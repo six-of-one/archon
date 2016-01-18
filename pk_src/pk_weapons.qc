@@ -2131,6 +2131,8 @@ void() PK_ImpulseCommands =
 	else if (self.impulse == 50)
 	{
 		grap_releaseHarpoon();
+		if (self.state) self.state = 0;
+		else self.state = self.morphy;
 	}
 
 // PAINKEEP_PREVWEAPON_START

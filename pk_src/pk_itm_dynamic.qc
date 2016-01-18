@@ -137,6 +137,10 @@ void(string cls) item_call =
 		self.dodmg = 0; // might give some things extra blast dmg
 		self.wait = 0; // RSP_TIME; // damn q3 respawn time rules - hope this doesnt fxk rndize
 		self.dmgtime = POW_TIME;
+		self.x_items = 0;
+		self.pk_currentitem = 0;
+		self.weaponframe = 0;
+		self.weaponmodel = "";
 
 		self.frame = 0;
 		self.skin = 0;
@@ -152,6 +156,7 @@ void(string cls) item_call =
 	else if (cls == "weapon_shotgun") q100_weapon_shotgun();
 	else if (cls == "weapon_supershotgun") q100_weapon_supershotgun();
 	else if (cls == "weapon_nailgun") weapon_nailgun();
+	else if (cls == "weapon_nailgun_q1") weapon_nailgun_q1();
 	else if (cls == "weapon_supernailgun") weapon_supernailgun();
 	else if (cls == "weapon_grenadelauncher") q100_weapon_grenadelauncher();
 	else if (cls == "weapon_rocketlauncher") q100_weapon_rocketlauncher();

@@ -1019,6 +1019,7 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "weapon_shotgun")										return(MC_SHOTGUN);
 	if (tsc == "weapon_supershotgun")								return(MC_SUPER_SHOTGUN);
 	if (tsc == "weapon_nailgun")										return(MC_NAILGUN);
+	if (tsc == "weapon_nailgun_q1")									return(MC_NAILGUN);
 	if (tsc == "weapon_supernailgun")								return(MC_SUPER_NAILGUN);
 	if (tsc == "weapon_grenadelauncher")							return(MC_GRENADEL);
 	if (tsc == "weapon_rocketlauncher")								return(MC_ROCKETL);
@@ -1797,8 +1798,13 @@ float(float bt, string md) wepbit_mcode =
 
 void () painkeep_weapon_touch;
 
+// NOTE: make these both eweapons, only way it will ever mork with map mode
+
 /*QUAKED weapon_pulsenail (0 .5 .8) (-16 -16 0) (16 16 32)
 */
+
+// note: wont set map mode either
+// CHECK make sure !PK code doesnt change this
 
 void () weapon_pulsenail =
 {
@@ -1808,7 +1814,16 @@ void () weapon_pulsenail =
 	self.netname = "Pulse Rifle";
 	self.touch = painkeep_weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
+	self.mask_x = CB_HUMAN+ CB_GREMLIN + CB_OGRE;
 	StartItem ();
+};
+
+// regular nailgun wont be pk translated
+
+void () weapon_nailgun_q1 =
+{
+	weapon_nailgun();
+	self.touch = painkeep_weapon_touch;
 };
 
 // axe attack - assumes player frames
@@ -1955,7 +1970,6 @@ void () weapon_hook =
 // self MUST BE player
 void() cube_rearm =
 {
-	self.state = 0;
 	self.weapon = W_BestWeapon();
 	self.pk_currentitem = W_BestPKWeapon();
 	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
@@ -2020,9 +2034,9 @@ void() painkeep_cube_use =
 
 	if (!d)
 	{
-		f = MC_PK_RNDITM - 1;
-		if (PK_ART) f = MC_PKP_RNDITM - 2;
-		d = MC_CHTHUNDR + rint(random() * f);
+		f = MC_PK_RNDITM;
+		if (PK_ART) f = MC_PKP_RNDITM - 1;
+		d = MC_PULSE_NAILGUN + rint(random() * f);
 		if (random() < 0.36)
 		{
 			d = 0;
@@ -2321,6 +2335,11 @@ void() cube_touch =
 		return;
 
 	if (self.dropent) // dont touch while inventory controlling
+		return;
+
+	if (MORPH_LOCK) // already morphed and morph lock is engaged - hit impulse 50 to clear
+	if (self.wad == "morph_cube")
+	if (other.state)
 		return;
 
 	if (other.eweapon) // other has a cube and is touching different one

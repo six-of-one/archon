@@ -346,8 +346,8 @@ void(float silent) player_demon_become =
 
 	setmodel(self,"progs/demon.mdl");
 
-	self.items = self.items | IT_AXE | IT_SHOTGUN | IT_GRENADE_LAUNCHER;
-	self.builtin = self.items & WEP_MASK;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_GRENADE_LAUNCHER;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_SHOTGUN;
 
 	self.msight = "demon/sight2.wav";

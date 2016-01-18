@@ -83,6 +83,11 @@ void () PlaceItem =
 {
 	local float f;
 
+	if (notmod(self)) // not mod for items - note: this removes the ent
+	{
+		return;
+	}
+
 	bot_item_linx(self); // *bot - item tie in
 
 // used for translate - if *_100 on
@@ -202,7 +207,7 @@ void () painkeep_weapon_touch =
 		other.ammo_cells = other.ammo_cells + 30;
 		new = PK_IT_CLIGHT;
 	}
-	else if (self.classname == "weapon_pulsenail" || self.mcode == MC_PULSE_NAILGUN)
+	else if (self.classname == "weapon_pulsenail" || self.mcode == MC_PULSE_NAILGUN || self.classname == "weapon_nailgun_q1")
 	{
 		if (leave && (other.items & IT_NAILGUN))
 			return ;
@@ -1672,27 +1677,27 @@ void() ip_checkForMovement =
 {
 
 	if (self.solid != SOLID_NOT)
- {
-	if (self.map == "rune" && RUNES && self.classname == "item_sigil")// && self.delay > -1)  // !chaos
 	{
-		rune_relocate();
-	}
-	else
-	if (self.ip_orgOrigin != v0)
-	if (self.ip_orgOrigin != self.origin)
-	{ // position has changed... repawn after x minutes..
-		if (self.mcode != self.scode) // item was changed by rndize
+		if (self.map == "rune" && RUNES && self.classname == "item_sigil")// && self.delay > -1)  // !chaos
 		{
-			self.nextthink = time + CFM_TIME;
-			if (self.ip_orgOrigin_x == self.origin_x)
-			if (self.ip_orgOrigin_y == self.origin_y) return;
+			rune_relocate();
 		}
+		else
+		if (self.ip_orgOrigin != v0)
+		if (self.ip_orgOrigin != self.origin)
+		{ // position has changed... repawn after x minutes..
+			if (self.mcode != self.scode) // item was changed by rndize
+			{
+				self.nextthink = time + CFM_TIME;
+				if (self.ip_orgOrigin_x == self.origin_x)
+				if (self.ip_orgOrigin_y == self.origin_y) return;
+			}
 
-		self.think = ip_regen;
-		self.nextthink = time + (ip_timeout * (RSP_TIME * 2));
-		return;
+			self.think = ip_regen;
+			self.nextthink = time + (ip_timeout * (RSP_TIME * 2));
+			return;
+		}
 	}
- }
 	self.nextthink = time + CFM_TIME;
 };
 
@@ -1716,6 +1721,8 @@ void() pk_item_position =
 		setorigin (self, self.ip_orgOrigin);
 	else
 		setorigin (self, self.origin);
+
+	rune_bounce();
 };
 
 // give tossed items eject velocity
@@ -1792,7 +1799,8 @@ void() pk_placeitem =
 
 // Cataboligne - added check here because new mode (not permanently PK & loaded a PK map can set PK mode after nailguns get loaded on map
 	if (PK) // pulse nail replace
-	if (self.wad == "")
+	if (self.wad == "") // not a live spawn - i.e. a map spawn
+	if (self.classname != "weapon_nailgun_q1")
 	if (self.classname == "weapon_nailgun" || self.weapon == IT_NAILGUN)
 	if (self.model == "progs/g_nail.mdl")
 	{

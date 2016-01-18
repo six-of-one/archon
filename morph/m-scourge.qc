@@ -514,7 +514,7 @@ void(float silent) player_scourge_become =
 	setmodel(self,"progs/scor.mdl");
 
 	self.items = self.items | IT_AXE | IT_SHOTGUN;
-	self.builtin = self.items & WEP_MASK | IT_LIGHTNING | IT_GRENADE_LAUNCHER;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_LIGHTNING | IT_GRENADE_LAUNCHER;
 	SEL_SCRGNAIL = IT_SHOTGUN;
 	SEL_SCRGTAIL = IT_AXE;
 	self.weapon = SEL_SCRGNAIL;

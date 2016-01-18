@@ -98,10 +98,12 @@ float(entity e) inWater =
 // Makes splashes of an entity has meved in / out of water. Called in PlayerPreThink
 void() CheckWaterLevels =
 {
-	local entity e;
-	local float mv;
+	local entity e, f;
+	local float mv, now;
 
 	cc_frame = framecount; // call only once per frame
+
+	mv = 0 - cvar("sv_maxvelocity");
 
 	e = find(world, water_notify, "yes");
 
@@ -109,55 +111,60 @@ void() CheckWaterLevels =
 	{
 		if (inWater(e) != e.inwater)
 		{
-	    if (e.classname == "drop")
-	    {
-	      sound(self, CHAN_AUTO, "misc/drip/drip_1.wav", 1, ATTN_NORM);
-	      remove(e);
-	    }
-	    else
-	    {
-			if (!XENV || PK_100) // NOTE: server vars that control splashing
-	      if ( ! pk_flags & PK_TP_SPARKSFLASH)
-	        MakeSplash(e);
+			if (e.classname == "drop")
+			{
+				sound(self, CHAN_AUTO, "misc/drip/drip_1.wav", 1, ATTN_NORM);
+				remove(e);
+			}
+			else
+			{
+				if (!XENV || PK_100) // NOTE: server vars that control splashing
+				if ( ! pk_flags & PK_TP_SPARKSFLASH)
+				  MakeSplash(e);
 
-	      e.inwater = pc;
+				e.inwater = pc;
 
-	      // Remove turrets and beartraps if they fall into the lava
-	      if (pc == CONTENT_LAVA)
-	      {
-	        if (e.classname == "beartrap")
-	        {
-	          e.think = beartrapDie;
-	          e.nextthink = time + 0.1;
-	        }
-	        else if (e.classname == "turret")
-	        {
-	          e.think = turret_deathAnim;
-	          e.nextthink = time + 0.1;
-	        }
-			  else if (e.map  == "rune" && e.classname == "item_sigil")
-			  {
-				  local entity f;
-	          e.think = SUB_Remove;
-	          e.nextthink = time + 0.1;
-				 rune_count = cnt_ent(world, "map", "rune") - 1;
-				 f = find(world,classname,"rune_maker");
-				 if (f) f.nextthink = time + 10 + random() * 60;
-			  }
-			  else if (e.classname == "tomb") // Cataboligne 8.12.9 purify - pk artifacts
-			  {
-					e.think = tombdie;
-					e.nextthink = (time + 0.1);
-			  }
-	      }
-	    }
-	      
+				// Remove turrets and beartraps if they fall into the lava
+				if (pc == CONTENT_LAVA)
+				{
+					if (e.classname == "beartrap")
+					{
+						e.think = beartrapDie;
+						e.nextthink = time + 0.1;
+					}
+					else if (e.classname == "turret")
+					{
+						e.think = turret_deathAnim;
+						e.nextthink = time + 0.1;
+					}
+					else if (e.map  == "rune" && e.classname == "item_sigil")
+					{
+						if (RUNES)
+						{
+							e.think = ip_checkForMovement; // note - if for any reason rune isnt in checkfor, this code puts it there
+							e.nextthink = time + random() * 4;
+							e.hook = TRUE;
+				/*
+							e.think = SUB_Remove;
+							e.nextthink = time + 0.1;
+							rune_count = cnt_ent(world, "map", "rune") - 1;
+							f = find(world,classname,"rune_maker");
+							if (f) f.nextthink = time + 10 + random() * 60;
+				*/
+						}
+					}
+					else if (e.classname == "tomb") // Cataboligne 8.12.9 purify - pk artifacts
+					{
+						e.think = tombdie;
+						e.nextthink = (time + 0.1);
+					}
+				}
+			}
 		}
 
 // fall from grace - stuff out of level checks
 
 // suspect shot stuff is from bots fallen out & not returned yet
-		mv = 0 - cvar("sv_maxvelocity");
 
  		if (pcc == CONTENT_SOLID || (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv))
 		{
@@ -172,7 +179,13 @@ void() CheckWaterLevels =
 	//					bprint(item_ident(e));
 	//					bprint("\n");
 					}
-					if (e.ip_orgOrigin != v0) // put items back now
+					if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
+					{
+						e.think = ip_checkForMovement;
+						e.nextthink = time + random() * 4;
+						e.hook = TRUE;
+					}
+					else if (e.ip_orgOrigin != v0) // put items back now
 					{
 						e.wait = e.wait - 1;
 						if (e.wait < -891) e.movetype = MOVETYPE_NONE; // drastic but neccesary if a bounding box seems to cut into a wall / solid because item keeps falling after every reset
@@ -200,7 +213,9 @@ void() CheckWaterLevels =
 					if (!e.portal_busy) // no action if under influence of portal contols
 					{
 						if (SV_FALLEN == 1)
+						if (e.duration < time)
 						{
+							e.duration = time + 2; // debounce
 							if (e.model == "progs/cthon.mdl") lavacthon_blobme(e); // re-blob cthon
 							f = spawn ();
 							f.owner = e;
@@ -215,7 +230,9 @@ void() CheckWaterLevels =
 							f.netname = " fell from grace.";
 							f.deadflag = 1; // use name
 							f.frags = 0;
-							T_Damage(e, e, f, 10000);
+							e.armorvalue = 0;
+							e.invincible_finished = 0; // turn off invincible
+							T_Damage(e, e, f, e.health + 10);
 							remove(f);
 						}
 					}
@@ -231,6 +248,22 @@ void() CheckWaterLevels =
 					if (e.classname == "turret") remove(e.turret_base);
 					remove(e); // remove all else
 				}
+			}
+		}
+
+		if (RUNE_NOWAY) // outside noway bounds checks
+		if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
+		{
+			now = FALSE;
+			if (noway_below)
+			if (e.origin_z < noway_below) now = TRUE;
+			if (noway_above)
+			if (e.origin_z > noway_above) now = TRUE;
+			if (now)
+			{
+				e.think = ip_checkForMovement;
+				e.nextthink = time + random() * 4;
+				e.hook = TRUE;
 			}
 		}
 

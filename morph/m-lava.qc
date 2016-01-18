@@ -471,7 +471,7 @@ void(float silent) player_lavablob_become =
 	self.modelindex_morph = self.modelindex;
 
 	self.items = self.items | IT_AXE | IT_NAILGUN;
-	self.builtin = self.items & WEP_MASK;
+	self.builtin = IT_AXE | IT_NAILGUN;
 	self.weapon = IT_AXE;
 
 	self.skin = 0;

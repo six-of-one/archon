@@ -584,6 +584,10 @@ void() SV_FlyMove =
 {
 	// This is nothing like the Quake function.
 
+	if (!self.flags & FL_CLIENT)
+	{
+		bprint("====== FSCK: non bot in SV_FlyMove\n");
+	}
 	if (self.phys_obj == world)
 	{
 		self.phys_obj = find(world,classname,"phys_obj");

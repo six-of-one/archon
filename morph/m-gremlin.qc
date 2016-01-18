@@ -380,6 +380,23 @@ void() player_gremlin_attack =
 		return;
 	}
 
+// bot controlled gremlin
+	if (!self.ishuman)
+	if (random() < 0.3)
+	{
+//		local float f;
+//		f = self.movetype;
+		if (self.movetype == MOVETYPE_FLY)
+		{
+			if (random() < 0.05) flyer_check(self, FALSE); //gremlin_takeoff();
+		}
+		else
+		{
+			if (random() < 0.2) gremlin_takeoff();			
+		}
+//		if (self.movetype != f) return;
+	}
+
 	if (self.weapon == IT_AXE)
 	{
 		if (rune_haste(0.5))
@@ -742,8 +759,8 @@ void(float silent) player_gremlin_become =
 //	self.modelindex_morph=self.modelindex;
 //	self.mask_x = CB_GREMLIN;
 
-	self.items = self.items | IT_AXE | IT_SHOTGUN;
-	self.builtin = self.items & WEP_MASK;
+	self.builtin = IT_AXE | IT_SHOTGUN;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_SHOTGUN;
 
 

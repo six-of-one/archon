@@ -304,6 +304,12 @@ void () cam_deathmove =
 		}
 		return;
 	}
+	else // fix issue where admin->observer gets "killed" by splash damage
+	{
+		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta
+		self.owner.takedamage = DAMAGE_NO;
+		self.owner.health = 1; // hack so engine will let you move cam
+	}
 
 // observers are very poor - no possesions
 //	if (self.owner.frame || self.owner.effects || self.owner.weapon || self.owner.currentammo || self.owner.model != "progs/null.mdl")
@@ -316,8 +322,8 @@ void () cam_deathmove =
 	{
 		setmodel(self.owner, "progs/null.mdl");
 		setsize (self.owner,'-4 -4 -4', ' 4 4 4');
-		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta
-		self.owner.takedamage = DAMAGE_NO;
+//		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta
+//		self.owner.takedamage = DAMAGE_NO;
 		self.owner.wait = 0;
 		self.owner.view_ofs_z = 1;
 		self.owner.water_notify = ""; // Cataboligne - 6.13.10 - deadcam splash issue
@@ -341,7 +347,7 @@ bprint ("\n");
 
 	if (cvar("fov") != DCAM_FOV) stuffcmd( self.owner, DCAM_SET_FOV ); // I see short dead dudes - enforce crow vision
 
-	PK_SetCurrentAmmoOnly(self.owner);
+	PK_SetCurrentAmmoOnly(self.owner); // note: is this needed in loop?
 //	self.owner.flags = self.owner.flags | FL_ONGROUND;
 };
 

@@ -159,7 +159,7 @@ float BOT_FIXED = 1; // if this is true and a bots frags dont change in the time
 // waypoint limit
 float noway_above;
 float noway_below;
-float noway_radius = 160; // no new waypoint in this radius
+float noway_radius = 108; // no new waypoint in this radius
 
 // client links
 float () getrandombotskin;

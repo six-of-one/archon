@@ -314,6 +314,8 @@ float CHAOS_H2_RET				= 0.1; // chance chaos will change form if health < 1/2 ma
 
 // vars
 
+float MORPH_LOCK					= 1; // if true, once morph is selected, cubes are ignored.  impulse 50 toggles this
+
 float WALKSOUND					= 1; // sv_
 
 float ZOMBIE_FLSH_VEL			= 600;

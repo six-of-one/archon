@@ -2099,9 +2099,9 @@ void() AdminCommands =
 		else if (self.admin_input == 26)
 		{
 			if (self.cnt)
-				cvar_set("sv_monster_map2", ftos(pk_monster_set));				
+				cvar_set("sv_monster_map2", ftos(pk_monster_set & MONSTER_MASK_II));
 			else
-				cvar_set("sv_monster_map", ftos(pk_monster_set));
+				cvar_set("sv_monster_map", ftos(pk_monster_set & MONSTER_MASK));
 			self.wad = "\nBit set written to sv_monster_map";
 			bprint("Map monsters bit set: ");
 			bit_print(MONSTER_MASK, pk_monster_set);
@@ -2110,9 +2110,9 @@ void() AdminCommands =
 		else if (self.admin_input == 27)
 		{
 			if (self.cnt)
-				cvar_set("sv_monster_rnd2", ftos(pk_monster_set));				
+				cvar_set("sv_monster_rnd2", ftos(pk_monster_set & MONSTER_MASK_II));				
 			else
-				cvar_set("sv_monster_rnd", ftos(pk_monster_set));
+				cvar_set("sv_monster_rnd", ftos(pk_monster_set & MONSTER_MASK));
 			self.wad = "\nBit set written to sv_monster_rnd";
 			bprint("Random monsters bit set: ");
 			bit_print(MONSTER_MASK, pk_monster_set);
@@ -2121,9 +2121,9 @@ void() AdminCommands =
 		else if (self.admin_input == 28)
 		{
 			if (self.cnt)
-				cvar_set("sv_monster_resp2", ftos(pk_monster_set));				
+				cvar_set("sv_monster_resp2", ftos(pk_monster_set & MONSTER_MASK_II));				
 			else
-				cvar_set("sv_monster_resp", ftos(pk_monster_set));
+				cvar_set("sv_monster_resp", ftos(pk_monster_set & MONSTER_MASK));
 			self.wad = "\nBit set written to sv_monster_resp";
 			bprint("Respawning map monsters bit set: ");
 			bit_print(MONSTER_MASK, pk_monster_set);

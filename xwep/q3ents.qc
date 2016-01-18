@@ -1904,7 +1904,8 @@ void() holdable_medkit =
 	self.touch = x_pwr_touch;
 	self.pk_currentitem = PK_IT_CANPAB;
 	self.items = IT_AXE;
-	
+	self.stack1 = "q3_hold";
+
 	self._attack = player_q3held;
 	self._fr_attack = SUB_Null;
 
@@ -1950,6 +1951,7 @@ void() holdable_teleporter =
 	self.touch = x_pwr_touch;
 	self.pk_currentitem = PKPLUS_IT_PHONE;
 	self.items = IT_AXE;
+	self.stack1 = "q3_hold";
 	
 	self._attack = player_q3held;
 	self._fr_attack = SUB_Null;

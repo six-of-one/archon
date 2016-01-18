@@ -1078,6 +1078,7 @@ void() d_item_automap =
 	}
 
 	q100_weapon_shotgun();
+	self.weaponmodel = "";
 	self.netname = "Auto Map";
 
 	self.touch = x_item_touch;
@@ -1100,6 +1101,7 @@ void() d_item_nightvis =
 	}
 
 	q100_weapon_shotgun();
+	self.weaponmodel = "";
 	self.netname = "Night Vision Goggles";
 
 	self.touch = x_item_touch;

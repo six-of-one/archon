@@ -248,6 +248,7 @@ float DEF_DOC_ARMORTYPE		= 0.6;
 float RUNE_QUAD_COMB			= 1; // allow damage runes to combind with quad
 float RUNE_TECH_DMG_COMB	= 1; // allow damage runes to combind with each other
 float RUNE_TECH_RS_COMB		= 1; // allow resist runes to combind with each other
+float RUNE_NOWAY				= 1; // if true relocate runes past noway bounds for waypoints faster
 
 void() flyer_move; // fly rune for now
 
@@ -493,6 +494,8 @@ float MC_Q3_HOLDTELE;
 
 // **************************************
 
+float ENHANCED					= 1; // adds features that werent originally there in the sub mods (like runes)
+
 .float xp // experience points
 
 // goes elsewhere section
@@ -510,6 +513,8 @@ float RND_maxdmg; // set to CBOMB_DEF_MAX if > 0 this is the max damage all expl
 float DUD_DEF_DMG				= 20; // defualt base damage for a dud explosive that blow
 
 // inventory flags
+
+.string stack1; // here for specials
 
 float WEP_ITEM_MASK			= 255; // mask of range weapon bits in .items
 float PK_ITEM_MASK			= 4094; // mask off non items bits
@@ -530,6 +535,7 @@ void(string sl, float b, entity e) drop_string;
 float(entity e, string ms) force_drop_set;
 float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) drop_one;
 void(entity e) dead_artifact;
+void(entity e) dead_drop;
 void (entity e, entity p) stack_touch;
 float(entity e, string ss) stack_search;
 

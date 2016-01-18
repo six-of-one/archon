@@ -2197,6 +2197,11 @@ void(entity e, float trvs) item_translate =
 		item_call_save(e, mcc);
 		e.mcode = pk_mcode("", e);
 		e.sscode = sid_code[(int)(e.mcode - 100) * %4]; // just for doom_alpha code
+		if (e.touch != painkeep_touch && e.touch != SUB_Null)
+		{
+			e.pk_touch = e.touch;
+			e.touch = painkeep_touch;
+		}
 	}
 	if (WARNING) bprint("\n");
 };

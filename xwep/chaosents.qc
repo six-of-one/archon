@@ -507,7 +507,8 @@ void() x_pwr_touch =
 	if ( (other.health > morph_healmax(other.health_modifier, self.volume)) || (other.armorvalue > self.currentammo) )
 		return;
 
-	if (self.class_select == "q3_item") // for holdables - since they use pk slots, tho the corollary of collecting a pk item is not tested
+	if (self.stack1 == "q3_hold") // for holdables - since they use pk slots, tho the corollary of collecting a pk item is not tested
+//	if (self.class_select == "q3_item")  // cant test - translation issue
 	if (self.pk_currentitem) // 'es already got one...wot?  'e sais 'yve already got one.  already got a Grail?
 	{
 		if (other.pk_canpabammo && self.pk_currentitem == PK_IT_CANPAB) return;

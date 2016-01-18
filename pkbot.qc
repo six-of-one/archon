@@ -712,6 +712,8 @@ void () BotDie =
 	{
 		return ;
 	}
+	dead_drop(self);
+
 	self.items = (self.items - (self.items & IT_INVISIBILITY));
 	self.invisible_finished = 0;
 	self.invincible_finished = 0;

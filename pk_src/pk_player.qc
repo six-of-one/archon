@@ -613,15 +613,16 @@ void() PK_GibPlayer =
 
 // GIBS_START
 //	if (random() > 0.5)
-//	{
-	f = 0;
-	if (self.mdl == "progs/plyr_bw.mdl") f = HEADSKN_W;
-	else if (self.mdl == "progs/plyr_dm.mdl") f = HEADSKN_D;
-	else if (self.mdl == "progs/plyr_q3.mdl") f = HEADSKN_Q3;
-	ThrowHead ("progs/h_player.mdl", self.health);
-	self.skin = f;
-/*
+	if (self.mask_x & CB_HUMAN) // note: interim fix, need proper heads for all morphs
+	{
+		f = 0;
+		if (self.mdl == "progs/plyr_bw.mdl") f = HEADSKN_W;
+		else if (self.mdl == "progs/plyr_dm.mdl") f = HEADSKN_D;
+		else if (self.mdl == "progs/plyr_q3.mdl") f = HEADSKN_Q3;
+		ThrowHead ("progs/h_player.mdl", self.health);
+		self.skin = f;
 	}
+/*
 	else
 	{
 		ThrowHead ("progs/qtgib3.mdl", self.health); // this is just an unskinned head ?

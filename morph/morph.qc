@@ -1102,6 +1102,7 @@ void(float silent) player_human_become =
 	if (self.morphy == CHAR_W) setmodel(self, "progs/plyr_bw.mdl");
 	if (self.morphy == CHAR_D) setmodel(self, "progs/plyr_dm.mdl");
 	if (self.morphy == CHAR_Q) setmodel(self, "progs/player.mdl");
+	if (self.morphy == CHAR_PK) setmodel(self, "progs/plyr_pk.mdl");
 	if (self.morphy == CHAR_Q3) setmodel(self, "progs/plyr_q3.mdl");
 	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
 };
@@ -1463,16 +1464,35 @@ void() random_monster =
 		self = spawn();
 		self.classname = self.wad = monster_id(f, M); // get spawn func
 
+		if (self.wad == "")
+		{
+			if (WARNING)
+			{
+				bprint("*** WARNING - random monster spawn assign fail - returning\n");
+				bprint("*** Assign bit: ");
+				bprint(ftos(f));
+				bprint(" - make mode: ");
+				bprint(ftos(M));
+				bprint("\n");
+			}
+			return;
+		}
+
 		self.event = "dyn_monster";
 		item_call(self.wad);
 
-
 bprint("spawning: ");
 bprint(item_ident(self));
+bprint(" - wad: ");
+bprint(self.wad);
 bprint(" - cnt: ");
 bprint(ftos(monster_rnd_cnt));
 bprint(" - limit: ");
 bprint(ftos(C_MONSTER_CNT));
+bprint(" - f: ");
+bprint(ftos(f));
+bprint(" - M: ");
+bprint(ftos(M));
 bprint("\n");
 
 

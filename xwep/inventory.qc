@@ -1783,6 +1783,26 @@ float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) 
 	return(TRUE);
 };
 
+// died & need to check dropping stuff
+
+// e is dead ent
+
+void(entity e) dead_drop =
+{
+	if (e.dropent)
+	{
+		remove(e.dropent);
+		e.dropent = world;
+	}
+
+	if (DEAD_THROW_ARTIFACT)
+		dead_artifact(e);
+
+	if (e.rune_flag) // because you can have runs in q100 for some reason
+		dead_runes(e);
+};
+
+
 // touched item stack - so inventory drop & dead throws can toss out the correct item - this works most of the time
 // note: this might require more string space, perhaps done on command line with -zone
 
@@ -1790,7 +1810,7 @@ float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) 
 
 // put classname or other strings of some player touched ents in a string stack
 
-.string stack1, stack2, stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
+.string stack2, stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
 
 float(entity e, string ss) stack_search =
 {

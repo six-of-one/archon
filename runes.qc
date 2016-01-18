@@ -196,6 +196,7 @@ void(float b) rune_map_print =
 {
 	local float f, rbc;
 	local entity e;
+	local string rs;
 
 	f = 0 - b;
 	rune_print(world, f, FALSE);
@@ -220,7 +221,25 @@ void(float b) rune_map_print =
 			bprint(" spawned ");
 	}
 	else
-		bprint(" ------- ");
+	{
+		if (RUNES > 1)
+		{
+			rs = " ------- ";
+			e = find(world, classname, "player");
+			while (e)
+			{
+				if (e.rune_flag & b) rs = " potent- ";
+				e = find(e, classname, "player");
+			}
+			e = find(world, class_select, "class_bot");
+			while (e)
+			{
+				if (e.rune_flag & b) rs = " potent- ";
+				e = find(e, class_select, "class_bot");
+			}
+		}
+		bprint(rs);
+	}
 	bprint(") ");
 	rune_print(world, b, FALSE);
 };
@@ -229,6 +248,8 @@ void(float b) rune_map_print =
 
 // 1 - set sv_c_rune_set to a valid rune map code
 // 2 - set sv_c_rune_set to a valid rune power bit code
+
+// TDO: update for all runes
 
 void() mk_rune_set =
 {
@@ -703,10 +724,13 @@ void () rune_touch =
 	if (! (self.spawnflags & RUNE_MASK)) // rune not allowed - prob map rune
 		return;
 
+	if (ENHANCED)
 	if (other.rune_flag & RUNE_VAMPIRE)
 	if (self.spawnflags & RUNE_FLG_RG || self.spawnflags & TECH_ADOC)
 	{
+		if (other.duration < time)
 		sprint(other,"Suck heads cant get Regeneration\n");
+		other.duration = time + 2 + random();
 		return;
 	}
 
@@ -746,17 +770,33 @@ void () rune_touch =
 	self.cnt = 0;
 	self.count = self.count + 0.13; // increment for each grab - more activity = less chance of rune moving
 
+//	serverflags = serverflags | (self.spawnflags & 15);
+
+	activator = other;
+	SUB_UseTargets();				// fire all targets / killtargets
+
 	if (RUNES == 1 || RUNES == 3) // NOTE rule 4 will be special here - extra code
 	{
 //	if (deathmatch !=  2) // this is likely a meaningless deal for runes
 		self.nextthink = time + RSP_TIME;
 		self.think = SUB_regen;
 	}
+	else
+		remove(self); // rule 2, rule 4 normal - its gone from the map
 
-//	serverflags = serverflags | (self.spawnflags & 15);
+};
 
-	activator = other;
-	SUB_UseTargets();				// fire all targets / killtargets
+// bounce a created rune
+// note: could be used for other items, with .hook
+
+void() rune_bounce =
+{
+	if (self.map  == "rune" && self.classname == "item_sigil")
+	{
+		if (self.punchangle != v0)
+			item_eject(self, self.punchangle);
+		self.punchangle = v0; // dont bounce with every respawn in rule 1
+	}
 };
 
 // make runes for runeserver
@@ -776,10 +816,11 @@ void() rune_maker =
 
 	if (rune_count < RUNE_CNT)
 	{
-		if (rune_count < 2) // make at least 2 sort of quicker
-			self.nextthink = time + random() * 30;
+		f = RUNE_CNT / 2;
+		if (rune_count < f) // make at least 1/2 sort of quicker
+			self.nextthink = time + random() * 10;
 		else
-			self.nextthink = time + 10 + random() * 60;
+			self.nextthink = time + 5 + random() * 43;
 
 // make a rune
 		e = spawn();
@@ -861,12 +902,18 @@ void() rune_maker =
 
 			item_call(self.wad);
 
-		if (Q_100 || PK_100) // if *100 - need this here
-		{
-			self.think = SUB_regen; // dont go thru place_item - use regen method
-			self.nextthink = time + 1 + 3 * random(); // spread em out
-			self.model = string_null;
-		}
+			self.punchangle = MED_BOUNCE; // for rune_bounce
+
+			if (Q_100 || PK_100) // if *100 - need this here
+			{
+				SUB_regen(); // note: does not use positioning code correctly
+//				item_eject(self, MED_BOUNCE);
+//				self.think = SUB_regen; // dont go thru place_item - use regen method
+//				self.nextthink = time + 1 + 3 * random(); // spread em out
+//				self.model = string_null;
+			}
+//			else
+//			item_eject(self, MED_BOUNCE);
 
 			AddToSplash(self); // splash code kills lava immersed runes
 
@@ -893,7 +940,7 @@ void() rune_maker =
 	}
 };
 
-// relocation code - called by ip_checkForMovement
+// relocation code - called by ip_checkForMovement & from splash.qc
 
 void() rune_relocate =
 {
@@ -902,8 +949,9 @@ void() rune_relocate =
 
 	self.cnt = self.cnt + 1;
 	self.delay = self.delay + 1;
-	if (self.cnt > self.count || self.delay > RUNE_MOVE) // not touched in 2 - 6 mins or > 10 mins
+	if (self.cnt > self.count || self.delay > RUNE_MOVE || self.hook) // not touched in 2 - 6 mins or > 10 mins, or force relocate with .hook
 	{
+		self.hook = FALSE;
 		if (self.delay > RUNE_MOVE) // reload val
 		{
 			RUNE_MOVE = 10 + rint(random() * 2.5 + random() * 2.5);
@@ -914,17 +962,18 @@ void() rune_relocate =
 		if (e)
 		{
 			v1 = e.origin + ' 0 0 4';
-			if (e.flags & FL_ITEM) // randomize away from other map items
-				v1 = stdv_rndloc(e.origin + ' 0 0 4', 50, 100);
+//			if (e.flags & FL_ITEM) // randomize away from other map items - not needed, bouncing
+//				v1 = stdv_rndloc(e.origin + ' 0 0 4', 50, 100);
 			setorigin(self, v1);
-			self.ip_orgOrigin = self.origin;
+			item_eject(self, MED_BOUNCE);
+			self.ip_orgOrigin = self.origin; // bogus because of bounce
 			self.count = 2 + random() * 3.8; // reset for new location
 			self.cnt = 0;
 
 			bprint("\n\b*** RUNE relocating: ");
 			bprint(self.netname);
 			bprint(" near: ");
-			bprint(e.classname);
+			bprint(item_ident(e));
 			bprint("\n\n");
 		}
 	}
@@ -1001,16 +1050,15 @@ void() run_runes =
 	if (r == 2) // note: rule 3, 4 
 		r = -2;
 
-	if (r < 2) RUNE_MASK_ALL = RULE1_MASK; // set all mask for rules
+	f = RUNE_VAMPIRE; // add in vampire for rules -2
+	if (r == -2) RUNE_MASK_ALL = RULE1_MASK | f;
+	else if (r < 2) RUNE_MASK_ALL = RULE1_MASK; // set all mask for rules
 	else if (r > 1) RUNE_MASK_ALL = RULE2_MASK;
 
 	RUNE_MASK = cvar("sv_c_rune_mask") & RUNE_MASK_ALL;
 	if (RUNE_MASK < 1 || RUNE_MASK > RUNE_MASK_ALL)
 	{
 		RUNE_MASK = RUNE_MASK_ALL;
-
-		f = RULE1_MASK;
-		if (r == -2) RUNE_MASK = f | RUNE_VAMPIRE; // add in vampire for rules -2
 	}
 
 	RUNE_AR1M = cvar("sv_c_rune_allowrule1multi");
@@ -1552,6 +1600,7 @@ void () item_sigil =
 		rul = -2; // models not avail
 
 	self.noise = "misc/runekey.wav";
+	self.noise4 = "misc/null.wav"; // TDO: see if pooted out runes make noise
 	precache_sound ("misc/runekey.wav");
 
 	self.duration = 0;

@@ -37,7 +37,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	if (e.vv_draw != (void()) 0) e.movetype = 0; // for now these cant movetype follow - that will come later
 
 	e.weapon = e.items = self.items;
-	if (self.items == IT_AXE) e.pk_currentitem = self.pk_currentitem; // replacing the axe
+	if (self.items == IT_AXE) e.pk_currentitem = self.pk_currentitem; // a x item with pk bits - q3 holdables
 	e.x_items = self.x_items;
 	e.currentammo = self.currentammo;
 	e.lip = self.lip;

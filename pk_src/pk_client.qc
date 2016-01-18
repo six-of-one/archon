@@ -272,6 +272,7 @@ void () ClientKill =
 		q100_ClientKill();
 		return;
 	}
+	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
 	bprint (self.netname);
 	bprint (" suicides\n");
 	set_suicide_frame();
@@ -1749,6 +1750,8 @@ void () ClientDisconnect =
 	// if the level end trigger has been activated, just return
 	// since they aren't *really* leaving
 
+	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
+
 	if (!Q_100 && !Q_99)
 	{
 // PK - set flag so that we know that it's a disconnected entity.
@@ -2488,6 +2491,10 @@ Att = attacker;
 						deathstring = attacker._killmsg(targ, attacker);
 					if (!deathstring)
 						bprint(" was mauled by ");
+					else if (deathstring == "return") // printed in killmsg call, just go back
+						return;
+					else
+						bprint(deathstring);
 					bprint(attacker.netname);
                bprint ("\n");
 				}

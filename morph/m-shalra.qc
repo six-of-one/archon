@@ -294,10 +294,8 @@ void(float silent) player_shalrath_become =
 
 	setmodel(self,"progs/shalrath.mdl");
 
-	//	self.modelindex_morph=self.modelindex;
-//	self.mask_x = CB_SHALR;
-	self.items = self.items | IT_AXE | IT_SUPER_NAILGUN | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
-	self.builtin = self.items & WEP_MASK;
+	self.builtin = IT_AXE | IT_SUPER_NAILGUN | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
+	self.items = self.items | self.builtin;
 	SEL_SHAL_BOMB = IT_ROCKET_LAUNCHER;
 	SEL_SHAL_LTN = IT_LIGHTNING;
 	SEL_SHAL_SPIKE = IT_SUPER_NAILGUN;

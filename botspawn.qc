@@ -852,6 +852,7 @@ void(entity e) removeBot =
 		f.id = f.b_clientno = -1;
 	}
 
+	dead_drop(f); // Cataboligne - 10.7.11 - drop runes+
 	remove (f.movetarget);
 	remove (f.goalentity);
 	remove (f);

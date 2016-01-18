@@ -279,6 +279,17 @@ void() bossman_mad =
 };
 
 
+string(entity targ, entity attacker) bossman_killmsg =
+{
+		return " got nothing but \"blah blah blah\" from ";
+};
+
+string(entity targ, entity attacker) bossman_killmsg2 =
+{
+	return ".\n";
+};
+
+
 /*QUAKED monster_bossman (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
 void(float ign) monster_bossman =
@@ -323,6 +334,7 @@ if (ign != A_MONSTER)
 	self.th_missile = bossman_mad;
 	self.th_pain = bossman_pain;
 	self.th_die = bossman_die;
+	self._killmsg = bossman_killmsg;
 
 	walkmonster_start ();
 };

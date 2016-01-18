@@ -290,8 +290,8 @@ local entity e;
 	e.v_angle = e.angles - self.angles; // relative angles
 	self.movetarget = e;
 
-	self.items = self.items | IT_AXE;
-	self.builtin = self.items & WEP_MASK;
+	self.builtin = IT_AXE;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
 
 //	self.msight = "anode/sight.wav";

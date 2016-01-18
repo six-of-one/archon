@@ -314,8 +314,8 @@ void(float silent) player_shambler_become = {
 
 	setmodel(self,"progs/shambler.mdl");
 
-	self.items = self.items | IT_AXE | IT_LIGHTNING;
-	self.builtin = self.items & WEP_MASK;
+	self.builtin = IT_AXE | IT_LIGHTNING;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_LIGHTNING;
 
 	self.msight = "shambler/ssight.wav";
