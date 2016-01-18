@@ -24,6 +24,7 @@ float XTR_SAVED1				= 1195724115; // saved1 test val
 
 float() SUB_False				= { return 0; }; // Return a false value
 float() SUB_True				= { return 1; }; // Return a true value
+void() SUB_Void				= {  }; // just so fteqcc code can assign (void()) 0 to a fn call and detect it later
 
 // **************************************
 // server strings section

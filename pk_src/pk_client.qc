@@ -2662,12 +2662,14 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					deathstring2 = "'s experimental weapon\n";
 
 					if (attacker.eweapon._killmsg != SUB_Null) // xwep kill
-					if (attacker.eweapon._killmsg != (void ()) 0)
+//					if (attacker.eweapon._killmsg != (void()) 0)
+					if (attacker.eweapon._killmsg)
 					{
 						deathstring = attacker.eweapon._killmsg(targ, attacker);
 						if (deathstring == "return") return; // printed in killmsg call, just go back
 
-						if (attacker.eweapon._killmsg2 != (void ()) 0)
+//						if (attacker.eweapon._killmsg2 != (void ()) 0)
+						if (attacker.eweapon._killmsg2)
 						deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
 						if (deathstring == "")
 						{
@@ -2682,14 +2684,16 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					return;
 				}
 
-				if (attacker._killmsg != (void ()) 0)
+//				if (attacker._killmsg != (void ()) 0)
+				if (attacker._killmsg)
 				if (attacker._killmsg != SUB_Null) // morphic kill
 				if (attacker.weapon & attacker.builtin) // make sure its not a reg or xwep kill
 				{
 					deathstring = attacker._killmsg(targ, attacker);
 					if (deathstring == "return") return; // printed in killmsg call, just go back
 
-					if (attacker._killmsg2 != (void ()) 0)
+//					if (attacker._killmsg2 != (void ()) 0)
+					if (attacker._killmsg2)
 					deathstring2 = attacker._killmsg2(targ, attacker);
 
 					if (deathstring == "") // nope, ur?
@@ -2920,7 +2924,8 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				else // now have generic
 				{
 					deathstring = "";
-					if (attacker._killmsg != (void()) 0)
+//					if (attacker._killmsg != (void()) 0)
+					if (attacker._killmsg)
 						deathstring = attacker._killmsg(targ, attacker);
 					if (!deathstring)
 						bprint(" was mauled by ");

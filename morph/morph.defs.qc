@@ -359,6 +359,7 @@ float HEADSKN_Q2					= 4;
 float HEADSKN_Q3					= 3; // 5;
 
 // evolution
+void(float silent) player_chaos_become;
 void(float silent) player_scourge_become;
 void(float silent) player_shalrath_become;
 void(float silent) player_enforcer_become;
@@ -485,6 +486,7 @@ float(entity e) IS_ZOMBIE;
 // precaches
 
 void() morph_precache;
+void() m_precache_chaos;
 void() m_precache_scourge;
 void() m_precache_shalrath;
 void() m_precache_enforcer;

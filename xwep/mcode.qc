@@ -3270,7 +3270,8 @@ void() barrel_explode =
 //	else
 	if (!deathmatch || deathmatch == 2 || deathmatch == 4)
 		SUB_Remove();
-	else if (self.th_stand != SUB_Null && self.th_stand != (void()) 0)
+//	else if (self.th_stand != SUB_Null && self.th_stand != (void()) 0)
+	else if (self.th_stand != SUB_Null && self.th_stand)
 		self.th_stand();
 	else
 	if (EXPLBOX_RESP)

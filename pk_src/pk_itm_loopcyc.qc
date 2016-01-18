@@ -175,7 +175,8 @@ e.button12 = 65536+random();
 // IMP: mass replace here for all loop x.theowner, else below
 
 				self.delay = f = loop_next(self, e.mcode);
-				e.pk_touch = (void()) 0;
+//				e.pk_touch = (void()) 0;
+				e.pk_touch = SUB_Void;
 				if (self.killtarget != "")
 					item_call_save(e, self.killtarget);
 				else

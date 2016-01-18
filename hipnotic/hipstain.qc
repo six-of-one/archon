@@ -113,7 +113,8 @@ entity( vector pos, string stain, void() thk, float ttm ) placestain =
    makevectors(self.angles);
    setorigin( new, pos - ( v_forward * 0.2 ) );
 
-	if (thk != SUB_Null && thk != (void()) 0)
+//	if (thk != SUB_Null && thk != (void()) 0)
+	if (thk != SUB_Null && thk)
 		new.think = thk;		
 	else
 		new.think = remove_stain;

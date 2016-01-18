@@ -312,43 +312,13 @@ void() Admin_varmenu =
 	if (self.cnt == 0.01)
 	{
 	self.message =
-					 "\b   Administration Menu:    \n"
-					 "\b+-------------------------+\n"
-						"      adjust variable      \n"
-						" +-----------------------+ \n"
-						"  increment     decrement  \n"
-						"     1:     0.01     :6    \n"
-						"     2:     0.1      :5    \n"
-						"     3:     1.0      :4    \n"
-						"          by value         \n"
-						" +-----------------------+ \n"
-						"   7: save modification    \n"
-						"   8: enter new value      \n"
-						"   9: main menu            \n"
-						" admin impulse: exit admin \n"
-					 "\b+-------------------------+\n"
-					 "\b Enter code: ";
+					"\b   Administration Menu:    \n\b+-------------------------+\n      adjust variable      \n +-----------------------+ \n  increment     decrement  \n     1:     0.01     :6    \n     2:     0.1      :5    \n     3:     1.0      :4    \n          by value         \n +-----------------------+ \n   7: save modification    \n   8: enter new value      \n   9: main menu            \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 	}
 //	if (self.cnt == 1)
 	else
 	{
 	self.message =
-					 "\b   Administration Menu:    \n"
-					 "\b+-------------------------+\n"
-						"      adjust variable      \n"
-						" +-----------------------+ \n"
-						"  increment     decrement  \n"
-						"     1:      1       :6    \n"
-						"     2:      10      :5    \n"
-						"     3:      100     :4    \n"
-						"          by value         \n"
-						" +-----------------------+ \n"
-						"   7: save modification    \n"
-						"   8: enter new value      \n"
-						"   9: main menu            \n"
-						" admin impulse: exit admin \n"
-					 "\b+-------------------------+\n"
-					 "\b Enter code: ";
+					"\b   Administration Menu:    \n\b+-------------------------+\n      adjust variable      \n +-----------------------+ \n  increment     decrement  \n     1:      1       :6    \n     2:      10      :5    \n     3:      100     :4    \n          by value         \n +-----------------------+ \n   7: save modification    \n   8: enter new value      \n   9: main menu            \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 	}
 	self.wad = "";
 	self.admin = self.lip = 19;
@@ -377,37 +347,7 @@ MapDM
 void() Admin_dmmapmenu2 =
 {
 	self.message =
-					 "\b Painkeep map expansion:\n"
-					 "\b+------------------------+\n"
-						"  01: pkts01   21: pkn1   \n"
-						"  02: pkts02   22: pkn2   \n"
-						"  03: pkts03   23: pkn3   \n"
-						"  04: pkts04   24: pkn4   \n"
-						"  05: pkts05   25: pkn5   \n"
-						"  06: pkts06   26: pkn6   \n"
-						"  07: pkts07   27: pkn7   \n"
-						"  08: pkts08   28: pkn8   \n"
-						"  09: pkts09   29: pkn9   \n"
-						"  10: pkts10   30: pkn10  \n"
-						"  11: pkts11   31: pkn11  \n"
-						"  12: pkts12   32: pkn12  \n"
-						"  13: pkts13   33: pkn13  \n"
-						"  14: pkts14   34: pkn14  \n"
-						"  15: pkts00   35: pkn15  \n"
-						"    :          36: pkn16  \n"
-						"    :          37: pkn17  \n"
-						"  18: hub2     38: pkn18  \n"
-						"  19: hub3     39: pkn19  \n"
-						"  20: chv_hub  40: pkn20  \n"
-						"  41: painkeep2           \n"
-						"  42: custom hub          \n"
-						"  60: original maps       \n"
-						"  61: list hub links      \n"
-						" 666: main menu           \n"
-						"  admin impulse exits     \n"
-					 "\b+------------------------+\n"
-//					 "              * you must rename or link hub2 & hub3\n"
-					 "\b Enter code: ";
+"\b Painkeep map expansion:\n\b+------------------------+\n  01: pkts01   21: pkn1   \n  02: pkts02   22: pkn2   \n  03: pkts03   23: pkn3   \n  04: pkts04   24: pkn4   \n  05: pkts05   25: pkn5   \n  06: pkts06   26: pkn6   \n  07: pkts07   27: pkn7   \n  08: pkts08   28: pkn8   \n  09: pkts09   29: pkn9   \n  10: pkts10   30: pkn10  \n  11: pkts11   31: pkn11  \n  12: pkts12   32: pkn12  \n  13: pkts13   33: pkn13  \n  14: pkts14   34: pkn14  \n  15: pkts00   35: pkn15  \n    :          36: pkn16  \n    :          37: pkn17  \n  18: hub2     38: pkn18  \n  19: hub3     39: pkn19  \n  20: chv_hub  40: pkn20  \n  41: painkeep2           \n  42: custom hub          \n  60: original maps       \n  61: list hub links      \n 666: main menu           \n  admin impulse exits     \n\b+------------------------+\n\b Enter code: ";
 };
 
 void() Admin_dmmapmenu =
@@ -415,79 +355,20 @@ void() Admin_dmmapmenu =
 	if (Q_99)
 	{
 	self.message =
-					 "\b  Quake map Menu:\n"
-					 "\b+------------------------+\n"
-						"    01:  dn1    20: e2m4  \n"
-						"    02:  dm2    21: e2m5 \n"
-						"    03:  dm3    22: e2m6  \n"
-						"    04:  dm4    23: e2m7  \n"
-						"    05:  dm5    24: e3m1  \n"
-						"    06:  dm6    25: e3m2 \n"
-						"    07:  start  26: e3m3  \n"
-						"    08:  end    27: e3m4  \n"
-						"    09:  e1m1   28: e3m5  \n"
-						"    10:  e1m2   29: e3m6  \n"
-						"    11:  e1m3   30: e3m7  \n"
-						"    12:  e1m4   31: e4m1  \n"
-						"    13:  e1m5   32: e4m2  \n"
-						"    14:  e1m6   33: e4m3  \n"
-						"    15:  e1m7   34: e4m4  \n"
-						"    16:  e1m8   35: e4m5  \n"
-						"    17:  e2m1   36: e4m6  \n"
-						"    18:  e2m2   37: e4m7  \n"
-						"    19:  e2m3   38: e4m8  \n"
-//						"    60:  new maps         \n"
-//						"    61:  list hub links   \n"
-						"   666:  main menu        \n"
-						"  admin impulse exits     \n"
-					 "\b+------------------------+\n"
-					 "\b Enter code: ";
+					"\b  Quake map Menu:\n\b+------------------------+\n    01:  dn1    20: e2m4  \n    02:  dm2    21: e2m5 \n    03:  dm3    22: e2m6  \n    04:  dm4    23: e2m7  \n    05:  dm5    24: e3m1  \n    06:  dm6    25: e3m2 \n    07:  start  26: e3m3  \n    08:  end    27: e3m4  \n    09:  e1m1   28: e3m5  \n    10:  e1m2   29: e3m6  \n    11:  e1m3   30: e3m7  \n    12:  e1m4   31: e4m1  \n    13:  e1m5   32: e4m2  \n    14:  e1m6   33: e4m3  \n    15:  e1m7   34: e4m4  \n    16:  e1m8   35: e4m5  \n    17:  e2m1   36: e4m6  \n    18:  e2m2   37: e4m7  \n    19:  e2m3   38: e4m8  \n   666:  main menu        \n  admin impulse exits     \n\b+------------------------+\n\b Enter code: ";
+//    60:  new maps         \n
+//    61:  list hub links   \n
 	}
 	else if (PK_ADHUB)
 	{
 	self.message =
-					 "\b  Painkeep map Menu:\n"
-					 "\b+------------------------+\n"
-						"    01:  pk1    11: pk11  \n"
-						"    02:  pk2    12: pk12  \n"
-						"    03:  pk3    13: pk13  \n"
-						"    04:  pk4    14: pk14  \n"
-						"    05:  pk5    15: pk15  \n"
-						"    06:  pk6    16: pk16  \n"
-						"    07:  pk7    17: pk17  \n"
-						"    08:  pk8    18: pk18  \n"
-						"    09:  pk9    19: pk0   \n"
-						"    10:  pk10   21: hub   \n"
-						"    20:  painkeep         \n"
-						"    60:  new maps         \n"
-						"    61:  list hub links   \n"
-						"   666:  main menu        \n"
-						"  admin impulse exits     \n"
-					 "\b+------------------------+\n"
-					 "\b Enter code: ";
+					"\b  Painkeep map Menu:\n\b+------------------------+\n    01:  pk1    11: pk11  \n    02:  pk2    12: pk12  \n    03:  pk3    13: pk13  \n    04:  pk4    14: pk14  \n    05:  pk5    15: pk15  \n    06:  pk6    16: pk16  \n    07:  pk7    17: pk17  \n    08:  pk8    18: pk18  \n    09:  pk9    19: pk0   \n    10:  pk10   21: hub   \n    20:  painkeep         \n    60:  new maps         \n    61:  list hub links   \n   666:  main menu        \n  admin impulse exits     \n\b+------------------------+\n\b Enter code: ";
 	if (self.cnt) Admin_dmmapmenu2();
 	}
 	else
 	{
 	self.message =
-					 "\b  Painkeep DM map Menu:\n"
-					 "\b+------------------------+\n"
-						"    01:  pk1    11: pk11  \n"
-						"    02:  pk2    12: pk12  \n"
-						"    03:  pk3    13: pk13  \n"
-						"    04:  pk4    14: pk14  \n"
-						"    05:  pk5    15: pk15  \n"
-						"    06:  pk6    16: pk16  \n"
-						"    07:  pk7    17: pk17  \n"
-						"    08:  pk8    18: pk18  \n"
-						"    09:  pk9    19: pk0   \n"
-						"    10:  pk10   21: hub   \n"
-						"    20:  painkeep         \n"
-						"    61:  list hub links   \n"
-						"   666:  main menu        \n"
-						"  admin impulse exits     \n"
-					 "\b+------------------------+\n"
-					 "\b Enter code: ";
+						"\b  Painkeep DM map Menu:\n\b+------------------------+\n    01:  pk1    11: pk11  \n    02:  pk2    12: pk12  \n    03:  pk3    13: pk13  \n    04:  pk4    14: pk14  \n    05:  pk5    15: pk15  \n    06:  pk6    16: pk16  \n    07:  pk7    17: pk17  \n    08:  pk8    18: pk18  \n    09:  pk9    19: pk0   \n    10:  pk10   21: hub   \n    20:  painkeep         \n    61:  list hub links   \n   666:  main menu        \n  admin impulse exits     \n\b+------------------------+\n\b Enter code: ";
 	}
 
 	self.wad = "";
@@ -787,39 +668,22 @@ void() find_Kick =
 void() Admin_kickmenu =
 {
 	self.message =
-					 "\b   Administration Menu:    \n"
-					 "\b+-------------------------+\n"
-						"   1: kick player ->       \n\n";
+					"\b   Administration Menu:    \n\b+-------------------------+\n   1: kick player ->       \n\n";
 
 	self.admin_input = 0;
 	if (self.impulse == 1)
 	{
 		if (self.enemy == self)
 		self.wad =
-				  "\n\n   3: next player          \n"
-						"   7: confirm kick         \n"
-						"   6: main menu            \n"
-						"  admin impulse exits      \n"
-					 "\b+-------------------------+\n"
-					 "\b      7 to confirm!        \n any other entry cancels  \n\b*** YOU ARE KICKING YOURSELF IF YOU ENTER 7! ***";
+					"\n\n   3: next player          \n   7: confirm kick         \n   6: main menu            \n  admin impulse exits      \n\b+-------------------------+\n\b      7 to confirm!        \n any other entry cancels  \n\b*** YOU ARE KICKING YOURSELF IF YOU ENTER 7! ***";
 		else
 		self.wad =
-				  "\n\n   3: next player          \n"
-						"   7: confirm kick         \n"
-						"   6: main menu            \n"
-						"  admin impulse exits      \n"
-					 "\b+-------------------------+\n"
-					 "\b      7 to confirm!        \n any other entry cancels  \n\b*** PLAYER WILL BE KICKED IF YOU ENTER 7! ***";
+				  "\n\n   3: next player          \n   7: confirm kick         \n   6: main menu            \n  admin impulse exits      \n\b+-------------------------+\n\b      7 to confirm!        \n any other entry cancels  \n\b*** PLAYER WILL BE KICKED IF YOU ENTER 7! ***";
 	self.admin_input = KICKCODE;
 	}
 	else
 		self.wad =
-				  "\n\n   3: next player          \n"
-						"   7: confirm kick         \n"
-						"   6: main menu            \n"
-						" admin impulse: exit admin \n"
-					 "\b+-------------------------+\n"
-					 "\b Enter code: ";
+				  "\n\n   3: next player          \n   7: confirm kick         \n   6: main menu            \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 
 	self.admin = 15;
 };
@@ -850,24 +714,8 @@ float(float sk) skill_add =
 void() Admin_botmenu =
 {
 	self.message =
-				       "\b     Admin Bot Menu:     \n"
-				       "\b+--------------------------+\n"
-							"    pk*bot       frikbot    \n"
-							" 01: add bot   11: add bot  \n"
-							" 02: remove 1  12: remove 1 \n"
-							" 03: 3 *skill  13: 3 *skill \n"
-							" - add 1 bot of each skill  \n"
-							" 04: add 4     14: add 4    \n"
-							" - add 4 bots - same skill  \n"
-							" 05: verbose                \n"
-							" 06: update    20: +skill   \n"
-//							" 07: unrestricted           \n"
-							" 08: observer mode          \n"
-							" 09: observer time          \n"
-							" 666:  main menu            \n"
-							" admin impulse: exit admin  \n"
-				       "\b+--------------------------+\n"
-						 "\b  Enter code: ";
+				       "\b     Admin Bot Menu:     \n\b+--------------------------+\n    pk*bot       frikbot    \n 01: add bot   11: add bot  \n 02: remove 1  12: remove 1 \n 03: 3 *skill  13: 3 *skill \n - add 1 bot of each skill  \n 04: add 4     14: add 4    \n - add 4 bots - same skill  \n 05: verbose                \n 06: update    20: +skill   \n 08: observer mode          \n 09: observer time          \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
+// 07: unrestricted           \n
 
 	self.wad = "";
 	self.admin = 18;
@@ -972,42 +820,7 @@ string() build_itemmenu =
 {
 	local string f;
 
-	f =		       "\b     Admin Items Menu:     \n"
-				       "\b+--------------------------+\n"
-							"  +------- \bweapons\b ------+  \n"
-							"  01: Double shotgun        \n" // 1
-							"  02: Nailgun               \n" // 2
-							"  03: Preforator            \n" // 4
-							"  04: Grenade launcher      \n" // 8
-							"  05: Rocket launcher       \n" // 16
-							"  06: Lightning gun         \n" // 32
-							"  07: Painkeep items        \n" // 64
-							"  +------ \bartifacts\b -----+  \n" 
-							"  08: Quad damage           \n" // 128
-							"  09: Invulnerability       \n" // 256
-							"  10: Radiation suit        \n" // 512
-							"  11: Ring of shadows       \n" // 1024
-							"  +-------- \barmor\b -------+  \n" 
-							"  12: Green Armor           \n" // 2048
-							"  13: Yellow Armor          \n" // 4096
-							"  14: Red Armor             \n" // 8192
-							"  +------- \bhealth\b -------+  \n" 
-							"  15: 15 Health             \n" // 16384
-							"  16: 25 Health             \n" // 32768
-							"  17: Mega Health           \n" // 65536
-							"  +------ \bcontrols\b ------+  \n" 
-							"  18: Only these items      \n" // 131072
-							"  19: None of these items   \n" // 262144
-							"  20: Substitute removed    \n" // 542288
-							"  21: Infinite ammo         \n" // 1048576
-							"  22: Cycle selected items  \n" // 2097152
-							"  29: All bits off          \n" 
-							"  30: Show item bits        \n" 
-							"  31: Update map now        \n"
-							" 666:  main menu            \n"
-							" admin impulse: exit admin  \n"
-				       "\b+--------------------------+\n"
-						 "\b  Enter code: ";
+	f =		       "\b     Admin Items Menu:     \n\b+--------------------------+\n  +------- \bweapons\b ------+  \n  01: Double shotgun        \n  02: Nailgun               \n  03: Preforator            \n  04: Grenade launcher      \n  05: Rocket launcher       \n  06: Lightning gun         \n  07: Painkeep items        \n  +------ \bartifacts\b -----+  \n  08: Quad damage           \n  09: Invulnerability       \n  10: Radiation suit        \n  11: Ring of shadows       \n  +-------- \barmor\b -------+  \n  12: Green Armor           \n  13: Yellow Armor          \n  14: Red Armor             \n  +------- \bhealth\b -------+  \n  15: 15 Health             \n  16: 25 Health             \n  17: Mega Health           \n  +------ \bcontrols\b ------+  \n  18: Only these items      \n  19: None of these items   \n  20: Substitute removed    \n  21: Infinite ammo         \n  22: Cycle selected items  \n  29: All bits off          \n  30: Show item bits        \n  31: Update map now        \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
 	return(f);
 };
 
@@ -1016,42 +829,8 @@ void() Admin_itemmenu =
 	if (Q_99)
 	{
 	self.message =
-				       "\b     Admin Items Menu:     \n"
-				       "\b+--------------------------+\n"
-							"  +------- \bweapons\b ------+  \n"
-							"  01: Double shotgun        \n" // 1
-							"  02: Nailgun               \n" // 2
-							"  03: Preforator            \n" // 4
-							"  04: Grenade launcher      \n" // 8
-							"  05: Rocket launcher       \n" // 16
-							"  06: Lightning gun         \n" // 32
-//							"  07: Painkeep items        \n" // 64
-							"  +------ \bartifacts\b -----+  \n" 
-							"  08: Quad damage           \n" // 128
-							"  09: Invulnerability       \n" // 256
-							"  10: Radiation suit        \n" // 512
-							"  11: Ring of shadows       \n" // 1024
-							"  +-------- \barmor\b -------+  \n" 
-							"  12: Green Armor           \n" // 2048
-							"  13: Yellow Armor          \n" // 4096
-							"  14: Red Armor             \n" // 8192
-							"  +------- \bhealth\b -------+  \n" 
-							"  15: 15 Health             \n" // 16384
-							"  16: 25 Health             \n" // 32768
-							"  17: Mega Health           \n" // 65536
-							"  +------ \bcontrols\b ------+  \n" 
-							"  18: Only these items      \n" // 131072
-							"  19: None of these items   \n" // 262144
-							"  20: Substitute removed    \n" // 542288
-							"  21: Infinite ammo         \n" // 1048576
-							"  22: Cycle selected items  \n" // 2097152
-							"  29: All bits off          \n" 
-							"  30: Show item bits        \n" 
-							"  31: Update map now        \n"
-							" 666:  main menu            \n"
-							" admin impulse: exit admin  \n"
-				       "\b+--------------------------+\n"
-						 "\b  Enter code: ";
+"\b     Admin Items Menu:     \n\b+--------------------------+\n  +------- \bweapons\b ------+  \n  01: Double shotgun        \n  02: Nailgun               \n  03: Preforator            \n  04: Grenade launcher      \n  05: Rocket launcher       \n  06: Lightning gun         \n  +------ \bartifacts\b -----+  \n  08: Quad damage           \n  09: Invulnerability       \n  10: Radiation suit        \n  11: Ring of shadows       \n  +-------- \barmor\b -------+  \n  12: Green Armor           \n  13: Yellow Armor          \n  14: Red Armor             \n  +------- \bhealth\b -------+  \n  15: 15 Health             \n  16: 25 Health             \n  17: Mega Health           \n  +------ \bcontrols\b ------+  \n  18: Only these items      \n  19: None of these items   \n  20: Substitute removed    \n  21: Infinite ammo         \n  22: Cycle selected items  \n  29: All bits off          \n  30: Show item bits        \n  31: Update map now        \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
+//  07: Painkeep items        \n" // 64
 	}
 	else
 	{
@@ -1206,89 +985,36 @@ Monsters menu admin
 void() Admin_monstermenu2 =
 {
 	self.message =
-				       "\b     Admin Monster Menu:    \n"
-				       "\b+--------------------------+\n"
-							"  +------- \bmonster\b ------+  \n"
-							"  01: Blarg                 \n" // 1
-							"  02: Velociraptor          \n" // 2
-							"  03: Phase spider          \n" // 4
-							"  04: Manga Tai             \n" // 8
-							"  05: Bossman               \n" // 16
-							"  06: Alien pod             \n" // 32
-//							"  07:        \n" // 64
-//							"  08:        \n" // 128
-//							"  09:        \n" // 256
-//							"  10:        \n" // 512
-//							"  11:        \n" // 1024
-//							"  12:        \n" // 2048
-//							"  13:        \n" // 4096
-//							"  14:        \n" // 8192
-//							"  15:        \n" // 16384
-//							"  16:        \n" // 32768
-//							"  17:        \n" // 65536
-//							"  18:        \n" // 131072
-//							"  19:        \n" // 262144
-//							"  20:        \n" // 542288
-//							"  21:        \n" // 1048576
-//							"  22:        \n" // 2097152
-//							"  23:        \n" // 4194304
-//							"  24:        \n" // 8388608
-							"  +------ \bcontrols\b ------+  \n" 
-							"  26: Bits -> map monsters  \n" 
-							"  27: Bits -> to random     \n"
-							"  28: Bits -> to respawn    \n"
-							"  29: All bits off          \n" 
-							"  30: Show monster bits     \n"
-							"  31: List all monsters     \n"
-							"  32: Monster set I         \n"
-							" 666:  main menu            \n"
-							" admin impulse: exit admin  \n"
-				       "\b+--------------------------+\n"
-						 "\b  Enter code: ";
+				       "\b     Admin Monster Menu:    \n\b+--------------------------+\n  +------- \bmonster\b ------+  \n  01: Blarg                 \n  02: Velociraptor          \n  03: Phase spider          \n  04: Manga Tai             \n  05: Bossman               \n  06: Alien pod             \n  +------ \bcontrols\b ------+  \n  26: Bits -> map monsters  \n  27: Bits -> to random     \n  28: Bits -> to respawn    \n  29: All bits off          \n  30: Show monster bits     \n  31: List all monsters     \n  32: Monster set I         \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
+//  07:        \n" // 64
+//  08:        \n" // 128
+//  09:        \n" // 256
+//  10:        \n" // 512
+//  11:        \n" // 1024
+//  12:        \n" // 2048
+//  13:        \n" // 4096
+//  14:        \n" // 8192
+//  15:        \n" // 16384
+//  16:        \n" // 32768
+//  17:        \n" // 65536
+//  18:        \n" // 131072
+//  19:        \n" // 262144
+//  20:        \n" // 542288
+//  21:        \n" // 1048576
+//  22:        \n" // 2097152
+//  23:        \n" // 4194304
+//  24:        \n" // 8388608
 };
 
 void() Admin_monstermenu =
 {
 	self.message =
-				       "\b     Admin Monster Menu:    \n"
-				       "\b+--------------------------+\n"
-							"  +------- \bmonster\b ------+  \n"
-							"  01: Army Grunt            \n" // 1
-							"  02: Fish                  \n" // 2
-							"  03: Knight                \n" // 4
-							"  04: Rabid Dog             \n" // 8
-							"  05: Fiend                 \n" // 16
-							"  06: Enforcer              \n" // 32
-							"  07: Hell Knight           \n" // 64
-							"  08: Ogre                  \n" // 128
-							"  09: Shalrath              \n" // 256
-							"  10: Shambler              \n" // 512
-							"  11: Scragg                \n" // 1024
-							"  12: Zomby                 \n" // 2048
-							"  13: Cthon                 \n" // 4096
-							"  14: Spawn                 \n" // 8192
-							"  15: Scourge               \n" // 16384
-							"  16: Shubbers              \n" // 32768
-							"  17: Vorerel               \n" // 65536
-							"  18: Gremlin               \n" // 131072
-							"  19: Vomitus               \n" // 262144
-//							"  20:        \n" // 542288
-//							"  21:        \n" // 1048576
-//							"  22:        \n" // 2097152
-//							"  23:        \n" // 4194304
-//							"  24:        \n" // 8388608
-							"  +------ \bcontrols\b ------+  \n" 
-							"  26: Bits -> map monsters  \n" 
-							"  27: Bits -> to random     \n"
-							"  28: Bits -> to respawn    \n"
-							"  29: All bits off          \n" 
-							"  30: Show monster bits     \n"
-							"  31: List all monsters     \n"
-							"  32: Monster set II        \n"
-							" 666:  main menu            \n"
-							" admin impulse: exit admin  \n"
-				       "\b+--------------------------+\n"
-						 "\b  Enter code: ";
+				       "\b     Admin Monster Menu:    \n\b+--------------------------+\n  +------- \bmonster\b ------+  \n  01: Army Grunt            \n  02: Fish                  \n  03: Knight                \n  04: Rabid Dog             \n  05: Fiend                 \n  06: Enforcer              \n  07: Hell Knight           \n  08: Ogre                  \n  09: Shalrath              \n  10: Shambler              \n  11: Scragg                \n  12: Zomby                 \n  13: Cthon                 \n  14: Spawn                 \n  15: Scourge               \n  16: Shubbers              \n  17: Vorerel               \n  18: Gremlin               \n  19: Vomitus               \n  +------ \bcontrols\b ------+  \n  26: Bits -> map monsters  \n  27: Bits -> to random     \n  28: Bits -> to respawn    \n  29: All bits off          \n  30: Show monster bits     \n  31: List all monsters     \n  32: Monster set II        \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
+//  20:        \n" // 542288
+//  21:        \n" // 1048576
+//  22:        \n" // 2097152
+//  23:        \n" // 4194304
+//  24:        \n" // 8388608
 
 	if (self.cnt) Admin_monstermenu2();
 	self.wad = "";
@@ -1305,38 +1031,13 @@ void() Admin_pkmenu =
 {
 	if (PK_100)
 	self.message =
-				       "\b    Admin Painkeep Menu:    \n"
-				       "\b+--------------------------+\n"
-							"  01: SFX toggle            \n"
-							"  02: HUB mode toggle       \n"
-							"  03: Duty check toggle     \n"
-							"  04: settings list         \n"
-//							"  05: PK dynamic items      \n"
-//							"  06: Spike traps           \n"
-							"  07: Server map loop       \n"
-							"    : PK v1.11 Compatible   \n"
-//							"  07: Extra sound           \n"
-							" 666:  main menu            \n"
-							" admin impulse: exit admin  \n"
-				       "\b+--------------------------+\n"
-						 "\b  Enter code: ";
+				       "\b    Admin Painkeep Menu:    \n\b+--------------------------+\n  01: SFX toggle            \n  02: HUB mode toggle       \n  03: Duty check toggle     \n  04: settings list         \n  07: Server map loop       \n    : PK v1.11 Compatible   \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
 	else
 	self.message =
-				       "\b    Admin Painkeep Menu:    \n"
-				       "\b+--------------------------+\n"
-							"  01: SFX toggle            \n"
-							"  02: HUB mode toggle       \n"
-							"  03: Duty check toggle     \n"
-							"  04: settings list         \n"
-							"  05: PK dynamic items      \n"
-							"  06: Spike traps           \n"
-							"  07: Server map loop       \n"
-							"    : PK 2.X server         \n"
-//							"  07: Extra sound           \n"
-							" 666:  main menu            \n"
-							" admin impulse: exit admin  \n"
-				       "\b+--------------------------+\n"
-						 "\b  Enter code: ";
+				       "\b    Admin Painkeep Menu:    \n\b+--------------------------+\n  01: SFX toggle            \n  02: HUB mode toggle       \n  03: Duty check toggle     \n  04: settings list         \n  05: PK dynamic items      \n  06: Spike traps           \n  07: Server map loop       \n    : PK 2.X server         \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
+//  05: PK dynamic items      \n"
+//  06: Spike traps           \n"
+//  07: Extra sound           \n"
 
 	self.wad = "";
 	self.admin = 22;
@@ -1353,126 +1054,28 @@ void() Admin_mainmenu =
 	if (Q_99)
 	{
 	self.message =
-					 "\b   Administration Menu:    \n"
-					 "\b+-------------------------+\n"
-						"  01:  toggle deathmatch   \n"
-						"  02:  toggle teamplay     \n"
-						"  03:  toggle coop         \n"
-						"  04:  toggle no exit      \n"
-						"  05:  goto next level     \n"
-						"  06:  reset level         \n"
-						"  07:  start map load      \n"
-						"  10:  server frag limit   \n"
-						"  11:  server time limit   \n"
-						"  12:  server gravity      \n"
-						"  13:  server friction     \n"
-						"  22:  map control         \n"
-						"  23:  bot control         \n"
-//						"  24:  painkeep control    \n"
-						"  25:  item control        \n"
-						"  26:  monster control     \n"
-						"  30:  kick players        \n"
-//						"  60:  PK mode toggle      \n"
-//						"  ---  PK mode = TRUE      \n"
-						"  97:  exit menu only      \n"
-						"  98:  observer            \n"
-						"  99:  respawn (exits)     \n"
-						" admin impulse: exit admin \n"
-					 "\b+-------------------------+\n"
-					 "\b Enter code: ";
+					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  start map load      \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
+//  24:  painkeep control    \n"
+//  60:  PK mode toggle      \n"
+//  ---  PK mode = TRUE      \n"
 	}
 	else if (PK_100)
 	{
 	self.message =
-					 "\b   Administration Menu:    \n"
-					 "\b+-------------------------+\n"
-						"  01:  toggle deathmatch   \n"
-						"  02:  toggle teamplay     \n"
-						"  03:  toggle coop         \n"
-						"  04:  toggle no exit      \n"
-						"  05:  goto next level     \n"
-						"  06:  reset level         \n"
-						"  07:  hub map load        \n"
-						"  10:  server frag limit   \n"
-						"  11:  server time limit   \n"
-						"  12:  server gravity      \n"
-						"  13:  server friction     \n"
-						"  22:  map control         \n"
-						"  23:  bot control         \n"
-						"  24:  painkeep control    \n"
-//						"  25:  item control        \n"
-//						"  26:  monster control     \n"
-						"  30:  kick players        \n"
-//						"  60:  PK mode toggle      \n"
-						"  ---  PK mode = TRUE      \n"
-						"  97:  exit menu only      \n"
-						"  98:  observer            \n"
-						"  99:  respawn (exits)     \n"
-						" admin impulse: exit admin \n"
-					 "\b+-------------------------+\n"
-					 "\b Enter code: ";
+					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  hub map load        \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  30:  kick players        \n  ---  PK mode = TRUE      \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
+//  25:  item control        \n"
+//  26:  monster control     \n"
+//  60:  PK mode toggle      \n"
 	}
 	else if (PK) // menu with PK only entries
 	{
 	self.message =
-					 "\b   Administration Menu:    \n"
-					 "\b+-------------------------+\n"
-						"  01:  toggle deathmatch   \n"
-						"  02:  toggle teamplay     \n"
-						"  03:  toggle coop         \n"
-						"  04:  toggle no exit      \n"
-						"  05:  goto next level     \n"
-						"  06:  reset level         \n"
-						"  07:  hub map load        \n"
-						"  10:  server frag limit   \n"
-						"  11:  server time limit   \n"
-						"  12:  server gravity      \n"
-						"  13:  server friction     \n"
-						"  22:  map control         \n"
-						"  23:  bot control         \n"
-						"  24:  painkeep control    \n"
-						"  25:  item control        \n"
-						"  26:  monster control     \n"
-						"  30:  kick players        \n"
-						"  60:  PK mode toggle      \n"
-						"  ---  PK mode = TRUE      \n"
-						"  97:  exit menu only      \n"
-						"  98:  observer            \n"
-						"  99:  respawn (exits)     \n"
-						" admin impulse: exit admin \n"
-					 "\b+-------------------------+\n"
-					 "\b Enter code: ";
+					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  hub map load        \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  60:  PK mode toggle      \n  ---  PK mode = TRUE      \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 	}
 	else
 	{
 	self.message =
-					 "\b   Administration Menu:    \n"
-					 "\b+-------------------------+\n"
-						"  01:  toggle deathmatch   \n"
-						"  02:  toggle teamplay     \n"
-						"  03:  toggle coop         \n"
-						"  04:  toggle no exit      \n"
-						"  05:  goto next level     \n"
-						"  06:  reset level         \n"
-						"  07:  start map load      \n"
-						"  10:  server frag limit   \n"
-						"  11:  server time limit   \n"
-						"  12:  server gravity      \n"
-						"  13:  server friction     \n"
-						"  22:  map control         \n"
-						"  23:  bot control         \n"
-						"  24:  painkeep control    \n"
-						"  25:  item control        \n"
-						"  26:  monster control     \n"
-						"  30:  kick players        \n"
-						"  60:  PK mode toggle      \n"
-						"  ---  PK mode = FALSE     \n"
-						"  97:  exit menu only      \n"
-						"  98:  observer            \n"
-						"  99:  respawn (exits)     \n"
-						" admin impulse: exit admin \n"
-					 "\b+-------------------------+\n"
-					 "\b Enter code: ";
+					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  start map load      \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  60:  PK mode toggle      \n  ---  PK mode = FALSE     \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 	}
 
 	self.target = self.path = self.wad = "";
@@ -2274,13 +1877,10 @@ void() User_menu =
 	
 	if (self.ammo_cells > 1 && self.pk_items & PK_IT_CLIGHT)
 		head =
-					 "\b   Painkeep User Menu:   \n"
-					 "\b+------------------------+\n"
-						"  1: Chain Thunderbolt    \n";
+						"\b   Painkeep User Menu:   \n\b+------------------------+\n  1: Chain Thunderbolt    \n";
 	else
 		head =
-					 "\b   Painkeep User Menu:   \n"
-					 "\b+------------------------+\n";
+						"\b   Painkeep User Menu:   \n\b+------------------------+\n";
 
 	if (self.pk_gravitywellammo > 0)
 		ln1 =
@@ -2296,34 +1896,18 @@ void() User_menu =
 		ln3 =
 						"  4: Harpoon              \n";
 		foot = 
-						"  5: release harpoon      \n\n"
-				"\b*** following are impulse links ***\n\n"
-
-						"  11: close combat wep    \n"
-						"  12: prev pk weapon      \n"
-						"  13: status display      \n"
-						"    any impulse exits     \n"
-					 "\b+------------------------+\n"
-					 "\b Enter code: ";
+						"  5: release harpoon      \n\n\b*** following are impulse links ***\n\n  11: close combat wep    \n  12: prev pk weapon      \n  13: status display      \n    any impulse exits     \n\b+------------------------+\n\b Enter code: ";
 	}
 	else
 	{
 	foot = 
-				"\b*** following are impulse links ***\n\n"
-
-						"  11: close combat wep    \n"
-						"  12: prev pk weapon      \n"
-						"  13: status display      \n"
-						"    any impulse exits     \n"
-					 "\b+------------------------+\n"
-					 "\b Enter code: ";
+						"\b*** following are impulse links ***\n\n  11: close combat wep    \n  12: prev pk weapon      \n  13: status display      \n    any impulse exits     \n\b+------------------------+\n\b Enter code: ";
 	}
 	if (self.pk_items & PK_IT_AIRGUN)
 	{
 		if (self.pk_beartrapammo > 0)
 			ln4 =
-						"  6: Air fist             \n"
-						"  7: Beartrap             \n";
+						"  6: Air fist             \n  7: Beartrap             \n";
 		else
 			ln4 =
 						"  6: Air fist             \n";
@@ -2336,15 +1920,10 @@ void() User_menu =
 	}
 	if (self.pk_canpabammo > 0)
 		ln5 =
-						"  8: Can o' Pork n' Beans \n"
-						"  9: Axe                  \n"
-						"  0: Inventory list       \n"
-						"  +--------------------+  \n";
+						"  8: Can o' Pork n' Beans \n  9: Axe                  \n  0: Inventory list       \n  +--------------------+  \n";
 	else
 		ln5 =
-						"  9: Axe                  \n"
-						"  0: Inventory list       \n"
-						"  +--------------------+  \n";
+						"  9: Axe                  \n  0: Inventory list       \n  +--------------------+  \n";
 
 /*
 	old menu - deprecated

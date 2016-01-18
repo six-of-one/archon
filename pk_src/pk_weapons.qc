@@ -1822,7 +1822,8 @@ void() PK_ChangeWeapon =
 
 	if (self.eweapon) // multi mode test
 	if ((self.eweapon.weapon == fl) || (fl == IT_AXE && fl2 == PK_IT_CLIGHT && self.eweapon.weapon == IT_LIGHTNING)) // getting selected again
-	if (self.eweapon.th_melee != (void ()) 0)
+//	if (self.eweapon.th_melee != (void ()) 0)
+	if (self.eweapon.th_melee)
 	{
 		self.eweapon.th_melee();
 	}

@@ -2183,7 +2183,8 @@ void() q2_teleport_particles =
 	self.nextthink = time + 0.2;
 
 	if (self.th_die != SUB_Null) // really power point sub call
-   if (self.th_die != (void()) 0)
+//   if (self.th_die != (void()) 0)
+   if (self.th_die)
 		self.th_die();
 
 	if (self.classname == "archon_power")

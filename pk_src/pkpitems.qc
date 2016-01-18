@@ -162,7 +162,8 @@ void(entity e) pkplus_item_control =
 			e.wad = item_by_mcode(e.mcode);
 			if (e.wad != "")
 			{
-				e.pk_touch = (void()) 0; // so we can touch the new things
+//				e.pk_touch = (void()) 0; // so we can touch the new things
+				e.pk_touch = SUB_Void;
 				item_call_save(e, e.wad);
 			}
 			else

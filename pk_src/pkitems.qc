@@ -92,7 +92,7 @@ void () PlaceItem =
 
 // used for translate - if *_100 on
 	self.mcode = pk_mcode("", self); // put map code on ent
-	self.sscode = sid_code[(int)(self.mcode - 100) * %4];
+	self.sscode = ftos(self.mcode); //sid_code[(int)(self.mcode - 100) * %4];		// Cataboligne - 8.7.13 - compiler compatibility
 	if (!self.scode) self.scode = self.mcode;
 
 	if (Q_100 || PK_100) // || !XMOD)
@@ -725,13 +725,14 @@ if (self.theowner != other) // debounce
 		return;
 	}
 
-	if (self.pk_touch == (void()) 0)
+//	if (self.pk_touch == (void()) 0)
+	if (self.pk_touch == SUB_Void)
 	{
 		if (WARNING)
 		{
 		bprint("\b *** warning: in painkeep_touch for: ");
 		bprint(self.classname);
-		bprint(" and pk_touch is (void) 0 - reloading\n");
+		bprint(" and pk_touch is (void) 0 | SUB_Void - reloading\n");
 		}
 		if (self.event != "dynamic_item") item_call(self.classname);
 		else if (self.wad != "") item_call(self.wad);
@@ -1948,7 +1949,8 @@ void() pk_placeitem =
 	}
 
 // handle extra item stuff
-	if (self.pk_touch == (void()) 0) // dont swamp pointers
+//	if (self.pk_touch == (void()) 0) // dont swamp pointers
+	if ((self.pk_touch == SUB_Void) || !self.pk_touch) // dont swamp pointers
 	{
 		self.pk_touch = self.touch;
 	}
@@ -1984,7 +1986,7 @@ void() pk_placeitem =
 
 	self.mcode = pk_mcode("", self); // put map code on ent - do we need this? placeitem sets these too
 //	self.sscode = ftos(self.mcode);
-	self.sscode = sid_code[(int)(self.mcode - 100) * %4];
+	self.sscode = ftos(self.mcode); //sid_code[(int)(self.mcode - 100) * %4];		// Cataboligne - 8.7.13 - compiler compatibility
 	if (!self.scode) self.scode = self.mcode;
 
 	AddToSplashBig(self); // Cataboligne - 6.11.10 - items move so they should & restore on fall from grace

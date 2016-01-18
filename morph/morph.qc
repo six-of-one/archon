@@ -60,6 +60,7 @@ void() morph_setup =
 
 void() morph_precache =
 {
+	m_precache_chaos();
 	m_precache_scourge();
 	m_precache_enforcer();
 	m_precache_shalrath();
@@ -1364,6 +1365,7 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MENF) player_enforcer_become(pls);
 		else if (cmd == IMP_MGREMLIN_F) player_gremlin_become(pls);
 		else if (cmd == IMP_MGREMLIN_L) player_gremlin_become(pls);
+		else if (cmd == IMP_MCHAOS) player_chaos_become(pls);
 
 		else player_human_become(pls);
 	/*
@@ -1534,7 +1536,8 @@ void() random_monster_wakey =
 
 	if (!self.owner ||
 		(self.owner.health < 1) || // got killed - likely a monsta_frag --- note: chaos vector
-		(self.owner.think == (void ()) 0))
+//		(self.owner.think == (void ()) 0))
+		(!self.owner.think))
 	{
 		self.owner.think = SUB_Remove;
 		self.owner.nextthink = time + 15 + random() * 2;
@@ -1569,7 +1572,8 @@ void() random_monster_wakey =
 //	if((self.owner.enemy == world) || (self.owner.enemy == self))	//If he doesn't have an enemy
 	{
 		self.owner.goalentity = f;	// target entity f
-		if (self.owner.th_walk != (void ()) 0)
+//		if (self.owner.th_walk != (void ()) 0)
+		if (self.owner.th_walk)
 		{
 			self.owner.nextthink = time + 2 + random() * 2;
 			self.owner.think = self.owner.th_walk;
@@ -1935,7 +1939,6 @@ void() monster_respawn =
 
 };
 
-// fn(IS_LAVA) - morph is lava capable
 // returns true if lava enabled morph / monster
 
 float(entity e) IS_LAVA =

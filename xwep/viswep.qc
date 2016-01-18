@@ -758,7 +758,8 @@ void() viswep_post =
 		if (vwc)
 		if (vhead.owner.items & IT_INVISIBILITY) vhead.model = ""; // heh heh, player invisible - NOTE: art shells may be still visible when invisible
 		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
-		else if (vhead.vv_draw != (void()) 0) // new vw paradigm - code set models
+//		else if (vhead.vv_draw != (void()) 0) // new vw paradigm - code set models
+		else if (vhead.vv_draw) // new vw paradigm - code set models
 		{
 			if (0) // off for now IMP: fix rotate issues
 			if (DARKPLACES)
@@ -778,7 +779,8 @@ void() viswep_post =
 
 				vv_pa = vhead.owner.angles_x; // set pitch detect adjust
 				if (drw) vhead.vv_draw(vhead.owner.frame);
-				else if (vhead.vv_holster != (void()) 0) vhead.vv_holster(vhead.owner.frame);
+//				else if (vhead.vv_holster != (void()) 0) vhead.vv_holster(vhead.owner.frame);
+				else if (vhead.vv_holster) vhead.vv_holster(vhead.owner.frame);
 				else vwc = FALSE; // no display - no frames!
 
 				if (vwc)
@@ -1178,7 +1180,8 @@ void(entity pack, vector v1) DeadThrowWeps =
 			{
 //			if (vhead.vv_draw != (void()) 0) // IMP: dead throw framing or animation for these
 //			else
-				if (e.vv_draw == (void()) 0) // not the alternate vw animation - so it should have deadthrow frames
+//				if (e.vv_draw == (void()) 0) // not the alternate vw animation - so it should have deadthrow frames
+				if (!e.vv_draw) // not the alternate vw animation - so it should have deadthrow frames
 				{
 					e.frame = $dthrow1 + rint(random() * 4);
 				}

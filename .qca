@@ -3,7 +3,9 @@
 # Cataboligne - 10.23.11 archon compile
 #		7.29.13 - indicate when compile fails, have to move progs.dat first
 
-QCC="fqcc"
+# QCC="fqcc /O2"
+
+QCC="fteqcc"
 
 if [[ "$1" == "0" ]]; then QCC="fqcc0"; echo;echo Using qcc 0;echo;shift;fi
 
@@ -12,7 +14,7 @@ if [[  "$1" != "-?" && "$1" != "-h" && "$1" != "-help" && -f "./progs.dat" ]]; t
 # frikqcc compiler, rename to your flavor
 # -warn [1-4] to set warning level, 3 is good for discovering things
 
-($QCC /O2 "$@")
+($QCC "$@")
 
 # see if we got a new file
 

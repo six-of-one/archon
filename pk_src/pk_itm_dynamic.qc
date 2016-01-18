@@ -1626,7 +1626,8 @@ void() rndize_item =
 	}
 
 	self.owner.wad = item_by_mcode(self.owner.mcode);
-	self.owner.pk_touch = (void()) 0; // so we can touch the new things
+//	self.owner.pk_touch = (void()) 0; // so we can touch the new things
+	self.owner.pk_touch = SUB_Void; // so we can touch the new things
 
 // IDEA: could have a chaos mod vector go thru here for chaos effects
 
@@ -1693,7 +1694,7 @@ void() place_item_control =
 
 // have to make sure these got loaded
 	if (!self.mcode) self.mcode = pk_mcode("", self); // put map code on ent
-	if (self.sscode == "") self.sscode = sid_code[(int)(self.mcode - 100) * %4];
+	if (self.sscode == "") self.sscode = ftos(self.mcode); // sid_code[(int)(self.mcode - 100) * %4];		// Cataboligne - 8.7.13 - compiler compatibility
 	if (!self.scode) self.scode = self.mcode;
 
 	if (cvar("pk_place_item") == 1) // NOTE: something chaos will not be in control of
