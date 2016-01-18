@@ -289,6 +289,21 @@ void() player_order_attack =
 			{
 				T_Damage(self.enemy, self, self, 35);
 				self.button4 = self.button4 + 1;
+
+// and drain if vampire on - note: does not hit items like god particle
+				if (self.rune_flag & RUNE_VAMPIRE)
+				if (self.enemy.archon > 500)
+				{
+					if (autocvar_hud_vampire_target == null_string)
+					{
+						power_drain(self.enemy);
+						newmis.archon = 6 + random() * 6 + random() * 6; // per sec drain
+						newmis.spawnflags = 1; // varmpire rune power drain
+						stuffcmd(self, "hud_vampire_target \"");
+						stuffcmd(self, newmis.netname);
+						stuffcmd(self, "\"\n");
+					}
+				}
 			}
 			self.enemy = self.enemy.chain;
 		}

@@ -58,8 +58,19 @@ void() clinger_idle1 =[ $idle1, clinger_idle1 ]
 		e = e.chain;
 	}
 
-	if (!targ) return;
-//	if (targ.classname == OBSERVER) return; // dont fall on observers
+	if (!targ)
+#ifdef enhanced
+	{
+// new timer burst mode
+		if (self.rad_time)
+		{
+			if (self.rad_time <= time) clinger_fall1();
+		}
+		return;
+	}
+#else
+	return;
+#endifdef
 
 #ifdef enhanced
 //	if (ENHANCED)
@@ -89,6 +100,7 @@ void() clinger_idle1 =[ $idle1, clinger_idle1 ]
 	v_z = 0;
 	if (vlen(v) > 128)
 		return;
+
 	// if a fall trace can't see the target, return
 	v = self.origin + self.mins_z * '0 0 1';
 
@@ -237,7 +249,7 @@ void() clinger_respawn = [ $idle1, clinger_idle1 ]
 {
 	local float respawning;
 	respawning = self.aflag;
-	self.aflag = TRUE;
+	self.aflag = TRUE; // always respawning after first spawn
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_NONE; // note: protected from noway rules
 	self.model = self.mdl;
@@ -250,29 +262,34 @@ void() clinger_respawn = [ $idle1, clinger_idle1 ]
 	self._die = clinger_die1; // all internal calls
 	self.enemy = world;
 
+// occasionally make one that bursts w/o a target - 11.6.13
+	self.rad_time = 0;
+	if (random() < 0.06) self.rad_time = time + 30 + random() * 60;
+
 	// count all the young that will drop as monsters - not needed with item_call
 //	total_monsters = total_monsters + self.cnt;
 
 	if (respawning)
 		sound (self, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);
 
+// why were the braces here ??
+//	{
+	if (self.event == "dyn_monster" && self.angles_x == 180)
 	{
-		if (self.event == "dyn_monster" && self.angles_x == 180)
+		if (!respawning)
 		{
-			if (!respawning)
-			{
-				setsize (self, '-16 -16 0', '16 16 40');
-				self.origin = self.origin + '0 0 20';
-				self.velocity = '0 0 -20';
-				self.movetype = MOVETYPE_TOSS;
-			}
-		}
-		else
-		{
-			setsize (self, '-16 -16 -40', '16 16 0');
-			setorigin (self, self.dest1);
+			setsize (self, '-16 -16 0', '16 16 40');
+			self.origin = self.origin + '0 0 20';
+			self.velocity = '0 0 -20';
+			self.movetype = MOVETYPE_TOSS;
 		}
 	}
+	else
+	{
+		setsize (self, '-16 -16 -40', '16 16 0');
+		setorigin (self, self.dest1);
+	}
+//	}
 };
 
 
@@ -306,7 +323,13 @@ if (ign != A_MONSTER)
 	self.mdl = self.model;
 
 	self.class_select = "class_monster";
-	self.cnt = 2 + cvar("skill") * 2;
+// how many young this pod makes
+	self.cnt = 2 + cvar("skill") * 2
+#ifdef enhanced
+		+ rint(random())
+#endifdef
+		;
+
 	self.walkframe = 0;
 
 	if (self.event == "dyn_monster") // Cat note: dont create a load of respawners when making random monsters
@@ -322,7 +345,7 @@ if (ign != A_MONSTER)
 #endifdef
 
 		traceline(self.origin + '0 0 6', self.origin + '0 0 1005', TRUE, self);
-		if (sky_touch(null_string, trace_endpos + '0 0 1', world)) trace_fraction = 1; // hit sky brush or surface
+		if (sky_touch(null_string, trace_endpos + '0 0 1', world)) trace_fraction = 1; // hit sky brush or surface - we dont want them "on" skys
 		if (trace_fraction >= 1 || (random() < 0.16)) // no ceiling ? - or occasionally make a floor model
 		{
 			self.angles_x = 180; // try flipping over
@@ -333,6 +356,7 @@ if (ign != A_MONSTER)
 		}
 	}
 
+// what does this note really mean ??
 // *** Cat note: probably doesnt mix well with admin respawnable monsters - monster_II dont respawn yet
 
 // for respawning in deathmatch

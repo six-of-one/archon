@@ -320,7 +320,12 @@ void() MapStart =
 	admin_clear(self);
 	bprint("Admin loaded hub / start map...\n");
 
-	nextmap = hub_select();
+//	nextmap = hub_select();
+#ifdef enhanced
+	nextmap = "arc_hub";
+#else
+	nextmap = "start";
+#endifdef
 	GotoNextMap();
 };
 

@@ -184,10 +184,14 @@ void() hub_teleport =
 
 // select hub map - back to plain old painkeep hub, check_custom_hub handles custom hubs now
 
+/*
+ deprecated
+
 string() hub_select =
 {
 	return ("start");
 };
+*/
 
 // fn(check_custom_hub) - check for return to a custom hub when in GotoNextMap or admin reseting hub
 
@@ -347,6 +351,25 @@ entity(float num) getMap =
 			if (e.target1 == "!player_count")
 				f = FALSE;
 		}
+#ifdef warning
+if (WARNING & 2049)
+{
+	bprint("\b *** warning: hub: \b");
+	bprint(e.map);
+	bprint(" - t1: ");
+	bprint(e.target1);
+	if ((e.target1 == "player_count") || (e.target1 == "!player_count"))
+	{
+		bprint(" - cn: ");
+		bprint(ftos(e.count));
+	}
+	bprint(" - chose: ");
+	bprint(ftos(f));
+	bprint(" - sel: ");
+	bprint(ftos(num));
+	bprint("\n");
+}
+#endifdef
 
 		if (f)
 		if (e.map != "@random")
@@ -415,7 +438,7 @@ entity() getHighestWithoutRandom =
 			highest = e;
 			c = 1;
 		}
-		else if (e.cnt == highest.cnt)
+		else if (e.cnt == highest.cnt) // this will choose randomly amongst 0 cnt maps (no vote condition)
 		{
 			c = c + 1;
 			r = random() * 100;
@@ -455,12 +478,13 @@ void() hub_control_use =
 	}
 
 	// error
-	if (highest == world)
+	if (highest == world) // note: could be stuck on hub at this point
 	{
 		bprint("hub_control_use: highest vote not found\n");
 		return;
 	}
-	if (highest.map == "@random")
+
+	if (highest.map == "@random") // map portal says "pick a random map"
 	{
 		// randomly choose level here
 		c = countMaps();
@@ -473,7 +497,7 @@ void() hub_control_use =
 		
 		r = random() * c;
 		highest = getMap(r);
-		if (highest == world)
+		if (highest == world) // note: could be stuck on hub at this point
 		{
 			bprint("hub_control_use: random map not found\n");
 			return;

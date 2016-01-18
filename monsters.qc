@@ -376,6 +376,13 @@ void(string ms) SummonMonster =
 	e = spawn();
 	e.classname = e.wad = ms; //monster_id(CB_M_SPIKEMINE, MON_FUNC_REG); // get spawn func
 	item_call_save(e, e.classname);
+
+	if (self.charmer) // charmed monsters that summon make minons charmed as well
+	{
+		e.charmer = self.charmer;
+		e.charmed = 1;
+		e.effects = e.effects | self.effects; // copy dimlight or other effects if on
+	}
 	e.owner = self; // so we can count them
 
 // IMP: when gathering all random loc fn(), nearby in a radius & not in solid, monster or player

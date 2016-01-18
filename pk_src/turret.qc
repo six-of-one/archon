@@ -77,8 +77,8 @@ void() turret_dropTurret =
 		PK_TUR_VARIETY = 1; // regular orange nails
 		PK_TUR_QUADCON =  0; // if true, quad player takes ownership of turrets in deathrad
 		PK_TUR_DEATHRAD = 300; // this close to active pent destroys
-		PK_TUR_CRITICALMASS = 10; // more than this many
-		PK_TUR_CRITICALMASS_DIST = 100; // critical mass distance
+		PK_TUR_CRITICALMASS = 8; // more than this many
+		PK_TUR_CRITICALMASS_DIST = 160; // critical mass distance
 
 		if (DARKPLACES || chaos)
 		{
@@ -822,8 +822,13 @@ void(vector org, vector vec) turret_launchNail =
 	newmis.weapon = PK_IT_TURRET;
 //	newmis.effects = EF_DIMLIGHT;
 
-	setmodel (newmis, "progs/nail.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');
+	setmodel (newmis, "progs/spike.mdl");
+	setsize (newmis, v0, v0);
+
+	newmis.skin = 1; // orange kryptonite nails
+	newmis.modelflags = MF_GRENADE;
+
+//	setmodel (newmis, "progs/nail.mdl"); // removed
 
 	setorigin (newmis, org);
 
@@ -853,7 +858,8 @@ void(vector org, vector vec) turret_launchNail =
 		newmis.touch = spike_touch;
 		newmis.theowner = self.owner;
 		newmis.classname = "pulse_spike";
-		setmodel (newmis, "progs/spike.mdl");
+		newmis.wad = "turret"; // Cataboligne - 11.5.13 - still having obit issues
+//		setmodel (newmis, "progs/spike.mdl");
 		newmis.skin = 3;
 	}
 	else

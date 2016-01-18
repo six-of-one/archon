@@ -341,7 +341,11 @@ void () changelevel_touch =
 	nextmap = self.map;
 
 	if (pk_flags & PK_SF_HUB) // *pk - using voting / hub system - nextmap is always hub
-		nextmap = hub_select(); //"start"; // *pk - if we're working with the hub system, then let's override this and go to the hub
+#ifdef enhanced
+		nextmap = "arc_hub";
+#else
+		nextmap = "start"; // *pk - if we're working with the hub system, then let's override this and go to the hub - hub_select
+#endifdef
 
 	SUB_UseTargets ();
 
@@ -700,7 +704,12 @@ void () NextLevel =
 	}
 
 	if (pk_flags & PK_SF_HUB) // *pk - using voting / hub system - nextmap is always hub
-		o.map = hub_select(); //"start"; // *pk - if we're working with the hub system, then let's override this and go to the hub
+//		o.map = hub_select(); //"start"; // *pk - if we're working with the hub system, then let's override this and go to the hub
+#ifdef enhanced
+		o.map = "arc_hub";
+#else
+		o.map = "start"; // *pk - if we're working with the hub system, then let's override this and go to the hub
+#endifdef
 
 	nextmap = o.map;
 	gameover = TRUE;

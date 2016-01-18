@@ -707,6 +707,9 @@ void(entity e) bot_item_linx =
 // intro when not in painkeep mode, which has its own intro
 // mod for frikbot merge
 
+/*
+ doesnt even make sense with Archon
+
 void () printIntro =
 {
 	local float num;
@@ -735,8 +738,13 @@ void () printIntro =
 		centerprint (self,"Server running pk*bots v2.2, frikbot 0.10.1");
 	}
 };
+*/
 
  // Cataboligne - 6.9.10 - bots get really cold now - dev code
+
+/*
+
+ 11.6.13 - no longer using, but keeping around for a future "freeze ray" weapon
 
 float b_frz;
 float b_ufr;
@@ -762,6 +770,7 @@ void (entity e) bot_freeze =
 		b_ufr = b_ufr + 1;
 	}
 };
+*/
 
 // bot stuck in dead - tyr to force a respawn
 

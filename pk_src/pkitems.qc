@@ -603,6 +603,7 @@ void() painkeep_touch =
 
 
 #ifdef warning
+if (WARNING & 2)
 if (!self.mask_x)
 {
 	bprint("------------------- ** WARNING - item with no mask x = ");
@@ -659,10 +660,11 @@ if (self.theowner != other) // debounce
 		if (e) e.classname = e.wad;
 
 		if (self.wad != "morph_cube")
-		if (!other.mask_x & CB_HUMAN)
-		if (!other.mask_x & CB_GREMLIN) // needs more quals
+		if (! other.mask_x & CB_HUMAN)
+		if (! other.mask_x & CB_GREMLIN) // needs more quals
+		if (! other.mask_x & MORPH_ARCHON)
 		if (self.items & other.builtin) // touch activated special morph builtin
-		if (!self.items & other.items)
+		if (! self.items & other.items)
 		{
 			other.items = other.items | self.items;
 			sprint(other, "* Special morph powers activated - check your status bar\n");

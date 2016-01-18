@@ -36,13 +36,14 @@ float WARNING;								// display warnings - dev work mainly - now uses the follo
 												// & 8 - bot warnings
 												// & 16 - hipnotic warnings
 												// & 32 - weapons
-												// & 64 - runes
+												// & 64 - runes / artifact enh
 												// & 128 - environment
 												// & 255 - 1 - 128 inclusive + non masked
 												// & 256 - non masked elements - excludes 1 - 128 ++
 // specials
 												// & 1024 - hammer
-
+												// & 2048 - hub ops
+												// & 4096 - archon ops
 //
 // control over test code
 

@@ -978,7 +978,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		{
 			if (autocvar_hud_rels == 1)
 			{
-				DrawAmmo('1 1 1', '264 26 0', floor(time), ALPHA_FULL);
+				v = '0 0 0';
+				k = time;
+				while (k > 999)
+				{
+					k = floor(k / 10);
+					v_x = v_x - 7;
+				}
+				DrawAmmo('1 1 1', '264 26 0' + v, floor(time), ALPHA_FULL);
 				Sbar_DrawString('291 26 0' + woff, "rels", ALPHA_FULL, '7 7 0','1 0.9 1');
 			}
 			else

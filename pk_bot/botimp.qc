@@ -92,6 +92,10 @@ void () setNamingMode =
 	NAMEBOTS = !NAMEBOTS;
 };
 
+/*
+
+ 11.6.13 - removed impulse admin commands fully
+
 void () botControl =
 {
 	local string tmp;
@@ -151,13 +155,13 @@ void () botControl =
 		dprint (tmp);
 		dprint (" server flags\n");
 	}
-/*
+/ *
 	else if (self.impulse == 218)
 	{
 //		serverflags = serverflags - (serverflags & UNRESTRICTED);
 		bprint ("Unrestricted mode cleared\n");
 	}
-*/
+* /
 };
 
 void () botImpulseCommand =
@@ -176,7 +180,7 @@ void () botImpulseCommand =
 	}
 	else if (self.impulse == 221)
 	{
-		UpdateTeamColors ();
+		UpdateTeamColors (); // NOTE: is this something we need later ?
 	}
 };
-
+*/

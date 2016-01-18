@@ -1060,7 +1060,23 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_FireDamage
 //	if ((targ.morphy == IMP_MCTHON) || (targ.morphy == IMP_MCHAOS) || (targ.classname == "monster_tarbaby" || targ.classname == "monster_lavabomb")) // lava capable ents wont get burned...often
 	if (IS_LAVA(targ)) 
 	{
+
+#ifdef warning
+if (WARNING & 128)
+{
+bprint("*** warning: T_FireDamage ( ");
+item_ident(targ);
+bprint(" ) - possible heal: ");
+bprint(ftos(damage));
+bprint("\n");
+}
+#endifdef
+
 		if (targ.morphy == IMP_MCTHON) T_Heal(targ, damage, 0); // LOL - lava is "healed" by fire - such a horta situation...
+/*
+
+ deprecate - Archons take no damage or healing
+//
 		else if (targ.morphy == IMP_MCHAOS) // chaos here
 		{
 			if (targ.watertype == CONTENT_LAVA)
@@ -1071,8 +1087,11 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_FireDamage
 			else
 				if (random() < 0.02) T_Damage (targ, inflictor, attacker, damage * random());
 		}
+*/
 		else //if (targ.classname == "monster_tarbaby" || targ.classname == "monster_lavabomb") 
-			{ if (random() < 0.2) T_Heal(targ, damage, 0); } // tarbabys too..
+		{
+			if (random() < 0.2) T_Heal(targ, damage, 0);  // tarbabys too...
+		}
 	}
 	else T_Damage (targ, inflictor, attacker, damage);
 };

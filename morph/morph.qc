@@ -2122,6 +2122,17 @@ float(entity e) IS_LAVA =
 	else if ((e.model == "progs/scor2e.mdl") && (e.skin == 1 || e.skin == 2)) f = TRUE;
 	else if ((e.model == "progs/wizard.mdl") && (e.skin == 1)) f = TRUE;
 
+#ifdef warning
+if (WARNING & 4)
+{
+bprint("*** warning: IS_LAVA ( ");
+item_ident(e);
+bprint(" ) = ");
+bprint(ftos(f));
+bprint("\n");
+}
+#endifdef
+
 	return(f);
 };
 

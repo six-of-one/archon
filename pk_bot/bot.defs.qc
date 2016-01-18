@@ -203,7 +203,7 @@ void () DropBotPath;
 void () endEnemy;
 float () BotFoundTarget;
 vector () botaim;
-void () botImpulseCommand;
+//void () botImpulseCommand;
 
 // deprecated
 //void () initscore;

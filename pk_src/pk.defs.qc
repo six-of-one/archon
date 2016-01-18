@@ -297,7 +297,7 @@ float inHubMap;
 float custom_hub_loaded;				// if TRUE custom hub is used
 
 .float voteIntermission;
-string() hub_select;
+//string() hub_select;
 float() check_custom_hub;
 float(float cn) bot_vote;			// bot...vote
 

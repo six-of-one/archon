@@ -215,6 +215,10 @@ void()	young_run1	=[	$run1,		young_run1	]
 
 	ai_run(self.waitmax);
 	young_slimedamage();
+
+// trying to fix "floaty" aliens
+	if (random() > 0.97) droptofloor(0, 0);
+
 };
 /*
 void()	young_mdrun1	=[	$mdrun1,		young_mdrun1	]
@@ -430,6 +434,7 @@ void() young_med =
 
 	self.rad_time = time + YOUNG_LIFE_MD + random() * 14;
 //	self.dmg = 15;
+	droptofloor(0, 0);
 	young_walk1();
 };
 
@@ -461,6 +466,7 @@ void() young_lg =
 //	self.dmg = 40;
 	self.wad = "MEGA";
 
+	droptofloor(0, 0);
 	young_walk1();
 };
 
@@ -540,12 +546,11 @@ if (ign != A_MONSTER)
 
 #ifdef enhanced
 //	if (ENHANCED && YOUNG_EVOL)
-	if (1) //YOUNG_EVOL)
-	{
+//	{
 		YOUNG_WALK = 8;
 		self.rad_time = time + YOUNG_LIFE_SM + random() * 10;
 		self.aflag = 1;
-	}
+//	}
 #endifdef
 
 	if (ign)
@@ -567,6 +572,8 @@ if (ign != A_MONSTER)
 		self.velocity_x = crandom() * 200;
 		self.velocity_y = crandom() * 200;
 		self.velocity_z = 250;
+
+		droptofloor(0, 0); // since pods dont call walkmonster, these seem to end up off floor sometimes
 	}
 	else
 		walkmonster_start();

@@ -503,6 +503,9 @@ void(entity e, vector org, float ts) chaos_teleport_restore =
 // .bubble_count - change timer
 // .search_time - additive timer
 
+/*
+ we have removed health for Archons
+
 void() chaos_health =
 {
 //	local float ht, low;
@@ -523,8 +526,12 @@ void() chaos_health =
 	}
 
 };
+*/
 
 // fn(chaos_move_effect) - effects for chaos stand & run frames
+
+// return 0 - do chaos model framing for plasma form
+// return 1 - skip model framing
 
 float() chaos_move_effect =
 {
@@ -533,13 +540,16 @@ float() chaos_move_effect =
 
 	if (intermission_running || self.deadflag) return TRUE; //stop effects seen in intermix view - left in so other morphs turn off walksounds
 
-	chaos_health(); // chaos does not obey normal health rules - this still needs a good test
+//	chaos_health(); // chaos does not obey normal health rules - this still needs a good test
 
 	if (self.volume > MAX_CHAOS_LVL) self.aflag = self.aflag | FL_CSB;
 
+// in solid - no move effect, star burst will be on hold
+	if (pointcontents(self.origin) == CONTENT_SOLID) return FALSE;
+
 // IDEA - more violent as chaos level increases
 	if (self.aflag & FL_CSB) // Chaos star burst in progress
-		{
+	{
 		if (chaos_mdlchk(self.model)) chaos_form(FL_SPIKE);
 		if (self.wait > time) return FALSE;
 		self.wait = time + random() / 2.0;
@@ -550,33 +560,37 @@ float() chaos_move_effect =
 		if (random() < 0.08) if(newmis) newmis.movetype = MOVETYPE_FLYMISSILE;
 		if ((MAX_CHAOS_LVL - self.volume) > MIN_CHAOS_DEC)
 		if (random() < ( MAX_CHAOS_LVL / ( self.volume * (MAX_CHAOS_LVL / 350))))
-			{
+		{
 			self.aflag = FL_MELO;//self.aflag - (self.aflag & FL_CSB) | FL_MELO;
 			self.wait = time + CHAOS_MELO_MIN + (((MAX_CHAOS_LVL - self.volume) * 20) / MIN_CHAOS_DEC) + 25 * random();
-			sprint(self, "Chaos star burst is over\n");
+//			sprint(self, "Chaos star burst is over\n");
+			stuffcmd(self, "hud_message \"Chaos star burst is over\"\n");
 			dx = 1.5 + random() * 0.25;
 			chaos_constant(dx); // up the ante on csbs
-			}
-		return FALSE;
 		}
+		return FALSE;
+	}
 
 	if (!chaos_mdlchk(self.model)) chaos_particle(self.origin, 105, 0.8, -1);
 
 	if (self.aflag & FL_MELO)
-		{
+	{
 		if (self.wait > time) return FALSE;
 		self.aflag = self.aflag - (self.aflag & FL_MELO);
-		}
+	}
 
 	chaos_level(CHAOS_INC, self);
 
 	if (chaos_mdlchk(self.model)) return TRUE; // not in plasma bit form
 
 	if (random() < 0.05)
-		{
-		chaos_fire_fly(rnd_string('95.0 85.0 40.0',"progs/v_spike.mdl","progs/teleport.mdl","progs/lavaball.mdl","progs/snowball.mdl","progs/snowball.mdl"));
+	{
+//		chaos_fire_fly(rnd_string('95.0 85.0 40.0',"progs/v_spike.mdl","progs/teleport.mdl","progs/lavaball.mdl","progs/snowball.mdl","progs/snowball.mdl"));
+		chaos_fire_fly(null_string); // this is not doing that -^
 		if (newmis) 
-			{
+		{
+			newmis.owner = self; // fix for chaos bombs just exploding on launch
+			setmodel(newmis, rnd_string('95.0 85.0 40.0',"progs/v_spike.mdl","progs/teleport.mdl","progs/lavaball.mdl","progs/snowball.mdl","progs/snowball.mdl"));
 			if (random() < 0.24) newmis.think = chaos_bomb;
 			else if (random() < 0.11) newmis.touch = GrenadeTouch;
 			if (newmis.model == "progs/snowball.mdl")
@@ -586,7 +600,7 @@ float() chaos_move_effect =
 				else
 				{
 					newmis.skin = SKTELE;
-					if (random() < 0.8)
+					if (random() < 0.015)
 					{
 						local vector v;
 						v = newmis.origin;
@@ -599,22 +613,28 @@ float() chaos_move_effect =
 				}
 			}
 			if (newmis.think == chaos_bomb)
-				{
+			{
 				if (random() < 0.4) newmis.aflag = MOVETYPE_BOUNCE;
 				if (newmis.classname == "fireball")
 				if (random() < 0.7) chaos_bomb_rndmdl(newmis);
 
-				sprint(self, "chaos bomb launched: ");
-				sprint(self, newmis.model );
-				newline(self);
-				}
+#ifdef warning
+//				if (WARNING & 4)
+//				{
+					sprint(self, "chaos bomb launched: ");
+					sprint(self, newmis.model );
+					newline(self);
+//				}
+#endifdef
+
 			}
 		}
+	}
 	else if (random() < 0.02)
-		{
+	{
 		fire_burst (chaos_item, self.origin, 0, 150, null_string, null_string, 0, 1, 0, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world); // IDEA overall chaos affect cnt on this
 		if (self.health < (self.max_health * self.health_modifier * 0.70)) self.health = self.health + random() * 3;
-		}
+	}
 
 	if (self.walkframe & 2) self.alpha = random() + 0.4; // FIX gradual delta
 	if (self.walkframe == 2) morph_sound (0.1, rnd_string(' 80.0 60.0 40.0',"enforcer/enfstop.wav","misc/power.wav","ambience/comp1.wav","ambience/buzz1.wav","ambience/thunder1.wav"), 2);
@@ -1186,7 +1206,8 @@ void() chaos_item =
 					if (random() < CI_EXPLBOX)
 					{
 						misc_explodbox_set(newmis, ci_md, ci_fr, 10 + random() * 40, MOVETYPE_TOSS);
-						newmis._stand = SUB_Remove; // in case of respawn being called
+						if (newmis.size_z > 60) setsize(newmis, '-16 -16 -16', '16 16 16'); // some are sized huge
+						if (random() < 0.98) newmis.th_stand = SUB_Remove; // in case of respawn being called - dont regen
 #ifdef warning
 																														if (WARNING & 4)
 																														{
@@ -1476,10 +1497,9 @@ void() chaos_beam =
 	local vector org, ep;
 	local entity rent, e, f;
 	local float f1;
-	var string autocvar_hud_vampire_target;
 
 #ifdef testset
-//	if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0, v0, v0, "chaos_item", "progs/chaos_b2.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world); // TEST--
+if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0, v0, v0, "chaos_item", "progs/chaos_b2.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world); // TEST--
 #endifdef
 
 
@@ -1534,7 +1554,7 @@ void() chaos_beam =
 		e = findradius(ep, 64 + random() * 64);
 		rent = rnd_list(e, 0); // any random ent in beam strike range
 
-		if (self.rune_flag & RUNE_VAMPIRE)
+		if (self.rune_flag & RUNE_VAMPIRE) // note: dont get a drain on a "direct" beam hit
 		if (archon_high != self)
 		if (archon_high.archon > 0.2)
 		{
@@ -1543,7 +1563,8 @@ void() chaos_beam =
 				if (autocvar_hud_vampire_target == null_string) // IMP: more archon shields - ps
 				{
 					power_drain(archon_high);
-					newmis.spawnflags = 1;
+					newmis.archon = 6 + random() * 6 + random() * 6; // per sec drain
+					newmis.spawnflags = 1; // varmpire rune power drain
 					stuffcmd(self, "hud_vampire_target \"");
 					stuffcmd(self, newmis.netname);
 					stuffcmd(self, "\"\n");
@@ -1698,7 +1719,7 @@ void() chaos_beam =
 			spawn_chaos_monster(0, rent.origin);
 		}
 
-//setorigin(x3, trace_endpos); // TEST--
+setorigin(x3, trace_endpos); // TEST--
 #endifdef
 
 #ifdef warning
@@ -1875,7 +1896,7 @@ void() poly_monster =
 void() poly_init =
 {
 	other = self;
-	self = spawn();
+	self = spawn(); // tricky - we "make" a hidden morph cube
 	morph_cube();
 	if (other.ammo_nails == 5) // poly other can use all forms accessible
 	{
@@ -2184,6 +2205,11 @@ void() thing_imprisoned =
 			self.enemy.movetype = MOVETYPE_WALK;
 			self.enemy.think = player_stand1;
 			if (self.enemy.classname == "pk*bot") self.enemy.think = bot_stand1;
+		}
+		else if (self.enemy.flags & FL_MONSTER)
+		{
+			self.enemy.think = self.enemy.th_run;
+			self.enemy.nextthink = time + 1;
 		}
 		self.enemy.attack_finished = 0;
 		self.enemy.event = null_string;

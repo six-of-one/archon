@@ -3480,7 +3480,7 @@ void() fn_backpack =
 
 	DropBackpack(); // create a backback as newmis, set stats
 
-	if (random() < 0.0666)
+	if (random() < 0.06)
 	{
 		misc_explodbox_set(newmis, "progs/backpack.mdl", 10 + random() * 20, 5 + random() * 10, MOVETYPE_TOSS);
 		newmis.touch = barrel_explode;

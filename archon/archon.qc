@@ -351,8 +351,8 @@ void() archon_drain_thk =
 
 	if (self.spawnflags & 1) // for vampire
 	{
-		if (self.enemy.bolt_target) self.aflag = 1;
-		if (!((self.enemy.rune_flag & RUNE_FLG_RS) && (self.enemy.mask_x & MORPH_ARCHON))) self.aflag = 1;
+		if (self.enemy.bolt_target) self.aflag = 1; // note: bolt_target your own drain & he's free
+		if ((self.enemy.rune_flag & RUNE_FLG_RS) && (self.enemy.mask_x & MORPH_ARCHON)) self.aflag = 1;
 		if (! self.owner.rune_flag & RUNE_VAMPIRE) self.aflag = 1;
 
 		if (self.aflag)
@@ -376,6 +376,22 @@ void() archon_drain_thk =
 	self.owner.archon = self.owner.archon + self.archon;
 	self.enemy.archon = self.enemy.archon - self.archon;
 	self.count = self.count - self.archon;
+
+#ifdef warning
+if (WARNING & 4096)
+{
+	bprint(" *** warning: \bdrain: \b");
+	bprint(self.netname);
+	bprint(" - owner: ");
+	bprint(ftos(self.owner.archon));
+	bprint(" - target: ");
+	bprint(ftos(self.enemy.archon));
+	bprint(" - this time: ");
+	bprint(ftos(self.archon));
+	bprint("\n");
+}
+#endifdef
+
 };
 
 // power drain - take ents archon pts
@@ -394,6 +410,22 @@ void(entity e) power_drain =
 	newmis.archon = 1 + random() * 5; // points drained per sec
 	newmis.netname = e.netname;
 	if (newmis.netname == null_string) newmis.netname = "Unknown target";
+
+#ifdef warning
+if (WARNING & 4096)
+{
+	bprint(" *** warning: \bdrain: \b");
+	bprint(item_ident(e));
+	bprint(" - %: ");
+	bprint(ftos(newmis.lefty));
+	bprint(" - pts: ");
+	bprint(ftos(newmis.count));
+	bprint(" - /sec: ");
+	bprint(ftos(newmis.archon));
+	bprint("\n");
+}
+#endifdef
+
 };
 
 // teleport to random selected location via beacon code

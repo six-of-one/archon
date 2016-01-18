@@ -1974,18 +1974,32 @@ void() PK_ImpulseCommands =
 		return;
 	}
 
-	if ((self.impulse >= 1 && self.impulse <= 16) && self._impulse != SUB_Null) 
+	if (self.impulse == 14) // spell loop shortcut - vector for polymorhed archon to return to natural form
 	{
-		if (self.impulse == 14)
 		if (self.height == IMP_MCHAOS)
 		if (self.morphy != IMP_MCHAOS) // voluntary return to Archon form - no pts req. for now
 		{
-			if (self.goalentity.think != de_archon_thk)
+			if (self.goalentity.think != de_archon_thk) // does not work if de-archoned
 			if (self.goalentity.classname == "archon_morph")
 				self.goalentity.think();
 			else
 			chaos_morph_chg(self, 0);
+			self.impulse = 0;
+			return;
 		}
+		
+		if (self.height == IMP_MORDER)
+		if (self.morphy != IMP_MORDER) // voluntary return to Archon form - no pts req. for now
+		{
+			if (self.goalentity.think != de_archon_thk) // order can be de-archoned
+			polymorph_check(self.height, 0);
+			self.impulse = 0;
+			return;
+		}		
+	}
+
+	if ((self.impulse >= 1 && self.impulse <= 16) && self._impulse != SUB_Null) 
+	{
 //		if (!self.holdent.flags & FL_HELD) 
 			self._impulse(); // item_held()
 		self.impulse = 0;
@@ -2055,6 +2069,9 @@ void() PK_ImpulseCommands =
 	}
 
 
+/*
+ admin impulses fully removed 11.6.13
+ tho this was just a status request
 
 	else if (self.impulse == 225)
 	{
@@ -2075,6 +2092,10 @@ void() PK_ImpulseCommands =
 			sprint(self, "Custom Maps Off\n");
 		if (pk_admintime > 0) admin_resettimeout();
 	}
+*/
+
+// now controls non-dp botmatch launch
+// that is why it is still in the code
 
 	else if (self.impulse == 255)
 		QuadCheat ();

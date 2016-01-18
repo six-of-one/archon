@@ -1588,30 +1588,36 @@ ImpulseCommands
 */
 void () ImpulseCommands =
 {
-// runes
-	if (self.impulse == IMP_RUNEID)
-		rune_id(self, self);
-	else if (self.impulse == IMP_RUNEDROP)
-		rune_drop(self);
-
 // crosshair
 	if (self.impulse == IMP_CROSSHAIR)
 	{
 		crosshair_con(self, 1);
 	}
 
-// inventory
-	if (self.impulse == IMP_INV)
-		inventory();
-	else if (self.impulse == IMP_DROPI) // CHECK: *_100
+// Archon rune powers are different
+// Archons cannot drop or show inventory
+	if (! self.mask_x & MORPH_ARCHON)
 	{
-		if (!self.admin)
-			self.admin = -1; // USER-MENU
-		self.aflag = self.impulse;
+// runes
+		if (self.impulse == IMP_RUNEID)
+			rune_id(self, self);
+		else if (self.impulse == IMP_RUNEDROP)
+			rune_drop(self);
+
+// inventory
+		if (self.impulse == IMP_INV)
+			inventory();
+		else if (self.impulse == IMP_DROPI) // CHECK: *_100
+		{
+			if (!self.admin)
+				self.admin = -1; // USER-MENU
+			self.aflag = self.impulse; // this affects Archon Chaos
+		}
 	}
+
 	if (self.impulse == IMP_PARM)
 		power_armor_impulse();
-	if (self.impulse > 98) botImpulseCommand (); // *bot
+//	if (self.impulse > 98) botImpulseCommand (); // *bot
 // Cataboligne 9.11.3 purify - chase cam
 	if (self.impulse > 229 && self.impulse < 240) ccb_impulse_check();
 

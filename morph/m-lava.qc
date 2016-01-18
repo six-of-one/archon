@@ -570,6 +570,21 @@ void() player_lavablob_impulse =
 
 	morph_impulse();
 
+// switch to normal jump & back
+	if (self.impulse == 16) // IMP_MJSWUP
+	{
+		if (self._jump2 == lavablob_jump1)
+		{
+			self._jump2=SUB_Null;
+			stuffcmd(self, "hud_message \"Lava Bomb: normal jump\"\n");
+		}
+		else
+		{
+			self._jump2 = lavablob_jump1;
+			stuffcmd(self, "hud_message \"Lava Bomb: jump attack\"\n");
+		}
+	}
+
 /*
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)

@@ -203,6 +203,7 @@ void() morph_setup;
 void() morphic_impulse;
 
 // ops
+var string autocvar_hud_vampire_target;
 
 void(float cmd, float pls) polymorph_check;
 void(entity f, float all) morph_clearparms;
@@ -247,7 +248,10 @@ float(entity e) shotgun_check;
 
 float IMP_MFLY						= 15; // switch flight mode / ground mode
 float IMP_MSIGHT					= 14; // shout out
-float IMP_MSELECT					= 16; // select a morph
+//float IMP_MSELECT					= 16; // select a morph - not currently used
+
+// lava bomb
+//float IMP_MJSWUP					= 16; // lava bomb jump switch up
 
 // inventory
 float IMP_INV						= 53; // list inventory

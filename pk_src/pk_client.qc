@@ -1140,7 +1140,7 @@ void () WaterMove =
 
 	if (ISL && self.pain_finished < time)  //checks for non breathers based on lava / plasma makeup
 	{
-		if (IS_CHAOS_PURE(self)) drown = FALSE;
+		if (IS_CHAOS_PURE(self)) drown = FALSE; // note: test order if drown will ever apply
 		else 
 		if (self.watertype == CONTENT_LAVA) drown = FALSE;
 		else if (self.watertype == CONTENT_SLIME) drown = FALSE;
@@ -1903,7 +1903,7 @@ bprint ("\n");
 	
 // TURRET_START
 // Cataboligne - moved 8.7.13 - catch before we "spike" out
-		if (attacker.classname == "turret" || attacker.classname == "turret_gib")
+		if (inflictor.wad == "turret" || attacker.classname == "turret" || attacker.classname == "turret_gib")
 		{
 			bprint(targ.netname);
 

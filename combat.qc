@@ -121,18 +121,22 @@ void(entity targ, entity attacker) Killed =
 
 	monster_death_use ();
 
-	if (self.goalentity.think != de_archon_thk) // no return this vector if he got de-archoned
+	if (self.goalentity.think == de_archon_thk) // no return this vector if he got de-archoned
+	{
+		if (self.th_die) self.th_die ();
+	}
+	else
 	if ((self.height == IMP_MCHAOS && self.morphy != IMP_MCHAOS) ||
-		 (self.height == IMP_MORDER && self.morphy != IMP_MORDER)) // voluntary return to Archon form - no pts req. for now
+		 (self.height == IMP_MORDER && self.morphy != IMP_MORDER)) // death returns to Archon form from polymorph - no pts req. for now
 	{
 		if (self.goalentity.classname == "archon_morph")
 			self.goalentity.think();
 		else
-		chaos_morph_chg(self, 0);
+		chaos_morph_chg(self, 0); // CHECK: this for order
 	}
 	else
 //	if (self.th_die != (void()) 0) // something got thru with 0 th_die on server test 10.28.11
-	if (self.th_die) // something got thru with 0 th_die on server test 10.28.11
+	if (self.th_die) // something got thru with 0 th_die on server test 10.28.11 - fteqcc mode
 	self.th_die ();
 
 	if (self.vwepent) viswep_ld(self, -2); // still have visweps
@@ -223,11 +227,12 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	if (attacker.pkplus_actortype != PKPLUS_ACTORQUAD) // pk art code here
 	{
 		if ((self.group != "Berserk rage...nearly over...Hulk sad") || (self.eweapon.grap_state == 666000)) // fists only *4 with berserk
-{
+		{
 			damage = damage * 4;
-
-bprint(" ------------ ***          damage * 4\n"); // TEST: remove
-}
+#ifdef warning
+			if (WARNING & 64) bprint(" ------------ ***          damage * 4\n");
+#endifdef
+		}
 	}
 
 	r = cvar("sv_c_rune");
@@ -414,9 +419,9 @@ bprint(" ------------ ***          damage * 4\n"); // TEST: remove
 
 // crate being busted open - hear it now
 	if (targ.netname == "Crate")
-	if ((targ.aflag < time) || (targ.health <= 0))
+	if ((targ.aflag < time) || (targ.health <= 0)) // do crates use .aflag for anything?
 	{
-		targ.aflag = time + 1; // NOTE: does anything else use player .aflag?
+		targ.aflag = time + 1;
 		r = random();
 		if (targ.health <= 0)
 			sound (targ, CHAN_AUTO, CRATE_OPENED, 1, ATTN_NORM);
