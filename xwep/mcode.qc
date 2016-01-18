@@ -10,6 +10,9 @@
  *
  */
 
+// 10.30.14 - pk_cube out of range on HUD - pk_cube_ranger
+// 10.21.14 - count morph energy expended and create archon spirit after a set amount of points expended
+
 //float MIN_ITEM					= 100;
 //float MAX_INVITEM			= 255;
 //float MAX_OLDQ				= 300;
@@ -986,8 +989,8 @@ float(string sc, entity e) pk_mcode =
 	}
 
 	if (sc == "pk_cube")											return(1000);
-	if (e.mask_x == MORPH_ARCHON)			return(1002);
-	if (sc == "morph_cube")											return(1001);
+	if (e.mask_x == MORPH_ARCHON)			return(1004);
+	if (sc == "morph_cube")											return(1002);
 
 	if (e)
 	if (e.event == "dynamic_item")									return(0);
@@ -2224,6 +2227,7 @@ void() painkeep_cube_use =
 			c.event = "dynamic_item"; // dont respawn
 		}
 		c.wad = item_by_mcode(d);
+		c.mcode = d;
 	}
 
 	self = c;
@@ -2364,21 +2368,33 @@ void() abandoned_cube =
 	c = self;
 
 	if (c.owner)
-	if ((c.count < time) || (c.owner.eweapon != c))
 	{
-		c.effects = 0;
-		if (c.count < time) sprint(c.owner, "Your cube was left alone too long and abanoned you. You rat.\n");
-		c.touch = painkeep_touch;
-		self = c.owner;
-		c.owner = world;
-		cube_rearm(); // re arm player
-		self = c;
-		return;
+// ranging for pk cube owners HUD
+//was void() pk_cube_ranger
+		if (c.wad == "pk_cube")
+		{
+			c.owner.mcode = 1000; // in range
+			c.v_angle = c.origin - c.owner.origin;
+			if (vlen(c.v_angle) > PK_CUBE_DIST) c.owner.mcode = 1001; // out of range		
+		}
+
+		if ((c.count < time) || (c.owner.eweapon != c))
+		{
+			c.effects = 0;
+			if (c.count < time) sprint(c.owner, "Your cube was left alone too long and abanoned you. You rat.\n");
+			c.touch = painkeep_touch;
+			self = c.owner;
+			c.owner = world;
+			cube_rearm(); // re arm player
+			self = c;
+			return;
+		}
 	}
 
-	c.nextthink = time + 3 + random();
+	c.nextthink = time + 1;
 
 };
+
 
 // used by pk & morphic cubes
 float BOT_NOUSE_PKCUBE = 0.3;
@@ -2413,7 +2429,7 @@ void() cube_touch =
 			if (other.frags < 0) return;
 		}
 		if (!MORPH_FREE)
-		if (other.archon < 500) // make bots wait till they can morph to any - need a separate test for bot archon case
+		if (other.archon < 1000) // make bots wait till they can morph to any - need a separate test for bot archon case
 			return;
 	}
 
@@ -2558,7 +2574,7 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 
 	self.think = abandoned_cube;
 	self.count = time + 60 + random() * 10; // abandoned then
-	self.nextthink = time + 3 + random();
+	self.nextthink = time + 1;
 
 	if (other.class_select == "class_bot")
 	{
@@ -2576,23 +2592,31 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 				self.state = cb_morph(self.lefty);
 				sf = sf - 1;
 			}
+
 			polymorph_check(self.state, 0);
 
+			if (sf > 0)
 			if (!MORPH_FREE)
 			if (self.state == self.morphy)
 			{
-				self.archon = self.archon - e.archon; // bot archon pts
+				morph_print(self); // get archon pts
+				self.archon = self.archon - e.archon; // put bot archon pts back
+
+
 #ifdef morph_pwr
 				morphs = morphs + e.archon;
 
 
 bprint("------------------- ** WARNING - bot morphed apts = ");
 bprint(ftos(e.archon));
+bprint(" state = ");
+bprint(ftos(self.state));
 bprint("\n");
 
 
-
 #endifdef
+
+
 			}
 
 			remove(e);
@@ -2693,6 +2717,7 @@ void() crate_init =
 
 // make it openable
 	self.solid = SOLID_BBOX; // block, can climb on
+	self.movetype = MOVETYPE_TOSS;
 	self.health = 50 + random() * 50;
 	self.th_die = painkeep_cube_use;
 	self.takedamage = DAMAGE_AIM;
@@ -2807,6 +2832,10 @@ void() func_crate =
 
 // make it openable
 	self.solid = SOLID_BBOX; // block, can climb on
+	if (self.movetype < 0) // un_moveable crate - except grap
+		self.movetype = MOVETYPE_NONE;
+	else
+	self.movetype = MOVETYPE_TOSS;
 	self.health = 50 + random() * 50;
 	self.th_die = painkeep_cube_use;
 	self.takedamage = DAMAGE_AIM;

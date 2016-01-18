@@ -4,8 +4,10 @@
 		+---------------------------------------+
 */
 
+// 10.28.14 - fixed touch reverse issues - items with a touch field were not being touched
 // 10.23.14 - added: sphere go wild, random entity suck in, teleport wild sphere to new location
 // 10.22.14 - added: occasionally teleport instead of destroy, try to use ai_walk to move a wild sphere - does not seem to work in game
+// 10.29.14 - reality bomb expands as it runs
 
 
 // sphere special flags
@@ -51,10 +53,10 @@ float SPHERE_HORIZON = 100; // pull in missiles at this dist
 void() sphere_gravity_pulse1 = [ $grvbomb1, sphere_gravity_pulse2 ] { gravity_pull(); };
 void() sphere_gravity_pulse2 = [ $grvbomb2, sphere_gravity_pulse3 ] { gravity_pull(); };
 void() sphere_gravity_pulse3 = [ $grvbomb3, sphere_gravity_pulse4 ] { gravity_pull(); };
-void() sphere_gravity_pulse4 = [ $grvbomb4, sphere_gravity_pulse5 ] { gravity_pull(); };
+void() sphere_gravity_pulse4 = [ $grvbomb4, sphere_gravity_pulse5 ] { gravity_pull(); self.scale = self.scale + self.aflag; };
 void() sphere_gravity_pulse5 = [ $grvbomb5, sphere_gravity_pulse6 ] { gravity_pull(); };
 void() sphere_gravity_pulse6 = [ $grvbomb6, sphere_gravity_pulse7 ] { gravity_pull(); };
-void() sphere_gravity_pulse7 = [ $grvbomb7, sphere_gravity_pulse8 ] { gravity_pull(); };
+void() sphere_gravity_pulse7 = [ $grvbomb7, sphere_gravity_pulse8 ] { gravity_pull(); self.scale = self.scale + self.aflag;  };
 void() sphere_gravity_pulse8 = [ $grvbomb8, sphere_gravity_pulse9 ] { gravity_pull(); };
 void() sphere_gravity_pulse9 = [ $grvbomb9, sphere_gravity_pulse10 ]
 {
@@ -65,20 +67,30 @@ void() sphere_gravity_pulse9 = [ $grvbomb9, sphere_gravity_pulse10 ]
 };
 void() sphere_gravity_pulse10 = [ $grvbomb10, sphere_gravity_pulse11 ] { gravity_pull(); };
 void() sphere_gravity_pulse11 = [ $grvbomb11, sphere_gravity_pulse12 ] { gravity_pull(); };
-void() sphere_gravity_pulse12 = [ $grvbomb12, sphere_gravity_pulse13 ] { gravity_pull(); };
+void() sphere_gravity_pulse12 = [ $grvbomb12, sphere_gravity_pulse13 ] { gravity_pull();  self.scale = self.scale + self.aflag; };
 void() sphere_gravity_pulse13 = [ $grvbomb13, sphere_gravity_pulse14 ] { gravity_pull(); };
 void() sphere_gravity_pulse14 = [ $grvbomb14, sphere_gravity_pulse15 ] { gravity_pull(); };
 void() sphere_gravity_pulse15 = [ $grvbomb15, sphere_gravity_pulse16 ] { gravity_pull(); };
-void() sphere_gravity_pulse16 = [ $grvbomb16, sphere_gravity_pulse17 ] { gravity_pull(); };
-void() sphere_gravity_pulse17 = [ $grvbomb16, sphere_gravity_pulse18 ] { gravity_pull(); };
-void() sphere_gravity_pulse18 = [ $grvbomb16, sphere_gravity_pulse19 ] { gravity_pull(); };
-void() sphere_gravity_pulse19 = [ $grvbomb16, sphere_gravity_pulse20 ] { gravity_pull(); };
-void() sphere_gravity_pulse20 = [ $grvbomb16, sphere_gravity_pulse1 ]
+void() sphere_gravity_pulse16 = [ $grvbomb16, sphere_gravity_pulse17 ] { gravity_pull();  self.scale = self.scale + self.aflag; };
+void() sphere_gravity_pulse17 = [ $grvbomb15, sphere_gravity_pulse18 ] { gravity_pull(); };
+void() sphere_gravity_pulse18 = [ $grvbomb13, sphere_gravity_pulse19 ] { gravity_pull(); };
+void() sphere_gravity_pulse19 = [ $grvbomb11, sphere_gravity_pulse20 ] { gravity_pull(); };
+void() sphere_gravity_pulse20 = [ $grvbomb9, sphere_gravity_pulse1 ]
 {
 	gravity_pull();
 	if ((self.attack_finished - time) > 8)
 	if ((time & 7) == 4)
 		sound (self, CHAN_BODY, "misc/ambient/machine6.wav", 1, ATTN_NORM); // IMP: better sound
+	self.aflag = 0.02;
+
+	self.maxs_x = 7 * self.scale;
+	self.maxs_y = 7 * self.scale;
+	self.maxs_z = 7 * self.scale;
+	self.mins_x = -7 * self.scale;
+	self.mins_y = -7 * self.scale;
+	self.mins_z = -7 * self.scale;
+	setsize(self, self.mins, self.maxs);
+
 };
 
 void() sphere_become_gravbomb =
@@ -89,6 +101,7 @@ void() sphere_become_gravbomb =
 		self.attack_finished = self.count;
 	else
 		self.attack_finished = time + 4.0 + random() * 4;
+	self.aflag = 0.2;
 	self.touch = gravity_touch;
 	self.effects = self.effects | EF_BRIGHTLIGHT;
 	self.think = sphere_gravity_pulse1;
@@ -184,8 +197,9 @@ void() sphere_annihilation_move =
 #ifdef warning
 if (WARNING & 32)
 if (self.classname != "chaos_teleport_icon")
+if (self.classname != "sphere_annihilation")
 {
-		bprint("*** dev: sphere_annihilation_move classn = ");
+		bprint("*** dev: SoA_move classn = ");
 		bprint(self.classname);
 		bprint(" - netn = ");
 		bprint(self.netname);
@@ -206,6 +220,8 @@ bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
 
 }
 
+	if (self.trigger_field)
+	{
 /* TEST
 		if (random() < 0.02)
 		{
@@ -224,6 +240,7 @@ bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
 		}
 */
 		setorigin(self.trigger_field, self.origin); // field follows icon
+	}
 
 		if (self.search_time < time)
 		{
@@ -316,7 +333,7 @@ void() annihilate =
 #ifdef warning
 if (WARNING & 32)
 {
-		bprint("Destroying ");
+		bprint("		----> Destroying ");
 		bprint(self.classname);
 		bprint("\n");
 }
@@ -416,8 +433,9 @@ void(entity g) set_annihilate =
 {
 	local float t;
 
-	if (g.classname == "gravity") // whoopsie - note: maybe this should be even more violent, wacking items & such
+	if (g.classname == "gravity") // whoopsie - note: maybe this should be even more violent
 	{
+		if (g.frame > 19) self.scale = 2; // sgw effect // $cubelf20 - frame 19
 		t = g.attack_finished - time; // time left on grav well
 		if (t < 0) t = 2 + random() * 4;
 		remove(g);
@@ -427,6 +445,13 @@ void(entity g) set_annihilate =
 		return;
 	}
 
+	if (g.classname == "chaos_teleport_icon") // NOTE: if this is the anti-sphere this is the place to do it
+	{
+		g.classname = "whirl"; // block repeater
+		g.trigger_field.touch = SUB_Null; // allow no more teleports
+		dyn_remove(g, 1, chaos_tele_expire); // cant call tele_exp directly
+		return;
+	}
 
 
 #ifdef warning
@@ -439,9 +464,6 @@ if (WARNING & 32)
 		bprint("\n");
 }
 #endifdef
-
-
-
 
 	g.think = annihilate;
 	g.nextthink = time + 0.02;
@@ -461,8 +483,12 @@ void() sphere_annihilation_touch =
 
 #ifdef warning
 if (WARNING & 32)
+if (other)
+if (other.think != annihilate)
+if (other.deathtype != "SOA")
 {
-		bprint("*** dev: sphere_annihilation_touch classn = ");
+		other.deathtype = "SOA";
+		bprint("*** dev: SoA_touch classn = ");
 		bprint(self.classname);
 		bprint(" - netn = ");
 		bprint(self.netname);
@@ -479,6 +505,20 @@ if (WARNING & 32)
 
 	if (random() < 0.02) // its other's lucky rel - teleport this one thing
 	{
+
+
+#ifdef warning
+if (WARNING & 32)
+{
+		bprint("*** dev: SoA sneak teleported - ");
+		bprint(item_ident(other));
+		bprint("- from self = ");
+		bprint(item_ident(self));
+		bprint("\n");
+}
+#endifdef
+
+
 		archon_bouncer(other);
 	}
 	else
@@ -487,8 +527,62 @@ if (WARNING & 32)
 	{
 		self.dmg = self.dmg + 1;
 		set_annihilate(other);
-		if (other.classname == "chaos_teleport_icon") // NOTE: if this is the anti-sphere this is the place to do it
-			dyn_remove(other, 1, chaos_tele_expire); // cant call tele_exp directly
+	}
+};
+
+// reverse touch - called from other item touch function
+// -- because for some reason touchable items are not annihilating
+
+void() sphere_annihilation_reverse_touch =
+{
+
+
+
+#ifdef warning
+if (WARNING & 32)
+if (self.think != annihilate)
+if (self.deathtype != "SOA")
+{
+		self.deathtype = "SOA";
+		bprint("	  *** dev: SoA_touch \breversed\b classn = ");
+		bprint(self.classname);
+		bprint(" - netn = ");
+		bprint(self.netname);
+		bprint(" --- other classn = ");
+		bprint(other.classname);
+		bprint(" - netn = ");
+		bprint(other.netname);
+//		bprint(item_ident(self));
+		bprint("\n");
+}
+#endifdef
+
+
+
+	if (random() < 0.02) // its other's lucky rel - teleport this one thing
+	{
+		archon_bouncer(self);
+
+
+#ifdef warning
+if (WARNING & 32)
+{
+		bprint("*** dev: SoA sneak teleported - ");
+		bprint(item_ident(other));
+		bprint("- from self = ");
+		bprint(item_ident(self));
+		bprint("\n");
+}
+#endifdef
+
+
+	}
+	else
+
+	if (annihilation_check(self))
+	{
+		other.dmg = other.dmg + 1;
+		set_annihilate(self);
 	}
 };
 
@@ -503,6 +597,7 @@ void() sphere_annihilation_spawn =
 	sphere_a.state = ST_FOLLOW; // tag along to start
 	sphere_a.frame = $live2;
 	sphere_a.skin = 0; //2;
+	sphere_a.scale = 1;
 	sphere_a.map = "sphere_annihilation"; // double check search
 // spawn sound?
 
@@ -512,7 +607,7 @@ void() sphere_annihilation_spawn =
 #ifdef warning
 if (WARNING & 32)
 {
-		bprint("*** dev: sphere_annihilation_spawn classn = ");
+		bprint("*** dev: SoA_spawn classn = ");
 		bprint(self.classname);
 		bprint(" - netn = ");
 		bprint(self.netname);

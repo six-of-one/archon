@@ -601,7 +601,9 @@ void() coredump						= #28;		// prints all edicts
 void() traceon						= #29;		// turns statment trace on
 void () traceoff = #30; 
 void(entity e) eprint				= #31;		// prints an entire edict
-float(float yaw, float dist) walkmove	= #32;	// returns TRUE or FALSE
+//float(float yaw, float dist) walkmove	= #32;	// returns TRUE or FALSE
+float(float yaw, float dist) walkmove__	= #32;	// returns TRUE or FALSE
+float(float yaw, float dist) walkmove; // TEST remove
 // #33 was removed
 float(float yaw, float dist) droptofloor= #34;	// TRUE if landed on floor
 void (float style, string value) lightstyle = #35; 

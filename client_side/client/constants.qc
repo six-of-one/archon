@@ -122,6 +122,7 @@ float STAT_ARCHON 				= 66; // track archon power for power bar display
 /// ***************************************************************************************
 /// fooey.  these will be tricky to maintain since the list is built on the fly
 ///					this will need to be UPDATED everytime we add, re-arrange or change items
+// note: some kind of query system could be added - via pk_mcode in server
 
 float MC_AXE 						= 100;
 float MC_SHOTGUN 					= 101;
@@ -150,8 +151,9 @@ float MC_DEEPSLEEP 				= 291;
 float MC_QUANTUM	  				= 292;
 
 float MC_PKC	  					= 1000;
-float MC_MC	  						= 1001;
-float MC_MCAS 						= 1002;
+float MC_PKC_OOR	  				= 1001; // out of range
+float MC_MC	  						= 1002;
+float MC_MCAS 						= 1004;
 
 // pk inv - collectables
 float PK_IT_AXE					= 1;

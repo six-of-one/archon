@@ -256,6 +256,7 @@ void() DecodeLevelParms =
 string nextmap;
 void() PK_GotoNextMap =
 {
+// note: pknextmap MUST always be set incase this gets turned on
 	if (!PK_ADMINMAP)
 	if (pk_flags & PK_TP_USERMAPON) // *pk - user supplied map loop deal
 	{

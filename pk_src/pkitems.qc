@@ -555,6 +555,12 @@ void() painkeep_touch =
 	local float f, cube;
 	local entity e;
 
+	if (other.classname == "sphere_annihilation") // reverse touching this deadly ent - somehow this is blocking the spheres touch so we handle this case here
+	{
+		sphere_annihilation_reverse_touch();
+		return;
+	}
+
 	if (other.admin)
 	if (other.admin != LIVE_ADMIN)
 	if (other.admin != -1) // USER-MENU

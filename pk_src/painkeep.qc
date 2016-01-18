@@ -320,6 +320,17 @@ void() PK_init =
 	*/
 };
 
+// TEST remove
+
+float(float yaw, float dist) walkmove =
+{
+	if (self.flags & FL_MONSTER)
+	if (!self.movetype)
+		return(0);
+
+	return(walkmove__(yaw,dist));
+};
+
 // fn (precache_sound) -- dynamic item takeovers - because some engines cannot precache after map load
 // fn(precache_model)
 
@@ -1692,12 +1703,16 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		return;
 	}
 
+// NOTE: this section was removed to default.cfg so the hints could be added
 // new server controls
 // NOTE: chaos eng mod contains all these
+// reg under darkplaces - chaos engine has pre-reg
 
-	if (DARKPLACES) // reg under darkplaces - chaos engine has pre-reg
+
+// csqc - HUD - pass these server vars to the client
+
+	if (DARKPLACES)
 	{
-// csqc - HUD, etc
 
 // AST_STRING = 1 --- see pk.defs for other STAT_* number value idents
 // AST_FLOAT = 2
@@ -1753,6 +1768,15 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		pk_srvcfg = cvar("sv_c_srvcfg");
 		ADMINLOCK = cvar("sv_c_adminlock"); // so server admin can lock out remote admins in case of abuse - local console commands will still work
 
+
+// update these once
+		pk_bas_flags(PK_TP_SPARKSFLASH, cvar("sv_pk_sfx"));
+		pk_bas_update(st_pk_sfx, "Painkeep special effects ");
+		pk_bas_flags(PK_SF_HUB, cvar("sv_pk_hub"));
+		pk_bas_update(st_pk_hub, "Painkeep Hub mode ");
+		pk_bas_flags(PK_TP_USERMAPON, cvar("sv_pk_cmap"));
+		pk_bas_update(st_pk_cmap, "Painkeep custom server maps ");
+
 // for dedicated server
 		if (pk_mapcfg) // cfg file cmd
 		{
@@ -1760,7 +1784,6 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 			localcmd(mapname);
 			localcmd(".cfg\n");
 		}
-// NOTE: chaos eng doesnt need to store defaults this way - they will save in config.cfg
 
 
 		if (!deathmatch)

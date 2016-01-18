@@ -216,6 +216,7 @@ void() morphic_impulse;
 var string autocvar_hud_vampire_target;
 
 void(float cmd, float pls) polymorph_check;
+void(entity p1) morph_print;
 void(entity f, float all) morph_clearparms;
 float(float sel) cb_morph;
 float(entity chk) morph_clichk;
@@ -317,7 +318,7 @@ float CB_CYBER						= 8388608;
 float IMP_MIN						= 6;
 float IMP_MAX						= 99;
 
-// no can has 1, 2, 4
+// no can has 1, 2, 4 - these are also used in HUD for display
 
 float IMP_MCHAOS					= 6;	// string STI_MCHAOS			= "impulse 6";
 float IMP_MORDER					= 7;	// string STI_MORDER			= "impulse 7";

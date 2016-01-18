@@ -659,6 +659,15 @@ void() PK_GibPlayer =
 	if (pk_xsound) pk_player_sound(6); // NOTE: only functional extra sound because the files exist for this
 };
 
+// clear up a bug where deadflag is not upgraded
+// ugh - hack
+
+void() d_flag =
+{
+	if (self.owner.deadflag) self.owner.deadflag = DEAD_RESPAWNABLE;
+	remove(self);
+}
+
 // called from player die
 
 void() PK_PlayerDie =
@@ -677,6 +686,8 @@ void() PK_PlayerDie =
 
 	self.pkplus_actortype = 0; // Cataboligne 8.12.9 purify - pk artifacts
 
+// auto tweak d-flag if it wasnt done
+	chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, null_string, null_string, SUB_Null, 5, d_flag, SUB_Null, self, world);
 	self.deadflag = DEAD_DYING;
 	self.movetype = MOVETYPE_TOSS;
 

@@ -688,7 +688,7 @@ float(float pow) bar_scale =
 
 // has_* - once a mapcode item is detected, this allows holstered view
 float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left, explflg;
-float inv, quad, ring, suit, silencio, xplast, xpltime, deadtime, conrate;
+float inv, quad, ring, suit, silencio, xplast, xpltime, deadtime, conrate, had_decod;
 
 // hud special messaging system for cfg scripts
 float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
@@ -1650,11 +1650,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		{
 			if (cl_items & IT_INVISIBILITY) k = 0.2;
 
-			if (mcode == MC_PKC)
+			if (mcode == MC_PKC || mcode == MC_PKC_OOR)
 			{
 				DrawInventoryAmmo(pwr_step + wep_step + '200 60 0', "gfx/pkcb", ALPHA_FULL * k, 0.5);
 				Sbar_DrawString(pwr_step + wep_step + woff + '202 65 0', "Cube active", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
-				Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "press fire in range", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+				if (mcode == MC_PKC)
+					Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "press fire to open", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+				else
+					Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "out of range!", ALPHA_FULL, '7 7 0','0.77 0.9 0.05');
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 2 0', "or change weapon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			}
 			if (mcode == MC_MCAS || mcode == 1006 || mcode == 1007) // archons
@@ -1662,7 +1665,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				DrawInventoryAmmo(pwr_step + wep_step + '200 60 0', "gfx/mcas", ALPHA_FULL * k, 0.5);
 				Sbar_DrawString(pwr_step + wep_step + woff + '196 65 0', "Archon Spirit", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
 				Sbar_DrawString(pwr_step + wep_step + woff + '168 65 0', "***               ***", ALPHA_FULL * flashawep, '7 7 0','1.5 0.1 0.1');
-				Sbar_DrawString(pwr_step + wep_step + woff + '284 32 0', "Congradulations!", ALPHA_FULL * flasher, '7 7 0','1 0.5 0.5');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 32 0', "Congratulations!", ALPHA_FULL * flasher, '7 7 0','1 0.5 0.5');
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 22 0', "select option with wheel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "press ALT-fire -> Archon", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 2 0', "or change weapon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -1684,27 +1687,133 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 				if (volspec)
 				{
-					if (decod == IMP_MSCOURGE) mctl = "Scourge";
-					if (decod == IMP_MCHAOS) mctl = "Archon Chaos";
-					if (decod == IMP_MORDER) mctl = "Archon Order";
-					if (decod == IMP_MHUMAN) mctl = "Marine";
-					if (decod == CHAR_D) mctl = "UAC Marine";
-					if (decod == CHAR_Q2) mctl = "Space Marine";
-					if (decod == CHAR_Q3) mctl = "Sarge";
-					if (decod == CHAR_PK) mctl = "Pain Killer";
-					if (decod == CHAR_W) mctl = "Blaskowitz";
-					if (decod == IMP_MENF) mctl = "Enforcer";
-					if (decod == IMP_MOGRE) mctl = "Ogre";
-					if (decod == IMP_MHKNIGHT) mctl = "Hell Knight";
-					if (decod == IMP_MSHALR) mctl = "Vore";
-					if (decod == IMP_MSHAMBLR) mctl = "Shambler";
-					if (decod == IMP_MDEMON) mctl = "Fiend";
-					if (decod == IMP_MWIZARD) mctl = "Scrag";
-					if (decod == IMP_MZOMBIE) mctl = "Zomby";
+// show points in menu text
+					localcmd("set mpts \"");
+					localcmd(ftos(0 - volspec));
+					localcmd("\"\n");
+
+					if (decod == IMP_MSCOURGE)
+					{
+						mctl = "Scourge";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n"); // display center description - moved from server
+					}
+					if (decod == IMP_MCHAOS)
+					{
+						mctl = "Archon Chaos";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MORDER)
+					{
+						mctl = "Archon Order";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MHUMAN)
+					{
+						mctl = "Marine";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == CHAR_D)
+					{
+						mctl = "UAC Marine";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == CHAR_Q2)
+					{
+						mctl = "Space Marine";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == CHAR_Q3)
+					{
+						mctl = "Sarge";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == CHAR_PK)
+					{
+						mctl = "Pain Killer";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == CHAR_W)
+					{
+						mctl = "Blaskowitz";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MENF)
+					{
+						mctl = "Enforcer";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-enforcer_cprint.cfg\n");
+					}
+					if (decod == IMP_MOGRE)
+					{
+						mctl = "Ogre";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MHKNIGHT)
+					{
+						mctl = "Hell Knight";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MSHALR)
+					{
+						mctl = "Vore";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MSHAMBLR)
+					{
+						mctl = "Shambler";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MDEMON)
+					{
+						mctl = "Fiend";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MWIZARD)
+					{
+						mctl = "Scrag";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-scragg_cprint.cfg\n");
+					}
+					if (decod == IMP_MZOMBIE)
+					{
+						mctl = "Zomby";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
 //					if (decod == IMP_MCTHON) mctl = "Cthon";
-					if (decod == IMP_MCTHON) mctl = "Lava Bomb";
-					if (decod == IMP_MGREMLIN_F) mctl = "Gremlin";
-					if (decod == IMP_MGREMLIN_L) mctl = "Gremlin";
+					if (decod == IMP_MCTHON)
+					{
+						mctl = "Lava Bomb";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MGREMLIN_F)
+					{
+						mctl = "Gremlin";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					if (decod == IMP_MGREMLIN_L)
+					{
+						mctl = "Gremlin";
+						if (had_decod != decod)
+							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+					}
+					had_decod = decod;
 				}
 
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 42 0', mctl, ALPHA_FULL, '7 7 0','1 1 1');

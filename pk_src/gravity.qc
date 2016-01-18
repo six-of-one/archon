@@ -2,7 +2,16 @@
 	gravity well
 	Written by Matt Houser
 	an Evolve project
+
+	mods by
+	Cataboligne
+	for
+	chaos mod mk II - "the Archons"
+	painkeep 2.x, 3.x - "upgrades"
+	04.2008+
 */
+
+// 10.29.14 - super grav well expands as it runs
 
 $frame cubelf01 cubelf02 cubelf03 cubelf04 cubelf05 cubelf06 cubelf07 cubelf08
 $frame cubelf09 cubelf10 cubelf11 cubelf12 cubelf13 cubelf14 cubelf15 cubelf16
@@ -60,6 +69,13 @@ float (entity targ) grav_visible =
 
 void() gravity_touch =
 {
+	if (other.classname == "sphere_annihilation") // whoopsie - make the reality bomb
+	{
+		if (self.frame > $cubelf20) other.scale = 2; // sgw effect
+		set_annihilate(self);
+		return;
+	}
+
 	// try to gib whatever touched the gravity centre
 	if (other.takedamage && other.health > 0)
 	{
@@ -92,7 +108,12 @@ void() gravity_touch =
 		turret_KillStraker(other, 1 + random() * 5);
 	}
 
-	if (other.classname == "chaos_teleport_icon") dyn_remove(other, 1, chaos_tele_expire);
+	if (other.classname == "chaos_teleport_icon")
+	if (other.AIRG_Timeout != -6)
+	{
+		dyn_remove(other, 1, chaos_tele_expire);
+		other.AIRG_Timeout = -6;
+	}
 };
 
 // IDEA: reality bomb - chaos effects while active
@@ -243,6 +264,12 @@ void() gravity_pull =
 				setorigin(e, e.origin + '0 0 1');
 				e.flags = e.flags - FL_ONGROUND;
 			}
+// it seems the grav well will not suck flying monsters
+			if (e.flags & FL_MONSTER)
+			{
+				if (e.movetype != MOVETYPE_TOSS) // _STEP seems to avoid gravity pull period
+					e.movetype = MOVETYPE_TOSS;
+			}
 			//dprint(e.classname);
 			gPercent = 1 - (d / gDist);
 
@@ -255,6 +282,7 @@ void() gravity_pull =
 
 			if (e.map  == "rune" && e.classname == "item_sigil") // relocate runes sucked by wells
 				e.hook = TRUE;
+
 		}
 		e = e.chain;
 	}
@@ -285,23 +313,33 @@ void() gravity_pulse20 = [ $cubelf16, gravity_pulse1 ] { gravity_pull(); };
 void() gravity_pulsex1 = [ $cube201, gravity_pulsex2 ] { gravity_pull(); };
 void() gravity_pulsex2 = [ $cube202, gravity_pulsex3 ] { gravity_pull(); };
 void() gravity_pulsex3 = [ $cube203, gravity_pulsex4 ] { gravity_pull(); };
-void() gravity_pulsex4 = [ $cube204, gravity_pulsex5 ] { gravity_pull(); };
+void() gravity_pulsex4 = [ $cube204, gravity_pulsex5 ] { gravity_pull(); self.scale = self.scale + self.aflag; };
 void() gravity_pulsex5 = [ $cube205, gravity_pulsex6 ] { gravity_pull(); };
 void() gravity_pulsex6 = [ $cube206, gravity_pulsex7 ] { gravity_pull(); };
 void() gravity_pulsex7 = [ $cube207, gravity_pulsex8 ] { gravity_pull(); };
-void() gravity_pulsex8 = [ $cube208, gravity_pulsex9 ] { gravity_pull(); };
+void() gravity_pulsex8 = [ $cube208, gravity_pulsex9 ] { gravity_pull(); self.scale = self.scale + self.aflag; };
 void() gravity_pulsex9 = [ $cube209, gravity_pulsex10 ] { gravity_pull(); };
 void() gravity_pulsex10 = [ $cube210, gravity_pulsex11 ] { gravity_pull(); };
 void() gravity_pulsex11 = [ $cube211, gravity_pulsex12 ] { gravity_pull(); };
-void() gravity_pulsex12 = [ $cube212, gravity_pulsex13 ] { gravity_pull(); };
+void() gravity_pulsex12 = [ $cube212, gravity_pulsex13 ] { gravity_pull(); self.scale = self.scale + self.aflag; };
 void() gravity_pulsex13 = [ $cube213, gravity_pulsex14 ] { gravity_pull(); };
 void() gravity_pulsex14 = [ $cube214, gravity_pulsex15 ] { gravity_pull(); };
 void() gravity_pulsex15 = [ $cube215, gravity_pulsex16 ] { gravity_pull(); };
-void() gravity_pulsex16 = [ $cube216, gravity_pulsex17 ] { gravity_pull(); };
+void() gravity_pulsex16 = [ $cube216, gravity_pulsex17 ] { gravity_pull(); self.scale = self.scale + self.aflag; };
 void() gravity_pulsex17 = [ $cube216, gravity_pulsex18 ] { gravity_pull(); };
 void() gravity_pulsex18 = [ $cube216, gravity_pulsex19 ] { gravity_pull(); };
-void() gravity_pulsex19 = [ $cube216, gravity_pulsex20 ] { gravity_pull(); };
-void() gravity_pulsex20 = [ $cube216, gravity_pulsex1 ] { gravity_pull(); };
+void() gravity_pulsex19 = [ $cube216, gravity_pulsex20 ]
+{
+	gravity_pull();
+	self.maxs_x = 12 * self.scale;
+	self.maxs_y = 12 * self.scale;
+	self.maxs_z = 12 * self.scale;
+	self.mins_x = -12 * self.scale;
+	self.mins_y = -12 * self.scale;
+	self.mins_z = -12 * self.scale;
+	setsize(self, self.mins, self.maxs);
+};
+void() gravity_pulsex20 = [ $cube216, gravity_pulsex1 ] { gravity_pull(); self.aflag = 0.04; };
 
 
 void() gravity_explode =
@@ -331,6 +369,7 @@ void() gravity_explode =
 			sound (self, CHAN_BODY, "misc/grav/grav_new.wav", 1, ATTN_NORM);
 			self.attack_finished = time + PK_GRV_TIME + random() + random() + random();	// duration of sgw
 			self.think = gravity_pulsex1;
+			self.aflag = 0.1;
 		}
 		else
 		{
@@ -378,6 +417,7 @@ void() drop_gravity =
 	// TODO get acurate sizing
 	setsize(newmis, '-32 -32 -32', '32 32 32');
 	newmis.alpha = 1; // has to be set for norm ops to work right
+	newmis.scale = 1;
 
 	/*
 	newmis.think = gravity_explode;

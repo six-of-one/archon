@@ -121,7 +121,7 @@ void() turret_dropTurret =
 	turret.takedamage = TRUE;
 	turret.health = PK_TUR_HEAL;
 	if (PK_TUR_HEAL > 0) turret.th_die = turret_deathAnim;
-	else turret.th_die = turret_searchForEnemy;
+	else turret.th_die = SUB_Null; // turret_searchForEnemy; -- this was causing a badwolf loop bug when a grav well radius explosion was calling this, and the 2nd findradius was busting the .chain loop
 	turret.currentammo = turret.ammo_cells = PK_TUR_AMMO;
 // new stuff
 	turret.cnt = 0;
@@ -332,13 +332,14 @@ void() turret_findTarget =
 	// find the closest target within the current view of the turret.
 
 	e = 0;
+	self.style = 1000; // loop safety
 	// max distance that the turret can "see"
 	dist = 10000;
 	selected = world;
 
 	head = findradius(self.origin, dist);
 
-	while(head)
+	while(head && (self.style > 0))
 	{
 		if (head.health > 1)
 		if (head.takedamage)
@@ -382,28 +383,27 @@ void() turret_findTarget =
 			}
 			if (head.classname == "player")
 			{
+				if (head.invincible_finished > time)
+				if (head.pkplus_actortype != PKPLUS_ACTORPENT)
+				if (vlen(self.origin - head.origin) < PK_TUR_DEATHRAD)
+				{
+					turret_deathAnim();
+					return;
+				}
 
-			if (head.invincible_finished > time)
-			if (head.pkplus_actortype != PKPLUS_ACTORPENT)
-			if (vlen(self.origin - head.origin) < PK_TUR_DEATHRAD)
-			{
-				turret_deathAnim();
-				return;
-			}
-
-			if (PK_TUR_QUADCON)
-			if (self.owner != head)
-			if (head.super_damage_finished > time)
-			if (head.pkplus_actortype != PKPLUS_ACTORQUAD)
-			if (vlen(self.origin - head.origin) < PK_TUR_DEATHRAD)
-			{
-				self.owner = head;
-				return;
-			}
-
+				if (PK_TUR_QUADCON)
+				if (self.owner != head)
+				if (head.super_damage_finished > time)
+				if (head.pkplus_actortype != PKPLUS_ACTORQUAD)
+				if (vlen(self.origin - head.origin) < PK_TUR_DEATHRAD)
+				{
+					self.owner = head;
+					return;
+				}
 			}
 		}
 
+		self.style = self.style - 1;
 	  head = head.chain;
 	}
 

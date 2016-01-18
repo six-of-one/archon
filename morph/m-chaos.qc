@@ -32,6 +32,8 @@ Not too happy about the organized state of things either.
 Chaos intends to change all of that.
  */
  
+// 10.25.14 - added impulse 17 to select last spell actually cast (opposed to the last spell selected)
+
 /*
 		+---------------------------------------+
 		|  Frame code                           | SEC-HEAD
