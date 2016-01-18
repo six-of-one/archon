@@ -237,11 +237,10 @@ entity(entity start) FindWayPoint =
 		t = t._next;
 		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
 		{
-	local float sf;
-			sf = sf  + 1;
-			if (sf > 10) return best;
+			gsf = gsf  + 1;
+			if (gsf > 10) return best;
 		}
-	} 
+	}
 	return best;
 };
 
@@ -549,7 +548,7 @@ Waypoint Loading from file
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() ClearAllWays =
+void() ClearAllWays=
 {
 
 	local entity t, n;
@@ -561,9 +560,8 @@ void() ClearAllWays =
 		t = n;
 		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
 		{
-	local float sf;
-			sf = sf  + 1;
-			if (sf > 100) t = world;
+			gsf = gsf  + 1;
+			if (gsf > 100) t = world;
 		}
 	}
 	way_head = world;
@@ -585,9 +583,8 @@ entity(float num) WaypointForNum =
 		t = t._next;
 		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
 		{
-	local float sf;
-			sf = sf  + 1;
-			if (sf > 10) return world;
+			gsf = gsf  + 1;
+			if (gsf > 10) return world;
 		}
 	}
 	return world;
@@ -713,9 +710,8 @@ entity(entity lastone) FindRoute =
 		t = t._next;
 		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
 		{
-	local float sf;
-			sf = sf  + 1;
-			if (sf > 10) return best;
+			gsf = gsf  + 1;
+			if (gsf > 10) return best;
 		}
 	}
 	return best;
@@ -742,21 +738,20 @@ void() ClearRouteTable =
 		t = t._next;
 		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
 		{
-	local float sf;
-			sf = sf  + 1;
-			if (sf > 50) return;
+			gsf = gsf  + 1;
+			if (gsf > 50) return;
 		}
 	}
 };
 
 void() ClearMyRoute =
 {
-	local float flag, sf;
+	local float flag;
 	local entity t;
 
 	flag = ClientBitFlag(self.b_clientno);
 
-	sf = 0;
+	gsf = 0;
 	t = way_head;
 	while (t)
 	{
@@ -764,8 +759,8 @@ void() ClearMyRoute =
 		t = t._next;
 		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
 		{
-			sf = sf  + 1;
-			if (sf > 33) return;
+			gsf = gsf  + 1;
+			if (gsf > 33) return;
 		}
 	}
 };

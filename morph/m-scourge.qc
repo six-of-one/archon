@@ -539,8 +539,7 @@ void(float silent) player_scourge_become =
 
 	self.cam_z = 0;
 	self.cam_y = 10;
-	stuffcmd(self, "chase_up 0\n");
-	stuffcmd(self, "chase_back 10\n");
+
 	stuffcmd(self, "exec cfg/morph/m-scourge.cfg\n");
 
 	setmodel(self,"progs/scor2.mdl");

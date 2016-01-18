@@ -22,7 +22,11 @@ float XMOD;										// master exclude on extra elements
 float ULOKW, ULOKD, ULOK2, ULOK3, ULOKHL;		// unlock codes
 float PK_SEVEN, PK_EIGHT;
 float LOK_STRICT				= 1; 			// lock deal
-float XTR_SAVED1				= 1195724115; // saved1 test val 
+float XTR_SAVED1				= 1195724115; // saved1 test val
+
+float gsf;										// loop safety global - this MUST be watched CAREFULLY
+//				usage list:			m-gremlin, m-chaos, morph, bot_way **, grap **
+
 // end engines
 
 float() SUB_False				= { return 0; }; // Return a false value
@@ -133,6 +137,9 @@ float ARCHON_UNCOL = 0;					// if true allow uncollectable items (touching healt
 //												// value is factor 1 = full pts, 0.5 = 1/2 pts, etc.
 
 float ARCHON_MORPH_MIN = 100;			// minimum archon points to morph
+
+void() archon_target;
+void(entity e) archon_target_clear;
 
 // **************************************
 // ADMIN section
@@ -1294,7 +1301,6 @@ float STAT_PKMASK = 45; // pki ammos
 float STAT_AMBUL = 46; // enh ammos
 float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
-
 
 float STAT_ARCHON = 66; // track archon power for power bar display
 

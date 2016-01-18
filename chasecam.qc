@@ -108,8 +108,8 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 	if (DARKPLACES || chaos)
 	{
 		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
-		if (chaos)
-		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
+//		if (chaos)
+//		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 	}
 
 	if (Q_100 || PK_100 || NO_CAM || cam_owner.class_select == "class_bot") // Cataboligne - 8.16.9 - quake compatability mode - 9.19.11 dont allow bots in here
@@ -955,12 +955,12 @@ void(float sel) cam_parms =
 	if (DARKPLACES || chaos) // IDEA: move to live upd
 	{
 		CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam
-		if (chaos)
-		if (cvar("cl_cam_def") != CAM_DEF) CAM_DEF = cvar("cl_cam_def"); // Cataboligne - 8.26.11 - temp disable testing dpcam
+//		if (chaos)
+//		if (cvar("cl_cam_def") != CAM_DEF) CAM_DEF = cvar("cl_cam_def"); // Cataboligne - 8.26.11 - temp disable testing dpcam
 
 		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
-		if (chaos)
-		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
+//		if (chaos)
+//		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 	}
 
 	if (Q_100 || PK_100 || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
@@ -1053,8 +1053,8 @@ void () ccb_impulse_check =
 	if (DARKPLACES || chaos)
 	{
 		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
-		if (chaos)
-		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
+//		if (chaos)
+//		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 	}
 
 	if (Q_100 || PK_100 || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode

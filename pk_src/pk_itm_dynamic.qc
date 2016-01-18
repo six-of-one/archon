@@ -981,7 +981,7 @@ entity rseu; // random spawn ent origin used
 
 entity() dyn_rndloc =
 {
-	float ri, sf;
+	local float ri, sf;
 	local entity e, sv;
 
 	ri = sf = 0;
@@ -1031,7 +1031,7 @@ vector(vector v1, float d1, float r1) stdv_rndloc =
 	local float sf, pco, f, k;
 
 	v2 = v1;
-	sf = 100;
+	sf = 100; // NOT gsf
 	pco = CONTENT_SOLID;
 
 	while (sf > 0 && pco == CONTENT_SOLID)

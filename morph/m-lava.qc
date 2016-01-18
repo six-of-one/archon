@@ -585,8 +585,7 @@ void(float silent) player_lavablob_become =
 
 	self.cam_z = 10 / 100;
 	self.cam_y = 36;
-	stuffcmd(self, "chase_up 10\n");
-	stuffcmd(self, "chase_back 36\n");
+
 	stuffcmd(self, "exec cfg/morph/m-lava.cfg\n");
 
 	setmodel(self,"progs/lavabomb.mdl");

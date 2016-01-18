@@ -470,18 +470,32 @@ if (ibar_flag)
 
 sb_align = SB_BOTTOM;
 
-// Archon power bar - note vid_conheight is important for this
+// Archon power bar - note vid_conheight and vid_conwidth are very important for this
 
 // IMP: diff colors for archons themselves, show possible spell usage at top of bar (reduction amount)
 
-	arc_level = '-416 0 0';
+	arc_level = '-412 0 0';
 	arc_level_y = archon;
 
 	if (archon > 100) arc_level_y = 100 + (archon / 5000) * 380;
 	if (archon > 5000) arc_level_y = 100 + (archon / 60000) * 380;
 
-	DrawInventoryAmmo(arc_level, "gfx/inv_archon_bar", ALPHA_FULL, 1);
-	DrawAmmo(arc_level + '20 5 0', archon, ALPHA_FULL);
+	if (archon > 0)
+	{
+		DrawInventoryAmmo(arc_level, "gfx/inv_archon_bar", ALPHA_FULL, 1);
+		if  (archon < 4) arc_level_y = arc_level_y + 4 - archon;
+		DrawAmmo(arc_level + '20 5 0', archon, ALPHA_FULL);
+	}
+
+	if (mcode == -666)
+	if (explodeshot > 0)
+	{
+		if (archon > 5000) arc_level_y = arc_level_y - (explodeshot  / 60000) - 2;
+		else if (archon > 100) arc_level_y = arc_level_y - (explodeshot / 5000) - 2;
+		else arc_level_y = arc_level_y - explodeshot;
+		DrawInventoryAmmo(arc_level + '6 0 0', "gfx/spell_bar", ALPHA_FULL, 0.5);
+		DrawAmmo(arc_level + '20 -2 0', archon - explodeshot, ALPHA_FULL);
+	}
 
 // runes
 	pwr_step = '-400 50 0';
@@ -547,6 +561,8 @@ sb_align = SB_BOTTOM;
 	DrawInventory('190 48 0', "gfx/sb_sigil2", 0, 64, ALPHA_MEDIUM, 1.5);
 	DrawInventory('210 48 0', "gfx/sb_sigil3", 0, 128, ALPHA_MEDIUM, 1.5);
 	DrawInventory('230 48 0', "gfx/sb_sigil4", 0, 256, ALPHA_MEDIUM, 1.5);
+
+	if (mcode == -666) return; // because archon should not have any stuff
 
 sb_align = SB_BOTTOM_RIGHT;
 

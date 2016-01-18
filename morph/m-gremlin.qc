@@ -655,13 +655,12 @@ vector(vector loc, float dx, float mn, float zx, float zr) gremlin_spawn_pnt =
 float(float rng, vector sp1) gremlin_check_spot =
 {
 	local entity e;
-	local float sf;
 
 	e = findradius(sp1, rng);
-	sf = 150;
-	while (e && sf > 0)
+	gsf = 150;
+	while (e && gsf > 0)
 	{
-		sf = sf - 1;
+		gsf = gsf - 1;
 //		if (e.classname == "monster_gremlin" || 
 		if (e.flags & FL_MONSTER) return(TRUE); // try not to spawn in gremlins & monsters
 		if (e.flags & FL_CLIENT && e.classname == "player") return(TRUE); // try not to spawn in live players
@@ -699,7 +698,7 @@ bprint(ftos(sf));
 newline(world);
 }
 
-	sf = 100; // limit loop
+	sf = 100; // limit loop - NOT gsf
 	ts = 80; // test value
 	sp = rint(cn); // try to spawn this many
 	lv = 40; // min range
@@ -771,8 +770,7 @@ void(float silent) player_gremlin_become =
 
 	self.cam_z = 15 / 100;
 	self.cam_y = 32;
-	stuffcmd(self, "chase_up 15\n");
-	stuffcmd(self, "chase_back 32\n");
+
 	stuffcmd(self, "exec cfg/morph/m-gremlin.cfg\n");
 
 	if (self.morphy == IMP_MGREMLIN_F) // flyer

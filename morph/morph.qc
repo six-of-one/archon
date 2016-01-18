@@ -32,7 +32,7 @@ void() morph_setup =
 //	MORPH_ARENA = + ;
 	MORPH_ANCIENT = CB_DRAGON; // + CB_WRAITH;
 
-	MORPH_ALL = MORPH_ARCHON + MORPH_MONSTER + MORPH_HELLION + MORPH_STROG + MORPH_ANCIENT + CB_HUMAN;
+	MORPH_ALL = MORPH_MONSTER + MORPH_HELLION + MORPH_STROG + MORPH_ANCIENT + CB_HUMAN;
 
 // these morph fly natively
 	MORPH_FLY = CB_CHAOS + CB_ORDER + CB_SCRAG + CB_SHAPESHIFT + CB_WRAITH + CB_DRAGON + CB_GREMLIN;
@@ -76,6 +76,7 @@ void() morph_precache =
 	precache_model ("progs/plyr_dm.mdl");
 	precache_model ("progs/plyr_pk.mdl");
 	precache_model ("progs/plyr_q3.mdl");
+	precache_model ("progs/reticle.mdl");
 
 };
 
@@ -954,8 +955,7 @@ void(entity e, float all) morph_clearparms =
 
 void(float dx) morph_CycleWeaponCommand =
 {
-	local float sf;
-	sf = 50;
+	gsf = 50;
 	while (1)
 	{
 		if (self.weapon == IT_MJOLNIR)
@@ -1040,14 +1040,14 @@ void(float dx) morph_CycleWeaponCommand =
 		}
 
 // fix loop bug - we hope
-		if (sf < 1)
+		if (gsf < 1)
 		{
 			self.weapon = IT_AXE;
 			self.pk_currentitem = PK_IT_AXE;
 			W_SetCurrentAmmo();
 			return;
 		}
-		sf=sf - 1;
+		gsf=gsf - 1;
 
 		if (CanSelect(self.weapon, self.pk_currentitem))
 		{
@@ -1260,8 +1260,7 @@ void(float silent) player_human_become =
 	{
 		self.cam_z = 10 / 100;
 		self.cam_y = 30;
-		stuffcmd(self, "chase_up 10\n");
-		stuffcmd(self, "chase_back 30\n");
+
 		stuffcmd(self, "exec cfg/morph/m-human.cfg\n");
 	}
 
@@ -1596,12 +1595,11 @@ void(vector rdl) random_monster_location =
 {
 	local entity e;
 	local vector v;
-	local float sf;
 
 	v = v0;
-	sf = 50;
+	gsf = 50;
 	if (rdl) // randomize around this loc, try to avoid monsters / players
-	while ((sf > 0) && !v)
+	while ((gsf > 0) && !v)
 	{
 		v = stdv_rndloc(rdl, 100, 200); // only checks for solids
 		e = findradius(v, 100);
@@ -1611,7 +1609,7 @@ void(vector rdl) random_monster_location =
 //			if (e.flags & FL_PLAYER) v = v0; // only testing monsters for now
 			e = e.chain;
 		}
-		sf = sf - 1;
+		gsf = gsf - 1;
 	}
 
 	if (!v)

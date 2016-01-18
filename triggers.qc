@@ -347,7 +347,7 @@ float PLAYER_ONLY	 = 1;
 float T_SILENT	 = 2;
 float T_RANDOM = 4;
 float T_STEALTH = 8;
-float NONDIR = 16; // Note: zerstorer used this for something - ref: dd
+//float NONDIR = 16; // Note: zerstorer used this for something - ref: dd
 float T_NODEATH = 32;
 float ALT_TARGET = 64;
 
@@ -493,6 +493,7 @@ void () teleport_touch =
 			return ;
 	}
 
+	if (self.aflag != -6) // archon forced teleport, but only once
 // only teleport living creatures
 	if (other.health <= 0 || other.solid != SOLID_SLIDEBOX)
 		return ;
@@ -509,6 +510,11 @@ void () teleport_touch =
 
 	if (self.classname == "chaos_teleport") // chaos teleport sets movetarget - Cataboligne 1.23.8
 	{
+		if (self.aflag == -6)
+		{
+			other = self.enemy; // forced - must have correct target
+			self.touch = SUB_Null;
+		}
 		t = self.movetarget;
 		if (random() < self.aflag) self.movetarget = find_tdest(FL_RSALL, "");
 		if (!t) return;
@@ -539,6 +545,9 @@ void () teleport_touch =
 
 	if (PK) ClearSpawnPoint(t);
 // spawn a tfog flash in front of the destination
+	if (self.classname == "chaos_teleport" && t.classname != "info_teleport_destination") // - Cataboligne 1.23.8 - because chaos going to non tdest has no mangle
+		makevectors (other.angles);
+	else
 	makevectors (t.mangle);
 	org = t.origin + 32 * v_forward;
 
@@ -552,7 +561,8 @@ void () teleport_touch =
 	{
 		enemy_touched ();
 	}
-// move the player and lock him down for a little while
+
+// non living object
 	if (!other.health)
 	{
 		other.origin = t.origin;
@@ -560,9 +570,10 @@ void () teleport_touch =
 		return;
 	}
 
+// move the player and lock him down for a little while
 	setorigin (other,t.origin);
 
-	if (! self.spawnflags & NONDIR) other.angles = t.mangle; // Cataboligne - 10.31.12 - non directional landing - keep current facing, great with stealth
+	if (! self.spawnflags & 16) other.angles = t.mangle; // Cataboligne - 10.31.12 - non directional landing - keep current facing, great with stealth - NONDIR = 16
 	if (other.movetarget.movetarget)
 	{
 		addTarget (other.movetarget.movetarget,self);
@@ -574,7 +585,7 @@ void () teleport_touch =
 	}
 	if ((other.classname == "player") || (other.classname == "pk*bot") || (other.classname == OBSERVER))
 	{
-		if (! self.spawnflags & NONDIR)
+		if (! self.spawnflags & 16) // NONDIR = 16
 			other.fixangle = 1;		// turn this way immediately
 		other.teleport_time = time + 0.7;
 		other.bt_immune_time = time + BT_BUFFER; // *pk - beartrap - Note: ssnn issue here

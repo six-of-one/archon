@@ -1607,6 +1607,31 @@ void () PlayerPostThink =
 
 	W_WeaponFrame ();
 
+	if (self.mask_x & MORPH_ARCHON) // archon spell targeting
+	if ((self.weapon != IT_AXE) || (self.bolt_targetTimeout == -6)) // need to timeout when we select fire mode
+	{
+		if (self.bolt_targetTimeout > time)
+		{
+			if (self.bolt_target) setorigin(self.bolt_target.bolt_target, self.bolt_target.origin);
+			if (self.enemy) setorigin(self.enemy.bolt_target, self.enemy.origin);
+			archon_target();
+		}
+		else
+		{
+			if (self.bolt_target)
+				archon_target_clear(self.bolt_target);
+
+			if (self.enemy)
+				archon_target_clear(self.enemy);
+
+			self.enemy = self.bolt_target = world;
+			if (self.pk_explode_ammo > 0)
+				stuffcmd(self, "infobar 5 \"Spell canceled\"\n");
+			self.pk_explode_ammo = 0;
+			self.bolt_targetTimeout = 0;
+		}
+	}
+
 	if (self.classname != OBSERVER) // Cataboligne - 8.16.9 - dont need this for observers
 // check to see if player landed and play landing sound
 

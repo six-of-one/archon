@@ -2119,9 +2119,9 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("pk_sp_bt_noplayer", "0"); // single player - if true beartraps wont target players
 
 
-// new client controls
-		registercvar("cl_cam_off", "0"); // set to 1 to turn cam off entirely
-		registercvar("cl_cam_def", "1"); // set to 0 to default to no cam view
+// new client controls - do not work as planned
+//		registercvar("cl_cam_off", "0"); // set to 1 to turn cam off entirely
+//		registercvar("cl_cam_def", "1"); // set to 0 to default to no cam view
 	}
 /*
 		if (pk_srvcmd)

@@ -1576,11 +1576,18 @@ void() chaos_beam =
 		else sprint(self, e.classname);
 
 		org = e.origin;
-		e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  rent.origin , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		org_z = rent.origin_z;
 		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		f.enemy = e;
 
-		f.movetarget = e; f.aflag = -1;
-		e.movetarget = f; e.aflag = -1;
+		org = rent.origin;
+		org_z = e.origin_z;
+		e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		e.enemy = rent;
+
+		f.spawnflags = e.spawnflags = 48; // NONDIR, nodeath code
+		f.movetarget = e; f.aflag = -6;
+		e.movetarget = f; e.aflag = -6;
 		force_retouch = 2;
 	
 		sprint(self, ", with: ");
@@ -1601,6 +1608,17 @@ void() chaos_beam =
 
 };
 
+// setup spells
+
+void() spell_target_30 =
+{
+	stuffcmd(self, "infobar 30 \"Select a target (swap to secondary with ALT_FIRE)\"\n");
+	self.bolt_targetTimeout = time + 30;
+	self.pk_explode_ammo = 30; // spell cost
+	self.mcode = -666; // archon casting spell
+	self.th_missile = spell_target_30;
+}
+
 // main attack
 
 
@@ -1612,9 +1630,53 @@ void() player_chaos_attack =
 
 	if (self.impulse == ALT_FIRE_IMP)
 	{
+		if (self.weapon != IT_AXE)
+		{
+			if (self.bolt_target)
+			if (self.enemy)
+			{
+				self.bolt_targetTimeout = time + 30;
+				archon_target_clear(self.bolt_target);
+				self.bolt_target = self.enemy;
+				self.bolt_target.bolt_target.alpha = 1;
+				self.enemy = world;
+			}
+			return;
+		}
 		chaos_beam();
 		return;
 	}
+	if (self.weapon == IT_SHOTGUN) // fire a spell
+	{
+		if (!self.bolt_target) // pressing fire after used or after timeout resets spell
+		{
+			self.attack_finished = time + 1;
+			self.th_missile();
+			return;
+		}
+		if (!self.enemy) return;
+
+		org = self.bolt_target.origin;
+		org_z = self.enemy.origin_z;
+		newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		newmis.enemy = self.bolt_target;
+
+		org = self.enemy.origin;
+		org_z = self.bolt_target.origin_z;
+		trace_ent = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		trace_ent.enemy = self.enemy;
+
+		trace_ent.spawnflags = newmis.spawnflags = 48; // NONDIR, nodeath code
+		trace_ent.movetarget = newmis; trace_ent.aflag = -6;
+		newmis.movetarget = trace_ent; newmis.aflag = -6;
+		force_retouch = 2;
+		self.archon = self.archon - self.pk_explode_ammo;
+		self.pk_explode_ammo = 0;
+		self.bolt_targetTimeout = 0;
+	}
+
+	if (self.weapon != IT_AXE)
+		return;
 
 	if (self.chaosweptime < time) // pick a weapon and some time to fire it
 	{
@@ -1728,6 +1790,97 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 	}
 };
 
+// clear archon target reticles
+
+void(entity e) archon_target_clear =
+{
+	if (!e) return;
+
+	if (e.bolt_target)
+	{
+		if (e.bolt_target.model == "progs/reticle.mdl")
+		{
+			remove(e.bolt_target);
+			e.bolt_target = world;
+		}
+	}
+};
+
+// self is archon, sets .bolt_target if world, if not sets potential new target in .enemy
+
+void() archon_target =
+{
+	local float f;
+// 3000 - traceline targeting range
+	traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + v_forward * 3000, FALSE, self);
+
+// no target on traceline, look for ents the hard way
+	if (!trace_ent)
+	{
+		f = 3000;
+		gsf = 100;
+		newmis = world;
+		trace_ent = findradius(trace_endpos, 128);
+		while (trace_ent && (gsf > 0))
+		{
+			if (vlen(trace_ent.origin - trace_endpos) < f)
+			{
+				newmis = trace_ent;
+				f = vlen(trace_ent.origin - trace_endpos);
+			}
+			trace_ent = trace_ent.chain;
+			gsf = gsf - 1;
+		}
+		if (!newmis) return;
+		trace_ent = newmis;
+	}
+
+// things we should not target
+	if (trace_ent.map == "nonmove") return; // 7.22.13 - func_models we should not suck
+	if (trace_ent.classname == OBSERVER) return;
+
+	if (trace_ent.movetype == MOVETYPE_NONE) return;
+	if (trace_ent.movetype == MOVETYPE_PUSH) return;
+	if (trace_ent.movetype == MOVETYPE_NOCLIP) return;
+
+// already targeted, power point protection or in a clg bolt loop
+/// *** an archon with a primary target will not be targetable!
+	if (trace_ent.bolt_target) return;
+
+// already acquired - ignore
+	if (self.bolt_target == trace_ent) return;
+	if (self.enemy == trace_ent) return;
+
+	self.bolt_targetTimeout = time + 30;
+
+// setup reticle
+	trace_ent.bolt_target = spawn();
+	trace_ent.bolt_target.nextthink = time + 30;
+	trace_ent.bolt_target.think = SUB_Remove;
+	setorigin(trace_ent.bolt_target, trace_ent.origin);
+	setmodel(trace_ent.bolt_target, "progs/reticle.mdl");
+	if (!trace_ent.flags & FL_ITEM)
+		trace_ent.bolt_target.scale = 1.5;
+
+//	trace_ent.effects = EF_BRIGHTLIGHT; // IMP: reticle, poss HUD info
+	
+// first / main target
+
+	if (!self.bolt_target)
+	{
+		trace_ent.bolt_target.alpha = 1;
+		self.bolt_target = trace_ent;
+		archon_target_clear(self.enemy);
+		self.enemy = world;
+		return;
+	}
+// secondary - selected as main with ALT_FIRE
+
+	trace_ent.bolt_target.alpha = 0.65;
+
+	archon_target_clear(self.enemy);
+	self.enemy = trace_ent;
+};
 
 /*
 		+---------------------------------------+
@@ -1743,12 +1896,18 @@ void() player_chaos_impulse =
 
 	morph_impulse();
 
-
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Chaos firing random bolts\n");
 		self.items = self.items | IT_CELLS;
+
+		self.bolt_targetTimeout = -6;
+	}
+
+	if (self.weapon == IT_SHOTGUN) // spell list 1
+	{
+		spell_target_30();
 	}
 /*
 	for now alt fire is chaos beam fire
@@ -1820,13 +1979,17 @@ void(float silent) player_chaos_become =
 
 	self.cam_z = 10 / 100;
 	self.cam_y = 36;
-	stuffcmd(self, "chase_up 10\n");
-	stuffcmd(self, "chase_back 36\n");
+
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
 	self.items = self.items | IT_AXE | IT_SHOTGUN;
 	self.builtin = IT_AXE | IT_SHOTGUN;
 	self.weapon = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE;
+	self.pk_explode_ammo = 0; // spell cost
+	self.bolt_targetTimeout = 0; // spell time out
+	self.th_missile = SUB_Null;
+	self.mcode = -666; // archon casting spell
 
 	self.msight = "";
 	self.noise2 = "boss2/idle.wav";

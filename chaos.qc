@@ -1072,64 +1072,6 @@ void(entity e) archon_pprint =
 	sprint(e, "\n");
 }
 
-// display power bar while alive
-void(entity e) archon_power_bar =
-{
-	local float a,f,k; // heh heh
-	local string m;
-
-	k = e.archon;
-	stuffcmd(e, "infobar 6 \"");
-	stuffcmd(e, "Power: ");			// comment out for alt
-//	stuffcmd(e, "Power: Ä"); // alternate <====> style
-	if (e.archon > 10000) // 65535 is the max
-	{
-		f = 3276; // 20 units of 65536
-		m = " ( * Q000 )\"\n";
-		if (e.archon > 65535) k = 65535;
-	}
-	else if (e.archon > 1000)
-	{
-		f = 500;
-		m = " ( * 500  )\"\n";
-	}
-	else if (e.archon > 100)
-	{
-		f = 50;
-		m = " ( * 50   )\"\n";
-	}
-	else
-	{
-		f = 5;
-		m = " ( * 5    )\"\n";
-	}
-	a = floor(k / f);
-
-	k = 0;
-	while (a > 0)
-	{
-		if (f > 100)							// comment out for alt
-			stuffcmd(e, "ã");			
-		else
-			stuffcmd(e, "");		// end cofa
-//			stuffcmd(e, "Å"); // alternate
-		a = a - 1;
-		k = k + 1;
-	}
-//	stuffcmd(e, "Ç"); // alternate
-	while (k < 20) // make bar even as it grows or shrinks
-	{
-		if (e.archon < f)		// comment out for alt
-		{
-			f = -1;
-			stuffcmd(e, "*");
-		}
-		else									// end cofa
-			stuffcmd(e, " ");
-		k = k + 1;
-	}
-	stuffcmd(e, m);
-}
 
 
 // spawn flag values

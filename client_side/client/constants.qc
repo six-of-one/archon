@@ -81,7 +81,7 @@ float STAT_MCODE = 33; // track mcode of current weap in csqc - heh heh
 float STAT_RUNEFLAG = 34; // track rune_flag
 float STAT_PKM = 49; // track painkeep PK mode
 
-float STAT_EXPSHELL = 35; // track splode shells
+float STAT_EXPSHELL = 35; // track splode shells - dual purpose spell cost
 float STAT_PKINV = 36; // track pk inv - 3 weps
 float STAT_PKWEP = 37; // track pk inv - cur wep
 
@@ -98,6 +98,7 @@ float STAT_AMBUL = 46; // enh ammos
 float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
 
+//float STAT_SPELLCOST = 65; // track spell point cost
 float STAT_ARCHON = 66; // track archon power for power bar display
 
 // fooey.  these will be tricky to maintain since the list is built on the fly

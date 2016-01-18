@@ -16,7 +16,7 @@
 .vector grep_offset;	// harpoon target offset for bringing back to owner
 .float grap_firetest;
 
-float SAFE_LOOP = 300; // count of loop limit in case a grap test gets stuck somehow
+//float SAFE_LOOP = 300; // count of loop limit in case a grap test gets stuck somehow
 
 /*
    put in SAFE_LOOP to fix this, which I have seen a few times
@@ -235,7 +235,7 @@ float() grap_maintainRope =
 	else
 		cornerOrigin = corner.origin + '0 0 16';
 
-	sf = SAFE_LOOP;
+	sf = 300; // = SAFE_LOOP
 	while(corner.grap_cornerchainNext && sf > 0)
 	{
 		sf = sf - 1;
@@ -317,7 +317,7 @@ void(entity corner, vector cornerOrigin) grep_createCornerRope =
 
 
 
-		sf = SAFE_LOOP;
+		sf = 300; // = SAFE_LOOP
 		while(sf > 0)
 		{
 			sf = sf - 1;
@@ -399,7 +399,7 @@ void(entity corner, vector cornerOrigin) grep_createCornerRope =
 	  ropeOwner = rope;
 
 
-		sf = SAFE_LOOP;
+		sf = 300; // = SAFE_LOOP
 		while(sf > 0)
 		{
 			sf = sf - 1;
@@ -452,7 +452,6 @@ void() grap_touch =
 {
 	local entity grapOwner;
 //	local vector temp;
-	local float sf;
 
 	if (other == self.grap_owner)
 		return;
@@ -480,10 +479,10 @@ void() grap_touch =
 	self.touch = SUB_Null;
 
 	grapOwner = self.grap_owner;
-	sf = SAFE_LOOP;
-	while(grapOwner.grap_state == GRAP_CORNER && sf > 0)
+	gsf = 300; // = SAFE_LOOP
+	while(grapOwner.grap_state == GRAP_CORNER && gsf > 0)
 	{
-		sf = sf - 1;
+		gsf = gsf - 1;
 	  grapOwner = grapOwner.grap_owner;
 	}
 
@@ -497,10 +496,10 @@ void() grap_touch =
 
 		// set the corner touch functions.
 		grapOwner = self.grap_owner;
-		sf = SAFE_LOOP;
-		while(grapOwner.grap_state == GRAP_CORNER && sf > 0)
+		gsf = 300; // = SAFE_LOOP
+		while(grapOwner.grap_state == GRAP_CORNER && gsf > 0)
 		{
-			sf = sf - 1;
+			gsf = gsf - 1;
 		  grapOwner.touch = grep_touchCorner;
 		  grapOwner = grapOwner.grap_owner;
 		}
@@ -585,7 +584,6 @@ local float pull_lock;
 void() grap_touchOwner =
 {
 	local entity grapOwner;
-	local float sf;
 
 	// if touch grap_pull, don't bother to remove self, not there yet.
 	if (self.grap_pull == other)
@@ -615,10 +613,10 @@ void() grap_touchOwner =
 
 	  // remove everything
 	  grapOwner = self.grap_owner;
-		sf = SAFE_LOOP;
-		while(grapOwner.grap_state == GRAP_CORNER && sf > 0)
+		gsf = 300; // = SAFE_LOOP
+		while(grapOwner.grap_state == GRAP_CORNER && gsf > 0)
 		{
-			sf = sf - 1;
+			gsf = gsf - 1;
 			grapOwner = grapOwner.grap_owner;
 	  }
 
@@ -828,7 +826,7 @@ void(entity grapOwner) grap_remove =
 	local float sf;
 	e = grapOwner.grap_cornerchainNext;
 
-	sf = SAFE_LOOP;
+	sf = 300; // = SAFE_LOOP  // NOT gsf
 	while(e && sf > 0)
 	{
 		sf = sf - 1;
@@ -863,13 +861,12 @@ void(entity grapOwner) grap_remove =
 void(entity grapOwner) grap_removeRope =
 {
 	local entity e, f;
-	local float sf;
 	e = grapOwner.grap_ropechainPrev;
 
-	sf = SAFE_LOOP;
-	while(e && sf > 0)
+	gsf = 300; // = SAFE_LOOP
+	while(e && gsf > 0)
 	{
-		sf = sf - 1;
+		gsf = gsf - 1;
 		f = e;
 	  e = e.grap_ropechainPrev;
 
@@ -930,12 +927,10 @@ entity(entity ropeOwner) grap_createRope =
 // Find the harpoon entity.
 entity(entity start) grap_findHarpoon =
 {
-	local float sf;
-
-	sf = SAFE_LOOP;
-	while(start.grap_cornerchainNext && sf > 0)
+	gsf = 300; // = SAFE_LOOP
+	while(start.grap_cornerchainNext && gsf > 0)
 	{
-		sf = sf - 1;
+		gsf = gsf - 1;
 		start = start.grap_cornerchainNext;
 
 	  if (start.grap_state != GRAP_CORNER)
@@ -991,7 +986,7 @@ float() grap_checkCornerLines =
 	corner = self.grap_cornerchainNext;
 	cornerOrigin = self.origin + '0 0 16';
 
-	sf = SAFE_LOOP;
+	sf = 300; // = SAFE_LOOP
 	while(corner && sf > 0)
 	{
 		sf = sf - 1;
@@ -1205,8 +1200,6 @@ float(entity ownerEntity, vector ownerOrigin, vector tryOrigin) grap_checkIfCanB
 
 void() grap_checkIfGrap =
 {
-	local float sf;
-
 	if (other.classname == "Harpoon")
 	{ // we have a harpoon from a grappling hook, drag back..
 		local entity temp;
@@ -1214,10 +1207,10 @@ void() grap_checkIfGrap =
 
 	  // and it's going out...
 	  grapOwner = other.grap_owner;
-		sf = SAFE_LOOP;
-		while(grapOwner.grap_state == GRAP_CORNER && sf > 0)
+		gsf = 300; // = SAFE_LOOP
+		while(grapOwner.grap_state == GRAP_CORNER && gsf > 0)
 		{
-		sf = sf - 1;
+		gsf = gsf - 1;
 	    grapOwner = grapOwner.grap_owner;
 	  }
 
