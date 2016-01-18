@@ -107,8 +107,25 @@ void()  raptor1_stand1   =[      $stand1,        raptor1_stand2   ]
 		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 0;
 	}        
-    ai_stand();
+	ai_stand();
 };
+
+void()  raptor1_stand2   =[      $stand2,        raptor1_stand2   ]
+{
+	if (!self.weaponframe) self.weaponframe = $stand2;
+	else self.weaponframe = self.weaponframe + 1;
+	
+	if (self.weaponframe > $stand15)
+	{
+		self.weaponframe = $stand1;
+		raptor1_stand1();
+	}
+	else
+	self.frame = self.weaponframe;
+	ai_stand();
+};
+
+/*
 void()  raptor1_stand2   =[      $stand2,        raptor1_stand3   ] {ai_stand();};
 void()  raptor1_stand3   =[      $stand3,        raptor1_stand4   ] {ai_stand();};
 void()  raptor1_stand4   =[      $stand4,        raptor1_stand5   ] {ai_stand();};
@@ -123,6 +140,7 @@ void()  raptor1_stand12  =[      $stand12,       raptor1_stand13  ] {ai_stand();
 void()  raptor1_stand13  =[      $stand13,       raptor1_stand14  ] {ai_stand();};
 void()  raptor1_stand14  =[      $stand14,       raptor1_stand15  ] {ai_stand();};
 void()  raptor1_stand15  =[      $stand15,       raptor1_stand1   ] {ai_stand();};
+*/
 
 void()  raptor1_walk1    =[      $walk1,         raptor1_walk2    ]
 {

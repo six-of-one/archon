@@ -121,30 +121,45 @@ void() X_FireRailgun =
 {
 	local	vector org, destination, v1, v2, vp;
 	local	float	i, j, k, m, vl, damage, aj,ak, af, al, cn, ew;
-	local	entity startent, impactent;
-	local entity e;
+	local	entity startent, impactent, e;
 
 //	self.lefty = self.movetype; // temp str
 //	move_stop(self, ""); // mostly for beam appearances
-	ominous_hum(EWEAP.noise3, 0);
-	chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, EWEAP.endtime, railsnd_think, SUB_Null, self, world);
-
 	self.effects = self.effects | EF_MUZZLEFLASH;
-	self.punchangle_x = -4;
 
-	org = self.origin + v_up * VWZ_RAILGUN + v_right * VWY_RAILGUN + v_forward * VWX_RAILGUN;
-
-	traceline (org, org + v_forward*2048, TRUE, self);
-
-	if (EWEAP)
+	if (self.class_select == "class_monster") // enhanced - monster firing a rail beam
 	{
-		if (EWEAP.lefty == Q3_RAILBEAM) ew = TRUE; // fire q3 style beam
-		if (EWEAP.lip == AMMO_SLUGS)
-			self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(EWEAP.dmg_save, self, ""); // use ammo
+		sound (self, CHAN_WEAPON, "q2_snd/railf_mx.wav", 1, ATTN_NORM);
+
+		v_forward = normalize (self.enemy.origin - self.origin);
+//		makevectors(org);
+
+		org = self.origin + v_up * VWZ_RAILGUN + v_right * VWY_RAILGUN + v_forward * VWX_RAILGUN;
+
+		traceline (org, org + v_forward*2048, TRUE, self);
+		self.ammo_slug = self.ammo_slug - 1; //ammo_con(1, self, ""); // use ammo	
+	}
+	else
+	{
+		self.punchangle_x = -4;
+
+		ominous_hum(EWEAP.noise3, 0);
+		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, EWEAP.endtime, railsnd_think, SUB_Null, self, world);
+
+		makevectors(self.v_angle);
+		org = self.origin + v_up * VWZ_RAILGUN + v_right * VWY_RAILGUN + v_forward * VWX_RAILGUN;
+
+		traceline (org, org + v_forward*2048, TRUE, self);
+
+		if (EWEAP)
+		{
+			if (EWEAP.lefty == Q3_RAILBEAM) ew = TRUE; // fire q3 style beam
+			if (EWEAP.lip == AMMO_SLUGS)
+				self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(EWEAP.dmg_save, self, ""); // use ammo
+		}
+
 	}
 
-
-	makevectors(self.v_angle);
 	v1 = org;
 //	i = vlen(v1 - trace_endpos);
 //	i = 0;

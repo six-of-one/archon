@@ -190,6 +190,19 @@ void(float offset) vom_shot3 =
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 
+void()	vom_stand1	=[	$stand1,	vom_stand1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $stand9)) self.weaponframe = $stand1;
+	else self.weaponframe = self.weaponframe + 1;
+
+	self.frame = self.weaponframe;
+
+// TDO: idle sound
+
+	ai_stand();
+};
+
+/*
 void()	vom_stand1	=[	$stand1,	vom_stand2	] {ai_stand();};
 void()	vom_stand2	=[	$stand2,	vom_stand3	] {ai_stand();};
 void()	vom_stand3	=[	$stand3,	vom_stand4	] {ai_stand();};
@@ -199,6 +212,7 @@ void()	vom_stand6	=[	$stand6,	vom_stand7	] {ai_stand();};
 void()	vom_stand7	=[	$stand7,	vom_stand8	] {ai_stand();};
 void()	vom_stand8	=[	$stand8,	vom_stand9	] {ai_stand();};
 void()	vom_stand9	=[	$stand9,	vom_stand1	] {ai_stand();};
+*/
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 

@@ -124,6 +124,52 @@ void()	young_run8	=[	$run8,		young_run1	] {ai_face();young_slimedamage();};
 float YOUNG_WALK;
 
 // walk sets
+
+void()	young_walk1	=[	$run1,		young_walk1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $run8))
+	{
+		self.weaponframe = $run1;
+		young_noway();
+	}
+	else self.weaponframe = self.weaponframe + 1;
+
+	self.frame = self.weaponframe;
+
+	ai_walk(YOUNG_WALK);
+	young_slimedamage();
+};
+
+void()	young_mdwalk1	=[	$mdrun1,		young_mdwalk1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $mdrun8))
+	{
+		self.weaponframe = $mdrun1;
+		young_noway();
+	}
+	else self.weaponframe = self.weaponframe + 1;
+
+	self.frame = self.weaponframe;
+
+	ai_walk(YOUNG_WALK + 2);
+	young_slimedamage();
+};
+
+void()	young_lgwalk1	=[	$lgrun1,		young_lgwalk1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $lgrun8))
+	{
+		self.weaponframe = $lgrun1;
+		young_noway();
+	}
+	else self.weaponframe = self.weaponframe + 1;
+
+	self.frame = self.weaponframe;
+
+	ai_walk(YOUNG_WALK + 6);
+	young_slimedamage();
+};
+/*
 void()	young_walk1	=[	$run1,		young_walk2	] {ai_walk(YOUNG_WALK);young_slimedamage(); young_noway();};
 void()	young_walk2	=[	$run2,		young_walk3	] {ai_walk(YOUNG_WALK);young_slimedamage();};
 void()	young_walk3	=[	$run3,		young_walk4	] {ai_walk(YOUNG_WALK);young_slimedamage();};
@@ -150,8 +196,55 @@ void()	young_lgwalk5	=[	$lgrun5,		young_lgwalk6	] {ai_walk(YOUNG_WALK + 6);young
 void()	young_lgwalk6	=[	$lgrun6,		young_lgwalk7	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
 void()	young_lgwalk7	=[	$lgrun7,		young_lgwalk8	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
 void()	young_lgwalk8	=[	$lgrun8,		young_lgwalk1	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
+*/
 
 // run sets
+
+void()	young_run1	=[	$run1,		young_run1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $run8))
+	{
+		self.weaponframe = $run1;
+		young_noway();
+	}
+	else self.weaponframe = self.weaponframe + 1;
+
+	self.frame = self.weaponframe;
+
+	ai_run(16);
+	young_slimedamage();
+};
+
+void()	young_mdrun1	=[	$mdrun1,		young_mdrun1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $mdrun8))
+	{
+		self.weaponframe = $mdrun1;
+		young_noway();
+	}
+	else self.weaponframe = self.weaponframe + 1;
+
+	self.frame = self.weaponframe;
+
+	ai_run(20);
+	young_slimedamage();
+};
+
+void()	young_lgrun1	=[	$lgrun1,		young_lgrun1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $lgrun8))
+	{
+		self.weaponframe = $lgrun1;
+		young_noway();
+	}
+	else self.weaponframe = self.weaponframe + 1;
+
+	self.frame = self.weaponframe;
+
+	ai_run(24);
+	young_slimedamage();
+};
+/*
 void()	young_run1	=[	$run1,		young_run2	] {ai_run(16);young_slimedamage(); young_noway();};
 void()	young_run2	=[	$run2,		young_run3	] {ai_run(16);young_slimedamage();};
 void()	young_run3	=[	$run3,		young_run4	] {ai_run(16);young_slimedamage();};
@@ -178,6 +271,7 @@ void()	young_lgrun5	=[	$lgrun5,		young_lgrun6	] {ai_run(24);young_slimedamage();
 void()	young_lgrun6	=[	$lgrun6,		young_lgrun7	] {ai_run(24);young_slimedamage();};
 void()	young_lgrun7	=[	$lgrun7,		young_lgrun8	] {ai_run(24);young_slimedamage();};
 void()	young_lgrun8	=[	$lgrun8,		young_lgrun1	] {ai_run(24);young_slimedamage();};
+*/
 
 // do an attack
 

@@ -59,7 +59,7 @@ void() heximp_sit1 = [	$heximpwat1, heximp_sit1 ]
 
 	self.frame = self.weaponframe;
 
-	if (self.frame == 1)
+	if (self.frame == $heximpwat1)
 	if (random() < 0.5) sound (self, CHAN_VOICE, "heximp/up.wav", 1, ATTN_IDLE);
 
 	ai_stand();
@@ -360,7 +360,11 @@ void() heximp_up2 = [	$heximpup2, heximp_up2 ]
 	if (!self.weaponframe) self.weaponframe = $heximpup2;
 	else self.weaponframe = self.weaponframe + 1;
 
-	if (self.weaponframe > $heximpup23) heximp_fly1();
+	if (self.weaponframe > $heximpup23)
+	{
+		self.weaponframe = $heximpup1;
+		heximp_fly1();
+	}
 	else
 	self.frame = self.weaponframe;
 };

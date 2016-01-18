@@ -1,0 +1,73 @@
+Source file: progs.src
+outputfile: ./progs.dat
+compiling defs.qc
+compiling pk_src/pk_art.defs.qc
+compiling pk_src/pk.defs.qc
+compiling bot.defs.qc
+compiling bot_tally.qc
+compiling morph/morph.defs.qc
+compiling hipnotic/hipdefs.qc
+compiling xwep/hook.defs.qc
+compiling frikbot/map_dm1.qc
+compiling frikbot/map_dm2.qc
+compiling frikbot/map_dm3.qc
+compiling frikbot/map_dm4.qc
+compiling frikbot/map_dm5.qc
+compiling frikbot/map_dm6.qc
+compiling frikbot/bot.qc
+compiling frikbot/bot_way.qc
+in function make_waypoint (line 229),
+frikbot/bot_way.qc:289: warning: Result of comparison is constant
+compiling frikbot/bot_fight.qc
+compiling frikbot/bot_ai.qc
+compiling frikbot/bot_misc.qc
+in function BotName (line 264),
+frikbot/bot_misc.qc:152: warning: BotName: not all control paths return a value
+in function sisible (line 256),
+frikbot/bot_misc.qc:720: warning: sisible: not all control paths return a value
+compiling frikbot/bot_phys.qc
+compiling frikbot/bot_move.qc
+compiling frikbot/bot_ed.qc
+compiling precache.qc
+compiling chaos.qc
+in function loop_sound (line 462),
+chaos.qc:505: warning: loop_sound: not all control paths return a value
+in function CopyToBodyQue (line 1794),
+chaos.qc:1809: warning: Result of comparison is constant
+compiling environment.qc
+in function getsurfacenumpoints (line 220),
+environment.qc:68: warning: getsurfacenumpoints: not all control paths return a value
+in function getsurfacepoint (line 221),
+environment.qc:73: warning: getsurfacepoint: not all control paths return a value
+in function getsurfacenormal (line 222),
+environment.qc:78: warning: getsurfacenormal: not all control paths return a value
+in function getsurfacetexture (line 223),
+environment.qc:83: warning: getsurfacetexture: not all control paths return a value
+in function getsurfacenearpoint (line 224),
+environment.qc:88: warning: getsurfacenearpoint: not all control paths return a value
+in function getsurfaceclippedpoint (line 225),
+environment.qc:93: warning: getsurfaceclippedpoint: not all control paths return a value
+in function find_tselect (line 758),
+environment.qc:763: warning: Result of comparison is constant
+in function lavapud_live (line 1313),
+environment.qc:1321: warning: Result of comparison is constant
+compiling pk_src/painkeep.qc
+in function precache_sound (line 1475),
+pk_src/painkeep.qc:341: warning: precache_sound: not all control paths return a value
+in function precache_model (line 1476),
+pk_src/painkeep.qc:364: warning: precache_model: not all control paths return a value
+in function PK_mapmode (line 1442),
+pk_src/painkeep.qc:391: warning: Result of comparison is constant
+in function player_count (line 502),
+pk_src/painkeep.qc:523: warning: Result of comparison is constant
+in function pk_liveupd (line 736),
+pk_src/painkeep.qc:773: warning: Result of comparison is constant
+pk_src/painkeep.qc:1036: warning: Result of comparison is constant
+in function pk_srvcmd_set (line 180),
+pk_src/painkeep.qc:1448: warning: Result of comparison is constant
+pk_src/painkeep.qc:1663: error: expected ;, found :
+
+************ ERROR ************
+Errors have occured
+
+Error in pk_src/painkeep.qc on line 2295

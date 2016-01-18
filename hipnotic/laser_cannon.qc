@@ -41,7 +41,12 @@ void() HIP_LaserTouch =
 	local float mag;
 	local float r;
 
+	if (self.owner.class_select != "class_monster")
 	self.owner = world;
+
+	if (self.owner && (other == self.owner))
+		return;		// don't explode on owner when its a monster that fired it
+
 	self.cnt = self.cnt - 1;
 
 //	if (pointcontents(self.origin) == CONTENT_SKY) { remove(self); return;	}
@@ -162,6 +167,8 @@ void(vector org, vector vec, float light1, string sd) HIP_LaunchLaser =
 
 	if (EWEAP) newmis.target = EWEAP.target; // bouncy sound
 	else newmis.target = "weapons/lasercannon/laserric.wav";
+
+	if (self.class_select == "class_monster") newmis.target = "weapons/lasercannon/laserric.wav";
 // laser cannon bolt selection
 	newmis.skin = 3;
 	newmis.frame = 4;
@@ -177,53 +184,80 @@ void(float stat) HIP_FireLaser =
    local vector out;
    local float ofs;
    local float aofs;
+	local string lns;
 
-	if (!self.button0)
+	if (self.class_select != "class_monster") // enhanced - monster firing a hip laser
 	{
-      player_run ();
-      return;
-	}
+//		local entity e;
+//		e = self.enemy;
 
-	if (self.ammo_cells < ammo_con(self.eweapon.dmg_save, self, ""))
-	{
-		self.weapon = W_BestWeapon ();
-		W_SetCurrentAmmo ();
-//		eject_batt(1 + random() * 0.8 + crandom() * 1);
-		return;
-	}
+//		v_forward = normalize (self.enemy.origin - self.origin);
+//		makevectors(v_forward);
 
-   SuperDamageSound();
+//		org = self.origin + v_up * VWZ_RAILGUN + v_right * VWY_RAILGUN + v_forward * VWX_RAILGUN;
+
+//		traceline (org, org + v_forward*2048, TRUE, self);
+
+//	}
+//	else
+//	{
+		if (!self.button0)
+		{
+			player_run ();
+			return;
+		}
+
+		if (self.ammo_cells < ammo_con(self.eweapon.dmg_save, self, ""))
+		{
+			self.weapon = W_BestWeapon ();
+			W_SetCurrentAmmo ();
+	//		eject_batt(1 + random() * 0.8 + crandom() * 1);
+			return;
+		}
+
+		SuperDamageSound();
+		makevectors (self.v_angle);
+
+		lns = self.eweapon.noise3;
+	}
+	else
+		lns = "weapons/lasercannon/laserg.wav";
+
    self.effects = self.effects | EF_MUZZLEFLASH;
-   makevectors (self.v_angle);
 
    ofs = 6;
    out = v_forward;
    out_z = 0;
    out = normalize(out);
    org = self.origin + ((VWZ_LASERCAN - ofs) * v_up) + (VWX_LASERCAN * out);
-   dir = aim (self, 1000);
+	if (self.class_select == "class_monster")
+		dir = normalize (self.enemy.origin - self.origin);
+	else
+	dir = aim (self, 1000);
    aofs = ofs * 0.707;
 
    if (stat == 0)
       {
+		if (self.class_select != "class_monster")
       self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(self.eweapon.dmg_save, self, "");
 		org = org + (aofs*v_right);
 		org = org - (aofs*v_up);
-		HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 0, self.eweapon.noise3);
+		HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 0, lns);
 		org = org - (2*aofs*v_right);
-		HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 0, self.eweapon.noise3);
+		HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 0, lns);
       }
    else if (stat == 1)
       {
+		if (self.class_select != "class_monster")
       self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(self.eweapon.dmg_save, self, "");
       org = org + (ofs*v_up);
       if (random()<0.1)
          {
-			HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 1, self.eweapon.noise3);
+			HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 1, lns);
          newmis.dmg = newmis.dmg * 1.39; // = 25 if base 18
          }
       else
-			HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 0, self.eweapon.noise3);
+			HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 0, lns);
       }
    self.punchangle_x = -1;
 };

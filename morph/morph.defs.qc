@@ -38,6 +38,8 @@ float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent 
 float DM_MONSTER;	// true if any option allows monsters in dm
 float HUB_MONSTER;	// true if monsters will appear on hub maps - "sv_monster_hub"
 
+float ENH_Q1_MAP_MONSTERS 		= 1; // if true some q1 map monsters get weapon upgrades - grunt, enforcer
+
 // fast and slow monsters
 //void(float fst, float slw, string mcls, origin vm) fast_slow_monster;
 void(string sp, string mcls, vector vm) speed_monster;

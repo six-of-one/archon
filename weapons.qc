@@ -9,6 +9,7 @@
  * final qc
  *
  */
+ 
 // Cataboligne 9.11.3 purify proto - chase cam
 void () ccb_impulse_check;
 
@@ -389,6 +390,8 @@ void () T_MissileTouch =
 		return ;
 	}
 
+	if (self.dmg) damg = self.dmg; // Cataboligne - 12.2.12 - mod for variable damage rockets
+	else
 	damg = 100 + random()*20;
 
 	if (other.health)
@@ -398,9 +401,13 @@ void () T_MissileTouch =
 		T_Damage (other,self,self.owner,damg);
 	}
 
+	if (self.dmg) damg = self.dmg;
+	else
+		damg = 120;
+
 	// don't do radius damage to the other, because all the damage
 	// was done in the impact
-	T_RadiusDamage (self, self.owner, 120, other);
+	T_RadiusDamage (self, self.owner, damg, other);
 
 //	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
 	self.origin = self.origin - 8*normalize(self.velocity);
@@ -441,22 +448,25 @@ void () W_FireRocket =
 
 // set missile speed
 
-	makevectors (self.v_angle);
-	if (self.classname == "class_monster") // enhanced - monster firing a rocket
+	if (self.class_select == "class_monster") // enhanced - monster firing a rocket
 	{
-		mpuff = self.enemy;
-		bfwd = mpuff.origin - mpuff.velocity*0.2;
+		bfwd = self.enemy.origin - self.enemy.velocity*0.2;
 		missile.velocity = normalize (bfwd - self.origin);
+		missile.dmg = 80; // not as strong as player unless set that way
 	}
 	else
-	if (self.classname == "pk*bot")
 	{
-		missile.velocity = botaim ();
-		bfwd = botaim ();
-		bfwd_z = 0;
+		makevectors (self.v_angle);
+
+		if (self.classname == "pk*bot")
+		{
+			missile.velocity = botaim ();
+			bfwd = botaim ();
+			bfwd_z = 0;
+		}
+		else
+		missile.velocity = aim (self,1000);
 	}
-	else
-	missile.velocity = aim (self,1000);
 	missile.velocity = missile.velocity * 1000;
 	missile.angles = vectoangles (missile.velocity);
 
@@ -552,28 +562,38 @@ void () W_FireLightning =
 	local float wlevel;
 	local vector dir;
 
-	if (self.ammo_cells < 1)
+	if (self.class_select == "class_monster") // enhanced - monster firing lightning
 	{
-		self.weapon = W_BestWeapon ();
-		if (!Q_100 && !Q_99) self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
-		W_SetCurrentAmmo ();
-		if (self.classname == "pk*bot")
-		{
-			self.think = self.th_run;
-		}
-		return ;
-	}
-
-// explode if under water
-	cells = self.ammo_cells;
-	if (self.classname == "pk*bot")
+		v_forward = normalize (self.enemy.origin - self.origin);
+//		makevectors(v_forward);
 		wlevel = CheckWaterLevel ();
+		cells = 10 + random() * 10;
+	}
 	else
-		wlevel = self.waterlevel;
+	{
+		if (self.ammo_cells < 1)
+		{
+			self.weapon = W_BestWeapon ();
+			if (!Q_100 && !Q_99) self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
+			W_SetCurrentAmmo ();
+			if (self.classname == "pk*bot")
+			{
+				self.think = self.th_run;
+			}
+			return ;
+		}
 
-	if (self.eweapon)
-	if (self.eweapon.mcode == MC_Q3_LIGHTNING) // cause q3 lg doesnt blow under water
-		wlevel = 0;
+	// explode if under water
+		cells = self.ammo_cells;
+		if (self.classname == "pk*bot")
+			wlevel = CheckWaterLevel ();
+		else
+			wlevel = self.waterlevel;
+
+		if (self.eweapon)
+		if (self.eweapon.mcode == MC_Q3_LIGHTNING) // cause q3 lg doesnt blow under water
+			wlevel = 0;
+	}
 
 	if (wlevel > 1)
 	{
@@ -590,10 +610,14 @@ void () W_FireLightning =
 		sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
 		self.t_width = time + 0.6;
 	}
-	self.punchangle_x = -2;
-	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 
-	self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(1, self, "");
+	if (self.class_select != "class_monster")
+	{
+		self.punchangle_x = -2;
+		cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+
+		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(1, self, "");
+	}
 
 	if (PK_100 || Q_100)
 		org = self.origin + '0 0 16';

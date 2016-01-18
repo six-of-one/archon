@@ -158,7 +158,21 @@ local float 	ldmg;
 	}
 };
 
+void() manga_stand1	=[	$st1,	manga_stand1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $st8)) self.weaponframe = $st1;
+	else self.weaponframe = self.weaponframe + 1;
 
+	self.frame = self.weaponframe;
+
+	if (self.frame == $st5)
+	if (random() < 0.2)
+		sound (self, CHAN_VOICE, "mon_II/manga/kungfu.wav", 1, ATTN_IDLE);
+
+	ai_stand();
+};
+
+/*
 void() manga_stand1	=[	$st1,	manga_stand2	] {ai_stand();};
 void() manga_stand2	=[	$st2,	manga_stand3	] {ai_stand();};
 void() manga_stand3	=[	$st3,	manga_stand4	] {ai_stand();};
@@ -171,7 +185,30 @@ ai_stand();
 void() manga_stand6	=[	$st6,	manga_stand7	] {ai_stand();};
 void() manga_stand7	=[	$st7,	manga_stand8	] {ai_stand();};
 void() manga_stand8	=[	$st8,	manga_stand1	] {ai_stand();};
+*/
 
+void() manga_walk1	=[	$wa1,		manga_walk1	]
+{
+	if (!self.weaponframe || (self.weaponframe > $wa18)) self.weaponframe = $wa1;
+	else self.weaponframe = self.weaponframe + 1;
+
+	self.frame = self.weaponframe;
+
+	if (self.frame == $wa3)
+	if (random() < 0.2)
+		sound (self, CHAN_VOICE, "mon_II/manga/kungfu.wav", 1, ATTN_IDLE);
+
+	if (self.frame == $wa6)
+	if (random() < 0.1)
+	{
+		ai_walk(3);
+		sound (self, CHAN_VOICE, "mon_II/manga/hiyaa.wav", 1, ATTN_IDLE);
+	}
+
+	ai_walk(2);
+};
+
+/*
 void() manga_walk1	=[	$wa1,		manga_walk2	] {ai_walk(2);};
 void() manga_walk2	=[	$wa2,		manga_walk3	] {ai_walk(2);};
 void() manga_walk3	=[	$wa3,		manga_walk4	] {
@@ -198,7 +235,7 @@ void() manga_walk15	=[	$wa15,	manga_walk16	] {ai_walk(2);};
 void() manga_walk16	=[	$wa16,	manga_walk17	] {ai_walk(2);};
 void() manga_walk17	=[	$wa17,	manga_walk18	] {ai_walk(2);};
 void() manga_walk18	=[	$wa18,	manga_walk1	] {ai_walk(2);};
-
+*/
 
 
 void() manga_run1	=[	$wa1,		manga_run2	] {ai_run(9);
