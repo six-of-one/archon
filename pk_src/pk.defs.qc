@@ -187,6 +187,8 @@ float RUNE_FLG_FLY			= 32; // no rune code yet - for q3
 
 void() flyer_move; // fly rune for now
 
+.vector movement; // for haste
+
 // end runes
 
 // **************************************

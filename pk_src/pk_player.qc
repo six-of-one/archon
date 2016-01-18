@@ -155,23 +155,49 @@ void() pk_run_frames =
 // haste run faster - moved up here for morphs
 	if (self.rune_flag & RUNE_FLG_HS)
 	{
-		local float f;
-		f = cvar("sv_maxspeed") * 1.6;
-		if (vlen(self.velocity) < f)
-		if (self.button1)
-			self.velocity = self.velocity * (f / vlen(self.velocity));
+		local float f, ms, v;
+		ms = cvar("sv_maxspeed");
+		f =  ms * 1.8; // at 320 max, this is 576
+		if (self.movetype == MOVETYPE_FLY) f = ms * 1.4;
+		v = vlen(self.velocity); 
+		if (!self.movement_x && !self.movement_y)
+		{
+			if (v > ms)
+				self.velocity = self.velocity * 0.95;// (ms / v); // cap it
+		}
+		else
+		if (v < f)
+		{
+			if (self.movement_x > 20)
+				self.velocity = self.velocity * (f / v);
+			else
+			{
+				f = ms * 1.25;
+				if (self.movetype == MOVETYPE_FLY) f = ms * 0.9; // flight speed side & back normally .8 * ms
+				if ( (fabs(self.movement_y) > 20) ||  (self.movement_x < 20) )
+					self.velocity = self.velocity * (f / v);
+			}
+		}
+	}
 
+// TEST: runner speed
+if (cvar("saved1") == -888)
 
-if (vlen(self.velocity) > cvar("sv_maxspeed") + 2)
+if (vlen(self.velocity) > 50)
+//if (vlen(self.velocity) > cvar("sv_maxspeed") + 2)
 //if (time & 3 == 0)
 {
-bprint("haste speed: ");
+bprint("run --- speedlimit: ");
+bprint(ftos(cvar("sv_maxspeed")));
+bprint("  - movecode: ");
+bprint(vtos(self.movement));
+
+bprint("  - haste speed: ");
 bprint(ftos(vlen(self.velocity)));
 bprint("\n");
 }
 
 
-	}
 
 	if (self._run != SUB_Null)
 	{

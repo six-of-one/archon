@@ -1009,7 +1009,7 @@ void () WaterMove =
 	if (DARKPLACES)
 	if (self.watertype == CONTENT_WATER)
 	{
-		surfnum  = getsurfacenearpoint(world, self.origin);
+		surfnum  = getsurfacenearpoint(world, self.origin); // NOTE: does not continuosly detect = fail FIX:
 		if (surfnum >= 0)
 		{
 			f = FALSE;
@@ -1027,7 +1027,12 @@ void () WaterMove =
 
 			if (f)
 			{
+bprint("*** excised water: ");
+bprint(surface);
+bprint("\n");
 				self.watertype = self.waterlevel = 0;
+				self.flags = self.flags - (self.flags & FL_INWATER);
+				return;
 			}
 		}
 	}
@@ -1165,7 +1170,7 @@ server total 100?
 		if (self.watertype == CONTENT_SLIME)
 			sound (self, CHAN_BODY, "player/slimbrn2.wav", 1, ATTN_NORM);
 
-		self.flags = self.flags + FL_INWATER;
+		self.flags = self.flags | FL_INWATER;
 		self.dmgtime = 0;
 	}
 
@@ -1254,6 +1259,10 @@ void () PlayerPreThink =
 
 	if (self.deadflag >= DEAD_DEAD)
 	{
+		if (! (framecount & 2))
+		if (self.classname == OBSERVER)
+			flyer_move(); // Cataboligne - 7.26.10 - flyer mouse-fly right code from chaos mod flight
+
 		PlayerDeathThink ();
 		return;
 	}
@@ -1272,7 +1281,11 @@ void () PlayerPreThink =
 		self.flags = self.flags | FL_JUMPRELEASED;
 
 // NOTE: morph flyers, jetpack
-	if (self.rune_flag & RUNE_FLG_FLY) flyer_move(); // Cataboligne - 7.26.10 - flyer mouse-fly right code from chaos mod flight
+//	if (self.rune_flag & RUNE_FLG_FLY)
+	if (! (framecount & 2))
+	if ((!self.flags & FL_ONGROUND) || (self.v_angle_x < -45))
+	if (self.movetype == MOVETYPE_FLY) // NOTE: horn, grap set this
+		flyer_move(); // Cataboligne - 7.26.10 - flyer mouse-fly right code from chaos mod flight
 
 // teleporters can force a non-moving pause time
 	if (time < self.pausetime)

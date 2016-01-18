@@ -326,29 +326,24 @@ float() gremlin_flight_check =
 
 void() gremlin_takeoff =
 {
+	if (self.movetype == MOVETYPE_FLY)
+		flyer_mode(self);
+	else
 	if (self.map != "spawn")
 	if (self.model == "progs/gremlin-fly.mdl") // gremlin in fly mode
+	{
+		self.attack_finished = time + 0.3;
+		if (gremlin_flight_check() > GREM_FLY_MAXWEP) // IDEA done by wep weight system
 		{
-			self.attack_finished = time + 0.3;
-			if (self._stand == gremlin_hover) // landing - best be close to ground
-			{
-				self._stand=SUB_Null;
-				self._run=SUB_Null;
-			}
-			else
-			{
-				if (gremlin_flight_check() > GREM_FLY_MAXWEP) // IDEA done by wep weight system
-				{
-					sprint(self, "Your weapons are too heavy for you to fly with - throw some away.\n");
-					return;
-				}
-				self._stand=gremlin_hover;
-				self._run=gremlin_fly;
-				gremlin_hover();
-//				self.velocity = self.velocity * v_up * 50; // some upward motion
-			}
+			sprint(self, "Your weapons are too heavy for you to fly with - throw some away.\n");
+			return;
 		}
-	flyer_check(self, (self._stand == gremlin_hover));
+		self._stand=gremlin_hover;
+		self._run=gremlin_fly;
+		gremlin_hover();
+//				self.velocity = self.velocity * v_up * 50; // some upward motion
+		flyer_check(self, TRUE);
+	}
 };
 
 
@@ -363,7 +358,7 @@ void() player_gremlin_attack =
 		return;
 	}
 
-	if (self.impulse == ALT_FIRE_IMP)
+	if (self.impulse == ALT_FIRE_IMP) // note: can also use impulse 15
 	{
 		gremlin_takeoff();
 		return;

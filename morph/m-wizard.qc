@@ -127,6 +127,7 @@ void() pointer_hk_fire_spike =
 
 void() Wiz_fireBomb =
 {
+bprint("fired bomb\n");
 	fire_missile(SCRAGG_SHT_VEL * 0.8, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, self.origin, v0, "missile", "progs/w_spike.mdl", "", Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
 	newmis.frame = 1;
 	newmis.dmg = 75;
@@ -257,8 +258,7 @@ void() player_Wiz_FastFire =
 	if (self.weapon == IT_SHOTGUN) offmlt = 10;
 	
 	if(random()>0.75) offset=0;
-	else if(random()>0.5) offset=0-(random()*offmlt);
-	else offset=random()*offmlt;
+	else offset= crandom()*offmlt;
 
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
@@ -356,12 +356,18 @@ void() player_wizard_painleech4 = [ $pain1,   player_stand1            ] {};
 	
 void() player_wizard_attack1 = [ $attack1, player_wizard_attack3 ]
 	{
-	if (self.weapon == IT_SHOTGUN) 	if (rune_haste(0.5)) self.attack_finished = time + 1.0;				// plain old spikes
+	if (self.weapon == IT_SHOTGUN)
+	{
+		if (rune_haste(0.5)) self.attack_finished = time + 1.0;				// plain old spikes
+	}
 	else
 		{
 		if (rune_haste(0.2))
 		self.attack_finished = time + 0.4;
-		if (self.weapon == IT_ROCKET_LAUNCHER) 	if (rune_haste(0.55)) self.attack_finished = time + 1.1;
+		if (self.weapon == IT_ROCKET_LAUNCHER)
+		{
+			if (rune_haste(0.55)) self.attack_finished = time + 1.1;
+		}
 		player_Wiz_FastFire();  																// concentrated spikes || spike bomb
 		}
 	};

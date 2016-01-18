@@ -106,6 +106,7 @@ float CB_M_BLARG					= 1;
 float CB_M_RAPTOR					= 2;
 float CB_M_SPIDER					= 4;
 float CB_M_MANGA					= 8;
+float CB_M_BOSSMAN				= 16;
 
 float MON_NAME_II					= 2;
 float MON_FUNC_II					= 3;

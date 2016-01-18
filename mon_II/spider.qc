@@ -312,7 +312,7 @@ void(float ign) monster_spider =
 {
 if (ign != A_MONSTER)
 {
-	if (!M_MONSTER & CB_M_FISH)
+	if (!M_MONSTER_II & CB_M_FISH)
 	if (deathmatch)
 //		if (deathmatch != 4)
 	{

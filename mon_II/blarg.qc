@@ -304,7 +304,7 @@ void(float ign) monster_blarg =
 
 if (ign != A_MONSTER)
 {
-	if (!M_MONSTER & CB_M_ARMY)
+	if (!M_MONSTER_II & CB_M_ARMY)
 	if (deathmatch)
 //		if (deathmatch != 4)
 	{

@@ -342,7 +342,7 @@ void(float ign) monster_manga =
 
 if (ign != A_MONSTER)
 {
-	if (!M_MONSTER & CB_M_KNIGHT)
+	if (!M_MONSTER_II & CB_M_KNIGHT)
 	if (deathmatch)
 	{
 		if (R_MONSTER)

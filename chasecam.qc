@@ -334,7 +334,7 @@ if (PR_VIEWPC) bprint ("set_viewport: deathmove\n");
 	if (cvar("fov") != DCAM_FOV) stuffcmd( self.owner, DCAM_SET_FOV ); // I see short dead dudes - enforce crow vision
 
 	PK_SetCurrentAmmoOnly(self.owner);
-	self.owner.flags = self.owner.flags | FL_ONGROUND;
+//	self.owner.flags = self.owner.flags | FL_ONGROUND;
 };
 
 // fn(cam_deathview) - view of recently deceased

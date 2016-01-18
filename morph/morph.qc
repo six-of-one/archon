@@ -42,7 +42,7 @@ void() morph_setup =
 	MONSTER_MASK = CB_M_ARMY + CB_M_FISH + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
 						CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE + CB_M_GREMLIN + CB_M_VOMIT;
 
-	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA;
+	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA + CB_M_BOSSMAN;
 
 };
 
@@ -255,6 +255,7 @@ string(float mb, float mode) monster_id =
 		if (mb == CB_M_RAPTOR) 			s2 = "Velociraptor";
 		if (mb == CB_M_SPIDER) 			s2 = "Phase Spider";
 		if (mb == CB_M_MANGA) 			s2 = "Manga Tai";
+		if (mb == CB_M_BOSSMAN) 		s2 = "Like a Boss";
 	}
 	else
 	if (mode == MON_FUNC_II)
@@ -263,6 +264,7 @@ string(float mb, float mode) monster_id =
 		if (mb == CB_M_RAPTOR) 			s2 = "monster_raptor";
 		if (mb == CB_M_SPIDER) 			s2 = "monster_spider";
 		if (mb == CB_M_MANGA) 			s2 = "monster_manga";
+		if (mb == CB_M_BOSSMAN) 		s2 = "monster_bossman";
 	}
 	return s2;	
 };
@@ -895,10 +897,7 @@ void() morph_impulse =
 			morph_sound(2, self.msight, 3);							// let player morphs "talk"
 		if (self._summon != SUB_Null) self._summon();		// attempt summon - TEST: ing
 	}
-	if (self.impulse == IMP_MFLY)
-	{
-		flyer_mode(self);
-	}
+
 /*
 	if (cmd == IMP_MFIREM)
 		{
@@ -1307,6 +1306,7 @@ void() random_monster =
 	{
 		self.cnt = 0;
 		f = self.count;
+		M = MON_FUNC_II;
 	}
 
 	c = self;
@@ -1317,6 +1317,13 @@ void() random_monster =
 
 		self.classname = "dyn_monster";
 		item_call(self.wad);
+
+
+bprint("spawning: ");
+bprint(item_ident(self));
+bprint("\n");
+
+
 		e = dyn_rndloc();
 		v = e.origin;
 		v_z = v_z + 30 - fabs(e.mins_z); // has to move up enough to account for monsters feet at -24

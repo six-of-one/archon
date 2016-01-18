@@ -457,6 +457,7 @@ void(string cls) item_call =
 	else if (cls == "monster_raptor") monster_raptor(A_MONSTER);
 	else if (cls == "monster_spider") monster_spider(A_MONSTER);
 	else if (cls == "monster_manga") monster_manga(A_MONSTER);
+	else if (cls == "monster_bossman") monster_bossman(A_MONSTER);
 	
 	else // fail - not valid
 	{

@@ -2008,7 +2008,10 @@ void() PK_ImpulseCommands =
 // DEV - TESTING
 	vw_config(); // call config check viswep
 
-
+	if (self.impulse == IMP_MFLY)
+	{
+		flyer_mode(self);
+	}
 
 // morphic control - cube or other
 	if (self.eweapon)
