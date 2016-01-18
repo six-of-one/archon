@@ -581,6 +581,13 @@ void() painkeep_touch =
 	if (other.health <= 0)
 		return;
 
+	if (cb_morph(other.morphy) != CB_HUMAN)
+	if (!self.mask_x & other.mask_x && self.wad != "morph_cube")
+	{
+		if (e) e.classname = "pk*bot";
+		return;
+	}
+
 	if (other.classname == "player") // *bot
 //	if (self.pk_touch != painkeep_touch)
 	if (self.state == CACHE_ROUTE_TOUCH || self.state == BOT_TOUCHED_CACHE_ROUTE_TOUCH) // *bot code - patch in cacheRoute for bot code - routes here because this is PK master touch fn()

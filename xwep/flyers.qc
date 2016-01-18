@@ -11,7 +11,7 @@
 // set MOVETYPE_FLY if we can fly
 // so far these can fly - chaos as plasma bolt ball, scragg, deadcam, flying gremlin when launched
 
-/*
+
 void(entity fent, float fl) flyer_check =
 {
 	if (!fent.movetype) return; // froze by something
@@ -19,10 +19,10 @@ void(entity fent, float fl) flyer_check =
 	fent.movetype = MOVETYPE_WALK;
 
 	if (fl)
-	if	(fent.morphnum == IMP_MWIZARD
-		|| fent.morphnum == IMP_MCHAOS
-		|| fent.morphnum == IMP_MWRAITH
-		|| fent.morphnum == IMP_MGREMLIN
+	if	(fent.morphy == IMP_MWIZARD
+		|| fent.morphy == IMP_MCHAOS
+		|| fent.morphy == IMP_MWRAITH
+		|| fent.morphy == IMP_MGREMLIN
 		|| fent.classname == "deadcam"
 //		|| (fent.model == "progs/gremlin-fly.mdl" && fent._stand == gremlin_hover)
 		)
@@ -31,15 +31,16 @@ void(entity fent, float fl) flyer_check =
 	}
 };
 
+
 // fn(flyer_mode) - switch between ground & flight if flight is an option
 
 // called by impulse 155
 
 void(entity fent) flyer_mode =
 {
-	if (fent.morphnum == IMP_MGREMLIN)
+	if (fent.morphy == IMP_MGREMLIN)
 	{
-		if (fent == self) gremlin_takeoff(); // gremlin must switch modes here
+//		if (fent == self) gremlin_takeoff(); // gremlin must switch modes here
 		return;
 	}
 
@@ -53,7 +54,6 @@ void(entity fent) flyer_mode =
 //		fent.velocity = self.velocity * v_up * 50; // some upward motion
 	}
 };
-*/
 
 void() flyer_move =
 {

@@ -107,6 +107,8 @@ void(float ab, float gb, float amx, float gmx) wk_frames =
 
 void() pk_stand_frames =
 {
+	if (self._stand != SUB_Null) { self._stand(); return; } // NOTE: gremlin stuff we need to check back on
+
 	wk_frames($axstnd1, $stand1, 12, 5);
 	return;
 //	if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
@@ -127,6 +129,12 @@ void() pk_stand_frames =
 
 void() pk_run_frames =
 {
+	if (self._run != SUB_Null && !intermission_running) // Cataboligne - 9.30.3 no effects during intermix
+	{
+		self._run();
+		return;
+	}
+
 	wk_frames($axrun1, $rockrun1, 6, 6);
 // haste run faster
 	if (self.rune_flag & RUNE_FLG_HS)

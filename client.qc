@@ -379,9 +379,13 @@ void () respawn =
 		// make a copy of the dead body for appearances sake
 		if (self.model != "progs/null.mdl") // Cataboligne - 8.14.9 - dead cam etc
 		CopyToBodyQue (self);
+
+		morph_clearparms(self, TRUE);
+
 		// get the spawn parms as they were at level start
 		setspawnparms (self);
 		// respawn
+		parm15 = self.morphy;
 		PutClientInServer ();
 	}
 	else if (deathmatch)
@@ -389,13 +393,18 @@ void () respawn =
 		// make a copy of the dead body for appearances sake
 		if (self.model != "progs/null.mdl") // Cataboligne - 8.14.9 - dead cam etc
 			CopyToBodyQue (self);
+
+		morph_clearparms(self, TRUE);
+
 		// set default spawn parms
-			if (!Q_100) // Cataboligne - 8.22.9 - pk orig oper
-				SetNewParms_PK();
-			else
-			SetNewParms ();
-		// respawn
-			PutClientInServer ();
+		parm15 = self.morphy;
+
+		if (!Q_100) // Cataboligne - 8.22.9 - pk orig oper
+			SetNewParms_PK();
+		else
+		SetNewParms ();
+	// respawn
+		PutClientInServer ();
 	}
 	else
 	{	// restart the entire server
@@ -804,6 +813,9 @@ void () PlayerJump =
 	self.flags = self.flags - FL_ONGROUND;	// don't stairwalk
 
 	self.button2 = 0;
+
+	if(self._jump2 != SUB_Null) { self._jump2(); return; }
+	if (cb_morph(self.morphy) == CB_HUMAN) // Cataboligne - 9.24.03 FIX need jump snd for all morphs
 // player jumping sound
 	sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
 //	if (pk_xsound) pk_jump_sound(); // *pk - new jump sounds

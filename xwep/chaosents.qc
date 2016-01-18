@@ -907,6 +907,21 @@ void(entity e, float bl) xw_bit_loop =
 // e - ent to set (player or bot)
 // defaults read from server var *
 
+// return numeric (morphic) char code for a given map mode
+float(string mm) set_char_num =
+{
+	local float cn;
+	
+	cn = CHAR_Q;
+	if (mm == "W") cn = CHAR_W;
+	if (mm == "D") cn = CHAR_D;
+	if (mm == "Q") cn = CHAR_Q;
+	if (mm == "PK") cn = CHAR_PK;
+	if (mm == "Q2") cn = CHAR_Q2;
+	if (mm == "Q3") cn = CHAR_Q3;
+	return(cn);
+};
+
 // NOTE: q1 & pk mode wep add can be without ammo
 
 void(entity e) set_defaults =
@@ -924,6 +939,11 @@ void(entity e) set_defaults =
 	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;
 
 	if (Q_100 || PK_100) return;
+
+// NOTE: muddy area for morphs.  how to handle all this - maybe convert health by modifier?
+//					check to see if morph can use any of the give away eweaps?
+	if (cb_morph(self.morphy) != CB_HUMAN) return;
+
 
 	if (DEF_HEALTH) e.health = fabs(DEF_HEALTH);
 	if (DEF_ARMOR)
@@ -965,6 +985,16 @@ void(entity e) set_defaults =
 	if (DEF_AMMO_GAS) e.ammo_gaspr = fabs(DEF_AMMO_GAS);
 
 	DEF_WEAPON = DEF_WEAPON & WEP_MASK; // mask off remove bits
+
+// char init
+	
+	if (CHAR_CON)
+	{
+		if (!e.morphy)
+		if (CHAR_CON >= CHAR_W && CHAR_CON  <= CHAR_Q3) e.morphy = CHAR_CON;
+		else e.morphy = set_char_num(MAP_MODE);
+// TDO: set model, mdl, etc - done in morph call
+	}
 
 // x weapon inits
 
@@ -1008,27 +1038,27 @@ void(entity e) set_defaults =
 		}
 		else if (INIT_CON & FL_INIT_CGEN_BIT) // genre by char using bits
 		{
-			if (e.char_mode == "W") xw_bit_loop(e, INIT_0_W);
-			if (e.char_mode == "D") xw_bit_loop(e, INIT_1_D);
-			if (e.char_mode == "Q") xw_bit_loop(e, INIT_2_Q);
-//			if (e.char_mode == "PK") xw_bit_loop(e, INIT_3_PK); // not going to have pk char mode - maybe some other morph class
+			if (e.morphy == CHAR_W) xw_bit_loop(e, INIT_0_W);
+			if (e.morphy == CHAR_D) xw_bit_loop(e, INIT_1_D);
+			if (e.morphy == CHAR_Q) xw_bit_loop(e, INIT_2_Q);
+//			if (e.morphy == CHAR_PK) xw_bit_loop(e, INIT_3_PK); // not going to have pk char mode - maybe some other morph class
 			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
-			if (e.char_mode == "Q2") xw_bit_loop(e, INIT_4_Q2);
-			if (e.char_mode == "Q3") xw_bit_loop(e, INIT_5_Q3);
-	//		if (e.char_mode == "") xw_bit_loop(INIT_7);
+			if (e.morphy == CHAR_Q2) xw_bit_loop(e, INIT_4_Q2);
+			if (e.morphy == CHAR_Q3) xw_bit_loop(e, INIT_5_Q3);
+	//		if (e.morphy == "") xw_bit_loop(INIT_7);
 			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); // 2 extra map code weps
 			if (INIT_7 > 0) set_xweap(e, INIT_7);
 		}
 		else if (INIT_CON & FL_INIT_CGEN_MC) // genre by char using code - 1 per + 2 for all
 		{
-			if (INIT_0_W > 0 && e.char_mode == "W") set_xweap(e, INIT_0_W);
-			if (INIT_1_D > 0 && e.char_mode == "D") set_xweap(e, INIT_1_D);
-			if (INIT_2_Q > 0 && e.char_mode == "Q")set_xweap(e, INIT_2_Q);
-//			if (INIT_3_PK > 0 && e.char_mode == "PK") set_xweap(e, INIT_3_PK);
+			if (INIT_0_W > 0 && e.morphy == CHAR_W) set_xweap(e, INIT_0_W);
+			if (INIT_1_D > 0 && e.morphy == CHAR_D) set_xweap(e, INIT_1_D);
+			if (INIT_2_Q > 0 && e.morphy == CHAR_Q)set_xweap(e, INIT_2_Q);
+//			if (INIT_3_PK > 0 && e.morphy == CHAR_PK) set_xweap(e, INIT_3_PK);
 			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
-			if (INIT_4_Q2 > 0 && e.char_mode == "Q2") set_xweap(e, INIT_4_Q2);
-			if (INIT_5_Q3 > 0 && e.char_mode == "Q3") set_xweap(e, INIT_5_Q3);
-			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); //  && e.char_mode == "HP") set_xweap(e, INIT_6_HP); // goes to all for now
+			if (INIT_4_Q2 > 0 && e.morphy == CHAR_Q2) set_xweap(e, INIT_4_Q2);
+			if (INIT_5_Q3 > 0 && e.morphy == CHAR_Q3) set_xweap(e, INIT_5_Q3);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); //  && e.morphy == "HP") set_xweap(e, INIT_6_HP); // goes to all for now
 			if (INIT_7 > 0) set_xweap(e, INIT_7);
 		}
 

@@ -400,6 +400,8 @@ void() player_pain =
 
 	if (!Q_100)
 	{
+		if (self._pain != SUB_Null) { self._pain(world, 0); return; }
+
 		if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
 			player_axpain1 (); // *pk - run pk axe frames
 		else

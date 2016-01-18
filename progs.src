@@ -156,7 +156,9 @@ pk_src/pk_artifacts.qc
 
 // m0rphic
 
+morph/morph_print.qc
 morph/morph.qc
+morph/m-scourge.qc
 
 bot.qc
 bot_func.qc

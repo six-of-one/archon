@@ -4,12 +4,17 @@
 vector v0						= ' 0 0 0'; // zero vector |dimension
 float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 
+// engine section
 float chaos;									// detect customized glquake engine - has cvars compiled
 float CHAOS_ENG				= 10100010110111; // chaos engine id
 float DARKPLACES;								// for detecting darkplaces
 float GENERATIONS;							// exclude xtra elements
 float ULOKW, ULOKD, ULOK2, ULOK3;		// unlock codes
 float XTR_SAVED1				= 1195724115; // saved1 test val 
+// end engines
+
+float() SUB_False				= { return 0; }; // Return a false value
+float() SUB_True				= { return 1; }; // Return a true value
 
 // ADMIN section
 float WARNING;									// display warnings - dev work mainly
@@ -91,6 +96,7 @@ float NODECOR;								// sv decor controls
 void (entity e) bot_froze;
 void(float tm) th_bot_changeParms; // save bot parms to cvar or parm*
 
+void(entity e) admin_clear;
 string() build_itemmenu;
 void() Admin_itembits;
 float(float msk) rnd_bit_mask;
@@ -134,9 +140,7 @@ vector(entity e, float s) getsurfacenormal;
 string(entity e, float s) getsurfacetexture;
 float(entity e, vector p) getsurfacenearpoint;
 vector(entity e, float s, vector p) getsurfaceclippedpoint;
-// end specials
-
-// end env section
+// end wrap specials
 
 
 // runes
@@ -360,26 +364,7 @@ float PF_LAVA					= 1048576;
 */
 
 
-// inventory flags
-
-float WEP_ITEM_MASK			= 255; // mask of weapon bits in .items
-
-float DROP_ALLOW; // inv bits player is allowed to drop
-
-float IGN_INV 					= 66600;
-float FL_MELEE_WEP			= 66601;
-float SND_OVER					= 66602; // play eweapon sound over after fire call
-
-
-void() chaos_precache;
-
-// CHECK: placement of this section
-float FL_REMOVE				= 64;
-float FL_HELD					= 128;
-float NO_BUBBLES				= -1; // this ent wont make bubbles
-float FL_VANM					= 131072; // vmodel animation in progress
-
-float EF_FULLBRIGHT			= 512;
+// pack - goes with dead
 
 float BACKPACK_TIME			= 120; // time for thrown packs to live
 float BACKPACK_TIME_DV		= 30; // deviation on time (+/-)
@@ -405,8 +390,8 @@ float MC_Q3_GRAPPLE;
 float MC_Q3_HOLDMEDKIT;
 float MC_Q3_HOLDTELE;
 
+// end dead rules
 
-// end inventorys
 
 
 //DP_SV_MODELFLAGS_AS_EFFECTS
@@ -418,6 +403,25 @@ float MC_Q3_HOLDTELE;
 // chaos section
 
 // **************************************
+
+
+// inventory flags
+
+float WEP_ITEM_MASK			= 255; // mask of weapon bits in .items
+
+float DROP_ALLOW; // inv bits player is allowed to drop
+
+
+void() chaos_precache;
+
+float FL_REMOVE				= 64;
+float FL_HELD					= 128;
+float NO_BUBBLES				= -1; // this ent wont make bubbles
+float FL_VANM					= 131072; // vmodel animation in progress
+
+float EF_FULLBRIGHT			= 512;
+// end inventorys
+
 
 // env stuff - part of chaos engine env effects - mostly unused
 
@@ -481,6 +485,8 @@ float EXPLODE_RUBBLE			= 0.6; // chance of rubble from explosion
 float RUBBLE_SHOT				= 0.07; // % chance a bullet hitting solid will release a mini rubble
 
 void(vector rorg, vector vel, float vibe, float rskn) rubble_debris;
+
+// end env section
 
 
 // flags for find_tdest making random selections
@@ -571,13 +577,23 @@ float DEF_X_ITEMS; // x bit flags
 
 // end defaults
 
+float SPIKE_VEL				= 1000; // TDO: cvar? port to other code
 
 // inits - by genre and map
 
-.string char_mode; // genre of player character - set by selection to vars morph states
+//.float char_mode; // genre of player character - set by selection to vars morph states
+float CHAR_W					= 10;
+float CHAR_D					= 11;
+float CHAR_Q					= 12;
+float CHAR_PK					= 13;
+float CHAR_Q2					= 14;
+float CHAR_Q3					= 15;
+
+
 string MAP_MODE; // genre of loaded map (if detected) Q quake (default), Q2 quake 2, Q3 quake 3, D doom, W wolf, PK painkeep
 
 float INIT_CON; // control flag
+float CHAR_CON; // control flag - character mode
 
 float INIT_0_W;
 float INIT_1_D;
@@ -620,6 +636,11 @@ void(entity e, float camct, float mcd, string spf, float islot) xwep_fakeload;
 void(entity e, float smc) set_xweap;
 void(entity e) xw_parm;
 float X_CHGLVL;
+
+// special codes for x weps - usually found in .lefty
+float IGN_INV 					= 66600;
+float FL_MELEE_WEP			= 66601;
+float SND_OVER					= 66602; // play eweapon sound over after fire call
 
 entity telesnd; // teleport sound effect (dest) global - so holdable can change sound played (hackish way to do things)
 
@@ -1383,7 +1404,7 @@ void() PlayerDeathThink;
 void() PlayerJump;
 float() W_BestWeapon;
 void() W_SetCurrentAmmo;
-void() PK_SetCurrentAmmoOnly;
+void(entity e) PK_SetCurrentAmmoOnly;
 void() CheckWaterLevels;
 float cc_frame;
 // pk_postthink

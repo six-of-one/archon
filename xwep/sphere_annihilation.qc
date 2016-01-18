@@ -143,7 +143,7 @@ void() sphere_annihilation_move =
 				self.aiment = world;
 			}
 		else if (!self.aiment && random() > 0.4)
-				self.aiment = loop_sound(self, CHAN_WEAPON,"ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, self.origin, 0, LOOPFOREVER);
+				self.aiment = loop_sound(self, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, self.origin, 0, LOOPFOREVER);
 	}
 // IDEA self.count < time - 120 = start checking after 2 mins, when something sucked in self.count = time
 };

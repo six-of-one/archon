@@ -1913,20 +1913,30 @@ float(entity gr) chaos_teleport_grab =
 	return(TRUE);
 };
 */
+void() chaos_trigger_teleport =
+{
+	InitTrigger ();
+	self.touch = teleport_touch;
+	self.model = ""; // TEST:ING
+};
 
 void(vector torg, string trgname, entity trgent) chaos_teleport =
 {
 //	local entity tel;
+	local entity s;
+	
+	if (self.classname == "player") s = self; // only players own these
 
 // IDEA - get trigger field size from model sizes
 	// physical ent - because trigger has no mdl
-	newmis = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0,  torg, '-12 -12 -12', ' 12 12 12', v0, v0, "chaos_teleport_icon", "progs/sphere_annihilation.mdl", SUB_Null, 2, sphere_annihilation_move, SUB_Null, self, world);
+	newmis = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0,  torg, '-12 -12 -12', ' 12 12 12', v0, v0, "chaos_teleport_icon", "progs/sphere_annihilation.mdl", SUB_Null, 2, sphere_annihilation_move, SUB_Null, s, world);
 	newmis.oldorigin = torg;
 	newmis.aflag = -1; //stable
 //	newmis.grab_callback = chaos_teleport_grab;
 
 // trigger
-	newmis.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  torg , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "progs/sphere_annihilation.mdl", SUB_Null, 4, trigger_teleport, SUB_Null, self, world);
+	newmis.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  torg , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "progs/sphere_annihilation.mdl", SUB_Null, 4, chaos_trigger_teleport, SUB_Null, s, world);
+
 //	newmis.frame = needs think fn
 	newmis.skin = 1; //animated skin group
 // locate target
@@ -1936,7 +1946,7 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 
 	if (!newmis.trigger_field.movetarget) newmis.trigger_field.movetarget = find_tdest(0, "");
 
-	newmis.aiment = loop_sound(self, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, torg, 0, LOOPFOREVER);
+	newmis.aiment = loop_sound(newmis, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, torg, 0, LOOPFOREVER);
 };
 
 

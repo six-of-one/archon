@@ -256,7 +256,7 @@ void() PK_SetCurrentAmmo =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	if (self.classname == OBSERVER)
+	if (self.classname == OBSERVER) // NOTE: wraith in cloud form
 	{
 		self.currentammo = 0;
 		self.weapon = 0;
@@ -303,7 +303,7 @@ void() PK_SetCurrentAmmo =
 
 	if (self.weapon == IT_AXE)
 	{
-		if (self.pk_currentitem == PK_IT_AXE)
+		if (self.pk_currentitem == PK_IT_AXE && (cb_morph(self.morphy) == CB_HUMAN))
 		{
 			self.currentammo = 0;
 			self.weaponmodel = "progs/v_axe.mdl";
@@ -432,6 +432,8 @@ void() PK_SetCurrentAmmo =
 		}
 // end pk_art
 	}
+	else if (cb_morph(self.morphy) != CB_HUMAN) SUB_Null();
+
 	else if (self.weapon == IT_SHOTGUN)
 	{
 // EXPLODESHELLS_START
@@ -574,6 +576,8 @@ void() PK_SetCurrentAmmo =
 		self.weaponmodel = self.eweapon.weaponmodel;
 	}
 
+//	if (cb_morph(self.morphy) != CB_HUMAN) self.weaponmodel = ""; // morphs can use carryables - this will make them no wep mdls
+
 // Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
 		if ( (self.cam_x & CHSCAM_ON) || self.classname == OBSERVER)
@@ -587,220 +591,231 @@ void() PK_SetCurrentAmmo =
 
 // just to update ammo counts since viswep controls "you have selected" & weaponmodel changes now
 
-void() PK_SetCurrentAmmoOnly =
+void(entity e) PK_SetCurrentAmmoOnly =
 {
-	if (self.classname == "player") // *bot - dont set run frames
+	local entity f;
+
+	f = self;
+	if (e) f = e;
+
+	if (f == self)
+	if (f.classname == "player") // *bot - dont set run frames
 	player_run ();		// get out of any weapon firing states
 
-	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
+	f.items = f.items - (f.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	if (self.classname == OBSERVER)
+	if (f.classname == OBSERVER)
 	{
-		self.currentammo = 0;
-		self.weapon = 0;
-		self.weaponframe = 0;
-		self.weaponmodel = "";
-		self.eweapon = world;
+		f.currentammo = 0;
+		f.weapon = 0;
+		f.weaponframe = 0;
+		f.weaponmodel = "";
+		f.eweapon = world;
 		return;
 	}
 
-	if (self.weapon == IT_AXE)
+	if (f.weapon == IT_AXE)
 	{
-		if (self.pk_currentitem == PK_IT_AXE)
+		if (f.pk_currentitem == PK_IT_AXE && (cb_morph(f.morphy) == CB_HUMAN))
 		{
-			self.currentammo = 0;
-			self.weaponframe = 0;
+			f.currentammo = 0;
+			f.weaponframe = 0;
 		}
-		else if (self.pk_currentitem == PK_IT_GRAVITYWELL)
+		else if (f.pk_currentitem == PK_IT_GRAVITYWELL)
 		{
-			self.currentammo = self.pk_gravitywellammo;
-			self.weaponframe = 0;
+			f.currentammo = f.pk_gravitywellammo;
+			f.weaponframe = 0;
 		}
-		else if (self.pk_currentitem == PK_IT_TURRET)
+		else if (f.pk_currentitem == PK_IT_TURRET)
 		{
-			self.currentammo = self.pk_turretammo;
-			self.weaponframe = 0;
+			f.currentammo = f.pk_turretammo;
+			f.weaponframe = 0;
 		}
-		else if (self.pk_currentitem == PK_IT_CANPAB)
+		else if (f.pk_currentitem == PK_IT_CANPAB)
 		{
-			self.currentammo = self.pk_canpabammo;
-			self.weaponframe = 0;
+			f.currentammo = f.pk_canpabammo;
+			f.weaponframe = 0;
 		}
-		else if (self.pk_currentitem == PK_IT_GRAPGUN)
+		else if (f.pk_currentitem == PK_IT_GRAPGUN)
 		{
 // GRAPPLING_START
-			self.currentammo = 1;
+			f.currentammo = 1;
 
-			if (self.grap_cornerchainNext != world)
+			if (f.grap_cornerchainNext != world)
 			{
-				self.weaponframe = 8;
+				f.weaponframe = 8;
 			}
 			else
 			{
-				self.weaponframe = 0;
+				f.weaponframe = 0;
 			}
 		}
-		else if (self.pk_currentitem == PK_IT_BEARTRAP)
+		else if (f.pk_currentitem == PK_IT_BEARTRAP)
 		{
-			self.currentammo = self.pk_beartrapammo;
-			self.weaponframe = 0;
+			f.currentammo = f.pk_beartrapammo;
+			f.weaponframe = 0;
 		}
-		else if (self.pk_currentitem == PK_IT_AIRGUN)
+		else if (f.pk_currentitem == PK_IT_AIRGUN)
 		{
-			self.currentammo = 1;
-			self.weaponframe = 0;
+			f.currentammo = 1;
+			f.weaponframe = 0;
 		}
 // BOLT_START
-		else if (self.pk_currentitem == PK_IT_CLIGHT)
+		else if (f.pk_currentitem == PK_IT_CLIGHT)
 		{
-			self.currentammo = self.ammo_cells;
-			self.weaponframe = 0;
-			if (self.bolt_changeModelTimeout < time)
+			f.currentammo = f.ammo_cells;
+			f.weaponframe = 0;
+			if (f.bolt_changeModelTimeout < time)
 			{
-				self.weaponmodel = "progs/v_cl_off.mdl";
+				f.weaponmodel = "progs/v_cl_off.mdl";
 			}
 			else
 			{
-				self.weaponmodel = "progs/v_cl_on.mdl";
+				f.weaponmodel = "progs/v_cl_on.mdl";
 			}
-			self.items = self.items | IT_CELLS;
+			f.items = f.items | IT_CELLS;
 		}
 
 // Cataboligne 8.12.9 purify - pk artifacts
-		if (self.pk_currentitem == PKPLUS_IT_EGO)
+		if (f.pk_currentitem == PKPLUS_IT_EGO)
 		{
-			self.currentammo = self.pkplus_egoammo;
-			self.weaponframe = 0;
+			f.currentammo = f.pkplus_egoammo;
+			f.weaponframe = 0;
 		}
-		else if (self.pk_currentitem == PKPLUS_IT_TOMB)
+		else if (f.pk_currentitem == PKPLUS_IT_TOMB)
 		{
-			self.currentammo = self.pkplus_tombammo;
-			self.weaponframe = 0;
+			f.currentammo = f.pkplus_tombammo;
+			f.weaponframe = 0;
 		}
-		else if (self.pk_currentitem == PKPLUS_IT_ACTOR)
+		else if (f.pk_currentitem == PKPLUS_IT_ACTOR)
 		{
-			if (self.pkplus_actorskin == PKPLUS_ACTORQUAD)
+			if (f.pkplus_actorskin == PKPLUS_ACTORQUAD)
 			{
-				self.weaponmodel = "progs/v_actorb.mdl";
+				f.weaponmodel = "progs/v_actorb.mdl";
 			}
 			else
-//		if (self.pkplus_actorskin == PKPLUS_ACTORPENT)
+//		if (f.pkplus_actorskin == PKPLUS_ACTORPENT)
 			{	
-				self.weaponmodel = "progs/v_actorr.mdl";
+				f.weaponmodel = "progs/v_actorr.mdl";
 			}
-			self.currentammo = self.pkplus_actorammo;
-			self.weaponframe = 0;
+			f.currentammo = f.pkplus_actorammo;
+			f.weaponframe = 0;
 			}
-		else if (self.pk_currentitem == PKPLUS_IT_PHONE)
+		else if (f.pk_currentitem == PKPLUS_IT_PHONE)
 		{
-			self.currentammo = self.pkplus_phoneammo;
-			self.weaponframe = 0;
+			f.currentammo = f.pkplus_phoneammo;
+			f.weaponframe = 0;
 		}
 // end pk_art
 	}
-	else if (self.weapon == IT_SHOTGUN)
+	else if (cb_morph(f.morphy) != CB_HUMAN) SUB_Null();
+
+	else if (f.weapon == IT_SHOTGUN)
 	{
 // EXPLODESHELLS_START
-		if (self.pk_explode_ammo) {
-			self.currentammo = self.pk_explode_ammo;
-			if (!self.eweapon) self.weaponmodel = "progs/v_eshot.mdl";
+		if (f.pk_explode_ammo) {
+			f.currentammo = f.pk_explode_ammo;
+			if (!f.eweapon) f.weaponmodel = "progs/v_eshot.mdl";
 
 		} else {
-			self.currentammo = self.ammo_shells;
-			if (!self.eweapon)
+			f.currentammo = f.ammo_shells;
+			if (!f.eweapon)
 			if (PK_100 || Q_100)
-			self.weaponmodel = "progs/v_shot.mdl";
+			f.weaponmodel = "progs/v_shot.mdl";
 			else
-			self.weaponmodel = "progs/v2_shot.mdl";
+			f.weaponmodel = "progs/v2_shot.mdl";
 		}
-		self.weaponframe = 0;
-		self.items = self.items | IT_SHELLS;
+		f.weaponframe = 0;
+		f.items = f.items | IT_SHELLS;
 	}
-	else if (self.weapon == IT_SUPER_SHOTGUN)
+	else if (f.weapon == IT_SUPER_SHOTGUN)
 	{
 // EXPLODESHELLS_START
-		if (self.pk_explode_ammo) {
-			self.currentammo = self.pk_explode_ammo;
-			if (!self.eweapon) self.weaponmodel = "progs/v_eshot2.mdl";
+		if (f.pk_explode_ammo) {
+			f.currentammo = f.pk_explode_ammo;
+			if (!f.eweapon) f.weaponmodel = "progs/v_eshot2.mdl";
 
 		} else {
-			self.currentammo = self.ammo_shells;
-			if (!self.eweapon)
+			f.currentammo = f.ammo_shells;
+			if (!f.eweapon)
 			if (PK_100 || Q_100)
-			self.weaponmodel = "progs/v_shot2.mdl";
+			f.weaponmodel = "progs/v_shot2.mdl";
 			else
-			self.weaponmodel = "progs/v2_shot2.mdl";
+			f.weaponmodel = "progs/v2_shot2.mdl";
 		}
-		self.weaponframe = 0;
-		self.items = self.items | IT_SHELLS;
+		f.weaponframe = 0;
+		f.items = f.items | IT_SHELLS;
 	}
-	else if (self.weapon == IT_NAILGUN)
+	else if (f.weapon == IT_NAILGUN)
 	{
-		self.currentammo = self.ammo_nails;
-		self.weaponframe = 0;
-		self.items = self.items | IT_NAILS;
+		f.currentammo = f.ammo_nails;
+		f.weaponframe = 0;
+		f.items = f.items | IT_NAILS;
 	}
-	else if (self.weapon == IT_SUPER_NAILGUN)
+	else if (f.weapon == IT_SUPER_NAILGUN)
 	{
-		self.currentammo = self.ammo_nails;
-		self.items = self.items | IT_NAILS;
-		self.weaponframe = 0;
+		f.currentammo = f.ammo_nails;
+		f.items = f.items | IT_NAILS;
+		f.weaponframe = 0;
 		}
-	else if (self.weapon == IT_GRENADE_LAUNCHER)
+	else if (f.weapon == IT_GRENADE_LAUNCHER)
 	{
-		self.currentammo = self.ammo_rockets;
-		self.weaponframe = 0;
-		self.items = self.items | IT_ROCKETS;
+		f.currentammo = f.ammo_rockets;
+		f.weaponframe = 0;
+		f.items = f.items | IT_ROCKETS;
 	}
-	else if (self.weapon == IT_ROCKET_LAUNCHER)
+	else if (f.weapon == IT_ROCKET_LAUNCHER)
 	{
-		self.currentammo = self.ammo_rockets;
-		self.weaponframe = 0;
-		self.items = self.items | IT_ROCKETS;
+		f.currentammo = f.ammo_rockets;
+		f.weaponframe = 0;
+		f.items = f.items | IT_ROCKETS;
 	}
-	else if (self.weapon == IT_LIGHTNING)
+	else if (f.weapon == IT_LIGHTNING)
 	{
-		self.currentammo = self.ammo_cells;
-		self.weaponframe = 0;
-		self.items = self.items | IT_CELLS;
+		f.currentammo = f.ammo_cells;
+		f.weaponframe = 0;
+		f.items = f.items | IT_CELLS;
 	}
 	else
 	{
-		self.currentammo = 0;
-		self.weaponmodel = "";
-		self.weaponframe = 0;
+		f.currentammo = 0;
+		f.weaponmodel = "";
+		f.weaponframe = 0;
 	}
 
-	if (self.eweapon)
+	if (f.eweapon)
 	{
-		if (self.eweapon.lip)
+		if (f.eweapon.lip)
 		{
-			if (self.eweapon.lip == AMMO_BULLETS)
-				self.currentammo = self.ammo_bullet;
-			else if (self.eweapon.lip == AMMO_SHELLS)
-				self.currentammo = self.ammo_shells;
-			else if (self.eweapon.lip == AMMO_CELLS)
-				self.currentammo = self.ammo_cells;
-			else if (self.eweapon.lip == AMMO_NAILS)
-				self.currentammo = self.ammo_nails;
-			else if (self.eweapon.lip == AMMO_ROCKETS)
-				self.currentammo = self.ammo_rockets;
-			else if (self.eweapon.lip == AMMO_GRENADES)
-				self.currentammo = self.ammo_rockets;
-			else if (self.eweapon.lip == AMMO_SLUGS)
-				self.currentammo = self.ammo_slug;
-			else if (self.eweapon.lip == AMMO_GAS)
-				self.currentammo = self.ammo_gaspr;
-			else if (self.eweapon.lip == AMMO_NONE)
-				self.currentammo = 1;
+			if (f.eweapon.lip == AMMO_BULLETS)
+				f.currentammo = f.ammo_bullet;
+			else if (f.eweapon.lip == AMMO_SHELLS)
+				f.currentammo = f.ammo_shells;
+			else if (f.eweapon.lip == AMMO_CELLS)
+				f.currentammo = f.ammo_cells;
+			else if (f.eweapon.lip == AMMO_NAILS)
+				f.currentammo = f.ammo_nails;
+			else if (f.eweapon.lip == AMMO_ROCKETS)
+				f.currentammo = f.ammo_rockets;
+			else if (f.eweapon.lip == AMMO_GRENADES)
+				f.currentammo = f.ammo_rockets;
+			else if (f.eweapon.lip == AMMO_SLUGS)
+				f.currentammo = f.ammo_slug;
+			else if (f.eweapon.lip == AMMO_GAS)
+				f.currentammo = f.ammo_gaspr;
+			else if (f.eweapon.lip == AMMO_NONE)
+				f.currentammo = 1;
 		}
-		self.weaponframe = 0;
+		f.weaponframe = 0;
 	}
+
+//	if (cb_morph(f.morphy) != CB_HUMAN) self.weaponmodel = ""; // morphs can use carryables - this will make them no wep mdls
+
 // Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
-		if ( (self.cam_x & CHSCAM_ON) || self.classname == OBSERVER)
+		if ( (f.cam_x & CHSCAM_ON) || f.classname == OBSERVER)
 		{
-			self.weaponmodel = "";
+			f.weaponmodel = "";
 		}
 
 };
@@ -1311,7 +1326,11 @@ float() PK_CheckNoAmmo =
 
 	if (ammo_con(self.weapon, self, "wpck")) // see if its inf ammo wep
 		return TRUE;
-	
+
+	if (cb_morph(self.morphy) != CB_HUMAN) // morph using builtin
+	if (!self.eweapon)
+		return TRUE;
+
 	self.weapon = W_BestWeapon ();
 	self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
 
@@ -1381,6 +1400,12 @@ void() PK_Attack =
 	if (self.eweapon)
 	{
 		e_weap_Attack();
+		return;
+	}
+
+	if (self._attack != SUB_Null) // morph built in weapons
+	{
+		self._attack();
 		return;
 	}
 
@@ -1954,7 +1979,31 @@ void() PK_ImpulseCommands =
 
 
 
-
+// morphic control - cube or other
+	if (self.eweapon)
+	{
+		if (self.eweapon.wad == "morph_cube")
+		if (self.impulse >= 1 && self.impulse <= 10 || self.impulse == 12) // || self.impulse == 13) // wraith option
+		{
+			morphic_impulse();
+			if (self.impulse > 9) return; // only 1 - 9 exit cube selector
+		}
+		if (self.eweapon.wad == "pk_cube") // any impulse will free a pk cube!
+		{
+			self.eweapon.owner = world;
+			self.eweapon.touch = painkeep_touch;
+			centerprint(self, "The cube is free...");
+			cube_rearm(); // re arm player
+		}
+	}
+		
+	if ((self.impulse >= 1 && self.impulse <= 13) && self._impulse != SUB_Null) 
+	{
+//		if (!self.holdent.flags & FL_HELD) 
+			self._impulse(); // item_held()
+		self.impulse = 0;
+		return;
+	}
 
 	if (self.impulse >= 1 && self.impulse <= 8)
 		W_ChangeWeapon ();

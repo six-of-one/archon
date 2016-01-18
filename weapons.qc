@@ -912,7 +912,7 @@ void () W_SetCurrentAmmo =
 		if (PK_100)// || !VW)
 			PK_SetCurrentAmmo(); // *pk - handle ammo for all pk items & cam
 		else
-			PK_SetCurrentAmmoOnly();
+			PK_SetCurrentAmmoOnly(self);
 		return;
 	}
 	if (self.classname == "player") // *bot

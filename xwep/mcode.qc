@@ -1943,17 +1943,21 @@ void() painkeep_cube_use =
 					d = MC_PENT;
 					f = MC_TOT - 2;
 					if (random() < 0.2 && GENERATIONS) d = MC_SUPER_SHOTGUN + rint(random() * f);
+					if (random() < 0.2 && MORPHIC) c.wad = "morph_cube";
 				}
 			}
 		}
 	}
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
 
-	c.wad = item_by_mcode(d);
+	if (c.wad == "pk_cube")
+		c.wad = item_by_mcode(d);
+
 	self = c;
 	self.pk_touch = painkeep_touch;
 //	item_translate(self, FL_TR_RANDOM);
-	if (0) // TEST: random() > 0.15)
+	if (random() > 0.15)
+//	if (0) // TEST:
 	{
 		if (d == MC_EXPLOD2 || d == MC_D_BARREL) // cause barrels are special
 		{
@@ -2003,6 +2007,17 @@ void() painkeep_cube_use =
 
 //:-( cube owner didnt open it
 
+// self MUST BE player
+void() cube_rearm =
+{
+	self.state = 0;
+	self.weapon = W_BestWeapon();
+	self.pk_currentitem = W_BestPKWeapon();
+	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
+	W_SetCurrentAmmo();
+	admin_clear(self); // for morphic cube	
+};
+
 void() abandoned_cube =
 {
 	local entity c;
@@ -2014,17 +2029,16 @@ void() abandoned_cube =
 		self = self.owner;
 		sprint(self, "Your cube was left alone too long and abanoned you. You rat.\n");
 		c.owner = world;
-
-		self.eweapon = world;
-		self.weapon = W_BestWeapon();
-		self.pk_currentitem = W_BestPKWeapon();
-		W_SetCurrentAmmo();
+		c.touch = painkeep_touch;
+		cube_rearm(); // re arm player
 	}
 };
 
-void() painkeep_cube_touch =
+// used by pk & morphic cubes
+
+void() cube_touch =
 {
-	if (other.classname != "player") // *bot - done in master touch fn
+	if (other.classname != "player" || IROBOT(self)) // *bot - done in master touch fn - NOTE: no bots in cube code yet
 	{
 		grap_checkIfGrap();
 		return ;
@@ -2036,39 +2050,68 @@ void() painkeep_cube_touch =
 		return;
 	}
 
-	if (self.owner)
-	if (self.owner.eweapon == self) // TEST: make sure eweapon is cleared when only holding std weps
+	if (self.owner) // shouldnt happen
 		return;
 
-	if (other.eweapon)
-	if (other.eweapon.wad == "pk_cube")
+	if (other.eweapon) // other has a cube and is touching another one
 	{
-		sprint(other, "You already own a Painkeep Cube - you must use it or change weapons.\n");
-		return;
+		if (other.eweapon.wad == "pk_cube")
+		{
+			if (other.eweapon.duration > time) return;
+			other.eweapon.duration = time + 3;
+			sprint(other, "You already control a Painkeep Cube - you must use it or change weapons.\n");
+			return;
+		}
+		if (other.eweapon.wad == "morph_cube")
+		{
+			if (other.eweapon.duration > time) return; // debouncer
+			other.eweapon.duration = time + 3;
+			sprint(other, "You already merged with an Evolution Cube - you must use it or change weapons.\n");
+			return;
+		}
 	}
 
-	sprint(other, "You own this Painkeep Cube! hit fire to open - you must be in range\n");
-	sprint(other, "If you select another weapon the cube will be free...\n");
+	if (self.wad == "morph_cube")
+		sprint(other, "you merged with this Evolution Cube");
+	else
+//	if (self.wad == "pk_cube")
+		sprint(other, "You control this Painkeep Cube");
+	sprint(other, "! ");
+	if (self.wad == "pk_cube")
+		sprint(other, "hit fire to open - you must be in range");
+	else
+	{
+		other.state = 0;
+		other.impulse = 10; // display first item
+		self.lefty = 8388608; // start bit will be 1
+		stuffcmd(other, "usergamma\n");
+		stuffcmd(other, "admin_centertime\n");
+//		admin_timer(FALSE, USER_TIMEOUT);
+	}
+
+	sprint(other, ".\nIf you select another weapon the cube will be free...\n");
 	self.owner = other;
 	other.weapon = 0;
 	other.eweapon = self;
 	self.effects = self.effects | EF_DIMLIGHT;
+	self.touch = SUB_Null;
 
 	self.think = abandoned_cube;
 	self.nextthink = time + 120;
-	
-}
+
+};
 
 void() pk_cube =
 {
 	setmodel(self, "progs/pk_cube.bsp");
 	self.netname = "Painkeep Cube";
 	self.touch = painkeep_touch;
-	self.pk_touch = painkeep_cube_touch;
+	self.pk_touch = cube_touch;
 	self.noise = "items/r_item2.wav";
 	self._attack = painkeep_cube_use; // fire button to use
 	self._fr_attack = SUB_Null; // fire button to use
 	self.attack_finished = 3;
+//	self.mask_x = MORPH_ALL; // TDO: vet later
 
 	self.punchangle = ' 210 210 240'; // for ejector
 //	item_eject(self, ' 210 210 240'); // done by pk_place_item with punchangle set

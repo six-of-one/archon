@@ -383,6 +383,8 @@ void(entity e, float cd) viswep_ld =
 		return;
 	}
 
+	if (cb_morph(e.morphy) != CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
+	
 // have items & check for inventory
 	while (tr)
 	{

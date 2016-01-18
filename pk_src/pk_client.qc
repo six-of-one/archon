@@ -69,6 +69,8 @@ void() SetChangeParms =
 
 	if (self.health <= 0 || self.classname == OBSERVER) // Cataboligne - 5.3.10 - fix level change issue when in dead observer or admin observer
 	{
+		morph_clearparms(self, TRUE);
+		parm15 = self.morphy;
 		SetNewParms_PK();
 		parm16 = parm16 | 256; // Cataboligne - 8.22.9 - pk orig oper
 		return ;
@@ -104,7 +106,7 @@ void() SetChangeParms =
 	parm7 = self.ammo_cells;
 	parm8 = self.weapon;
 	parm9 = self.armortype * 100;
-	parm10 = parm11 = parm15 = parm16 = 0;
+	parm10 = parm11 = parm16 = 0;
 
 	parm10 = PK_IT_AXE | self.pk_items;
 // recode so *bot can have vars for skill level save - provide max inventory of 15 for mod expansion, current max is 3 on most except for explode ammo
@@ -115,6 +117,7 @@ void() SetChangeParms =
 	 + ((self.pkplus_egoammo & 3) * 4096) + ((self.pkplus_tombammo & 3) * 16384) + ((self.pkplus_actorammo & 3) * 65536) + ((self.pkplus_phoneammo & 3) * 262144);
 // end pk_art
 
+	parm15 = self.morphy;// + 256 * (self.char_mode & 7);
 	// do hub message.
 	parm16 = self.msgcount | 256; // | (self.pk_items & PK_IT_EXTRADISP);
 };
@@ -139,7 +142,7 @@ void() SetNewParms =
 	parm8 = 1;
 	parm9 = 0;
 //	parm10 = PK_IT_AXE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_CANPAB | PK_IT_BEARTRAP; // deprecated - not really used
-//	parm11 = parm12 = parm13 = parm14 = parm15 = 0; // chasecam change
+//	parm11 = parm12 = parm13 = parm14 = 0; // chasecam change
 		parm10 = parm11 = 0;
 // do hub message.
 	parm16 = 256;
@@ -204,7 +207,10 @@ void() DecodeLevelParms =
 
 	self.msgcount = (parm16 & 255);
 
-	if (parm6 == -6) set_defaults(self);
+	self.morphy = parm15;
+
+// NOTE: *** morphy MUST be set prior to this call!
+	if (parm6 == -6) set_defaults(self); // only done on respawn or spawn where we are clearing parms because of dead
 
 // Cataboligne 9.11.3 purify - chase cam
 	cam_parms(1);
@@ -486,6 +492,19 @@ void() PutClientInServer =
 	self.effects = 0;
 	self.invincible_time = 0;
 
+// morphic
+	self._stand = SUB_Null; // make sure these are safe & detectable
+	self._pain = SUB_Null;
+	self._run = SUB_Null;
+	self._impulse = SUB_Null;
+	self._hk_lesser = SUB_Null;
+	self._hk_major = SUB_Null;
+	self._attack = SUB_Null;
+	self._jump = SUB_Null;
+	self._jump2 = SUB_Null;
+	self._die = SUB_Null;
+	self._summon = SUB_Null;
+
 	DecodeLevelParms ();
 
 	W_SetCurrentAmmo ();
@@ -514,6 +533,11 @@ void() PutClientInServer =
 	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
 
 	self.view_ofs = ' 0 0 22';
+
+	if (self.health_modifier <= 0) self.health_modifier = MHUMAN_HEALMOD;
+
+	if (!cb_morph(self.morphy)) self.morphy = IMP_MHUMAN; // should NEVER happen?!  TDO: char_con deal
+	polymorph_check(self.morphy, self.morphy); // become incarnation
 
 	player_stand1 ();
 
@@ -970,6 +994,9 @@ void () PlayerPreThink =
 
 	if (self.button2)
 	{
+		if (self._jump != SUB_Null) // Should be after these checks? (in client.qc under playerjump)
+			self._jump();
+		else
 		PlayerJump ();
 	}
 	else
@@ -1247,6 +1274,7 @@ void () ClientConnect =
 		bprint(" entered the game\n");
 	}
 
+	parm15 = 0;
 // a client connecting during an intermission can cause problems
 	if (intermission_running)
 		ExitIntermission ();

@@ -224,6 +224,7 @@ void(string cls) item_call =
 	else if (cls == "item_pkplus_phone") item_pkplus_phone();
 
 	else if (cls == "pk_cube") pk_cube();
+	else if (cls == "morph_cube") morph_cube();
 
 // ctf
 	else if (cls == "weapon_hook") weapon_hook();
@@ -749,10 +750,10 @@ void() dyn_rem =
 {
 	if (self.enemy)
 	{
-		if (self.enemy.wad == "pk_cube")
+		if (self.enemy.wad == "pk_cube" || self.enemy.wad == "morph_cube") // dont just remove an active cube
 		if (self.enemy.owner)
 		{
-			self.nextthink = time + PK_CUBE_TIME;
+			self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 2;
 			return;
 		}
 		remove(self.enemy);
@@ -854,6 +855,7 @@ void() dyn_spawn =
   }
 // give players notice
 	if (self.wad == "pk_cube") bprint("\n\n"); // space cubes so the notes are easier to see
+	else if (self.wad == "morph_cube") bprint("\n\n");
 	bprint("*** Dynamic item spawned: ");
 	bprint(self.wad);
 	if (sv)
@@ -864,6 +866,7 @@ void() dyn_spawn =
 	else
 		bprint(" on the map");
 	if (self.wad == "pk_cube") bprint("\n\n");
+	else if (self.wad == "morph_cube") bprint("\n\n");
 	bprint("\n");
 
 	item_call(self.wad);
@@ -871,6 +874,9 @@ void() dyn_spawn =
 	sv.enemy = self;
 	sv.think = dyn_rem;
 
+	if (self.wad == "morph_cube")
+		sv.nextthink = time + MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
+	else
 	if (self.wad == "pk_cube")
 		sv.nextthink = time + fabs(PK_CUBE_TIME);
 	else
@@ -1160,6 +1166,12 @@ void() func_dynitem =
 			self.wait = fabs(PK_CUBE_TIME);
 			if (PK_CUBE_TIME < 0) self.delay = fabs(PK_CUBE_TIME) * 0.3;
 		}
+		if (self.netname == "morph_cube_maker") // makin cubes
+		{
+			e.wad = "morph_cube";
+			self.wait = fabs(MORPH_CUBE_TIME);
+			self.delay = fabs(MORPH_CUBE_DV);
+		}
 		else
 		if (self.dest1_x) // weapon + q items admin bit codes here
 		{
@@ -1200,36 +1212,75 @@ void() func_dynitem =
 void(string cb) cube_handle =
 {
 	local entity e, p;
-	local float f;
+	local float f, cbv, cbt, cbd, cv, msg;
+	local string cbnet, cn;
 
-	if (PK_CUBE <= 0 && cvar("pk_cubes") > 0)
+	if (cb == "pk_cubes")
 	{
-		f =  cvar(cb); //"pk_cubes");
+		cv = cvar(cb);
+		cbnet = "pk_cube_maker";
+		cn = "Painkeep";
+		cbv = PK_CUBE;
+		cbt = fabs(PK_CUBE_TIME);
+		if (PK_CUBE_TIME < 0) cbd = fabs(PK_CUBE_TIME) * 0.3;
+	}
+	else
+	if (cb == "sv_morph")
+	{
+		cv = cvar(cb) - 1;
+		cbnet = "morph_cube_maker";
+		cn = "Morphic";
+		cbv = MORPHIC;
+		cbt = MORPH_CUBE_TIME;
+		cbd = MORPH_CUBE_DV;
+	}
+	else
+	{
 		if (WARNING)
-		if (f > 10) bprint("*** Warning - pk cube: making more than 10 cubes!\n");
+		{
+			bprint("*** Warning - ");
+			bprint(cb);
+			bprint(": invalid in cube handler!\n");
+		}
+		
+		return;
+	}
+
+	if (cbv <= 0 && cv > 0)
+	{
+		f =  cv; //cvar("pk_cubes");
+		if (WARNING)
+		if (f > 10)
+		{
+			bprint("*** Warning - ");
+			bprint(cb);
+			bprint(": making more than 10 cubes!\n");
+		}
 
 		while (f > 0)
 		{
 			e = spawn();
 
 			e.classname = "func_dynitem";
-			e.netname = "pk_cube_maker";
-			e.wait = fabs(PK_CUBE_TIME);
-			if (PK_CUBE_TIME < 0) e.delay = fabs(PK_CUBE_TIME) * 0.3;
+			e.netname = cbnet; //"pk_cube_maker";
+			e.wait = cbt; // PK_CUBE_TIME
+			e.delay = cbd;
 			e.think = func_dynitem;
 			e.nextthink = time + e.wait * 0.1 + random() * 10;
 			
 			f = f - 1;
 		}
-		bprint("***  Painkeep Cubes will spawn on this map - keep an eye out\n");
+		bprint("***  ");
+		bprint(cn);
+		bprint(" Cubes will spawn on this map - keep an eye out\n");
 	}
-	if (PK_CUBE > 0 && cvar(cb) <= 0)
+	if (cbv > 0 && cv <= 0)
 	{
-		e = find(world,netname,"pk_cube_make");
+		e = find(world,netname, cbnet);
 		while (e)
 		{
 			p = e;
-			e = find(e,netname,"pk_cube_make");
+			e = find(e,netname, cbnet);
 			remove (p);
 		}
 	}

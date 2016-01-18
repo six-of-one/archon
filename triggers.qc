@@ -556,15 +556,6 @@ void () trigger_teleport =
 	if (!self.target)
 	{
 		if (Q_100 && Q_100_OBJERR) objerror ("no target");
-		if (!Q_100 && !PK_100)
-		{
-			self.classname = "chaos_teleport"; // chaos mod - select rnd target
-			self.movetarget = find_tdest(0, "");
-
-			precache_sound ("alt_ambience/hum1.wav");
-			o = (self.mins + self.maxs)*0.5;
-			ambientsound (o,"alt_ambience/hum1.wav",0.5,ATTN_STATIC);
-		}
 		else
 		{
 			if (WARNING) bprint("Teleporter - no target -- removed\n");
@@ -574,7 +565,6 @@ void () trigger_teleport =
 	}
 	self.use = teleport_use;
 
-	if (self.classname != "chaos_teleport")
 	if (!(self.spawnflags & SILENT))
 	{
 		precache_sound ("ambience/hum1.wav");

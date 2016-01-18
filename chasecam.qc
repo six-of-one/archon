@@ -257,6 +257,7 @@ void () cam_deathmove =
 //		self = self.owner;
 		setorigin(self.owner, self.oldorigin);
 		self.owner.velocity = ' 0 0 0';
+		parm15 = self.morphy;
 		if (!intermission_running) 
 		{
 			self.owner.think = respawn;
@@ -287,18 +288,7 @@ void () cam_deathmove =
 // observers are very poor - no possesions
 	if (self.owner.frame || self.owner.effects || self.owner.weapon || self.owner.currentammo || self.owner.model != "progs/null.mdl")
 	{
-		self.owner.invincible_time = self.owner.super_damage_finished = self.owner.radsuit_finished = self.owner.invisible_finished = self.owner.invincible_finished = 0;
-		self.owner.effects = self.owner.items = 0;
-// self.owner.frame = 0;
-//		self.owner.items = self.owner.items - (self.owner.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY));
-		self.owner.weapon = self.owner.currentammo = self.owner.ammo_shells = self.owner.ammo_nails = self.owner.ammo_rockets = self.owner.ammo_cells = 0;
-		self.owner.eweapon = world;
-		self.owner.pkprevweapon = self.owner.pklastweapon = self.owner.prevweapon = self.owner.lastweapon = 0;
-// remove pk items & ammos
-		self.owner.pkplus_egoammo = self.owner.pkplus_tombammo = self.owner.pkplus_actorammo = self.owner.pkplus_phoneammo = 0;
-		self.owner.pk_gravitywellammo = self.owner.pk_turretammo = self.owner.pk_canpabammo = self.owner.pk_beartrapammo = self.owner.pk_explode_ammo = 0;
-// remove x items & ammos
-		self.owner.x_items = self.owner.ammo_bullet = self.owner.ammo_slug = self.owner.ammo_gaspr = self.owner.ammo_hgrenade = 0;
+		morph_clearparms(self.owner, TRUE);
 	}
 
 	if (self.owner.model != "progs/null.mdl")
@@ -317,7 +307,7 @@ void () cam_deathmove =
 	}
 	if (cvar("fov") != DCAM_FOV) stuffcmd( self.owner, DCAM_SET_FOV ); // I see short dead dudes - enforce crow vision
 
-	PK_SetCurrentAmmoOnly();
+	PK_SetCurrentAmmoOnly(self.owner);
 	self.owner.flags = self.owner.flags | FL_ONGROUND;
 };
 
@@ -358,7 +348,7 @@ void () cam_deathview =
 	
 
 	self.owner.classname = OBSERVER;
-	PK_SetCurrentAmmoOnly();
+	PK_SetCurrentAmmoOnly(self.owner);
 
 	traceline( self.owner.origin, self.origin, TRUE, self.owner);
 
@@ -891,14 +881,12 @@ void(float sel) cam_parms =
 	{
 // holds current state of cam and targeter between levels
 		parm14 = self.cam_x + (self.cam_y & 255) * 256 + ((self.cam_z * 100) & 255) * 65536; // bit flags, cam distance, cam height
-//		parm15 = self.dest1_y;
 	}
 	else if (sel == 1)
 	{
 		self.cam_x = parm14 & 255;
 		self.cam_y = (parm14 & 65280)/256;
 		self.cam_z = ((parm14 & 16711680)/65536)  * 0.01;
-//		self.dest1_y = parm15;
 		if (CAM_DEF == DPCAM_ON)
 		{
 //			cvar_set("chase_active", ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
