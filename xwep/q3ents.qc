@@ -510,7 +510,7 @@ void() weapon_plasmagun =
 void() q3_mg_base =
 {
 // stats
-	self.items = IT_NAILGUN;
+	self.items = IT_SHOTGUN;
 	self.currentammo = 100;
 	self.lip = AMMO_BULLETS;
 	self.volume = Q3_MAX_BULLETS;
@@ -883,7 +883,7 @@ void () q3_weapon_railgun =
 
 	self.currentammo = Q3_SLUG_AMMO;
 	self.aflag = IGN_INV;
-	self.items = IT_SHOTGUN;
+	self.items = IT_NAILGUN; // swapped with mg so gremlin can get raily
 	self.lip = AMMO_SLUGS;
 	self.volume = Q3_MAX_SLUGS;
 	self.attack_finished = 1.5;

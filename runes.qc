@@ -725,13 +725,24 @@ void () rune_touch =
 		return;
 
 	if (ENHANCED)
-	if (other.rune_flag & RUNE_VAMPIRE)
-	if (self.spawnflags & RUNE_FLG_RG || self.spawnflags & TECH_ADOC)
 	{
-		if (other.duration < time)
-		sprint(other,"Suck heads cant get Regeneration\n");
-		other.duration = time + 2 + random();
-		return;
+		if (other.rune_flag & RUNE_VAMPIRE)
+		if (self.spawnflags & RUNE_FLG_RG || self.spawnflags & TECH_ADOC)
+		{
+			if (other.duration < time)
+			sprint(other,"Suck heads cant get Regeneration\n");
+			other.duration = time + 2 + random();
+			return;
+		}
+
+		if (self.rune_flag & RUNE_VAMPIRE)
+		if (other.spawnflags & RUNE_FLG_RG || other.spawnflags & TECH_ADOC)
+		{
+			if (other.duration < time)
+			sprint(other,"You have Regeneration - you cant become a Suck head\n");
+			other.duration = time + 2 + random();
+			return;
+		}
 	}
 
 	centerprint3 (other,"You got the ",self.netname," Rune!");

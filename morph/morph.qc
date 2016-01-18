@@ -1481,6 +1481,8 @@ void() random_monster =
 		self.event = "dyn_monster";
 		item_call(self.wad);
 
+if (cvar("saved1") == -555)
+{
 bprint("spawning: ");
 bprint(item_ident(self));
 bprint(" - wad: ");
@@ -1494,6 +1496,7 @@ bprint(ftos(f));
 bprint(" - M: ");
 bprint(ftos(M));
 bprint("\n");
+}
 
 
 		e = dyn_rndloc();
@@ -1527,6 +1530,26 @@ bprint("\n");
 		else
 			bprint(" on the map");
 		bprint("\n");
+	}
+
+// call the hearse
+
+	e = find(world,class_select,"class_monster"); // these will only be random monster corpse - respawned monsters use body que assets
+	while(e)
+	{
+		f = DEAD_BODYTIME + random() * 45;
+		if (!deathmatch)
+		{
+			f = f + DEAD_BODYTIME * 4; // hang around much longer in sp / coop
+			if (e.event != "dyn_monster") f = 0; // respawnable monsters are seen by this if dead - dont remove
+		}
+		if (f)
+		if (e.health <= 0)
+		{
+			e.think = SUB_Remove;
+			e.nextthink = f + time;
+		}		
+		e = find(e, class_select, "class_monster");
 	}
 };
 

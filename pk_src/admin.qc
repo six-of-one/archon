@@ -84,14 +84,14 @@ void() admin_sv_cfg =
 {
 	local string str;
 
-
+/*
 if (!self.ishuman)
 {//return;
 bprint("------------------- **  admin sv - bot = ");
 bprint(item_ident(self));
 bprint("\n");
 }
-
+*/
 
 	str = ftos(pk_flags);
 	if (pk_flags != pk_flags_ck)
@@ -113,9 +113,14 @@ void(entity e) admin_clear =
 {
 
 
+/*
+if (!self.ishuman)
+{
 bprint("------------------- **  admin clear ");
 bprint(e.netname);
 bprint("\n");
+}
+*/
 
 
 	if (!e.ishuman) return;

@@ -1782,13 +1782,13 @@ float(float bt, string md) wepbit_mcode =
 	{
 		if (bt == IT_AXE)													return(MC_Q3_GAUNTLET);
 //		if (bt == IT_AXE)													return(MC_Q3_GRAPPLE); // (IT_SHOTGUN);
-		if (bt == IT_NAILGUN)											return(MC_Q3_MACHINEGUN); // (IT_NAILGUN);
+		if (bt == IT_SHOTGUN)											return(MC_Q3_MACHINEGUN); // (IT_NAILGUN);
 		if (bt == IT_SUPER_SHOTGUN)									return(MC_Q3_SHOTGUN); // (IT_SUPER_SHOTGUN);
 		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q3_GRENADEL); // (IT_GRENADE_LAUNCHER);
 		if (bt == IT_ROCKET_LAUNCHER)									return(MC_Q3_ROCKETL); // (IT_ROCKET_LAUNCHER);
 		if (bt == IT_SUPER_NAILGUN)									return(MC_Q3_PLASMA); // (IT_SUPER_NAILGUN);
 		if (bt == IT_LIGHTNING)											return(MC_Q3_LIGHTNING); // (IT_LIGHTNING);
-		if (bt == IT_SHOTGUN)											return(MC_Q3_RAILGUN); // (IT_ROCKET_LAUNCHER);
+		if (bt == IT_NAILGUN)											return(MC_Q3_RAILGUN); // (IT_ROCKET_LAUNCHER);
 		if (bt == IT_EXTRA_WEAPON)										return(MC_Q3_BFG); // (IT_LIGHTNING);
 	}
 
@@ -2134,6 +2134,7 @@ void() painkeep_cube_use =
 		setorigin(c, crate.origin + ' 0 0 8');
 		c.event = "dynamic_item"; // dont respawn
 		c.ammo_cells = crate.ammo_cells; // was set above
+		dyn_remove(c, (PK_DYNTO * 2 + random())); // remove it eventually
 
 		c.wad = item_by_mcode(d); // default
 		f = floor(random() * crate.stdev);
@@ -2845,7 +2846,7 @@ void(float mc, vector vo, string wd) fn_make =
 	}
 };
 
-/*QUAKED func_make (0 .5 .8) (-8 -8 -8) (8 8 8) RNDLOC RESPAWN
+/*QUAKED func_make (0 .5 .8) (-8 -8 -8) (8 8 8) RNDLOC RESPAWN REMOVE
 --------  CAT  --------
 Cataboligne - 6.13.10
 
@@ -2853,6 +2854,7 @@ spawn a mapcode item
 
 RNDLOC (spawnflags = 1) - use a random location
 RESPAWN - items created will respawn, unless monsters
+REMOVE - remove this item with dyn_remove
 
 wait: any valid mapcode - see mcode.qc for details
       -1 - spawn a random q1 ent, ignores runes if server on
@@ -2993,6 +2995,8 @@ void() func_make =
 		newmis.event = "dynamic_item";
 		pk_ditems = pk_ditems + 1; // do here because call already made
 	}
+
+	if (self.spawnflags & 4) dyn_remove(newmis, 0);
 
 	if (newmis) // make sure we made it
 	if (self.charmer) // IDEA: if targeted this func could easily spawn charmed monsters just by detecting targeting player

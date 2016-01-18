@@ -932,11 +932,13 @@ void() bot_wakey =
 	{
 
 
+if (cvar("saved1") == -555)
+{
 bprint("------------------- ** bot woken  ");
 //bprint(item_ident(e));
 bprint(self.owner.netname);
 bprint("\n");
-
+}
 
 		self.owner.button16 = self.owner.frags;
 		if (self.owner.classname == "pk*bot")
@@ -1019,12 +1021,13 @@ bprint("bot fix started\n");
 						f.owner = e;
 						e.button16 = -666000;
 
-
+if (cvar("saved1") == -555)
+{
 bprint("------------------- ** bot waking  ");
 //bprint(item_ident(e));
 bprint(e.netname);
 bprint("\n");
-
+}
 
 
 					}
@@ -1032,11 +1035,13 @@ bprint("\n");
 					{
 
 
+if (cvar("saved1") == -555)
+{
 bprint("------------------- ** bot fixing  ");
 bprint(e.netname);
 //bprint(item_ident(e));
 bprint("\n");
-
+}
 
 					bot_fix.frags = bot_fix.frags + 1;
 					e.armorvalue = 0;

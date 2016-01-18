@@ -211,8 +211,8 @@ void() player_shalrath_attack =
 		}
 		else if (self.weapon == SEL_SHAL_LTN)
 		{
-			if (rune_haste(0.45))
-				self.attack_finished = time + 0.9;
+			if (rune_haste(0.4))
+				self.attack_finished = time + 0.75;
 			player_shalrath_lightning1(); // lightning
 		}
 		else

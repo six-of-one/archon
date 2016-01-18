@@ -820,6 +820,8 @@ float(float cn, entity e, string op) ammo_con =
 // fn(dyn_rem) - remove a dynamic item after a timeout
 // fn(dyn_rndloc) - get a random location to spawn an item dynamically
 
+// note: this has very few qualifications for a selected ent
+
 void() dyn_rem =
 {
 	if (self.enemy)
@@ -833,8 +835,37 @@ void() dyn_rem =
 		remove(self.enemy);
 	}
 	remove(self);
-	pk_ditems = pk_ditems - 1;
+	pk_ditems = pk_ditems - 1; // this is meaningless
 }
+
+// setup an item for removal
+
+// e - remove this ent
+// tm - time to live
+
+float REMOVE_DV = 30; // some deviation to spread things out
+
+void(entity e, float tm) dyn_remove =
+{
+	local entity f;
+	local float dv;
+
+	f = spawn();
+	f.classname = "dyn_removal";
+	f.enemy = e;
+	f.think = dyn_rem;
+
+	dv = REMOVE_DV;
+	if (dv > tm) dv = tm * 0.2;
+	if (tm)
+		f.nextthink = time + tm + crandom() * dv;
+	else if (e.wad == "morph_cube")
+		f.nextthink = time + MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
+	else if (e.wad == "pk_cube")
+		f.nextthink = time + fabs(PK_CUBE_TIME) + crandom() * 20;
+	else
+	f.nextthink = time + PK_DYNTO + crandom() * 55;
+};
 
 entity rseu; // random spawn ent origin used
 
@@ -950,19 +981,9 @@ void() dyn_spawn =
 
 	item_call(self.wad);
 
-	if (self.wad == "pk_crate") return;
+	if (self.wad == "pk_crate") return; // note: hrm. crates are not removed?  seems like they could fill a map
 
-	sv = spawn();
-	sv.enemy = self;
-	sv.think = dyn_rem;
-
-	if (self.wad == "morph_cube")
-		sv.nextthink = time + MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
-	else
-	if (self.wad == "pk_cube")
-		sv.nextthink = time + fabs(PK_CUBE_TIME);
-	else
-	sv.nextthink = time + PK_DYNTO + crandom() * 55;
+	dyn_remove(self, 0);
 };
 
 // think to handle dynamic item spawns if enabled by admin - pk_items only

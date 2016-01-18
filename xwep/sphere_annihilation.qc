@@ -99,6 +99,9 @@ void() sphere_annihilation_death7 = [ $die7, SUB_Null ]
 
 // for now this is animation code - free spheres do not move on thier own - but they need to
 
+float sphere_audio;
+float SPHERE_AUDIO_LIMIT = 3;
+
 void() sphere_annihilation_move =
 {
 	local float r1, v1;
@@ -154,13 +157,22 @@ bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
 		if (r1 != self.effects) self.search_time = time + 4 + random() * 4; // dont change this for a bit
 		}
 
-		if (random() < 0.15)
+		if (random() < 0.05)
+		{
+			if (self.aiment)
 			{
-				if (self.aiment) remove(self.aiment); // aiment is audio source
+				remove(self.aiment); // aiment is audio source
 				self.aiment = world;
+				sphere_audio = sphere_audio - 1;
+				if (sphere_audio < 0) sphere_audio = 0;
 			}
-		else if (!self.aiment && random() > 0.4)
-				self.aiment = loop_sound(self, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, self.origin, 0, LOOPFOREVER);
+		}
+		else if (!self.aiment && random() > 0.85)
+		if (sphere_audio < SPHERE_AUDIO_LIMIT)
+		{
+			self.aiment = loop_sound(self, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, self.origin, 0, LOOPFOREVER);
+			sphere_audio = sphere_audio + 1;
+		}
 	}
 // IDEA self.count < time - 120 = start checking after 2 mins, when something sucked in self.count = time
 };
@@ -281,15 +293,15 @@ float(entity g) annihilation_check =
 	else if (g.classname == OBSERVER) t = FALSE;
 	else if (g.flags & FL_CLIENT && g.health <= 0) t = FALSE;
 	else if (g.flags & FL_CLIENT && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_CLI) t = FALSE;
-	else if (g.classname == "viswep" && g.owner != world) t = FALSE;
+	else if (g.classname == "viswep" && g.owner != world) t = FALSE; // viswep held by player
 	else if (! IS_MISSILE(g) && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
 	else if (vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON) t = FALSE;
 	else if (g.model == "progs/null.mdl") t = FALSE;
 	else if (g.solid == SOLID_TRIGGER && g.movetype == MOVETYPE_NONE) t = FALSE;
 	else if (g.solid == SOLID_BSP) t = FALSE;
 	else if (g.movetype == MOVETYPE_PUSH) t = FALSE;
-	else if (g.classname == "crosshair_targeter") t = FALSE;
-	
+//	else if (g.classname == "crosshair_targeter") t = FALSE; // removed
+
 	return(t);
 };
 
@@ -429,7 +441,7 @@ void() sphere_annihilation_phys_move =
 				if (pointcontents(sphere_a.origin + v1) == CONTENT_LAVA) f = TRUE;
 				v1_z = v1_z - 1;
 			}
-			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_BBOX, 0, RM_SKY,  sphere_a.origin , v0, v0, v0, v0, "whirl", "progs/steam.mdl", SUB_Null, 5 + random() * 4, SUB_Remove, SUB_Null, self, world);
+			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_BBOX, 0, RM_SKY,  sphere_a.origin , v0, v0, v0, v0, "whirl", "progs/steam.mdl", SUB_Null, 5 + random() * 4, SUB_Remove, SUB_Null, sphere_a, world);
 			newmis.origin_x = newmis.origin_x + crandom() * 80;
 			newmis.origin_y = newmis.origin_y + crandom() * 80;
 			newmis.origin_z = newmis.origin_z + random() * 32;

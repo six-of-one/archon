@@ -591,7 +591,6 @@ void() PutClientInServer =
 	polymorph_check(self.morphy, self.morphy); // become incarnation
 
 	W_SetCurrentAmmo (); // moved for m0rphic
-
 	player_stand1 ();
 
 	if (deathmatch || coop)
@@ -1118,9 +1117,15 @@ void () WaterMove =
 
 			if (f)
 			{
-bprint("*** excised water: ");
-bprint(surface);
-bprint("\n");
+
+
+// TEST:
+//bprint("*** excised water: ");
+//bprint(surface);
+//bprint("\n");
+
+
+
 				self.watertype = self.waterlevel = 0;
 				self.flags = self.flags - (self.flags & FL_INWATER);
 				return;
@@ -1356,6 +1361,7 @@ void () PlayerPreThink =
 				CheckWaterJump ();
 		}
 
+//		if (!Q_100 && !PK_100)
 //		if (!Q_100 && !PK_100)
 		if (self.waterlevel)
 		if (! self.flags & FL_WATERJUMP)

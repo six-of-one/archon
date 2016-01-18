@@ -586,7 +586,10 @@ void() SV_FlyMove =
 
 	if (!self.flags & FL_CLIENT)
 	{
-		bprint("====== FSCK: non bot in SV_FlyMove\n");
+		bprint("====== FSCK: non bot in SV_FlyMove -- ");
+		bprint(item_ident(self));
+		bprint("\n");
+		return;
 	}
 	if (self.phys_obj == world)
 	{

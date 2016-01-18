@@ -1371,6 +1371,7 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 		bq = spawn(); // make one each time
 		bq.think = SUB_Remove;
 		bq.nextthink = time + DEAD_BODYTIME + random() * 30;
+		if (!deathmatch) bq.nextthink = time + DEAD_BODYTIME * 6 + random() * 40; // this would be for respawnable monsters
 		bq.classname = "bodyque";	
 	}
 
@@ -1381,7 +1382,7 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 	bq.rune_flag = e.rune_flag;  // corpse have runes - when gibable, they will be protected by resist
 	bq.colormap = e.colormap; // player colors till disconnect - changes when changed live
 //	bq.clientcolors = e.clientcolors; // does nothing - colors happen thru the colormap, of which there are client slots count
-	bq.flags = FL_CLIENT;
+	bq.flags = e.flags - (e.flags & (FL_CLIENT | FL_MONSTER) ); // mask off these flags
 	bq.movetype = e.movetype;
 	bq.velocity = e.velocity;
 	bq.flags = 0;

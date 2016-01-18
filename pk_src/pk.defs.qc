@@ -72,6 +72,7 @@ float pk_map;								// true if a painkeep map is loaded
 float pk_ditems;							// count painkeep items for dyn_items code
 float PK_DYNTO;							// timeout in 120 secs
 float PK_DYNRAD				= 8000;	// dynamic radius search 8000 units
+void(entity e, float tm) dyn_remove;
 
 float PK_ADMIN;							// allow admin - set this to 0 to completely disable all admin
 float pk_adminimp;						// impulse set in admin.cfg to access admin commands, defaults to 255
@@ -146,7 +147,11 @@ vector(entity e, float s, vector p) getsurfaceclippedpoint;
 // end wrap specials
 
 
+// **************************************
 // runes
+
+// **************************************
+
 
 // for serverflags drop
 void(string g) tbprint; // just for this - code is a test temp
@@ -758,7 +763,7 @@ float DEF_ATYPE				= 0.3; // default armor is always lowest protection ?
 float DEF_ITEMS; // q1 standard bit flags
 float DEF_PK_ITEMS; // pk bit flags
 float DEF_WEAPON; // bit for wep slot - per genre char default action
-float DEF_REMWEP				= 256; // bit set in def_weap - if normal defaults are set - remove them NOTE: axe doesnt remove because of pk item code!
+float DEF_REMWEP				= 256; // bit set in def_weap - if normal defaults are set - remove them NOTE: axe doesnt remove because of pk item code, but it can be replaced!
 float DEF_REMAMMO				= 512; // bit set in def_weap - if normal ammo set - remove it
 
 
