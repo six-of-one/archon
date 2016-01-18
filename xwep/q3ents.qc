@@ -2550,6 +2550,7 @@ void() target_speaker =
 	{
 		ambientsound (self.origin, self.noise, 0.5, ATTN_STATIC);
 //		loop_sound(self, CHAN_WEAPON,self.noise, 1, attn, 8.25, self.origin, 0, LOOPFOREVER); // FIX - want this for loopoff - problem is we need the sound length
+//		remove(self);
 	}
 //	else if (self.flags & Q3_LOOPOFF) // finish this
 //	{

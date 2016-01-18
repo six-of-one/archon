@@ -467,6 +467,80 @@ void() func_model =
 void() InitTrigger;
 void() func_maphack;
 
+// copy trigger data for map hacks
+
+// copy from self or biome (if set) to self.trigger_field
+
+void() hack_trigger_cp =
+{
+// this is where we can do biomes
+	if (biome)
+	{
+		self.trigger_field.mean = biome.mean;
+		self.trigger_field.stdev = biome.stdev;
+		self.trigger_field.count = biome.count;
+		self.trigger_field.cnt = biome.cnt;
+		self.trigger_field.delay = biome.delay;
+		self.trigger_field.map = biome.map;
+		self.trigger_field.rotate_type = biome.rotate_type;
+		self.trigger_field.lefty = biome.lefty;
+		self.trigger_field.stack1 = biome.stack1;
+		self.trigger_field.stack2 = biome.stack2;
+		self.trigger_field.stack3 = biome.stack3;
+		self.trigger_field.stack4 = biome.stack4;
+		self.trigger_field.stack5 = biome.stack5;
+		self.trigger_field.stack6 = biome.stack6;
+		self.trigger_field.stack7 = biome.stack7;
+		self.trigger_field.stack8 = biome.stack8;
+		self.trigger_field.stack9 = biome.stack9;
+		self.trigger_field.stack10 = biome.stack10;
+		self.trigger_field.stack11 = biome.stack11;
+		self.trigger_field.stack12 = biome.stack12;
+		self.trigger_field.stack13 = biome.stack13;
+		self.trigger_field.stack14 = biome.stack14;
+		self.trigger_field.stack15 = biome.stack15;
+		self.trigger_field.stack16 = biome.stack16;
+		self.trigger_field.target1 = biome.target1;
+		self.trigger_field.target2 = biome.target2;
+		self.trigger_field.group = biome.group;
+		self.trigger_field.rad_time = biome.rad_time;
+		self.trigger_field.spawnflags = biome.spawnflags;
+	}
+	else
+	{
+		self.trigger_field.mean = self.mean;
+		self.trigger_field.stdev = self.stdev;
+		self.trigger_field.count = self.count;
+		self.trigger_field.cnt = self.cnt;
+		self.trigger_field.delay = self.delay;
+		self.trigger_field.map = self.map;
+		self.trigger_field.rotate_type = self.rotate_type;
+		self.trigger_field.lefty = self.lefty;
+		self.trigger_field.stack1 = self.stack1;
+		self.trigger_field.stack2 = self.stack2;
+		self.trigger_field.stack3 = self.stack3;
+		self.trigger_field.stack4 = self.stack4;
+		self.trigger_field.stack5 = self.stack5;
+		self.trigger_field.stack6 = self.stack6;
+		self.trigger_field.stack7 = self.stack7;
+		self.trigger_field.stack8 = self.stack8;
+		self.trigger_field.stack9 = self.stack9;
+		self.trigger_field.stack10 = self.stack10;
+		self.trigger_field.stack11 = self.stack11;
+		self.trigger_field.stack12 = self.stack12;
+		self.trigger_field.stack13 = self.stack13;
+		self.trigger_field.stack14 = self.stack14;
+		self.trigger_field.stack15 = self.stack15;
+		self.trigger_field.stack16 = self.stack16;
+		self.trigger_field.target1 = self.target1;
+		self.trigger_field.target2 = self.target2;
+		self.trigger_field.group = self.group;
+		self.trigger_field.rad_time = self.rad_time;
+		self.trigger_field.spawnflags = self.spawnflags;
+	}
+
+};
+
 // set a biome with a trigger
 // see func_maphack for biome data
 
@@ -508,7 +582,7 @@ entity(vector horg) chaos_maphack_probe =
 #ifdef warning
 																			if (WARNING & 131072)
 																			{
-																				bprint(" *** warning:   map hack found by load trigger: ");
+																				bprint(" *** warning:   map hack found by probe: ");
 																				bprint(vtos(self.goalentity.origin));
 																				bprint(", desired: ");
 																				bprint(vtos(self.dest));
@@ -530,67 +604,7 @@ entity(vector horg) chaos_maphack_probe =
 	{
 		self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.dest , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", null_string, SUB_Null, 0.2, func_maphack, SUB_Null, self.owner, world);
 //		self.trigger_field.origin_z = self.owner.origin_z;
-
-// this is where we can do biomes
-		if (biome)
-		{
-			self.trigger_field.mean = biome.mean;
-			self.trigger_field.stdev = biome.stdev;
-			self.trigger_field.count = biome.count;
-			self.trigger_field.cnt = biome.cnt;
-			self.trigger_field.delay = biome.delay;
-			self.trigger_field.map = biome.map;
-			self.trigger_field.rotate_type = biome.rotate_type;
-			self.trigger_field.lefty = biome.lefty;
-			self.trigger_field.stack1 = biome.stack1;
-			self.trigger_field.stack2 = biome.stack2;
-			self.trigger_field.stack3 = biome.stack3;
-			self.trigger_field.stack4 = biome.stack4;
-			self.trigger_field.stack5 = biome.stack5;
-			self.trigger_field.stack6 = biome.stack6;
-			self.trigger_field.stack7 = biome.stack7;
-			self.trigger_field.stack8 = biome.stack8;
-			self.trigger_field.stack9 = biome.stack9;
-			self.trigger_field.stack10 = biome.stack10;
-			self.trigger_field.stack11 = biome.stack11;
-			self.trigger_field.stack12 = biome.stack12;
-			self.trigger_field.stack13 = biome.stack13;
-			self.trigger_field.stack14 = biome.stack14;
-			self.trigger_field.stack15 = biome.stack15;
-			self.trigger_field.stack16 = biome.stack16;
-			self.trigger_field.target1 = biome.target1;
-			self.trigger_field.target2 = biome.target2;
-			self.trigger_field.group = biome.group;
-			self.trigger_field.rad_time = biome.rad_time;
-			self.trigger_field.spawnflags = biome.spawnflags;
-		}
-		else
-		{
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.lefty = self.lefty;
-			self.trigger_field.stack1 = self.stack1;
-			self.trigger_field.stack2 = self.stack2;
-			self.trigger_field.stack3 = self.stack3;
-			self.trigger_field.stack4 = self.stack4;
-			self.trigger_field.stack5 = self.stack5;
-			self.trigger_field.stack6 = self.stack6;
-			self.trigger_field.stack7 = self.stack7;
-			self.trigger_field.stack8 = self.stack8;
-			self.trigger_field.stack9 = self.stack9;
-			self.trigger_field.stack10 = self.stack10;
-			self.trigger_field.stack11 = self.stack11;
-			self.trigger_field.stack12 = self.stack12;
-			self.trigger_field.stack13 = self.stack13;
-			self.trigger_field.stack14 = self.stack14;
-			self.trigger_field.stack15 = self.stack15;
-			self.trigger_field.stack16 = self.stack16;
-			self.trigger_field.target1 = self.target1;
-			self.trigger_field.target2 = self.target2;
-			self.trigger_field.group = self.group;
-			self.trigger_field.rad_time = self.rad_time;
-			self.trigger_field.spawnflags = 16; // rose red
-		}
-
+		hack_trigger_cp();
 
 #ifdef warning
 //																			if (WARNING & 65536)
@@ -613,15 +627,20 @@ void() chaos_maphack_fire =
 // find all hacks
 //	cnt_ent(self, "classname", "func_maphack");
 
-// test destination location - 8 ray star
+// test destination location - 8 ray star + center - up & down added 8.6.14
+
 
 //	self.dest1 = self.owner.origin + '512 0 0';
 	self.dest2 = self.owner.origin;
+	if (self.flags == -6) self.dest2 = self.origin; // -6 is up / down trigger
+
 	self.dest2_x = floor(self.dest2_x);
 	self.dest2_y = floor(self.dest2_y);
 	self.dest2_z = floor(self.dest2_z);
 	self.dest1 = self.dest2;
-	
+
+	chaos_maphack_probe(self.dest2);
+
 	self.dest1_x = self.dest1_x + self.lefty;
 	chaos_maphack_probe(self.dest1);
 /*
@@ -719,8 +738,36 @@ void() chaos_maphack_trigger =
 		self.dest1_z = -512;
 		self.dest2_x = self.lefty / 2 + 128;
 		self.dest2_y = self.lefty / 2 + 128;
-		self.dest2_z = 2048; // note - flyer issues at any greater height
-		
+// note - flyer issues at any greater height - the biggest flyer issue being the sky when away from a skybrush section of each chunk
+		self.dest2_z = 2048;
+
+// biomes may spec up & down direction with lip - restricts size of trigger up & down, makes above & below triggers
+		if (biome)
+		if (biome.lip > 0)
+		{
+/*
+																				bprint(" *** warning:   map hack up / down trigger: ");
+																				bprint(vtos(self.origin));
+																				bprint(", owner at: ");
+																				bprint(vtos(self.owner.origin));
+																				bprint(" - flags: ");
+																				bprint(ftos(self.flags));
+																				bprint(" - done\n");
+*/
+			self.dest1_z = -128; // because our chosen "basement" is 128 below the 0 line
+			self.dest2_z = biome.lip - 128;
+
+			if (self.flags == 6) // dont allow this to replicate itself
+			{
+				self.dest = v0;
+				self.dest_z = biome.lip;
+				self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, -6, 0,  self.origin + self.dest, '-8 -8 -8', '8 8 8', v0, v0, "maphack_trigger", null_string, SUB_Null, 0.5 + random(), chaos_maphack_trigger, SUB_Null, self.owner, world);
+				hack_trigger_cp();
+
+				self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, -6, 0,  self.origin - self.dest, '-8 -8 -8', '8 8 8', v0, v0, "maphack_trigger", null_string, SUB_Null, 0.5 + random(), chaos_maphack_trigger, SUB_Null, self.owner, world);
+				hack_trigger_cp();
+			}
+		}
 		setsize(self, self.dest1, self.dest2);
 	}
 };
@@ -809,6 +856,39 @@ void() hide_hacks =
 	}
 };
 
+// delete a hack and all its sub ents
+
+// self must be the hack
+
+void() delete_hack =
+{
+	chaos_maphack_probe(self.origin);
+	if (self.trigger_field) // nothing found
+	{
+		remove(self.trigger_field);
+		self.trigger_field = world;
+	}
+	else
+	{
+// found a hack - destroy it and all sub ents
+		self.aiment =  findradius(self.origin, self.lefty * 1.5); // radius should cover the whole hack
+		while (self.aiment && self.goalentity)
+		{
+			if (self.aiment.button12 == self.goalentity.button12) // same hash
+			{
+				self.aiment.think = SUB_Remove;
+				self.aiment.nextthink = time;
+																						bprint(" *** warning:   hack derezing - destroying : ");
+																						bprint(item_ident(self.aiment));
+																						bprint("\n");
+			}
+			self.aiment = self.aiment.chain;
+			if (!self.aiment) remove(self.goalentity);
+		}
+		self.goalentity = world;
+	}
+};
+
 void() target_speaker;
 // doors
 entity (vector fmins, vector fmaxs) spawn_field;
@@ -864,7 +944,7 @@ void(entity es) maphack_copy =
 			(ec.classname == "door") && (ec.touch != secret_touch))
 			ec.dest1 = ec.dest2 = es.pos2; // door / button only
 
-//		if (self.classname == "func_maphack") // always have a maphack now
+//		if (self.classname == "func_maphack") // always have a maphack now - all sub items will rotate
 		if ((mh.angles_y == 90) || (mh.angles_y == 180) || (mh.angles_y == 270))
 		{
 // note: does not work on secret doors that use mangle for dir
@@ -880,6 +960,7 @@ void(entity es) maphack_copy =
 				}
 // note - these do not get rotated - they MUST be in the correct position to start with
 			}
+			else if ((ec.touch == secret_touch) && (ec.spawnflags & 32)) SUB_Nop(); // dont rotate secret doors with spawnflag 32 set
 			else // rotate code for all else
 			{
 
@@ -979,6 +1060,15 @@ void(entity es) maphack_copy =
 #endifdef
 		if (!ec.model) setmodel(ec, ec.mdl);
 
+		if (ec.classname == "func_maphack") // copied a placeholder
+		if (ec.spawnflags & 4) // destroy any hack in this location
+		{
+			sv = self;
+			self = ec;
+			delete_hack();
+			self = sv;
+		}
+
 		if (ec.classname == "func_model") // || (ec.classname == "misc_model"))
 		{
 /// note: cost is ridculous - deprecated for now
@@ -1015,21 +1105,26 @@ void(entity es) maphack_copy =
 			self = sv;
 		}
 
+// note - use of self, for links between triggers / buttons and targets
 		if (self.button16 == system_hash) ec.button16 = system_hash;
 
 // previously func_model test included below - had to change for sub items
 
 // Ph'nglui - recursive code again
 // copy all target1 items to the hack - relative origin of item to '0 0 0' added to chunk origin
-/// sub items (2 part doors, etc.) should be copied with target1 - the sub parts have ONLY the target1 id !!
-			if (ec.target1 || ec.target2)
+/// sub items (2 part doors, etc.) should be copied with target1 - the sub parts have ONLY the target1 = deathtype id !!
+
+/// note - the only place triggers and buttons are given a system hash, so they MUST target1 (or target2) the thing they link with
+//			  (except random teleports, which assign system hash on the fly
+
+		if (ec.target1 || ec.target2)
 			{
 				if (ec.class_select == "trigger_secret")
 				{
 					ec.button16 = system_hash;
 					if (ec.classname == "trigger_teleport") ec.spawnflags = ec.spawnflags | 256; // perm link
 				}
-				if (ec.class_select == "func_button") ec.button16 = system_hash;
+				if (ec.classname == "func_button") ec.button16 = system_hash;
 /*
 // remove
 																							bprint(" *** warning:   detect target1 in: ");
@@ -1044,7 +1139,7 @@ void(entity es) maphack_copy =
 				self = ec;
 				if (self.target1)
 				{
-					self.grap_state =  // test  remove
+//					self.grap_state =  // test  remove
 					cnt_ent(self, "deathtype", self.target1);
 /*
 // remove:
@@ -1091,7 +1186,7 @@ void(entity es) maphack_copy =
 							maphack_copy(self.dropent);
 						}
 						else
-						if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
+						if (self.dropent.event) // a rnd chance item that didnt copy can have an alternate item set that appears
 						{
 // note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
 							cnt_ent(self, "deathtype", self.dropent.event);
@@ -1105,6 +1200,10 @@ void(entity es) maphack_copy =
 					self.dropent = self.dropent.chain;
 					}
 				}
+/// note - relayed sub items - button (L1) +button (L2) +button (L2) -> trigger_relay (L2) -> door (L3 relay)
+//										 only the last item at a level can sub items
+//										 because the last items (trigger_relay) will clear the system hash here
+				if (self.button16 == system_hash) system_hash = system_hash + 1 + rint(random() * 3);			
 				self = sv;
 			}
 /*
@@ -1123,7 +1222,7 @@ void(entity es) maphack_copy =
 		}
 
 */
-		if (ec.button16 == system_hash) system_hash = system_hash + 1 + rint(random() * 3);			
+// system hash bump used to be here
 
 		if (ec.classname == "func_copymod")
 		{
@@ -1166,9 +1265,11 @@ void(entity es) maphack_copy =
 				ec.owner = ec;
 				ec.enemy = ec; // so trigger can fire proper door
 
-//				if (!ec.targetname) // triggers still dont copy right
-				ec.trigger_field = spawn_field (ec.absmin + '30 30 0',ec.absmax - '30 30 0'); // make a new trigger field around door
-				ec.trigger_field.owner = ec; // tell trigger to fire this door - it will initially point at the source door that was copied
+				if (!ec.targetname) // make a trigger if not targeted
+				{
+					ec.trigger_field = spawn_field (ec.absmin + '30 30 0',ec.absmax - '30 30 0'); // make a new trigger field around door
+					ec.trigger_field.owner = ec; // tell trigger to fire this door - it will initially point at the source door that was copied
+				}
 			}
 			else
 			{
@@ -1508,6 +1609,7 @@ void() func_maphack =
 		}
 	}
 
+// issue with this - all items copied with target*
 	if (self.delay > 0) // idea: fade replace?
 	{
 		self.nextthink = time + self.delay;
@@ -1517,32 +1619,19 @@ void() func_maphack =
 // using classname for now
 //	if (!self.class_select) self.class_select = "class_biome"; 
 
-	setmodel (self,self.mdl);
-//	self.model = self.mdl;
+	if (!self.spawnflags & 8) // 8 is HOLD - placeholder, dont solid or load model
+	{
+		setmodel (self,self.mdl);
+//		self.model = self.mdl;
 
-	self.solid = SOLID_BSP; // map piece
+		self.solid = SOLID_BSP; // act like map brushes
+	}
 
 // copy all target1 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
 	mh = self;
 
 	self.button12 = system_hash; // id all parts of a hack
 	system_hash = system_hash + 1 + rint(random() * 3);
-
-/* deprecated - do this plus reg. search
-	if (self.mdl && self.mdl != null_string) // or maphack_copy goes nuts & makes 32767 ents & overloads server
-	{
-		if (!self.target1)
-		{
-			self.target1 = self.mdl; // allow a per chunk copy set - uses map name of chunk
-			self.deathtype = "start";
-		}
-		if (!self.target2)
-		{
-			self.target2 = self.mdl; // allow a per chunk random copy set - uses map name of chunk
-			self.weaponmodel = "start";
-		}
-	}
-*/
 
 	if (self.target1)
 	{
@@ -1647,33 +1736,9 @@ void() func_maphack =
 // build trigger - otherwise this gets boring fast
 	if (self.spawnflags & 16)
 	{
-
 // trigger for making more chunks
-		self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.origin + '0 0 64' , '-16 -16 -16', '16 16 16', v0, v0, "maphack_trigger", null_string, SUB_Null, 0.5, chaos_maphack_trigger, SUB_Null, self, world);
-
-		self.trigger_field.rotate_type = self.rotate_type;
-		self.trigger_field.lefty = self.lefty;
-
-		self.trigger_field.stack1 = self.stack1;
-		self.trigger_field.stack2 = self.stack2;
-		self.trigger_field.stack3 = self.stack3;
-		self.trigger_field.stack4 = self.stack4;
-		self.trigger_field.stack5 = self.stack5;
-		self.trigger_field.stack6 = self.stack6;
-		self.trigger_field.stack7 = self.stack7;
-		self.trigger_field.stack8 = self.stack8;
-		self.trigger_field.stack9 = self.stack9;
-		self.trigger_field.stack10 = self.stack10;
-		self.trigger_field.stack11 = self.stack11;
-		self.trigger_field.stack12 = self.stack12;
-		self.trigger_field.stack13 = self.stack13;
-		self.trigger_field.stack14 = self.stack14;
-		self.trigger_field.stack15 = self.stack15;
-		self.trigger_field.stack16 = self.stack16;
-		self.trigger_field.target1 = self.target1;
-		self.trigger_field.target2 = self.target2;
-		self.trigger_field.group = self.group;
-		self.trigger_field.rad_time = self.rad_time;
+		self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 6, 0,  self.origin, '-16 -16 -16', '16 16 16', v0, v0, "maphack_trigger", null_string, SUB_Null, 0.5, chaos_maphack_trigger, SUB_Null, self, world);
+		hack_trigger_cp();
 	}
 
 
