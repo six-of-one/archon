@@ -6,7 +6,8 @@
  *
  * date: 6/17/10
  *
- * qc - support painkeep 2.0 map item translation
+ * qc - support archon 1.0 uber map item translation
+ *    - support painkeep 2.0 map item translation
  *
  */
 
@@ -1075,6 +1076,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
+
 /// doom
 	else if (e.scode == MC_D_MEGASPH)
 	{
@@ -1274,8 +1276,8 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
-/// quake
 
+/// quake
 	else if (e.scode == MC_NAILGUN) // this ones a little odd because some other weps fit that slot better in trans
 	{
 		if (TR == FL_TR_WOLF) return("w_weapon_machinegun");
@@ -2114,7 +2116,25 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
+
+/// chaos - for now just removes in case of *100
 	else if (e.scode == MC_REGGUN)
+	{
+		if (Q_100 || PK_100)
+		{
+			return("RMV");
+		}
+		if (TR >= FL_TR_REMOVE) return("RMV");
+	}
+	else if (e.scode == MC_TALLBALL)
+	{
+		if (Q_100 || PK_100)
+		{
+			return("RMV");
+		}
+		if (TR >= FL_TR_REMOVE) return("RMV");
+	}
+	else if (e.scode == MC_DEEPSLEEP)
 	{
 		if (Q_100 || PK_100)
 		{
@@ -2146,6 +2166,7 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
+
 	else // scode not recognized
 	{
 		if (Q_100 || PK_100)

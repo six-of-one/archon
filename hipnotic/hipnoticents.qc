@@ -242,7 +242,7 @@ void() weapon_mjolnir =
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 
-	self.archon = ARCHON_WEP_EXT;
+	self.archon = ARCHON_WEP_EXT + 0.3;
 };
 
 void() weapon_laser_gun =
@@ -281,7 +281,7 @@ void() weapon_laser_gun =
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 
-	self.archon = ARCHON_WEP_EXT;
+	self.archon = ARCHON_WEP_EXT + 0.2;
 };
 
 
@@ -373,7 +373,7 @@ void() item_hornofconjuring =
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get arts
 
-	self.archon = ARCHON_ART;
+	self.archon = ARCHON_ART + 0.1;
 };
 
 

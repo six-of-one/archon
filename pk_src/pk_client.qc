@@ -2817,7 +2817,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					if (!NOPKCIDE)
 						targ.frags = targ.frags - frag_minus();
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
 					else
 					bprint(" forgot to hide from his own AutoSentry!\n");
 				return;
@@ -2875,7 +2875,8 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					bprint (" was exploded by a Vore\n");
 				else
 				if (attacker.classname == "monster_supervore")
-					bprint (" was eviscerated by a Hierophant Vorerel\n");
+					bprint (" was eviscerated by a Hierophant Vaareziel\n");
+//					bprint (" was eviscerated by a Hierophant Vorerel\n");
 				else
 				if (attacker.classname == "monster_shambler")
 					bprint (" was smashed by a Shambler\n");

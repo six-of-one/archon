@@ -256,7 +256,8 @@ void() player_ogre_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	split_morph_impulse();
+//	split_morph_impulse();
+	morph_impulse();
 
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
@@ -330,9 +331,9 @@ void(float silent) player_ogre_become =
 	self.cam_z = 0.1;
 
 //	if(!deathmatch)
-//		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
-	 	setsize (self, '-16 -16 -24', '16 16 40');
+//		setsize (self, '-16 -16 -24', '16 16 40');
 	self.health = self.health * MOGRE_HEALMOD / self.health_modifier;
 	self.health_modifier = MOGRE_HEALMOD;
 	makevectors(self.v_angle);

@@ -387,7 +387,8 @@ void() player_scourge_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	split_morph_impulse();
+//	split_morph_impulse();
+	morph_impulse();
 
 // IMP: alt fire (for what?)
 

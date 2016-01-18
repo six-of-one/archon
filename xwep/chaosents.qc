@@ -260,6 +260,61 @@ void () c_weapon_deepsleep =
 };
 
 
+string() tsphere_killmsg =
+{
+	if (ENHANCED)
+		return(rnd_string(' 90.0 60.0 60.0'," joined the Tall Man because of "," was given a mind altering experience by ","",""," was drilled by "));
+
+	return " joined the Tall Man because of ";
+};
+
+string() tsphere_killmsg2 =
+{
+	return "\n";
+};
+
+// Tall Mans killing ball - as you know it and love it, the silver (and gold) sphere(s) from Phantasm
+
+void () c_weapon_tallball =
+{
+	q100_weapon_supershotgun();
+
+	self.netname = "Phantasm Sphere";
+
+	self.touch = x_weapon_touch;
+	self._attack = SUB_Null;
+	self._fr_attack = player_pistol1;
+
+	self.currentammo = 0;
+	self.aflag = IGN_INV; // swap with axe
+	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE; // axe replacement
+	self.lip = AMMO_NONE;
+	self.attack_finished = 1;
+	self.dmg = 3;
+	self.dmg_save = 0;
+	self.dmg_take = 1; // shot cnt
+	self.style = FL_MELEE_WEP;
+	self.wait = RSP_TIME;
+
+	self.vv_draw = vw_melee_base;
+
+	setmodel (self, "progs/tall_ball.mdl");
+	self.weaponmodel = "progs/tall_ball.mdl";
+	self.vwepmdl = "progs/tall_ball.mdl";
+//	self.noise3 = "q2_snd/blastf1a.wav";
+//	self.target = "q2_snd/lashit.wav";
+
+	self._killmsg = tsphere_killmsg;
+	self._killmsg2 = tsphere_killmsg2;
+
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "x_item";
+	self.mask_x = MORPH_ALL;
+
+	self.archon = ARCHON_WEP_EXT;
+};
+
 // from chaos mod
 
 // T_Heal: add health to an entity, limiting health to max_health

@@ -342,6 +342,7 @@ float MC_Q3_RNDITM; // # of total items
 /// chaos
 
 float MC_REGGUN;
+float MC_TALLBALL;
 float MC_DEEPSLEEP;
 float MC_QUANTUM;
 
@@ -650,6 +651,7 @@ void() mcode_load =
 	MC_Q3_RNDITM = f - MC_Q3_GAUNTLET; // # of total items
 
 	MC_REGGUN = f = (f + 1);
+	MC_TALLBALL = f = (f + 1);
 	MC_DEEPSLEEP = f = (f + 1);
 	MC_QUANTUM = f = (f + 1);
 	MC_C_FLAMER = f = (f + 1);
@@ -944,6 +946,7 @@ float(float mcv, entity e) bit_mcode =
 /// chaos
 	
 	if (mc == MC_REGGUN)													return(IT_SUPER_SHOTGUN);
+	if (mc == MC_TALLBALL)													return(IT_AXE);
 	if (mc == MC_DEEPSLEEP)												return(IT_AXE);
 	if (mc == MC_QUANTUM)												return(IT_LIGHTNING);
 	if (mc == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
@@ -1268,6 +1271,7 @@ float(string sc, entity e) pk_mcode =
 /// chaos
 	
 	if (tsc == "c_weapon_reggun")										return(MC_REGGUN);
+	if (tsc == "c_weapon_tallball")										return(MC_TALLBALL);
 	if (tsc == "c_weapon_deepsleep")									return(MC_DEEPSLEEP);
 	if (tsc == "weapon_quantum")										return(MC_QUANTUM);
 	if (tsc == "weapon_flamer")										return(MC_C_FLAMER);
@@ -1569,6 +1573,7 @@ string (float mc) item_by_mcode =
 /// chaos
 	
 	if (mc == MC_REGGUN)													return("c_weapon_reggun");
+	if (mc == MC_TALLBALL)													return("c_weapon_tallball");
 	if (mc == MC_DEEPSLEEP)												return("c_weapon_deepsleep");
 	if (mc == MC_QUANTUM)												return("weapon_quantum");
 	if (mc == MC_C_FLAMER)												return("weapon_flamer");
@@ -1658,6 +1663,7 @@ float(float mcv) valid_wep_mcode =
 /// chaos
 
 	if (mcv == MC_REGGUN)												return(IT_SUPER_SHOTGUN);
+	if (mcv == MC_TALLBALL)												return(IT_AXE);
 	if (mcv == MC_DEEPSLEEP)											return(IT_AXE);
 	if (mcv == MC_QUANTUM)												return(IT_LIGHTNING);
 	if (mcv == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
@@ -1853,7 +1859,7 @@ void() fire_axe =
 
 void () weapon_axe =
 {
-	self.touch = weapon_touch;
+	self.touch = weapon_touch; // NOTE: does not work - touch ends up SUB_Null
 	self._attack = SUB_Null;
 	self._fr_attack = fire_axe;
 

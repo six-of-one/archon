@@ -760,6 +760,12 @@ void() pk_liveupd =
 	noway_below = cvar("sv_bot_noway_below"); // no bot waypoints below this
 	noway_above = cvar("sv_bot_noway_above"); // bot bot waypoints above this
 
+	if (WORLD_NOWAY)
+	{
+		if (!noway_below) noway_below = world.mins_z;
+		if (!noway_above) noway_above = world.maxs_z;
+	}
+
 	NODECOR = cvar("sv_c_nodecor");
 
 // runes
@@ -1064,6 +1070,53 @@ void() pk_liveupd =
 	}
 	M_MONSTER_II = cvar("sv_monster_map2");
 
+// list monster control bits
+	if (cvar("sv_monster_list"))
+	{
+		cvar_set("sv_monster_list", "0");
+		bprint("\b--------------------------------\n");
+		bprint("Monsters bit list:\n");
+		bprint("monster_army			1\n");
+		bprint("monster_fish			2\n");
+		bprint("monster_knight			4\n");
+		bprint("monster_dog			8\n");
+		bprint("monster_demon			16\n");
+		bprint("monster_enforcer		32\n");
+		bprint("monster_hellknight		64\n");
+		bprint("monster_ogre			128\n");
+		bprint("monster_shalrath		256\n");
+		bprint("monster_shambler		512\n");
+		bprint("monster_scrag			1024\n");
+		bprint("monster_zombie			2048\n");
+		bprint("monster_boss			4096	(Cthon)\n");
+		bprint("monster_tarbaby			8192\n");
+		bprint("monster_scourge			16384	(Plague)\n");
+		bprint("monster_oldone			32768	(Shubbers)\n");
+		bprint("monster_supervore		65536\n");
+		bprint("monster_gremlin			131072\n");
+		bprint("monster_vomit			262144\n");
+		bprint("trap_spike_mine			524288\n");
+		bprint("\b--------------------------------\n");
+		bprint("Monsters II bit list:\n");
+		bprint("monster_blarg			1\n");
+		bprint("monster_raptor			2\n");
+		bprint("monster_spider			4\n");
+		bprint("monster_manga			8\n");
+		bprint("monster_bossman			16\n");
+		bprint("monster_clinger			32	(Alien Infestation)\n");
+		bprint("monster_heximp			64\n");
+		bprint("\b--------------------------------\n");
+	}
+/*
+float CB_M_BLARG					= 1;
+float CB_M_RAPTOR					= 2;
+float CB_M_SPIDER					= 4;	// first 3 featured in ultimate mod
+float CB_M_MANGA					= 8;
+float CB_M_BOSSMAN				= 16; // Bossman by Wendigo - from Blahbalicious
+float CB_M_CLING					= 32; // alien infestation by Lord Havoc
+float CB_M_HEXIMP					= 64;	// Hexen2 Imp by Claus Kruuskopf AKA WiCKeD
+
+*/
 // pk cubes
 	PK_CUBE_TIME = cvar("pk_cubes_time"); // TDO: doesnt reset existing makers
 
@@ -1822,6 +1875,7 @@ current max is 312, move lines out of comment as needed
 		registercvar("sv_monster_rnd", "0"); // bit mask to allow random spawned monsters in dm
 		registercvar("sv_monster_cnt", "0"); // # of random monster to spawn
 		registercvar("sv_monster_resp", "0"); // bit mask to respawn some map monsters (not random ones)
+		registercvar("sv_monster_list", "0"); // when true, list ,monster bits to console & clear
 // monsters II
 		registercvar("sv_monster_map2", "0"); // bit mask to allow map monsters in dm
 		registercvar("sv_monster_rnd2", "0"); // bit mask to allow extra random spawned monsters in dm

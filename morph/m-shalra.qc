@@ -313,7 +313,7 @@ void(float silent) player_shalrath_become =
 	self.noise3 = "";
 	self.view_ofs = '0 0 34'; // raised 8
 	self.cam_z = 0.1;
-	//setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else

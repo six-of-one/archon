@@ -375,6 +375,8 @@ float RULE1_MASK				= 15;
 float RULE2_MASK				= 1966159; // original 4 + vampire + techs
 float RALL_MASK				= 1966207; // everything
 
+float RULOK2;		// unlock code - lith vector
+
 float RUNE_VAMPIRE_PER; // percent of damage added to suck heads health - rule 2
 
 float DEF_DOC_ARMORTYPE		= 0.6;
@@ -645,6 +647,8 @@ float MC_Q3_HOLDTELE;
 // **************************************
 
 float ENHANCED					= 1; // adds features that werent originally there in the sub mods (like runes)
+
+float WORLD_NOWAY				= 1; // use world min & max for noway bounds if sv_ bounds not set
 
 .float xp; // experience points
 
@@ -936,7 +940,7 @@ float DEF_AMMO_BASE			= 25; // if no ammo given for a default wep, this is it
 
 // **************************************
 
-string DEF_WEP_DEATH1		= " was just plain shot with ";
+string DEF_WEP_DEATH1		= " was just plain killed with ";
 string DEF_WEP_DEATH2		= "'s random weapon of choice\n";
 
 .vector bulletspread; // weapon fire spread - used to be punchangle
@@ -1055,7 +1059,7 @@ float X_Q2_KEY_PASS			= 256;
 float X_Q2_KEY_AIRSTRK		= 512;
 float X_Q2_KEY_DATACD		= 1024;
 float X_Q2_KEY_CDSPIN		= 2048;
-float X_Q2_KEY_CHEAD			= 4096;
+float X_Q2_KEY_CHEAD			= 4096; // note: second head key
 // 8192
 
 float X_D_MAP					= 16384;
@@ -1275,7 +1279,7 @@ float EXPLOSIVE				= 114688; // for things that explode - chaos mod
 
 .float vw_frame; // only run once per frame per ent
 
-// attachs e to a tag on tagentity (note: use "" to attach to entity origin/angles instead of a tag)
+// attaches e to a tag on tagentity (note: use "" to attach to entity origin/angles instead of a tag)
 //description:
 //allows entities to be visually attached to model tags (which follow animations perfectly) on other entities, for example attaching a weapon to a player's hand, 
 // or upper body attached to lower body, allowing it to change angles and frame separately (note: origin and angles are relative to the tag, use '0 0 0' for both 

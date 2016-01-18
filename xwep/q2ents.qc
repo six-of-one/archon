@@ -381,23 +381,6 @@ void() q2_ammo_slugs =
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
-/* heh heh
-void() q2_ammo_grenades =
-{
-	item_rockets();
-	self.touch = pk_ammo_touch;
-
-	self.lip = AMMO_GRENADES;
-	self.currentammo = Q2_DEF_HGRN;
-
-	setmodel (self, "progs/q2_grenades.mdl");
-	self.noise = "q2_snd/am_pkup.wav";
-	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Grenades";
-	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
-};
-*/
 
 // kill messages
 

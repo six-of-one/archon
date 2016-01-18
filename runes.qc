@@ -13,7 +13,7 @@ void(entity e, float f, float r) rune_print =
 	local float rul;
 
 	rul = cvar("sv_c_rune"); // see -2 for q1 only models & not techs in rule 2
-	if (!ULOK2) 
+	if (!RULOK2) 
 	if (rul == 2) // note: rule 3, 4 
 		rul = -2; // models not avail
 
@@ -180,7 +180,7 @@ string(float b) rune_name =
 	if (b == TECH_TEIM) return("Time Accelerator");
 	if (b == TECH_ADOC) return("Auto Doc");
 
-	if (cvar("sv_c_rune") > 1 && ULOK2) return(rune2_name(b));
+	if (cvar("sv_c_rune") > 1 && RULOK2) return(rune2_name(b));
 
 	if (b == R_EARTH) return("Earth magic");
 	if (b == R_BLACK) return("Black magic");
@@ -1225,7 +1225,10 @@ void() run_runes =
 
 	r = cvar("sv_c_rune"); // because we need a sneek peak
 
-	if (!ULOK2)
+	RULOK2 = ULOK2;
+
+	if (DARKPLACES) RULOK2 = 1;
+	if (!RULOK2)
 	if (r == 2) // note: rule 3, 4 
 		r = -2;
 
@@ -1672,7 +1675,7 @@ void() rune_dmg_sound =
 	{
 		if (RUNE_QUAD_COMB)
 		if (self.rune_flag & TECH_AMP)
-//		if (cvar("sv_c_rune") > 1 && ULOK2) // quad & rune
+//		if (cvar("sv_c_rune") > 1 && RULOK2) // quad & rune
 		if (self.items & IT_QUAD)
 		if (self.super_sound == (time + 1))
 		{
@@ -1789,7 +1792,7 @@ void () item_sigil =
 	}
 
 	rul = cvar("sv_c_rune"); // see -2 for q1 only models in rule 2
-	if (!ULOK2) 
+	if (!RULOK2) 
 	if (rul == 2) // note: rule 3, 4 
 		rul = -2; // models not avail
 

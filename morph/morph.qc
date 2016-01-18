@@ -1035,7 +1035,7 @@ void() morph_impulse =
 */
 };
 
-// half morph impulse, half rebular weapons - note: has to have builtin axe - this cant be skipped
+// half morph impulse, half rebular weapons - note: has to have builtin axe (can be any wep, but slot must be used) - this cant be skipped
 
 
 void() split_morph_impulse =
@@ -1422,6 +1422,8 @@ float(entity e, float hl) morph_heal =
 // need think to wake them up because *monster_start_go has to happen
 // NOTE: this does seem to wack monsters that attack player / morph on site (grunts)
 
+// self.owner = monster spawned
+
 void() random_monster_wakey =
 {
 	local entity f;
@@ -1437,12 +1439,13 @@ void() random_monster_wakey =
 		return;
 	}
 
-	self.owner.think(); // attempt to *_start_go
+	if (self.owner.think == SUB_Remove) return; // some failure is removing the monster
+
+//	self.owner.think(); // attempt to *_start_go
+	self.owner.nextthink = time; // attempt to think with *_start_go
 
 // have had some non solid monsters from cubes - 11.19.12
 	if (!self.owner.solid) self.owner.solid = SOLID_SLIDEBOX;
-
-	if (self.owner.think == SUB_Remove) return; // some failure is removing the monster
 
 	if (!self.owner.takedamage) self.owner.takedamage = DAMAGE_AIM;
 
@@ -1458,12 +1461,10 @@ void() random_monster_wakey =
 		remove(f);
 		return;
 	}
-//	f = self;
+
 	f =  find_tdest(FL_RSTELE | FL_RSSTART | FL_ITEM, "");
 	if (!f) f = findradius(self.owner.origin, PK_DYNRAD);
 
-//	self = self.owner;
-//	FoundTarget();
 	if (f) // these should be random monsters - when they get here there should be no enemy
 //	if((self.owner.enemy == world) || (self.owner.enemy == self))	//If he doesn't have an enemy
 	{
@@ -1733,7 +1734,7 @@ void(string sp, string mcls, vector vm) speed_monster =
 	self.netname = sp;
 	self.classname = mcls;
 	item_call(mcls);
-//		monster_ogre(A_MONSTER); // FIX: use item call? - incr count, wake up
+//		monster_ogre(A_MONSTER); // FIXED: use item call? - incr count, wake up
 	random_monster_location(vm); // note: try to home near parent
 
 /*

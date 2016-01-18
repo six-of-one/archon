@@ -242,7 +242,7 @@ float CHAOS_VER =	1;
 float TEST_VER =	2;
 float hook_ver = 2;
 
-float CHAIN_FRAME_ADJ = 15; // adjust frame to new mdl
+float CHAIN_FRAME_ADJ = 18; // adjust frame to new mdl - 7.1.13 - did not match model, re-aligned
 
 //--------------------------------------------------------------------
 // Vector dot product function

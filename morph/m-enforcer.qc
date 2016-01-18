@@ -390,9 +390,9 @@ void(float silent) player_enforcer_become =
 	self.view_ofs = ' 0 0 24';
 	self.cam_z = 0.1;
 //	if(!deathmatch)
-//		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
-	setsize (self, '-16 -16 -24', ' 16 16 40');
+//	setsize (self, '-16 -16 -24', ' 16 16 40');
 	self.health = self.health * MENF_HEALMOD / self.health_modifier;
 	self.health_modifier = MENF_HEALMOD;
 	makevectors(self.v_angle);

@@ -22,7 +22,7 @@ Once upon a Quake, Shubbers needed a realm gaurdian.
 What better than an 80 foot tall lava creature that can throw explosive lava blobs?
 
 Once summoned Cthon proved to be a great gaurdian.  With the exception of being very difficult to control.
-The thing about a large mass of living lava - its hard damage.
+The thing about a large mass of living lava - its hard to damage.
 
 Enter the massive "House of Cthon" lava pit electric grid.
 It took 100 shamblers to pump out the juice to power one electrode.  The grid needed two.

@@ -91,7 +91,7 @@ void(string cls) item_call =
 
 	f = world;
 	rd = random();
-	if (self.event != "dyn_monster") // because explod box translantions & randomizes need faked
+	if (self.event != "dyn_monster")
 	if (self.event != "dynamic_item") // because explod box translantions & randomizes need faked
 	{
 		rd = 1;
@@ -449,9 +449,11 @@ void(string cls) item_call =
 		q3_misc_explobox();
 		return;
 	}
+
 // chaos
 	else if (cls == "c_weapon_reggun") c_weapon_reggun();
 	else if (cls == "c_weapon_deepsleep") c_weapon_deepsleep();
+	else if (cls == "c_weapon_tallball") c_weapon_tallball();
 	else if (cls == "weapon_quantum") weapon_quantum();
 	else if (cls == "weapon_flamer") weapon_flamer();
 	else if (cls == "ammo_gas") ammo_gas();
