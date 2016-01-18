@@ -52,7 +52,7 @@ frikbot/bot_ai.qc
 frikbot/bot_misc.qc
 frikbot/bot_phys.qc
 frikbot/bot_move.qc
-frikbot/bot_ed.qc
+//frikbot/bot_ed.qc
 
 precache.qc
 

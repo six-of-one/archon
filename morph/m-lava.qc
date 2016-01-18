@@ -380,7 +380,7 @@ void() lavablob_mytosis =
 		+---------------------------------------+
 */
 
-// fn(Lavablob_JumpTouch) exec blob jump for lava morph
+// fn(Lavablob_JumpTouch) exec cfg/morph/blob jump for lava morph
 // tarbaby jump code, it is kind of cool - and gives lavablob morph a second attack
 
 void()	Lavablob_JumpTouch =
@@ -587,7 +587,7 @@ void(float silent) player_lavablob_become =
 	self.cam_y = 36;
 	stuffcmd(self, "chase_up 10\n");
 	stuffcmd(self, "chase_back 36\n");
-	stuffcmd(self, "exec m-lava.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-lava.cfg\n");
 
 	setmodel(self,"progs/lavabomb.mdl");
 	self.modelindex_morph = self.modelindex;

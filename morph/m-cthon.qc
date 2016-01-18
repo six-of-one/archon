@@ -376,7 +376,7 @@ void() player_lavacthon_become =
 	self.cam_y = 36;
 	stuffcmd(self, "chase_up 108\n");
 	stuffcmd(self, "chase_back 36\n");
-	stuffcmd(self, "exec m-cthon.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-cthon.cfg\n");
 
 	setmodel(self,"progs/cthon.mdl");
 	self.modelindex_morph = self.modelindex;

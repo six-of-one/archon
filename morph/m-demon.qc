@@ -470,7 +470,7 @@ void(float silent) player_demon_become =
 	self.cam_y = 10;	
 	stuffcmd(self, "chase_up 20\n");
 	stuffcmd(self, "chase_back 10\n");
-	stuffcmd(self, "exec m-fiend.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-fiend.cfg\n");
 
 	setmodel(self,"progs/demon.mdl");
 

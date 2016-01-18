@@ -1822,11 +1822,14 @@ void(float silent) player_chaos_become =
 	chaos_form(tc);
 	self.dest_y = CB_CHAOS | CB_HUMAN | CB_SHALR | CB_CTHON | CB_SCOURGE | CB_GREMLIN | CB_TANK | CB_ARACHN | CB_ENF | CB_SCRAG;
 
+//	if (chaos != QRACK_ENGINE) self.dest_y = self.dest_y | CB_GREMLIN;
+// RESTORE - rest of morphs CB_DEMON | CB_HKNIGHT | CB_OGRE | CB_SHAMBL | CB_ZOMBY
+
 	self.cam_z = 10 / 100;
 	self.cam_y = 36;
 	stuffcmd(self, "chase_up 10\n");
 	stuffcmd(self, "chase_back 36\n");
-	stuffcmd(self, "exec m-chaos.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
 	self.items = self.items | IT_AXE | IT_SHOTGUN;
 	self.builtin = IT_AXE | IT_SHOTGUN;
@@ -1841,25 +1844,20 @@ void(float silent) player_chaos_become =
 	self.cam_z = 0.2;  //cam
 
 //		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
-	self.health = self.health * MLAVAB_HEALMOD / self.health_modifier;
-	self.health_modifier = MLAVAB_HEALMOD;
-	self.skin = 1;
+	self.health = self.health * MCHAOS_HEALMOD / self.health_modifier;
+	self.health_modifier = MCHAOS_HEALMOD;
 
-	if (silent != NO_TFOG) // not coming from cthon form
-	{
-		makevectors(self.v_angle);
-		spawn_tfog(self.origin + 20 * v_forward);
-	}
-	else
-		player_run(); // fix the back in blob, but firing cthon issue
+	makevectors(self.v_angle);
+	spawn_tfog(self.origin + 20 * v_forward);
+
+	if (!MAX_CHAOS_LVL) chaos_constant(0);
 
 	if (!silent) // silent for starting new level as this beasty
 	{
 		bprint(self.netname);
-		bprint(" has become \bChaos\n"); // owwieee! it burnsies...
+		bprint(" has become \bChaos\n"); 
 	}
-
-	if (!MAX_CHAOS_LVL) chaos_constant(0);
+	self.skin = 1;
 };
 
 

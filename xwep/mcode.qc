@@ -2474,7 +2474,7 @@ void() cube_touch =
 		other.state = other.morphy;
 		if (other.class_select == "class_player")
 		{
-			stuffcmd(other, "exec hook_release.cfg\n"); // make sure they have wheel select here
+			stuffcmd(other, "exec cfg/hook_release.cfg\n"); // make sure they have wheel select here
 
 			other.impulse = 10; // display first item
 			self.lefty = 8388608; // start bit will be 1

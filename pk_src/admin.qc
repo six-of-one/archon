@@ -1010,11 +1010,6 @@ void() Admin_monstermenu =
 {
 	self.message =
 				       "\b     Admin Monster Menu:    \n\b+--------------------------+\n  +------- \bmonster\b ------+  \n  01: Army Grunt            \n  02: Fish                  \n  03: Knight                \n  04: Rabid Dog             \n  05: Fiend                 \n  06: Enforcer              \n  07: Hell Knight           \n  08: Ogre                  \n  09: Shalrath              \n  10: Shambler              \n  11: Scragg                \n  12: Zomby                 \n  13: Cthon                 \n  14: Spawn                 \n  15: Scourge               \n  16: Shubbers              \n  17: Vorerel               \n  18: Gremlin               \n  19: Vomitus               \n  +------ \bcontrols\b ------+  \n  26: Bits -> map monsters  \n  27: Bits -> to random     \n  28: Bits -> to respawn    \n  29: All bits off          \n  30: Show monster bits     \n  31: List all monsters     \n  32: Monster set II        \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
-//  20:        \n" // 542288
-//  21:        \n" // 1048576
-//  22:        \n" // 2097152
-//  23:        \n" // 4194304
-//  24:        \n" // 8388608
 
 	if (self.cnt) Admin_monstermenu2();
 	self.wad = "";
@@ -1925,32 +1920,6 @@ void() User_menu =
 		ln5 =
 						"  9: Axe                  \n  0: Inventory list       \n  +--------------------+  \n";
 
-/*
-	old menu - deprecated
-
-	self.message =
-					 "\b   Painkeep User Menu:   \n"
-					 "\b+------------------------+\n"
-						"  1: Chain Thunderbolt    \n"
-						"  2: Gravity Well         \n"
-						"  3: Auto Sentry          \n"
-						"  4: Harpoon              \n"
-						"  6: Air fist             \n"
-						"  7: Beartrap             \n"
-						"  8: Can o' Pork n' Beans \n"
-						"  9: Axe                  \n"
-						"  0: Inventory list       \n"
-						"  +--------------------+  \n"
-						"  5: release harpoon      \n\n"
-				"\b*** following are impulse links ***\n\n"
-
-						"  11: close combat wep    \n"
-						"  12: prev pk weapon      \n"
-						"  13: status display      \n"
-						"    any impulse exits     \n"
-					 "\b+------------------------+\n"
-					 "\b Enter code: ";
-*/
 	self.wad = "";
 	centerprint7(self, head, ln1, ln2, ln3, ln4, ln5, foot);
 };

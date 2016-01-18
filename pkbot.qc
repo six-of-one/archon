@@ -389,6 +389,8 @@ void () pkbot_melee =
 	W_BotAttack ();
 };
 
+// NOTE: hardcoded stuff like this means this bot CAN NOT use morphs - he will try to run these frames and fire weps - looks way weird
+
 void () bot_nail1 = [ $lightfatt1, bot_nail2 ]
 {
  	self.effects = (self.effects | EF_MUZZLEFLASH);

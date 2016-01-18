@@ -1097,40 +1097,7 @@ void() pk_liveupd =
 	if (cvar("sv_monster_list"))
 	{
 		localcmd("monster_bits\n");
-	
 		cvar_set("sv_monster_list", "0");
-		bprint("\b--------------------------------\n");
-		bprint("Monsters bit list:\n");
-		bprint("monster_army			1\n");
-		bprint("monster_fish			2\n");
-		bprint("monster_knight			4\n");
-		bprint("monster_dog			8\n");
-		bprint("monster_demon			16\n");
-		bprint("monster_enforcer		32\n");
-		bprint("monster_hellknight		64\n");
-		bprint("monster_ogre			128\n");
-		bprint("monster_shalrath		256\n");
-		bprint("monster_shambler		512\n");
-		bprint("monster_scrag			1024\n");
-		bprint("monster_zombie			2048\n");
-		bprint("monster_boss			4096	(Cthon)\n");
-		bprint("monster_tarbaby			8192\n");
-		bprint("monster_scourge			16384	(Plague)\n");
-		bprint("monster_oldone			32768	(Shubbers)\n");
-		bprint("monster_supervore		65536\n");
-		bprint("monster_gremlin			131072\n");
-		bprint("monster_vomit			262144\n");
-		bprint("trap_spike_mine			524288\n");
-		bprint("\b--------------------------------\n");
-		bprint("Monsters II bit list:\n");
-		bprint("monster_blarg			1\n");
-		bprint("monster_raptor			2\n");
-		bprint("monster_spider			4\n");
-		bprint("monster_manga			8\n");
-		bprint("monster_bossman			16\n");
-		bprint("monster_clinger			32	(Alien Infestation)\n");
-		bprint("monster_heximp			64\n");
-		bprint("\b--------------------------------\n");
 	}
 
 // pk cubes
@@ -1171,7 +1138,7 @@ void() pk_liveupd =
 			if (!S_MONSTER && !S_MONSTER_II && !C_MONSTER && !C_MONSTER_II && !M_MONSTER && !M_MONSTER_II)
 			{
 				localcmd("typical\n"); // run typical alias
-				localcmd("default_hub\n"); // load default hub
+				localcmd("default_hub_map\n"); // load default hub
 			}
 		}
 	}
@@ -1388,8 +1355,8 @@ void() pk_srvcmd_load =
 
 	XMOD = cvar("sv_xtras");
 
-	localcmd("exec pk_7.cfg\n"); // module X - wont exec until after first map load - this should be ok, because first map of server should always be a hub
-	localcmd("exec pk_8.cfg\n");
+	localcmd("exec cfg/map/pk_7.cfg\n"); // module X - wont exec until after first map load - this should be ok, because first map of server should always be a hub
+	localcmd("exec cfg/map/pk_8.cfg\n");
 
 	PK_100 = cvar("sv_pk100");
 
@@ -1400,13 +1367,20 @@ void() pk_srvcmd_load =
 	pk_liveupd(); // load live now, set all cfg changed vars
 };
 
+void() reload_map =
+{
+	if (deathmatch) // Cataboligne - 8.9.13 - change from old code that did a double map load
+		localcmd("default_hub\n"); // MUST be encoded with changelevel so players dont loose morph state or archon points
+	else
+		localcmd("changelevel start\n"); // NOTE: returing to start strips players of items, but we currently cant de-map
+};
+
 void() pk_srvcmd_set =
 {
 // set mcodes - this means they can change and things like func_make that have fixed map codes might go wrong if the code changes in the future - DOH!
 	mcode_load();
 
 // server controls, default on for full feature set
-	pk_mapcmd = 1;
 	pk_mapcfg = 1;
 	pk_srvcfg = 1;
 
@@ -1523,19 +1497,11 @@ void() pk_srvcmd_set =
 	{
 		if (!m_score_rel1)
 		if (world.target1 == "score_rel1")
-		{
-			localcmd("map start\n");
-			localcmd("default_hub\n");
-			return;
-		}
+			XMOD = -666;
 
 		if (!m_score_rel2)
 		if (world.target1 == "score_rel2")
-		{
-			localcmd("map start\n");
-			localcmd("default_hub\n");
-			return;
-		}
+			XMOD = -666;
 	}
 
 // cam controls
@@ -1548,7 +1514,7 @@ void() pk_srvcmd_set =
 	NOPKCIDE = 0;
 
 // vw controls
-	VW_ARMOR = FALSE; /// has issues - can be turned on with sv_vw_armor 1 // TRUE; // should only ever be 1 or 0 - used in conditionals
+	VW_ARMOR = FALSE; /// has issues - can be turned on with sv_vw_armor 1
 	VW_HOLSTER = TRUE;
 	VW = TRUE;
 
@@ -1593,6 +1559,14 @@ void() pk_srvcmd_set =
 	C_FS_MONSTER = 0;
 
 	if (MON_SPEED_DIV <= 0) MON_SPEED_DIV = 1;
+
+	if (XMOD == -666)
+	{
+		newmis = spawn();
+		newmis.think = reload_map;
+		newmis.nextthink = time + 0.666;
+		return;
+	}
 
 // crates
 
@@ -1752,7 +1726,6 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("pk_seven", "0"); // xops
 		registercvar("pk_eight", "0"); // xops
 		registercvar("sv_dmstart", "0");
-		registercvar("sv_c_mapcmd", "1");
 		registercvar("sv_c_mapcfg", "1");
 		registercvar("sv_c_srvcfg", "1");
 		registercvar("sv_c_botfreeze", "0"); // for testing
@@ -2140,20 +2113,14 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 	cvar_set("sv_bot_noway_above", "0"); // bot bot waypoints above this
 
 // server controls - override immediately
-		pk_mapcmd = cvar("sv_c_mapcmd");
 		pk_mapcfg = cvar("sv_c_mapcfg");
 		pk_srvcfg = cvar("sv_c_srvcfg");
 		ADMINLOCK = cvar("sv_c_adminlock"); // so server admin can lock out remote admins in case of abuse - local console commands will still work
 
 // for dedicated server
-		if (pk_mapcmd) // alias cmd
-		{
-			localcmd(mapname);
-			localcmd(ADMINMAPCMD);
-		}
 		if (pk_mapcfg) // cfg file cmd
 		{
-			localcmd("exec ");
+			localcmd("exec cfg/map/");
 			localcmd(mapname);
 			localcmd(".cfg\n");
 		}
@@ -2164,8 +2131,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		{
 			if (!cvar("sv_qstart"))
 			{
-				localcmd("exec ");
-				localcmd("sp_server.cfg\n");
+				localcmd("exec cfg/sp_server.cfg\n");
 			}
 		}
 		else
@@ -2173,10 +2139,9 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		{
 			if (!cvar("sv_dmstart"))
 			{
-				localcmd("exec ");
-				localcmd("d_server.cfg\n");
+				localcmd("exec cfg/d_server.cfg\n");
 			}
-			localcmd("exec ");
+			localcmd("exec cfg/map/");
 			localcmd(mapname);
 			localcmd("_server.cfg\n");
 		}

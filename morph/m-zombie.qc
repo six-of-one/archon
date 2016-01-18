@@ -944,7 +944,7 @@ void(float silent) player_zombie_become =
 	self.cam_y = 28;
 	stuffcmd(self, "chase_up 16\n");
 	stuffcmd(self, "chase_back 28\n");
-	stuffcmd(self, "exec m-zomby.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-zomby.cfg\n");
 
 	setmodel(self,"progs/zombie.mdl");
 

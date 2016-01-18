@@ -376,7 +376,7 @@ void(float silent) player_enforcer_become =
 	self.cam_y = 26;
 	stuffcmd(self, "chase_up 22\n");
 	stuffcmd(self, "chase_back 26\n");
-	stuffcmd(self, "exec m-enforcer.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-enforcer.cfg\n");
 
 	setmodel(self,"progs/enforcer.mdl");
 

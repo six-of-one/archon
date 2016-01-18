@@ -773,7 +773,7 @@ void(float silent) player_gremlin_become =
 	self.cam_y = 32;
 	stuffcmd(self, "chase_up 15\n");
 	stuffcmd(self, "chase_back 32\n");
-	stuffcmd(self, "exec m-gremlin.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-gremlin.cfg\n");
 
 	if (self.morphy == IMP_MGREMLIN_F) // flyer
 		setmodel(self,"progs/gremlin-fly.mdl");

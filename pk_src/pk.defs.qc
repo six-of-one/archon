@@ -206,7 +206,6 @@ string ADMINCODE				= "float1\n"; // local command that loads admin security pas
 //													  //- obscured to keep anyone with casual console access from divining its true meaning
 string ADMINIMPULSE			= "float2\n"; // load the impulse
 string ADMINTIME				= "float3\n"; // load the time out
-string ADMINMAPCMD			= "_mapcmd\n"; // append to mapname for alias cmd
 float BOTFREEZE;							// if true stop bots cold
 float BOTCAM;								// turning off frikbot botcam - 268226 in saved1 to turn on
 float NODECOR;								// sv decor controls
@@ -219,7 +218,6 @@ void() Admin_itembits;
 float(float msk) rnd_bit_mask;
 void(float msk, float bt) bit_print;
 
-float pk_mapcmd;
 float pk_mapcfg;
 
 // obliviously un-implemented for now

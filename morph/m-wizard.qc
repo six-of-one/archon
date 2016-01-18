@@ -470,7 +470,7 @@ void(float silent) player_wizard_become =
 	self.cam_y = -4;
 	stuffcmd(self, "chase_up 36\n");
 	stuffcmd(self, "chase_back -4\n");
-	stuffcmd(self, "exec m-scragg.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-scragg.cfg\n");
 
 	setmodel(self,"progs/wizard.mdl");
 

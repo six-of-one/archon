@@ -222,8 +222,8 @@ r(*) defs
 
 Cataboligne - 9.8.11 - adapted control cfg files -
 
-exec hook_control.cfg = give mouse wheel control of reel in / out
-exec hook_release.cfg = return mouse wheel to weap select up / down
+exec cfg/hook_control.cfg = give mouse wheel control of reel in / out
+exec cfg/hook_release.cfg = return mouse wheel to weap select up / down
 
 if these are in the mod dir they will be run when starting / releasing the hook if it is a standard hook
 
@@ -265,7 +265,7 @@ void () DropHook =
 
 	if (!self.morphy) 
 	if (self.lefty == SEL_S_HOOK )
-		stuffcmd(self.owner, "exec hook_release.cfg\n");
+		stuffcmd(self.owner, "exec cfg/hook_release.cfg\n");
 
 	sound (self.owner, CHAN_AUTO, self.noise1, 1, ATTN_NORM);
 
@@ -299,7 +299,7 @@ void (entity e) DropHook_ent =
 
 	if (!f.morphy) 
 	if (f.lefty == SEL_S_HOOK )
-		stuffcmd(f.owner, "exec hook_release.cfg\n");
+		stuffcmd(f.owner, "exec cfg/hook_release.cfg\n");
 
 	sound (f.owner, CHAN_AUTO, f.noise1, 1, ATTN_NORM);
 
@@ -931,7 +931,7 @@ void(entity e) InitiateHook =
 
 	if (!newhook.morphy) 
 	if (newhook.lefty == SEL_S_HOOK )
-		stuffcmd(e, "exec hook_control.cfg\n");
+		stuffcmd(e, "exec cfg/hook_control.cfg\n");
 
 // setup hook timeout
 	local float f;

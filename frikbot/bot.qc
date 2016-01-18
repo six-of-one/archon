@@ -267,10 +267,10 @@ void() bot_chat;
 void(float tpic) bot_start_topic;
 
 
-// editor stuffs
+// editor stuffs - not compiled in.  exists in source dir
 
-void()				bot_way_edit;
-void()				bot_menu_display;
+//void()				bot_way_edit;
+//void()				bot_menu_display;
 
 
 // ----------Commands---------
@@ -671,8 +671,8 @@ float () BotPostFrame =
 	if (self.class_select == "class_player")
 	{
 
-		if (waypoint_mode > WM_LOADED)
-			bot_menu_display();
+//		if (waypoint_mode > WM_LOADED)
+//			bot_menu_display();
 
 		if (self.admin) // || (serverflags & UNRESTRICTED)) // *pk - admin restriction on bot controls
 		if (self.impulse)
@@ -1275,8 +1275,8 @@ void() BotImpulses =
 		KickABot();
 	else if (self.impulse == 103)
 		botcam_u();
-	else if (self.impulse == 104)
-		bot_way_edit();
+//	else if (self.impulse == 104)
+//		bot_way_edit();
 	else
 		return;
 

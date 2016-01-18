@@ -466,7 +466,7 @@ entity() PK_SelectSpawnPoint =
 
 // config players for admin on spawn & map for players if cfg avail
 
-// code sets admin kby config & tries to run map commands - {mapname}.cfg file and any alias {mapname}_mapcmd
+// code sets admin kby config & tries to run map commands - {mapname}.cfg file
 
 void() pk_plcfg =
 {
@@ -474,14 +474,10 @@ void() pk_plcfg =
 	{
 		crosshair_off(self); // save at init
 		pk_admincfg(self);
-		if (pk_mapcmd) // alias cmd
-		{
-			stuffcmd(self, mapname);
-			stuffcmd(self, ADMINMAPCMD);
-		}
+
 		if (pk_mapcfg) // cfg file cmd
 		{
-			stuffcmd(self, "exec ");
+			stuffcmd(self, "exec cfg/map/");
 			stuffcmd(self, mapname);
 			stuffcmd(self, ".cfg\n");
 		}

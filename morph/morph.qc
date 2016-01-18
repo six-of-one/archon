@@ -1262,7 +1262,7 @@ void(float silent) player_human_become =
 		self.cam_y = 30;
 		stuffcmd(self, "chase_up 10\n");
 		stuffcmd(self, "chase_back 30\n");
-		stuffcmd(self, "exec m-human.cfg\n");
+		stuffcmd(self, "exec cfg/morph/m-human.cfg\n");
 	}
 
 	if (self.morphy == CHAR_W) setmodel(self, "progs/plyr_bw.mdl");

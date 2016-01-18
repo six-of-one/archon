@@ -300,7 +300,7 @@ void(float silent) player_shalrath_become =
 	self.cam_y = 22;
 	stuffcmd(self, "chase_up 15\n");
 	stuffcmd(self, "chase_back 22\n");
-	stuffcmd(self, "exec m-shalrath.cfg\n");
+	stuffcmd(self, "exec cfg/morph/m-shalrath.cfg\n");
 
 	setmodel(self,"progs/shalrath.mdl");
 
