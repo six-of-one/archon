@@ -232,7 +232,6 @@ void(entity e) init_loopcyc =
 	local entity sr, s2;
 	local string cl;
 	local float f0, f1, fr, sf;
-	local vector v1;
 
 	e.theowner = world;
 	cl = "";

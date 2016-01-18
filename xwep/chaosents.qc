@@ -72,6 +72,7 @@ void() chaos_precache =
 
 // shovel test
 	precache_model ("progs/m_shovel.mdl");
+	precache_model ("progs/shovel.md3");
 	precache_model ("progs/vw_shovel.mdl");
 
 // Quantum tunnel apparatus 
@@ -195,7 +196,7 @@ void() c_weapon_shovel =
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/m_shovel.mdl");
-//	if (DARKPLACES) setmodel (self, "progs/shovel.md3"); // TESTING - remove
+	if (DARKPLACES) setmodel (self, "progs/shovel.md3"); // TESTING - remove
 	self.weaponmodel = "progs/v_axe.mdl";
 	self.vwepmdl = "progs/vw_shovel.mdl";
 	self.vv_draw = vw_melee_base;

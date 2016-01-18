@@ -20,6 +20,9 @@ float PK_TUR_INVRETIME = 80; // what to retime invs to if infinite turrets exist
 
 float SENTRY_SDOT = 0.8; // view radius
 
+// last one made, for chaos item
+entity turret;
+
 void() turret_searchForEnemy;
 void() turret_findTarget;
 //float (entity e) turret_inFront;
@@ -46,7 +49,7 @@ void(entity e, float tm) turret_KillStraker =
 
 void() turret_dropTurret =
 {
-	local	entity turret;
+//	local	entity turret;
 	local vector dir;
 
 	if (self.flags & FL_CLIENT) // NOTE: if pk*bot is set back to no client flag

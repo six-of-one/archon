@@ -876,7 +876,6 @@ void() rune_maker =
 {
 	local entity e;
 	local float sf, f, rm, tm;
-	local vector v1;
 
 // periodic check once all runes made
 	tm = 120 + random() * 60;
@@ -1111,7 +1110,6 @@ void() fade_relocate =
 void() rune_relocate =
 {
 	local entity e;
-//	local vector v1;
 
 	if (self.think == fade_relocate) return; // heh heh - dont relocate while relocating
 

@@ -24,8 +24,11 @@ float PK_SEVEN, PK_EIGHT;
 float LOK_STRICT				= 1; 			// lock deal
 float XTR_SAVED1				= 1195724115; // saved1 test val
 
+// scratch vars
+
 float gsf;										// loop safety global - this MUST be watched CAREFULLY
 //				usage list:			m-gremlin, m-chaos, morph, bot_way **, grap **
+vector v1;
 
 // end engines
 
@@ -451,7 +454,7 @@ void(entity e, string cl) item_call_save;
 string(entity e) item_ident;
 void() dtf_handle;
 entity() dyn_rndloc;
-vector(vector v1, float d1, float r1) stdv_rndloc
+vector(vector pv1, float d1, float r1) stdv_rndloc
 void() start_loopcyc;
 void(float mc, vector vo, string wd) fn_make;
 float(string sc, entity e) pk_mcode;
@@ -737,7 +740,7 @@ float EF_FULLBRIGHT			= 512;
 
 float CHAOS_TELE_LIMIT		= 6; // max number of cube spawned spheres per map instance
 
-void(vector v1, vector v2, float typ, string snd) lightning_bolt;
+void(vector pv1, vector pv2, float typ, string snd) lightning_bolt;
 
 void(vector org, float ofs, vector vp, vector vr, float dur, float amt, float rmt, float flg, vector clm, vector crm, vector per) particle_burst;
 float FL_RND					= 1; // pick a random color
@@ -1613,7 +1616,7 @@ void(entity client, string s, string s1, string s2, string s3, string s4, string
 .float pk_currentitem;
 float pk_attack;		// bit 1 = can make a pk attack on any map, bit 2 = pk_artifacts attack
 void() use_pkitem; // bots using pk items
-void(entity e, vector v1) item_eject;
+void(entity e, vector pv1) item_eject;
 
 
 float PK_INV = 1; // if true show pk items in inventory list

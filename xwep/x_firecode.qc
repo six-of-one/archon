@@ -34,7 +34,8 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.vv_holster = self.vv_holster;
 	e.vwepmdl = self.vwepmdl; // for pack / dthrow weps
 //		e.touch = self.touch;
-	if (e.vv_draw != (void()) 0) e.movetype = 0; // for now these cant movetype follow - that will come later
+//	if (e.vv_draw != (void()) 0) e.movetype = 0; // for now these cant movetype follow - that will come later
+	if (e.vv_draw) e.movetype = 0; // for now these cant movetype follow - that will come later
 
 	e.weapon = e.items = self.items;
 	if (self.items == IT_AXE) e.pk_currentitem = self.pk_currentitem; // a x item with pk bits - q3 holdables
@@ -53,15 +54,19 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	if (self.mcode) e.mcode = self.mcode; // for pack touch deal
 //		e.cnt = self.cnt; // vw skinnage
 	e.th_melee = SUB_Null;
-	if (self.th_melee != (void ()) 0) e.th_melee = self.th_melee; // multi modes
+//	if (self.th_melee != (void ()) 0) e.th_melee = self.th_melee; // multi modes
+	if (self.th_melee) e.th_melee = self.th_melee; // multi modes
 
 // alt fire modes
-	if (self._alt_fire != (void ()) 0) e._alt_fire = self._alt_fire; // multi modes
+//	if (self._alt_fire != (void ()) 0) e._alt_fire = self._alt_fire; // multi modes
+	if (self._alt_fire) e._alt_fire = self._alt_fire; // multi modes
 	else self._alt_fire = e._alt_fire = SUB_Null;
 
-	if (self._killmsg != (void ()) 0) e._killmsg = self._killmsg; // kill messages
+//	if (self._killmsg != (void ()) 0) e._killmsg = self._killmsg; // kill messages
+	if (self._killmsg) e._killmsg = self._killmsg; // kill messages
 	else self._killmsg = e._killmsg = SUB_Null;
-	if (self._killmsg2 != (void ()) 0) e._killmsg2 = self._killmsg2;
+//	if (self._killmsg2 != (void ()) 0) e._killmsg2 = self._killmsg2;
+	if (self._killmsg2) e._killmsg2 = self._killmsg2;
 	else self._killmsg2 = e._killmsg2 = SUB_Null;
 
 	e.netname = self.netname;
@@ -1893,7 +1898,6 @@ void() bfg_trace_thk =
 					f = f * (Q2_BFG_LASER / k);
 				}
 
-local vector v1, v2;
 local float i;
 local entity g;
 
@@ -2105,7 +2109,8 @@ void() e_weap_Attack =
 	if (rune_haste(e.attack_finished / 2))
 		self.attack_finished = time + e.attack_finished;
 
-	if (e._attack != (void ()) 0)
+//	if (e._attack != (void ()) 0)
+	if (e._attack)
 	if (e._attack != SUB_Null) e._attack();
 
 	if (c) // dont let cube making a weap fire anything
@@ -2114,7 +2119,8 @@ void() e_weap_Attack =
 		return;
 	}
 
-	if (e._fr_attack != (void ()) 0)
+//	if (e._fr_attack != (void ()) 0)
+	if (e._fr_attack)
 	if (e._fr_attack != SUB_Null) e._fr_attack();
 
 	if (e.duration == SND_OVER)

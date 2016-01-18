@@ -76,7 +76,8 @@ void() morph_precache =
 	precache_model ("progs/plyr_dm.mdl");
 	precache_model ("progs/plyr_pk.mdl");
 	precache_model ("progs/plyr_q3.mdl");
-	precache_model ("progs/reticle.mdl");
+//	precache_model ("progs/reticle.mdl");
+	precache_model ("gfx/reticle.spr");
 
 };
 
@@ -1325,6 +1326,12 @@ void(float cmd, float pls) polymorph_check =
 				}
 			}
 			morph_armor_check(cb_morph(cmd));
+
+			if ((cmd == IMP_MCHAOS) || (cmd == IMP_MORDER))
+			{
+				dead_artifact(self);
+				dead_runes(self);
+			}
 	//		morph_powerup_check(cmd);
 			morph_clearparms(self, FALSE);
 		}

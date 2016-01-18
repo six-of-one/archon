@@ -59,8 +59,6 @@ void() cthon_outoflava;
 
 void() level_cthon =
 {
-	local vector v1;
-
 	if (!LEVEL_CTHON) return;
 
 	v1 = ' 0 0 0';

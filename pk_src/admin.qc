@@ -534,7 +534,7 @@ float() MapDM =
 		else if (self.admin_input == 61) // hub links
 		{
 			local entity e, f, b;
-			local vector v1, v2;
+			local vector v2;
 			local float dx, mm;
 			e = find(world, classname, "hub_teleport");
 			if (!e)

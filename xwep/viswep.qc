@@ -797,7 +797,7 @@ void() viswep_post =
 
 
 					if (drw) vofs = v0;
-					local vector v1, v2, v3, v4;
+					local vector v2, v3, v4;
 
 					v1 = vhead.owner.angles;
 					v1_x = 0 - v1_x; // must reverse pitch for proper position from v_fwd calc
@@ -942,7 +942,7 @@ void() viswep_togl =
 vector(entity hent) grap_vw_adj =
 {
 	local vector vwa;
-	local vector v1, v2, v3, v4;
+	local vector v2, v3, v4;
 
 	vwa = v0;
 	if (!hent) return (vwa);
@@ -1123,7 +1123,7 @@ void(entity e, string md, entity p) DeadThrew =
 
 // $frame dthrow1 dthrow2 dthrow3 dthrow4 dthrow5
 
-void(entity pack, vector v1) DeadThrowWeps =
+void(entity pack, vector pv1) DeadThrowWeps =
 {
 	local entity e;
 	local float w, pkid, pd;
@@ -1204,7 +1204,7 @@ void(entity pack, vector v1) DeadThrowWeps =
 
 
 				newmis.frame = e.frame;
-				if (newmis.origin == v0) setorigin(newmis, v1);
+				if (newmis.origin == v0) setorigin(newmis, pv1);
 			}
 /*
 				xwep_ammo(e, pack); // adjust ammo in pack for retrievable wep

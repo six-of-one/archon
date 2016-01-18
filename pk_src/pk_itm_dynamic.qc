@@ -1021,16 +1021,16 @@ entity() dyn_rndloc =
 
 // some deviation around a random loc, rule out solid areas
 
-// v1 - org
+// pv1 - org
 // d1 - min radius away
 // r1 - dist to rnd past min
 
-vector(vector v1, float d1, float r1) stdv_rndloc =
+vector(vector pv1, float d1, float r1) stdv_rndloc =
 {
-	vector v2;
+	local vector v2; // NOT v1 !!!
 	local float sf, pco, f, k;
 
-	v2 = v1;
+	v2 = pv1;
 	sf = 100; // NOT gsf
 	pco = CONTENT_SOLID;
 
@@ -1039,14 +1039,14 @@ vector(vector v1, float d1, float r1) stdv_rndloc =
 		f = crandom() * r1;
 		k = d1;
 		if (f < 0) k = 0 - d1;
-		v2_x = v1_x + k + f;
+		v2_x = pv1_x + k + f;
 		f = crandom() * r1;
 		k = d1;
 		if (f < 0) k = 0 - d1;
-		v2_y = v1_y + k + f;
+		v2_y = pv1_y + k + f;
 		pco = pointcontents(v2);
 		sf = sf - 1;
-		if (sf < 1) v2 = v1;
+		if (sf < 1) v2 = pv1;
 	}
 	return(v2);
 };
@@ -1347,7 +1347,6 @@ void() func_dynitem =
 {
 	local float rv, sb;
 	local entity e;
-	local vector v1;
 
 	if (PK_100 || Q_100)
 	{

@@ -493,7 +493,6 @@ void() sphere_whirl =
 void() sphere_annihilation_phys_move =
 {
 	local entity head;
-	local vector v1;
 	local float f;
 
 	if (sphere_a.classname != "sphere_annihilation") // something has gone wrong with the pointer!

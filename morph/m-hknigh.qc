@@ -346,8 +346,7 @@ void(float silent) player_hknight_become =
 
 	self.cam_z = 15 / 100;
 	self.cam_y = 12;
-	stuffcmd(self, "chase_up 15\n");
-	stuffcmd(self, "chase_back 12\n");
+
 	stuffcmd(self, "exec cfg/morph/m-hellknight.cfg\n");
 
 	setmodel(self,"progs/hknight.mdl");

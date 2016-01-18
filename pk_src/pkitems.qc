@@ -1896,11 +1896,11 @@ void() pk_item_position =
 
 // give tossed items eject velocity
 
-void(entity e, vector v1) item_eject =
+void(entity e, vector pv1) item_eject =
 {
-	e.velocity_z = v1_z + 100 * random();
-	e.velocity_x = crandom() * v1_x;
-	e.velocity_y = crandom() * v1_y;
+	e.velocity_z = pv1_z + 100 * random();
+	e.velocity_x = crandom() * pv1_x;
+	e.velocity_y = crandom() * pv1_y;
 
 };
 
@@ -1995,7 +1995,6 @@ void() pk_placeitem =
 void() dtf_handle =
 {
 	local entity e;
-	local vector v1;
 
 	e = dyn_rndloc();
 	if (!e) e = findradius(world.origin, 256000);

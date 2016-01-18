@@ -313,6 +313,8 @@ void(vector valor, string pic1, string pic2, float itemnum, float scale, float s
 				Sbar_DrawPic(v + y, "gfx/dmg_flare2", ibar_alpha, 0.125); // NOTE: scale deal
 			if (dmg_flare)
 				Sbar_DrawPic(v + y, "gfx/dmg_flare", ibar_alpha, 0.125);
+			else
+				Sbar_DrawPic(v + y + '3 -16 0', "gfx/spell_bar", ibar_alpha, 0.5);
 
 // code hasted weps - dbl shadow image on active wep
 			if ((rune_flag & RUNE_FLG_HS) || (rune_flag & TECH_TEIM))
@@ -500,6 +502,13 @@ sb_align = SB_BOTTOM;
 // runes
 	pwr_step = '-400 50 0';
 
+// ammo pack deal
+	if (rune_flag & RUNE_AMMO)
+	{
+		DrawInventoryAmmo(pwr_step, "gfx/rune_pack", ALPHA_FULL, 0.25);
+		pwr_step_y = pwr_step_y + 30;
+	}
+
 	if (rune_flag & TECH_AMP)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_amp", ALPHA_FULL, 0.25);
@@ -657,6 +666,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_PHONE))
 		{
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_phn", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_phone, ALPHA_FULL);
 		}
@@ -673,6 +683,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_ACTOR))
 		{
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_mask", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_mask, ALPHA_FULL);
 		}
@@ -689,6 +700,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_TOMB))
 		{
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_tomb", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_tomb, ALPHA_FULL);
 		}
@@ -705,6 +717,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_EGO))
 		{
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_ego", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_ego, ALPHA_FULL);
 		}
@@ -721,6 +734,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_CANPAB))
 		{
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_copb", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_copb, ALPHA_FULL);
 		}
@@ -737,6 +751,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_BEARTRAP))
 		{
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_btrap", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_bt, ALPHA_FULL);
 		}
@@ -753,6 +768,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_TURRET))
 		{
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_turr", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_tur, ALPHA_FULL);
 		}
@@ -769,6 +785,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_GRAVITYWELL))
 		{
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
 			if (pk_gwell > 0)
 				DrawInventoryAmmo(wep_step, "gfx/inv_gwell", ALPHA_FULL, 0.125);
 			else

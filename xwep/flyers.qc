@@ -86,7 +86,6 @@ void(entity fent) flyer_mode =
 void() flyer_move =
 {
 	local float vel1, ms;
-	local vector v1;
 
 	v1 = self.velocity;
 	v1_z = 0;

@@ -98,7 +98,7 @@ float MC_BACKPACK;
 /// painkeep
 // pk wep ids
 float MC_EXPSHOTGUN;
-//float MC_PULSE_NAILGUN;
+//float MC_PULSE_NAILGUN; // moved for HUD
 float MC_CHTHUNDR;
 float MC_GRAP;
 float MC_AIRGUN;
@@ -2002,7 +2002,6 @@ void(entity e, float trvs) item_translate;
 
 void() painkeep_cube_use =
 {
-	local vector v1;
 	local entity c, sv, crate, y;
 	local float f, d;
 	local vector v;
@@ -2910,7 +2909,6 @@ void(float mc, vector vo, string wd) fn_make =
 {
 	local string sc;
 	local entity e, sv;
-	local vector v1;
 
 	newmis = world;
 	sv = self;

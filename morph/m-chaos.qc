@@ -186,7 +186,6 @@ void(entity cent, float pl) chaos_morph_chg =
 {
 	local entity sv;
 	local float sf;
-	local vector v1,v2;
 
 	sv = self;
 	if (cent != world) self = cent;
@@ -1079,7 +1078,7 @@ void() chaos_item =
 		else if (ci_fr == 7) HIP_LaunchLaser(v0, v0, rint(random()), "lasercannon/laserg.wav");
 		else if (ci_fr == 8) fire_cbolt();
 		else if (ci_fr == 9) { beartrap_dropBearTrap(); newmis.beartrap_time = time + 9; }
-		else if (ci_fr == 10) turret_dropTurret(); //if (newmis) if (random() < 0.333) newmis.th_stand = chaos_sentry_lt; }
+		else if (ci_fr == 10) { turret_dropTurret(); turret.owner = self; }
 		if (newmis)
 		{
 			if (ci_fr == 4) newmis.classname = "chaos_prox";
@@ -1097,7 +1096,7 @@ void() chaos_item =
 		r1 = floor(random() * 20.3);
 		if (r1 == 0) ci_md = "progs/proxbomb.mdl";
 		else if (r1 == 1) {ci_md = "progs/bolt2.mdl"; ci_fr = floor(random() * 6.3);}
-		else if (r1 == 2) {ci_md = "progs/ejbatt.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 20; }
+		else if (r1 == 2) {ci_md = "progs/h_dog.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 20; }
 		else if (r1 == 3) ci_md = "progs/hook.mdl";
 		else if (r1 == 4) {ci_md = "maps/b_rock0.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 50; }
 		else if (r1 == 5) {ci_md = "maps/b_exbox2.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 80; }
@@ -1115,7 +1114,7 @@ void() chaos_item =
 		else if (r1 == 17) {ci_md = "progs/invulner.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
 		else if (r1 == 18) {ci_md = "progs/gas.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 80; }
 		else if (r1 == 19) ci_md = "progs/beartrap.mdl";
-		else if (r1 == 20) {ci_md = "progs/b_eshel0.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 50; }
+		else if (r1 == 20) {ci_md = "maps/b_eshel0.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 50; }
 		else if (r1 == 21) { ci_md = "progs/laser_m.mdl"; ci_sk = floor(random() * 10.4); ci_fr = floor(random() * 10.4); }
 		}
 	if (ft || random() < 0.05) // random inert crap
@@ -1288,7 +1287,6 @@ void(entity fe) chaos_fieldmove = // set move vectors for field
 void() chaos_field_thk =
 {
 	local float rng, pr;
-	local vector v1;
 
 	if (random() < 0.5) rng = 20 + random() * 200;
 	else rng = 85;
@@ -1638,7 +1636,8 @@ void() player_chaos_attack =
 				self.bolt_targetTimeout = time + 30;
 				archon_target_clear(self.bolt_target);
 				self.bolt_target = self.enemy;
-				self.bolt_target.bolt_target.alpha = 1;
+//				self.bolt_target.bolt_target.alpha = 1;
+				self.bolt_target.bolt_target.skin = 0;
 				self.enemy = world;
 			}
 			return;
@@ -1792,18 +1791,27 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 
 // clear archon target reticles
 
+// e - entity that was targeted
+
 void(entity e) archon_target_clear =
 {
 	if (!e) return;
 
 	if (e.bolt_target)
 	{
-		if (e.bolt_target.model == "progs/reticle.mdl")
+		if (e.bolt_target.model == "gfx/reticle.spr")
 		{
 			remove(e.bolt_target);
 			e.bolt_target = world;
 		}
 	}
+};
+
+void() clear_target =
+{
+	if (self.owner.bolt_target.model == "gfx/reticle.spr")
+		self.owner.bolt_target = world;
+	remove(self);
 };
 
 // self is archon, sets .bolt_target if world, if not sets potential new target in .enemy
@@ -1836,12 +1844,15 @@ void() archon_target =
 	}
 
 // things we should not target
-	if (trace_ent.map == "nonmove") return; // 7.22.13 - func_models we should not suck
-	if (trace_ent.classname == OBSERVER) return;
+	if (! trace_ent.flags & (FL_CLIENT | FL_MONSTER | FL_ITEM))
+	{
+		if (trace_ent.map == "nonmove") return; // 7.22.13 - func_models we should not suck
+		if (trace_ent.classname == OBSERVER) return;
 
-	if (trace_ent.movetype == MOVETYPE_NONE) return;
-	if (trace_ent.movetype == MOVETYPE_PUSH) return;
-	if (trace_ent.movetype == MOVETYPE_NOCLIP) return;
+		if (trace_ent.movetype == MOVETYPE_NONE) return;
+		if (trace_ent.movetype == MOVETYPE_PUSH) return;
+		if (trace_ent.movetype == MOVETYPE_NOCLIP) return;
+	}
 
 // already targeted, power point protection or in a clg bolt loop
 /// *** an archon with a primary target will not be targetable!
@@ -1851,16 +1862,44 @@ void() archon_target =
 	if (self.bolt_target == trace_ent) return;
 	if (self.enemy == trace_ent) return;
 
+	if (trace_ent.classname == "turret") // target the turrets base so it can be moved - note other spells will be diff
+	if (trace_ent.turret_base)
+	if (trace_ent.turret_base.classname == "turret_base")
+		trace_ent = trace_ent.turret_base;
+
 	self.bolt_targetTimeout = time + 30;
 
 // setup reticle
 	trace_ent.bolt_target = spawn();
-	trace_ent.bolt_target.nextthink = time + 30;
-	trace_ent.bolt_target.think = SUB_Remove;
-	setorigin(trace_ent.bolt_target, trace_ent.origin);
-	setmodel(trace_ent.bolt_target, "progs/reticle.mdl");
-	if (!trace_ent.flags & FL_ITEM)
-		trace_ent.bolt_target.scale = 1.5;
+	trace_ent.bolt_target.nextthink = time + 31;
+	trace_ent.bolt_target.think = clear_target;
+	trace_ent.bolt_target.owner = trace_ent;
+	trace_ent.bolt_target.movetype = MOVETYPE_FLY;
+//	trace_ent.bolt_target.scale = 8;
+// because bottom point of ammo boxes is mostly on ground - can submerge reticle
+	trace_ent.bolt_target.view_ofs = v0;
+	if (!trace_ent.mins_z)
+	{
+		trace_ent.bolt_target.view_ofs_x = trace_ent.maxs_x / 2;
+		trace_ent.bolt_target.view_ofs_y = trace_ent.maxs_y / 2;
+		trace_ent.bolt_target.view_ofs_z = trace_ent.maxs_z / 2;
+	}
+
+   v1 = trace_plane_normal;
+   v1_x = 0 - v1_x;
+   v1_y = 0 - v1_y;
+   trace_ent.bolt_target.angles = vectoangles( v1 );
+
+	if (trace_ent.bolt_target.angles_x == 90)
+		trace_ent.bolt_target.avelocity_y = 20;
+	else if (trace_ent.bolt_target.angles_x == 0)
+		trace_ent.bolt_target.avelocity_z = -20;
+
+	setorigin(trace_ent.bolt_target, trace_ent.origin + trace_ent.bolt_target.view_ofs);
+//	setmodel(trace_ent.bolt_target, "progs/reticle.mdl");
+	setmodel(trace_ent.bolt_target, "gfx/reticle.spr");
+	if (! trace_ent.flags & FL_ITEM)
+		trace_ent.bolt_target.scale = 1.66;
 
 //	trace_ent.effects = EF_BRIGHTLIGHT; // IMP: reticle, poss HUD info
 	
@@ -1868,6 +1907,7 @@ void() archon_target =
 
 	if (!self.bolt_target)
 	{
+		trace_ent.bolt_target.skin = 0;
 		trace_ent.bolt_target.alpha = 1;
 		self.bolt_target = trace_ent;
 		archon_target_clear(self.enemy);
@@ -1876,7 +1916,9 @@ void() archon_target =
 	}
 // secondary - selected as main with ALT_FIRE
 
-	trace_ent.bolt_target.alpha = 0.65;
+
+//	trace_ent.bolt_target.alpha = 0.65;
+	trace_ent.bolt_target.skin = 1;
 
 	archon_target_clear(self.enemy);
 	self.enemy = trace_ent;

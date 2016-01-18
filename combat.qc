@@ -156,6 +156,9 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
    if (discharged && targ.wetsuit_finished && (targ.items & IT_SUIT)) // lightning underwater & wearing suit
       return;
 
+// Archons dont use health - no damage & no additive - 9.19.13
+	if (targ.mask_x & MORPH_ARCHON) return;
+
 // used by buttons and triggers to set activator for target firing
 	damage_attacker = attacker;
 
@@ -420,15 +423,16 @@ void (entity inflictor, entity attacker, float damage, entity ignore) T_RadiusDa
 		if (head != ignore)
 		{
 			if (head.takedamage)
-			if (head.wad != "q1" || PK_100 || Q_100) // dont damage hidden replacement stuff 2.21.11 -i.e. barrels!
+			if (head.wad != "q1") // dont damage hidden replacement stuff 2.21.11 -i.e. barrels!
 			{
 				org = head.origin + (head.mins + head.maxs)*0.5;
 				points = 0.5*vlen (inflictor.origin - org);
 				if (points < 0)
 					points = 0;
 				points = damage - points;
-				if (head == attacker)
+				if (head == attacker || inflictor.classname == "chaos_prox")
 					points = points * 0.5;
+				if (head.morphy == IMP_MCHAOS) points = 0; // Cat - imp 9.19.13 - so chaos proxmines dont hurt chaos
 				if (points > 0)
 				{
 					if (CanDamage (head,inflictor))
@@ -445,11 +449,14 @@ void (entity inflictor, entity attacker, float damage, entity ignore) T_RadiusDa
 	}
 };
 
+// fn(T_BeamDamage) -  deprecated - never called by qc code
+
 /*
 ============
 T_BeamDamage
 ============
-*/
+*
+
 void (entity attacker, float damage) T_BeamDamage =
 {
 	local float points;
@@ -482,3 +489,4 @@ void (entity attacker, float damage) T_BeamDamage =
 	}
 };
 
+*/

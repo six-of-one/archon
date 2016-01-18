@@ -312,7 +312,7 @@ entity (vector pos, entity entrance) OpenPortalExit =
 void () PortalPathThink =
 {
 	local float pntc;
-	local vector o2, v1;
+	local vector o2;
 
 	if ((self.attack_finished < time))
 	{

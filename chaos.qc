@@ -914,7 +914,6 @@ float() crandom;
 void() th_arcarn =
 {
 	local float f;
-	local vector v1;
 
 	self.nextthink = time + self.wait + self.cnt * random();
 
@@ -1093,7 +1092,6 @@ void() archon_power_fn =
 {
 	local float f;
 	local entity e;
-	local vector v1;
 
 		if (self.target) // follow this target
 		{
@@ -1280,10 +1278,32 @@ void() archon_power_touch =
 			T_Heal(activator,other.healtype + rint(0.33 + random()), 0);
 	}
 
+	if (activator.mask_x & MORPH_ARCHON)
+		activator.archon = activator.archon + (self.archon + ARCHON_POINT) * 5;
 	if (self.archon)
 		activator.archon = activator.archon + self.archon;
 	else
 		activator.archon = activator.archon + ARCHON_POINT;
+
+// magic protection
+	if (activator.bolt_target)
+	{
+		if (activator.bolt_target == self)
+		{
+			activator.bolt_targetTimeout = time + 10;
+			return;
+		}
+		if (activator.bolt_target.model == "progs/reticle.mdl") // was targeted - clear it
+		{
+			archon_target_clear(activator);
+		}
+	}
+
+	if (!activator.bolt_target) // set protection
+	{
+		activator.bolt_target = self;
+		activator.bolt_targetTimeout = time + 10;		
+	}
 };
 
 // power point activator - must be targeted by multi trigger

@@ -2177,7 +2177,6 @@ void() X_FireBlaster =
 
 void() q2_teleport_particles =
 {
-	local vector v1;
 	local float f, z;
 
 	self.nextthink = time + 0.2;

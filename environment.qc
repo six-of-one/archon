@@ -126,8 +126,6 @@ void() fallingwater_fire;
 
 void() fallingwater_think =
 {
-	local vector v1;
-
 	if (self.state == self.count)
 	{
 		SUB_UseTargets (); // anything we targeted
@@ -258,7 +256,7 @@ void(vector org, vector end, float fr) multi_beam =
 
 // "weapons/lstart.wav"
 
-void(vector v1, vector v2, float typ, string snd) lightning_bolt =
+void(vector pv1, vector pv2, float typ, string snd) lightning_bolt =
 {
 	local entity e;
 	local float te;
@@ -272,18 +270,18 @@ void(vector v1, vector v2, float typ, string snd) lightning_bolt =
 	WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, te);
 	WriteEntity (MSG_BROADCAST, e);
-	WriteCoord (MSG_BROADCAST, v1_x);
-	WriteCoord (MSG_BROADCAST, v1_y);
-	WriteCoord (MSG_BROADCAST, v1_z);
-	WriteCoord (MSG_BROADCAST, v2_x);
-	WriteCoord (MSG_BROADCAST, v2_y);
-	WriteCoord (MSG_BROADCAST, v2_z);
+	WriteCoord (MSG_BROADCAST, pv1_x);
+	WriteCoord (MSG_BROADCAST, pv1_y);
+	WriteCoord (MSG_BROADCAST, pv1_z);
+	WriteCoord (MSG_BROADCAST, pv2_x);
+	WriteCoord (MSG_BROADCAST, pv2_y);
+	WriteCoord (MSG_BROADCAST, pv2_z);
 
 	if (snd)
 	{
-		e.origin = v1;
+		e.origin = pv1;
 		sound (e, CHAN_WEAPON, snd, 1, ATTN_NORM);
-//		e.orign = v2;
+//		e.orign = pv2;
 //		sound (e, CHAN_VOICE, "weapons/lhit.wav", 1, ATTN_NORM);
 	}
 };
@@ -411,7 +409,7 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 	sv = self;
 	self = s;
 	if (s == world) self = spawn();
-	if (self == world) { self = sv; return; } // IDEA: error msg?
+	if (self == world) { self = sv; return; }
 	newmis = world;
 
 	r1 = amt + rint(random() * rmt);
@@ -631,7 +629,6 @@ void() item_fall_touch =
 
 void() item_fall_think =
 {
-	local vector v1;
 	local entity drop;
 	local float f;
 
@@ -1086,7 +1083,7 @@ float smallent_sf; // loop safety - _must_ be set before fn() call
 
 void(float sz) smallent_free =
 {
-	local vector v1, v2;
+	local vector v2;
 
 	v1 = v0;
 	for (v1_x = 0 - sz; v1_x < (sz + 1); v1_x = v1_x + sz)
