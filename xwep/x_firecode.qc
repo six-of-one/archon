@@ -70,7 +70,7 @@ void() d_weapon_touch =
 	else if (self.classname == "d_weapon_pistol" || self.classname == "d_weapon_chaingun"
 					|| self.classname == "q3_weapon_machinegun" || self.classname == "q2_weapon_machinegun"
 					|| self.classname == "w_weapon_machinegun" || self.classname == "w_weapon_chaingun"
-					|| self.classname == "weapon_chaingun"
+					|| self.classname == "weapon_chaingun" || self.classname == "weapon_machinegun"
 					|| self.classname == "w_weapon_pistol")
 	{
 	if (self.noise4 == Q3_DET)
@@ -88,6 +88,7 @@ void() d_weapon_touch =
 		self.classname == "q3_weapon_lightning" || self.classname == "weapon_lightning" ||
 		self.classname == "q3_weapon_bfg" || self.classname == "weapon_hyperblaster" ||
 		self.classname == "d_weapon_bfg" || self.classname == "q2_weapon_bfg" ||
+		self.classname == "weapon_bfg" || 
 		self.classname == "weapon_plasmagun")
 	{
 	if (self.noise4 == Q3_DET)
@@ -1333,6 +1334,18 @@ float PKPLUS_IT_CORPSE			= 1024; // special - corpse has health, can takedmg, ca
 // r - range to test if flag set
 // flg - flags control tests
 
+
+
+
+// test
+float chtt;
+
+
+
+
+
+
+
 float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 {
 	local float k;
@@ -1475,6 +1488,18 @@ bprint(".\n");
 	if ((e.flags & FL_CLIENT) && (flg & TFL_PLY)) return(FALSE);
 	if ((e.flags & FL_MONSTER) && (flg & TFL_MON)) return(FALSE);
 
+
+
+if (chtt)
+{
+bprint(" *** cht found ent (");
+bprint(item_ident(e));
+bprint(")\n");
+}
+
+
+
+
 	return(TRUE);
 };
 
@@ -1518,8 +1543,8 @@ float bdm;
 
 void() bfg_trace_thk =
 {
-	local float f, j, k, k2, tr, bfl, sf, ifr;
-	local entity e, tl, t2;
+	local float f, j, k, kl, tr, bfl, sf, ifr;
+	local entity e, tl;
 
 
 /*
@@ -1539,38 +1564,49 @@ bdm = 0;
 	else if (self.flags == 0.87)
 	{
 		self.flags = Q2_BFG_LASER;
-bdm = 0;
+chtt = bdm = 0;
 	}
 
 	if (self.flags == Q2_BFG)
 	{
-		self.flags = Q2_BFG;
-		
-	}
-	if (self.flags == Q2_BFG_LASER)
-	{
-		e = findradius(self.enemy.origin, Q2_BFG_LASER); // find things to laser dmg in fire radius
-		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM;
+
+
+
+tr = 0;
+chtt = 1;
+
+
+
+		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM ;		// all hittable things
+		k = bfg_targ_seq(self.enemy.origin, Q2_BFG_TRACE, bfl, 0); // find things to dmg in beam radius
+		e = self.theowner;
 		while (e)
 		{
-			if (can_has_target(e, self.owner, self.enemy.origin, 0, bfl)){
-				T_Damage (e,self,self.owner,Q2_BFG_LASER_DMG);
+			if (can_has_target(e, self.owner, self.owner.origin, 0, bfl)) // check LOS to owner
+			{
+				f = self.eweapon.dodmg;
+				k = vlen(e.origin - self.enemy.origin);
+				if (k > Q2_BFG_LASER)
+				{
+					f = f * (Q2_BFG_LASER / k);
+				}
 
 
 
-
+chtt = 0;
 local vector v1, v2;
 local float i, m;
 local entity g;
 
+/*
 	v1 = e.origin - self.enemy.origin;
 	m = vlen(v1) * 0.01;
 	v2 = normalize(v1) * m;
 	v1 = self.enemy.origin;
 	i = 100;
-	while (i > 0)
+	while (i > 0) // beam from ball
 	{
-		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/beambit.spr", SUB_Remove, 0.1, SUB_Remove, SUB_Null, self, world);
+		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/bfgbit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
 		if (g)
 		{
 			g.alpha = 0.7;
@@ -1578,21 +1614,101 @@ local entity g;
 		v1 = v1 + v2;
 		i = i - 1;
 	}
+	g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, e.origin, v0, v0, v0, v0, "", e.model, SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
+	g.frame = e.frame;
+
+	v1 = e.origin - self.owner.origin;
+	m = vlen(v1) * 0.01;
+	v2 = normalize(v1) * m;
+	v1 = self.owner.origin;
+	i = 100;
+	while (i > 0) // beam from player
+	{
+		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/beambit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
+		if (g)
+		{
+			g.alpha = 0.5;
+		}
+		v1 = v1 + v2;
+		i = i - 1;
+	}
+*/
+
+
+tr = tr + 1;
+bprint("*** q2 bfg beam hit = ");
+bprint(item_ident(e));
+bprint(", for dmg = ");
+bprint(ftos(f));
+bprint(".\n");
+
+fts.dmg_take = fts.dmg_take + f;
+bdm = bdm + f;
+
+
+
+				T_Damage (e,self,self.owner,f);
+				}
+				e = e.theowner;
+			}
+
+
+
+bprint(", beams fired = ");
+bprint(ftos( tr));
+
+
+
+	}
+	if (self.flags == Q2_BFG_LASER)
+	{
+		self.cnt = self.cnt + 1;
+		e = findradius(self.enemy.origin, Q2_BFG_LASER); // find things to laser dmg in fire radius
+		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM;
+		while (e)
+		{
+			if (can_has_target(e, self.owner, self.enemy.origin, 0, bfl))
+			{
+				T_Damage (e,self,self.owner,Q2_BFG_LASER_DMG);
+
+				v1 = e.origin - self.enemy.origin;
+				m = 2; //vlen(v1) * 0.02;
+				v2 = normalize(v1) * m;
+				v1 = self.enemy.origin;
+				i = vlen(v1) / m;
+
+bprint(" --- laser vln = ");
+bprint(ftos(vlen(v1)));
+bprint(" - cnt = ");
+bprint(ftos(i));
+bprint(".\n");
+
+				if (self.cnt & 1)
+				while (i > 0)
+				{
+					g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/bfgbit.spr", SUB_Remove, 0.1, SUB_Remove, SUB_Null, self, world);
+					if (g)
+					{
+						g.alpha = 0.55;
+					}
+					v1 = v1 + v2;
+					i = i - 1;
+				}
 
 
 fts.dmg_take = fts.dmg_take + Q2_BFG_LASER_DMG;
 bdm = bdm + Q2_BFG_LASER_DMG;
 
+/*
 bprint("*** q2 bfg laser hit = ");
 bprint(item_ident(e));
 bprint(", for dmg = ");
 bprint(ftos(Q2_BFG_LASER_DMG));
 bprint(".\n");
-
-}
-
+*/
 
 
+			}
 			e = e.chain;
 		}
 		self.nextthink = time + 0.1;
@@ -1606,15 +1722,14 @@ bprint(".\n");
 		ifr = self.origin_x;
 		tr = 40;
 		self.theowner = tl = world;
-//		makevectors (self.angles);
+
 		self.v_angle = self.angles;
 		self.origin = self.owner.origin; // where ever the player is .38 secs after ball hits or expires
 
 //		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_PLY | TFL_MON | TFL_INV | TFL_TR_IGM | TFL_IFR_NOZ; // only monsters & players
-		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_PLY | TFL_MON | TFL_TR_IGM | TFL_IFR_NOZ;		// no players or monsters - all other hittable things
+		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_TR_IGM | TFL_IFR_NOZ;		// all hittable things
 
 		k = bfg_targ_seq(self.origin, DOOM_BFG_TRACE, bfl, ifr);
-
 		tl = self.theowner;
 
 
@@ -1624,6 +1739,7 @@ bprint(".\n");
 
 
 
+		kl = k; // track killed ents
 		sf = 400;
 		if (tl)
 		while (tr > 0 && sf > 0)
@@ -1646,6 +1762,7 @@ bprint(".\n");
 			if (e.health > 0)
 			{
 				T_Damage (e,self,self.owner,f);
+				if (e.health <= 0) kl = kl - 1;
 
 
 
@@ -1667,7 +1784,7 @@ bprint(".\n");
 	i = 40;
 	while (i > 0)
 	{
-		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/beambit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
+		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/bfgbit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
 		if (g)
 		{
 			g.alpha = 0.5;
@@ -1692,90 +1809,23 @@ bdm = bdm + f;
 
 				tr = tr - 1;
 			}
-			sf = sf - 1;
-		}
-
-// if traces left & second list give it some shots
-		sf = 400;
-		if (t2 && tr > 0)
-		while (tr > 0 && sf > 0)
-		{
-			f = rint(random() * k2);
-			e = t2;
-			while (f > 0 && e.theowner)
+			if (kl < 1) // killed everything on current list - try to retarget
 			{
-				e = e.theowner;
-				f = f - 1;
-			}
-			j = 16;
-			f = 0;
-			while (j > 0) // new calc based on revised faq - making bfg even more deadly
-			{
-				f = f + ceil(random() * 8); // add d8 up 16 times
-				j = j - 1;
-			}
-//			f = 49 + ceil(36 * random());
-			if (e.health > 0)
-			{
-				T_Damage (e,self,self.owner,f);
-
-
-
-
-	if (e.count == 0)
-	{
-		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, e.origin, v0, v0, v0, v0, "", e.model, SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
-		g.frame = e.frame;
-		e.count = 1;
-	}
-	else
-		e.count = e.count + 2;
-
-
-	v1 = e.origin - self.origin;
-	m = vlen(v1) * 0.025;
-	v2 = normalize(v1) * m;
-	v1 = self.origin;
-	v1_z = self.origin_z + e.count;
-	i = 40;
-	while (i > 0)
-	{
-		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/beambit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
-		if (g)
-		{
-			g.alpha = 0.5;
-		}
-		v1 = v1 + v2;
-		i = i - 1;
-	}
-
-
-bprint("*** doom bfg beam hit = ");
-bprint(item_ident(e));
-bprint(", for dmg = ");
-bprint(ftos(f));
-bprint(".\n");
-
-fts.dmg_take = fts.dmg_take + f;
-bdm = bdm + f;
-
-
-
-
-
-				tr = tr - 1;
+				k = bfg_targ_seq(self.origin, DOOM_BFG_TRACE, bfl, ifr);
+				tl = self.theowner;
+				if (!tl) sf = 0;
 			}
 			sf = sf - 1;
 		}
+
 
 
 bprint(", beams fired = ");
 bprint(ftos(40 - tr));
 
 
+
 	}
-
-
 
 
 
@@ -1844,6 +1894,7 @@ void() player_bfg1   = [$lightfatt1, player_bfg1]
 	f = 0.2;
 	if (EWEAP.noise4 == DOOM_DET) f = ROCKET_FUSE; // ball flight time max - doom starts think here to get data but it gets activated by plasma hit logic
 	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.punchangle, v0, v0, self.v_angle, v0, "", "", SUB_Null, f, bfg_trace_thk, SUB_Null, self, world);
+	e.eweapon = EWEAP;
 	e.enemy = newmis; // q2 - fires lasers from ball
 	newmis.enemy = e; // trace blast
 

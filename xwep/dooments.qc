@@ -88,6 +88,7 @@ void() doom_precache =
 	precache_model ("progs/d_dblshot.mdl");
 // shots
 	precache_model ("progs/d_plasma_sht.mdl");
+	precache_model ("progs/bfgbit.spr");
 
 // view models
 	precache_model ("progs/v_d_pistol.mdl");

@@ -28,6 +28,14 @@ float q3_grenade_amsk		= 5;
 float q3_shot_amsk			= 6;
 float q3_mach_amsk			= 7;
 
+// artifact frames / skins in mdl
+float q3_quad_fsk				= 0;
+float q3_regn_fsk				= 1;
+float q3_env_fsk				= 2;
+float q3_hst_fsk				= 3;
+float q3_flt_fsk				= 4;
+float q3_inv_fsk				= 5;
+
 float Q3_BFG_AMMO				= 150; // 15 - adj =10 cells per shot -- using cell ammo for now
 float Q3_SLUG_AMMO			= 10;
 float Q3_CELL_AMMO			= 30;
@@ -59,7 +67,7 @@ float Q3_HEALM_A				= 100;
 
 vector Q3_LIFT					= ' 0 0 20'; // q3 models sit too "low" - lift them by this on spawn
 
-string Q3_BOBHOFF				= "cl_itembobheight 0\n"; // q3 item bob height off setting
+//string Q3_BOBHOFF				= "cl_itembobheight 0\n"; // q3 item bob height off setting
 string Q3_BOBH					= "cl_itembobheight 8\n"; // q3 item bob height default - compile as 0 to disable (server cfg parm?)
 string Q3_BOBHALIAS			= "q3bobheight\n"; // q3 item bob height alias to run
 
@@ -78,6 +86,11 @@ void() q3_precache =
 //	precache_sound ("");
 
 	precache_model ("progs/q3_health.mdl");
+	precache_model ("progs/q3_arm.mdl");
+	precache_model ("progs/q3_arm_shard.mdl");
+	precache_model ("progs/q3_art.mdl");
+	precache_model ("progs/q3_hld_med.mdl");
+	precache_model ("progs/q3_hld_tel.mdl");
 // all ammo
 	precache_model ("progs/q3_ammobox.mdl");
 // weps
@@ -122,6 +135,21 @@ void() q3_precache =
 	precache_sound ("q3_snd/n_health.wav");
 	precache_sound ("q3_snd/l_health.wav");
 	precache_sound ("q3_snd/m_health.wav");
+	precache_sound ("q3_snd/ar1_pkup.wav");
+	precache_sound ("q3_snd/ar2_pkup.wav");
+	precache_sound ("q3_snd/ar3_pkup.wav");
+// art
+	precache_sound ("q3_snd/airout.wav");
+	precache_sound ("q3_snd/flight.wav");
+	precache_sound ("q3_snd/haste.wav");
+	precache_sound ("q3_snd/holdable.wav");
+	precache_sound ("q3_snd/invisibility.wav");
+	precache_sound ("q3_snd/poweruprespawn.wav");
+	precache_sound ("q3_snd/quaddamage.wav");
+	precache_sound ("q3_snd/regeneration.wav");
+	precache_sound ("q3_snd/regen.wav");
+	precache_sound ("q3_snd/use_medkit.wav");
+
 // fire
 	precache_sound ("q3_snd/rocklf1a.wav");
 	precache_sound ("q3_snd/rocklx1a.wav");
@@ -140,11 +168,26 @@ void() q3_precache =
 };
 
 // bob em - needs called from client capable of stuff cmd
+
+// IDEA: consider recrafted q3 maps with wad == "q3.wad"
+
 void() q3_bob_height =
 {
-	if (q3_bob_on > 0) return;
-	if (q3_bob_on == 0) q3_bob_on = -1;
+//	if (q3_bob_on > 0) return;
+//	if (q3_bob_on == 0) q3_bob_on = -1;
+
 	if (!self.flags & FL_CLIENT) return;
+	if (!self.ishuman) return; // already tested, but just in case
+
+	if (TR_Q3 > 0)
+	{
+		if (TR_Q3 != FL_TR_Q3) // dont bob if translating all q3 items
+		{
+			stuffcmd(self, Q3_BOBHOFF);
+			q3_bob_on = 0;
+			return;
+		}
+	}
 
 	q3_bob_on = 1;
 	stuffcmd(self, Q3_BOBH); // bob q3 items, heh heh
@@ -894,7 +937,10 @@ void() q3_item_armor_combat =
 	self.items = IT_ARMOR2;
 	if (!self.wait) self.wait = RSP_TIME * 0.8333;
 
+	setmodel (self, "progs/q3_arm.mdl");
+	self.noise = "q3_snd/ar2_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
+	self.skin = 0;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
@@ -923,7 +969,10 @@ void() q3_item_armor_body =
 	self.items = IT_ARMOR3;
 	if (!self.wait) self.wait = RSP_TIME * 0.8333;
 
+	setmodel (self, "progs/q3_arm.mdl");
+	self.noise = "q3_snd/ar3_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
+	self.skin = 1;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
@@ -948,14 +997,14 @@ void() q3_item_armor_shard =
 	item_armor1();
 	self.netname = "Armor shard";
 
-	setmodel (self, "progs/q2_armorshard.mdl");
+	setmodel (self, "progs/q3_arm_shard.mdl");
 	self.volume = 200; // max add
 	self.style = 0.3;
 	self.items = IT_ARMOR1;
 	self.currentammo = Q3_ARM_SHARD; // 2 units
 	if (!self.wait) self.wait = RSP_TIME * 0.8333;
 
-	self.noise = "q2_snd/ar2_pkup.wav";
+	self.noise = "q3_snd/ar1_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 
@@ -1101,13 +1150,20 @@ void () item_health_mega =
 
 void() q3_item_quad =
 {
-	self.classname = "item_artifact_super_damage";
+//	self.classname = "item_artifact_super_damage";
 	item_artifact_super_damage();
 	self.netname = "Quad Damage";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_QUAD;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
+
+	setmodel(self, "progs/q3_art.mdl");
+	self.noise = "q3_snd/quaddamage.wav";
+	self.noise4 = "q3_snd/poweruprespawn.wav";
+	self.frame = q3_quad_fsk;
+	self.skin = q3_quad_fsk;
+	self.alpha = 0.9;
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -1129,20 +1185,27 @@ void () item_quad =
 void() item_regen =
 {
 	if (self.class_select == "") self.class_select = "q3_item";
-	self.classname = "item_sigil";
+//	self.classname = "item_sigil";
 	self.spawnflags = RUNE_FLG_RG; //rune_bit_code(rune_bit_code(0, RUNE_FLG_RG),0);
 	item_sigil();
 	self.netname = "Regeneration";
 
-
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
+
+	setmodel(self, "progs/q3_art.mdl");
+	self.noise = "q3_snd/regeneration.wav";
+	self.noise3 = "q3_snd/regen.wav";
+	self.noise4 = "q3_snd/poweruprespawn.wav";
+	self.frame = q3_regn_fsk;
+	self.skin = q3_regn_fsk;
+	self.alpha = 0.9;
 
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
 
 void() item_invis =
 {
-	self.classname = "item_artifact_invisibility";
+//	self.classname = "item_artifact_invisibility";
 	item_artifact_invisibility();
 	self.netname = "Invisibility";
 
@@ -1150,19 +1213,33 @@ void() item_invis =
 	self.items = IT_INVISIBILITY;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
+	setmodel(self, "progs/q3_art.mdl");
+	self.noise = "q3_snd/invisibility.wav";
+	self.noise4 = "q3_snd/poweruprespawn.wav";
+	self.frame = q3_inv_fsk;
+	self.skin = q3_inv_fsk;
+	self.alpha = 0.6;
+
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
 
 void() q3_item_enviro =
 {
-	self.classname = "item_artifact_envirosuit";
+//	self.classname = "item_artifact_envirosuit";
 	item_artifact_envirosuit();
 	self.netname = "Battle Suit";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_SUIT;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
+
+	setmodel(self, "progs/q3_art.mdl");
+	self.noise = "q3_snd/airout.wav";
+	self.noise4 = "q3_snd/poweruprespawn.wav";
+	self.frame = q3_env_fsk;
+	self.skin = q3_env_fsk;
+	self.alpha = 0.9;
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -1184,12 +1261,19 @@ void () item_enviro =
 void() item_haste =
 {
 	if (self.class_select == "") self.class_select = "q3_item";
-	self.classname = "item_sigil";
+//	self.classname = "item_sigil";
 	self.spawnflags = RUNE_FLG_HS; //rune_bit_code(rune_bit_code(0, RUNE_FLG_HS),0);
 	item_sigil();
 	self.netname = "Haste";
 
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
+
+	setmodel(self, "progs/q3_art.mdl");
+	self.noise = "q3_snd/haste.wav";
+	self.noise4 = "q3_snd/poweruprespawn.wav";
+	self.frame = q3_hst_fsk;
+	self.skin = q3_hst_fsk;
+	self.alpha = 0.9;
 
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
@@ -1204,19 +1288,31 @@ void() item_flight =
 
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
+	setmodel(self, "progs/q3_art.mdl");
+	self.noise = "q3_snd/flight.wav";
+	self.noise4 = "q3_snd/poweruprespawn.wav";
+	self.frame = q3_flt_fsk;
+	self.skin = q3_flt_fsk;
+	self.alpha = 0.9;
+
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
 
 // holdables
+void() item_painkeep_can;
+void() item_pkplus_phone;
 
 void() holdable_medkit =
 {
-	self.classname = "item_painkeep_can";
-//	item_painkeep_can();
+//	self.classname = "item_painkeep_can";
+	item_painkeep_can();
 	self.netname = "Holdable Medkit";
 
 	if (!self.wait) self.wait = RSP_TIME * 2;
+
+	setmodel(self, "progs/q3_hld_med.mdl");
+	self.noise = "q3_snd/holdable.wav";
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -1224,11 +1320,14 @@ void() holdable_medkit =
 
 void() holdable_teleporter =
 {
-	self.classname = "item_pkplus_phone";
-//	item_pkplus_phone();
+//	self.classname = "item_pkplus_phone";
+	item_pkplus_phone();
 	self.netname = "Holdable Teleport";
 
 	if (!self.wait) self.wait = RSP_TIME * 2;
+
+	setmodel(self, "progs/q3_hld_tel.mdl");
+	self.noise = "q3_snd/holdable.wav";
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();

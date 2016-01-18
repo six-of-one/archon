@@ -460,6 +460,17 @@ float (string wpm) ver_weaponmodel =
 {
 	string wmr;
 
+
+
+if (WARNING)
+{
+bprint("\n\n*** warning: called ver_weaponmodel with (");
+bprint(wpm);
+bprint(")\n\n");
+}
+
+
+
 	if (wpm == "progs/v_w_mortar.mdl") return(TRUE);
 	else if (wpm == "progs/v_d_rock.mdl") return(TRUE);
 //	else if (wpm == "") return(TRUE);

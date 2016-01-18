@@ -1586,9 +1586,9 @@ void(float mc, vector vo) fn_make =
 	}
 };
 
-// func_make handles map call - set wait to valid map code
+// func_make handles map call - set wait to valid map code or special value listed below
 
-// special values of .wait
+// special values of .wait - select random item from:
 // -1 = q1 items, no runes if RUNES
 // -2 = q1 items, ignore RUNES
 // -3 = pk items, no art if !PK_ART
