@@ -92,8 +92,6 @@ void () PlaceItem =
 
 // used for translate - if *_100 on
 	self.mcode = pk_mcode("", self); // put map code on ent
-//	self.sscode = sid_code[(int)(self.mcode - 100) * %4];
-	sid_code(self.mcode, self);              // Cataboligne - 8.7.13 - compiler compatibility
 	if (!self.scode) self.scode = self.mcode;
 
 	if (Q_100 || PK_100) // || !XMOD)
@@ -1986,10 +1984,6 @@ void() pk_placeitem =
 	}
 
 	self.mcode = pk_mcode("", self); // put map code on ent - do we need this? placeitem sets these too
-
-//	self.sscode = ftos(self.mcode); // FAIL!
-//	self.sscode = sid_code[(int)(self.mcode - 100) * %4];		// frik method
-	sid_code(self.mcode, self);              // Cataboligne - 8.7.13 - compiler compatibility
 
 	if (!self.scode) self.scode = self.mcode;
 

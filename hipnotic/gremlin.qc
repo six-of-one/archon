@@ -1807,6 +1807,7 @@ if (ign != A_MONSTER)
 		return;
 	}
    precache_model ("progs/gremlin.mdl");
+   precache_model ("progs/grem.mdl"); // TDO: remove
 //   precache_model ("progs/h_grem.mdl");
 
    precache_sound ("grem/death.wav");

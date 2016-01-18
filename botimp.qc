@@ -1,6 +1,6 @@
 /* ::-::
  *
- * dectran: decompiler translator by Cataboligne v1.3 - (3.31.8)
+ * conscript: by Cataboligne v1.3 - (3.31.8)
  *
  * file: botimp.qc
  *

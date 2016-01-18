@@ -71,6 +71,12 @@ void() morph_precache =
 	m_precache_shambler();
 	m_precache_lavablob();
 	m_precache_gremlin();
+
+	precache_model ("progs/plyr_bw.mdl");
+	precache_model ("progs/plyr_dm.mdl");
+	precache_model ("progs/plyr_pk.mdl");
+	precache_model ("progs/plyr_q3.mdl");
+
 };
 
 

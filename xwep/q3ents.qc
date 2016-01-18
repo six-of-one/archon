@@ -156,6 +156,7 @@ void() q3_precache =
 	precache_model ("progs/vw_q3_gauntlet.mdl");
 	precache_model ("progs/vw_q3_tel.mdl");
 	precache_model ("progs/vw_q3_med.mdl");
+	precache_model ("progs/player_sh.mdl");
 
 // hear it
 // art

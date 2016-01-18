@@ -169,6 +169,7 @@ void() wolf_precache =
 //	precache_model ("progs/w_armor.mdl");
 	precache_model ("progs/w_chaing.mdl");
 	precache_model ("progs/w_clip.mdl");
+	precache_model ("progs/w_mortars.mdl");
 	precache_sound ("sound/wolf/w_mortars.wav");
 //	precache_model ("progs/w_dcr_changrn2.mdl");
 //	precache_model ("progs/w_dcr_changrn.mdl");

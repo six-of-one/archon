@@ -244,7 +244,7 @@ void() turret_searchForEnemy =
 //d invuln
 			f = pk_mcode("d_art_invulnerable", world); 
 			e = find(world, classname, "d_art_invulnerable"); 
-			if (!e) e = find(world, sscode, ftos(f));
+//			if (!e) e = find(world, sscode, ftos(f)); // Cataboligne - 8.8.13 - removing sscode array / func dealy
 			if (e)
 			{
 				c = TRUE;
@@ -256,7 +256,7 @@ void() turret_searchForEnemy =
 //q2 invuln
 			f = pk_mcode("item_invulnerability", world); 
 			e = find(world, classname, "item_invulnerability"); 
-			if (!e) e = find(world, sscode, ftos(f));
+//			if (!e) e = find(world, sscode, ftos(f));
 			if (e)
 			{
 				c = TRUE;
@@ -268,7 +268,7 @@ void() turret_searchForEnemy =
 //q invuln
 			f = pk_mcode("item_artifact_invulnerability", world); 
 			e = find(world, classname, "item_artifact_invulnerability"); 
-			if (!e) e = find(world, sscode, ftos(f));
+//			if (!e) e = find(world, sscode, ftos(f));
 			if (e)
 			{
 				c = TRUE;

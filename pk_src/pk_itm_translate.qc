@@ -2219,9 +2219,6 @@ void(entity e, float trvs) item_translate =
 		if(e.map == "repic") e.map = "pic_item";
 		item_call_save(e, mcc);
 		e.mcode = pk_mcode("", e);
-// just for doom_alpha code
-//		e.sscode = sid_code[(int)(e.mcode - 100) * %4]; 
-		sid_code(e.mcode, e);		// Cataboligne - 8.7.13 - compiler compatibility
 		if (e.touch != painkeep_touch && e.touch != SUB_Null)
 		{
 			e.pk_touch = e.touch;
@@ -2340,9 +2337,6 @@ float(entity e, float q1ck, string itm) noxtr_item_control =
 			if(e.map == "repic") e.map = "pic_item";
 			item_call_save(e, itm);
 			e.mcode = pk_mcode("", e);
-// just for doom_alpha code
-//			e.sscode = sid_code[(int)(e.mcode - 100) * %4];
-			sid_code(e.mcode, e);		// Cataboligne - 8.7.13 - compiler compatibility
 		}
 //		else
 //			hide_item (e);

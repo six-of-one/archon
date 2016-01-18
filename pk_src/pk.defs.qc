@@ -454,9 +454,7 @@ float(float mcv, entity e) bit_mcode;
 .float mcode;								// map item code - handle sub lists
 .float scode;								// save item code - for restore
 .string sscode;							// map item code string - for find
-void(float mcd, entity e) sid_code;
 
-//string sid_code[330];							// list of all codes as string, access = (code - 100) * 4;
 ///float item_op;								// item operation currently in progress
 ///float IT_CALL					= 16;		// op is item call
 ///float IT_MAP					= 8;		// op is map call

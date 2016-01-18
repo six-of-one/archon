@@ -1694,9 +1694,6 @@ void() place_item_control =
 
 // have to make sure these got loaded
 	if (!self.mcode) self.mcode = pk_mcode("", self); // put map code on ent
-//	if (self.sscode == "") self.sscode = ftos(self.mcode); // FAIL!
-//	if (self.sscode == "") sid_code[(int)(self.mcode - 100) * %4];		// was frik method
-	if (self.sscode == "") sid_code(self.mcode, self);		// Cataboligne - 8.7.13 - compiler compatibility
 	if (!self.scode) self.scode = self.mcode;
 
 	if (cvar("pk_place_item") == 1) // NOTE: something chaos will not be in control of
@@ -1754,7 +1751,7 @@ string(entity e) item_ident =
 	f = "item has no identity!";
 	if (e.netname != "") f = e.netname;
 	else if (e.classname != "") f = e.classname;
-	else if (e.sscode != "") f = e.sscode;
+	else if (e.class_select != "") f = e.class_select;
 
 	return(f);
 };

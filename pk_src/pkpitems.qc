@@ -99,6 +99,7 @@ void(entity e) pkplus_item_control =
 	if (e.think == pic_restore_item) // still check dynamics and live map ents
 		return;
 
+// if pk_art is turned off, this hijacks the items rndize think and force thinks it
 	if (!PK_ART)
 	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3) // when turning on - this should never get here
 	{
@@ -177,27 +178,7 @@ void(entity e) pkplus_item_control =
 
 // twiddled after map load
 
-float pkp_sc; // search code
-string pkp_str; // search string
 
-void() find_pkpitems =
-{
-	local entity e;
-//	local float k;
-
-	pkp_str = ftos(pkp_sc);
-	e = find(world,sscode,pkp_str);
-	while (!e && pkp_sc)
-	{
-		pkp_sc  = pkp_sc  + 1;
-		if (pkp_sc > MC_MASK) pkp_sc = 0;
-		if (pkp_sc)
-		{
-			pkp_str = ftos(pkp_sc);
-			e = find(world,sscode,pkp_str);
-		}
-	}
-};
 
 // only called when pk_art toggled
 
@@ -210,51 +191,29 @@ void() pkplus_item_control_loop =
 //	if (cvar("pk_place_item") != 0)
 //		return;
 
-
 	if (PK_ART)
+	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
 	{
-		if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
-		{
-			sr = "pkpitem";
-			e = find(world,wad,sr); // looking for rndize_* control ents for pkp items
-			while (e)
-			{
-				e.owner.mcode = MC_TOMB + rint(random() * 3);
-				e.owner.wad = item_by_mcode(e.owner.mcode);
-				item_call_save(e.owner, e.owner.wad);
-				e.wad = "";
-				e = find(world,wad,sr);
-			}
-			return;
-		}
-	
-		pkp_str = "pkplus_item";
-		e = find(world,class_select,pkp_str);
+		sr = "pkpitem";
+		e = find(world,wad,sr); // looking for rndize_* control ents for pkp items
 		while (e)
 		{
-			pkplus_item_control(e);
-			e = find(e,class_select,pkp_str);
+			e.owner.mcode = MC_TOMB + rint(random() * 3);
+			e.owner.wad = item_by_mcode(e.owner.mcode);
+			item_call_save(e.owner, e.owner.wad);
+			e.wad = "";
+			e = find(world,wad,sr);
 		}
 		return;
 	}
 
-	pkp_sc = MC_TOMB;
-	find_pkpitems();
-	e = find(world,sscode,pkp_str);
+	e = find(world, class_select, "pkplus_item");
 	while (e)
 	{
 		pkplus_item_control(e);
-		e = find(e,sscode,pkp_str);
-		if (!e)
-		{
-			pkp_sc = pkp_sc + 1;
-			if (pkp_sc <= MC_MASK)
-			{
-				find_pkpitems();
-				e = find(world,sscode,pkp_str);
-			}
-		}
+		e = find(e, class_select, "pkplus_item");
 	}
+
 };
 
 void () item_pkplus_ego =

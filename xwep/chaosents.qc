@@ -29,6 +29,7 @@ void() chaos_precache =
 	precache_model ("progs/v_reggun.mdl");
 	precache_model ("progs/vw_reggun.mdl");
 	precache_model ("progs/pt_beam.mdl");
+	precache_model ("progs/lzrbm_seg.mdl");
 	precache_model ("progs/g_flamer2.mdl");
 	precache_model ("progs/g_gas.mdl");
 	precache_model ("progs/vw_flamer2.mdl");
@@ -37,6 +38,8 @@ void() chaos_precache =
 	precache_model ("progs/g_deepsleep.mdl");
 	precache_model ("progs/vw_deepsleep.mdl");
 	precache_model ("progs/steam.mdl");
+	precache_model ("progs/snowball.mdl");
+	precache_model ("progs/gib_m.mdl");
 
 // map repair - block hollow brush effect
 	precache_model ("progs/abclip.bsp");
@@ -44,6 +47,7 @@ void() chaos_precache =
 // cubes & crates
 
 	precache_model ("progs/pk_cube.bsp");
+	precache_model ("progs/8ray_arc.bsp"); // chaos archon morph device
 	precache_model ("progs/crate.bsp");
 	precache_model ("progs/crate_lg.bsp");
 	precache_model ("progs/crate_lg_o1.bsp");
@@ -88,6 +92,8 @@ void() chaos_precache =
 // Alien infestation
 	precache_model ("progs/clinger2.mdl");
 	precache_model ("progs/young.mdl");
+
+	precache_model ("progs/tall_ball.mdl");
 
 //	flamer_precache();
 };
@@ -189,7 +195,7 @@ void() c_weapon_shovel =
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/m_shovel.mdl");
-	if (DARKPLACES) setmodel (self, "progs/shovel.md3"); // TESTING
+//	if (DARKPLACES) setmodel (self, "progs/shovel.md3"); // TESTING - remove
 	self.weaponmodel = "progs/v_axe.mdl";
 	self.vwepmdl = "progs/vw_shovel.mdl";
 	self.vv_draw = vw_melee_base;
