@@ -1298,6 +1298,11 @@ float(string sc, entity e) pk_mcode =
 };
 
 
+// this is called with self.delay == 104, how does it return a null string ?
+//		***     warning: loopcyc - no FL_ITEM set on = _-=* Number Six - searched:  - code: 104
+//		]prvm_global server MC_SUPER_NAILGUN
+//		MC_SUPER_NAILGUN: 104
+
 // fn(item_by_mcode) - given map code mc, return call string
 
 string (float mc) item_by_mcode =

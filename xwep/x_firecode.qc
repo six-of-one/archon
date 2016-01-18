@@ -291,7 +291,7 @@ void() x_weapon_touch =
 		cls == "q2_weapon_grapple" ||
 		cls == "weapon_hook" ||
 		cls == "weapon_quantum" ||
-		cls == "c_weapon_sphere" ||
+		cls == "c_weapon_tallball" ||
 		cls == "w_weapon_knife")
 	{
 	camc = 1;

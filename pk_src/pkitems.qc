@@ -672,11 +672,13 @@ if (!self.mask_x)
 
 
 
-// testing touch select for morphs
-if (1)
+// testing touch select for morphs, etc
+if (WARNING)
+if (self.theowner != other) // debounce
 //if (self.classname == "Backpack")
 {
-	bprint("---------------- ** WARNING - in touch: dont allow: ");
+	self.theowner = other;
+	bprint("         ------- *** WARNING - in touch: dont allow: ");
 	bprint(ftos(f));
 	bprint(" item: ");
 	bprint(item_ident(self));

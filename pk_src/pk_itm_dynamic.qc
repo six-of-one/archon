@@ -136,6 +136,7 @@ void(string cls) item_call =
 		self.style = 0; // so we dont get range weps using melee frames
 		self.dodmg = 0; // might give some things extra blast dmg
 		self.wait = 0; // RSP_TIME; // damn q3 respawn time rules - hope this doesnt fxk rndize
+		self.msgcount = 0; // -888 lock in splash.qc
 		self.dmgtime = POW_TIME;
 		self.x_items = 0;
 		self.pk_currentitem = 0;
@@ -529,7 +530,6 @@ void(string cls) item_call =
 			self.nextthink = time + 1 + 3 * random(); // spread em out
 			self.model = string_null;
 		}
-		if (self.wait <= -888) self.wait = 0;
 	}
 	else
 		pk_ditems = pk_ditems + 1;

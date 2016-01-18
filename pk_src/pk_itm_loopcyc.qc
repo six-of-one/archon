@@ -130,12 +130,13 @@ void() loopcyc_think =
 	else
 		e = self.theowner;
 
+	if (mmc) // 8.2.13 - catching things it should not with blank search string, still need to know how that happens -- chaos vector if FL_MONSTER - cool effects, attacks as monster, collectible as item
 	while (e)
 	{
 
 
 
-if (1)
+if (WARNING)
 if (!e.flags & FL_ITEM)
 {
 bprint("***     warning: loopcyc - no FL_ITEM set on = ");

@@ -579,7 +579,12 @@ local float	rsnd;
 		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/sight1.wav","gremlin/sight2.wav","gremlin/sight4.wav","","gremlin/sight3.wav"), 1, ATTN_NORM);
 	}
 	else if (self.classname == "monster_scourge")
+	{
+		if (self.noise1)
+			sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+		else
 		sound (self, CHAN_VOICE, "scourge/sight.wav", 1, ATTN_NORM);
+	}
 	else if (self.classname == "monster_armagon")
 		sound (self, CHAN_VOICE, "armagon/sight.wav", 1, 0.1);
 };

@@ -122,126 +122,61 @@ void() blarg_stop =
 	}
 };
 
-void() blarg_stand1    = 
-{
-	self.frame =      $kikidl01;	self.nextthink = time + 0.1;	self.think =     blarg_stand2;	
+void() blarg_stand1     =[      $kikidl01,      blarg_stand2    ] {
 	ai_stand();
 	if (random() < 0.05)
 		sound (self, CHAN_VOICE, "mon_II/blarg/bidle.wav", 1, ATTN_NORM);
 	else if (random() < 0.1)
 		sound (self, CHAN_VOICE, "mon_II/blarg/bidle2.wav", 1, ATTN_NORM);
 };
+void() blarg_stand2     =[      $kikidl02,      blarg_stand3    ] {ai_stand();};
+void() blarg_stand3     =[      $kikidl03,      blarg_stand4    ] {ai_stand();};
+void() blarg_stand4     =[      $kikidl04,      blarg_stand5    ] {ai_stand();};
+void() blarg_stand5     =[      $kikidl05,      blarg_stand6    ] {ai_stand();};
+void() blarg_stand6     =[      $kikidl04,      blarg_stand7    ] {ai_stand();};
+void() blarg_stand7     =[      $kikidl03,      blarg_stand8    ] {ai_stand();};
+void() blarg_stand8     =[      $kikidl02,      blarg_stand1    ] {ai_stand();};
 
-void() blarg_stand2    = 
-{
-	self.frame =      $kikidl02;	self.nextthink = time + 0.1;	self.think =     blarg_stand3;	ai_stand();};
-void() blarg_stand3    = 
-{
-	self.frame =      $kikidl03;	self.nextthink = time + 0.1;	self.think =     blarg_stand4;	ai_stand();};
-void() blarg_stand4    = 
-{
-	self.frame =      $kikidl04;	self.nextthink = time + 0.1;	self.think =     blarg_stand5;	ai_stand();};
-void() blarg_stand5    = 
-{
-	self.frame =      $kikidl05;	self.nextthink = time + 0.1;	self.think =     blarg_stand6;	ai_stand();};
-void() blarg_stand6    = 
-{
-	self.frame =      $kikidl04;	self.nextthink = time + 0.1;	self.think =     blarg_stand7;	ai_stand();};
-void() blarg_stand7    = 
-{
-	self.frame =      $kikidl03;	self.nextthink = time + 0.1;	self.think =     blarg_stand8;	ai_stand();};
-void() blarg_stand8    = 
-{
-	self.frame =      $kikidl02;	self.nextthink = time + 0.1;	self.think =     blarg_stand1;	ai_stand();};
-
-void() blarg_stop1     = 
-{
-	self.frame =      $kikdie01;	self.nextthink = time + 0.1;	self.think =     blarg_stop2     ] 
+void() blarg_stop1      =[      $kikdie01,      blarg_stop2     ] 
 {
 	sound (self, CHAN_VOICE, "demon/ddeath.wav", 1, ATTN_NORM);
 };
-void() blarg_stop2     = 
-{
-	self.frame =      $kikdie02;	self.nextthink = time + 0.1;	self.think =     blarg_stop3;	};
-void() blarg_stop3     = 
-{
-	self.frame =      $kikdie03;	self.nextthink = time + 0.1;	self.think =     blarg_stop4;	};
-void() blarg_stop4     = 
-{
-	self.frame =      $kikdie04;	self.nextthink = time + 0.1;	self.think =     blarg_stop5;	};
-void() blarg_stop5     = 
-{
-	self.frame =      $kikdie05;	self.nextthink = time + 0.1;	self.think =     blarg_stop6;	self.solid = SOLID_NOT;};
-void() blarg_stop6     = 
-{
-	self.frame =      $kikdie06;	self.nextthink = time + 0.1;	self.think =     blarg_stop7;	};
-void() blarg_stop7     = 
-{
-	self.frame =      $kikdie08;	self.nextthink = time + 0.1;	self.think =     blarg_stop7;	};
+void() blarg_stop2      =[      $kikdie02,      blarg_stop3     ] {};
+void() blarg_stop3      =[      $kikdie03,      blarg_stop4     ] {};
+void() blarg_stop4      =[      $kikdie04,      blarg_stop5     ] {};
+void() blarg_stop5      =[      $kikdie05,      blarg_stop6     ] {self.solid = SOLID_NOT;};
+void() blarg_stop6      =[      $kikdie06,      blarg_stop7     ] {};
+void() blarg_stop7      =[      $kikdie08,      blarg_stop7     ] {};
 
-void() blarg_bstop1    = 
-{
-	self.frame =      $kikdib01;	self.nextthink = time + 0.1;	self.think =     blarg_bstop2    ] 
+void() blarg_bstop1     =[      $kikdib01,      blarg_bstop2    ] 
 {
 	sound (self, CHAN_VOICE, "demon/ddeath.wav", 1, ATTN_NORM);
 	ai_forward(16);
 };
-void() blarg_bstop2    = 
-{
-	self.frame =      $kikdib02;	self.nextthink = time + 0.1;	self.think =     blarg_bstop3;	ai_forward(14);};
-void() blarg_bstop3    = 
-{
-	self.frame =      $kikdib03;	self.nextthink = time + 0.1;	self.think =     blarg_bstop4;	ai_forward(10);};
-void() blarg_bstop4    = 
-{
-	self.frame =      $kikdib04;	self.nextthink = time + 0.1;	self.think =     blarg_bstop5;	ai_forward(5);};
-void() blarg_bstop5    = 
-{
-	self.frame =      $kikdib05;	self.nextthink = time + 0.1;	self.think =     blarg_bstop6;	self.solid = SOLID_NOT;};
-void() blarg_bstop6    = 
-{
-	self.frame =      $kikdib05;	self.nextthink = time + 0.1;	self.think =     blarg_bstop7;	};
-void() blarg_bstop7    = 
-{
-	self.frame =      $kikdib05;	self.nextthink = time + 0.1;	self.think =     blarg_bstop7;	};
+void() blarg_bstop2     =[      $kikdib02,      blarg_bstop3    ] {ai_forward(14);};
+void() blarg_bstop3     =[      $kikdib03,      blarg_bstop4    ] {ai_forward(10);};
+void() blarg_bstop4     =[      $kikdib04,      blarg_bstop5    ] {ai_forward(5);};
+void() blarg_bstop5     =[      $kikdib05,      blarg_bstop6    ] {self.solid = SOLID_NOT;};
+void() blarg_bstop6     =[      $kikdib05,      blarg_bstop7    ] {};
+void() blarg_bstop7     =[      $kikdib05,      blarg_bstop7    ] {};
 
 
-void() blarg_walk1     = 
-{
-	self.frame =      $kikwalk01;	self.nextthink = time + 0.1;	self.think =   blarg_walk2     ] 
+void() blarg_walk1      =[      $kikwalk01 ,    blarg_walk2     ] 
 {
 	if (random() < 0.2)
 		sound (self, CHAN_VOICE, "mon_II/blarg/bidle.wav", 1, ATTN_IDLE);
 	ai_walk(8);
 };
-void() blarg_walk2     = 
-{
-	self.frame =      $kikwalk02;	self.nextthink = time + 0.1;	self.think =   blarg_walk3;	ai_walk(16);};
-void() blarg_walk3     = 
-{
-	self.frame =      $kikwalk03;	self.nextthink = time + 0.1;	self.think =   blarg_walk4;	ai_walk(16);};
-void() blarg_walk4     = 
-{
-	self.frame =      $kikwalk04;	self.nextthink = time + 0.1;	self.think =   blarg_walk6;	ai_walk(8);};
-void() blarg_walk6     = 
-{
-	self.frame =      $kikwalk05;	self.nextthink = time + 0.1;	self.think =   blarg_walk7;	ai_walk(16);};
-void() blarg_walk7     = 
-{
-	self.frame =      $kikwalk06;	self.nextthink = time + 0.1;	self.think =   blarg_walk1;	ai_walk(16);};
+void() blarg_walk2      =[      $kikwalk02 ,    blarg_walk3     ] {ai_walk(16);};
+void() blarg_walk3      =[      $kikwalk03 ,    blarg_walk4     ] {ai_walk(16);};
+void() blarg_walk4      =[      $kikwalk04 ,    blarg_walk6     ] {ai_walk(8);};
+void() blarg_walk6      =[      $kikwalk05 ,    blarg_walk7     ] {ai_walk(16);};
+void() blarg_walk7      =[      $kikwalk06 ,    blarg_walk1     ] {ai_walk(16);};
 
-void() blarg_run1      = 
-{
-	self.frame =      $kikatt12;	self.nextthink = time + 0.1;	self.think =    blarg_run2 ;	ai_run(0); ai_face();};
-void() blarg_run2      = 
-{
-	self.frame =      $kikatt13;	self.nextthink = time + 0.1;	self.think =    blarg_run3 ;	ai_run(0); ai_face();};
-void() blarg_run3      = 
-{
-	self.frame =      $kikatt14;	self.nextthink = time + 0.1;	self.think =    blarg_run4 ;	ai_run(10); ai_face();};
-void() blarg_run4      = 
-{
-	self.frame =      $kikatt15;	self.nextthink = time + 0.1;	self.think =    blarg_run5      ] 
+void() blarg_run1       =[      $kikatt12 ,     blarg_run2      ] {ai_run(0); ai_face();};
+void() blarg_run2       =[      $kikatt13 ,     blarg_run3      ] {ai_run(0); ai_face();};
+void() blarg_run3       =[      $kikatt14 ,     blarg_run4      ] {ai_run(10); ai_face();};
+void() blarg_run4       =[      $kikatt15 ,     blarg_run5      ] 
 {
 	ai_face();
 	
@@ -254,57 +189,27 @@ void() blarg_run4      =
 	sound (self, CHAN_VOICE, "mon_II/blarg/bjump.wav", 1, ATTN_NORM);
 	return;
 };
-void() blarg_run5      = 
-{
-	self.frame =      $kikatt08;	self.nextthink = time + 0.1;	self.think =    blarg_run6 ;	};
-void() blarg_run6      = 
-{
-	self.frame =      $kikatt09;	self.nextthink = time + 0.1;	self.think =    blarg_run7 ;	};
-void() blarg_run7      = 
-{
-	self.frame =      $kikatt10;	self.nextthink = time + 0.1;	self.think =    blarg_run8 ;	};
-void() blarg_run8      = 
-{
-	self.frame =      $kikatt11;	self.nextthink = time + 0.1;	self.think =    blarg_run1 ;	};
+void() blarg_run5       =[      $kikatt08 ,     blarg_run6      ] {};
+void() blarg_run6       =[      $kikatt09 ,     blarg_run7      ] {};
+void() blarg_run7       =[      $kikatt10 ,     blarg_run8      ] {};
+void() blarg_run8       =[      $kikatt11 ,     blarg_run1      ] {};
 
-void() blarg_atta1     = 
-{
-	self.frame =      $kikatt13;	self.nextthink = time + 0.1;	self.think =     blarg_atta2;	ai_charge(10); ai_face();};
-void() blarg_atta2     = 
-{
-	self.frame =      $kikatt14;	self.nextthink = time + 0.1;	self.think =     blarg_atta3;	ai_charge(10); ai_face();};
-void() blarg_atta3     = 
-{
-	self.frame =      $kikatt15;	self.nextthink = time + 0.1;	self.think =     blarg_atta4;	ai_charge(10); blarg_bite();};
-void() blarg_atta4     = 
-{
-	self.frame =      $kikatt16;	self.nextthink = time + 0.1;	self.think =     blarg_atta5     ] 
+void() blarg_atta1      =[      $kikatt13,      blarg_atta2     ] {ai_charge(10); ai_face();};
+void() blarg_atta2      =[      $kikatt14,      blarg_atta3     ] {ai_charge(10); ai_face();};
+void() blarg_atta3      =[      $kikatt15,      blarg_atta4     ] {ai_charge(10); blarg_bite();};
+void() blarg_atta4      =[      $kikatt16,      blarg_atta5     ] 
 {
 	sound (self, CHAN_VOICE, "mon_II/blarg/bjump2.wav", 1, ATTN_NORM);
 	blarg_bite();
 };
-void() blarg_atta5     = 
-{
-	self.frame =      $kikatt17;	self.nextthink = time + 0.1;	self.think =     blarg_atta6;	ai_charge(10); blarg_bite();};
-void() blarg_atta6     = 
-{
-	self.frame =      $kikatt18;	self.nextthink = time + 0.1;	self.think =     blarg_atta7;	ai_charge(10);};
-void() blarg_atta7     = 
-{
-	self.frame =      $kikatt19;	self.nextthink = time + 0.1;	self.think =     blarg_atta8;	ai_charge(10);};
-void() blarg_atta8     = 
-{
-	self.frame =      $kikatt20;	self.nextthink = time + 0.1;	self.think =     blarg_run1 ;	ai_charge(10);};
+void() blarg_atta5      =[      $kikatt17,      blarg_atta6     ] {ai_charge(10); blarg_bite();};
+void() blarg_atta6      =[      $kikatt18,      blarg_atta7     ] {ai_charge(10);};
+void() blarg_atta7      =[      $kikatt19,      blarg_atta8     ] {ai_charge(10);};
+void() blarg_atta8      =[      $kikatt20,      blarg_run1      ] {ai_charge(10);};
 
-void() blarg_leap1     = 
-{
-	self.frame =      $kikatt20;	self.nextthink = time + 0.1;	self.think =             blarg_leap2;	ai_face();};
-void() blarg_leap2     = 
-{
-	self.frame =      $kikatt21;	self.nextthink = time + 0.1;	self.think =             blarg_leap3;	ai_face();};
-void() blarg_leap3     = 
-{
-	self.frame =      $kikatt22;	self.nextthink = time + 0.1;	self.think =             blarg_leap4     ]
+void() blarg_leap1      =[      $kikatt20,              blarg_leap2     ] {ai_face();};
+void() blarg_leap2      =[      $kikatt21,              blarg_leap3     ] {ai_face();};
+void() blarg_leap3      =[      $kikatt22,              blarg_leap4     ]
 {
 	ai_face();
 	
@@ -317,15 +222,9 @@ void() blarg_leap3     =
 	sound (self, CHAN_VOICE, "mon_II/blarg/bjump.wav", 1, ATTN_NORM);
 };
 
-void() blarg_leap4     = 
-{
-	self.frame =      $kikatt23;	self.nextthink = time + 0.1;	self.think =             blarg_leap5;	};
-void() blarg_leap5     = 
-{
-	self.frame =      $kikatt24;	self.nextthink = time + 0.1;	self.think =             blarg_leap6;	};
-void() blarg_leap6     = 
-{
-	self.frame =      $kikatt08;	self.nextthink = time + 0.1;	self.think =             blarg_run1;	};
+void() blarg_leap4      =[      $kikatt23,              blarg_leap5     ] {};
+void() blarg_leap5      =[      $kikatt24,              blarg_leap6     ] {};
+void() blarg_leap6      =[      $kikatt08,              blarg_run1      ] {};
 
 
 
