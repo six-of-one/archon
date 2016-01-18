@@ -160,6 +160,9 @@ float CB_M_ARACHN					= 4194304;
 float CB_M_CYBER					= 8388608;
 */
 
+float MAP_LAVABABY				= 0.5; // chance map babys will be lava monsters
+float RND_LAVABABY				= 0.3; // chance random babys will be lava monsters
+
 // selection
 void() morph_cube;
 void() morph_setup;

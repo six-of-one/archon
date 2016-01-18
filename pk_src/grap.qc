@@ -516,6 +516,22 @@ void() grap_touch =
 			spawn_touchblood (9);
 			T_Damage(other, self, grapOwner, 9);
 
+			// chance to knock a rune loose
+			rune_pull(other, HARP_PULL);
+			if (newmis)
+			{
+local float pull_lock;
+				pull_lock = TRUE; // dont let harp grab other
+				newmis.velocity = v0;
+				newmis.nextthink = time + 2; // solid faster so grap owner can grab - but not too fast or the loser will get it
+//				other = newmis;
+				self.grap_pull = newmis;
+				self.grap_pull.grap_owner = self.grap_owner;
+				self.grap_pull.movetype = MOVETYPE_FLY;
+
+				self.button13 = newmis.button13  = ceil(random() * 100000); // allow grap to pull this - see code in pull fn
+//				return;
+			}
 	  }
 	  else
 	  {
@@ -524,11 +540,12 @@ void() grap_touch =
 	  }
 
 	  // drag to the owner.
+	  if (!pull_lock)
 	  if ((other.health && other.solid != SOLID_BSP && other.solid != SOLID_NOT) || other.solid == SOLID_TRIGGER)
 	  {
-		  self.grap_pull = other;
-		  self.grap_pull.grap_owner = self.grap_owner;
-	  	self.grap_pull.movetype = MOVETYPE_FLY;
+			self.grap_pull = other;
+			self.grap_pull.grap_owner = self.grap_owner;
+			self.grap_pull.movetype = MOVETYPE_FLY;
 	  }
 	}
 	else
@@ -625,6 +642,7 @@ void() grap_goToOwner =
 	self.nextthink = time + 0.1;
 
 	if (self.grap_pull)
+	if (!self.button13 || (self.button13 != self.grap_pull.button13)) // rune plucked from an unsuspecing player - not solid yet, but let it be pulled
 	if (self.grap_pull.solid != SOLID_TRIGGER)
 	if (self.grap_pull.health < 1 || self.grap_pull.solid == SOLID_NOT)  // check if the entity is dead or "picked up"
 	{

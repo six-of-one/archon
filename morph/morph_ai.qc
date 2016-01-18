@@ -744,6 +744,12 @@ float() FindTarget =
 	if (client.items & IT_INVISIBILITY)
 		return FALSE;
 
+// Cataboligne 9.11.3 purify - chase cam
+// *** reasserted 11.17.12
+// cam death view workaround
+	if (client.solid == SOLID_NOT)
+		return FALSE;
+
 	r = range (client);
 	if (r == RANGE_FAR)
 		return FALSE;
@@ -792,6 +798,12 @@ float() FindTarget =
 
 
 //=============================================================================
+// Cataboligne - 11.14.12 - fast / slow code
+// 	uses self.speed as a distance value modifier
+//		self.lip is monsters speed divisor
+//		MON_SPEED_DIV is global monster speed divisor
+//	0.2 - half speed monster
+//	0.05 - double speed monster
 
 void(float dist) ai_forward =
 {
@@ -812,7 +824,7 @@ void(float dist) ai_back =
 		if (self.flags & FL_FROZEN) return; // monster frozen
 	}
 
-	walkmove ( (self.angles_y+180), dist);
+	walkmove ((self.angles_y + 180), dist);
 };
 
 
@@ -864,6 +876,17 @@ The monster is walking it's beat
 void(float dist) ai_walk =
 {
 	local vector		mtemp;
+	local float ddist;
+	ddist = dist;
+
+	if (self.speed > 0)
+	{
+		if (self.lip <= 0) self.lip = 1; // local speed divisor
+		ddist = dist * ((0.1 / self.speed) / self.lip) / MON_SPEED_DIV;
+		self.nextthink = time + (self.speed * MON_SPEED_DIV * self.lip);
+	}
+
+	movedist = ddist;
 
 	if (!Q_100)
 	{
@@ -871,11 +894,9 @@ void(float dist) ai_walk =
 		if (self.flags & FL_FROZEN) return; // monster frozen\
 	}
 
-	movedist = dist;
-
 	if (self.classname == "monster_dragon") // do we need this?
 	{
-		movetogoal (dist);
+		movetogoal (ddist);
 		return;
 	}
 	// check for noticing a player
@@ -885,11 +906,11 @@ void(float dist) ai_walk =
 	if (self.huntingcharmer)
 	{
 //		movetogoal (dist*2);
-		movetogoal (dist);
+		movetogoal (ddist);
 		self.nextthink = time + ((self.nextthink - time)/2);
 	}
 	else
-		movetogoal (dist);
+		movetogoal (ddist);
 };
 
 
@@ -940,6 +961,11 @@ void() ai_turn =
 		return;
 	
 	ChangeYaw ();
+	if (self.speed > 0)
+	{
+		if (self.lip <= 0) self.lip = 1; // local speed divisor
+		self.nextthink = time + (self.speed * MON_SPEED_DIV * self.lip);
+	}
 };
 
 /*
@@ -1198,10 +1224,18 @@ void(float dist) ai_run =
 {
 	local	vector	delta;
 	local	float	axis;
-	local	float	direct, ang_rint, ang_floor, ang_ceil;
-	
-	movedist = dist;
+	local	float	direct, ang_rint, ang_floor, ang_ceil, ddist;
 
+	movedist = ddist = dist;
+
+	if (self.speed > 0)
+	{
+		if (self.lip <= 0) self.lip = 1; // local speed divisor
+		movedist = ddist = dist * ((0.1 / self.speed) / self.lip) / MON_SPEED_DIV;
+		self.nextthink = time + (self.speed * MON_SPEED_DIV * self.lip);
+	}
+
+// see if the enemy is dead
 	if (!Q_100)
 	if (self.flags & FL_MONSTER)
 	{
@@ -1228,7 +1262,12 @@ if (WARNING) bprint("monster move check\n");
 	}
 
 // see if the enemy is dead
-	if (self.enemy.health <= 0 || (self.charmed && (self.charmer == self.enemy)))
+// Cataboligne 9.11.3 purify - chase cam
+// *** reasserted 11.17.12
+	// change detection method so monsters won't keep attacking
+	// a dead player with health reset to one (no view tilting hack for cam view)
+	if (self.enemy.solid == SOLID_NOT || (self.charmed && (self.charmer == self.enemy)))
+	//if (self.enemy.health <= 0 || (self.charmed && (self.charmer == self.enemy)))
 	{
 		self.enemy = world;
 //MED 10/30/96 added charmed stuff
@@ -1238,7 +1277,9 @@ if (WARNING) bprint("monster move check\n");
 			return;
 		}
 	// FIXME: look all around for other targets
-		if (self.oldenemy.health > 0)
+// Cataboligne 9.11.3 purify - chase cam
+		if (self.oldenemy.solid != SOLID_NOT)
+		//if (self.oldenemy.health > 0)
 		{
 			self.enemy = self.oldenemy;
 			HuntTarget ();
@@ -1261,7 +1302,7 @@ if (WARNING) bprint("monster move check\n");
 		self.search_time = time + 5;
 
 // look for other coop players
-	if (coop && self.search_time < time && !self.charmed)
+	if ((coop || deathmatch) && self.search_time < time && !self.charmed) // *bot
 	{
 		if (FindTarget ())
 			return;
@@ -1318,7 +1359,7 @@ if (WARNING) bprint("monster move check\n");
 		if (!axis)
 		{
 			self.endtime = time + 3;
-			movetogoal (dist);		// done in C code...
+			movetogoal (ddist);		// done in C code...
 		}
 //		else
 //			ChangeYaw();
@@ -1326,7 +1367,7 @@ if (WARNING) bprint("monster move check\n");
 	else
 	{
 // head straight in
-	movetogoal (dist);		// done in C code...
+	movetogoal (ddist);		// done in C code...
 	}
 };
 

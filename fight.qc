@@ -139,6 +139,12 @@ void() ai_face =
 {
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 	ChangeYaw ();
+
+	if (self.speed > 0)
+	{
+		if (self.lip <= 0) self.lip = 1; // local speed divisor
+		self.nextthink = time + (self.speed * MON_SPEED_DIV * self.lip);
+	}
 };
 
 /*
@@ -157,8 +163,11 @@ void(float d) ai_charge =
 	local float ddist;
 	ddist = d;
 
-	if (self.lip <= 0) self.lip = 1; // local speed divisor
-	if (self.speed) ddist = d * ((0.1 / self.speed) / self.lip) / MON_SPEED_DIV;
+	if (self.speed > 0)
+	{
+		if (self.lip <= 0) self.lip = 1; // local speed divisor
+		ddist = d * ((0.1 / self.speed) / self.lip) / MON_SPEED_DIV;
+	}
 
 	ai_face ();	
 	movetogoal (ddist);		// done in C code...

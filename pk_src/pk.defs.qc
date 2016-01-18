@@ -29,6 +29,12 @@ string sites					= "alias sites \"echo website  http://www.moddb.com/mods/chaos-
 string vmotd					= "\\/ersion \b1\b.\b0\b.\b3a\b\n\n";
 
 
+// **************************************
+// Archon section
+
+// **************************************
+
+.float archon; // accumulates power
 
 // **************************************
 // ADMIN section
@@ -233,6 +239,22 @@ float RUNE_MOVE; // move a rune after this many min regardless of other cnts
 float rune_count; // total # on map
 void() rune_maker;
 void() rune_precache;
+
+// runes can be forcefully removed in ENHANCED mode
+float RUNE_PULL; // if true tells print code rune is being pulled and not to print drop messages
+void(entity e, float pr) rune_pull;
+
+/*
+float HARP_PULL				= 0.15; // % chance harpoon poink gets a rune from a player - IDEA: seperate chance to drop a rune whilst being pulled ?
+
+TEST:
+*/
+float HARP_PULL				= 1; // % chance harpoon poink gets a rune from a player - IDEA: seperate chance to drop a rune whilst being pulled ?
+float HORN_PULL				= 0.08; // % chance air horn will blow a rune off a player
+float FALL_PULL				= 0.1;  // % chance a damaging fall will pull a rune loose
+float GRAV_PULL				= 0.5;  // % chance a gravity well will pull a rune loose - mostly depends on player being caught on something and in range of pull
+float SGRAV_PULL				= 0.8;  // % chance a super gravity well / reality bomb will pull a rune loose
+
 
 string rune_resist_sound;
 string rune_strength_sound;
@@ -589,7 +611,7 @@ void(entity de, entity ve, vector vb) dropinview;
 void(entity p, float pg) drop_setup;
 void(float im, entity p, vector vb) drop_inventory;
 void() inventory;
-void(string sl, float b, entity e) drop_string;
+void(entity p, string sl, float b, entity e) drop_string;
 float(entity e, string ms) force_drop_set;
 float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) drop_one;
 void(entity e) dead_artifact;

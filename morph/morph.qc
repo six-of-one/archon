@@ -1434,6 +1434,9 @@ void() random_monster_wakey =
 
 	self.owner.think(); // attempt to *_start_go
 
+// have had some non solid monsters from cubes - 11.19.12
+	if (!self.owner.solid) self.owner.solid = SOLID_SLIDEBOX;
+
 	if (self.owner.think == SUB_Remove) return; // some failure is removing the monster
 
 	if (!self.owner.takedamage) self.owner.takedamage = DAMAGE_AIM;

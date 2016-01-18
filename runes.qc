@@ -284,14 +284,6 @@ void() mk_rune_set =
 
 // pull a rune forcefully from player
 
-float HARP_PULL				= 0.15; // % chance harpoon poink gets a rune from a player - IDEA: seperate chance to drop a rune whilst being pulled ?
-float HORN_PULL				= 0.08; // % chance air horn will blow a rune off a player
-float FALL_PULL				= 0.1;  // % chance a damaging fall will pull a rune loose
-float GRAV_PULL				= 0.5;  // % chance a gravity well will pull a rune loose - mostly depends on player being caught on something and in range of pull
-float SGRAV_PULL				= 0.8;  // % chance a super gravity well / reality bomb will pull a rune loose
-
-float RUNE_PULL; // if true tells print code rune is being pulled and not to print drop messages
-
 // TDO: harp can grab ejected rune - will be in newmis if exists
 // TDO: level 3 rules that have incremental - will not pull a whole rune, but a series of increments
 
@@ -323,6 +315,7 @@ void(entity e) rune_drop =
 	if (k & RUNE_MASK) // drop a rune - wont drop if it was disabled by admin
 	{
 		if (!rp) ms = "Rune drop failure - clear menus and try again\n";
+
 		if (force_drop_set(e, ms)) return;
 		drop_setup(e, 0);
 
@@ -330,10 +323,11 @@ void(entity e) rune_drop =
 		{
 			if (!rp)
 			sprint(e, "Rune drop failure - oh no\n");
-			remove(e.dropent);
-			e.dropent = world;
+//			remove(e.dropent);
+//			e.dropent = world;
 			return;
 		}
+
 		drop_inventory(1, e, anti_bounce); // must have anti bounce  here - rune could have been ejected manually with impulse
 		if (e.dropent.map)
 		{
@@ -347,6 +341,34 @@ void(entity e) rune_drop =
 		remove(e.dropent);
 		e.dropent = world;
 	}
+};
+
+// test for a forced rune eject
+
+// entity - player or bot
+// pr - percentage test
+
+void(entity e, float pr) rune_pull =
+{
+// MUST always be set because of code (like harpoon) that tries to snag a rune
+	newmis = world;
+
+	if (!ENHANCED) return;
+	if (!e) return;
+
+// only players & bots for now
+	if (e.class_select != "class_player" && e.class_select != "class_bot") return;
+
+// no can has rune - go back
+	if (!e.rune_flag & RUNE_MASK_ALL) return;
+
+// not in the cards
+	if (random() > pr) return;
+
+// pull a rune - this tests rune rule set value (no drop for rules 1)
+	RUNE_PULL = TRUE;
+	rune_drop(e);
+	if (newmis) item_eject(newmis, GEN_BOUNCE);
 };
 
 // handle runes when player dies

@@ -312,6 +312,8 @@ void () weapon_airfist =
 	//setsize (self, '-15 -9 25', '17 9 43');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
+
+	self.archon = 0.1; // 10 pts
 };
 
 /*QUAKED weapon_rmine (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -346,6 +348,8 @@ void () weapon_chainlg =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
+
+	self.archon = 0.35; // 35 pts
 };
 
 
@@ -369,6 +373,8 @@ void () weapon_grapgun =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
+
+	self.archon = 0.25;
 };
 
 // dynamic items go away when touched
@@ -709,6 +715,9 @@ if (self.classname == "")
 //		}
 		self.pk_touch();
 
+// power up archon
+		if (self.archon) other.archon = other.archon + self.archon;
+
 //		if (f) self.event = "dynamic_item"; // restore
 
 		if (other.mask_x & CB_SCOURGE) // scourge has to select x_wep so they look / sound right
@@ -822,6 +831,8 @@ bprint(")\n");
 		other.pk_canpabammo = other.pk_canpabammo + 1;
 	}
 
+// power up archon - pki
+	if (self.archon) other.archon = other.archon + self.archon;
 
 	// print message of what you picked up
 	/*
@@ -893,6 +904,8 @@ void () item_painkeep_gwell =
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can have pk specials
 	StartItem ();
+
+	self.archon = 0.40;
 };
 
 /*QUAKED item_painkeep_turret (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -915,6 +928,8 @@ void () item_painkeep_turret =
 	setsize (self,'-7 -7 -7','4 7 21');
 	self.mask_x = MORPH_ALL;
 	StartItem ();
+
+	self.archon = 0.15;
 };
 
 /*QUAKED item_painkeep_lantern (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -944,6 +959,8 @@ void () item_painkeep_can =
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL;
 	StartItem ();
+
+	self.archon = 0.1;
 };
 
 /*QUAKED item_painkeep_beartrap(0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -965,6 +982,8 @@ void () item_painkeep_beartrap =
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL;
 	StartItem ();
+
+	self.archon = 0.15;
 };
 
 
@@ -1009,6 +1028,8 @@ void () item_painkeep_expshells =
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
 	self.mask_x = MORPH_ALL;
+
+	self.archon = 0.2;
 };
 
 // called from bound_ammo - bounds for pk ammo

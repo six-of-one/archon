@@ -100,7 +100,7 @@ void() SetChangeParms =
 		self.health = 50;
 
 	parm1 = self.items;
-	parm2 = self.health;
+	parm2 = self.health + ceil(self.archon * 256);
 	armorsave_rev(self);
 //	parm3 = self.armorvalue; // put in parm9
 	parm4 = self.ammo_shells;
@@ -199,7 +199,8 @@ void() DecodeLevelParms =
 	self.mcode = parm3;
 
 	self.items = parm1;
-	self.health = parm2;
+	self.health = parm2 & 255;
+	if (!self.archon) self.archon = ceil((parm2 &  16776960 ) / 256);
 	self.ammo_shells = parm4;
 	self.ammo_nails = parm5;
 	if (parm6 > 0) self.ammo_rockets = parm6;
@@ -1615,6 +1616,9 @@ void () PlayerPostThink =
 			else if (self.jump_flag < -650)
 			{
 				T_Damage (self, world, world, 5); // IDEA: falling damage related to dist & velo (*_z)
+				// chance to knock a rune loose
+				rune_pull(self, FALL_PULL);
+
 				//sound (self, CHAN_VOICE, "player/fall_2.wav", 1, ATTN_NORM);
 				if (self.mask_x == CB_HUMAN)
 					sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);

@@ -76,10 +76,12 @@ void() gravity_touch =
 
 };
 
+// IDEA: reality bomb - chaos effects while active
+
 void() gravity_pull =
 {
 	local entity e, g;
-	local float d, sgl, i;
+	local float d, sgl, i, gp;
 	local vector org, v1;
 	local float gPercent;
 	local float gDist, gExt, gFal;
@@ -88,14 +90,16 @@ void() gravity_pull =
 	gDist = 960;		// range of the weapon
 	gPower = 512;	// ideal speed of pull
 	gExt = 0; // extra dist - only super gravwell
+	gp = GRAV_PULL; // rune pull test %
 
 // either banished & went grav or grav + sphere
-	if (self.classname == "sphere_annihilation") // these are a bit more powerfull
+	if (self.classname == "sphere_annihilation") // reality bomb - these are a bit more powerfull
 	{
 		gDist = 1290 + random() * 200;
 		gPower = 640 + random() * 100;		
 		gExt = 360; // laser beam range out to 1600
 		sgl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS;		// all hittable things for lazer
+		gp = SGRAV_PULL * 1.1; // rune pull test %
 	}
 	else
 	if (self.frame > $cubelf20) // super grav well = sgw
@@ -104,6 +108,7 @@ void() gravity_pull =
 		gPower = 640;
 		gExt = 320; // laser beam range out to 1600
 		sgl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS;		// all hittable things for lazer
+		gp = SGRAV_PULL; // rune pull test %
 	}
 
 // idea: sgw -  phantom zone effect with 6 sides flying off, catching vars ents, & sweeping from level - players watch this - time out & allow respawn / return
@@ -140,6 +145,12 @@ void() gravity_pull =
 			{
 // idea: sgw - chance to teleport out of range in range
 //if (e != self.owner) // idea: should not target owner ?
+
+// rune pull _beyond_ grab range test
+				if (vlen(e.origin - self.origin) < (gDist * 1.333))
+				if (random() < 0.2) // only 2o% to try test (curr 5o%) for things past pull range
+					// chance to knock a rune loose
+					rune_pull(e, GRAV_PULL); // not a super pull yet
 
 				if (random() < 0.366)
 				if (can_has_target(e, self, self.origin, 0, sgl)) // check LOS to grav
@@ -204,6 +215,10 @@ void() gravity_pull =
 
 			// modify the velocity
 			e.velocity = e.velocity + normalize(self.origin - e.origin) * gPower * gPercent;
+
+//			if (random() < 0.1) // only 1o% to try test (curr 5o%) for things getting pulled every 0.1 secs - prob be dead before this ever factored in
+				// chance to knock a rune loose
+				rune_pull(e, gp);
 
 			if (e.map  == "rune" && e.classname == "item_sigil") // relocate runes sucked by wells
 				e.hook = TRUE;

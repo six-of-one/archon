@@ -2226,6 +2226,7 @@ void() painkeep_cube_use =
 		{
 			self.skin = 1; // super gravity well
 			self.frame = 1;
+			self.archon = 0.80;
 		}
 
 		if (!crate)

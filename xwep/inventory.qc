@@ -1247,52 +1247,52 @@ void(float im, entity p, vector vb) drop_inventory =
 };
 
 
-void(string sl, float b, entity e) drop_string =
+void(entity p, string sl, float b, entity e) drop_string =
 {
-	if (self.dropent.cnt == 1)
+	if (p.dropent.cnt == 1)
 	{
-		self.dropent.noise = sl;
-		self.dropent.dmg = b;
-		self.dropent.eweapon = e;
+		p.dropent.noise = sl;
+		p.dropent.dmg = b;
+		p.dropent.eweapon = e;
 	}
-	if (self.dropent.cnt == 2)
+	if (p.dropent.cnt == 2)
 	{
-		self.dropent.noise1 = sl;
-		self.dropent.lefty = b;
-		self.dropent.vwepent = e;
+		p.dropent.noise1 = sl;
+		p.dropent.lefty = b;
+		p.dropent.vwepent = e;
 	}
-	if (self.dropent.cnt == 3)
+	if (p.dropent.cnt == 3)
 	{
-		self.dropent.noise2 = sl;
-		self.dropent.lip = b;
-		self.dropent.charmer = e;
+		p.dropent.noise2 = sl;
+		p.dropent.lip = b;
+		p.dropent.charmer = e;
 	}
-	if (self.dropent.cnt == 4)
+	if (p.dropent.cnt == 4)
 	{
-		self.dropent.noise3 = sl;
-		self.dropent.wait = b;
-		self.dropent.enemy = e;
+		p.dropent.noise3 = sl;
+		p.dropent.wait = b;
+		p.dropent.enemy = e;
 	}
-	if (self.dropent.cnt == 5)
+	if (p.dropent.cnt == 5)
 	{
-		self.dropent.noise4 = sl;
-		self.dropent.aflag = b;
-		self.dropent.oldenemy = e;
+		p.dropent.noise4 = sl;
+		p.dropent.aflag = b;
+		p.dropent.oldenemy = e;
 	}
-	if (self.dropent.cnt == 6)
+	if (p.dropent.cnt == 6)
 	{
-		self.dropent.target1 = sl;
-		self.dropent.delay = b;
-		self.dropent.goalentity = e;
+		p.dropent.target1 = sl;
+		p.dropent.delay = b;
+		p.dropent.goalentity = e;
 	}
-	if (self.dropent.cnt == 7)
+	if (p.dropent.cnt == 7)
 	{
-		self.dropent.target2 = sl;
-		self.dropent.volume = b;
-		self.dropent.owner = e;
+		p.dropent.target2 = sl;
+		p.dropent.volume = b;
+		p.dropent.owner = e;
 	}
 
-	self.dropent.cnt = self.dropent.cnt + 1;
+	p.dropent.cnt = p.dropent.cnt + 1;
 };
 
 // used
@@ -1371,6 +1371,7 @@ void(entity p, float pg) drop_setup =
 	de.cnt = 1;
 	sel = "";
 
+
 	while (de.cnt < 8)
 	{
 		if (d <= 8388608)
@@ -1391,13 +1392,13 @@ void(entity p, float pg) drop_setup =
 						if (stack_search(p, "item_regen"))
 							ic = "Regeneration ";
 
-						if (ic != "") drop_string(ic, d, world);
+						if (ic != "") drop_string(p, ic, d, world);
 					}
 
 					a = d & 15; // in case runes are ever > bit 8
 					if (serverflags & a)
 					{
-						drop_string(rune_name(a), d, world);
+						drop_string(p, rune_name(a), d, world);
 						de.msight = " *: server runes can be released";
 					}
 				}
@@ -1415,7 +1416,7 @@ void(entity p, float pg) drop_setup =
 					if (stack_search(p, "item_regen"))
 						ic = "Regeneration ";
 
-					drop_string(ic, d, world);
+					drop_string(p, ic, d, world);
 				}
 			}
 
@@ -1424,7 +1425,7 @@ void(entity p, float pg) drop_setup =
 				a = RUNE_AMMO;
 				if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
 				if (p.rune_flag & RUNE_AMMO)
-					drop_string("Ammo Pack", RUNE_AMMO, world);
+					drop_string(p, "Ammo Pack", RUNE_AMMO, world);
 			}
 
 			if (d == 32)
@@ -1432,56 +1433,56 @@ void(entity p, float pg) drop_setup =
 				a = RUNE_FLG_FLY;
 				if (!(a & RUNE_MASK_ALL))
 				if (p.rune_flag & RUNE_FLG_FLY)
-					drop_string("Flying Rune", RUNE_FLG_FLY, world); // note: if rune ever exists will need to id q3 item
+					drop_string(p, "Flying Rune", RUNE_FLG_FLY, world); // note: if rune ever exists will need to id q3 item
 			}
 
 			if (d == 64)
 			if (p.rune_flag & R_VAMPIRE)
-				drop_string(rune_name(R_VAMPIRE), R_VAMPIRE, world);
+				drop_string(p, rune_name(R_VAMPIRE), R_VAMPIRE, world);
 
 			if (d == 128)
 			if (p.rune_flag & T_DSH)
-				drop_string(rune_name(T_DSH), T_DSH, world);
+				drop_string(p, rune_name(T_DSH), T_DSH, world);
 
 			if (d == 256)
 			if (p.rune_flag & T_AMP)
-				drop_string(rune_name(T_AMP), T_AMP, world);
+				drop_string(p, rune_name(T_AMP), T_AMP, world);
 
 			if (d == 512)
 			if (p.rune_flag & T_TEIM)
-				drop_string(rune_name(T_TEIM), T_TEIM, world);
+				drop_string(p, rune_name(T_TEIM), T_TEIM, world);
 
 			if (d == 1024)
 			if (p.rune_flag & T_ADOC)
-				drop_string(rune_name(T_ADOC), T_ADOC, world);
+				drop_string(p, rune_name(T_ADOC), T_ADOC, world);
 
 			if (d == 2048)
-			if (p.items & IT_INVULNERABILITY) drop_string("Invulerability", IT_INVULNERABILITY, world);
+			if (p.items & IT_INVULNERABILITY) drop_string(p, "Invulerability", IT_INVULNERABILITY, world);
 
 			if (d == 4096)
-			if (p.items & IT_QUAD) drop_string("Quad Damage", IT_QUAD, world);
+			if (p.items & IT_QUAD) drop_string(p, "Quad Damage", IT_QUAD, world);
 
 			if (d == 8192)
-			if (p.items & IT_INVISIBILITY) drop_string("Limited Invisibility", IT_INVISIBILITY, world);
+			if (p.items & IT_INVISIBILITY) drop_string(p, "Limited Invisibility", IT_INVISIBILITY, world);
 
 			if (d == 16384)
-			if ((p.items & IT_SUIT) && !p.wetsuit_finished) drop_string("Hazmat Suit", IT_SUIT, world);
+			if ((p.items & IT_SUIT) && !p.wetsuit_finished) drop_string(p, "Hazmat Suit", IT_SUIT, world);
 
 			if (d == 32768)
-			if ((p.items & IT_SUIT) && p.wetsuit_finished) drop_string("Diving Suit", IT_SUIT, world);
+			if ((p.items & IT_SUIT) && p.wetsuit_finished) drop_string(p, "Diving Suit", IT_SUIT, world);
 
 			if (d == 65536)
-			if (p.empathy_finished) drop_string("Empathy Shields", 0, world);
+			if (p.empathy_finished) drop_string(p, "Empathy Shields", 0, world);
 
 			if (d == 131072)
-			if (p.items & IT_SUPERHEALTH) drop_string("Mega Health", IT_SUPERHEALTH, world);
+			if (p.items & IT_SUPERHEALTH) drop_string(p, "Mega Health", IT_SUPERHEALTH, world);
 
 // note: protect builtin armors
 			if (d == 262144)
 			{
 				if (!((p.mask_x & MORPH_SARMOR) || p.armortype == ARM_SCRG)) // builtin type armor is not thrown
 				if (p.armorvalue * p.armortype)
-					drop_string("Armor", 0, world);
+					drop_string(p, "Armor", 0, world);
 			}
  
 
@@ -1807,6 +1808,7 @@ float(entity e, string ms) force_drop_set =
 	}
 	else if (e.dropent.vwepmdl != "forcedrop")
 	{
+
 		if (ms != "") sprint(e, ms);
 		return(TRUE);
 	}
@@ -1848,7 +1850,7 @@ float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) 
 	}
 
 	e.dropent.cnt = 1;
-	drop_string(ds, bv, ew);
+	drop_string(e, ds, bv, ew);
 	drop_inventory(1, e, vb);
 
 	if (!p || ke)

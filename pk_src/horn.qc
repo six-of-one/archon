@@ -411,6 +411,8 @@ void(float firstBlast) horn_airblast =
 	      {
 		      // Apply damage to the entity.
 		      T_Damage(e, self, self, ldmg);
+				// chance to knock a rune loose
+				rune_pull(e, HORN_PULL);
 	      }
 	    }
 	  }

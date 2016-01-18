@@ -310,6 +310,7 @@ if (ign != A_MONSTER)
 		return;
 	}
 	precache_model ("progs/bossman.mdl");
+	precache_model ("progs/h_bossman.mdl");
 	
 	precache_sound ("mon_II/bossman/bossback.wav");
 	precache_sound ("mon_II/bossman/bossblah.wav");
