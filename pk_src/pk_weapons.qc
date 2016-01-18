@@ -1345,6 +1345,7 @@ void() PK_Attack =
 	makevectors	(self.v_angle);			// calculate forward angle for velocity
 	self.show_hostile = time + 1;	// wake monsters up
 
+	if (self.morphy != IMP_MENF) // m-enf has an internal ewa, and always uses his frames
 	if (self.eweapon)
 	{
 		e_weap_Attack();

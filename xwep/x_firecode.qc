@@ -2204,7 +2204,7 @@ void() e_weap_Attack =
 	if (EWEAP._fr_attack != SUB_Null) EWEAP._fr_attack();
 
 	if (EWEAP.duration == SND_OVER)
-	if (EWEAP.model != null_string) // fists hack
+	if ((EWEAP.model != null_string) || (self.morphy == IMP_MENF)) // fists hack
 	if (EWEAP.noise3 != null_string)
 		sound (self, CHAN_WEAPON, EWEAP.noise3, 1, ATTN_NORM);
 //	EWEAP.aflag = self.currentammo;

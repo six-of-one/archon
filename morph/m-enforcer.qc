@@ -81,6 +81,7 @@ void() m_precache_enforcer =
 void()	player_enf_atk;
 void()	player_enf_atk4;
 void()	player_enf_atk7;
+void()	player_enf_atk11;
 
 void(float stat) player_enforcer_fire =
 {
@@ -90,17 +91,19 @@ void(float stat) player_enforcer_fire =
 
 	if (self.eweapon) fr = self.frame;
 	else
+	if (self.weapon != IT_AXE) fr = self.frame; // any non builtin
+/*
 	if (self.weapon == IT_LIGHTNING) fr = self.frame; // W_FireLightning();
 	else if (self.weapon == IT_ROCKET_LAUNCHER) fr = self.frame; // W_FireRocket();
 	else if (self.weapon == IT_GRENADE_LAUNCHER) fr = self.frame; // W_FireGrenade();
 	else if (self.weapon == IT_SUPER_SHOTGUN) fr = self.frame; // W_FireSuperShotgun();
 	else if (self.weapon == IT_SHOTGUN) fr = self.frame; // W_FireShotgun();
-
-	if (fr)
+*/
+	if (fr) // NOT a builtin wep
 	{
 		if (!self.eweapon)
 		{
-			if (self.weapon == IT_LIGHTNING)
+			if (self.weapon == IT_LIGHTNING) // fire ltn
 			{
 				if (self.ammo_cells > 1)
 				{
@@ -109,11 +112,11 @@ void(float stat) player_enforcer_fire =
 					if (self.button0) player_enf_atk4();
 				}
 				else self.weapon = IT_AXE;
-				return;
 			}
-			if (self.weapon != IT_AXE) // use a normal wep
+			else
+//			if (self.weapon != IT_AXE) // use non ewep
 			{
-				self._attack = SUB_Null;
+				self._attack = SUB_Null; // block infinite loop
 				W_Attack();
 				self._attack = player_enf_atk;
 			}
@@ -128,7 +131,11 @@ void(float stat) player_enforcer_fire =
 			if (self.eweapon)
 			{
 				e_weap_Attack();
-				if (self.eweapon._fr_attack) self.think = player_enf_atk7;
+
+// this will fix framing issues when enforcer fires some eweaps - it also breaks those weps
+//				if (self.eweapon._fr_attack)
+//				if (stat == 2) self.think = player_enf_atk7;
+//				else self.think = player_enf_atk11;
 			}
 			else fr = FALSE;
 

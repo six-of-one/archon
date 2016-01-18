@@ -191,15 +191,12 @@ void() player_ogre_shoot3 = [ $shoot3, player_ogre_shoot4 ]
 	fr = TRUE;
 	if (!self.eweapon)
 	{
-//		if (self.eweapon.weapon == MC_THUNDER) W_FireLightning();
-//		else if (self.eweapon.weapon == MC_LASERCAN) HIP_FireLaser(stat);
-//		else 
 		if (self.weapon & (IT_NAILGUN | IT_SUPER_NAILGUN))
-			{
-				W_FireSpikes(-12);
-				self.attack_finished = time + 0.2;
-				if (self.button0) self.think = player_ogre_shoot2;
-			}
+		{
+			W_FireSpikes(-12);
+			self.attack_finished = time + 0.2;
+			if (self.button0) self.think = player_ogre_shoot2;
+		}
 		else fr = FALSE;
 		if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
 		if (fr) return;
@@ -212,7 +209,9 @@ void() player_ogre_shoot3 = [ $shoot3, player_ogre_shoot4 ]
 		if (self.eweapon)
 		{
 			e_weap_Attack();
-			if (self.eweapon._fr_attack) self.think = player_ogre_shoot4;
+
+// if the ogre had framing issues - nothing he can get that causes them, note it will also break some eweaps, see m-enf
+//			if (self.eweapon._fr_attack) self.think = player_ogre_shoot4;
 		}
 		else fr = FALSE;
 		if (fr) return;	

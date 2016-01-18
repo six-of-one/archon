@@ -1300,7 +1300,7 @@ void () PlayerPreThink =
 // PAINKEEP SPLASH Check for entities splashing
 		CheckWaterLevels();
 // Archon - moveable power points
-		PowerPointMove();
+//		PowerPointMove();
 	}
 
 	//JIM

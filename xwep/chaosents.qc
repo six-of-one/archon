@@ -1170,6 +1170,12 @@ void() generator_fire =
 	if (!self.targetname)
 		self.nextthink = time + self.speed;
 
+	if (cvar("nomonsters"))
+	{
+		if (!self.targetname) self.nextthink = time + 120; // check back much later if thinking
+		return;
+	}
+
 // pausing or slowing
 	if (self.super_time > time)
 	{
