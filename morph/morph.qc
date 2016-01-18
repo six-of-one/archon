@@ -348,9 +348,9 @@ void() morphic_impulse =
 		if (dx)
 		{
 			self.state = dx;
-			c.count = dx; // save in case we have fail
+			c.aflag = dx; // save in case we have fail
 		}
-		else self.state = c.count;
+		else self.state = c.aflag;
 		morph_print(self);
 	}
 
@@ -997,6 +997,32 @@ void() split_morph_impulse =
 	{
 		self.pk_currentitem = PK_IT_AXE;
 	}
+};
+
+// check for explode shells - see if morph has a gun
+
+// e - player ent
+// return true if ent possess shotgun
+
+float(entity e) shotgun_check =
+{
+	local entity f;
+
+	f = e.vwepent;
+	while (f)
+	{
+		if (f.lip == AMMO_SHELLS) return(TRUE);
+		f = f.vwepent;
+	}
+	if (e.items & IT_SUPER_SHOTGUN)
+	if (!e.builtin & IT_SUPER_SHOTGUN)
+		return(TRUE);
+
+	if (e.items & IT_SHOTGUN)
+	if (!e.builtin & IT_SHOTGUN)
+		return(TRUE);
+
+	return(FALSE);
 };
 
 

@@ -1296,6 +1296,7 @@ float PK_IT_BEARTRAP			= 128;
 float PK_IT_EXTRADISP		= 4096; //= 256; - pk artifacts support recode
 
 float PK_IT_RANGE				= 112; // range weps - grap, airgun, chainthunder
+float PK_IT_CARY				= 3982; // throwables - fire & forget - grav, turret, can, beartrap, ego, tomb, phone, actor
 /*
 Impulse 1 will toggle between Axe, Bear Trap, CoPB, AS, and GW.
 

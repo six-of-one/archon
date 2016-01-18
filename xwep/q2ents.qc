@@ -1238,7 +1238,7 @@ void() item_power_shield =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
-	self.mask_x = CB_HUMAN + CB_ENF;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
 void() item_power_screen =
@@ -1269,7 +1269,7 @@ void() item_power_screen =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
-	self.mask_x = CB_HUMAN + CB_ENF;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
 void() item_silencer =
@@ -1354,7 +1354,7 @@ void() q2_item_enviro =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 };
 
 void() q2_item_quad =
@@ -1437,6 +1437,7 @@ void() item_bandolier =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF; // everyone can get arts
 };
 
 void() item_pack =
@@ -1468,6 +1469,7 @@ void() item_pack =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN; // everyone can get arts
 };
 
 void() item_breather =
@@ -1495,7 +1497,7 @@ void() item_breather =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 };
 
 void() key_pyramid =

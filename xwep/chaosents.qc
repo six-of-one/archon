@@ -646,7 +646,7 @@ bprint("\n");
 			self.movetarget.wait = -10; // make a random monster
 			self.movetarget.count = self.movetarget.delay = 0; // only make 1
 			self.movetarget.charmer = other; // horn conjured monster
-			self.movetarget.mask_x = 0; // any q1 - fish - cthon - shubs
+			self.movetarget.mask_x = 0; // any q1 -fish -cthon -shubs
 			if (random() < 0.9) // hip horn default
 				self.movetarget.mask_x =  CB_M_DOG + CB_M_DEMON + CB_M_OGRE + CB_M_SHAMBL + CB_M_ZOMBY;			
 		}

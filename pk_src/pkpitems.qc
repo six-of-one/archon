@@ -291,6 +291,7 @@ void () item_pkplus_actor =
 	self.netname = "Actor";
 	self.pk_items = PKPLUS_IT_ACTOR;
 	setsize (self,'-16 -16 -24','16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get arts
 	StartItem ();
 	if (self.class_select == "") self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);

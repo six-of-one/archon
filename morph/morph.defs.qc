@@ -141,7 +141,7 @@ void(string ws, float rtime ) morph_walksound;
 float(entity o) morph_chasecam_fpv;
 
 void(float dx) morph_CycleWeaponCommand;
-
+float(entity e) shotgun_check;
 
 .void() _stand;
 .void(entity attacker, float take) _pain; // so we can use native monster calls
@@ -211,43 +211,43 @@ float CB_ANODEX					= 1048576;
 // code numbers - store in .morphy
 // cant use 1, 2, 4, 8, 16, 32, 64, 128 ... etc
 
-float IMP_MCHAOS					= 6;	string STI_MCHAOS			= "impulse 156";
-float IMP_MORDER					= 7;	string STI_MORDER			= "impulse 157";
-float IMP_MANODEX					= 9;	string STI_MANODEX		= "impulse 159";
+float IMP_MCHAOS					= 6;	// string STI_MCHAOS			= "impulse 6";
+float IMP_MORDER					= 7;	// string STI_MORDER			= "impulse 7";
+float IMP_MANODEX					= 9;	// string STI_MANODEX		= "impulse 9";
 //float USE_PULSE_SPIKES			= -257368;
 //Techs:
-float IMP_MHUMAN					= 12;	string STI_MHUMAN			= "impulse 160"; // NOTE: char_q - standard quake guy
-float IMP_MDEMO					= 61;	string STI_MDEMO			= "impulse 161";
-float IMP_MSPECIAL				= 62;	string STI_MSPECIAL		= "impulse 162";
-float IMP_MTECH					= 63;	string STI_MTECH			= "impulse 163";
-float IMP_MENG						= 65;	string STI_MENG			= "impulse 165";
+float IMP_MHUMAN					= 12;	// string STI_MHUMAN			= "impulse 12"; // NOTE: char_q - standard quake guy
+float IMP_MDEMO					= 61;	// string STI_MDEMO			= "impulse 61";
+float IMP_MSPECIAL				= 62;	// string STI_MSPECIAL		= "impulse 62";
+float IMP_MTECH					= 63;	// string STI_MTECH			= "impulse 63";
+float IMP_MENG						= 65;	// string STI_MENG			= "impulse 65";
 //Medieval:
-float IMP_MWRAITH					= 70;	string STI_MWRAITH		= "impulse 170";
-float IMP_MTHAM					= 71;	string STI_MTHAM			= "impulse 171";
-float IMP_MDRACON 				= 72;	string STI_MDRACON		= "impulse 172";
-float IMP_MTHIEF					= 73;	string STI_MTHIEF			= "impulse 173";
+float IMP_MWRAITH					= 70;	// string STI_MWRAITH		= "impulse 70";
+float IMP_MTHAM					= 71;	// string STI_MTHAM			= "impulse 71";
+float IMP_MDRACON 				= 72;	// string STI_MDRACON		= "impulse 72";
+float IMP_MTHIEF					= 73;	// string STI_MTHIEF			= "impulse 73";
 float IMP_MJUMP					= 81; // jump over undefined morph states in select
 //Quake 2:
-float IMP_MGUNNEY			 		= 81;	string STI_MGUNNEY		= "impulse 181";
-float IMP_MTANK	 				= 82;	string STI_MTANK			= "impulse 182";
-float IMP_MSUPTANK				= 83;	string STI_MSUPTANK		= "impulse 183";
+float IMP_MGUNNEY			 		= 81;	// string STI_MGUNNEY		= "impulse 81";
+float IMP_MTANK	 				= 82;	// string STI_MTANK			= "impulse 82";
+float IMP_MSUPTANK				= 83;	// string STI_MSUPTANK		= "impulse 83";
 //Doomer:
-float IMP_MIMP	 					= 84;	string STI_MIMP			= "impulse 184";
-float IMP_MCYBER	 				= 85;	string STI_MCYBER			= "impulse 185";
-float IMP_MARACHN			 		= 86;	string STI_MARACHN		= "impulse 186";
+float IMP_MIMP	 					= 84;	// string STI_MIMP			= "impulse 84";
+float IMP_MCYBER	 				= 85;	// string STI_MCYBER			= "impulse 85";
+float IMP_MARACHN			 		= 86;	// string STI_MARACHN		= "impulse 86";
 //Beastie:
-float IMP_MENF	 					= 87;	string STI_MENF			= "impulse 187";
-float IMP_MZOMBIE					= 88;	string STI_MZOMBIE		= "impulse 188";
-float IMP_MWIZARD					= 89;	string STI_MSCRAG			= "impulse 189";
-float IMP_MOGRE					= 90;	string STI_MOGRE			= "impulse 190";
-float IMP_MHKNIGHT				= 91;	string STI_MHKNIGHT		= "impulse 191";
-float IMP_MSHALR					= 92;	string STI_MSHALR			= "impulse 192";
-float IMP_MSHAMBLR				= 93;	string STI_MSHAMBLR		= "impulse 193";
-float IMP_MDEMON					= 94;	string STI_MDEMON			= "impulse 194";
-float IMP_MCTHON					= 95;	string STI_MCTHON			= "impulse 195";
-float IMP_MDRAGON					= 96;	string STI_MDRAGON		= "impulse 196";
-float IMP_MSCOURGE				= 97;	string STI_MSCOURGE		= "impulse 197";
-float IMP_MGREMLIN_F				= 98;	string STI_MGREMLIN		= "impulse 198"; // flying gremlin
+float IMP_MENF	 					= 87;	// string STI_MENF			= "impulse 87";
+float IMP_MZOMBIE					= 88;	// string STI_MZOMBIE		= "impulse 88";
+float IMP_MWIZARD					= 89;	// string STI_MSCRAG			= "impulse 89";
+float IMP_MOGRE					= 90;	// string STI_MOGRE			= "impulse 90";
+float IMP_MHKNIGHT				= 91;	// string STI_MHKNIGHT		= "impulse 91";
+float IMP_MSHALR					= 92;	// string STI_MSHALR			= "impulse 92";
+float IMP_MSHAMBLR				= 93;	// string STI_MSHAMBLR		= "impulse 93";
+float IMP_MDEMON					= 94;	// string STI_MDEMON			= "impulse 94";
+float IMP_MCTHON					= 95;	// string STI_MCTHON			= "impulse 95";
+float IMP_MDRAGON					= 96;	// string STI_MDRAGON		= "impulse 96";
+float IMP_MSCOURGE				= 97;	// string STI_MSCOURGE		= "impulse 97";
+float IMP_MGREMLIN_F				= 98;	// string STI_MGREMLIN		= "impulse 98"; // flying gremlin
 float IMP_MGREMLIN_L				= 99;	// landlubber gremlin
 
 

@@ -1293,7 +1293,7 @@ void() d_art_radsuit =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
-	self.mask_x = MORPH_ALL; // everyone can get arts
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 };
 
 // use spawnflags to make one of 6 keys...

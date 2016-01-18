@@ -2051,7 +2051,7 @@ void() painkeep_cube_use =
 			func_make();
 			d = pk_mcode(newmis.wad, world);
 			if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL)
-				n.th_stand = SUB_Remove;
+				newmis.th_stand = SUB_Remove;
 			newmis.velocity = v0; // stop eject
 			remove(self);
 			sv = self;

@@ -1757,7 +1757,7 @@ void() q3_item_enviro =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 };
 
 void() item_haste =

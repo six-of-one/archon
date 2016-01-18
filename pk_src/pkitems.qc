@@ -497,9 +497,9 @@ void() pk_ammo_touch =
 		{
 			if (other.pk_explode_ammo >= PK_EXPLODEAMMO_MAX)
 				return;
-			if (other.mask_x & CB_GREMLIN)
+			if (!other.mask_x & CB_HUMAN)
 			{
-				if (!other.items & IT_SUPER_SHOTGUN) // gremlin has to have a gun to get this
+				if (!shotgun_check(other)) // morph has to have a gun to get this
 					return;
 			}
 			other.pk_explode_ammo = other.pk_explode_ammo + self.aflag;
@@ -613,7 +613,7 @@ if (!self.mask_x) 			bprint("\n\n\n\n\n*** - WARNING - item with no mask x\n\n\n
 
 	if (!self.mask_x & other.mask_x) f = TRUE; // morph cant collect
 	if ((other.mask_x & CB_GREMLIN) &&  (other.builtin & self.items)) f = TRUE; // gremlin trying to replace builtin, even if he can collect
-	if (self.pk_currentitem > 1)  f = FALSE; // all can get pki (but cthon)
+	if (self.pk_currentitem & PK_IT_CARY)  f = FALSE; // all can get pki (but cthon)
 	if (other.mask_x & CB_HUMAN) f = FALSE; // humans are ignoring the test - TDO: remove this
 	if (other.model == "progs/cthon.mdl") f = TRUE; // cthon get nada
 	if (self.wad == "morph_cube") f = FALSE; // all can get cube
@@ -942,6 +942,7 @@ void () item_painkeep_expshells =
 	self.netname = "Exploding Shells";
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
+	self.mask_x = MORPH_ALL;
 };
 
 // called from bound_ammo - bounds for pk ammo
