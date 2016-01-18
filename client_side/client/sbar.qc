@@ -678,6 +678,8 @@ float(float pow) bar_scale =
 	return(scl);
 }
 
+float svtime; // save time for next loop
+
 void() Sbar_DrawInventory =
 {
 
@@ -1123,19 +1125,121 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			}
 		}
 
+// STATS section
+
+// map
+		
+	string mn, m2, mdg;
+
+// mod gamedir name
+		mdg = cvar_string("fs_gamedir");
+
+// map load name
+		mn = substring(mapname, 5, strlen(mapname)); // strip maps/
+		m2 = substring(mn, 0, strlen(mn) - 4); // strip .bsp
+
+// player
+		plnum = -1;
+
+// score board ranking slot - set by server qc
+// I can find no other way to get this # here
+		plnum = cvar("cl_number") + 1;
+		plname = getplayerkey(plnum - 1, "name");
+		plscore = stof(getplayerkey(plnum - 1, "frags"));
+
+	string clnick, clut, clutmap, clutmod, clscmap;
+//	mn = substring(mapname, 5, strlen(mapname));
+//	m2 = substring(mn, 0, strlen(mn) - 4);
+//	mn = strcat("map_title_", m2); // attempt to find a user set conversion cvar
+
+	float timep;
+	float cl_uptime, cl_maptime, cl_modtime, cl_mapscore;
+
+// client stat nick - option for fancy names
+		clnick = cvar_string("cl_nick");
+		if (clnick == "") clnick = plname;
+
+// client total uptime
+		clut = strcat("cl_uptime_", clnick);
+// client mod uptime
+		clutmod = strcat("cl_uptime_",mdg);
+// client map uptime
+		clutmap = strcat("cl_uptime_",m2);
+// client map high score
+		clscmap = strcat("cl_mapscore_",m2);
+
+// tme passed since last stat update
+		timep = time - svtime;
+
+		if (timep >= 1.0) // track stats every second
+		{
+
+// score on this map
+			if (!cl_mapscore) cl_mapscore = cvar(clscmap);
+
+			if (cl_mapscore < plscore) cl_mapscore = plscore;
+			
+			localcmd("seta ");
+			localcmd(clscmap);
+			localcmd("\" ");
+			localcmd(ftos(cl_mapscore));
+			localcmd("\"\n");
+			
+// total up
+			if (!cl_uptime) cl_uptime = cvar(clut);
+			
+			if (cl_uptime < time) cl_uptime = time;
+			else cl_uptime = cl_uptime + timep;
+
+			localcmd("seta \"");
+			localcmd(clut);
+			localcmd("\" \"");
+			localcmd(ftos(cl_uptime));
+			localcmd("\"\n");
+
+// mod up
+			if (!cl_modtime) cl_modtime = cvar(clutmod);
+			
+			if (cl_modtime < time) cl_modtime = time;
+			else cl_modtime = cl_modtime + timep;
+
+			localcmd("seta \"");
+			localcmd(clutmod);
+			localcmd("\" \"");
+			localcmd(ftos(cl_modtime));
+			localcmd("\"\n");
+
+// map up
+			if (!cl_maptime) cl_maptime = cvar(clutmap);
+			
+			if (cl_maptime < time) cl_maptime = time;
+			else cl_maptime = cl_maptime + timep;
+
+			localcmd("seta \"");
+			localcmd(clutmap);
+			localcmd("\" \"");
+			localcmd(ftos(cl_maptime));
+			localcmd("\"\n");
+
+// save last time setting for add to stats
+			svtime = time;
+		}
+
+// client map uptime
+
 	float p2nd, style, pself;
 	float mons, secs, tmon, tsec, flashermhc, flasher2mhc;
 	var float autocvar_hud_frags_off = 0;
 	var float autocvar_hud_frags_negative = 0;
 	var float autocvar_master_high_score = 6;
 	var string autocvar_master_high_nick = "_-=* [Six]";
+// score stats package client side
+	var float autocvar_hud_keepscores = 1;
 
 // scores on new HUD
 // singleplayer:
 // 	display monster & secret counts
 
-		if (autocvar_hud_frags > 0)
-		{
 // for single player / coop
 			mons = GetStat_FLOAT_TRUNCATED(STAT_MONSTERS);
 			tmon = GetStat_FLOAT_TRUNCATED(STAT_TOTALMONSTERS);
@@ -1143,11 +1247,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			tsec = GetStat_FLOAT_TRUNCATED(STAT_TOTALSECRETS);
 
 			style = autocvar_hud_frags_style & 3; // mask off bit 8
-			plnum = -1;
 
-// score board ranking slot - set by server qc
-// I can find no other way to get this # here
-			if (style) plnum = cvar("cl_number") + 1;
 			pself = 0;
 
 			k = maxclients;
@@ -1303,7 +1403,10 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				}
 			}
 
-	float intoff_frags = -140; // internal offset
+		if (autocvar_hud_frags > 0)
+		{
+
+			float intoff_frags = -140; // internal offset
 			k = autocvar_hud_frags; // player preference cfg cnt <= 6
 			if (k > 6) k = 6;
 			v = '0 0 0';
@@ -1506,34 +1609,21 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 // include map name - translate bsp name if we know it - could also be world.message
 			if (autocvar_hud_frags_mapname)
 			{
-				string mn, m2;
 				Sbar_DrawString(v + '28 -12 0', "Map:", ALPHA_FULL, '7 7 0',cl1);
-				mn = substring(mapname, 5, strlen(mapname));
-				m2 = substring(mn, 0, strlen(mn) - 4);
 // translator
 // maker supplied a map_ cvar - format map_{mapname} in a cfg file - which the server runs for each map ~/cfg/map/{mapname}.cfg
 // could also place them in any cfg file, like info.cfg
 // example: dm1
 // in ~/cfg/map/dm1.cfg
-// set map_dm1 "Place of Two Deaths"
-				mn = strcat("map_", m2); // attempt to find a conversion cvar
-// a few of our favorites
+// set map_title_dm1 "Place of Two Deaths"
+				mn = strcat("map_title_", m2); // attempt to find a user set conversion cvar
+// a few re-names
 				if (cvar_string(mn) != "") m2 = cvar_string(mn);
-				else if (m2 == "arc_hub") m2 = "Archon Hub";
 				else if (m2 == "ac1") m2 = "Ariochs Castle";
-				else if (m2 == "chv") m2 = "Chaos Heaven";
-				else if (m2 == "chv_2") m2 = "Chaos Heaven [mk II]";
 				else if (m2 == "chv_hub") m2 = "Chaos Heaven [hub]";
-				else if (m2 == "doom1_e1") m2 = "Hangar";
-				else if (m2 == "de1m1") m2 = "Hangar";
 				else if (m2 == "dm4_dark") m2 = "Bad Place [dark]";
-				else if (m2 == "dm4_x") m2 = "Bad Place [mk II x]";
-				else if (m2 == "dm4") m2 = "the Bad Place";
-				else if (m2 == "fact3") m2 = "Sudden Death";
-				else if (m2 == "vis12k5") m2 = "Visage";
-				else if (m2 == "OA") m2 = "Occlument Augury";
-				else if (m2 == "ka_0") m2 = "Killmoulis Arcana";
-				else if (m2 == "qh_0000") m2 = "Quake Hack [experimental]";
+// server tries to set this from world.message when player connects
+				else if (cvar_string("map_title_world") != "") m2 = cvar_string("map_title_world");
 
 
 				f = strlen(m2) - 15;

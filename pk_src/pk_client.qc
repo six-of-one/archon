@@ -2170,6 +2170,7 @@ bprint ("\n");
 					high_score = attacker.frags; // secretly for bot morph decision making
 					high_score_nn = attacker.netname;
 					
+// the "high score" in frags
 					if (high_score > autocvar_master_high_score)
 					{
 						localcmd("seta master_high_score \"");

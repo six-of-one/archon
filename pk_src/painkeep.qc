@@ -531,6 +531,14 @@ void() player_count =
 		stuffcmd(self, high_score_nn);
 		stuffcmd(self, "\"\n");
 	}
+
+// set local map title for HUD
+	if (world.message)
+	{
+		stuffcmd(self, "set map_title_world \"");
+		stuffcmd(self, world.message);
+		stuffcmd(self, "\"\n");
+	}
 };
 
 // fn(pk_srvcmd_set) - setup new server control vars & load from cfg or alias
