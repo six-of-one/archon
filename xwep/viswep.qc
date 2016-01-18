@@ -696,8 +696,8 @@ void() viswep_post =
 	{
 		if (vhead.owner) // Cataboligne - 10.10.11 - REMOVE: interim - world is getting viswframe set to this val
 			vhead.owner.viswframe = -1; // NOTE: remove to use visframe code anywhere - ? what does this mean ?
-		else
-			bprint(" ---------- NOTE: vhead.owner == world\n"); // REMOVE:
+//		else
+//			bprint(" ---------- NOTE: vhead.owner == world\n"); // REMOVE:
 		vang = v_forward;
 		vang_z = 0;
 //		makevectors(vang);
@@ -1094,11 +1094,10 @@ void(entity e, string md, entity p) DeadThrew =
 	{
 		newmis.nextthink = time + DEAD_THROW_TIME;
 		if (newmis.eweapon)
-			dyn_remove(newmis.eweapon, time + DEAD_THROW_TIME + 1, SUB_Null); // set up an eventual remove if wep uncollected
+			dyn_remove(newmis.eweapon, DEAD_THROW_TIME + 1, SUB_Null); // set up an eventual remove if wep uncollected
 	}
 
 	AddToSplash(newmis); // *pk - splash tossed items
-
 };
 
 // fn(DeadThrowWeps) - handel throwing weapons out on death

@@ -225,6 +225,10 @@ void () item_megahealth_rot =
 {
 	other = self.owner;
 
+// Cataboligne - 10.13.11 - regen / vampire runes
+	if (!(other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
+	if (! other.rune_flag & (RUNE_FLG_RG | TECH_ADOC))
+
 	if (other.health > other.max_health * other.health_modifier) // Cataboligne - 9.18.11 - morphic
 	{
 		self.duration = self.duration - 1; // for drop inv - TDO: have to find this ent & set

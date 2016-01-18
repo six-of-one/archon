@@ -259,7 +259,7 @@ if (PR_VIEWPC) bprint ("set_viewport: remove cam\n");
 
 void () cam_deathmove =
 {
-	self.nextthink = time + 0.2;
+	self.nextthink = time + 1;
 
 	if (self.owner.solid != SOLID_NOT) // respawned
 	{
@@ -315,17 +315,33 @@ if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
 		self.owner.takedamage = DAMAGE_NO;
 		self.owner.health = 1; // hack so engine will let you move cam
 		if (self.owner.crosshair_sv > 0) crosshair_off(self.owner);
+
+// pbserver status bar - time spent observing in rels & high score
+		stuffcmd(self.owner, "infobar 2 \"");
+		stuffcmd(self.owner, self.netname);
+		stuffcmd(self.owner, " :observer (");
+		stuffcmd(self.owner, ftos(rint(time - self.ltime)));
+		stuffcmd(self.owner, " rels) Archon 3.1a - high score: ");
+		stuffcmd(self.owner, ftos(high_score));
+		stuffcmd(self.owner, " - map: ");
+		if (world.message != "")
+			stuffcmd(self.owner, world.message);
+		else
+			stuffcmd(self.owner, world.model);
+		stuffcmd(self.owner, "\"\n");
 	}
 
 // observers are very poor - no possesions
 //	if (self.owner.frame || self.owner.effects || self.owner.weapon || self.owner.currentammo || self.owner.model != "progs/null.mdl")
-	if (self.owner.model != "progs/null.mdl")
-	{
-		morph_clearparms(self.owner, TRUE);
-	}
+//	if (self.owner.model != "progs/null.mdl")
+//	{
+//		morph_clearparms(self.owner, TRUE);
+//	}
 
 	if (self.owner.model != "progs/null.mdl")
 	{
+		morph_clearparms(self.owner, TRUE);
+		self.ltime = time;
 		setmodel(self.owner, "progs/null.mdl");
 		setsize (self.owner,'-4 -4 -4', ' 4 4 4');
 //		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta

@@ -2288,7 +2288,7 @@ bprint(")\n");
 			f = 4 + random() * 4;
 			while (f > 0)
 			{
-				W_FireGrenade(); // uses ammo, but we dont care here
+				W_FireClusterGren(); // uses ammo, but we dont care here
 				item_eject(newmis, ' 400 400 400');
 				f = f - 1;
 			}
@@ -2351,7 +2351,17 @@ void() cube_touch =
 		return;
 	}
 
-	if (other.wad == "pk*bot") return;
+	if (self.wad == "morph_cube")
+	if (!other.ishuman)
+	{
+		if (other.wad == "pk*bot") return;
+
+		if (other.mask_x & CB_HUMAN) // if bot score is low, stay human for now
+		{
+			if (other.frags < (high_score * 0.11)) return;
+			if (other.frags < 0) return;
+		}
+	}
 
 	if (self.owner) // shouldnt happen
 		return;
@@ -2359,7 +2369,7 @@ void() cube_touch =
 	if (sphere_a.owner == other) // no cubes while controlling sphere
 		return;
 
-	if (self.dropent) // dont touch while inventory controlling
+	if (other.dropent) // dont touch while inventory controlling
 		return;
 
 	if (MORPH_LOCK) // already morphed and morph lock is engaged - hit impulse 50 to clear
@@ -2369,7 +2379,6 @@ void() cube_touch =
 		if (other.ishuman) return;
 		else if (random() > 0.08) return;
 	}
-
 
 	if (other.eweapon) // other has a cube and is touching different one
 	{
@@ -2426,7 +2435,7 @@ void() cube_touch =
 	if (cvar("r_ambient") > 0)
 		other.light_lev = cvar("r_ambient"); // because of cube re-arm
 
-	sprint(other, ".\nIf you select another weapon the cube will be free...\n");
+	sprint(other, "\nIf you select another weapon the cube will be free...\n");
 	self.owner = other;
 	other.prevweapon = other.weapon; // save for pack on morphic
 	other.theowner = other.eweapon;

@@ -360,11 +360,12 @@ void() ZombieGrenadeTouch2;
 float ST_BEATPLAGUE			= 3; // 3 rnds fighting off plague and its gone...for now
 float ST_HEALPLAGUE			= 0.05; // % per for beating plague for normal health boxes
 float CK_PLAGUE_CATCH		= 0.8; // chance per touch to catch plague - IDEA - diff for some morphs?
-float CK_PLAGUE_RND			= 0.1; // chance to fight plague per round
+float CK_PLAGUE_RND			= 0.1; // chance to fight plague per round - cumulative
 float CK_PLAGUE_TIME			= 2; // time before retouch on bodies / heads
 float CK_PLAGUE_ZGIB			= 0.3; // chance zombie gibs / head are plagued
-float CK_PLAGUE_GIB			= 0.03; // chance regular gibs / head are plagued
+float CK_PLAGUE_GIB			= 0.1; // chance regular gibs / head are plagued
 float TM_PLAGUE				= 1; // round defined for think - 1 sec
+float MAX_PLAGUE_TIME		= 300; // total plague time 5 mins
 
 void() PlagueTouch;
 
@@ -372,7 +373,7 @@ void() ZombiePlague =
 {
 	local float dm;
 
-	if (!self.enemy || self.lip > ST_BEATPLAGUE) // enemy gone? will this ever happen?
+	if (self.wait < time || !self.enemy || self.lip > ST_BEATPLAGUE  || !self.enemy.solid || !self.enemy.takedamage) // enemy gone, beat it, killed by something else or ?
 	{
 		remove(self);
 		return;
@@ -399,19 +400,21 @@ void() ZombiePlague =
 
 	self.nextthink = time + TM_PLAGUE;
 
-	if (random() < CK_PLAGUE_RND) 
+	if (random() < (CK_PLAGUE_RND * (self.lip + 1) )) 
 	{
 		self.lip = self.lip + 1;
 		return; // fought off bug this rnd
 	}
 
+	if (self.search_time < time) self.dmg = (self.dmg / 2) - random();
+
 	self.lip = 0;
-	dm = floor(random() * 5.5); // 0 - 5
+	dm = floor(random() * self.dmg); // 0 - 5
 	T_Damage (self.enemy, self, self.owner, dm );
 	if (self.enemy.health < 0)
 	{
 		self.enemy.deathtype = "plague"; // not needed - T_Dam above gets it with classname - tho maybe the corpse could cause plagues
-//		self.enemy.touch = PlagueTouch; // test: sometime
+		if (random() < (CK_PLAGUE_GIB * 5)) self.enemy.touch = PlagueTouch; // test: sometime - 5 * chance for plague vic - 50% current data
 	}
 };
 
@@ -425,15 +428,17 @@ void() PlagueTouch =
 	else if (self.invisible_time > time) return;
 
 	if (random() < CK_PLAGUE_CATCH)
-	if (other.takedamage && (other.classname == "player" || other.flags & FL_MONSTER))
+	if (other.takedamage && (other.classname == "player" || other.classname == "pk*bot" || other.flags & FL_MONSTER))
 	{
 		p = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "plague", "", SUB_Null, 1, ZombiePlague, SUB_Null, self.owner, world);
 		p.enemy = other;
+		p.dmg = 5.5;
 		p.search_time = time + 120;
+		p.wait = time + MAX_PLAGUE_TIME; // total plague time limit
 	}
 
 	self.invisible_time = time + CK_PLAGUE_TIME + random() * CK_PLAGUE_TIME; // no re-touch for this long for bodies & heads
-	if (self.class_select != "dead_body")
+	if (self.classname == "grenade")
 		ZombieGrenadeTouch2(); // do reg damage, remove missile - NOTE: not for entire bodies / heads
 };
 

@@ -821,7 +821,19 @@ float(float cn, entity e, string op) ammo_con =
 // fn(dyn_rem) - remove a dynamic item after a timeout
 // fn(dyn_rndloc) - get a random location to spawn an item dynamically
 
-// note: this has very few qualifications for a selected ent
+void() remove_fade =
+{
+	self.touch = SUB_Null;
+	self.solid = SOLID_NOT;
+
+	self.think = remove_fade;
+
+	self.alpha = self.alpha - 0.05;
+	if (self.alpha < 0.05) remove(self);
+	else self.nextthink = time + 0.15;
+};
+
+// note: this has very few qualifications for a selected ent - not anymore - protected by hash code
 
 // kept for the old style remove on cubes and anything with a think
 
@@ -833,7 +845,10 @@ void() dyn_rem =
 		{
 			if (self.wait) // new ops - set sub rem & exit
 			{
-				self.enemy.think = SUB_Remove;
+				if (self.enemy.model != "")
+					self.enemy.think = remove_fade;
+				else
+					self.enemy.think = SUB_Remove;
 				self.enemy.nextthink = time + self.wait;
 			}
 			else // old ops
@@ -841,10 +856,16 @@ void() dyn_rem =
 				if (self.enemy.wad == "pk_cube" || self.enemy.wad == "morph_cube") // dont just remove an active cube
 				if (self.enemy.owner)
 				{
-					self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 2;
+					self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 4;
 					return;
 				}
-				remove(self.enemy);
+				if (self.enemy.model != "")
+				{
+					self.enemy.think = remove_fade; //SUB_Remove;
+					self.enemy.nextthink = time + 0.1;
+				}
+				else
+					remove(self.enemy);
 	//			pk_ditems = pk_ditems - 1; // this is really meaningless
 			}
 		}
@@ -901,13 +922,13 @@ void(entity e, float tm, void() rmv) dyn_remove =
 	dv = REMOVE_DV;
 	if (dv > tm) dv = tm * 0.2;
 	if (tm)
-		f.wait = time + tm + crandom() * dv;
+		f.wait = tm + crandom() * dv;
 	else if (e.wad == "morph_cube")
-		f.wait = time + MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
+		f.wait = MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
 	else if (e.wad == "pk_cube")
-		f.wait = time + fabs(PK_CUBE_TIME) + crandom() * 20;
+		f.wait = fabs(PK_CUBE_TIME) + crandom() * 20;
 	else
-	f.wait = time + PK_DYNTO + crandom() * 55;
+	f.wait = PK_DYNTO + crandom() * 55;
 
 	if (rmv != SUB_Null) // old style or something else = direct think
 	{
@@ -1027,7 +1048,7 @@ void() dyn_spawn =
 	else if (self.wad == "pk_crate") bprint("\n");
 	bprint("\n");
 
-	drop_inv_check(); // check for anyone in drop inventory menu
+	drop_inv_check(); // check for anyone in drop inventory menu - residplay menu
 
 	item_call(self.wad);
 

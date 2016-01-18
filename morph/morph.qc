@@ -380,7 +380,7 @@ void() morph_cube_use =
 		self.pk_currentitem = W_BestPKWeapon();
 		self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
 		W_SetCurrentAmmo();
-		if (WARNING)	bprint("*** WARNING - in cube use and dont have a cube!\n");
+		if (WARNING)	bprint("*** WARNING - in morphic cube use and dont have a cube!\n");
 		return;
 	}
 
@@ -411,6 +411,7 @@ void() morph_cube_use =
 	polymorph_check(self.state, 0);
 
 	self.impulse = 0;
+	remove(c);
 	cube_rearm(); // re arm player
 };
 
@@ -1093,11 +1094,14 @@ float(string mm) set_char_num =
 // TEST:ING
 void(float silent) player_human_become = 
 {
-	self.cam_z = 10 / 100;
-	self.cam_y = 30;
-	stuffcmd(self, "chase_up 10\n");
-	stuffcmd(self, "chase_back 30\n");
-	stuffcmd(self, "exec m-human.cfg\n");
+	if (self.ishuman)
+	{
+		self.cam_z = 10 / 100;
+		self.cam_y = 30;
+		stuffcmd(self, "chase_up 10\n");
+		stuffcmd(self, "chase_back 30\n");
+		stuffcmd(self, "exec m-human.cfg\n");
+	}
 
 
 	if (self.morphy == CHAR_W) setmodel(self, "progs/plyr_bw.mdl");
@@ -1115,9 +1119,11 @@ void(float cmd, float pls) polymorph_check =
 {
 	if (!cb_morph(cmd)) return; // ha ha, validation
 
-	if (cb_morph(cmd))	// these are polymorph commands
-	{
-		if (!pls) // if pls is set its a spawn (level load) | respawn incarnation
+//	if (cb_morph(cmd))	// these are polymorph commands - used to be other commands in here - handled else wheres now
+//	{
+// if pls is set its a spawn (level load) | respawn incarnation
+
+		if (!pls) // live morph change - voluntary or not
 		{
 			if (self.morphy == cmd) return; // nothing to do - NOTE: WARNING: if an eweapon fires this off, it must be cleared after this
 	// changing states & not starting level - validated in weapons.qc -- impulse commands 
@@ -1153,6 +1159,24 @@ void(float cmd, float pls) polymorph_check =
 			morph_armor_check(cb_morph(cmd));
 	//		morph_powerup_check(cmd);
 			morph_clearparms(self, FALSE);
+		}
+		else // respawn or level load
+		{
+			if (!self.ishuman)
+			if (cb_morph(cmd) != CB_HUMAN) // if bot score is low, become human
+			if (random() < 0.2) // 20% chance of test per respawn
+			{
+				if (self.frags < (high_score * 0.11)) cmd = 0;
+				if (self.frags < 0) cmd = 0;
+
+				if (!cmd)
+				{
+					cmd = IMP_MHUMAN; // base human - quake guy
+					if (CHAR_CON)
+					if (CHAR_CON >= CHAR_W && CHAR_CON  <= CHAR_Q3) cmd = CHAR_CON;
+					else cmd = set_char_num(MAP_MODE);
+				}
+			}
 		}
 
 		self.morphy = cmd;
@@ -1207,7 +1231,7 @@ void(float cmd, float pls) polymorph_check =
 			flyer_check(self, FALSE);
 
 //	if (cmd != IMP_MWIZARD && cmd != IMP_MCHAOS && cmd != IMP_MWRAITH) self.movetype = MOVETYPE_WALK; // only spawned flyers
-	}
+//	}
 };
 
 

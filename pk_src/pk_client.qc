@@ -2218,6 +2218,8 @@ bprint("\n");
 			{
 				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below - this includes monsters! - NOTE: anode_x vector...
 
+				if (attacker.frags > high_score) high_score = attacker.frags; // secretly for bot morph decision making
+
 // died & empathy damaged hit targ
 				if (empathy_dmg == 1)
 				{

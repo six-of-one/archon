@@ -1299,6 +1299,7 @@ void() run_runes =
 			}
 			bprint("\n***   \bRunes\b of power will spawn on this map - keep an eye out\n");
 			rune_new_map = TRUE;
+			rune_map = 0; // clear this TDO: clear any rune flags players might have
 		}
 		else
 			bprint("\n***   \bRune\b server - turned off and all spawned runes removed\n");
@@ -1307,7 +1308,7 @@ void() run_runes =
 		{
 			RUNE_CNT  = 4;
 			if (r == -2) RUNE_CNT = 5;
-			if (RUNES > 1) RUNE_CNT = 9;
+			else if (RUNES > 1) RUNE_CNT = 9;
 		}
 	}
 	else if (RUNES)
@@ -1702,7 +1703,7 @@ void () item_sigil =
 			self.netname = "Earth magic"; // Cataboligne - 5.32.10 - for rune server		
 
 			if (R_EARTH == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY);
 		}
 		if (self.spawnflags & R_BLACK)
 		{
@@ -1711,7 +1712,7 @@ void () item_sigil =
 			self.netname = "Black magic"; // Cataboligne - 5.32.10 - for rune server
 
 			if (R_BLACK == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 		if (self.spawnflags & R_HELL)
 		{
@@ -1720,7 +1721,7 @@ void () item_sigil =
 			self.netname = "Hell magic"; // Cataboligne - 5.32.10 - for rune server
 
 			if (R_HELL == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 		if (self.spawnflags & R_ELDER)
 		{
@@ -1729,7 +1730,7 @@ void () item_sigil =
 			self.netname = "Elder magic"; // Cataboligne - 5.32.10 - for rune server
 
 			if (R_ELDER == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 		if (self.spawnflags & R_VAMPIRE) // bit 64
 		{
@@ -1738,7 +1739,7 @@ void () item_sigil =
 			self.netname = "Vampire magic";
 			self.effects = EF_DIMLIGHT;
 
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 	}
 	else
@@ -1752,7 +1753,7 @@ void () item_sigil =
 			self.skin = 2;
 
 			if (R_EARTH == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 		if (self.spawnflags & R_BLACK)
 		{
@@ -1761,7 +1762,7 @@ void () item_sigil =
 			self.skin = 1;
 
 			if (R_BLACK == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 		if (self.spawnflags & R_HELL)
 		{
@@ -1770,7 +1771,7 @@ void () item_sigil =
 			self.skin = 3;
 
 			if (R_HELL == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 		if (self.spawnflags & R_ELDER)
 		{
@@ -1779,7 +1780,7 @@ void () item_sigil =
 			self.skin = 4;
 
 			if (R_ELDER == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 		if (self.spawnflags & R_VAMPIRE) // bit 64
 		{
@@ -1787,7 +1788,7 @@ void () item_sigil =
 			self.frame = 1;
 			self.skin = 6;
 
-			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
+			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
 		}
 	}
 

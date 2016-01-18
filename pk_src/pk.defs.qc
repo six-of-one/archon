@@ -122,6 +122,8 @@ void() mcode_load;
 .float stdev;
 float (float lMean, float lStDev) meantime;
 
+float high_score; // best of the best
+
 // from light.qc
 
 .entity next; // for the linked list of lightning - Cataboligne - 4.29,11 - moved to pk_defs 
@@ -811,15 +813,7 @@ void(entity e) crosshair_off;
 
 // inits - by genre and map
 
-//.float char_mode; // genre of player character - set by selection to vars morph states
-// cant be 1, 2, 4, 8, 16, 32
-float CHAR_W					= 10;
-float CHAR_D					= 11;
-float CHAR_Q					= 12;
-float CHAR_PK					= 13;
-float CHAR_Q2					= 14;
-float CHAR_Q3					= 15;
-
+// char data moved to morph.defs
 
 string MAP_MODE; // genre of loaded map (if detected) Q quake (default), Q2 quake 2, Q3 quake 3, D doom, W wolf, PK painkeep
 
@@ -933,6 +927,8 @@ float X_INV						= 57331; ///  1101111111110011
 
 
 // vars x weapon things
+
+void() W_FireClusterGren;
 
 void() x_weapon_touch;
 

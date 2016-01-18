@@ -689,7 +689,10 @@ void() spike_touch =
 			{
 				move_stop(self, "");
 				setorigin(self, self.origin + v_forward * -1 * (2 + 8 * random()));  // backup abit
-				self.nextthink = time + 20 + random() * 100; // max 2 mins - less?
+				if (!deathmatch)
+					self.nextthink = time + 20 + random() * 100; // max 2 mins - sp | coop
+				else
+				self.nextthink = time + 6 + random() * 4;
 				self.think = SUB_Remove; //SUB_FadeRemove;
 				self.dmg = 0; // get rid of nail on touch - dont do dmg
 				return;

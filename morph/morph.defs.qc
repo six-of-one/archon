@@ -227,6 +227,17 @@ float IMP_MANODEX					= 9;	// string STI_MANODEX		= "impulse 9";
 //float USE_PULSE_SPIKES			= -257368;
 //Techs:
 float IMP_MHUMAN					= 12;	// string STI_MHUMAN			= "impulse 12"; // NOTE: char_q - standard quake guy
+
+//.float char_mode; // genre of player character - set by selection to vars morph states
+// cant be 1, 2, 4, 8, 16, 32
+float CHAR_W						= 10;
+float CHAR_D						= 11;
+float CHAR_Q						= 12;
+float CHAR_PK						= 13;
+float CHAR_Q2						= 14;
+float CHAR_Q3						= 15;
+
+
 float IMP_MDEMO					= 61;	// string STI_MDEMO			= "impulse 61";
 float IMP_MSPECIAL				= 62;	// string STI_MSPECIAL		= "impulse 62";
 float IMP_MTECH					= 63;	// string STI_MTECH			= "impulse 63";
