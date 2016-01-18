@@ -174,6 +174,8 @@ void() x_weapon_touch =
 		e.eweapon = e;
 		e._attack = self._attack;
 		e._fr_attack = self._fr_attack;
+		e.vv_draw = self.vv_draw;
+		e.vv_holster = self.vv_holster;
 //		e.touch = self.touch;
 
 		e.weapon = e.items = self.items;

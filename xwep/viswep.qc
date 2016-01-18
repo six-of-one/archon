@@ -508,7 +508,7 @@ float vw_frame; // once per frame
 void() viswep_post =
 {
 	local entity vhead;
-	local float qld, pkbits, vwc, hr1;
+	local float qld, pkbits, vwc, hr1, drw;
 	local string vmdl;
 
 //	if (!self.flags & FL_CLIENT) return;
@@ -604,15 +604,17 @@ void() viswep_post =
 	hr1 = TRUE; // only display one holstered range wep when !vw
 
 	while (vhead) // IDEA: do this in engine & test above for chaos = CHAOS_ENGINE
-		{
+	{
 		qld = grap_frame_adjust = gremlin_frame_adjust = vadd = 0;
 //		vofs = vhead.finaldest_x * normalize(vang) + vhead.finaldest_y * normalize(v_right);
 	//	vofs_z = vhead.finaldest_z;
 		vwc = TRUE; // viswep control -  == VW for holstered weps
 		vmdl = vhead.mdl; // for return from invisible
+		drw = FALSE; // weapon is drawn
 		if (dwep > 0)
 		if (vhead.weapon == dwep && (vhead.pk_currentitem == pkdwep || vhead.weapon != IT_AXE))
 		{
+			drw = TRUE;
 //			if (pkdwep < 2)
 				vhead.owner.eweapon = vhead.eweapon;
 //			else
@@ -660,52 +662,81 @@ void() viswep_post =
 		if (vwc)
 		if (vhead.owner.items & IT_INVISIBILITY) vhead.model = ""; // heh heh, player invisible
 		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
-		else
-		if (vhead.model == "" || (vhead.origin + vofs) != vhead.owner.origin || vhead.angles != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
+		else if (vhead.vv_draw != (void()) 0) // new vw paradigm - code set models
+		{
+			if (vhead.model == "" || (vhead.oldorigin + vofs) != vhead.owner.origin || vhead.mangle != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
 			{
-			if (vhead.model == "") setmodel(vhead, vmdl);
-			vhead.weaponframe = vhead.owner.frame; // track player frame, vw .frame may not match
+				if (vhead.model == "") setmodel(vhead, vmdl);
 
-			vframe = vhead.owner.frame;
-																		// adjust for gremlin flying frames & carried gun, pretty hackish isnt it?
-//			if (vhead.owner.model == "progs/gremlin-fly.mdl" && vhead.owner._stand == gremlin_hover && vhead.owner.frame >= grem_fly_frame) gremlin_frame_adjust = grem_fly_frame;
-	
-			if( ! (vhead.owner.cam_x & CHSCAM_ON) ) vhead.exteriormodeltoclient = vhead.owner; // darkplaces - works for dp!
-			else vhead.exteriormodeltoclient = world;
+				vhead.oldorigin = vhead.owner.origin; // track player data, but viswep values are all diffferent
+				vhead.mangle = vhead.owner.angles;
+				vhead.weaponframe = vhead.owner.frame;
 
-			if (PK_100 || Q_100 || !VW)
-			{
-				if (vhead.weapon != IT_AXE && dwep != IT_AXE) qld = TRUE;
-				else if (vhead.pk_currentitem != PK_IT_AXE && pkdwep != PK_IT_AXE) qld = TRUE;
-				else if (vhead.weapon == IT_AXE && dwep == IT_AXE || pkdwep == PK_IT_AXE) qld = TRUE;
-// TDO: set eweapon by code
-			}
-			else if (dwep > 0)
-			{
-				if ((vhead.weapon == dwep) && (dwep != IT_AXE)) qld = TRUE; // main weapon - not holstered
-				else if ((vhead.weapon == dwep) && (vhead.pk_currentitem == pkdwep)) qld = TRUE;
-			}
+				if (drw) vhead.vv_draw(vhead.owner.frame);
+				else if (vhead.vv_holster != (void()) 0) vhead.vv_holster(vhead.owner.frame);
+				else vwc = FALSE; // no display - no frames!
 
-			if (qld)
+				if (vwc)
 				{
-																		// grap hook out - adjust run / stand frameset
-				if (vhead.mdl == "progs/vw_harp.mdl" && vhead.owner.grap_cornerchainNext != world && (vhead.owner.frame - gremlin_frame_adjust)< 11) // $pain1
-					grap_frame_adjust = VW_HARP_FRADJ;
-				vofs = ' 0 0 0';
-				if (vhead.owner.viswframe > -1) vframe = vhead.owner.viswframe;
-				if (FL_MELEE(vhead, vhead.weapon, vhead.pk_currentitem)) {
-					if ( (vhead.owner.frame - gremlin_frame_adjust) >= melee_frames) vadd = viswaddf - melee_frames;
-					} else if (FL_RANGE(vhead, vhead.weapon, vhead.pk_currentitem) || (vhead.mdl == VW_DEFGUN)) {
-					if ( (vhead.owner.frame - gremlin_frame_adjust) < range_frames) vadd = viswaddf;
-				 }
+				if( ! (vhead.owner.cam_x & CHSCAM_ON) ) vhead.exteriormodeltoclient = vhead.owner; // darkplaces - works for dp!
+				else vhead.exteriormodeltoclient = world;
 
-				} // IDEA: viswframe weps on gremlins back for special frames
-			vhead.frame = vframe + vadd - gremlin_frame_adjust - grap_frame_adjust;
+				vhead.frame = vv_x_000_y;
+				setorigin(vhead, vhead.owner.origin  + vv_o_000); // ... sync visible weapon model
+				vhead.angles = vhead.owner.angles + vv_a_000;
+				}
+				else 
+					vhead.model = "";
+			}
+		}
+		else
+		{
+			if (vhead.model == "" || (vhead.origin + vofs) != vhead.owner.origin || vhead.angles != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
+			{
+				if (vhead.model == "") setmodel(vhead, vmdl);
+				vhead.weaponframe = vhead.owner.frame; // track player frame, vw .frame may not match
+
+				vframe = vhead.owner.frame;
+																			// adjust for gremlin flying frames & carried gun, pretty hackish isnt it?
+	//			if (vhead.owner.model == "progs/gremlin-fly.mdl" && vhead.owner._stand == gremlin_hover && vhead.owner.frame >= grem_fly_frame) gremlin_frame_adjust = grem_fly_frame;
+		
+				if( ! (vhead.owner.cam_x & CHSCAM_ON) ) vhead.exteriormodeltoclient = vhead.owner; // darkplaces - works for dp!
+				else vhead.exteriormodeltoclient = world;
+
+				if (PK_100 || Q_100 || !VW)
+				{
+					if (vhead.weapon != IT_AXE && dwep != IT_AXE) qld = TRUE;
+					else if (vhead.pk_currentitem != PK_IT_AXE && pkdwep != PK_IT_AXE) qld = TRUE;
+					else if (vhead.weapon == IT_AXE && dwep == IT_AXE || pkdwep == PK_IT_AXE) qld = TRUE;
+	// TDO: set eweapon by code
+				}
+				else if (dwep > 0)
+				{
+					if ((vhead.weapon == dwep) && (dwep != IT_AXE)) qld = TRUE; // main weapon - not holstered
+					else if ((vhead.weapon == dwep) && (vhead.pk_currentitem == pkdwep)) qld = TRUE;
+				}
+
+				if (qld)
+					{
+																			// grap hook out - adjust run / stand frameset
+					if (vhead.mdl == "progs/vw_harp.mdl" && vhead.owner.grap_cornerchainNext != world && (vhead.owner.frame - gremlin_frame_adjust)< 11) // $pain1
+						grap_frame_adjust = VW_HARP_FRADJ;
+					vofs = ' 0 0 0';
+					if (vhead.owner.viswframe > -1) vframe = vhead.owner.viswframe;
+					if (FL_MELEE(vhead, vhead.weapon, vhead.pk_currentitem)) {
+						if ( (vhead.owner.frame - gremlin_frame_adjust) >= melee_frames) vadd = viswaddf - melee_frames;
+						} else if (FL_RANGE(vhead, vhead.weapon, vhead.pk_currentitem) || (vhead.mdl == VW_DEFGUN)) {
+						if ( (vhead.owner.frame - gremlin_frame_adjust) < range_frames) vadd = viswaddf;
+					 }
+
+					} // IDEA: viswframe weps on gremlins back for special frames
+				vhead.frame = vframe + vadd - gremlin_frame_adjust - grap_frame_adjust;
 				setorigin(vhead, vhead.owner.origin + vofs); // ... sync visible weapon model
 				vhead.angles = vhead.owner.angles;
 			}
-		vhead = vhead.vwepent;
 		}
+		vhead = vhead.vwepent;
+	}
 
 };
 
@@ -758,13 +789,14 @@ vector(entity hent) grap_vw_adj =
 // new vw framing - by code, globals
 
 // editing
-// visweo vector - origin, angles, frame & effects
+// viswep vector - origin, angles, frame & effects
 
 float vv_incr;
 
 // return vals
 vector vv_o_0, vv_a_0, vv_x_0;
 
+// editor storage
 vector  vv_o_1,  vv_a_1,  vv_x_1;
 vector  vv_o_2,  vv_a_2,  vv_x_2;
 vector  vv_o_3,  vv_a_3,  vv_x_3;
@@ -827,52 +859,7 @@ void(float v_frm) vv_load_0 =
 
 // animate range drawn
 
-// run fire framing - range weps only
 
-	if (v_frm == 0)
-	{
-		vv_o_000 = '15.0  -5.9  12.3';
-		vv_a_000 = '-4.8   0.0   5.0';
-		vv_x_000 = ' 0.0   0.0   0.0';
-	}
-
-	if (v_frm == 1)
-	{
-		vv_o_000 = '14.2  -8.6   8.8';
-		vv_a_000 = '-0.0  -4.7   0.0';
-		vv_x_000 = ' 0.0   0.0   0.0';
-	}
-
-	if (v_frm == 2)
-	{
-		vv_o_000 = '10.4 -12.3  10.0';
-		vv_a_000 = ' 0.0   0.0   7.0';
-		vv_x_000 = ' 0.0   0.0   0.0';
-	}
-
-	if (v_frm == 3)
-	{
-		vv_o_000 = ' 8.2 -13.4  13.0';
-		vv_a_000 = '10.6   0.0   3.7';
-		vv_x_000 = ' 0.0   0.0   0.0';
-	}
-
-	if (v_frm == 4)
-	{
-		vv_o_000 = '12.0 -10.0  10.0';
-		vv_a_000 = '-2.0   0.0   0.0';
-		vv_x_000 = ' 0.0   0.0   0.0';
-	}
-
-	if (v_frm == 5)
-	{
-		vv_o_000 = '14.8  -8.2  10.3';
-		vv_a_000 = ' 0.0   0.0   0.0';
-		vv_x_000 = ' 0.0   0.0   0.0';
-	}
-
-
-/*
 	if (v_frm == 0)
 	{
 		vv_o_000 = ' 8.0  -4.2  12.5';
@@ -914,7 +901,6 @@ void(float v_frm) vv_load_0 =
 		vv_a_000 = '-4.5  93.0  14.0';
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
-*/
 
 	if (v_frm == 6)
 	{
@@ -1107,7 +1093,7 @@ void(float v_frm) vv_load_0 =
 	if (v_frm == 33)
 	{
 		vv_o_000 = '-8.0 -9.5  12.3';
-		vv_a_000 = '-5.0  -2.0  -15.0';
+		vv_a_000 = '15.2  -2.4  -5.7';
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 
@@ -1132,61 +1118,300 @@ void(float v_frm) vv_load_0 =
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 
+
+	if (v_frm == 37)
+	{
+		vv_o_000 = '-8.0 -16.8   6.1';
+		vv_a_000 = ' 0.0  25.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 38)
+	{
+		vv_o_000 = '-8.0 -16.8   4.5';
+		vv_a_000 = ' 0.0  25.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 39)
+	{
+		vv_o_000 = '-8.0 -16.8   3.0';
+		vv_a_000 = ' 0.0  25.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+
+
+	if (v_frm == 40)
+	{
+		vv_o_000 = '-7.7 -17.1   1.0';
+		vv_a_000 = ' 0.0  25.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 41)
+	{
+		vv_o_000 = '-7.7 -17.1   1.0';
+		vv_a_000 = ' 0.0  25.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 42)
+	{
+		vv_o_000 = '-7.7 -17.1   1.0';
+		vv_a_000 = ' 0.0  25.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 43)
+	{
+		vv_o_000 = '-7.6 -17.1   0.9';
+		vv_a_000 = ' 0.0  25.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 44)
+	{
+		vv_o_000 = '-7.6 -17.1   1.1';
+		vv_a_000 = ' 0.0  25.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+// prone
+
+	if (v_frm == 45)
+	{
+		vv_o_000 = ' 3.0 -17.3  -4.8';
+		vv_a_000 = '-15.5  77.2  49.3';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 46)
+	{
+		vv_o_000 = ' 7.4 -18.1 -11.5';
+		vv_a_000 = '-18.9  82.7  63.7';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 47)
+	{
+		vv_o_000 = ' 7.3 -17.4 -17.2';
+		vv_a_000 = '-14.2  58.7  82.1';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 48)
+	{
+		vv_o_000 = '12.9 -14.6 -20.7';
+		vv_a_000 = ' 7.1  40.7  82.1';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 49)
+	{
+		vv_o_000 = '20.9 -13.2 -22.3';
+		vv_a_000 = '-1.3   0.0  -5.9';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 50)
+	{
+		vv_o_000 = '23.3 -16.0 -22.3';
+		vv_a_000 = '-1.3  17.4 -11.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 51)
+	{
+		vv_o_000 = '23.3 -16.0 -22.3';
+		vv_a_000 = '-1.3  15.5 -19.4';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+
 // drop - pull, not used yet
+
 	if (v_frm == 52)
 	{
-		vv_o_000 = ' 4.9  -5.5   5.9';
+		vv_o_000 = ' 4.9  -5.5   6.9';
 		vv_a_000 = '-39.2  57.5  27.9';
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 	if (v_frm == 53)
 	{
-		vv_o_000 = ' 3.2  -9.6   0.3';
-		vv_a_000 = '-48.8  50.6  32.4';
+		vv_o_000 = ' 6.2  -8.6   1.3';
+		vv_a_000 = '-28.8  50.6  32.4';
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 	if (v_frm == 54)
 	{
-		vv_o_000 = ' 0.5  -9.8  -3.0';
-		vv_a_000 = '-45.1  50.6  -1.0';
-		vv_x_000 = ' 0.0   0.0   0.0';
-	}
-	if (v_frm == 54)
-	{
-		vv_o_000 = ' 0.5  -9.8  -3.0';
-		vv_a_000 = '-45.1  50.6  -1.0';
+		vv_o_000 = ' 3.5 -12.8  -4.0';
+		vv_a_000 = '-24.1  45.6  -1.0';
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 	if (v_frm == 55)
 	{
-		vv_o_000 = ' 0.5  -9.8  -3.0';
-		vv_a_000 = '-45.1  50.6  -1.0';
+		vv_o_000 = '-6.4 -16.2  -2.6';
+		vv_a_000 = '-31.1   9.6 -13.0';
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 	if (v_frm == 56)
 	{
-		vv_o_000 = ' 0.5  -9.8  -3.0';
-		vv_a_000 = '-45.1  50.6  -1.0';
+		vv_o_000 = '-12.4 -13.2   0.4';
+		vv_a_000 = '-39.1 -26.4 -14.0';
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 	if (v_frm == 57)
 	{
-		vv_o_000 = ' 0.5  -9.8  -3.0';
-		vv_a_000 = '-45.1  50.6  -1.0';
-		vv_x_000 = ' 0.0   0.0   0.0';
+		vv_o_000 = '-12.4  -3.2  11.4';
+		vv_a_000 = '-4.1   3.6 -29.0';
+		vv_x_000 = ' 0.0   7.0   0.0';
 	}
 	if (v_frm == 58)
 	{
-		vv_o_000 = ' 0.5  -9.8  -3.0';
-		vv_a_000 = '-45.1  50.6  -1.0';
-		vv_x_000 = ' 0.0   0.0   0.0';
+		vv_o_000 = '-10.5   1.8  16.4';
+		vv_a_000 = '-9.7  -0.0 -20.1';
+		vv_x_000 = ' 0.0   7.0   0.0';
 	}
+
 // end drop pull
 
+// melee special frames
+/*
+	if (v_frm == 37)
+	{
+		vv_o_000 = '-9.9 -18.3   6.1';
+		vv_a_000 = ' 0.0 -15.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 38)
+	{
+		vv_o_000 = '-9.9 -18.3   4.5';
+		vv_a_000 = ' 0.0 -15.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 39)
+	{
+		vv_o_000 = '-9.9 -18.3   3.0';
+		vv_a_000 = ' 0.0 -15.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 40)
+	{
+		vv_o_000 = '-9.6 -18.6   1.0';
+		vv_a_000 = ' 0.0 -15.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 41)
+	{
+		vv_o_000 = '-9.6 -18.6   1.0';
+		vv_a_000 = ' 0.0 -15.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 42)
+	{
+		vv_o_000 = '-9.6 -18.6   1.0';
+		vv_a_000 = ' 0.0 -15.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 43)
+	{
+		vv_o_000 = '-9.5 -18.6   0.9';
+		vv_a_000 = ' 0.0 -15.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 44)
+	{
+		vv_o_000 = '-9.5 -18.6   1.1';
+		vv_a_000 = ' 0.0 -15.0   0.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 45)
+	{
+		vv_o_000 = ' 3.0 -18.8  -4.8';
+		vv_a_000 = '133.5  35.8 147.3';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 46)
+	{
+		vv_o_000 = ' 8.4 -19.6  -9.5';
+		vv_a_000 = '130.1  41.3 144.7';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 47)
+	{
+		vv_o_000 = ' 8.3 -18.9 -15.2';
+		vv_a_000 = '134.8  17.3 163.1';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 48)
+	{
+		vv_o_000 = '11.9 -15.6 -20.7';
+		vv_a_000 = ' 7.1  40.7  82.1';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 49)
+	{
+		vv_o_000 = '16.9 -14.2 -21.3';
+		vv_a_000 = '-63.3   0.0  -5.9';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 50)
+	{
+		vv_o_000 = '22.1 -12.2 -21.3';
+		vv_a_000 = '-63.3  17.4 -11.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 51)
+	{
+		vv_o_000 = '22.1 -11.7 -21.9';
+		vv_a_000 = '-63.3  15.5 -19.4';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 52)
+	{
+		vv_o_000 = ' 3.9  -6.5   6.9';
+		vv_a_000 = '-39.2  57.5  27.9';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 53)
+	{
+		vv_o_000 = ' 2.8 -11.9   4.7';
+		vv_a_000 = '-85.8  50.6  32.4';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 54)
+	{
+		vv_o_000 = ' 2.1 -10.1   3.1';
+		vv_a_000 = '-130.0  50.6  32.4';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 55)
+	{
+		vv_o_000 = ' 2.0 -12.4   2.1';
+		vv_a_000 = '-179.0  17.6  19.4';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 56)
+	{
+		vv_o_000 = '-2.4 -11.9   2.1';
+		vv_a_000 = '-180.3  17.6  19.4';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 57)
+	{
+		vv_o_000 = '-7.7  -9.0   2.3';
+		vv_a_000 = '22.0   0.0 -18.7';
+		vv_x_000 = ' 0.0   1.0   0.0';
+	}
+	if (v_frm == 58)
+	{
+		vv_o_000 = '-8.8  -9.0   2.3';
+		vv_a_000 = '-7.0   0.0 -18.7';
+		vv_x_000 = ' 0.0   1.0   0.0';
+	}
 
-
-
-
+*/
 
 // animate melee drawn
 
@@ -1311,6 +1536,12 @@ void(float v_frm) vv_load_0 =
 	{
 		vv_o_000 = ' 2.0 -16.9   4.4';
 		vv_a_000 = '-36.9 -47.0 -61.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 77)
+	{
+		vv_o_000 = '-2.2 -14.7   3.2';
+		vv_a_000 = '-67.0 -12.0  -4.0';
 		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 
@@ -2339,6 +2570,7 @@ void() vw_config =
 			stuffcmd(self, "sv_c_warning 0\n");
 			registercvar("vv_incr", "0");
 			registercvar("vv_set", "0");
+			registercvar("vv_pitch", "0");
 		}
 
 
@@ -2401,7 +2633,8 @@ void() vw_config =
 			if (vv_chg < 6) vv_chg = 6;
 			else
 			vv_chg = vv_chg + 1;
-			if (vv_chg > 9) vv_chg = 6;
+//			if (vv_chg > 9) vv_chg = 6;
+			if (vv_chg > 11) vv_chg = 6; // pitch / rotate adj
 //			centerprint3(self, "edit:  ", ftos(vv_chg), "\n");
 		}
 
@@ -2446,6 +2679,14 @@ void() vw_config =
 			else if (vv_chg == 9)
 			{
 				centerprint3(self, " --- store frame:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 10)
+			{
+				centerprint3(self, " --- model y (rotate) angle:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 11)
+			{
+				centerprint3(self, " --- model x (pitch) angle:  ", ftos(vv_chg), "\n");
 			}
 		}
 /*
@@ -2493,8 +2734,8 @@ void() vw_config =
 			}
 			else if (vv_chg == 6)
 			{
-				vv_x_0_x = vv_x_0_x + 1; // frame only changes by 1
-				centerprint3(self, " --- (frame) x_X:  ", ftos(vv_x_0_x), "\n");
+				vv_x_0_y = vv_x_0_y + 1; // frame only changes by 1
+				centerprint3(self, " --- (frame) x_X:  ", ftos(vv_x_0_y), "\n");
 			}
 			else if (vv_chg == 7)
 			{
@@ -2508,6 +2749,16 @@ void() vw_config =
 			{
 				vv_cpy = vv_cpy + 1;
 				centerprint3(self, " --- copy from frame:  ", ftos(vv_cpy), "\n");
+			}
+			else if (vv_chg == 10)
+			{
+				vv.angles_y = vv.angles_y + vv_incr;
+				centerprint3(self, " --- (vv rotate) vv_Y:  ", ftos(vv.angles_y), "\n");
+			}
+			else if (vv_chg == 11)
+			{
+				vv.angles_x = vv.angles_x + vv_incr;
+				centerprint3(self, " --- (vv pitch) vv_X:  ", ftos(vv.angles_x), "\n");
 			}
 
 			if (vv_chg < 7)
@@ -2547,8 +2798,8 @@ void() vw_config =
 			}
 			else if (vv_chg == 6)
 			{
-				vv_x_0_x = vv_x_0_x - 1; // frame only changes by 1
-				centerprint3(self, " --- (frame) x_X:  ", ftos(vv_x_0_x), "\n");
+				vv_x_0_y = vv_x_0_y - 1; // frame only changes by 1
+				centerprint3(self, " --- (frame) x_X:  ", ftos(vv_x_0_y), "\n");
 			}
 			else if (vv_chg == 7)
 			{
@@ -2562,6 +2813,16 @@ void() vw_config =
 			{
 				vv_cpy = vv_cpy - 1;
 				centerprint3(self, " --- copy from frame:  ", ftos(vv_cpy), "\n");
+			}
+			else if (vv_chg == 10)
+			{
+				vv.angles_y = vv.angles_y - vv_incr;
+				centerprint3(self, " --- (vv rotate) vv_Y:  ", ftos(vv.angles_y), "\n");
+			}
+			else if (vv_chg == 11)
+			{
+				vv.angles_x = vv.angles_x - vv_incr;
+				centerprint3(self, " --- (vv pitch) vv_X:  ", ftos(vv.angles_x), "\n");
 			}
 
 			if (vv_chg < 7)
@@ -2660,15 +2921,55 @@ void() vw_config =
 			bprint("-----------------\n");
 		}
 
+		local vector v1, v2, v3, v4;
+		local float f1, k, m;
+
 		vv_load_0(vv.frame); // get current stored data
-		setorigin(vv.vwepent, vv.origin + vv_o_0 + vv_o_000); 
+		v1 = vv.angles;
+		v1_x = 0 - v1_x;
+		makevectors( v1 );
+		k = m = f1 = 1;
+		if (0)
+		if (fabs(vv.angles_x) > 0.05)
+		{
+			f1 = vv.angles_x / 90;
+			m = 1 + f1;
+			k = 1 - fabs(f1);
+
+
+
+bprint(" --- limiters   a_x:  ");
+bprint(ftos(vv.angles_x));
+bprint(" -  f1:  ");
+bprint(ftos(f1));
+bprint(" - z - m:  ");
+bprint(ftos(m));
+bprint(" - fwd - k:  ");
+bprint(ftos(k));
+bprint("\n");
+
+
+		}
+
+		v2 = (vv_o_0_x + vv_o_000_x) * v_forward;
+		v3 = (0 - (vv_o_0_y + vv_o_000_y)) * v_right;
+		v4 = (vv_o_0_z + vv_o_000_z) * v_up;
+
+		setorigin(vv.vwepent, vv.origin + v2 + v3 + v4); 
+//		vv.vwepent.angles = v1 + vv_a_0 + vv_a_000;
 		vv.vwepent.angles = vv.angles + vv_a_0 + vv_a_000;
-		vv.vwepent.frame = vv_x_0_x + vv_x_000_x;
+		if (cvar("vv_pitch"))
+		if (!vv_x_000_y) vv.vwepent.angles_x = vv.vwepent.angles_x - vv.angles_x; // negate pitch when using a_x
+//		vv.vwepent.angles_x = vv_a_0_x + vv_a_000_x - (vv.angles_x / 2);
+		vv.vwepent.angles_x = vv_a_0_x + vv_a_000_x;
+//		vv.vwepent.angles_y = vv.angles_y + vv_a_0_y + vv_a_000_y;
+//		vv.vwepent.angles_z = vv.angles_z + vv_a_0_z + vv_a_000_z;
+		vv.vwepent.frame = vv_x_0_y + vv_x_000_y;
 		setorigin(vv.eweapon, vv.origin); 
-		vv.eweapon.angles = vv.angles;
-		vv.eweapon.frame = vv.frame + 233;
+		vv.eweapon.angles = vv.angles;x_000
+//		vv.eweapon.frame = vv.frame + 233; // run fired
 //		vv.eweapon.frame = vv.frame + viswaddf - melee_frames;
-//		vv.eweapon.frame = vv.frame + viswaddf;
+		vv.eweapon.frame = vv.frame + viswaddf;
 
 		self.impulse = 0;
 	}

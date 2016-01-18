@@ -476,7 +476,11 @@ void() q2_weapon_rocketlauncher =
 // appearances
 	setmodel (self, "progs/q2_rocketl.mdl");
 	self.weaponmodel = "progs/v_q2_rl.mdl";
-	self.vwepmdl = "progs/vw_q2_rock.mdl";
+//	self.vwepmdl = "progs/vw_q2_rock.mdl";
+// TESTING
+	self.vwepmdl = "progs/vw_q2_rock2.mdl";
+	self.vv_draw = vw_range_base;
+
 	self.noise = "q2_snd/w_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.noise3 = "q2_snd/rktf_mx.wav";
