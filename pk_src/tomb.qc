@@ -90,7 +90,7 @@ void () corpsefollow =
 		self.dodmg = 1;
 	}
 	if (!self.tomb_target.ishuman) // Cataboligne - 10.3.11 - just for stationary bots
-	if (random() < 0.1)
+	if (random() < 0.3)
 		self.dodmg = 1;
 		
 	self.tomb_time = (self.tomb_time + 0.1);
@@ -151,12 +151,15 @@ void () tombtouch =
 	if (ENHANCED)
 	if (other.mask_x & CB_ZOMBY || other.model == "progs/zombie.mdl")
 	{
-		if (self.class_select != "progs/zombie.mdl")
-		if (self.flags & FL_CLIENT)
-		if (self.ishuman)
+		if (self.enemy != other)
+		if (other.flags & FL_CLIENT)
+		if (other.ishuman)
 		{
-			sprint(other, "There is an old friend down there...\n");
-			self.class_select = "progs/zombie.mdl";
+			if (random() < 0.5)
+				sprint(other, "Stop for a visit, why not stay for a while?...\n");
+			else
+				sprint(other, "There is an old friend down there...\n");
+			self.enemy = other;
 		}
 		return ;
 	}

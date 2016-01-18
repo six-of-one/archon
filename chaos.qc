@@ -1390,6 +1390,8 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 	bq.flags = e.flags - (e.flags & (FL_CLIENT | FL_MONSTER) ); // mask off these flags
 	bq.movetype = e.movetype;
 	bq.velocity = e.velocity;
+	bq.deathtype = e.deathtype; // plague, etc
+	bq.touch = e.touch;
 	bq.flags = 0;
 	bq.skin = e.skin; // *pk damage skins
 	setorigin (bq,e.origin);

@@ -14,8 +14,9 @@ void() copb_eatCan =
 	// allow above 100...
 	other = self;
 	T_Heal(other, 100, 1);
+	other.healtype = HEAL_BOT; // plague, poison, fire
 
-	if (self.health > smax) self.health = smax; // bound to max
+	if (self.health > smax) self.health = smax; // bound to special max - 250 for human
 
 	self.copb_timeout = time + POW_TIME;
 	self.search_time = time + (random() * 2);

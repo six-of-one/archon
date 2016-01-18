@@ -970,7 +970,6 @@ bprint("\n");
 			{
 				if (WARNING) bprint("*** warning: rune_make could not find a random (or any) location - giving up\n");
 				remove(self);
-//				remove(self);
 				return; // crap - no location
 			}
 			v1 = e.origin + ' 0 0 8';
@@ -1692,6 +1691,7 @@ void () item_sigil =
 		else f = rnd_bit_mask(15); // fail! no spawnflag - just pick one at random
 		self.spawnflags = f;
 	}
+	self.mask_x = MORPH_ALL; // everyone can get runes
 
 	if (rul < 2 || time < PIC_TO)
 	{
@@ -1699,26 +1699,37 @@ void () item_sigil =
 		{
 			precache_model ("progs/end1.mdl");
 			setmodel (self,"progs/end1.mdl");
-			self.netname = "Earth magic"; // Cataboligne - 5.32.10 - for rune server
-		
+			self.netname = "Earth magic"; // Cataboligne - 5.32.10 - for rune server		
+
+			if (R_EARTH == RUNE_FLG_RG)
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 		if (self.spawnflags & R_BLACK)
 		{
 			precache_model ("progs/end2.mdl");
 			setmodel (self,"progs/end2.mdl");
 			self.netname = "Black magic"; // Cataboligne - 5.32.10 - for rune server
+
+			if (R_BLACK == RUNE_FLG_RG)
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 		if (self.spawnflags & R_HELL)
 		{
 			precache_model ("progs/end3.mdl");
 			setmodel (self,"progs/end3.mdl");
 			self.netname = "Hell magic"; // Cataboligne - 5.32.10 - for rune server
+
+			if (R_HELL == RUNE_FLG_RG)
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 		if (self.spawnflags & R_ELDER)
 		{
-				precache_model ("progs/end4.mdl");
-		setmodel (self,"progs/end4.mdl");
+			precache_model ("progs/end4.mdl");
+			setmodel (self,"progs/end4.mdl");
 			self.netname = "Elder magic"; // Cataboligne - 5.32.10 - for rune server
+
+			if (R_ELDER == RUNE_FLG_RG)
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 		if (self.spawnflags & R_VAMPIRE) // bit 64
 		{
@@ -1726,6 +1737,8 @@ void () item_sigil =
 			setmodel (self,"progs/g_axe.mdl"); // hur?
 			self.netname = "Vampire magic";
 			self.effects = EF_DIMLIGHT;
+
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 	}
 	else
@@ -1737,30 +1750,44 @@ void () item_sigil =
 			self.netname = rune2_name(R_EARTH); //"Resistance";
 			self.frame = 1;
 			self.skin = 2;
+
+			if (R_EARTH == RUNE_FLG_RG)
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 		if (self.spawnflags & R_BLACK)
 		{
 			self.netname = rune2_name(R_BLACK); // "Strength";
 			self.frame = 1;
 			self.skin = 1;
+
+			if (R_BLACK == RUNE_FLG_RG)
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 		if (self.spawnflags & R_HELL)
 		{
 			self.netname = rune2_name(R_HELL); // "Haste";
 			self.frame = 1;
 			self.skin = 3;
+
+			if (R_HELL == RUNE_FLG_RG)
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 		if (self.spawnflags & R_ELDER)
 		{
 			self.netname = rune2_name(R_ELDER); // "Regeneration";
 			self.frame = 1;
 			self.skin = 4;
+
+			if (R_ELDER == RUNE_FLG_RG)
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 		if (self.spawnflags & R_VAMPIRE) // bit 64
 		{
 			self.netname = rune2_name(R_VAMPIRE); // "Vampire";
 			self.frame = 1;
 			self.skin = 6;
+
+			if (ENHANCED) self.mask_x = MORPH_ALL - CB_ZOMBY ;
 		}
 	}
 
@@ -1800,6 +1827,5 @@ void () item_sigil =
 	else
 	self.touch = sigil_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL; // everyone can get runes
 	StartItem ();
 };

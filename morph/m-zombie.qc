@@ -366,6 +366,8 @@ float CK_PLAGUE_ZGIB			= 0.3; // chance zombie gibs / head are plagued
 float CK_PLAGUE_GIB			= 0.03; // chance regular gibs / head are plagued
 float TM_PLAGUE				= 1; // round defined for think - 1 sec
 
+void() PlagueTouch;
+
 void() ZombiePlague =
 {
 	local float dm;
@@ -406,7 +408,11 @@ void() ZombiePlague =
 	self.lip = 0;
 	dm = floor(random() * 5.5); // 0 - 5
 	T_Damage (self.enemy, self, self.owner, dm );
-	if (self.enemy.health < 0) self.enemy.deathtype = "plague";
+	if (self.enemy.health < 0)
+	{
+		self.enemy.deathtype = "plague"; // not needed - T_Dam above gets it with classname - tho maybe the corpse could cause plagues
+//		self.enemy.touch = PlagueTouch; // test: sometime
+	}
 };
 
 // fn(PlagueTouch) - handle contact with plagued gibs & bodies
@@ -526,8 +532,9 @@ void() player_ZombieFireGrenade =
 // .lefty - chance of instant death
 // IDEAS: color?
 
-float MIN_CLOUD_DIST			= 800; // minimum distance between player / zombie clouds
-float CLOUD2_STATE			= 40; // if 2nd cloud is to start - cloud 1 state must be < than this
+float MIN_CLOUD_DIST			= 300; // minimum distance between player / zombie clouds
+float CLOUD2_STATE			= 100; // if 2nd cloud is to start - cloud 1 state must be < than this
+float tot_cloud;  // limit 3 clouds, 1 zomby can only have 2
 
 void() cloudkill =
 {
@@ -536,11 +543,19 @@ void() cloudkill =
 
 	if (self.classname != "cloudkill") // called as fn - make a cloudkill
 	{
-		chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", "", SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
+		head = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", "", SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
+		head.aflag = -1; // ignore zomby limits - note: for code out of control, this could swamp the server with clouds
 		return;
 	}
 
-	if (self.search_time) if (self.search_time < time) self.state = 10 + random() * self.lip; // running down now
+	if (self.aflag > 0) // zomby clouds
+	if (tot_cloud > 2) // just in case
+	{
+		remove(self);
+		return;
+	}
+
+	if (self.search_time) if (self.search_time < time) self.state = 100 - (2 * random() * self.lip); // running down now
 
 	if (!self.state) // state not preset - do an init
 	{
@@ -565,7 +580,15 @@ void() cloudkill =
 
 	if (self.state < 0)
 	{
-		self.owner.enemy = world;
+//		if (self.aflag == 1)
+		if (self.owner.trigger_field)
+			self.owner.trigger_field.aflag = 1; // if 2nd, set to 1
+
+		if (self.owner.trigger_field == self)
+			self.owner.trigger_field = world;
+
+		if (self.aflag > 0) tot_cloud = tot_cloud - 1;
+		if (tot_cloud < 0) tot_cloud = 0;
 		remove(self);
 		return;
 	}
@@ -580,6 +603,7 @@ void() cloudkill =
 		if (random() < 0.2) self.state = self.state - random();
 		mult = self.state / self.count; // percentage slump
 
+		if (self.dmg > 5) self.dmg = self.dmg * 0.8; // less potent
 //		self.distance = self.distance * dist;
 //		if (dist < 0.5) self.cnt = self.cnt * dist;
 //		if (dist < 0.4) self.dmg = self.dmg * dist;
@@ -587,10 +611,12 @@ void() cloudkill =
 
 	if (self.state > 200) // start up
 	{
-		mult = (self.count - 200) / (self.state - 200);
+		mult = fabs((self.count - 200) / (self.state - 200));
 		self.state = self.state - 1;
 		if (random() < 0.2) self.state = self.state - 1.5 * random();
 	}
+	else
+		if (self.dmg < 6) self.dmg = self.dmg * 2; // more potent
 
 	
 	self.nextthink = time + 0.2;
@@ -653,10 +679,10 @@ bprint("\n");
 	{
 		self.wait = 5; // dmg once per sec.
 		if (head != self)
-		if (head.solid == SOLID_SLIDEBOX)  // BLOODCHECK - this is one for sure that we might want FL_CLIENT, FL_MONSTER so its more inclusive
+		if (head.solid == SOLID_SLIDEBOX || head.netname == "Crate")  // BLOODCHECK - this is one for sure that we might want FL_CLIENT, FL_MONSTER so its more inclusive
 		{
 			if (!IS_ZOMBIE(head)) // us / our family
-			if (!IS_LAVA(head)) // non breathers // IDEA also exclude wraiths
+			if (!IS_LAVA(head)) // non breathers
 			if (head.takedamage)
 			{
 				dist = vlen(head.origin - self.origin);
@@ -665,6 +691,8 @@ bprint("\n");
 					head.lastvictim = self;
 					head.cnt = time + self.rad_time;
 				}
+
+				if (vlen(head.velocity) > 75) head.velocity = head.velocity * 0.5; // slow down in cloud
 
 				if (self.dmg_take > 0)
 					T_Damage (head, self, self.owner, self.dmg * (self.dmg_take / dist) + self.dmg_save * random());
@@ -773,8 +801,9 @@ void() player_zombie_attc12 = [ $attc12, player_stand1 ] { player_ZombieFireGren
 void() player_zombie_attack =
 {
 	local entity p;
+	local float f;
 
-	if (self.weapon != IT_AXE)
+	if (self.weapon != IT_AXE || tot_cloud >= 3)
 	{
 		self.attack_finished=time+10; // note: trick to put finish time into fire frames - ISSUE: dont work with rune haste!
 		if(random()>0.66) player_zombie_atta1();
@@ -782,22 +811,35 @@ void() player_zombie_attack =
 		else player_zombie_attc1();
 	}
 	else
-	if (!self.enemy || self.enemy.classname != "cloudkill" || ( (self.enemy.state < CLOUD2_STATE) && (vlen(self.origin - self.enemy.origin) > MIN_CLOUD_DIST) ) )
 	{
-		self.enemy = p = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", "", SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
-		p.dmg = 2;
-		p.dmg_save = 1;
-		p.dmg_take = 0;
-		p.cnt = 70;
-		p.lip = 20;
-		p.distance = self.health * 3;
-		p.search_time = time + self.health + self.health * 0.5 * random() + 30 * random();
-		p.rad_time = self.health * 0.6 + 30 * random();
-		p.lefty = 0.04;
-		self.flags = self.flags | FL_CLOUDED; // take a short dirt nap
-		self.attack_finished = time + 60 + 60 * random();
-		sound (self, CHAN_VOICE, "chaos/z_gas.wav", 1, ATTN_NORM);
-		player_zombie_paine1(); // falls down after gas out
+		f = 0;
+		if (!self.trigger_field) f = 1;
+		else
+		if (self.trigger_field.aflag < 2)
+		if (( (self.trigger_field.state < CLOUD2_STATE) && (vlen(self.origin - self.trigger_field.origin) > MIN_CLOUD_DIST) ) ) f = 2;
+
+//	if (!self.trigger_field || self.trigger_field.classname != "cloudkill" || ( (self.trigger_field.state < CLOUD2_STATE) && (vlen(self.origin - self.trigger_field.origin) > MIN_CLOUD_DIST) ) )
+		if (f)
+		{
+			tot_cloud = tot_cloud + 1;
+			self.trigger_field = p = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", "", SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
+			p.dmg = 2;
+			p.dmg_save = 1;
+			p.dmg_take = 0;
+			p.cnt = 70;
+			p.lip = 20;
+			p.distance = self.health * 3;
+			p.search_time = time + self.health + self.health * 0.5 * random() + 30 * random();
+			p.rad_time = self.health * 0.6 + 30 * random();
+			p.lefty = 0.04;
+			p.aflag = f;
+			self.flags = self.flags | FL_CLOUDED; // take a short dirt nap
+			self.attack_finished = time + 60 + 60 * random();
+			sound (self, CHAN_VOICE, "chaos/z_gas.wav", 1, ATTN_NORM);
+			player_zombie_paine1(); // falls down after gas out
+		}
+		else
+			player_zombie_attc1();
 	}
 };
 

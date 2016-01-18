@@ -1091,6 +1091,7 @@ bprint("\n");
 };
 
 // preventative for endless bot axe war - also remove bot fixer
+// or a little cheat goes along way
 
 void() Bot_Melee =
 {
@@ -1101,19 +1102,20 @@ void() Bot_Melee =
 //	W_FireAxe (); // called from in fireaxe now
 
 	if (!ax_dmg)
-	if (random() < 0.444) // unknown timing - this is a guess, might be really good or really bad
+	if (random() < 0.366) // unknown timing - this is a guess, might be really good or really bad or really medium  
 	{
 		f = TRUE;
 		e = findradius(self.origin, 80);
 		while (e && f)
 		{
+			if (e != self)
 			if (e.class_select == "class_bot")
 			{
 				if (CanDamage(e, self)) // hit this other bot - we dont really care about the particulars, what happens between bots, stays between bots
 				{
 					e.axhitme = 1;
 					SpawnBlood (e.origin, '0 0 0', 20);
-					T_Damage (e,self,self,10 + random() * 10);
+					T_Damage (e,self,self,20 + random() * 10);
 					f = FALSE;
 
 
