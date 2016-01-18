@@ -387,7 +387,7 @@ void()	Lavablob_JumpTouch =
 {
 	local	float	ldmg;
 
-	if (other.takedamage && other.morphy != self.morphy && other.classname != "monster_tarbaby" && other.classname != "monster_vomit")
+	if (other.takedamage && other.morphy != self.morphy && other.classname != "monster_tarbaby" && other.classname != "monster_lavabomb" && other.classname != "monster_vomit")
 	{
 		if ( vlen(self.velocity) > 400 )
 		{

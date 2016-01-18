@@ -1050,6 +1050,9 @@ void() pk_liveupd =
 		random_monster(); // control
 	}
 
+	if ((C_MONSTER  || C_MONSTER_II) && random_monster_spawn.nextthink <= 0)
+		random_monster(); // fix not spawning monsters when nthink got < 0
+	
 	if (M_MONSTER != cvar("sv_monster_map"))
 	{
 		M_MONSTER = cvar("sv_monster_map"); // IMP: process loop - turn bits on and off, remove culled monsters

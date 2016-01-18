@@ -577,6 +577,8 @@ void() pk_ammo_touch =
 
 // The touch func for our new items
 
+entity ae; // TEST remove
+
 void() painkeep_touch =
 {
 	local entity stm2;
@@ -724,12 +726,16 @@ if (self.classname == "")
 // power up archon
 		if (self.archon) other.archon = other.archon + self.archon;
 
-if (1) // TEST
+
+
+if (ae != self) // TEST
 {
 	bprint("*** - archon pts = ");
 	bprint(ftos(self.archon));
 	bprint("\n");
+	ae = self;
 }
+
 
 
 //		if (f) self.event = "dynamic_item"; // restore

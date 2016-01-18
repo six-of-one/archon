@@ -1416,8 +1416,6 @@ float(entity e, float hl) morph_heal =
 };
 
 
-entity random_monster_spawn;
-
 // need think to wake them up because *monster_start_go has to happen
 // NOTE: this does seem to wack monsters that attack player / morph on site (grunts)
 

@@ -30,6 +30,8 @@ float MORPH_ALL; //every morph bit in mask 1
 
 // monsters in dm - so morphs have friends
 
+entity random_monster_spawn;
+
 float A_MONSTER				= -555777; // allow monsters in dm - monster_* called from code
 float M_MONSTER; // bit mask to allow map monsters in dm
 float S_MONSTER; // bit mask of monsters to respawn when dead (map monsters only, no random ones) - works in single player too!
