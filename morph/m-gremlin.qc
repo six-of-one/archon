@@ -256,6 +256,17 @@ void()   player_gremlin_dieb11 =[ $deathb9, SUB_Nop ] {};
 
 void() player_gremlin_die =
 {
+	local float gib;
+
+	if (self.health < -95 || (!XENV && pointcontents(self.origin) == CONTENT_LAVA)) gib = TRUE;
+
+	if (deathmatch || coop || (DEAD_GIBPACK & 2))
+	if (!gib || DEAD_GIBPACK)
+		DropBackpack();
+
+	if (DEAD_THROW)
+	if ((DEAD_THROW & 16) || !gib)
+		DeadThrowWeps(newmis); // newmis is the pack - ammo must be accounted
 
 	if ( GibMorph ("progs/gremlin.mdl", $severedhead, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND | FL_PLAGUE, 0, -95, 8, 0, "") ) return;
 

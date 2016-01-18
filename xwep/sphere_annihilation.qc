@@ -156,7 +156,7 @@ bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
 
 		if (random() < 0.15)
 			{
-				if (self.aiment) remove(self.aiment);
+				if (self.aiment) remove(self.aiment); // aiment is audio source
 				self.aiment = world;
 			}
 		else if (!self.aiment && random() > 0.4)

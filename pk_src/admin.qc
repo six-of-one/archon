@@ -122,17 +122,17 @@ void(entity e) admin_clear =
 		stuffcmd(e, "\n");
 	}
 
-	if (e.aiment)
-	if (e.aiment.classname == "dropinv")
+	if (e.dropent)
+	if (e.dropent.classname == "dropinv")
 	{
 		stuffcmd(e, "con_notifytime "); // restore notify
-		stuffcmd(e, ftos(e.aiment.grap_state));
+		stuffcmd(e, ftos(e.dropent.grap_state));
 		stuffcmd(e, "\ncon_notify ");
-		stuffcmd(e, ftos(e.aiment.grap_length));
+		stuffcmd(e, ftos(e.dropent.grap_length));
 		stuffcmd(e, "\n");
 
-		remove(e.aiment);
-		e.aiment = world;
+		remove(e.dropent);
+		e.dropent = world;
 	}
 };
 
@@ -2380,19 +2380,19 @@ void() PK_AdminImpulse =
 			if (self.impulse > 0 && self.impulse < 8)
 			{
 				self.goalentity.nextthink = time + USER_TIMEOUT; // keep menu up while buttons are being pressed
-				if (self.aiment)
-				if (self.aiment.classname == "dropinv")
-					self.aiment.weapon = self.impulse; // selected
+				if (self.dropent)
+				if (self.dropent.classname == "dropinv")
+					self.dropent.weapon = self.impulse; // selected
 				self.impulse = 0;
-				self.aiment.grap_firetest = 0; // show it
+				self.dropent.grap_firetest = 0; // show it
 			}
-			if (self.aiment)
-			if (self.aiment.classname == "dropinv")
-			if (self.aiment.weapon)
+			if (self.dropent)
+			if (self.dropent.classname == "dropinv")
+			if (self.dropent.weapon)
 			if (self.impulse == 11 || self.button0) //confirmed
 			{
 				self.goalentity.nextthink = time + USER_TIMEOUT;
-				drop_inventory(self.aiment.weapon);
+				drop_inventory(self.dropent.weapon, self);
 				drop_setup(-1); // redo page
 				self.impulse = 0;
 				self.button0 = 0;
@@ -2401,7 +2401,7 @@ void() PK_AdminImpulse =
 			{
 				self.goalentity.nextthink = time + USER_TIMEOUT;
 				drop_setup(1);
-				if (self.aiment.noise == "")
+				if (self.dropent.noise == "")
 				{
 					drop_setup(0);
 				}

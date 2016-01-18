@@ -693,7 +693,7 @@ void() PK_PlayerDie =
 	{
 		grap_remove(self);
 	}
-
+	
 	if (self._die != SUB_Null) 
 	{
 		morph_die();

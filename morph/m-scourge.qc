@@ -143,25 +143,22 @@ void() player_scourge_die =
    player_scourge_die1 ();
 
 // scourge can drop stuff if not gibbed
-/*
+
 	if (random() < 0.4)
-		{
-		e = drop_item(item_spikes, self, "", 0);
-		droprnd(v0, e);
-		}
+	{
+		e = drop_item(0, "item_spikes", self, v0);
+	}
 	if ((self.ammo_rockets > 0) && (random() < ((100 - self.ammo_rockets) * 0.01) ))
-		{
-		e = drop_item(item_rockets, self, "Scourge rockets", 0);
+	{
+		e = drop_item(0, "item_rockets", self, v0);
 		e.aflag = self.ammo_rockets;
-		droprnd(v0, e);
-		}
+	}
 	if ((self.ammo_cells > 0) && (random() < ((120 - self.ammo_rockets) * 0.01) ))
-		{
-		e = drop_item(item_cells, self, "Scourge batteries!", 0);
+	{
+		e = drop_item(0, "item_cells", self, v0);
 		e.aflag = self.ammo_cells;
-		droprnd(v0, e);
-		}
-*/
+	}
+
 };
 
 /*
@@ -206,7 +203,7 @@ void(float ox) player_scourge_FireSpikes =
 		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, am, RM_SKY | PF_LAVA, src, ' 0 0 0', "laser", "progs/laser_m.mdl", s1, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 
 		if (s1 == "enforcer/enfire.wav")
-//		if (self.eweapon)
+
 		if (self.currentammo > 0)
 			self.currentammo = self.ammo_cells = self.ammo_cells - 1;
 		newmis.skin = 8; // white / blue shift
@@ -311,16 +308,6 @@ void() m_Attack_With_Tail =
 {
 	if (self.weapon == IT_GRENADE_LAUNCHER && (self.ammo_rockets > 0))  // we got modded to fire prox mines if we have rockets
 	{
-/*		if (self.eweapon)
-		if (self.eweapon.pk_touch != cube_touch)
-		{
-			self.eweapon.weaponmodel = "";
-			self.eweapon._attack = player_scourge_attack;
-			self.eweapon._fr_attack = SUB_Null;
-			self.eweapon.duration = 0; 
-			self.eweapon.noise3 = "weapons/prox/proxbomb.wav";
-		}
-*/
 		self.currentammo = self.ammo_rockets;
 		W_Fire_Proxmine();
 //		if (!self.eweapon) 
@@ -362,17 +349,6 @@ void() player_scourge_attack =
 	}
 	else
 	{
- /*		if (self.eweapon)
-		if (self.eweapon.pk_touch != cube_touch)
-		{
-			self.eweapon.weaponmodel = "";
-			self.eweapon.noise3 = "";
-			self.eweapon.lip = 0; // ammo used in fire fn above
-			self.eweapon._attack = player_scourge_attack;
-			self.eweapon._fr_attack = SUB_Null;
-			self.eweapon.duration = 0; // dont dbl sound
-		}
-*/
 		player_scourge_atk1();
 		if (rune_haste(0.4))
 		self.attack_finished = time + 0.8;
@@ -424,18 +400,6 @@ void() player_scourge_impulse =
 			sprint(self, "Scourge firing ( stinger )\n"); 
 		}
 	}
-	
-/*	if (self.vwepent)
-		viswep_ld(self, -1);
-
-	if (self.eweapon)
-	if (self.eweapon.pk_touch != cube_touch)
-	{
-		self.eweapon.weaponmodel = "";
-		self.eweapon._attack = player_scourge_attack;
-		self.eweapon._fr_attack = SUB_Null;
-		self.eweapon.duration = 0; 
-	} */
 };
 
 /*

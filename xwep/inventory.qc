@@ -804,13 +804,14 @@ void() inventory =
 // for tossed items
 
 // fn(dropinview) - toss stuff out
-// de - ent doing tossing (player)
+// de - ent doing tossing (player) - if world, pick a random location
 // ve - ent being tossed
 
 void(entity de, entity ve) dropinview =
 {
 	local vector vec;
 	local float at;
+	local entity e;
 
 	ve.nextthink = time + 5; // no touch for a bit - assuming item_call make
 
@@ -818,6 +819,14 @@ void(entity de, entity ve) dropinview =
 	{
 		at = TRUE; // allow long throw
 		ve.punchangle = '-1 -1 -1'; // dont re bounce
+	}
+
+	if (!de)
+	{
+		e = find_tdest(FL_RSALL, "");
+		if (!e) return; // might not be good - this ent will be at v0
+		setorigin(ve, e.origin);
+		return;
 	}
 //	if (ve.classname == "gravity_armed") at = TRUE; // ur? fails to land
 
@@ -839,9 +848,48 @@ void(entity de, entity ve) dropinview =
 		}
 }
 
+// drop a random item
+// will not make functioning rune server runes or anything else that needs a classname
+
+// mc - valid map code
+// cls - classname
+// de - drop ent (for origin, v_angle)
+// v1 - random throw vector
+
+entity(float mc, string cls, entity de, vector v1) drop_item =
+{
+	local entity e;
+	local string scls;
+
+	scls = cls;
+	if (!scls)
+		scls = item_by_mcode(mc);
+
+	if (!scls)
+	{
+		if (WARNING) bprint("*** warning: drop_item did not get a valid function - giving up\n");
+		return(world);
+	}
+
+	e = spawn(); // for tossed item
+	e.classname = "dyn_item";
+	item_call_save(e, scls);
+	dropinview(de, e);
+
+	if (v1 != '-1 -1 -1') // use dropinview throw calc, unless from world
+	if (v1 != v0)
+		e.punchangle = v1;
+	else
+		e.punchangle = ' 160 160 240';
+
+	return(e);
+};
 // dropping imventory - the complicated method
 
-void(float im) drop_inventory =
+// p - ent to drop inv - player
+// im - selection from menu
+
+void(float im, entity p) drop_inventory =
 {
 	local string sel, ic;
 	local float b, f;
@@ -849,53 +897,53 @@ void(float im) drop_inventory =
 
 	if (!im) return;
 
-	if (!self.aiment) return;
-	if (self.aiment.classname != "dropinv") return;
+	if (!p.dropent) return;
+	if (p.dropent.classname != "dropinv") return;
 
 	if (im == 1)
 	{
-		sel = self.aiment.noise;
-		b = self.aiment.dmg;
-		d = self.aiment.eweapon; // eweap
+		sel = p.dropent.noise;
+		b = p.dropent.dmg;
+		d = p.dropent.eweapon; // eweap
 	}
 	if (im == 2)
 	{
-		sel = self.aiment.noise1;
-		b = self.aiment.lefty;
-		d = self.aiment.vwepent; // eweap
+		sel = p.dropent.noise1;
+		b = p.dropent.lefty;
+		d = p.dropent.vwepent; // eweap
 	}
 	if (im == 3)
 	{
-		sel = self.aiment.noise2;
-		b = self.aiment.lip;
-		d = self.aiment.charmer; // eweap
+		sel = p.dropent.noise2;
+		b = p.dropent.lip;
+		d = p.dropent.charmer; // eweap
 	}
-	if (self.aiment.cnt == 4)
+	if (p.dropent.cnt == 4)
 	{
-		sel = self.aiment.noise3;
-		b = self.aiment.wait;
-		d = self.aiment.enemy;
+		sel = p.dropent.noise3;
+		b = p.dropent.wait;
+		d = p.dropent.enemy;
 	}
-	if (self.aiment.cnt == 5)
+	if (p.dropent.cnt == 5)
 	{
-		sel = self.aiment.noise4;
-		b = self.aiment.aflag;
-		d = self.aiment.oldenemy;
+		sel = p.dropent.noise4;
+		b = p.dropent.aflag;
+		d = p.dropent.oldenemy;
 	}
-	if (self.aiment.cnt == 5)
+	if (p.dropent.cnt == 5)
 	{
-		sel = self.aiment.target1;
-		b = self.aiment.delay;
-		d = self.aiment.goalentity;
+		sel = p.dropent.target1;
+		b = p.dropent.delay;
+		d = p.dropent.goalentity;
 	}
-	if (self.aiment.cnt == 7)
+	if (p.dropent.cnt == 7)
 	{
-		sel = self.aiment.target2;
-		b = self.aiment.volume;
-		d = self.aiment.owner;
+		sel = p.dropent.target2;
+		b = p.dropent.volume;
+		d = p.dropent.owner;
 	}
 
-	e = spawn(); // for tossed item
+	newmis = e = spawn(); // for tossed item
 	e.classname = "dyn_item";
 	f = 0;
 
@@ -929,95 +977,96 @@ void(float im) drop_inventory =
 		if (ic == "item_sigil") e.classname = ic; // make a real item
 
 		if (RUNES)
-			self.rune_flag = self.rune_flag - (self.rune_flag & b); // remove rune
+			p.rune_flag = p.rune_flag - (p.rune_flag & b); // remove rune
 		else if (ic == "item_sigil")
 		{
 			serverflags = serverflags - (serverflags & b); // remove server rune
 			serverflags = serverflags | (SVR1 * b); // so we know it was collected and pooted out
 		}
-		dropinview(self, e);
-		self.aiment.map = sel;
+		dropinview(p, e);
+		p.dropent.map = sel;
 		return;
 	}
 
 // dropping an artifact
-	if (sel == "Invulerability" && (self.items & b))
+	if (sel == "Invulerability" && (p.items & b))
 	{
 		item_call_save(e, "item_artifact_invulnerability");
-		f = self.invincible_finished;
-		self.invincible_finished = -1;
+		f = p.invincible_finished;
+		p.invincible_finished = -1;
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Quad Damage" && (self.items & b))
+	if (sel == "Quad Damage" && (p.items & b))
 	{
 		item_call_save(e, "item_artifact_super_damage");
-		f = self.super_damage_finished;
-		self.super_damage_finished = -1;
+		f = p.super_damage_finished;
+		p.super_damage_finished = -1;
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Limited Invisibility" && (self.items & b))
+	if (sel == "Limited Invisibility" && (p.items & b))
 	{
 		item_call_save(e, "item_artifact_invisibility");
-		f = self.invisible_time;
-		self.invisible_finished = -1;
+		f = p.invisible_time;
+		p.invisible_finished = -1;
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Hazmat Suit" && (self.items & b))
+	if (sel == "Hazmat Suit" && (p.items & b))
 	{
 		item_call_save(e, "item_artifact_envirosuit");
-		f = self.radsuit_finished;
-		self.radsuit_finished = -1;
+		f = p.radsuit_finished;
+		p.radsuit_finished = -1;
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Diving Suit" && (self.items & b))
+	if (sel == "Diving Suit" && (p.items & b))
 	{
 		item_call_save(e, "item_artifact_envirosuit");
-		f = self.wetsuit_finished;
-		self.wetsuit_finished = -1;
+		f = p.wetsuit_finished;
+		p.wetsuit_finished = -1;
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Empathy Shields" && (self.empathy_finished))
+	if (sel == "Empathy Shields" && (p.empathy_finished))
 	{
 		item_call_save(e, "item_artifact_empathy_shields");
-		f = self.empathy_finished;
-		self.empathy_finished = -1;
+		f = p.empathy_finished;
+		p.empathy_finished = -1;
 		if (f < 1) f = time + 10;
 	}
 
 // artifact common
 	if (f)
 	{
-		self.items = self.items - (self.items & b);
+		p.items = p.items - (p.items & b);
 		f = f - time;
 		if (f < 10) f = 10;
 		e.dmgtime = f;
-		dropinview(self, e);
-		self.aiment.map = sel;
+		dropinview(p, e);
+		p.dropent.map = sel;
+		if (sel == "Limited Invisibility") viswep_post(); // reset viswep
 		return;
 	}
 
-	if (sel == "Ammo Pack" && (self.rune_flag & RUNE_AMMO))
+	if (sel == "Ammo Pack" && (p.rune_flag & RUNE_AMMO))
 	{
 		item_call_save(e, "d_item_pack");
-		self.rune_flag = self.rune_flag - (self.rune_flag & b);
-		dropinview(self, e);
-		self.aiment.map = sel;
+		p.rune_flag = p.rune_flag - (p.rune_flag & b);
+		dropinview(p, e);
+		p.dropent.map = sel;
 		return;
 	}
 
 // q3 flight
-	if (sel == "Flying Rune" && (self.rune_flag & RUNE_FLG_FLY)) // note: flight time left is in expiry
+	if (sel == "Flying Rune" && (p.rune_flag & RUNE_FLG_FLY)) // note: flight time left is in expiry
 	{
 		item_call_save(e, "item_flight");
-		self.rune_flag = self.rune_flag - (self.rune_flag & b);
-		self.movetype = MOVETYPE_WALK;
-		dropinview(self, e);
-		self.aiment.map = sel;
+		p.rune_flag = p.rune_flag - (p.rune_flag & b);
+		p.movetype = MOVETYPE_WALK;
+		dropinview(p, e);
+		p.dropent.map = sel;
 		return;
 	}
 
@@ -1027,50 +1076,50 @@ void(float im) drop_inventory =
 
 void(string sl, float b, entity e) drop_string =
 {
-	if (self.aiment.cnt == 1)
+	if (self.dropent.cnt == 1)
 	{
-		self.aiment.noise = sl;
-		self.aiment.dmg = b;
-		self.aiment.eweapon = e;
+		self.dropent.noise = sl;
+		self.dropent.dmg = b;
+		self.dropent.eweapon = e;
 	}
-	if (self.aiment.cnt == 2)
+	if (self.dropent.cnt == 2)
 	{
-		self.aiment.noise1 = sl;
-		self.aiment.lefty = b;
-		self.aiment.vwepent = e;
+		self.dropent.noise1 = sl;
+		self.dropent.lefty = b;
+		self.dropent.vwepent = e;
 	}
-	if (self.aiment.cnt == 3)
+	if (self.dropent.cnt == 3)
 	{
-		self.aiment.noise2 = sl;
-		self.aiment.lip = b;
-		self.aiment.charmer = e;
+		self.dropent.noise2 = sl;
+		self.dropent.lip = b;
+		self.dropent.charmer = e;
 	}
-	if (self.aiment.cnt == 4)
+	if (self.dropent.cnt == 4)
 	{
-		self.aiment.noise3 = sl;
-		self.aiment.wait = b;
-		self.aiment.enemy = e;
+		self.dropent.noise3 = sl;
+		self.dropent.wait = b;
+		self.dropent.enemy = e;
 	}
-	if (self.aiment.cnt == 5)
+	if (self.dropent.cnt == 5)
 	{
-		self.aiment.noise4 = sl;
-		self.aiment.aflag = b;
-		self.aiment.oldenemy = e;
+		self.dropent.noise4 = sl;
+		self.dropent.aflag = b;
+		self.dropent.oldenemy = e;
 	}
-	if (self.aiment.cnt == 6)
+	if (self.dropent.cnt == 6)
 	{
-		self.aiment.target1 = sl;
-		self.aiment.delay = b;
-		self.aiment.goalentity = e;
+		self.dropent.target1 = sl;
+		self.dropent.delay = b;
+		self.dropent.goalentity = e;
 	}
-	if (self.aiment.cnt == 7)
+	if (self.dropent.cnt == 7)
 	{
-		self.aiment.target2 = sl;
-		self.aiment.volume = b;
-		self.aiment.owner = e;
+		self.dropent.target2 = sl;
+		self.dropent.volume = b;
+		self.dropent.owner = e;
 	}
 
-	self.aiment.cnt = self.aiment.cnt + 1;
+	self.dropent.cnt = self.dropent.cnt + 1;
 };
 
 // used
@@ -1085,67 +1134,67 @@ void(float pg) drop_setup =
 	local float a, d, e, f, k, l, m, n;
 	local string sel, ic;
 
-	if (!self.aiment) return;
-	if (self.aiment.classname != "dropinv") return;
+	if (!self.dropent) return;
+	if (self.dropent.classname != "dropinv") return;
 
-	self.aiment.grap_firetest = 0; // redo menu
-	self.aiment.weapon = 0;
-	self.aiment.wad = "";
+	self.dropent.grap_firetest = 0; // redo menu
+	self.dropent.weapon = 0;
+	self.dropent.wad = "";
 
-	self.aiment.noise = "";
-	self.aiment.noise1 = "";
-	self.aiment.noise2 = "";
-	self.aiment.noise3 = "";
-	self.aiment.noise4 = "";
-	self.aiment.target1 = "";
-	self.aiment.target2 = "";
+	self.dropent.noise = "";
+	self.dropent.noise1 = "";
+	self.dropent.noise2 = "";
+	self.dropent.noise3 = "";
+	self.dropent.noise4 = "";
+	self.dropent.target1 = "";
+	self.dropent.target2 = "";
 
 	if (!pg) // set place holders
 	{
 		d = e = f = k = //l = m = n =
 
-		self.aiment.button7 =
-		self.aiment.button8 =
-		self.aiment.button9 =
-		self.aiment.button10 =
-//		self.aiment.button11 =
-//		self.aiment.button12 =
-//		self.aiment.button13 =
+		self.dropent.button7 =
+		self.dropent.button8 =
+		self.dropent.button9 =
+		self.dropent.button10 =
+//		self.dropent.button11 =
+//		self.dropent.button12 =
+//		self.dropent.button13 =
 
-		self.aiment.button0 = 
-		self.aiment.button1 = 
-		self.aiment.button2 = 
-		self.aiment.button3 =
-//		self.aiment.button4 =
-//		self.aiment.button5 =
-//		self.aiment.button6 =
+		self.dropent.button0 = 
+		self.dropent.button1 = 
+		self.dropent.button2 = 
+		self.dropent.button3 =
+//		self.dropent.button4 =
+//		self.dropent.button5 =
+//		self.dropent.button6 =
 										1; //init
 	}
 	else if (pg < 0) // redo same page - but diff stuff
 	{
-		d = self.aiment.button7;
-		e = self.aiment.button8;
-		f = self.aiment.button9;
-		k = self.aiment.button10;
-//		l = self.aiment.button11;
-//		m = self.aiment.button12;
-//		n = self.aiment.button13;
+		d = self.dropent.button7;
+		e = self.dropent.button8;
+		f = self.dropent.button9;
+		k = self.dropent.button10;
+//		l = self.dropent.button11;
+//		m = self.dropent.button12;
+//		n = self.dropent.button13;
 	}
 	else
 	{
-		self.aiment.button7  = d = self.aiment.button0; // save pos for next page
-		self.aiment.button8  = e = self.aiment.button1;
-		self.aiment.button9  = f = self.aiment.button2;
-		self.aiment.button10 = k = self.aiment.button3;
-//		self.aiment.button11 = l = self.aiment.button4;
-//		self.aiment.button12 = m = self.aiment.button5;
-//		self.aiment.button13 = n = self.aiment.button6;
+		self.dropent.button7  = d = self.dropent.button0; // save pos for next page
+		self.dropent.button8  = e = self.dropent.button1;
+		self.dropent.button9  = f = self.dropent.button2;
+		self.dropent.button10 = k = self.dropent.button3;
+//		self.dropent.button11 = l = self.dropent.button4;
+//		self.dropent.button12 = m = self.dropent.button5;
+//		self.dropent.button13 = n = self.dropent.button6;
 	}
 
-	self.aiment.cnt = 1;
+	self.dropent.cnt = 1;
 	sel = "";
 
-	while (self.aiment.cnt < 8)
+	while (self.dropent.cnt < 8)
 	{
 		if (d <= 8388608)
 		{
@@ -1157,7 +1206,7 @@ void(float pg) drop_setup =
 					if (serverflags & a)
 					{
 						drop_string(rune_name(a), d, world);
-						self.aiment.msight = " *: server runes can be released";
+						self.dropent.msight = " *: server runes can be released";
 					}
 				}
 				else
@@ -1238,16 +1287,16 @@ void(float pg) drop_setup =
 			f = f * 2;
 		}
 		if (f == 8388608) 
-			self.aiment.cnt = 8;
+			self.dropent.cnt = 8;
 	}
 
-	self.aiment.button0 = d; // continue
-	self.aiment.button1 = e;
-	self.aiment.button2 = f;
-	self.aiment.button3 = k;
-//	self.aiment.button4 = l;
-//	self.aiment.button5 = m;
-//	self.aiment.button6 = n;
+	self.dropent.button0 = d; // continue
+	self.dropent.button1 = e;
+	self.dropent.button2 = f;
+	self.dropent.button3 = k;
+//	self.dropent.button4 = l;
+//	self.dropent.button5 = m;
+//	self.dropent.button6 = n;
 
 };
 
@@ -1262,15 +1311,15 @@ void() drop_menu =
 
 //	ln1 = ln2 = ln3 = ln4 = ln5 = "";
 
-	if (!self.aiment)
+	if (!self.dropent)
 	{
-		self.aiment = spawn();
-		self.aiment.classname = "dropinv";
+		self.dropent = spawn();
+		self.dropent.classname = "dropinv";
 		drop_setup(0);
 
 // save notify stats
-		self.aiment.grap_state = cvar("con_notifytime");
-		self.aiment.grap_length = cvar("con_notify");
+		self.dropent.grap_state = cvar("con_notifytime");
+		self.dropent.grap_length = cvar("con_notify");
 // setup menu display
 
 		stuffcmd(self, "con_notifytime "); // restore notify
@@ -1280,62 +1329,62 @@ void() drop_menu =
 		stuffcmd(self, "\n");
 
 	}
-	if (self.aiment.classname != "dropinv")
+	if (self.dropent.classname != "dropinv")
 	{
 		centerprint(self,"Drop inventory failure, exiting menu\n");
 		self.button1 = 1;
 		return;
 	}
 
-	if (self.aiment.grap_firetest) return; // displayed
-	self.aiment.grap_firetest = TRUE;
+	if (self.dropent.grap_firetest) return; // displayed
+	self.dropent.grap_firetest = TRUE;
 
 
-	if (self.aiment.weapon)
+	if (self.dropent.weapon)
 	{
-		if (self.aiment.weapon == 1)
+		if (self.dropent.weapon == 1)
 		{
-			if (!self.aiment.noise) self.aiment.weapon = 0;
-			else self.aiment.wad = self.aiment.noise;
+			if (!self.dropent.noise) self.dropent.weapon = 0;
+			else self.dropent.wad = self.dropent.noise;
 		}
 
-		if (self.aiment.weapon == 2)
+		if (self.dropent.weapon == 2)
 		{
-			if (!self.aiment.noise1) self.aiment.weapon = 0;
-			else self.aiment.wad = self.aiment.noise1;
+			if (!self.dropent.noise1) self.dropent.weapon = 0;
+			else self.dropent.wad = self.dropent.noise1;
 		}
 
-		if (self.aiment.weapon == 3)
+		if (self.dropent.weapon == 3)
 		{
-			if (!self.aiment.noise2) self.aiment.weapon = 0;
-			else self.aiment.wad = self.aiment.noise2;
+			if (!self.dropent.noise2) self.dropent.weapon = 0;
+			else self.dropent.wad = self.dropent.noise2;
 		}
 
-		if (self.aiment.weapon == 4)
+		if (self.dropent.weapon == 4)
 		{
-			if (!self.aiment.noise3) self.aiment.weapon = 0;
-			else self.aiment.wad = self.aiment.noise3;
+			if (!self.dropent.noise3) self.dropent.weapon = 0;
+			else self.dropent.wad = self.dropent.noise3;
 		}
 
-		if (self.aiment.weapon == 5)
+		if (self.dropent.weapon == 5)
 		{
-			if (!self.aiment.noise4) self.aiment.weapon = 0;
-			else self.aiment.wad = self.aiment.noise4;
+			if (!self.dropent.noise4) self.dropent.weapon = 0;
+			else self.dropent.wad = self.dropent.noise4;
 		}
 
-		if (self.aiment.weapon == 6)
+		if (self.dropent.weapon == 6)
 		{
-			if (!self.aiment.target1) self.aiment.weapon = 0;
-			else self.aiment.wad = self.aiment.target1;
+			if (!self.dropent.target1) self.dropent.weapon = 0;
+			else self.dropent.wad = self.dropent.target1;
 		}
 
-		if (self.aiment.weapon == 7)
+		if (self.dropent.weapon == 7)
 		{
-			if (!self.aiment.target2) self.aiment.weapon = 0;
-			else self.aiment.wad = self.aiment.target2;
+			if (!self.dropent.target2) self.dropent.weapon = 0;
+			else self.dropent.wad = self.dropent.target2;
 		}
-//		if (self.aiment.weapon == 4) self.wad = self.aiment.noise3;
-//		if (self.aiment.weapon == 5) self.wad = self.aiment.noise4;		
+//		if (self.dropent.weapon == 4) self.wad = self.dropent.noise3;
+//		if (self.dropent.weapon == 5) self.wad = self.dropent.noise4;		
 	}
 
 	head =
@@ -1355,52 +1404,52 @@ void() drop_menu =
 
 	sprint(self, head);
 
-	if (self.aiment.noise != "")
+	if (self.dropent.noise != "")
 	{
 		sprint(self,"  1: ");
-		sprint(self,self.aiment.noise);
+		sprint(self,self.dropent.noise);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.aiment.noise1 != "")
+	if (self.dropent.noise1 != "")
 	{
 		sprint(self,"  2: ");
-		sprint(self,self.aiment.noise1);
+		sprint(self,self.dropent.noise1);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.aiment.noise2 != "")
+	if (self.dropent.noise2 != "")
 	{
 		sprint(self,"  3: ");
-		sprint(self,self.aiment.noise2);
+		sprint(self,self.dropent.noise2);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.aiment.noise3 != "")
+	if (self.dropent.noise3 != "")
 	{
 		sprint(self,"  4: ");
-		sprint(self,self.aiment.noise3);
+		sprint(self,self.dropent.noise3);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.aiment.noise4 != "")
+	if (self.dropent.noise4 != "")
 	{
 		sprint(self,"  5: ");
-		sprint(self,self.aiment.noise4);
+		sprint(self,self.dropent.noise4);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.aiment.target1 != "")
+	if (self.dropent.target1 != "")
 	{
 		sprint(self,"  6: ");
-		sprint(self,self.aiment.target1);
+		sprint(self,self.dropent.target1);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.aiment.target2 != "")
+	if (self.dropent.target2 != "")
 	{
 		sprint(self,"  7: ");
-		sprint(self,self.aiment.target2);
+		sprint(self,self.dropent.target2);
 		sprint(self,"\n");
 		f = TRUE;
 	}
@@ -1410,27 +1459,27 @@ void() drop_menu =
 	else
 		sprint(self, "  8: next inventory page  \n");
 
-	if (self.aiment.msight)
+	if (self.dropent.msight)
 	{
-		sprint(self, self.aiment.msight);
+		sprint(self, self.dropent.msight);
 		sprint(self,"\n");
 	}
 
 	sprint(self, foot);
 
-	if (self.aiment.wad != "")
+	if (self.dropent.wad != "")
 	{
 		sprint(self,"\b <ENTER> or <FIRE> confirm drop of:\n");
-		sprint(self,self.aiment.wad);
+		sprint(self,self.dropent.wad);
 		sprint(self,"\n");
 		
 	}
 	else
 	{
-		if (self.aiment.map)
+		if (self.dropent.map)
 		{
 			sprint(self," You dropped: ");
-			sprint(self, self.aiment.map);
+			sprint(self, self.dropent.map);
 			sprint(self,"\n");
 		}
 		if (f)
@@ -1438,7 +1487,7 @@ void() drop_menu =
 	}
 
 /*	
-	if (self.aiment.noise == "")
+	if (self.dropent.noise == "")
 	{
 	head =
 					 "\b   Drop Inventory Menu:   \n"
@@ -1458,7 +1507,7 @@ void() drop_menu =
 						"1: ";
 	}
 
-	if (self.aiment.weapon == 1)
+	if (self.dropent.weapon == 1)
 	{
 	foot = 
 						"\n"
@@ -1468,7 +1517,7 @@ void() drop_menu =
 					 "\b <ENTER> confirm drop #1  ";
 	}
 	else
-	if (self.aiment.weapon == 2)
+	if (self.dropent.weapon == 2)
 	{
 	foot = 
 						"\n"
@@ -1478,7 +1527,7 @@ void() drop_menu =
 					 "\b <ENTER> confirm drop #2  ";
 	}
 	else
-	if (self.aiment.weapon == 3)
+	if (self.dropent.weapon == 3)
 	{
 	foot = 
 						"\n"
@@ -1487,7 +1536,7 @@ void() drop_menu =
 					 "\b+------------------------+\n"
 					 "\b <ENTER> confirm drop #3  ";
 	}
-	else if (self.aiment.noise != "")
+	else if (self.dropent.noise != "")
 	{
 	foot = 
 						"\n"
@@ -1497,14 +1546,14 @@ void() drop_menu =
 					 "\b Enter code: ";
 	}
 
-	if (self.aiment.noise1 != "") ln2 = "\n2: ";
-	if (self.aiment.noise2 != "") ln3 = "\n3: ";
-//	if (self.aiment.noise3 != "") ln4 = "\n4: ";
-//	if (self.aiment.noise4 != "") ln5 = "\n5: ";
+	if (self.dropent.noise1 != "") ln2 = "\n2: ";
+	if (self.dropent.noise2 != "") ln3 = "\n3: ";
+//	if (self.dropent.noise3 != "") ln4 = "\n4: ";
+//	if (self.dropent.noise4 != "") ln5 = "\n5: ";
 
 
-//	centerprint8(self, head, self.aiment.noise, ln2, self.aiment.noise1, ln3, self.aiment.noise2, ln4, self.aiment.noise3, ln5, self.aiment.noise4, foot, self.wad);
-	centerprint7(self, head, self.aiment.noise, ln2, self.aiment.noise1, ln3, self.aiment.noise2, foot);
+//	centerprint8(self, head, self.dropent.noise, ln2, self.dropent.noise1, ln3, self.dropent.noise2, ln4, self.dropent.noise3, ln5, self.dropent.noise4, foot, self.wad);
+	centerprint7(self, head, self.dropent.noise, ln2, self.dropent.noise1, ln3, self.dropent.noise2, foot);
 */
 };
 
@@ -1518,9 +1567,9 @@ void() drop_inv_check =
 	while (e)
 	{
 		if (e.ishuman)
-		if (e.aiment)
-		if (e.aiment.classname == "dropinv")
-			e.aiment.grap_firetest = 0;
+		if (e.dropent)
+		if (e.dropent.classname == "dropinv")
+			e.dropent.grap_firetest = 0;
 
 		e = find(e, classname, "player");
 	}

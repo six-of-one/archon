@@ -791,11 +791,11 @@ void() GoBack =
 	local entity spot;
 
 	// get rid of any dcam
-	if (self.aiment)
-	if (self.aiment.classname == "deadcam")
+	if (self.oldenemy)
+	if (self.oldenemy.classname == "deadcam")
 	{
-		remove(self.aiment);
-		self.aiment = world;
+		remove(self.oldenemy);
+		self.oldenemy = world;
 	}
 
 	// teleport someplace and then die

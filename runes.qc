@@ -150,12 +150,12 @@ void(entity e) rune_drop =
 
 	if (RUNES < 2) return;
 
-	if (!self.rune_flag) return;
+	if (!e.rune_flag) return;
 
 	f = 1;
 	while (f < RUNE_MASK_ALL)
 	{
-		if (f & self.rune_flag)
+		if (f & e.rune_flag)
 		if (!k)
 		{
 			k = f;
@@ -165,30 +165,55 @@ void(entity e) rune_drop =
 
 	if (k & RUNE_MASK_ALL) // drop a rune
 	{
-		if (!self.aiment)
+		if (!e.dropent)
 		{
-			self.aiment = spawn();
-			self.aiment.classname = "dropinv";
+			e.dropent = spawn();
+			e.dropent.classname = "dropinv";
 			drop_setup(0);
 
 	// save notify stats
-			self.aiment.grap_state = cvar("con_notifytime");
-			self.aiment.grap_length = cvar("con_notify");
+			e.dropent.grap_state = cvar("con_notifytime");
+			e.dropent.grap_length = cvar("con_notify");
 		}
 		else
 		{
-			sprint(self, "Rune drop failure - clear menus and try again\n");
+			sprint(e, "Rune drop failure - clear menus and try again\n");
 			return;
 		}
-		if (self.aiment.dmg != k) // should be this rune bit - idea: more validation
+		if (e.dropent.dmg != k) // should be this rune bit - idea: more validation
 		{
-			sprint(self, "Rune drop failure - oh no\n");
+			sprint(e, "Rune drop failure - oh no\n");
 			return;
 		}
-		drop_inventory(1);
-		remove(self.aiment);
-		self.aiment = world;
+		drop_inventory(1, e);
+		remove(e.dropent);
+		e.dropent = world;
 	}
+};
+
+// handle runes when player dies
+
+// note: rule 3 might be special
+
+void(entity e) dead_runes =
+{
+	local float f;
+
+	if (RUNES < 2) // rule one, or zero - no rune toss
+	{
+		e.rune_flag = 0;
+		return;
+	}
+
+	f = 1;
+	while (f < RUNE_MASK_ALL)
+	{
+		newmis = world;
+		rune_drop(e);
+		if (newmis) item_eject(newmis, ' 340 340 300');
+		f = f  * 2;
+	}
+	
 };
 
 // print rune info on impulse from e to p's console

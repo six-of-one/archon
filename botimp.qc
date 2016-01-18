@@ -127,8 +127,8 @@ void () observer =
 	setsize (self,'-4 -4 -4', ' 4 4 4'); // dont look in floors / walls
 	self.movetype = MOVETYPE_FLY;
 	self.health = self.view_ofs_z = 1;
-	self.aiment.oldorigin = self.origin;
-	self.aiment.think = cam_deathmove; // straight to death move, do not collect $200
+	self.oldenemy.oldorigin = self.origin;
+	self.oldenemy.think = cam_deathmove; // straight to death move, do not collect $200
 	self.classname = OBSERVER;
 	self.frags = 0; // woo - lose score?
 	self.solid = SOLID_NOT;

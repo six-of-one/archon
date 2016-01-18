@@ -28,7 +28,8 @@ void(entity fent, float fl) flyer_check =
 		|| fent.morphy == IMP_MCHAOS
 		|| fent.morphy == IMP_MWRAITH
 		|| (fent.model == "progs/gremlin-fly.mdl" && fent._stand == gremlin_hover)
-		|| fent.classname == "deadcam"
+//		|| fent.classname == "deadcam"
+//		|| fent.classname == OBSERVER
 		|| (fent.rune_flag & RUNE_FLG_FLY)
 		)
 	{

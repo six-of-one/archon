@@ -171,9 +171,12 @@ float(entity e) shotgun_check;
 float IMP_MFLY						= 15; // switch flight mode / ground mode
 float IMP_MSIGHT					= 14; // shout out
 float IMP_MSELECT					= 16; // select a morph
+
+// inventory
 float IMP_INV						= 53; // list inventory
 float IMP_DROPI;
 float IMP_DROPI_ACT				= 54; // drop inventory - activate impulse
+.entity dropent;
 
 // morph bit flags
 

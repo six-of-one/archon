@@ -743,18 +743,18 @@ void(entity e, float all) morph_clearparms =
 	e.weaponmodel = "";
 
 // just in case one is left hanging - IDEA: just call admin_clear from here
-	if (e.aiment)
+	if (e.dropent)
 	{
-		if (e.aiment.classname == "dropinv")
+		if (e.dropent.classname == "dropinv")
 		{
 			stuffcmd(e, "con_notifytime "); // restore notify
-			stuffcmd(e, ftos(e.aiment.grap_state));
+			stuffcmd(e, ftos(e.dropent.grap_state));
 			stuffcmd(e, "\ncon_notify ");
-			stuffcmd(e, ftos(e.aiment.grap_length));
+			stuffcmd(e, ftos(e.dropent.grap_length));
 			stuffcmd(e, "\n");
 		}
-		remove(e.aiment);
-		e.aiment = world;
+		remove(e.dropent);
+		e.dropent = world;
 	}
 	stuffcmd(e, "con_notify_alias\n"); // for some other default
 

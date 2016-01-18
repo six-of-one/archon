@@ -2998,7 +2998,7 @@ void() barrel_explode =
 	self.classname = "explo_box";
 
 	sound (self, CHAN_VOICE, bsnd, 1, ATTN_NORM);
-	particle (self.origin, '0 0 0', 75, 255);
+	particle (self.origin, '0 0 0', 75, 255); // ?? realli
 //	self.origin_z = self.origin_z + 32;
 //	Explode(0, bdmg, e, 0, 0, BecomeExplosion); // chaos mod replacement for this code
 //	T_RadiusDamage (self, self, bdmg, world);

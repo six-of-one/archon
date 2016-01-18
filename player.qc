@@ -613,6 +613,10 @@ void() GibPlayer =
 
 void() PlayerDie =
 {
+
+	if (self.rune_flag) // because you can have runs in q100 for some reason
+		dead_runes(self);
+
 	if (!Q_100)
 	{
 		PK_PlayerDie();

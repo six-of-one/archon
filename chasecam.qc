@@ -415,7 +415,7 @@ void() cam_startdeathview =
 	ang_x = 30; // pretend was a slight down aim
 	self.weaponmodel = "";
 
-	self.aiment = e = spawn();
+	self.oldenemy = e = spawn();
 	e.owner = self;
 	e.classname = "deadcam";
 	e.solid = SOLID_NOT;
@@ -1075,8 +1075,8 @@ void () dead_cam_set =
 	
 	if (self.flags & FL_CLIENT)
 	{
-		if (self.aiment)
-		if (self.aiment.classname == "deadcam") return; // dont make more than one - just in case
+		if (self.oldenemy)
+		if (self.oldenemy.classname == "deadcam") return; // dont make more than one - just in case
 
 		if ( (! self.cam_x & CHSCAM_ON) || (CAM_DEF & DPCAM_ON) )
 			cam_startdeathview();

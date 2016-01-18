@@ -1366,12 +1366,12 @@ void () PlayerPreThink =
 
 	}
 
+	if ((framecount & 3) == 2)
+	if (self.classname == OBSERVER)
+		flyer_move(); // Cataboligne - 7.26.10 - flyer mouse-fly right code from chaos mod flight
+
 	if (self.deadflag >= DEAD_DEAD)
 	{
-		if (! (framecount & 2))
-		if (self.classname == OBSERVER)
-			flyer_move(); // Cataboligne - 7.26.10 - flyer mouse-fly right code from chaos mod flight
-
 		PlayerDeathThink ();
 		return;
 	}
@@ -1479,8 +1479,11 @@ void () PlayerPostThink =
 
 	viswep_post(); // Cataboligne - 9.26.9 - viswep code link - always have to run this for 1 player + pk*bots deal
 
-	if (self.admin == USER_MENU && self.view_ofs != '0 0 0') // user menu does not allow skip postthink codes
-		admin_postthink();
+	if (self.admin == USER_MENU) // user menu does not allow skip postthink codes
+	{
+		if (self.view_ofs != '0 0 0') 
+			admin_postthink();
+	}
 	else
 	if (PK_ADMIN && !ADMINLOCK) // *pk - run admin for both modes - any deactivation will 0 this || make sure user menu always works
 	if (self.admin || (self.impulse == pk_adminimp))

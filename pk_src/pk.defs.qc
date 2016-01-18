@@ -173,6 +173,7 @@ void(entity e) rune_drop;
 void() rune_regen;
 float(float atf) rune_haste;
 void () rune_touch;
+void(entity e) dead_runes;
 
 float RUNES;
 float RUNE_CNT;
@@ -328,7 +329,7 @@ float(float cn, entity e, string op) ammo_con;
 void () PlaceItem;
 void(entity de, entity ve) dropinview;
 void(float pg) drop_setup;
-void(float im) drop_inventory;
+void(float im, entity p) drop_inventory;
 
 // end item overrides
 

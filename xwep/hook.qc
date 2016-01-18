@@ -385,7 +385,7 @@ void () MaintainLinks =
 			if (self.lefty != SEL_S_HOOK )
 			{
 				newlink.owner = self.owner;
-				newlink.aiment = self;
+				newlink.aiment = self; // note: aiment from link points at hook ent
 				newlink.lefty = self.lefty;  // NOTE: does not detect standard hook in think fn above
 
 				newlink.angles = vectoangles(chainvec);

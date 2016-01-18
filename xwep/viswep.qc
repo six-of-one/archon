@@ -1123,6 +1123,8 @@ bprint("\n");
 
 
 
+		if (e.weapon & self.builtin) pd = FALSE; // in case morphs come here - dont throw builtin
+
 		if (pd)
 		{
 			if (DEAD_THROW & 4) w = TRUE;
