@@ -1886,7 +1886,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 		{
 			bprint (targ.netname);
 			if (attacker.classname == "portalteledeath")
-				bprint (" was portal fragged by ");
+				bprint (" was quantum fragged by ");
 			else
 			bprint (" was telefragged by ");
 			bprint (attacker.owner.netname);

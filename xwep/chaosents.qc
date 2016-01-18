@@ -68,13 +68,15 @@ void() chaos_precache =
 	precache_model ("progs/m_shovel.mdl");
 	precache_model ("progs/vw_shovel.mdl");
 
-// poral 1
-	precache_model ("progs/portal.mdl");
-	precache_model ("progs/v_portal.mdl");
-	precache_sound ("sound/portal/portfire.wav");
-	precache_sound ("sound/portal/portfail.wav");
-	precache_sound ("sound/portal/chargeup.wav");
-	precache_sound ("sound/portal/shdoff.wav");
+// Quantum tunnel apparatus 
+	precache_model ("progs/quantum.mdl");
+	precache_model ("progs/v_quantum.mdl");
+	precache_model ("progs/m_quantum.mdl");
+	precache_model ("progs/vw_quantum.mdl");
+	precache_sound ("sound/quantum/qntfire.wav");
+	precache_sound ("sound/quantum/qntfail.wav");
+	precache_sound ("sound/quantum/chargeup.wav");
+	precache_sound ("sound/quantum/shdoff.wav");
 
 // spheres (tele / annihilate)
 
