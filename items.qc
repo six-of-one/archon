@@ -107,7 +107,6 @@ float (entity e, float Thealamount, float ignore) q10-_T_Heal =
 //	if (e.health > 250)
 //		e.health = 250;
 
-	pk_setDamageSkin(e); // *pk damage skins code
 	return 1;
 };
 

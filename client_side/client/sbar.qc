@@ -237,34 +237,37 @@ void() Sbar_DrawCompass =
 
 string (float bc, float op) item_by_clbit =
 {
-	if (bc == IT_AXE)														return("an Axe");
-	if (bc == IT_SHOTGUN)												return("a Shotgun");
-	if (bc == IT_SUPER_SHOTGUN)										return("a Double barrel shotgun");
-	if (bc == IT_NAILGUN)												return("a Nailgun");
-	if (bc == IT_SUPER_NAILGUN)										return("a Perforator");
-	if (bc == IT_GRENADE_LAUNCHER)									return("a Grenade launcher");
-	if (bc == IT_ROCKET_LAUNCHER)										return("a Rocket launcher");
-	if (bc == IT_LIGHTNING)												return("a Lightning gun");
-	if (bc == IT_MJOLNIR)												return("Mjolnir");
+	if (op == 1)
+	{
+		if (bc == IT_AXE)														return("an Axe");
+		if (bc == IT_SHOTGUN)												return("a Shotgun");
+		if (bc == IT_SUPER_SHOTGUN)										return("a Double barrel shotgun");
+		if (bc == IT_NAILGUN)												return("a Nailgun");
+		if (bc == IT_SUPER_NAILGUN)										return("a Perforator");
+		if (bc == IT_GRENADE_LAUNCHER)									return("a Grenade launcher");
+		if (bc == IT_ROCKET_LAUNCHER)										return("a Rocket launcher");
+		if (bc == IT_LIGHTNING)												return("a Lightning gun");
+		if (bc == IT_MJOLNIR)												return("Mjolnir");
 
-	if (bc == IT_INVULNERABILITY)										return("item_artifact_invulnerability");
-	if (bc == IT_SUIT)													return("an Environmental suit");
-	if (bc == IT_INVISIBILITY)											return("item_artifact_invisibility");
-	if (bc == IT_QUAD)													return("a Quad damage");
+		if (bc == IT_INVULNERABILITY)										return("a Pentagram");
+		if (bc == IT_SUIT)													return("an Environmental suit");
+		if (bc == IT_INVISIBILITY)											return("a Ring");
+		if (bc == IT_QUAD)													return("a Quad damage");
 
-	if (bc == IT_ARMOR1)													return("Green Armor");
-	if (bc == IT_ARMOR2)													return("Yellow Armor");
-	if (bc == IT_ARMOR3)													return("Red Armor");
+		if (bc == IT_ARMOR1)													return("Green Armor");
+		if (bc == IT_ARMOR2)													return("Yellow Armor");
+		if (bc == IT_ARMOR3)													return("Red Armor");
 
-	if (bc == IT_SUPERHEALTH)											return("Mega Health");
+		if (bc == IT_SUPERHEALTH)											return("Mega Health");
 
-	if (bc == IT_KEY1)													return("Silver key");
-	if (bc == IT_KEY2)													return("Gold key");
+		if (bc == IT_KEY1)													return("Silver key");
+		if (bc == IT_KEY2)													return("Gold key");
 
-	if (bc == IT_SHELLS)													return("a box of Shells");
-	if (bc == IT_NAILS)													return("a box of Spikes");
-	if (bc == IT_ROCKETS)												return("a box of Rockets");
-	if (bc == IT_CELLS)													return("a box of Cells");
+		if (bc == IT_SHELLS)													return("a box of Shells");
+		if (bc == IT_NAILS)													return("a box of Spikes");
+		if (bc == IT_ROCKETS)												return("a box of Rockets");
+		if (bc == IT_CELLS)													return("a box of Cells");
+	}
 
 /// op 2
 
@@ -280,20 +283,21 @@ string (float bc, float op) item_by_clbit =
 //	if (bc == MC_SIGIL64)												return("item_sigil64");
 
 /// op 3
-/*
-	if (bc == WEP_GWELL) return("item_painkeep_gwell");
-	if (bc == WEP_TURRET) return("item_painkeep_turret");
-	if (bc == WEP_BTRAP) return("item_painkeep_beartrap");
-	if (bc == WEP_EXPSH) return("item_painkeep_expshells");
-	if (bc == WEP_GRAP) return("weapon_grapgun");
-	if (bc == WEP_AIRG) return("weapon_airfist");
-	if (bc == WEP_CPNB) return("item_painkeep_can");
+	if (op == 3)
+	{
+		if (bc == WEP_GWELL) return("a Gravity Well");
+		if (bc == WEP_TURRET) return("an Auto Sentry");
+		if (bc == WEP_BTRAP) return("a Beartrap");
+		if (bc == WEP_EXPSH) return("Exploding shotgun shells");
+		if (bc == WEP_GRAP) return("a Harpoon");
+		if (bc == WEP_AIRG) return("an Air Cannon");
+		if (bc == WEP_CPNB) return("a Can of Pork and Beans");
 
-	if (bc == WEP_EGO) return("item_pkplus_ego");
-	if (bc == WEP_TOMB) return("item_pkplus_tomb");
-	if (bc == WEP_ACTOR) return("item_pkplus_actor");
-	if (bc == WEP_PHONE) return("item_pkplus_phone");
-*/
+		if (bc == WEP_EGO) return("an Ego");
+		if (bc == WEP_TOMB) return("a Tomb");
+		if (bc == WEP_ACTOR) return("an Actor");
+		if (bc == WEP_PHONE) return("a Phone");
+	}
 	return("");
 };
 
@@ -1608,7 +1612,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					if (bullets == 7)
 					{
-						Sbar_DrawString('286 40 0' + woff, "Create items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('282 40 0' + woff, "Create items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '60 -5 0' + woff, item_by_clbit(pk_bt, 1), ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						cnt_left = pwr_step_y;
@@ -1617,9 +1621,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					if (bullets == 11)
 					{
-						Sbar_DrawString('246 40 0' + woff, "Create painkeep items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('220 40 0' + woff, "Create painkeep items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						Sbar_DrawString(pwr_step + '60 -5 0' + woff, item_by_clbit(pk_bt, 1), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '60 -5 0' + woff, item_by_clbit(pk_bt, 3), ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 18;
 						

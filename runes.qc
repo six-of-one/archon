@@ -1632,7 +1632,6 @@ cap = 3.5
 		RegenerationSound();
 	}
 
-	pk_setDamageSkin(self);
 	self.rg_time = time + 0.5;
 
 	armorsave_rev(self);

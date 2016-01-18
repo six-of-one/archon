@@ -945,13 +945,14 @@ void() dyn_rem =
 		}
 		else
 		{
+#ifdef testset
 			if (self.enemy.class_select == "class_monster") // NOTE: these might have issues!
 			{
-				self.enemy.alpha = 0.4; // TEST - remove - should _now_ (10.11.13) not happen in server
-				self.enemy.netname = "I might have issues!"; // TEST - remove
+				self.enemy.alpha = 0.4; // TEST--  should _now_ (10.11.13) not happen in server
+				self.enemy.netname = "I might have issues!";
 			}
+#endifdef
 #ifdef warning
-			else
 			if (WARNING & 2)
 			{
 				bprint(" *** WARNING: dynamic remove hash fail: ");

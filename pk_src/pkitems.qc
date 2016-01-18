@@ -539,9 +539,11 @@ void() pk_ammo_touch =
 };
 
 
-// The touch func for our new items
+#ifdef warning
+entity ae, a2, a3;
+#endifdef
 
-entity ae, a2, a3; // TEST remove
+// The touch func for our new items
 
 void() painkeep_touch =
 {
@@ -686,14 +688,18 @@ if (self.theowner != other) // debounce
 //	if (self.pk_touch == (void()) 0)
 	if ((self.pk_touch == SUB_Void) || !self.pk_touch)
 	{
+
+
 #ifdef warning
-		if (WARNING & 2)
-		{
-		bprint("\b *** warning: in painkeep_touch for: ");
-		bprint(self.classname);
-		bprint(" and pk_touch is (void) 0 | SUB_Void - reloading\n");
-		}
+if (WARNING & 2)
+{
+bprint("\b *** warning: in painkeep_touch for: ");
+bprint(self.classname);
+bprint(" and pk_touch is (void) 0 | SUB_Void - reloading\n");
+}
 #endifdef
+
+
 		if (self.event != "dynamic_item") item_call(self.classname);
 		else if (self.wad != null_string) item_call(self.wad);
 		else if (self.scode) item_call(item_by_mcode(self.scode));
@@ -709,6 +715,7 @@ if (self.theowner != other) // debounce
 
 
 #ifdef warning
+if (WARNING & 2)
 if (self.classname == null_string)
 {
 	bprint("*** - blank classname in touch fn = ");
@@ -748,8 +755,8 @@ if (self.classname == null_string)
 		}
 
 
-
-if (0)
+#ifdef warning
+if (WARNING & 2)
 if (ae != self && a2 != self && a3 != self) // TEST
 {
 	a3 = a2;
@@ -759,7 +766,7 @@ if (ae != self && a2 != self && a3 != self) // TEST
 	bprint("\n");
 	ae = self;
 }
-
+#endifdef
 
 
 //		if (f) self.event = "dynamic_item"; // restore

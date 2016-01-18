@@ -329,7 +329,7 @@ entity(float num) getMap =
 		f = TRUE;
 
 		if (!m_score_rel1)
-		if (e.target1 == "score_rel1") // bot vote
+		if (e.target1 == "score_rel1") // bot vote or random must block locked maps
 			f = FALSE;
 
 		if (!m_score_rel2)

@@ -1942,13 +1942,16 @@ void() monster_speed =
 void() archon_makepp =
 {
 	newmis = spawn();
-	newmis.spawnflags = 1;
+	newmis.spawnflags = 1; // no heal
 	setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
 	newmis.wad = "archon_power";
+	newmis.event = "dynamic_item";
 
 	item_call_save(newmis, newmis.wad);
+	setsize(newmis, self.mins,self.maxs);
 	newmis.touch = archon_power_touch;
-	newmis.owner = self;
+	newmis.solid = SOLID_TRIGGER;
+	newmis.goalentity = self;
 	
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.attack_finished = time + 3; //debounce
@@ -2033,27 +2036,15 @@ string (float bc, float op) item_by_clbit =
 //	if (bc == MC_SIGIL32)												return("item_sigil32");
 //	if (bc == MC_SIGIL64)												return("item_sigil64");
 
-/// op 3
-/*
-	if (bc == WEP_GWELL) return("item_painkeep_gwell");
-	if (bc == WEP_TURRET) return("item_painkeep_turret");
-	if (bc == WEP_BTRAP) return("item_painkeep_beartrap");
-	if (bc == WEP_EXPSH) return("item_painkeep_expshells");
-	if (bc == WEP_GRAP) return("weapon_grapgun");
-	if (bc == WEP_AIRG) return("weapon_airfist");
-	if (bc == WEP_CPNB) return("item_painkeep_can");
-
-	if (bc == WEP_EGO) return("item_pkplus_ego");
-	if (bc == WEP_TOMB) return("item_pkplus_tomb");
-	if (bc == WEP_ACTOR) return("item_pkplus_actor");
-	if (bc == WEP_PHONE) return("item_pkplus_phone");
-*/
 	return(null_string);
 };
 
 void() archon_makeit =
 {
-	self.stack3 = item_by_clbit(self.pk_beartrapammo, 1);
+	if (self.ammo_bullet == 7) self.stack3 = item_by_clbit(self.pk_beartrapammo, 1);
+	else if (self.ammo_bullet == 11) self.stack3 = ammo_by_bit(self.pk_beartrapammo);
+	if (self.stack3 == null_string) return;
+
 	newmis = spawn();
 	setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
 
@@ -2134,9 +2125,9 @@ void() thing_imprisoned =
 
 		self.enemy.attack_finished = 0;
 		self.enemy.event = null_string; // clear imprison notice so we can re-imprison
+		self.owner.archon = self.owner.archon + 50; // self.pk_explode_ammo; - we dont have release spell set in this case
 		remove(self.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
 		remove(self);
-		self.owner.archon = self.owner.archon + 50; // self.pk_explode_ammo; - we dont have release spell set in this case
 	}
 	else
 	{
@@ -2237,7 +2228,6 @@ void() archon_imprison =
 		{
 			newmis.button4 = self.bolt_target.max_health;
 			if (newmis.button4 <= 0) newmis.button4 = 100;
-			newmis.think = SUB_Null;
 		}
 		self.bolt_target = world; // leave reticle on the imprisoned - maybe change
 	}
@@ -2469,14 +2459,16 @@ void() player_chaos_attack =
 //		if (rune_haste(0.275))
 //		self.attack_finished=time+0.55;
 
+	chaos_level(-1, self); // take away 1 point of mana
 
 //		newmis.morphy = self.morphy; // missiles should have a morphy
 
-	if (self.lastweapon == IT_MJOLNIR)
+	if (self.lastweapon == IT_MJOLNIR) // plasma ball
 	{
 		X_FireOnePlasma();
 		newmis.skin = rint(random() * 2);
 		self.attack_finished = time + 0.15;
+		chaos_level(-2, self);
 	}
 	if (self.lastweapon == IT_LIGHTNING)
 	{
@@ -2496,11 +2488,16 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 		beam4(org, trace_endpos, self.delay);
 
 		LightningDamage_x(FALSE, self.origin, trace_endpos + v_forward*4, self, 20);
+		chaos_level(-3, self);
 	}
 	else if (self.lastweapon == IT_ROCKET_LAUNCHER)
 	{
 		self.attack_finished = time + 0.8;
-		if (random() < 0.16)  W_FireRocket();
+		if (random() < 0.16) 
+		{
+			W_FireRocket();
+			chaos_level(-5, self); // more expensive
+		}
 		else
 /* REMOVED
 		 if (random() < 0.30) //0.40) 
@@ -2510,7 +2507,7 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 			}
 		else  // lava ball
 */
-			{
+		{
 			if (self.chaosattnoise) sd ="boss1/throw.wav";//rnd_string(' 95.0 66.6 66.6',"weapons/grenade.wav","weapons/sgun1.wav",null_string,null_string,"boss1/throw.wav");
 			fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA | PF_LAVA | CK_EARTHQUAKE, self.origin, ' 0 0 0', "fireballwep", "progs/lavaball.mdl", sd, fire_fly_touch, 5 + (random() * 4), meltthink, fire_fly_adj);
 
@@ -2523,7 +2520,8 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 			newmis.dest_y = 16;
 
 			self.attack_finished = time + 0.55;
-			}
+			chaos_level(-2, self);
+		}
 	}
 	else if (self.lastweapon & IT_NAILGUN) // fire some spikes
 	{
@@ -2558,6 +2556,7 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 		newmis.frame = random() * 10.4;
 		newmis.effects = newmis.effects | EF_FULLBRIGHT;
 		self.attack_finished = time + 0.3;
+		chaos_level(-1, self);
 	}
 };
 
@@ -2676,6 +2675,7 @@ void() spell_target =
 		if (self.ammo_bullet == 3) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_makepp; }
 		if (self.ammo_bullet == 5) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_maketele; }
 		if (self.ammo_bullet == 7) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
+		if (self.ammo_bullet == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
 	}
 	if (self.weapon == IT_LIGHTNING)
 	{
@@ -2972,6 +2972,7 @@ void() player_chaos_impulse =
 		if (self.weapon == IT_SUPER_NAILGUN)
 		{
 			if (self.ammo_bullet == 7) aux_bits(6377471);
+			if (self.ammo_bullet == 11) aux_bits(196480);
 		}
 		if (self.weapon == IT_LIGHTNING)
 		{
@@ -3048,11 +3049,16 @@ void() player_chaos_impulse =
 		{
 			if (self.ammo_bullet == 3) self.ammo_bullet = 5;
 			else if (self.ammo_bullet == 5) self.ammo_bullet = 7;
-			else if (self.ammo_bullet == 7) self.ammo_bullet = 3;
+			else if (self.ammo_bullet == 7) self.ammo_bullet = 11;
+			else if (self.ammo_bullet == 11) self.ammo_bullet = 3;
 
 			if (self.ammo_bullet == 7)
 			{
 				if (! self.pk_beartrapammo & 6377471) self.pk_beartrapammo = 1;
+			}
+			if (self.ammo_bullet == 11)
+			{
+				if (! self.pk_beartrapammo & 196480) self.pk_beartrapammo = 1;
 			}
 		}
 		self.weapon = IT_SUPER_NAILGUN;

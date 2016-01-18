@@ -11,7 +11,8 @@
 
 void(entity targ)	pk_setDamageSkin =
 {
-	if (targ.model == "progs/plyr_skins.mdl") return; // skin support added back in
+// player selectable skins like t800, c3p0, etc
+//	if (targ.model == "progs/plyr_skins.mdl") return; // skin support added back in
 
 	if (targ.classname == "player" || targ.classname == "pk*bot") // ignores observers, etc.
 	if (targ.solid != SOLID_NOT ) // Cataboligne - 5.11.10 - doent set skin for dead cam player

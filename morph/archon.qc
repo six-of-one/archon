@@ -198,8 +198,12 @@ void() archon_nodule_rnd =
 
 	gsf = rint(random() * 6);
 
-//	if (gsf == 0) setmodel (self,"progs/nodule1.mdl"); // 3, 4
-	if ((time > 30) && (random() < 0.1) && !altar) // random altar - only one on smaller maps - TEST!
+// try to create an altar every time we make a nodule
+#ifdef testset
+	if ((time > 30) && !altar) // TEST--
+#else
+	if ((time > 60) && (random() < 0.05) && !altar) // random altar - only one on smaller maps
+#endifdef
 	{
 		altar = self;
 		self.model = null_string;
@@ -207,13 +211,18 @@ void() archon_nodule_rnd =
 
 		archon_altar();
 //		setsize (self,'-16 -16 -24','16 16 16');
+		self.angles_y = random() * 360; // random facing for flag - may change for other models
 		self.effects = EF_BRIGHTFIELD; 
 		self.button13 = -666; // tell dyn_rem to relocate this guy
 		self.wait = 240; // long time to relocation cycle
 		bprint("***  the \bArchon Altar\b has spawned \b!\n");
 	}
-//	else if ((time > 240) && (random() < 0.05) && !god_particle) // god particle - only one - TEST line -restore
-	else if ((time > 60) && (random() < 0.05) && !god_particle) // god particle - only one - TEST!
+
+#ifdef testset
+	else if ((time > 60) && !god_particle) // TEST--
+#else
+	else if ((time > 240) && (random() < 0.02) && !god_particle) // god particle - only one
+#endifdef
 	{
 		god_particle = self;
 		self.netname = "\bGod Particle\b";
@@ -238,8 +247,13 @@ void() archon_nodule_rnd =
 			self.archon = 180 + crandom() * 80;
 //		}
 		if (random() < 0.3) self.modelflags = self.modelflags | 128; // purple light
-//		if ((time > 60) && random() < 0.06) // TEST
-		if ((time > 60) && random() < 0.15) // TEST - remove
+
+// the portable comes with the most valuable 011 nodule
+#ifdef testset
+		if ((time > 60) && random() < 0.1) // TEST--
+#else
+		if ((time > 60) && random() < 0.03)
+#endifdef
 		{
 			self.netname = "Portable power point";
 			self.mask_x = MORPH_ALL;
@@ -619,6 +633,8 @@ void() archon_power_fn =
 	local float f;
 	local entity e;
 
+// IMP: this must be moved to physics (pre think) or the point jumps when the plat moves
+
 		if (self.target) // follow this target
 		{
 			e = find (world,targetname,self.target);
@@ -802,20 +818,36 @@ void(entity e) archon_point_heal =
 
 void() archon_power_touch =
 {
-	if (! self.spawnflags & NOHEAL)
+	if (self.wad == "archon_power") // archon made points need debounced
 	{
-		if (!other.healtype) archon_point_heal(other);
-
-		if (activator.health < (activator.max_health * activator.health_modifier * other.health_modifier)) // health < points mod
-			T_Heal(activator,other.healtype + rint(0.33 + random()), 0);
+		if (activator.mask_x & MORPH_ARCHON) return;
+		if (self.rad_time > time) return;
+		self.rad_time = time + 1;
+		activator = other; // because this was a regular touch
 	}
 
+	if (self.goalentity) // made by an Archon, he gets some every usage
+	{
+		if (self.goalentity == other) return; // this might be a redundant check, as Archons are sent back above
+		self.goalentity.archon = self.goalentity.archon + 0.333;
+	}
+
+	if (! self.spawnflags & NOHEAL)
+	{
+		if (!activator.healtype) archon_point_heal(activator);
+
+		if (activator.health < (activator.max_health * activator.health_modifier * activator.health_modifier)) // health < points mod
+			T_Heal(activator,activator.healtype + rint(0.33 + random()), 0);
+	}
+
+	if (! self.archon) self.archon = ARCHON_POINT;
+
 	if (activator.mask_x & MORPH_ARCHON)
-		activator.archon = activator.archon + (self.archon + ARCHON_POINT) * 5;
-	if (self.archon)
-		activator.archon = activator.archon + self.archon;
-	else
-		activator.archon = activator.archon + ARCHON_POINT;
+		activator.archon = activator.archon + (self.archon) * 5;
+
+	activator.archon = activator.archon + self.archon;
+
+	if (activator.mask_x & MORPH_ARCHON) return;
 
 // magic protection
 	if (activator.bolt_target)

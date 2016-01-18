@@ -107,8 +107,21 @@ void() player_order_attack =
 				stuffcmd(self, "\"\n");
 			}
 		}
-//		else
-//			chaos_beam();
+		else
+		{
+// display the beam
+			self.dest1 = self.origin;
+			traceline (self.dest1, self.dest1 + v_forward * 910, TRUE, self); // note - can sometimes appear sticking out the back of the archon model
+			v1 = self.dest1 - trace_endpos;
+			newmis = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, trace_endpos, v0, v0, vectoangles(v1), v0, null_string, "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
+			newmis.cnt = vlen(v1);
+			newmis.cnt = floor(newmis.cnt / 32);
+			if (newmis.cnt > 63) newmis.cnt = 63;
+			newmis.frame = newmis.cnt + 64;
+			newmis.skin = 2;
+			newmis.effects = newmis.effects | EF_FULLBRIGHT;
+			self.volume = self.volume - 10;
+		}
 		return;
 	}
 
@@ -122,7 +135,13 @@ void() player_order_attack =
 			return;
 		}
 		if (self.pkplus_actorammo & 2) // spell needs target
-		if (!self.bolt_target) return;
+		{
+			if (!self.bolt_target) return;
+
+			if (self.bolt_target != self)
+			if (self.bolt_target.bolt_target == self.bolt_target) // arc ppp protect on
+				return;
+		}
 
 		if (self.pkplus_actorammo & 4) // spell needs 2nd target
 		if (!self.enemy) return;
@@ -215,6 +234,7 @@ void() player_order_impulse =
 		if (self.weapon == IT_SHOTGUN) self.impulse = 2;
 		if (self.weapon == IT_SUPER_SHOTGUN) self.impulse = 3;
 		if (self.weapon == IT_NAILGUN) self.impulse = 4;
+		if (self.weapon == IT_SUPER_NAILGUN) self.impulse = 5;
 		if (self.weapon == IT_LIGHTNING) self.impulse = 8;
 	}
 	else if (self.impulse == 16) // aux spell loops
@@ -231,6 +251,11 @@ void() player_order_impulse =
 			else self.AIRG_Flags = 71;
 			if (self.ammo_rockets == 3) aux_bits(self.AIRG_Flags);
 			if (self.ammo_rockets == 7) aux_bits(3);
+		}
+		if (self.weapon == IT_SUPER_NAILGUN)
+		{
+			if (self.ammo_bullet == 7) aux_bits(6377471);
+			if (self.ammo_bullet == 11) aux_bits(196480);
 		}
 		if (self.weapon == IT_LIGHTNING)
 		{
@@ -302,6 +327,26 @@ void() player_order_impulse =
 		}
 //		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
 		self.weapon = IT_NAILGUN;
+	}
+	if (self.impulse == 5) // spell list 4 - create
+	{
+		if (self.weapon == IT_SUPER_NAILGUN) // loop thru spell set
+		{
+			if (self.ammo_bullet == 3) self.ammo_bullet = 5;
+			else if (self.ammo_bullet == 5) self.ammo_bullet = 7;
+			else if (self.ammo_bullet == 7) self.ammo_bullet = 11;
+			else if (self.ammo_bullet == 11) self.ammo_bullet = 3;
+
+			if (self.ammo_bullet == 7)
+			{
+				if (! self.pk_beartrapammo & 6377471) self.pk_beartrapammo = 1;
+			}
+			if (self.ammo_bullet == 11)
+			{
+				if (! self.pk_beartrapammo & 196480) self.pk_beartrapammo = 1;
+			}
+		}
+		self.weapon = IT_SUPER_NAILGUN;
 	}
 	if (self.impulse == 8) // spell list archon legacy
 	{
@@ -382,7 +427,7 @@ void(float silent) player_order_become =
 
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
-	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_LIGHTNING;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_LIGHTNING;
 	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;
@@ -392,6 +437,7 @@ void(float silent) player_order_become =
 	self.ammo_nails = 3;
 	self.ammo_rockets = 3;
 	self.ammo_cells = 3;
+	self.ammo_bullet = 3;
 	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	self.pk_explode_ammo = 0; // spell cost

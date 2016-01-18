@@ -2185,7 +2185,7 @@ void() q2_teleport_particles =
 	{
 		if (self.spawnflags & NOSPRAY) return; // no particles - still have to think for other fns
 		z = 20; // particle fountain origin needs a boost up
-		}
+	}
 
 	if (!self.cnt)
 		self.cnt = 192;
@@ -2196,20 +2196,20 @@ void() q2_teleport_particles =
 		v1_x = crandom() * 18;
 		v1_y = crandom() * 18;
 		v1_z = z + crandom() * 6;
-		self.velocity_z = 200 + crandom() * 50;
-		particle (self.origin + v1, self.velocity, self.cnt, 4);
+		self.movedir_z = 200 + crandom() * 50;
+		particle (self.origin + v1, self.movedir, self.cnt, 4);
 
 		v1_x = crandom() * 18;
 		v1_y = crandom() * 18;
 		v1_z = z + 16 + crandom() * 6;
-		self.velocity_z = 200 + crandom() * 50;
-		particle (self.origin + v1, self.velocity, self.cnt, 4);
+		self.movedir_z = 200 + crandom() * 50;
+		particle (self.origin + v1, self.movedir, self.cnt, 4);
 
 		v1_x = crandom() * 18;
 		v1_y = crandom() * 18;
 		v1_z = z + 32 + crandom() * 6;
-		self.velocity_z = 200 + crandom() * 50;
-		particle (self.origin + v1, self.velocity, self.cnt, 4);
+		self.movedir_z = 200 + crandom() * 50;
+		particle (self.origin + v1, self.movedir, self.cnt, 4);
 
 		f = f - 1;
 	}

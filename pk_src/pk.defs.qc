@@ -23,6 +23,15 @@ float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 #ifdef warning
 #endifdef
 
+// control over test code
+
+#define testset
+
+#ifdef testset
+#else
+#endifdef
+
+
 // **************************************
 // engine section
 

@@ -433,8 +433,6 @@ float (entity e, float healamount6, float ignore) T_Heal =
 
 // NOTE: q2 deal will bork display bar if anyone can collect enough (and its pretty easy with a tank...)
 
-	pk_setDamageSkin(e); // *pk damage skins code
-
 	return 1;
 };
 

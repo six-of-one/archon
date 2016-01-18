@@ -383,8 +383,6 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 
 	ax_dmg = take; // Cataboligne - 10.11.11 - bot endless axe war preventative deal
 
-	pk_setDamageSkin(targ); // *pk damage skin support
-
 // crate being busted open - hear it now
 	if (targ.netname == "Crate")
 	if ((targ.aflag < time) || (targ.health <= 0))

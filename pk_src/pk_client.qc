@@ -828,7 +828,6 @@ void () CheckPowerups =
 			if (self.pkplus_actortype == PKPLUS_ACTORPENT) // pk art code here
 			{
 				self.pkplus_actortype = 0;
-				pk_setDamageSkin(self); // remove the pent costume
 			}
 		}
 		if (self.invincible_finished > time)
@@ -927,7 +926,6 @@ void () CheckPowerups =
 			if (self.skin > 4)
 			{
 				self.skin = 0;
-				pk_setDamageSkin(self);
 			}
 		}
 	}
@@ -986,7 +984,6 @@ void () CheckPowerups =
 			if (self.skin > 4)
 			{
 				self.skin = 0;
-				pk_setDamageSkin(self);
 			}
 		}
 	}
@@ -1374,6 +1371,9 @@ void () PlayerPreThink =
 	self.oldorigin = self.origin;
 
 	updateStatusDisplay(); // PK status
+
+// damage skins
+	pk_setDamageSkin(self);
 };
 
 
