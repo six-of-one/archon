@@ -1273,6 +1273,21 @@ void() q2_teleport_particles =
 	self.nextthink = time + 0.05;
 };
 
+
+// fn() - reverse armorsave value so real armor can be manipulated
+
+void(entity e) armorsave_rev =
+{
+	if (!e) return;
+
+	if (e.armorsave)
+	{
+		if (e.armorsave < 1) e.armorvalue = 0;
+		else e.armorvalue = e.armorsave;
+		e.armorsave = 0;
+	}
+};
+
 // return damage saved based on power armor settings and damage done
 
 float(entity e, entity f, float dm) power_armor =
@@ -1282,11 +1297,7 @@ float(entity e, entity f, float dm) power_armor =
 	pdmg = dm;
 	pwr = e.ammo_cells;
 
-	if (e.armorsave)
-	{
-		e.armorvalue = e.armorsave; // restore real val for combat
-		e.armorsave = 0;
-	}
+	armorsave_rev(e);
 
 	if (e.health < 0) return 0;
 	if (pwr < 1) return 0;

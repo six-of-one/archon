@@ -8,6 +8,8 @@ Cataboligne 9.26.9
 .float viswframe; // special framing - drop / pull [not used yet]
 .entity exteriormodeltoclient; // dp var -- viswep deal - good solution (only) for dp
 
+vector vv_o_000, vv_a_000, vv_x_000;
+
 string VW_DEFGUN = "progs/vw_qgun.mdl";
 
 // fn(viswep_pre) - precache
@@ -566,7 +568,7 @@ void() viswep_post =
 	else
 		{
 		if (self.items & qweps != vhead.items) qld = TRUE;
-		if (!qld && vhead.armorvalue != self.armortype) qld = VW_ARMOR;
+		if (!qld && vhead.armorvalue != self.armortype) qld = VW_ARMOR; // if vw armor display - update on armor changes
 
 		pkbits = mk_pkbits(self);
 		if (vhead.pk_items != pkbits || qld) viswep_ld(self, 1);
@@ -751,4 +753,1119 @@ vector(entity hent) grap_vw_adj =
 	}
 	return(vwa);
 };
+
+
+// new vw framing - by code, globals
+
+// editing
+// visweo vector - origin, angles, frame & effects
+
+float vv_incr;
+
+// return vals
+vector vv_o_0, vv_a_0, vv_x_0;
+
+vector  vv_o_1,  vv_a_1,  vv_x_1;
+vector  vv_o_2,  vv_a_2,  vv_x_2;
+vector  vv_o_3,  vv_a_3,  vv_x_3;
+vector  vv_o_4,  vv_a_4,  vv_x_4;
+vector  vv_o_5,  vv_a_5,  vv_x_5;
+vector  vv_o_6,  vv_a_6,  vv_x_6;
+vector  vv_o_7,  vv_a_7,  vv_x_7;
+vector  vv_o_8,  vv_a_8,  vv_x_8;
+vector  vv_o_9,  vv_a_9,  vv_x_9;
+vector vv_o_10, vv_a_10, vv_x_10;
+vector vv_o_11, vv_a_11, vv_x_11;
+vector vv_o_12, vv_a_12, vv_x_12;
+vector vv_o_13, vv_a_13, vv_x_13;
+vector vv_o_14, vv_a_14, vv_x_14;
+vector vv_o_15, vv_a_15, vv_x_15;
+vector vv_o_16, vv_a_16, vv_x_16;
+vector vv_o_17, vv_a_17, vv_x_17;
+vector vv_o_18, vv_a_18, vv_x_18;
+vector vv_o_19, vv_a_19, vv_x_19;
+vector vv_o_20, vv_a_20, vv_x_20;
+vector vv_o_21, vv_a_21, vv_x_21;
+vector vv_o_22, vv_a_22, vv_x_22;
+vector vv_o_23, vv_a_23, vv_x_23;
+vector vv_o_24, vv_a_24, vv_x_24;
+vector vv_o_25, vv_a_25, vv_x_25;
+vector vv_o_26, vv_a_26, vv_x_26;
+vector vv_o_27, vv_a_27, vv_x_27;
+vector vv_o_28, vv_a_28, vv_x_28;
+vector vv_o_29, vv_a_29, vv_x_29;
+vector vv_o_30, vv_a_30, vv_x_30;
+vector vv_o_31, vv_a_31, vv_x_31;
+vector vv_o_32, vv_a_32, vv_x_32;
+vector vv_o_33, vv_a_33, vv_x_33;
+vector vv_o_34, vv_a_34, vv_x_34;
+vector vv_o_35, vv_a_35, vv_x_35;
+vector vv_o_36, vv_a_36, vv_x_36;
+vector vv_o_37, vv_a_37, vv_x_37;
+vector vv_o_38, vv_a_38, vv_x_38;
+vector vv_o_39, vv_a_39, vv_x_39;
+vector vv_o_40, vv_a_40, vv_x_40;
+vector vv_o_41, vv_a_41, vv_x_41;
+vector vv_o_42, vv_a_42, vv_x_42;
+vector vv_o_43, vv_a_43, vv_x_43;
+vector vv_o_44, vv_a_44, vv_x_44;
+vector vv_o_45, vv_a_45, vv_x_45;
+vector vv_o_46, vv_a_46, vv_x_46;
+vector vv_o_47, vv_a_47, vv_x_47;
+vector vv_o_48, vv_a_48, vv_x_48;
+vector vv_o_49, vv_a_49, vv_x_49;
+vector vv_o_50, vv_a_50, vv_x_50;
+
+// fn for general wep load
+void(float v_frm) vv_load_0 =
+{
+
+// must clear when loading zero frames
+	vv_o_000 = v0;
+	vv_a_000 = v0;
+	vv_x_000 = v0;
+
+// animate melee drawn
+
+// stand frames	
+	if (v_frm == 65)
+	{
+		vv_o_000 = ' 2.2 -19.3 2.0';
+		vv_a_000 = '-39.9 -29.3 0.8';
+		vv_x_000 = ' 0.0 0.0 0.0';
+	}
+	if (v_frm == 66)
+	{
+		vv_o_000 = ' 1.8 -19.2 1.9';
+		vv_a_000 = '-39.9 -29.3 0.8';
+		vv_x_000 = ' 0.0 0.0 0.0';
+	}
+
+	return;
+};
+
+void(float f) vv_load =
+{
+	if (!f || f > 50 || f < -50) return; // invalid edit - v0 vals
+
+	if (f == 1)
+	{
+		vv_o_0 = vv_o_1;
+		vv_a_0 = vv_a_1;
+		vv_x_0 = vv_x_1;
+	}
+	else
+	if (f == 2)
+	{
+		vv_o_0 = vv_o_2;
+		vv_a_0 = vv_a_2;
+		vv_x_0 = vv_x_2;
+	}
+	else
+	if (f == 3)
+	{
+		vv_o_0 = vv_o_3;
+		vv_a_0 = vv_a_3;
+		vv_x_0 = vv_x_3;
+	}
+	else
+	if (f == 4)
+	{
+		vv_o_0 = vv_o_4;
+		vv_a_0 = vv_a_4;
+		vv_x_0 = vv_x_4;
+	}
+	else
+	if (f == 5)
+	{
+		vv_o_0 = vv_o_5;
+		vv_a_0 = vv_a_5;
+		vv_x_0 = vv_x_5;
+	}
+	else
+	if (f == 6)
+	{
+		vv_o_0 = vv_o_6;
+		vv_a_0 = vv_a_6;
+		vv_x_0 = vv_x_6;
+	}
+	else
+	if (f == 7)
+	{
+		vv_o_0 = vv_o_7;
+		vv_a_0 = vv_a_7;
+		vv_x_0 = vv_x_7;
+	}
+	else
+	if (f == 8)
+	{
+		vv_o_0 = vv_o_8;
+		vv_a_0 = vv_a_8;
+		vv_x_0 = vv_x_8;
+	}
+	else
+	if (f == 9)
+	{
+		vv_o_0 = vv_o_9;
+		vv_a_0 = vv_a_9;
+		vv_x_0 = vv_x_9;
+	}
+	else
+	if (f == 10)
+	{
+		vv_o_0 = vv_o_10;
+		vv_a_0 = vv_a_10;
+		vv_x_0 = vv_x_10;
+	}
+	else
+	if (f == 11)
+	{
+		vv_o_0 = vv_o_11;
+		vv_a_0 = vv_a_11;
+		vv_x_0 = vv_x_11;
+	}
+	else
+	if (f == 12)
+	{
+		vv_o_0 = vv_o_12;
+		vv_a_0 = vv_a_12;
+		vv_x_0 = vv_x_12;
+	}
+	else
+	if (f == 13)
+	{
+		vv_o_0 = vv_o_13;
+		vv_a_0 = vv_a_13;
+		vv_x_0 = vv_x_13;
+	}
+	else
+	if (f == 14)
+	{
+		vv_o_0 = vv_o_14;
+		vv_a_0 = vv_a_14;
+		vv_x_0 = vv_x_14;
+	}
+	else
+	if (f == 15)
+	{
+		vv_o_0 = vv_o_15;
+		vv_a_0 = vv_a_15;
+		vv_x_0 = vv_x_15;
+	}
+	else
+	if (f == 16)
+	{
+		vv_o_0 = vv_o_16;
+		vv_a_0 = vv_a_16;
+		vv_x_0 = vv_x_16;
+	}
+	else
+	if (f == 17)
+	{
+		vv_o_0 = vv_o_17;
+		vv_a_0 = vv_a_17;
+		vv_x_0 = vv_x_17;
+	}
+	else
+	if (f == 18)
+	{
+		vv_o_0 = vv_o_18;
+		vv_a_0 = vv_a_18;
+		vv_x_0 = vv_x_18;
+	}
+	else
+	if (f == 19)
+	{
+		vv_o_0 = vv_o_19;
+		vv_a_0 = vv_a_19;
+		vv_x_0 = vv_x_19;
+	}
+	else
+	if (f == 20)
+	{
+		vv_o_0 = vv_o_20;
+		vv_a_0 = vv_a_20;
+		vv_x_0 = vv_x_20;
+	}
+	else
+	if (f == 21)
+	{
+		vv_o_0 = vv_o_21;
+		vv_a_0 = vv_a_21;
+		vv_x_0 = vv_x_21;
+	}
+	else
+	if (f == 22)
+	{
+		vv_o_0 = vv_o_22;
+		vv_a_0 = vv_a_22;
+		vv_x_0 = vv_x_22;
+	}
+	else
+	if (f == 23)
+	{
+		vv_o_0 = vv_o_23;
+		vv_a_0 = vv_a_23;
+		vv_x_0 = vv_x_23;
+	}
+	else
+	if (f == 24)
+	{
+		vv_o_0 = vv_o_24;
+		vv_a_0 = vv_a_24;
+		vv_x_0 = vv_x_24;
+	}
+	else
+	if (f == 25)
+	{
+		vv_o_0 = vv_o_25;
+		vv_a_0 = vv_a_25;
+		vv_x_0 = vv_x_25;
+	}
+	else
+	if (f == 26)
+	{
+		vv_o_0 = vv_o_26;
+		vv_a_0 = vv_a_26;
+		vv_x_0 = vv_x_26;
+	}
+	else
+	if (f == 27)
+	{
+		vv_o_0 = vv_o_27;
+		vv_a_0 = vv_a_27;
+		vv_x_0 = vv_x_27;
+	}
+	else
+	if (f == 28)
+	{
+		vv_o_0 = vv_o_28;
+		vv_a_0 = vv_a_28;
+		vv_x_0 = vv_x_28;
+	}
+	else
+	if (f == 29)
+	{
+		vv_o_0 = vv_o_29;
+		vv_a_0 = vv_a_29;
+		vv_x_0 = vv_x_29;
+	}
+	else
+	if (f == 30)
+	{
+		vv_o_0 = vv_o_30;
+		vv_a_0 = vv_a_30;
+		vv_x_0 = vv_x_30;
+	}
+	else
+	if (f == 31)
+	{
+		vv_o_0 = vv_o_31;
+		vv_a_0 = vv_a_31;
+		vv_x_0 = vv_x_31;
+	}
+	else
+	if (f == 32)
+	{
+		vv_o_0 = vv_o_32;
+		vv_a_0 = vv_a_32;
+		vv_x_0 = vv_x_32;
+	}
+	else
+	if (f == 33)
+	{
+		vv_o_0 = vv_o_33;
+		vv_a_0 = vv_a_33;
+		vv_x_0 = vv_x_33;
+	}
+	else
+	if (f == 34)
+	{
+		vv_o_0 = vv_o_34;
+		vv_a_0 = vv_a_34;
+		vv_x_0 = vv_x_34;
+	}
+	else
+	if (f == 35)
+	{
+		vv_o_0 = vv_o_35;
+		vv_a_0 = vv_a_35;
+		vv_x_0 = vv_x_35;
+	}
+	else
+	if (f == 36)
+	{
+		vv_o_0 = vv_o_36;
+		vv_a_0 = vv_a_36;
+		vv_x_0 = vv_x_36;
+	}
+	else
+	if (f == 37)
+	{
+		vv_o_0 = vv_o_37;
+		vv_a_0 = vv_a_37;
+		vv_x_0 = vv_x_37;
+	}
+	else
+	if (f == 38)
+	{
+		vv_o_0 = vv_o_38;
+		vv_a_0 = vv_a_38;
+		vv_x_0 = vv_x_38;
+	}
+	else
+	if (f == 39)
+	{
+		vv_o_0 = vv_o_39;
+		vv_a_0 = vv_a_39;
+		vv_x_0 = vv_x_39;
+	}
+	else
+	if (f == 40)
+	{
+		vv_o_0 = vv_o_40;
+		vv_a_0 = vv_a_40;
+		vv_x_0 = vv_x_40;
+	}
+	else
+	if (f == 41)
+	{
+		vv_o_0 = vv_o_41;
+		vv_a_0 = vv_a_41;
+		vv_x_0 = vv_x_41;
+	}
+	else
+	if (f == 42)
+	{
+		vv_o_0 = vv_o_42;
+		vv_a_0 = vv_a_42;
+		vv_x_0 = vv_x_42;
+	}
+	else
+	if (f == 43)
+	{
+		vv_o_0 = vv_o_43;
+		vv_a_0 = vv_a_43;
+		vv_x_0 = vv_x_43;
+	}
+	else
+	if (f == 44)
+	{
+		vv_o_0 = vv_o_44;
+		vv_a_0 = vv_a_44;
+		vv_x_0 = vv_x_44;
+	}
+	else
+	if (f == 45)
+	{
+		vv_o_0 = vv_o_45;
+		vv_a_0 = vv_a_45;
+		vv_x_0 = vv_x_45;
+	}
+	else
+	if (f == 46)
+	{
+		vv_o_0 = vv_o_46;
+		vv_a_0 = vv_a_46;
+		vv_x_0 = vv_x_46;
+	}
+	else
+	if (f == 47)
+	{
+		vv_o_0 = vv_o_47;
+		vv_a_0 = vv_a_47;
+		vv_x_0 = vv_x_47;
+	}
+	else
+	if (f == 48)
+	{
+		vv_o_0 = vv_o_48;
+		vv_a_0 = vv_a_48;
+		vv_x_0 = vv_x_48;
+	}
+	else
+	if (f == 49)
+	{
+		vv_o_0 = vv_o_49;
+		vv_a_0 = vv_a_49;
+		vv_x_0 = vv_x_49;
+	}
+	else
+	if (f == -1)
+	{
+		vv_o_1 = vv_o_0;
+		vv_a_1 = vv_a_0;
+		vv_x_1 = vv_x_0;
+	}
+	else
+	if (f == -2)
+	{
+		vv_o_2 = vv_o_0;
+		vv_a_2 = vv_a_0;
+		vv_x_2 = vv_x_0;
+	}
+	else
+	if (f == -3)
+	{
+		vv_o_3 = vv_o_0;
+		vv_a_3 = vv_a_0;
+		vv_x_3 = vv_x_0;
+	}
+	else
+	if (f == -4)
+	{
+		vv_o_4 = vv_o_0;
+		vv_a_4 = vv_a_0;
+		vv_x_4 = vv_x_0;
+	}
+	else
+	if (f == -5)
+	{
+		vv_o_5 = vv_o_0;
+		vv_a_5 = vv_a_0;
+		vv_x_5 = vv_x_0;
+	}
+	else
+	if (f == -6)
+	{
+		vv_o_6 = vv_o_0;
+		vv_a_6 = vv_a_0;
+		vv_x_6 = vv_x_0;
+	}
+	else
+	if (f == -7)
+	{
+		vv_o_7 = vv_o_0;
+		vv_a_7 = vv_a_0;
+		vv_x_7 = vv_x_0;
+	}
+	else
+	if (f == -8)
+	{
+		vv_o_8 = vv_o_0;
+		vv_a_8 = vv_a_0;
+		vv_x_8 = vv_x_0;
+	}
+	else
+	if (f == -9)
+	{
+		vv_o_9 = vv_o_0;
+		vv_a_9 = vv_a_0;
+		vv_x_9 = vv_x_0;
+	}
+	else
+	if (f == -10)
+	{
+		vv_o_10 = vv_o_0;
+		vv_a_10 = vv_a_0;
+		vv_x_10 = vv_x_0;
+	}
+else
+	if (f == -11)
+	{
+		vv_o_11 = vv_o_0;
+		vv_a_11 = vv_a_0;
+		vv_x_11 = vv_x_0;
+	}
+	else
+	if (f == -12)
+	{
+		vv_o_12 = vv_o_0;
+		vv_a_12 = vv_a_0;
+		vv_x_12 = vv_x_0;
+	}
+	else
+	if (f == -13)
+	{
+		vv_o_13 = vv_o_0;
+		vv_a_13 = vv_a_0;
+		vv_x_13 = vv_x_0;
+	}
+	else
+	if (f == -14)
+	{
+		vv_o_14 = vv_o_0;
+		vv_a_14 = vv_a_0;
+		vv_x_14 = vv_x_0;
+	}
+	else
+	if (f == -15)
+	{
+		vv_o_15 = vv_o_0;
+		vv_a_15 = vv_a_0;
+		vv_x_15 = vv_x_0;
+	}
+	else
+	if (f == -16)
+	{
+		vv_o_16 = vv_o_0;
+		vv_a_16 = vv_a_0;
+		vv_x_16 = vv_x_0;
+	}
+	else
+	if (f == -17)
+	{
+		vv_o_17 = vv_o_0;
+		vv_a_17 = vv_a_0;
+		vv_x_17 = vv_x_0;
+	}
+	else
+	if (f == -18)
+	{
+		vv_o_18 = vv_o_0;
+		vv_a_18 = vv_a_0;
+		vv_x_18 = vv_x_0;
+	}
+	else
+	if (f == -19)
+	{
+		vv_o_19 = vv_o_0;
+		vv_a_19 = vv_a_0;
+		vv_x_19 = vv_x_0;
+	}
+	else
+	if (f == -20)
+	{
+		vv_o_20 = vv_o_0;
+		vv_a_20 = vv_a_0;
+		vv_x_20 = vv_x_0;
+	}
+	else
+	if (f == -20)
+	{
+		vv_o_20 = vv_o_0;
+		vv_a_20 = vv_a_0;
+		vv_x_20 = vv_x_0;
+	}
+	else
+	if (f == -21)
+	{
+		vv_o_21 = vv_o_0;
+		vv_a_21 = vv_a_0;
+		vv_x_21 = vv_x_0;
+	}
+	else
+	if (f == -22)
+	{
+		vv_o_22 = vv_o_0;
+		vv_a_22 = vv_a_0;
+		vv_x_22 = vv_x_0;
+	}
+	else
+	if (f == -23)
+	{
+		vv_o_23 = vv_o_0;
+		vv_a_23 = vv_a_0;
+		vv_x_23 = vv_x_0;
+	}
+	else
+	if (f == -24)
+	{
+		vv_o_24 = vv_o_0;
+		vv_a_24 = vv_a_0;
+		vv_x_24 = vv_x_0;
+	}
+	else
+	if (f == -25)
+	{
+		vv_o_25 = vv_o_0;
+		vv_a_25 = vv_a_0;
+		vv_x_25 = vv_x_0;
+	}
+	else
+	if (f == -26)
+	{
+		vv_o_26 = vv_o_0;
+		vv_a_26 = vv_a_0;
+		vv_x_26 = vv_x_0;
+	}
+	else
+	if (f == -27)
+	{
+		vv_o_27 = vv_o_0;
+		vv_a_27 = vv_a_0;
+		vv_x_27 = vv_x_0;
+	}
+	else
+	if (f == -28)
+	{
+		vv_o_28 = vv_o_0;
+		vv_a_28 = vv_a_0;
+		vv_x_28 = vv_x_0;
+	}
+	else
+	if (f == -29)
+	{
+		vv_o_29 = vv_o_0;
+		vv_a_29 = vv_a_0;
+		vv_x_29 = vv_x_0;
+	}
+	else
+	if (f == -30)
+	{
+		vv_o_30 = vv_o_0;
+		vv_a_30 = vv_a_0;
+		vv_x_30 = vv_x_0;
+	}
+	else
+	if (f == -31)
+	{
+		vv_o_31 = vv_o_0;
+		vv_a_31 = vv_a_0;
+		vv_x_31 = vv_x_0;
+	}
+	else
+	if (f == -32)
+	{
+		vv_o_32 = vv_o_0;
+		vv_a_32 = vv_a_0;
+		vv_x_32 = vv_x_0;
+	}
+	else
+	if (f == -33)
+	{
+		vv_o_33 = vv_o_0;
+		vv_a_33 = vv_a_0;
+		vv_x_33 = vv_x_0;
+	}
+	else
+	if (f == -34)
+	{
+		vv_o_34 = vv_o_0;
+		vv_a_34 = vv_a_0;
+		vv_x_34 = vv_x_0;
+	}
+	else
+	if (f == -35)
+	{
+		vv_o_35 = vv_o_0;
+		vv_a_35 = vv_a_0;
+		vv_x_35 = vv_x_0;
+	}
+	else
+	if (f == -36)
+	{
+		vv_o_36 = vv_o_0;
+		vv_a_36 = vv_a_0;
+		vv_x_36 = vv_x_0;
+	}
+	else
+	if (f == -37)
+	{
+		vv_o_37 = vv_o_0;
+		vv_a_37 = vv_a_0;
+		vv_x_37 = vv_x_0;
+	}
+	else
+	if (f == -38)
+	{
+		vv_o_38 = vv_o_0;
+		vv_a_38 = vv_a_0;
+		vv_x_38 = vv_x_0;
+	}
+	else
+	if (f == -39)
+	{
+		vv_o_39 = vv_o_0;
+		vv_a_39 = vv_a_0;
+		vv_x_39 = vv_x_0;
+	}
+	else
+	if (f == -40)
+	{
+		vv_o_40 = vv_o_0;
+		vv_a_40 = vv_a_0;
+		vv_x_40 = vv_x_0;
+	}
+	else
+	if (f == -41)
+	{
+		vv_o_41 = vv_o_0;
+		vv_a_41 = vv_a_0;
+		vv_x_41 = vv_x_0;
+	}
+	else
+	if (f == -42)
+	{
+		vv_o_42 = vv_o_0;
+		vv_a_42 = vv_a_0;
+		vv_x_42 = vv_x_0;
+	}
+	else
+	if (f == -43)
+	{
+		vv_o_43 = vv_o_0;
+		vv_a_43 = vv_a_0;
+		vv_x_43 = vv_x_0;
+	}
+	else
+	if (f == -44)
+	{
+		vv_o_44 = vv_o_0;
+		vv_a_44 = vv_a_0;
+		vv_x_44 = vv_x_0;
+	}
+	else
+	if (f == -45)
+	{
+		vv_o_45 = vv_o_0;
+		vv_a_45 = vv_a_0;
+		vv_x_45 = vv_x_0;
+	}
+	else
+	if (f == -46)
+	{
+		vv_o_46 = vv_o_0;
+		vv_a_46 = vv_a_0;
+		vv_x_46 = vv_x_0;
+	}
+	else
+	if (f == -47)
+	{
+		vv_o_47 = vv_o_0;
+		vv_a_47 = vv_a_0;
+		vv_x_47 = vv_x_0;
+	}
+	else
+	if (f == -48)
+	{
+		vv_o_48 = vv_o_0;
+		vv_a_48 = vv_a_0;
+		vv_x_48 = vv_x_0;
+	}
+	else
+	if (f == -49)
+	{
+		vv_o_49 = vv_o_0;
+		vv_a_49 = vv_a_0;
+		vv_x_49 = vv_x_0;
+	}
+	
+};
+
+
+float vv_chg, vv_prf, vv_cpy;
+entity vv;
+
+void(float f) vv_print =
+{
+	local string pr;
+
+	vv_load(vv.vwepent.viswframe + f - vv.frame);
+	vv_load_0(f);
+
+	bprint("	if (v_frm == ");
+	bprint(ftos(f));
+	bprint(")\n");
+	bprint("	{\n");
+	bprint("		vv_o_000 = ");
+	bprint(vtos(vv_o_0 + vv_o_000));
+	bprint(";\n");
+	bprint("		vv_a_000 = ");
+	bprint(vtos(vv_a_0 + vv_a_000));
+	bprint(";\n");
+	bprint("		vv_x_000 = ");
+	bprint(vtos(vv_x_0 + vv_x_000));
+	bprint(";\n");
+	bprint("	}\n");
+};
+
+
+void() vw_config = 
+{
+	if (cvar("saved1") == -999)
+	{
+		WARNING = FALSE;
+		if (!vv)
+		{
+			vv_cpy = 0; // default - copy from 1 ahead, any other value copys from that frame
+			stuffcmd(self, "admin_centertime\n");
+			stuffcmd(self, "sv_c_warning 0\n");
+		}
+
+
+		if (self.impulse == 2) // change value increment & decrement
+		{
+			if (vv_incr == 1)
+			{
+				vv_incr = 2;
+			}
+			else
+			if (vv_incr == 2)
+			{
+				vv_incr = 5;
+			}
+			else
+			if (vv_incr == 5)
+			{
+				vv_incr = 0.1;
+			}
+			else
+			if (vv_incr == 0.1)
+			{
+				vv_incr = 0.01;
+			}
+			else
+			if (vv_incr == 0.01)
+			{
+				vv_incr = 1;
+			}
+			else
+			{
+				vv_incr = 1;
+			}
+			centerprint5(self, "incr:  ", ftos(vv_incr)," -- decr:  ", ftos(vv_incr), "\n");
+		}
+		
+		if (self.impulse == 3) // change value edit
+		{
+			vv_chg = vv_chg + 1;
+			if (vv_chg > 8) vv_chg = 0;
+//			centerprint3(self, "edit:  ", ftos(vv_chg), "\n");
+			if (vv_chg == 0)
+			{
+				centerprint3(self, " --- o_X:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 1)
+			{
+				centerprint3(self, " --- o_Y:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 2)
+			{
+				centerprint3(self, " --- o_Z:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 3)
+			{
+				centerprint3(self, " --- a_X:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 4)
+			{
+				centerprint3(self, " --- a_Y:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 5)
+			{
+				centerprint3(self, " --- a_Z:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 6)
+			{
+				centerprint3(self, " --- (frame) x_X:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 7)
+			{
+				centerprint3(self, " --- v slot:  ", ftos(vv_chg), "\n");
+			}
+			else if (vv_chg == 8)
+			{
+				centerprint3(self, " --- cpy frame:  ", ftos(vv_chg), "\n");
+			}
+		}
+		else if (self.impulse == 10)
+		{
+			if (vv_chg == 0)
+			{
+				vv_o_0_x = vv_o_0_x + vv_incr;
+				centerprint3(self, " --- o_X:  ", ftos(vv_o_0_x), "\n");
+			}
+			else if (vv_chg == 1)
+			{
+				vv_o_0_y = vv_o_0_y + vv_incr;
+				centerprint3(self, " --- o_Y:  ", ftos(vv_o_0_y), "\n");
+			}
+			else if (vv_chg == 2)
+			{
+				vv_o_0_z = vv_o_0_z + vv_incr;
+				centerprint3(self, " --- o_Z:  ", ftos(vv_o_0_z), "\n");
+			}
+			else if (vv_chg == 3)
+			{
+				vv_a_0_x = vv_a_0_x + vv_incr;
+				centerprint3(self, " --- a_X:  ", ftos(vv_a_0_x), "\n");
+			}
+			else if (vv_chg == 4)
+			{
+				vv_a_0_y = vv_a_0_y + vv_incr;
+				centerprint3(self, " --- a_Y:  ", ftos(vv_a_0_y), "\n");
+			}
+			else if (vv_chg == 5)
+			{
+				vv_a_0_z = vv_a_0_z + vv_incr;
+				centerprint3(self, " --- a_Z:  ", ftos(vv_a_0_z), "\n");
+			}
+			else if (vv_chg == 6)
+			{
+				vv_x_0_x = vv_x_0_x + 1; // frame only changes by 1
+				centerprint3(self, " --- (frame) x_X:  ", ftos(vv_x_0_x), "\n");
+			}
+			else if (vv_chg == 7)
+			{
+				vv.vwepent.viswframe = vv.vwepent.viswframe + 1; // frame only changes by 1
+				if (vv.vwepent.viswframe > 49) vv.vwepent.viswframe = 1;
+				if (vv.vwepent.viswframe < 1) vv.vwepent.viswframe = 49;
+				centerprint3(self, " --- v slot:  ", ftos(vv.vwepent.viswframe), "\n");
+				vv_load(vv.vwepent.viswframe);
+			}
+			else if (vv_chg == 8)
+			{
+				vv_cpy = vv_cpy + 1;
+				centerprint3(self, " --- copy from frame:  ", ftos(vv_cpy), "\n");
+			}
+
+			if (vv_chg < 7)
+				vv_load(0 - vv.vwepent.viswframe);
+		}
+		else if (self.impulse == 12)
+		{
+			if (vv_chg == 0)
+			{
+				vv_o_0_x = vv_o_0_x - vv_incr;
+				centerprint3(self, " --- o_X:  ", ftos(vv_o_0_x), "\n");
+			}
+			else if (vv_chg == 1)
+			{
+				vv_o_0_y = vv_o_0_y - vv_incr;
+				centerprint3(self, " --- o_Y:  ", ftos(vv_o_0_y), "\n");
+			}
+			else if (vv_chg == 2)
+			{
+				vv_o_0_z = vv_o_0_z - vv_incr;
+				centerprint3(self, " --- o_Z:  ", ftos(vv_o_0_z), "\n");
+			}
+			else if (vv_chg == 3)
+			{
+				vv_a_0_x = vv_a_0_x - vv_incr;
+				centerprint3(self, " --- a_X:  ", ftos(vv_a_0_x), "\n");
+			}
+			else if (vv_chg == 4)
+			{
+				vv_a_0_y = vv_a_0_y - vv_incr;
+				centerprint3(self, " --- a_Y:  ", ftos(vv_a_0_y), "\n");
+			}
+			else if (vv_chg == 5)
+			{
+				vv_a_0_z = vv_a_0_z - vv_incr;
+				centerprint3(self, " --- a_Z:  ", ftos(vv_a_0_z), "\n");
+			}
+			else if (vv_chg == 6)
+			{
+				vv_x_0_x = vv_x_0_x - 1; // frame only changes by 1
+				centerprint3(self, " --- (frame) x_X:  ", ftos(vv_x_0_x), "\n");
+			}
+			else if (vv_chg == 7)
+			{
+				vv.vwepent.viswframe = vv.vwepent.viswframe - 1; // frame only changes by 1
+				if (vv.vwepent.viswframe > 49) vv.vwepent.viswframe = 1;
+				if (vv.vwepent.viswframe < 1) vv.vwepent.viswframe = 49;
+				centerprint3(self, " --- v slot:  ", ftos(vv.vwepent.viswframe), "\n");
+				vv_load(vv.vwepent.viswframe);
+			}
+			else if (vv_chg == 8 && vv_cpy > 0)
+			{
+				vv_cpy = vv_cpy - 1;
+				centerprint3(self, " --- copy from frame:  ", ftos(vv_cpy), "\n");
+			}
+
+			if (vv_chg < 7)
+				vv_load(0 - vv.vwepent.viswframe);
+		}
+		else if (self.impulse == 1)
+		{
+			if (vv == world)
+			{
+				vv = spawn();
+					setmodel(vv, "progs/player.mdl");
+				setorigin(vv, self.origin);
+				vv.vwepent = spawn();
+				setmodel(vv.vwepent, "progs/vw_q3_gaunt.mdl");
+				setorigin(vv.vwepent, self.origin);
+				vv.vwepent.viswframe = 1; // get / save data for this var slot
+				vv_load(vv.vwepent.viswframe);
+			}
+		}
+		else if (self.impulse == 4) // print data by frame val
+		{
+//			vv_load_0(vv.frame); - get current stored data
+			vv_print(vv_prf);
+			vv_prf = vv_prf + 1;
+		}
+		else if (self.impulse == 5) // frame inc
+		{
+			vv_prf = vv.frame = vv.frame + 1; // frame only changes by 1
+			vv.vwepent.viswframe = vv.vwepent.viswframe + 1; // frame only changes by 1
+			if (vv.vwepent.viswframe > 49) vv.vwepent.viswframe = 1;
+			if (vv.vwepent.viswframe < 1) vv.vwepent.viswframe = 49;
+			vv.vwepent.noise1 = ftos(vv.frame);
+			centerprint5(self, " --- mdl frame:  ", vv.vwepent.noise1," --- v slot:  ", ftos(vv.vwepent.viswframe), "\n");
+			vv_load(vv.vwepent.viswframe);
+		}
+		else if (self.impulse == 6 && vv.frame > 0) // frame dec
+		{
+			vv_prf = vv.frame = vv.frame - 1; // frame only changes by 1
+			vv.vwepent.viswframe = vv.vwepent.viswframe - 1; // frame only changes by 1
+			if (vv.vwepent.viswframe > 49) vv.vwepent.viswframe = 1;
+			if (vv.vwepent.viswframe < 1) vv.vwepent.viswframe = 49;
+			vv.vwepent.noise1 = ftos(vv.frame);
+			centerprint5(self, " --- mdl frame:  ", vv.vwepent.noise1," --- v slot:  ", ftos(vv.vwepent.viswframe), "\n");
+			vv_load(vv.vwepent.viswframe);
+		}
+		else if (self.impulse == 8) // copy val fwd one - or copy from
+		{
+			if (!vv_cpy)
+				vv_load(0 - (vv.vwepent.viswframe + 1));
+			else // get val from frame vv_cpy
+			{
+				local float f;
+
+				f = vv.vwepent.viswframe + vv_cpy - vv.frame;
+				if (f >0)
+				{
+					vv_load(f);
+					if (vv_o_000 == v0 && vv_o_000 == v0 && vv_o_000 == v0) // get base frame if this frame is 0'ed
+					{
+						vv_load_0(vv_cpy);
+						vv_o_0 = vv_o_0 + vv_o_000;
+						vv_a_0 = vv_a_0 + vv_a_000;
+						vv_x_0 = vv_x_0 + vv_x_000;
+					}
+				}
+				vv_load(0 - vv.vwepent.viswframe); // save where we are
+			}
+
+			vv_load_0(vv.frame); // reload
+		}
+		else if (self.impulse == 13) 
+		{
+			bprint("\n-----------------\n");
+			bprint("   1 - init models\n");
+			bprint("   2 - loop increment\n");
+			bprint("   3 - value edit loop\n");
+			bprint("   4 - print data to console for current frame & incr print frame\n");
+			bprint("   5 - mdl frame increment\n");
+			bprint("   6 - mdl frame dec\n");
+			bprint("   8 - copy cur data down 1 slot or from any slot\n");
+			bprint("   10  val incr - wheel up\n");
+			bprint("   12  val dec - wheel down\n");
+			bprint("-----------------\n");
+		}
+
+		vv_load_0(vv.frame); // get current stored data
+		setorigin(vv.vwepent, vv.origin + vv_o_0 + vv_o_000); 
+		vv.vwepent.angles = vv.angles + vv_a_0 + vv_a_000;
+		vv.vwepent.frame = vv_x_0_x + vv_x_000_x;
+
+		self.impulse = 0;
+	}
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -1560,3 +1560,37 @@ void() player_sawu3 = [$shotatt3, player_sawu4] { self.weaponframe = 8; };
 void() player_sawu4 = [$shotatt4, player_sawu5] { self.weaponframe = 7; };
 void() player_sawu5 = [$shotatt5, player_sawu6] { self.weaponframe = 6; };
 void() player_sawu6 = [$shotatt6, player_stand1] { };
+
+
+// specials, decor
+
+void() d_bloody_mess =
+{
+// for now
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/marine_squished.md2");
+	setmodel(self,"progs/md2/marine_squished.md2");
+//	setorigin(self, self.origin + ' 0 0 -8');
+	self.frame = 9;
+//	self.movetype = MOVETYPE_TOSS;
+};
+
+void() d_dead_player =
+{
+// for now
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/marine.md2");
+	setmodel(self,"progs/md2/marine.md2");
+//	setorigin(self, self.origin + ' 0 0 -8');
+	self.frame = 146;
+//	self.movetype = MOVETYPE_TOSS;
+};
+

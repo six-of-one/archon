@@ -788,6 +788,7 @@ void() q3_ha_rot_thk =
 	else
 	if (self.owner.armorvalue > Q3_HA_MAX)
 	{
+		armorsave_rev(self.owner);
 		self.owner.armorvalue = self.owner.armorvalue - 1;
 		f = TRUE;
 	}
