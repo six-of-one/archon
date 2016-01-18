@@ -973,8 +973,8 @@ bprint("\n");
 				return; // crap - no location
 			}
 			v1 = e.origin + ' 0 0 8';
-			if (e.flags & FL_ITEM) // randomize away from other map items
-				v1 = stdv_rndloc(e.origin + ' 0 0 8', 50, 100);
+//			if (e.flags & FL_ITEM) // randomize away from other map items - 
+//				v1 = stdv_rndloc(e.origin + ' 0 0 8', 50, 100); // uses ejector
 			setorigin(self, v1);
 
 			item_call(self.wad);
@@ -1019,9 +1019,41 @@ bprint("\n");
 
 // relocation code - called by ip_checkForMovement & from splash.qc
 
+// could move anything, effect should prob be client sided
+
+void() fade_relocate =
+{
+	if (!self.alpha) self.alpha = 1.03; // make sure the fade doesnt hit 0 and fire this again
+
+	self.think = fade_relocate;
+	self.nextthink = time + 0.1;
+
+	if (self.alpha < 0.6) self.touch = SUB_Null;
+	else self.touch = rune_touch;
+
+	self.alpha = self.alpha + self.lip;
+	if (self.lip < 0)
+	if (self.alpha < 0.05)
+	{
+		self.lip = 0.05;
+		setorigin(self, self.ip_orgOrigin);
+		item_eject(self, MED_BOUNCE);		
+	}
+
+	if (self.lip > 0)
+	if (self.alpha > 1)
+	{
+		self.alpha = 1.03;
+		self.lip = 0;
+		self.think = self.th_stand;
+		self.th_stand = SUB_Null;
+		self.nextthink = self.lefty;
+	}
+};
+
 void() rune_relocate =
 {
-	local entity e;
+	local entity e, f;
 	local vector v1;
 
 	self.cnt = self.cnt + 1;
@@ -1035,18 +1067,23 @@ void() rune_relocate =
 			self.delay = 0;
 		}
 		e = dyn_rndloc();
-		if (!e) e = findradius(world.origin, 256000);
+		if (!e) e = findradius(world.origin, 256000); // if nothing, it wont move
+
+		self.th_stand = self.think;
+		self.lefty = self.nextthink;
+		self.think = fade_relocate;
+		self.nextthink = time + 0.1;
+		self.lip = -0.05;
+
+//			setorigin(self, v1);
+//			item_eject(self, MED_BOUNCE);
+		self.ip_orgOrigin = self.origin; // if no location found it will bounce here
+		self.count = 2 + random() * 3.8; // reset for new location
+		self.cnt = 0;
+
 		if (e)
 		{
-			v1 = e.origin + ' 0 0 4';
-//			if (e.flags & FL_ITEM) // randomize away from other map items - not needed, bouncing
-//				v1 = stdv_rndloc(e.origin + ' 0 0 4', 50, 100);
-			setorigin(self, v1);
-			item_eject(self, MED_BOUNCE);
-			self.ip_orgOrigin = self.origin; // bogus because of bounce
-			self.count = 2 + random() * 3.8; // reset for new location
-			self.cnt = 0;
-
+			self.ip_orgOrigin = e.origin + ' 0 0 4';
 			bprint("\n\b*** RUNE relocating: ");
 			bprint(self.netname);
 			bprint(" near: ");

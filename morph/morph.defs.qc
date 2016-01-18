@@ -108,9 +108,10 @@ float MONSTER_MASK_II; // all monster bits
 
 float CB_M_BLARG					= 1;
 float CB_M_RAPTOR					= 2;
-float CB_M_SPIDER					= 4;
+float CB_M_SPIDER					= 4;	// first 3 featured in ultimate mod
 float CB_M_MANGA					= 8;
-float CB_M_BOSSMAN				= 16;
+float CB_M_BOSSMAN				= 16; // Bossman by Wendigo - from Blahbalicious
+float CB_M_CLING					= 32; // alien infestation by Lord Havoc
 
 float MON_NAME_II					= 2;
 float MON_FUNC_II					= 3;

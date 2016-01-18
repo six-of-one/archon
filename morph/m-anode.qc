@@ -30,9 +30,9 @@ $frame	walk11 walk12
 void() m_precache_anode =
 {
 //// anode morph
-	precache_model2 ("progs/anode_x.mdl");
+	precache_model ("progs/anode_x.mdl");
 
-//	precache_sound2 ("anode/fired.wav");
+//	precache_sound ("anode/fired.wav");
 };
 
 void() player_anode_stand = [ $walk1, player_stand1 ] { };

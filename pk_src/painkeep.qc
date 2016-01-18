@@ -942,6 +942,15 @@ void() pk_liveupd =
 
 // pk cubes
 	PK_CUBE_TIME = cvar("pk_cubes_time"); // TDO: doesnt reset existing makers
+
+	if (PK_CUBE_TIME < 0)
+	{
+		PK_CUBE_TIME = fabs(PK_CUBE_TIME);
+		PK_CUBE_DV = PK_CUBE_TIME * 0.3;
+	}
+	else
+		PK_CUBE_DV = 0;
+
 	if (PK_CUBE  != cvar("pk_cubes")) 
 	{
 		cube_handle("pk_cubes");
@@ -1311,6 +1320,7 @@ void() pk_srvcmd_set =
 
 	PK_CUBE = 0;
 	PK_CUBE_TIME = 60;
+	PK_CUBE_DV = 0;
 	
 // map translations
 
@@ -1682,7 +1692,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 		registercvar("pk_crates", "1"); // TEST: "0"); // randomly spawn this many crates on a map
 		registercvar("pk_cubes", "1"); // TEST: "0"); // randomly spawn this many companion cubes on a map
-		registercvar("pk_cubes_time", "60"); // cube timeout - respawn every this many secs
+		registercvar("pk_cubes_time", "60"); // cube timeout - respawn every this many secs, if < 0 set 30% of val for deviation from time
 
 		registercvar("pk_bt_time", "90"); // time for beartraps to live
 		registercvar("pk_bt_follow", "15"); // time for beartraps to hold on & bite

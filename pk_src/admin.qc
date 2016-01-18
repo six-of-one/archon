@@ -1213,7 +1213,7 @@ void() Admin_monstermenu2 =
 							"  03: Phase spider          \n" // 4
 							"  04: Manga Tai             \n" // 8
 							"  05: Bossman               \n" // 16
-//							"  06:        \n" // 32
+							"  06: Alien pod             \n" // 32
 //							"  07:        \n" // 64
 //							"  08:        \n" // 128
 //							"  09:        \n" // 256

@@ -49,9 +49,9 @@ void() m_precache_lavablob =
 	precache_model ("progs/cthon.mdl");
 
 // blob sounds
-	precache_sound2 ("blob/death1.wav"); // exploding statue sound - pretty good
-	precache_sound2 ("blob/hit1.wav"); // dull flesh thud
-	precache_sound2 ("blob/sight1.wav"); // grrr
+	precache_sound ("blob/death1.wav"); // exploding statue sound - pretty good
+	precache_sound ("blob/hit1.wav"); // dull flesh thud
+	precache_sound ("blob/sight1.wav"); // grrr
 	precache_sound ("chaos/lavabidle.wav"); // hisss
 	precache_sound ("chaos/lava-shot.wav"); // nail shot
 // cthon sounds

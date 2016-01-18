@@ -318,7 +318,7 @@ if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
 
 // pbserver status bar - time spent observing in rels & high score
 		stuffcmd(self.owner, "infobar 2 \"");
-		stuffcmd(self.owner, self.netname);
+		stuffcmd(self.owner, self.owner.netname);
 		stuffcmd(self.owner, " :observer (");
 		stuffcmd(self.owner, ftos(rint(time - self.ltime)));
 		stuffcmd(self.owner, " rels) Archon 3.1a - high score: ");

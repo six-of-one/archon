@@ -324,20 +324,20 @@ if (ign != A_MONSTER)
 			remove(self);
 		return;
 	}
-	precache_model2 ("progs/enforcer.mdl");
-	precache_model2 ("progs/h_mega.mdl");
-	precache_model2 ("progs/laser.mdl");
+	precache_model ("progs/enforcer.mdl");
+	precache_model ("progs/h_mega.mdl");
+	precache_model ("progs/laser.mdl");
 
-	precache_sound2 ("enforcer/death1.wav");
-	precache_sound2 ("enforcer/enfire.wav");
-	precache_sound2 ("enforcer/enfstop.wav");
-	precache_sound2 ("enforcer/idle1.wav");
-	precache_sound2 ("enforcer/pain1.wav");
-	precache_sound2 ("enforcer/pain2.wav");
-	precache_sound2 ("enforcer/sight1.wav");
-	precache_sound2 ("enforcer/sight2.wav");
-	precache_sound2 ("enforcer/sight3.wav");
-	precache_sound2 ("enforcer/sight4.wav");
+	precache_sound ("enforcer/death1.wav");
+	precache_sound ("enforcer/enfire.wav");
+	precache_sound ("enforcer/enfstop.wav");
+	precache_sound ("enforcer/idle1.wav");
+	precache_sound ("enforcer/pain1.wav");
+	precache_sound ("enforcer/pain2.wav");
+	precache_sound ("enforcer/sight1.wav");
+	precache_sound ("enforcer/sight2.wav");
+	precache_sound ("enforcer/sight3.wav");
+	precache_sound ("enforcer/sight4.wav");
 }
 	self.netname = "Enforcer";
 

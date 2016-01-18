@@ -71,6 +71,9 @@ void() chaos_precache =
 	precache_model ("progs/sphere_annihilation.mdl");
 	precache_sound ("alt_ambience/hum1.wav");
 
+// Alien infestation
+	precache_model ("progs/clinger2.mdl");
+	precache_model ("progs/young.mdl");
 
 //	flamer_precache();
 };

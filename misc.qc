@@ -292,7 +292,7 @@ void () q100_misc_explobox2 =
 
 	self.solid = SOLID_BBOX;
 	self.movetype = MOVETYPE_NONE;
-	precache_model2 ("maps/b_exbox2.bsp");
+	precache_model ("maps/b_exbox2.bsp");
 	setmodel (self,"maps/b_exbox2.bsp");
 	precache_sound ("weapons/r_exp3.wav");
 	self.health = 20;
@@ -360,10 +360,10 @@ void () trap_spikeshooter =
 	self.use = spikeshooter_use;
 	if (self.spawnflags & SPAWNFLAG_LASER)
 	{
-		precache_model2 ("progs/laser.mdl");
+		precache_model ("progs/laser.mdl");
 
-		precache_sound2 ("enforcer/enfire.wav");
-		precache_sound2 ("enforcer/enfstop.wav");
+		precache_sound ("enforcer/enfire.wav");
+		precache_sound ("enforcer/enfstop.wav");
 	}
 	else
 		precache_sound ("weapons/spike2.wav");
@@ -697,16 +697,16 @@ For optimzation testing, starts a lot of sounds.
 void () misc_noisemaker =
 
 {
-	precache_sound2 ("enforcer/enfire.wav");
-	precache_sound2 ("enforcer/enfstop.wav");
-	precache_sound2 ("enforcer/sight1.wav");
-	precache_sound2 ("enforcer/sight2.wav");
-	precache_sound2 ("enforcer/sight3.wav");
-	precache_sound2 ("enforcer/sight4.wav");
-	precache_sound2 ("enforcer/pain1.wav");
-	precache_sound2 ("enforcer/pain2.wav");
-	precache_sound2 ("enforcer/death1.wav");
-	precache_sound2 ("enforcer/idle1.wav");
+	precache_sound ("enforcer/enfire.wav");
+	precache_sound ("enforcer/enfstop.wav");
+	precache_sound ("enforcer/sight1.wav");
+	precache_sound ("enforcer/sight2.wav");
+	precache_sound ("enforcer/sight3.wav");
+	precache_sound ("enforcer/sight4.wav");
+	precache_sound ("enforcer/pain1.wav");
+	precache_sound ("enforcer/pain2.wav");
+	precache_sound ("enforcer/death1.wav");
+	precache_sound ("enforcer/idle1.wav");
 
 	self.nextthink = time + 0.1 + random();
 	self.think = noise_think;

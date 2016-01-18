@@ -1374,7 +1374,7 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 	if (trm) // terminate it later
 	{
 		bq = spawn(); // make one each time
-		bq.think = SUB_Remove;
+		bq.think = remove_fade; //SUB_Remove;
 		bq.nextthink = time + DEAD_BODYTIME + random() * 30;
 		if (!deathmatch) bq.nextthink = time + DEAD_BODYTIME * 6 + random() * 40; // this would be for respawnable monsters
 		bq.classname = "bodyque";	
@@ -1426,7 +1426,7 @@ void (entity e) CopyToBodyQue =
 	if (DEAD_BODYCOUNT < 1)
 	{
 		bodyque_head = spawn(); // make one each time
-		bodyque_head.think = SUB_Remove;
+		bodyque_head.think = remove_fade; //SUB_Remove;
 		bodyque_head.nextthink = time + DEAD_BODYTIME + random() * 30;
 		bodyque_head.classname = "bodyque";
 	}

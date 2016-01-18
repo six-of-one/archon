@@ -335,17 +335,17 @@ if (ign != A_MONSTER)
 		return;
 	}	
 
-	precache_model2 ("progs/spider.mdl");
-	precache_model2 ("progs/w_spike.mdl");
+	precache_model ("progs/spider.mdl");
+	precache_model ("progs/w_spike.mdl");
 
-	precache_sound2 ("mon_II/spider/tap.wav");
-	precache_sound2 ("shalrath/attack.wav");
-	precache_sound2 ("shalrath/attack2.wav");
-	precache_sound2 ("demon/dhit2.wav");
-	precache_sound2 ("shalrath/death.wav");
-	precache_sound2 ("shalrath/idle.wav");
-	precache_sound2 ("shalrath/pain.wav");
-	precache_sound2 ("shalrath/sight.wav");
+	precache_sound ("mon_II/spider/tap.wav");
+	precache_sound ("shalrath/attack.wav");
+	precache_sound ("shalrath/attack2.wav");
+	precache_sound ("demon/dhit2.wav");
+	precache_sound ("shalrath/death.wav");
+	precache_sound ("shalrath/idle.wav");
+	precache_sound ("shalrath/pain.wav");
+	precache_sound ("shalrath/sight.wav");
 }
 	self.netname = "Phase spider";
 

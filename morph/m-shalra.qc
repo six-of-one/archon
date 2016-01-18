@@ -30,16 +30,16 @@ $frame	walk11 walk12
 void() m_precache_shalrath =
 {
 //// Shalrath morph
-	precache_model2 ("progs/shalrath.mdl");
-	precache_model2 ("progs/h_shal.mdl");
-	precache_model2 ("progs/v_spike.mdl");
+	precache_model ("progs/shalrath.mdl");
+	precache_model ("progs/h_shal.mdl");
+	precache_model ("progs/v_spike.mdl");
 	
-	precache_sound2 ("shalrath/attack.wav");
-	precache_sound2 ("shalrath/attack2.wav");
-	precache_sound2 ("shalrath/death.wav");
-	precache_sound2 ("shalrath/idle.wav");
-	precache_sound2 ("shalrath/pain.wav");
-	precache_sound2 ("shalrath/sight.wav");
+	precache_sound ("shalrath/attack.wav");
+	precache_sound ("shalrath/attack2.wav");
+	precache_sound ("shalrath/death.wav");
+	precache_sound ("shalrath/idle.wav");
+	precache_sound ("shalrath/pain.wav");
+	precache_sound ("shalrath/sight.wav");
 };
 
 void() player_shalrath_stand = [ $walk1, player_stand1 ] { };

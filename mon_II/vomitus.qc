@@ -584,27 +584,27 @@ if (ign != A_MONSTER)
 		return;
 	}	
 
-	precache_model2 ("progs/vomitus.mdl");
-	precache_model2 ("progs/vomis.mdl");
-	precache_model2 ("progs/h_hellkn.mdl");
+	precache_model ("progs/vomitus.mdl");
+	precache_model ("progs/vomis.mdl");
+	precache_model ("progs/h_hellkn.mdl");
 
 	
-	precache_sound2 ("vomitus/attack1.wav");
-      precache_sound2 ("vomitus/attack2.wav");
-	precache_sound2 ("vomitus/die.wav");
-	precache_sound2 ("vomitus/paina.wav");
-	precache_sound2 ("vomitus/painb.wav");
-	precache_sound2 ("vomitus/painc.wav");
-	precache_sound2 ("hknight/sight1.wav");
+	precache_sound ("vomitus/attack1.wav");
+      precache_sound ("vomitus/attack2.wav");
+	precache_sound ("vomitus/die.wav");
+	precache_sound ("vomitus/paina.wav");
+	precache_sound ("vomitus/painb.wav");
+	precache_sound ("vomitus/painc.wav");
+	precache_sound ("hknight/sight1.wav");
 	precache_sound ("hknight/hit.wav");		// used by C code, so don't sound2
-	precache_sound2 ("vomitus/idle1.wav");
+	precache_sound ("vomitus/idle1.wav");
 //tarbaby stuff
-	precache_model2 ("progs/tarbaby.mdl");
+	precache_model ("progs/tarbaby.mdl");
 
-	precache_sound2 ("blob/death1.wav");
-	precache_sound2 ("blob/hit1.wav");
-	precache_sound2 ("blob/land1.wav");
-	precache_sound2 ("blob/sight1.wav");
+	precache_sound ("blob/death1.wav");
+	precache_sound ("blob/hit1.wav");
+	precache_sound ("blob/land1.wav");
+	precache_sound ("blob/sight1.wav");
 }
 	self.netname = "Vomitus";
 

@@ -55,22 +55,22 @@ $frame paind17 paind18 paind19
 
 void() m_precache_enforcer =
 {
-	precache_model2 ("progs/enforcer.mdl");
-	precache_model2 ("progs/h_mega.mdl");
+	precache_model ("progs/enforcer.mdl");
+	precache_model ("progs/h_mega.mdl");
 	precache_model ("progs/g_enflaser.mdl"); // 3 following not used directly by enforcer - but for tossed gun when dead
 	precache_model ("progs/v_enflaser.mdl");
 	precache_model ("progs/vw_enflaser.mdl");
 
-	precache_sound2 ("enforcer/death1.wav");
-	precache_sound2 ("enforcer/enfire.wav");
-	precache_sound2 ("enforcer/enfstop.wav");
-	precache_sound2 ("enforcer/idle1.wav");
-	precache_sound2 ("enforcer/pain1.wav");
-	precache_sound2 ("enforcer/pain2.wav");
-	precache_sound2 ("enforcer/sight1.wav");
-	precache_sound2 ("enforcer/sight2.wav");
-	precache_sound2 ("enforcer/sight3.wav");
-	precache_sound2 ("enforcer/sight4.wav");
+	precache_sound ("enforcer/death1.wav");
+	precache_sound ("enforcer/enfire.wav");
+	precache_sound ("enforcer/enfstop.wav");
+	precache_sound ("enforcer/idle1.wav");
+	precache_sound ("enforcer/pain1.wav");
+	precache_sound ("enforcer/pain2.wav");
+	precache_sound ("enforcer/sight1.wav");
+	precache_sound ("enforcer/sight2.wav");
+	precache_sound ("enforcer/sight3.wav");
+	precache_sound ("enforcer/sight4.wav");
 };
 
 /*

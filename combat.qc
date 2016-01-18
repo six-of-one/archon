@@ -425,7 +425,7 @@ void (entity attacker, float damage) T_BeamDamage =
 			{
 				if (CanDamage (head,attacker))
 				{
-					if (head.classname == "monster_shambler")
+					if (head.classname == "monster_shambler" || head.morphy == IMP_MSHAMBLR)
 						T_Damage (head, attacker, attacker, points*0.5);
 					else
 						T_Damage (head,attacker,attacker,points);

@@ -1036,7 +1036,7 @@ void () key_setsounds =
 	}
 	if (world.worldtype >= 2)
 	{
-		precache_sound2 ("misc/basekey.wav");
+		precache_sound ("misc/basekey.wav");
 		self.noise = "misc/basekey.wav";
 	}
 };
@@ -1068,7 +1068,7 @@ void () item_key1 =
 	}
 	else if (world.worldtype >= 2)
 	{
-		precache_model2 ("progs/b_s_key.mdl");
+		precache_model ("progs/b_s_key.mdl");
 		setmodel (self,"progs/b_s_key.mdl");
 		self.netname = "silver keycard";
 	}
@@ -1107,7 +1107,7 @@ void () item_key2 =
 	}
 	if (world.worldtype >= 2)
 	{
-		precache_model2 ("progs/b_g_key.mdl");
+		precache_model ("progs/b_g_key.mdl");
 		setmodel (self,"progs/b_g_key.mdl");
 		self.netname = "gold keycard";
 	}
@@ -1172,17 +1172,17 @@ void () q100_item_sigil =
 	}
 	if (self.spawnflags & 2)
 	{
-		precache_model2 ("progs/end2.mdl");
+		precache_model ("progs/end2.mdl");
 		setmodel (self,"progs/end2.mdl");
 	}
 	if (self.spawnflags & 4)
 	{
-		precache_model2 ("progs/end3.mdl");
+		precache_model ("progs/end3.mdl");
 		setmodel (self,"progs/end3.mdl");
 	}
 	if (self.spawnflags & 8)
 	{
-		precache_model2 ("progs/end4.mdl");
+		precache_model ("progs/end4.mdl");
 		setmodel (self,"progs/end4.mdl");
 	}
 

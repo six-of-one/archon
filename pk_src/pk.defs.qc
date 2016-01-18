@@ -509,6 +509,8 @@ float ENHANCED					= 1; // adds features that werent originally there in the sub
 
 .float xp // experience points
 
+void() remove_fade;
+
 // goes elsewhere section
 float NO_FLOAT					= -671234; // dont float anything with this offset, or?
 
@@ -1545,6 +1547,7 @@ float PK_CRATE;
 float PK_CUBE;
 float PK_CUBE_DIST			= 192; // must be this close to cube to open, heh heh
 float PK_CUBE_TIME; // freq of respawn
+float PK_CUBE_DV; // dev of respawn
 void(string cb) cube_handle;
 
 // can o p&b

@@ -1026,6 +1026,7 @@ float() FacingIdeal =
 
 float()	WizardCheckAttack;
 float()	DogCheckAttack;
+float() YoungCheckAttack; // Cataboligne - 10/13/11 - alien infestation
 //float()  GremlinCheckAttack;
 //float()  ScourgeCheckAttack;
 
@@ -1045,6 +1046,8 @@ float() CheckAnyAttack =
 		return DogCheckAttack ();
 	if (self.classname == "monster_wizard")
 		return WizardCheckAttack ();
+	if (self.classname == "monster_young")
+		return YoungCheckAttack ();
 //	if (self.classname == "monster_gremlin")
 //		return GremlinCheckAttack ();
 //	if (self.classname == "monster_scourge")

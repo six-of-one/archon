@@ -302,19 +302,19 @@ if (ign != A_MONSTER)
 		remove(self);
 		return;
 	}
-	precache_model2 ("progs/bossman.mdl");
+	precache_model ("progs/bossman.mdl");
 	
-	precache_sound2 ("mon_II/bossman/bossback.wav");
-	precache_sound2 ("mon_II/bossman/bossblah.wav");
-	precache_sound2 ("mon_II/bossman/bossdead.wav");
-	precache_sound2 ("mon_II/bossman/bossecho.wav");
-	precache_sound2 ("mon_II/bossman/bossgard.wav");
-	precache_sound2 ("mon_II/bossman/bosshi.wav");
-	precache_sound2 ("mon_II/bossman/bossat1.wav");
-	precache_sound2 ("mon_II/bossman/bossat2.wav");
-	precache_sound2 ("mon_II/bossman/bossfall1.wav");
-	precache_sound2 ("mon_II/bossman/bossfall2.wav");
-	precache_sound2 ("mon_II/bossman/bossfall3.wav");
+	precache_sound ("mon_II/bossman/bossback.wav");
+	precache_sound ("mon_II/bossman/bossblah.wav");
+	precache_sound ("mon_II/bossman/bossdead.wav");
+	precache_sound ("mon_II/bossman/bossecho.wav");
+	precache_sound ("mon_II/bossman/bossgard.wav");
+	precache_sound ("mon_II/bossman/bosshi.wav");
+	precache_sound ("mon_II/bossman/bossat1.wav");
+	precache_sound ("mon_II/bossman/bossat2.wav");
+	precache_sound ("mon_II/bossman/bossfall1.wav");
+	precache_sound ("mon_II/bossman/bossfall2.wav");
+	precache_sound ("mon_II/bossman/bossfall3.wav");
 }
 	self.netname = "Bossman";
 

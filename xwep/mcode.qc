@@ -2103,13 +2103,13 @@ void() painkeep_cube_use =
 			if (c.th_stand != SUB_Null) // could be respawnable
 			{
 				c.think = c.th_stand;
-				c.nextthink = time + fabs(PK_CUBE_TIME) + random() * 30;
+				c.nextthink = time + PK_CUBE_TIME + crandom() * PK_CUBE_DV;
 			}
 			else
 			{
-				c.health = 20;
+				c.health = 20; // note: not really shootable because of solid flag
 				c.think = c.th_die = SUB_Remove;
-				c.nextthink = time + fabs(PK_CUBE_TIME) + random() * 30;
+				c.nextthink = time + PK_CUBE_TIME + crandom() * PK_CUBE_DV;
 			}
 		}
 
@@ -2168,7 +2168,7 @@ void() painkeep_cube_use =
 			if (deathmatch)
 //			if (deathmatch == 1 || deathmatch == 3)
 			c.think = SUB_regen;
-			c.nextthink = time + fabs(PK_CUBE_TIME);
+			c.nextthink = time + PK_CUBE_TIME + crandom() * PK_CUBE_DV;
 			v = c.origin + ' 0 0 4';
 			y = c = spawn();
 			c.origin = v;
@@ -2568,7 +2568,7 @@ void() crate_init =
 	setmodel(self, self.mdl); // for respawn crates
 
 	self.think = self.th_stand;
-	self.nextthink = time + 30 + fabs(PK_CUBE_TIME) + random() * fabs(PK_CUBE_TIME);
+	self.nextthink = time + 30 + PK_CUBE_TIME + random() * PK_CUBE_DV;
 };
 
 void() pk_crate =

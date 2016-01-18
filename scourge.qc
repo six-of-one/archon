@@ -490,11 +490,11 @@ if (ign != A_MONSTER)
 			remove(self);
 		return;
 	}
-   precache_model2 ("progs/scor.mdl");
-   precache_model2 ("progs/h_scourg.mdl");
-	precache_model2 ("progs/laser.mdl");
-   precache_model2 ("progs/s_light.mdl");
-   precache_model2 ("progs/spike.mdl");
+   precache_model ("progs/scor.mdl");
+   precache_model ("progs/h_scourg.mdl");
+	precache_model ("progs/laser.mdl");
+   precache_model ("progs/s_light.mdl");
+   precache_model ("progs/spike.mdl");
 
    precache_sound ("misc/null.wav");
    precache_sound ("scourge/idle.wav");
@@ -503,8 +503,8 @@ if (ign != A_MONSTER)
    precache_sound ("scourge/sight.wav");
    precache_sound ("scourge/tailswng.wav");
    precache_sound ("scourge/walk.wav");
-   precache_sound2 ("shambler/smack.wav");
-   precache_sound2 ("weapons/rocket1i.wav");
+   precache_sound ("shambler/smack.wav");
+   precache_sound ("weapons/rocket1i.wav");
 }
 	self.netname = "Centroid";
 

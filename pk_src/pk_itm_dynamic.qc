@@ -484,6 +484,8 @@ void(string cls) item_call =
 	else if (cls == "monster_spider") monster_spider(A_MONSTER);
 	else if (cls == "monster_manga") monster_manga(A_MONSTER);
 	else if (cls == "monster_bossman") monster_bossman(A_MONSTER);
+	else if (cls == "monster_clinger") monster_clinger(A_MONSTER);
+	else if (cls == "monster_young") monster_young(A_MONSTER);
 	
 	else // fail - not valid
 	{
@@ -495,6 +497,7 @@ void(string cls) item_call =
 
 	if (self.event == "dyn_monster" || self.class_select == "class_monster")
 	{
+		if (self.stack1 != "no_monster_wakey")
 		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2, random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 
@@ -821,10 +824,17 @@ float(float cn, entity e, string op) ammo_con =
 // fn(dyn_rem) - remove a dynamic item after a timeout
 // fn(dyn_rndloc) - get a random location to spawn an item dynamically
 
+// really should be client side coding
+
 void() remove_fade =
 {
 	self.touch = SUB_Null;
-	self.solid = SOLID_NOT;
+
+	if (!self.alpha) self.alpha = 1.03; // make sure the fade doesnt hit 0 and fire this again
+
+	if (self.solid)
+	if (self.alpha < 0.6)
+		self.solid = SOLID_NOT;
 
 	self.think = remove_fade;
 
@@ -926,9 +936,16 @@ void(entity e, float tm, void() rmv) dyn_remove =
 	else if (e.wad == "morph_cube")
 		f.wait = MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
 	else if (e.wad == "pk_cube")
-		f.wait = fabs(PK_CUBE_TIME) + crandom() * 20;
+		f.wait = PK_CUBE_TIME + crandom() * PK_CUBE_DV;
 	else
 	f.wait = PK_DYNTO + crandom() * 55;
+
+	if (f.wait < 1) {f.wait = 5 + random() * 10; // why ?
+
+
+bprint(" *** dyn_remove f.wait failed\n");
+}
+
 
 	if (rmv != SUB_Null) // old style or something else = direct think
 	{
@@ -994,7 +1011,7 @@ vector(vector v1, float d1, float r1) stdv_rndloc =
 	local float sf, pco, f, k;
 
 	v2 = v1;
-	sf = 500;
+	sf = 100;
 	pco = CONTENT_SOLID;
 
 	while (sf > 0 && pco == CONTENT_SOLID)
@@ -1341,15 +1358,15 @@ void() func_dynitem =
 		if (self.netname == "pk_crate_maker") // makin crates
 		{
 			e.wad = "pk_crate";
-			self.wait = fabs(PK_CUBE_TIME);
-			if (PK_CUBE_TIME < 0) self.delay = fabs(PK_CUBE_TIME) * 0.3;
+			self.wait = PK_CUBE_TIME;
+			self.delay = PK_CUBE_DV;
 		}
 		else
 		if (self.netname == "pk_cube_maker") // makin cubes
 		{
 			e.wad = "pk_cube";
-			self.wait = fabs(PK_CUBE_TIME);
-			if (PK_CUBE_TIME < 0) self.delay = fabs(PK_CUBE_TIME) * 0.3;
+			self.wait = PK_CUBE_TIME;
+			self.delay = PK_CUBE_DV;
 		}
 		else
 		if (self.netname == "morph_cube_maker") // makin cubes
@@ -1407,8 +1424,8 @@ void(string cb) cube_handle =
 		cbnet = "pk_cube_maker";
 		cn = "Painkeep Cubes";
 		cbv = PK_CUBE;
-		cbt = fabs(PK_CUBE_TIME);
-		if (PK_CUBE_TIME < 0) cbd = fabs(PK_CUBE_TIME) * 0.3;
+		cbt = PK_CUBE_TIME;
+		cbd = PK_CUBE_DV;
 	}
 	else
 	if (cb == "sv_morph")
@@ -1427,8 +1444,8 @@ void(string cb) cube_handle =
 		cbnet = "pk_crate_maker";
 		cn = "Crates";
 		cbv = PK_CRATE;
-		cbt = fabs(PK_CUBE_TIME);
-		if (PK_CUBE_TIME < 0) cbd = fabs(PK_CUBE_TIME) * 0.3;
+		cbt = PK_CUBE_TIME;
+		cbd = PK_CUBE_DV;
 	}
 	else
 	{
