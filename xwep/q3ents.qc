@@ -219,7 +219,7 @@ float SUSPENDED = 1; // some q3 items "float" in the air - hope this works
 
 // fn(q3_suspend) - make q3 items suspended as per q3 map spawnflag SUSPEND
 
-// NOTE: possible issue if pk grap interacts with these - TDO: mod grap to temp change movetype & restore with ip repos
+// NOTE: possible issue if pk grap interacts with these - IDEA: mod grap to temp change movetype & restore with ip repos
 
 void() q3_suspend =
 {
@@ -277,7 +277,7 @@ void () q3_weapon_bfg =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.noise3 = "q3_snd/bfg_fire.wav";
 	self.noise2 = "q3_snd/bfg_hum.wav";
-	self.target = "q3_snd/plasmx1a.wav"; // TDO: get right snd
+	self.target = "q3_snd/plasmx1a.wav"; // TDO: get right snd - CHECK: this
 	self.chaosweptime = 0.93;
 	self.duration = SND_OVER;
 
@@ -386,7 +386,7 @@ void() q3_weapon_shotgun =
 	self.dmg = 10;
 	self.dmg_save = 2;
 	self.dmg_take = 11; // shot cnt
-	self.punchangle = ' 0.14 0.08 0'; // bullet spread out -- TDO: get doom value, this is q1
+	self.punchangle = ' 0.14 0.08 0'; // bullet spread out -- TDO: get q3 value, this is q1
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 
 	setmodel (self, "progs/q3_shot.mdl");
@@ -544,7 +544,7 @@ void () q3_weapon_lightning =
 	self.items = IT_LIGHTNING;
 	self.lip = AMMO_LIGHTNING; // really cells
 	self.volume = Q3_MAX_CELLS;
-	self.attack_finished = 0.1; // TDO: separate from q1 lg fire
+	self.attack_finished = 0.1; // TDO: separate from q1 lg fire ??
 	self.dmg = 8;
 	self.dmg_save = 1;
 	self.dmg_take = 1; // shot cnt
@@ -556,7 +556,7 @@ void () q3_weapon_lightning =
 	self.noise = "q3_snd/w_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.noise3 = "q3_snd/lg_fire.wav";
-//	self.noise2 = "q3_snd/lg_hum.wav"; // ? - could have been 1 lg used to use
+//	self.noise2 = "q3_snd/lg_hum.wav"; // ? - could have been 1 lg used to use - CHECK
 	self.chaosweptime = 0.964;
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -885,7 +885,7 @@ void() q3_item_health_small =
 	self.netname = "5 health";
 
 	self.healamount = Q3_HEAL5_A;
-	self.healtype = HEAL_BOT; // TDO: special q3 rot
+	self.healtype = HEAL_BOT; // TDO: special q3 rot - isnt this done ?? CHECK
 
 	setmodel(self, "progs/q3_health.mdl");
 	self.noise = "q3_snd/s_health.wav";
@@ -1195,7 +1195,7 @@ void() holdable_teleporter =
 
 // hack just to match others - q3 has no explode boxes - and appearances can be deceiving
 
-// TDO: box model or some such
+// IDEA: box model or some such
 
 void() q3_misc_explobox =
 {
@@ -1369,7 +1369,7 @@ void() target_speaker =
 		ambientsound (self.origin, self.noise, 0.5, ATTN_STATIC);
 //		loop_sound(self, CHAN_WEAPON,self.noise, 1, attn, 8.25, self.origin, 0, LOOPFOREVER); // FIX - want this for loopoff - problem is we need the sound length
 	}
-//	else if (self.flags & Q3_LOOPOFF) // TDO
+//	else if (self.flags & Q3_LOOPOFF) // finish this
 //	{
 //		ambientsound (self.origin, self.noise, 0.5, ATTN_STATIC);
 //		loop_sound(self, CHAN_WEAPON,self.noise, 1, attn, 8.25, self.origin, 0, LOOPFOREVER);

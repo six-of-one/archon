@@ -830,7 +830,7 @@ void() d_art_berserker =
 
 //	setmodel(self, "progs/d_berzerk.mdl");
 	doom_alpha_tran(self, MC_D_BERS);
-	self.noise = "doom/dsitemup.wav"; // TDO: check this
+	self.noise = "doom/dsitemup.wav"; // CHECK: this
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";

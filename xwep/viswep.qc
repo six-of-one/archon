@@ -597,7 +597,7 @@ void() viswep_post =
 	pkdwep = vhead.owner.pk_currentitem;
 //	if (vhead.owner.flags & FL_DROP) dwep = vhead.owner.prev_weapon; // drop this down first
 
-	while (vhead) // IDEA - do this in engine & test above for chaos = CHAOS_ENGINE
+	while (vhead) // IDEA: do this in engine & test above for chaos = CHAOS_ENGINE
 		{
 		qld = grap_frame_adjust = gremlin_frame_adjust = vadd = 0;
 //		vofs = vhead.finaldest_x * normalize(vang) + vhead.finaldest_y * normalize(v_right);
@@ -663,7 +663,7 @@ void() viswep_post =
 					if ( (vhead.owner.frame - gremlin_frame_adjust) < range_frames) vadd = viswaddf;
 				 }
 
-				} // IDEA - viswframe weps on gremlins back for special frames
+				} // IDEA: viswframe weps on gremlins back for special frames
 			vhead.frame = vframe + vadd - gremlin_frame_adjust - grap_frame_adjust;
 				setorigin(vhead, vhead.owner.origin + vofs); // ... sync visible weapon model
 				vhead.angles = vhead.owner.angles;

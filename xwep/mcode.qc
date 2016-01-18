@@ -118,7 +118,6 @@ float MC_PKP_RNDITM; // + plus items
 
 
 float MC_T_RNDITM; // # of total items
-float MC_TRNSUB; // skip from q1 - pk
 
 /// hipnotic
 // wep ids
@@ -422,7 +421,6 @@ void() mcode_load =
 	MC_PK	 = (f + 1);
 
 	MC_T_RNDITM = f - MC_AXE;		//	#	of	total	items
-	MC_TRNSUB = 0;		//	skip	from	q1	-	pk - TDO: remove from code
 
 /// hipnotic
 	MC_HIP_MJOLNIR = f = (f + 1);
@@ -712,12 +710,12 @@ float(float mcv, entity e) bit_mcode =
 
 	if (mc == MC_D_SOULSPH)												return(IT_SUPERHEALTH);
 
-	if (mc == MC_D_KEY_RED_SK)											return(IT_KEY2);
-	if (mc == MC_D_KEY_BLU_SK)											return(IT_KEY1);
-//	if (mc == MC_D_KEY_YEL_SK)											return(IT_KEY3);
-	if (mc == MC_D_KEY_RED_CR)											return(IT_KEY2);
-	if (mc == MC_D_KEY_BLU_CR)											return(IT_KEY1);
-//	if (mc == MC_D_KEY_YEL_CR)											return(IT_KEY3);
+	if (mc == MC_D_KEY_RED_SK)											return(X_D_KEY_SKRED);
+	if (mc == MC_D_KEY_BLU_SK)											return(X_D_KEY_SKBLUE);
+	if (mc == MC_D_KEY_YEL_SK)											return(X_D_KEY_SKYEL);
+	if (mc == MC_D_KEY_RED_CR)											return(X_D_KEY_CRED);
+	if (mc == MC_D_KEY_BLU_CR)											return(X_D_KEY_CBLUE);
+	if (mc == MC_D_KEY_YEL_CR)											return(X_D_KEY_CYEL);
 
 	if (mc == MC_D_ASHELLS)												return(IT_SHELLS);
 	if (mc == MC_D_ASHELLS_LG)											return(IT_SHELLS);
@@ -727,6 +725,8 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_D_AROCKETS_LG)										return(IT_ROCKETS);
 	if (mc == MC_D_ACELLS)												return(IT_CELLS);
 	if (mc == MC_D_ACELLS_LG)											return(IT_CELLS);
+	if (mc == MC_D_NIGHTVS)											return(X_D_VIS);
+	if (mc == MC_D_AUTOMAP)											return(X_D_MAP);
 
 /// wolf
 
@@ -775,15 +775,15 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_Q2_MEDKIT)												return(0);
 	if (mc == MC_Q2_MEGA)												return(IT_SUPERHEALTH);
 
-	if (mc == MC_Q2_KEY_RED)											return(IT_KEY2);
-	if (mc == MC_Q2_KEY_BLU)											return(IT_KEY1);
-	if (mc == MC_Q2_KEY_CHEAD)											return(0);
-	if (mc == MC_Q2_KEY_ATARGET)										return(0);
-	if (mc == MC_Q2_KEY_CD)												return(0);
-	if (mc == MC_Q2_KEY_SPINNER)										return(0);
-	if (mc == MC_Q2_KEY_PASS)											return(0);
-	if (mc == MC_Q2_KEY_POWER)											return(0);
-	if (mc == MC_Q2_KEY_PYRAMID)										return(0);
+	if (mc == MC_Q2_KEY_RED)											return(X_Q2_KEY_RED);
+	if (mc == MC_Q2_KEY_BLU)											return(X_Q2_KEY_BLUE);
+	if (mc == MC_Q2_KEY_CHEAD)											return(X_Q2_KEY_CHEAD);
+	if (mc == MC_Q2_KEY_ATARGET)										return(X_Q2_KEY_AIRSTRK);
+	if (mc == MC_Q2_KEY_CD)												return(X_Q2_KEY_DATACD);
+	if (mc == MC_Q2_KEY_SPINNER)										return(X_Q2_KEY_CDSPIN);
+	if (mc == MC_Q2_KEY_PASS)											return(X_Q2_KEY_PASS);
+	if (mc == MC_Q2_KEY_POWER)											return(X_Q2_KEY_CUBE);
+	if (mc == MC_Q2_KEY_PYRAMID)										return(X_Q2_KEY_PYRAMID);
 
 	if (mc == MC_Q2_ASHELLS)											return(IT_SHELLS);
 	if (mc == MC_Q2_ABULLETS)											return(0);
@@ -849,8 +849,7 @@ float(float mcv, entity e) bit_mcode =
 // sc - classname to test
 // returns map code value
 
-//  TDO: handle native q3 & converted q2 maps that use disambig code
-// in other words ambiguous items on native maps must set the correct classname for this fn
+// ambiguous items on native maps must set the correct classname for this fn
 
 float(string sc, entity e) pk_mcode =
 {
@@ -1575,7 +1574,7 @@ void (float ksv) item_keyX =
 };
 
 
-// TDO: expand fn - handle chaos items, non respawnables, provide location area
+// TDO: expand fn - handle chaos items, non respawnables
 
 // fn_make - make an item from map code value
 
@@ -1589,11 +1588,9 @@ void(float mc, vector vo) fn_make =
 	sv = self;
 	sc = item_by_mcode(mc);
 
-	self = spawn();
-
  if (sc != "")
  {
-	v1 = vo;
+	 v1 = vo;
   if (vo == v0) // no origin sent, get random one around some other object
   {	  
 	e = dyn_rndloc();
@@ -1607,6 +1604,8 @@ void(float mc, vector vo) fn_make =
 	if (e.flags & FL_ITEM) // randomize away from other map items
 		v1 = stdv_rndloc(e.origin + ' 0 0 16', 50, 100);
   }
+
+	self = spawn();
 
 	self.wad = sc;
 

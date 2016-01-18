@@ -247,7 +247,7 @@ bprint(".\n");
 		else
 		{
 			SpawnSmoke(trace_endpos, ' 0 0 20');
-/* CHECK blocked, no rubble fn yet - restore later
+/* CHECK: blocked, no rubble fn yet - restore later
 			k = 2 + random() * 3;
 			while(k > 0)
 			{

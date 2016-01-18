@@ -61,7 +61,7 @@ void() ProximityGrenadeExplode =
 	NumProximityGrenades = NumProximityGrenades - 1;
 	self.deathtype = "exploding";
 	self.nextthink = time + 0.1;
-//	self.owner = self.lastvictim; CHECK - do we need this, answer may be in demo code
+//	self.owner = self.lastvictim; CHECK: do we need this, answer may be in demo code
 //	self._stand = 
 	self.think = ProximityExplode;
 	if (pointcontents(self.origin) == CONTENT_LAVA) self.nextthink = time;

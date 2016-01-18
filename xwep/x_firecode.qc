@@ -29,7 +29,7 @@ void() x_weapon_touch =
 	else
 		leave = 0;
 
-// IDEA - always leave for another rl type
+// IDEA: always leave for another rl type
 	if (leave && (other.items & self.items))	return ;
 	new = self.items;
 

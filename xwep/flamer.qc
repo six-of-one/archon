@@ -105,7 +105,7 @@ void(float num_bubbles, vector bub_origin) NewBubbles =
 };
 
 // fn(grab_fire) - some dummy tried to pick up a fire
-// IDEA - handle static fires?
+// IDEA: handle static fires?
 
 // e is being picked up and should be a fire
 // self is ent doing pick
@@ -164,7 +164,7 @@ void () BurnThem =
 	else if (self.enemy.health > 0) // NOTE: remove d_b when all things die
 	{
 
-		if (self.enemy.healtype > HEAL_NORM) // stopped by any special heal - IDEA includes d_berserk and q2_adrenaline
+		if (self.enemy.healtype > HEAL_NORM) // stopped by any special heal - IDEA: includes d_berserk and q2_adrenaline
 		{																											if (WARNING) if (FLAME_CHECK) bprint("fire out - mega heal\n");
 //		self.enemy.healtype = -1; box stops all plague ents
 			self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONFIRE);
@@ -204,7 +204,7 @@ if (WARNING) if (FLAME_CHECK) bprint("put out fire - dont know why!\n");
 // self - hot item, other - toucher
 // *** if FL_REMOVE is set self ent can be removed or become BurnThem thinker
 // if called as fn and not a think, if other.takedamage is FALSE, a movestop can occur which plays burning.wav
-// IDEA - handle static fires?
+// IDEA: handle static fires?
 
 void () FlameTouch =
 {
@@ -239,7 +239,7 @@ void () FlameTouch =
 			}
 		rn = random();
 		// 20% chance
-		if (rn <= 0.2 && !(other.flags & FL_ONFIRE) ) // IDEA - set chance by ents .* float value
+		if (rn <= 0.2 && !(other.flags & FL_ONFIRE) ) // IDEA: set chance by ents .* float value
 		{
 			// Fire stays with whatever it hits
 			if (other.classname == "player")
@@ -319,7 +319,7 @@ void()	s_flameburn3	=	[2,	s_flameburn1]
 // self = spawning item, (player)
 // org - flame origin
 
-// IDEA - limit napalm growth with radius check
+// IDEA: limit napalm growth with radius check
 
 entity(vector org) spawn_napalm =
 {
