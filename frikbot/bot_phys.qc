@@ -596,16 +596,10 @@ void() SV_FlyMove =
 			self.phys_obj = find(self.phys_obj,classname,"phys_obj");
 			if (self.phys_obj == world)
 			{
-				if (Q_100 && Q_100_OBJERR)
-					error("No physics entity spawned!\nMake sure BotInit was called\n");
-				else 
-				{
-					self.phys_obj = spawn();
-					self.phys_obj.owner = self;
-					self.phys_obj.stack1 = "insta spawn phys_obj"; // test: nothing spawn test
-					if (WARNING)
-					bprint("WARNING: No physics entity spawned!\nMake sure BotInit was called\n");
-				}
+				self.phys_obj = spawn();
+				self.phys_obj.owner = self;
+				self.phys_obj.stack1 = "insta spawn phys_obj"; // test: nothing spawn test
+				if (WARNING) bprint("WARNING: No physics entity spawned!\nMake sure BotInit was called\n");
 			}
 		}
 	}
@@ -689,15 +683,11 @@ void() SV_Physics_Client =
 	}
 	else
 	{
-		if (Q_100 && Q_100_OBJERR)
-		error ("SV_Physics_Client: Bad Movetype (BOT)");
-		else
-		{
-//			if (WARNING)
-			bprint("--- WARNING: SV_Physics_Client: Bad Movetype (BOT) = ");
-			bprint(item_ident(self));
-			bprint("\n");
-		}
+//		if (WARNING)
+		bprint("--- WARNING: SV_Physics_Client: Bad Movetype (BOT) = ");
+		bprint(item_ident(self));
+		bprint("\n");
+
 	}
 
 };

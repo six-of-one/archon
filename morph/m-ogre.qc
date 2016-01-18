@@ -222,6 +222,10 @@ void() player_ogre_shoot3 = [ $shoot3, player_ogre_shoot4 ]
 		newmis.weapon = IMP_MOGRE;
 		if (rune_haste(1.3))
 		self.attack_finished = time + 2.6;
+
+// use archon power
+		if (self.volume < 0)
+			self.archon = self.archon + self.volume;
 	}
 
 };
@@ -231,6 +235,9 @@ void() player_ogre_shoot6 = [ $shoot6, player_stand1 ] { };
 
 void() player_ogre_attack =
 {
+	if (self.archon < 6)
+	if (self.weapon == IT_ROCKET_LAUNCHER) self.weapon = IT_GRENADE_LAUNCHER;
+
 	if(self.weapon == IT_AXE)
 	{
 //		if(random()>0.66) {
@@ -256,23 +263,40 @@ void() player_ogre_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
+	if (!self.builtin & IT_ROCKET_LAUNCHER)
+	{
+		if (self.archon > 50) // ARCHON_MORPH_XMIN - minimum archon pts req to activate powers
+		{
+			self.builtin = self.builtin | IT_ROCKET_LAUNCHER;
+			self.items = self.items | self.builtin;
+		}
+	}
+	else
+	if (self.archon < 6) // ARCHON_MORPH_BLAST + 1 - pts required by morph explosive weps
+		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER);
+	else
+		self.items = self.items | IT_ROCKET_LAUNCHER;	
+
 //	split_morph_impulse();
 	morph_impulse();
+
+	self.volume = 0;
 
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		sprint(self, "Ogre using ( Chainsaw )\n");
+//		sprint(self, "Ogre using ( Chainsaw )\n"); // moved to hud
 	}
 	if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
-		sprint(self, "Ogre using ( Grenades )\n");
+//		sprint(self, "Ogre using ( Grenades )\n");
 		self.items = self.items | IT_ROCKETS;
 	}
 
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 		{
-		sprint(self, "Ogre using ( Cluster Grenade )\n");
+			self.volume = -5; // ARCHON_MORPH_BLAST / 2 - pts required by morph explosive weps
+//		sprint(self, "Ogre using ( Cluster Grenade )\n");
 		self.items = self.items | IT_ROCKETS;
 		}
 };
@@ -319,7 +343,7 @@ void(float silent) player_ogre_become =
 
 	setmodel(self,"progs/ogre.mdl");
 
-	self.builtin = IT_AXE | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
+	self.builtin = IT_AXE | IT_GRENADE_LAUNCHER;
 	self.items = self.items | self.builtin;
 	self.weapon = IT_GRENADE_LAUNCHER;
 	

@@ -403,14 +403,14 @@ void() player_scourge_impulse =
 	if (self.weapon == IT_LIGHTNING)
 	{
 		self.items = self.items | IT_CELLS;
-		sprint(self, "Scourge firing ( lazers )\n"); 
+//		sprint(self, "Scourge firing ( lazers )\n"); 
 		self.weaponmodel = 	null_string;
 		self.forcewchange = 0;
 	}
 	if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
 		self.items = self.items | IT_ROCKETS;
-		sprint(self, "Scourge firing ( bombs )\n"); 
+//		sprint(self, "Scourge firing ( bombs )\n"); 
 		self.weaponmodel = null_string;
 		self.forcewchange = 0;
 	}
@@ -419,16 +419,16 @@ void() player_scourge_impulse =
 		if (self.eweapon.pk_touch != cube_touch)
 		self.eweapon = world;
 		self.items = self.items | IT_NAILS;
-		sprint(self, "Scourge firing ( perforator )\n"); 
+//		sprint(self, "Scourge firing ( perforator )\n"); 
 	}
 	if (self.weapon == IT_AXE)
 	{
 		if (self.eweapon.pk_touch != cube_touch)
 		self.eweapon = world;		
-		if (self.pk_currentitem == PK_IT_AXE)
-		{
-			sprint(self, "Scourge firing ( stinger )\n"); 
-		}
+//		if (self.pk_currentitem == PK_IT_AXE)
+//		{
+//			sprint(self, "Scourge firing ( stinger )\n"); 
+//		}
 	}
 };
 
@@ -544,8 +544,8 @@ void(float silent) player_scourge_become =
 
 	setmodel(self,"progs/scor2.mdl");
 
-	self.items = self.items | IT_AXE | IT_SHOTGUN;
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_LIGHTNING | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
+	self.items = self.items | IT_AXE | IT_SHOTGUN;
 	self.weapon = IT_SHOTGUN;
 	
 	self.msight = "scrg/sight.wav";

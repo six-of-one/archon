@@ -537,8 +537,6 @@ void () teleport_touch =
 		t = find (world,targetname,targ);
 		if (!t)
 		{
-			if (Q_100 && Q_100_OBJERR)
-				objerror ("couldn't find target");
 			if (WARNING) bprint("\n*** warning:\nTeleporter target not found!\n");
 			return;
 		}
@@ -662,13 +660,9 @@ void () trigger_teleport =
 	// find the destination
 	if (!self.target)
 	{
-		if (Q_100 && Q_100_OBJERR) objerror ("no target");
-		else
-		{
-			if (WARNING) bprint("Teleporter - no target -- removed\n");
-			remove(self);
-			return;
-		}
+		if (WARNING) bprint("Teleporter - no target -- removed\n");
+		remove(self);
+		return;
 	}
 	self.use = teleport_use;
 

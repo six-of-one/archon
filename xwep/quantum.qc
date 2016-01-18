@@ -276,7 +276,6 @@ void () PortalThink =
 entity (vector pos, entity entrance) OpenPortalExit =
 {
 	local entity portal;
-	local vector norm;
 
 	portal = spawn ();
 	portal.movetype = MOVETYPE_FLYMISSILE;
@@ -417,7 +416,7 @@ float (vector dir, float md2) PreparePortalEntrance =
 {
 	local entity tline;
 	local entity portal;
-	local vector org, norm;
+	local vector org;
 	local string ts;
 	local float f;
 

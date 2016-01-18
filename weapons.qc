@@ -138,7 +138,7 @@ void (vector org, vector vel) SpawnMeatSpray =
 	setmodel (missile,"progs/zom_gib.mdl");
 	setsize (missile, '0 0 0', '0 0 0');
 	setorigin (missile,org);
-	if (!Q_100) pk_missile_splash(missile); // *pk - splash & message setup
+	pk_missile_splash(missile); // *pk - splash & message setup
 };
 
 /*
@@ -300,7 +300,7 @@ void () W_FireShotgun =
 {
 	local vector dir;
 
-	if (!(!Q_100 && !Q_99 && self.pk_explode_ammo))
+	if (!self.pk_explode_ammo)
 		sound (self,CHAN_WEAPON,"weapons/guncock.wav",1 ,ATTN_NORM);
 	else
 	{
@@ -334,7 +334,7 @@ void () W_FireSuperShotgun =
 		return ;
 	}
 
-	if (!(!Q_100 && !Q_99 && self.pk_explode_ammo))
+	if (!self.pk_explode_ammo)
 		sound (self,CHAN_WEAPON,"weapons/shotgn2.wav",1 ,ATTN_NORM);
 	else
 	{
@@ -484,19 +484,19 @@ void () W_FireRocket =
 	setsize (missile, '0 0 0', '0 0 0');
 	if (self.classname == "pk*bot")
 	{
-		if (PK_100 || Q_100)
+		if (autocvar_sv_centerwep)
 			setorigin (missile,((self.origin + (bfwd * 8)) + '0 0 16'));
 		else
 			setorigin (missile,self.origin + bfwd * VWX_ROCKETL + v_right * VWY_ROCKETL + v_up * VWZ_ROCKETL); // Cataboligne - 9.30.9 - true position fire point
 	}
 	else
 	{
-		if (PK_100 || Q_100)
+		if (autocvar_sv_centerwep)
 			setorigin (missile, self.origin + v_forward*8 + '0 0 16');
 		else
 			setorigin (missile,self.origin + v_forward * VWX_ROCKETL + v_right * VWY_ROCKETL + v_up * VWZ_ROCKETL); // Cataboligne - 9.30.9 - true position fire point
 	}
-	if (!Q_100) pk_missile_splash(missile); // *pk - splash & message setup
+	pk_missile_splash(missile); // *pk - splash & message setup
 };
 
 /*
@@ -614,7 +614,7 @@ void () W_FireLightning =
 		if (self.ammo_cells < 1)
 		{
 			self.weapon = W_BestWeapon ();
-			if (!Q_100 && !Q_99) self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
+			self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
 			W_SetCurrentAmmo ();
 			if (self.classname == "pk*bot")
 			{
@@ -659,10 +659,12 @@ void () W_FireLightning =
 		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(1, self, null_string);
 	}
 
-	if (PK_100 || Q_100)
+/* not needed with lg
+	if (autocvar_sv_centerwep)
 		org = self.origin + '0 0 16';
 	else
-		org = self.origin + v_right * VWY_THUNDER + v_forward * VWX_THUNDER + v_up * VWZ_THUNDER;
+	*/
+	org = self.origin + v_right * VWY_THUNDER + v_forward * VWX_THUNDER + v_up * VWZ_THUNDER;
 
 	if (self.classname == "pk*bot")
 	{
@@ -796,11 +798,11 @@ void () W_FireGrenade =
 
 	setmodel (missile,"progs/grenade.mdl");
 	setsize (missile, '0 0 0', '0 0 0');
-	if (PK_100 || Q_100)
+	if (autocvar_sv_centerwep)
 		setorigin (missile,self.origin);
 	else
 		setorigin (missile, self.origin + v_forward * VWX_GRENADEL + v_right * VWY_GRENADEL + v_up * VWZ_GRENADEL); // Cataboligne - 9.30.9 - true position fire point
-	if (!Q_100) pk_missile_splash(missile); // *pk - splash & message setup
+	pk_missile_splash(missile); // *pk - splash & message setup
 };
 
 
@@ -837,7 +839,7 @@ void (vector org, vector dir) launch_spike =
 	if (!rune_haste(0.1))
 		newmis.velocity = dir * 1000 * 2;
 
-	if (!Q_100) pk_missile_splash(newmis); // *pk - splash & message setup
+	pk_missile_splash(newmis); // *pk - splash & message setup
 };
 
 void () W_FireSuperSpikes =
@@ -853,7 +855,7 @@ void () W_FireSuperSpikes =
 	else
 	dir = aim (self,1000);
 	
-	if (PK_100 || Q_100)
+	if (autocvar_sv_centerwep)
 		launch_spike (self.origin + '0 0 16', dir);
 	else
 		launch_spike (self.origin + v_up * VWZ_SNAILG + v_right * VWY_SNAILG + v_forward * VWX_SNAILG, dir);
@@ -886,7 +888,7 @@ void(float ox) W_FireSpikes =
 	if (self.ammo_nails < 1)
 	{
 		self.weapon = W_BestWeapon ();
-		if (!Q_100 && !Q_99) self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
+		self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
 		W_SetCurrentAmmo ();
 		if (self.classname == "pk*bot")
 		{
@@ -908,7 +910,7 @@ void(float ox) W_FireSpikes =
 	else
 	dir = aim (self, 1000);
 
-	if (PK_100 || Q_100)
+	if (autocvar_sv_centerwep)
 		launch_spike (self.origin + '0 0 16' + v_right*ox, dir);
 	else
 		launch_spike (self.origin + v_up * VWZ_NAILG + v_right * ox + v_right * VWY_NAILG + v_forward * VWX_NAILG, dir);
@@ -1007,6 +1009,8 @@ PLAYER WEAPON USE
 
 void () W_SetCurrentAmmo =
 {
+	PK_SetCurrentAmmoOnly(self);
+/*
 //	if (PK || custom_hub_loaded || (self.cam_x & CHSCAM_ON)) // Cataboligne 8.8.9 purify - cc thru pk code - chase cam
 	if (!Q_100)
 	{
@@ -1083,14 +1087,14 @@ void () W_SetCurrentAmmo =
 		self.weaponmodel = null_string;
 		self.weaponframe = 0;
 	}
+*/
 };
 
 float () W_BestWeapon =
 {
+	return(PK_BestWeapon());  // *pk - best wep including pk items
+/*
 	local float it;
-	if (!Q_100)
-		return(PK_BestWeapon());  // *pk - best wep including pk items
-
 	it = self.items;
 
 	if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_LIGHTNING))
@@ -1104,14 +1108,13 @@ float () W_BestWeapon =
 	if (self.ammo_shells >= 1 && (it & IT_SHOTGUN))
 		return IT_SHOTGUN;
 	return IT_AXE;
+*/
 };
 
 float () W_CheckNoAmmo =
 {
-	if (!Q_100)
-	{
-		return(PK_CheckNoAmmo());
-	}
+	return(PK_CheckNoAmmo());
+/*
 	if (self.currentammo > 0)
 		return TRUE;
 
@@ -1124,6 +1127,7 @@ float () W_CheckNoAmmo =
 
 // drop the weapon down
 	return FALSE;
+*/
 };
 
 /*
@@ -1144,11 +1148,8 @@ void () player_rocket1;
 
 void () W_Attack =
 {
-	if (!Q_100)
-	{
-		PK_Attack();
-		return;
-	}
+	PK_Attack();
+/*
 	local float r;
 
 	if (!W_CheckNoAmmo ())
@@ -1216,6 +1217,7 @@ void () W_Attack =
 	}
 
 	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+*/
 };
 
 /*
@@ -1226,11 +1228,8 @@ W_ChangeWeapon
 */
 void () W_ChangeWeapon =
 {
-	if (!Q_100)
-	{
-		PK_ChangeWeapon();
-		return;
-	}
+	PK_ChangeWeapon();
+/*
 	local	float	it, am, fl;
 	
 	it = self.items;
@@ -1302,6 +1301,7 @@ void () W_ChangeWeapon =
 //
 	self.weapon = fl;		
 	W_SetCurrentAmmo ();
+*/
 };
 
 /*
@@ -1344,11 +1344,8 @@ Go to the next weapon with ammo
 */
 void () CycleWeaponCommand =
 {
-	if (!Q_100)
-	{
-		PK_CycleWeaponCommand();
-		return;
-	}
+	PK_CycleWeaponCommand();
+/*
 	local	float	it, am, sf;
 	sf = 50;
 	
@@ -1421,7 +1418,7 @@ void () CycleWeaponCommand =
 			return;
 		}
 	}
-
+*/
 };
 
 /*
@@ -1433,11 +1430,8 @@ Go to the prev weapon with ammo
 */
 void () CycleWeaponReverseCommand =
 {
-	if (!Q_100)
-	{
-		PK_CycleWeaponReverseCommand();
-		return;
-	}
+	PK_CycleWeaponReverseCommand();
+/*
 	local	float	it, am, sf;
 	sf = 50;
 	
@@ -1510,7 +1504,7 @@ void () CycleWeaponReverseCommand =
 			return;
 		}
 	}
-
+*/
 };
 
 /*
@@ -1580,11 +1574,8 @@ void () ImpulseCommands =
 // Cataboligne 9.11.3 purify - chase cam
 	if (self.impulse > 229 && self.impulse < 240) ccb_impulse_check();
 
-	if (!Q_100 && !Q_99)
-	{
-		PK_ImpulseCommands();
-		return;
-	}
+	PK_ImpulseCommands();
+/*
 	if (self.impulse >= 1 && self.impulse <= 8)
 		W_ChangeWeapon ();
 
@@ -1601,6 +1592,7 @@ void () ImpulseCommands =
 		QuadCheat ();
 
 	self.impulse = 0;
+*/
 };
 
 /*

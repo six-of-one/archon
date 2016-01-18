@@ -1031,17 +1031,6 @@ void() rune_maker =
 
 			self.punchangle = MED_BOUNCE; // for rune_bounce
 
-			if (Q_100 || PK_100) // if *100 - need this here
-			{
-				SUB_regen(); // note: does not use positioning code correctly
-//				item_eject(self, MED_BOUNCE);
-//				self.think = SUB_regen; // dont go thru place_item - use regen method
-//				self.nextthink = time + 1 + 3 * random(); // spread em out
-//				self.model = string_null;
-			}
-//			else
-//			item_eject(self, MED_BOUNCE);
-
 			AddToSplash(self); // splash code kills lava immersed runes
 
 			rune_map = rune_map | self.spawnflags;
@@ -1789,26 +1778,10 @@ void () item_sigil =
 	}
 
 	if (!self.spawnflags)
-//		objerror ("no spawnflags");
 	{
-		if (Q_100 && Q_100_OBJERR) objerror("no spawnflags");
-		else
-		{
-			if (WARNING)
-			{
-				if (Q_100 || PK_100)
-					bprint("\n*** warning:\nsigil with no spawnflags - removed.\n");
-				else
-					bprint("\n*** warning:\nsigil with no spawnflags - randomizing.\n");
-			}
-			if (Q_100 || PK_100)
-			{
-				remove(self);
-				return;
-			}
-			else
-			self.spawnflags = rnd_bit_mask(15);
-		}
+		if (WARNING) bprint("\n*** warning:\nsigil with no spawnflags - randomizing.\n");
+
+		self.spawnflags = rnd_bit_mask(15);
 	}
 
 	rul = cvar("sv_c_rune"); // see -2 for q1 only models in rule 2

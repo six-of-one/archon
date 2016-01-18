@@ -394,10 +394,7 @@ entity() PK_SelectSpawnPoint =
 		spot = find (world,classname,"info_player_start");
 		if (!spot)
 		{
-			if (PK_100 && PK_100_OBJERR)
-				error ("PutClientInServer: no info_player_start on level");
-			else
-				bprint ("*** Warning: PutClientInServer: no info_player_start on level - looking for dm start");
+			bprint ("*** Warning: PutClientInServer: no info_player_start on level - looking for dm start");
 		}
 		else
 			return(spot);

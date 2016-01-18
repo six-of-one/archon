@@ -126,7 +126,7 @@ void() walkmonster_start =
 	self.nextthink = self.nextthink + random()*0.5;
 	self.think = walkmonster_start_go;
 	total_monsters = total_monsters + 1;
-	if (!Q_100) AddToSplashBig(self); // *pk - Make this entity splash
+	AddToSplashBig(self); // *pk - Make this entity splash
 	if (self.class_select == null_string) self.class_select = "class_monster"; // Cataboligne - let mod know this is a monster
 
 	self.archon = self.health / ARCHON_MONSTER;
@@ -184,7 +184,7 @@ void() flymonster_start =
 	self.nextthink = self.nextthink + random()*0.5;
 	self.think = flymonster_start_go;
 	total_monsters = total_monsters + 1;
-	if (!Q_100) AddToSplashBig(self); // *pk - Make this entity splash
+	AddToSplashBig(self); // *pk - Make this entity splash
 	if (self.class_select == null_string) self.class_select = "class_monster";
 
 	self.archon = self.health / (ARCHON_MONSTER - 20);

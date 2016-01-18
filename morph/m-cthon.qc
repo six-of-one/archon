@@ -92,8 +92,6 @@ void() player_lavacthon_stand = [ $walk1, player_stand1 ]
 
 void() player_lavacthon_run = [ $walk1, player_run ] 
 {
-	cthon_outoflava();
-
 	if (self.walkframe > 30 || self.walkframe < 0) self.walkframe = 0;
 	if (self.walkframe == 2 || self.walkframe == 20)
 		{
@@ -166,6 +164,7 @@ void(entity e) lavacthon_blobme =
 {
 	local entity sv;
 
+	self.archon = self.archon + 50 + random() * 20; // get some back
 	sv = self;
 	if (e) self = e;
 	if (self.watertype != CONTENT_LAVA) // not in lava - just transform back, no sink frames
@@ -313,25 +312,30 @@ void() cthon_outoflava =
 	if (self.movetype == MOVETYPE_NOCLIP) return; // player cheating - shhh...just ignore this
 
 	if (self.watertype != CONTENT_LAVA)
-		{
+	{
+		self.mcode = -502;
 		if (self.count == 0)
 			{
-			sprint(self,"\n\n\bHURRY!\b  Find more Lava fast!\n");
+//			sprint(self,"\n\n\bHURRY!\b  Find more Lava fast!\n");
 			self.count = 101; // only have 10 secs to get back in lava!
 			}
 		else if (self.count > 1)
 		{
 			self.count = self.count - 1;
-			if (random() < 0.1) sprint(self,"\n\n\bHURRY!\b  Find more Lava fast!\n");
+//			if (random() < 0.1) sprint(self,"\n\n\bHURRY!\b  Find more Lava fast!\n");
 		}
 		else if (self.count == 1)
 			{
-			if (random() < 0.2) sprint(self,"Cthon cannot exist away from Lava\n");
+			self.mcode = -501;
+//			if (random() < 0.2) sprint(self,"Cthon cannot exist away from Lava\n");
 			T_Damage (self, world, world, self.health + 2);
 			}
-		}
+	}
 	else
+	{
 		self.count = 0;
+		self.mcode = -503;
+	}
 };
 
 
@@ -389,8 +393,11 @@ void() player_lavacthon_become =
 
 	sprint(self,"You are emergent...CTHON!!\n");
 
-	self.builtin = self.items = self.items | IT_SHOTGUN;
+	self.builtin = IT_SHOTGUN;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_SHOTGUN;
+	self.mcode = -503; // tell hud we are cthon emerged
+	self.volume = 0; // because of swap
 
 // remove all
 	if (self.dropent)

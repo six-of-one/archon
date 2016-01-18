@@ -110,11 +110,11 @@ void() player_run;
 
 void()	player_stand1 =[	$axstnd1,	player_stand1	]
 {
-	if (!Q_100 && !Q_99) pk_harpoon_frames();
-	else
-	self.weaponframe=0;
+	pk_harpoon_frames();
 
-	if (!Q_100) pk_stand_frames();
+	pk_stand_frames();
+/*
+	if (!Q-100) pk_stand_frames();
 	else
 	if (self.weapon == IT_AXE)
 	{
@@ -130,6 +130,7 @@ void()	player_stand1 =[	$axstnd1,	player_stand1	]
 		self.frame = $stand1 + self.walkframe;
 		self.walkframe = self.walkframe + 1;
 	}
+*/
 
 	if (self.velocity_x || self.velocity_y) // moved - allow frame to be set
 	{
@@ -149,11 +150,11 @@ void()	player_stand1 =[	$axstnd1,	player_stand1	]
 
 void()	player_run =[	$rockrun1,	player_run	]
 {
-	if (!Q_100 && !Q_99) pk_harpoon_frames();
-	else
-	self.weaponframe=0;
+	pk_harpoon_frames();
 
-	if (!Q_100) pk_run_frames();
+	pk_run_frames();
+/*
+	if (!Q-100) pk_run_frames();
 	else
 	if (self.weapon == IT_AXE)
 	{
@@ -169,6 +170,7 @@ void()	player_run =[	$rockrun1,	player_run	]
 		self.frame = self.frame + self.walkframe;
 		self.walkframe = self.walkframe + 1;
 	}
+*/
 
 	if (self.hook & HOOK_IN)
 	{
@@ -400,24 +402,17 @@ void() player_pain =
 	if (self.invisible_finished > time)
 		return;		// eyes don't have pain frames
 
-	if (!Q_100)
-	{
-		if (self.rune_flag & RUNE_FLG_RG)
-		if (random() < 0.95)
-			return;
+	if (self.rune_flag & RUNE_FLG_RG)
+	if (random() < 0.95)
+		return;
 
-		if (self._pain != SUB_Null) { self._pain(world, 0); return; }
+	if (self._pain != SUB_Null) { self._pain(world, 0); return; }
 
-		if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
-			player_axpain1 (); // *pk - run pk axe frames
-		else
-			player_pain1 ();
-	}
-	else
-	if (self.weapon == IT_AXE)
-		player_axpain1 ();
+	if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
+		player_axpain1 (); // *pk - run pk axe frames
 	else
 		player_pain1 ();
+
 };
 
 void() player_diea1;
@@ -517,7 +512,7 @@ vector(float dm) VelocityForDamage =
 {
 	local vector v;
 
-	if (!Q_100 && damage_inflictor) // *pk - used by the player gib functions to calculate the direction of the gib to go in.
+	if (damage_inflictor) // *pk - used by the player gib functions to calculate the direction of the gib to go in.
 	{
 		makevectors(damage_inflictor.angles);
 		v = (300 * v_forward * random()) + (100 * v_right * crandom()) + (v_up * 300 * random());
@@ -585,12 +580,8 @@ void(string gibname, float dm) ThrowHead =
 
 void() GibPlayer =
 {
-	if (!Q_100)
-	{
-		PK_GibPlayer();
-		return;
-	}
-
+	PK_GibPlayer();
+/*
 	ThrowHead ("progs/h_player.mdl", self.health);
 	ThrowGib ("progs/gib1.mdl", self.health);
 	ThrowGib ("progs/gib2.mdl", self.health);
@@ -614,17 +605,15 @@ void() GibPlayer =
 		sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE);
 	else
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+*/
 };
 
 void() PlayerDie =
 {
 	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
 
-	if (!Q_100)
-	{
-		PK_PlayerDie();
-		return;
-	}
+	PK_PlayerDie();
+/*
 	local	float	i;
 
 	self.items = self.items - (self.items & IT_INVISIBILITY); // note - doesnt clear other flags
@@ -680,16 +669,18 @@ void() PlayerDie =
 		player_died1();
 	else
 		player_diee1();
-
+*/
 };
 
 void() set_suicide_frame =
 { // used by kill command and diconnect command
 
-	if ( (Q_100 || PK_100) && self.model != "progs/player.mdl") // because of morph we cant test this
+/*
+	if ( (Q-100 || PK-100) && self.model != "progs/player.mdl") // because of morph we cant test this
 		return;	// allready gibbed
-	else if (self.modelindex != self.modelindex_morph)
-		return;
+	else 
+*/
+		if (self.modelindex != self.modelindex_morph) return;
 
 	self.frame = $deatha11;
 	self.solid = SOLID_NOT;

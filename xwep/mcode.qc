@@ -749,8 +749,6 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_AROCKETS_LG)											return(IT_ROCKETS);
 	if (mc == MC_ACELLS_LG)												return(IT_CELLS);
 
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-		return(0);
 
 /// pk
 	
@@ -1355,8 +1353,6 @@ string (float mc) item_by_mcode =
 	if (mc == MC_EXPLOD1)												return("misc_explobox");
 	if (mc == MC_EXPLOD2)												return("misc_explobox2");
 
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-		return(null_string);
 
 // TDO - q1 backpack cls - & in dyn items call()
 
@@ -2354,14 +2350,6 @@ void() cube_touch =
 {
 	local entity e;
 
-	if (PK_100 || Q_100)
-	{
-		self.model = null_string;
-		self.touch = SUB_Null;
-//		remove(self); // no can - dyn_rem issue
-		return;
-	}
-
 // clear power required for morph - morph cubes do not give archon points
 
 	if (self.wad == "morph_cube") self.archon = 0;
@@ -2395,7 +2383,9 @@ void() cube_touch =
 		return;
 
 	if (sphere_a.owner == other) // no cubes while controlling sphere
+	{if (WARNING) bprint("\b *** warning: nocubes: SOA\n");
 		return;
+	}
 
 	if (other.dropent) // dont touch while inventory controlling
 		return;
@@ -2463,7 +2453,7 @@ void() cube_touch =
 	else
 	{
 		other.cnt = -1;
-		other.state = other.morphy;
+		other.state = other.morphy; // set morph_lock
 		if (other.class_select == "class_player") // not a bot
 		{
 			stuffcmd(other, "exec hook_release.cfg\n"); // make sure they have wheel select here
@@ -2582,12 +2572,6 @@ void() crate_touch =
 
 	if (other.health <= 0)
 		return;
-
-	if (PK_100 || Q_100)
-	{
-		remove(self);
-		return;
-	}
 
 	if (self.duration > time) return;
 
@@ -3049,12 +3033,6 @@ void() func_make =
 {
 	local float d, f;
 
-	if (Q_100 || PK_100)
-	{
-		remove(self);
-		return;
-	}
-
 	if (self.spawnflags & 1) self.origin = v0;
 
 	d = self.wait;
@@ -3064,34 +3042,27 @@ void() func_make =
 	if (self.wait <=0)
 		d = MC_SUPER_SHOTGUN + rint(random() * f); // now default
 
-	if (!Q_99)
-	{
-		f = MC_PK_RNDITM;
-		if (PK_ART || self.wait == -4) f = MC_PKP_RNDITM;
-		if (self.wait == -3 || self.wait == -4) d = MC_PULSE_NAILGUN + rint(random() * f);
+	f = MC_PK_RNDITM;
+	if (PK_ART || self.wait == -4) f = MC_PKP_RNDITM;
+	if (self.wait == -3 || self.wait == -4) d = MC_PULSE_NAILGUN + rint(random() * f);
 
-		f = MC_D_RNDITM;
-		if ((self.wait == -6) && ULOKD) d = MC_D_SAW + rint(random() * f);
+	f = MC_D_RNDITM;
+	if ((self.wait == -6) && ULOKD) d = MC_D_SAW + rint(random() * f);
 
-		f = MC_W_RNDITM;
-		if ((self.wait == -7) && ULOKW) d = MC_W_KNIFE + rint(random() * f);
+	f = MC_W_RNDITM;
+	if ((self.wait == -7) && ULOKW) d = MC_W_KNIFE + rint(random() * f);
 
-		f = MC_Q2_RNDITM;
-		if ((self.wait == -8) && ULOK2) d = MC_Q2_BLASTER + rint(random() * f);
+	f = MC_Q2_RNDITM;
+	if ((self.wait == -8) && ULOK2) d = MC_Q2_BLASTER + rint(random() * f);
 
-		f = MC_Q3_RNDITM;
-		if ((self.wait == -9) && ULOK3) d = MC_Q3_GAUNTLET + rint(random() * f);
-	}
-	else
-	{
-		if (RUNES) f = MC_NR_RNDITM - 2; // dont rndize runes if server on
-		if (self.wait < -5) d = MC_SUPER_SHOTGUN + rint(random() * f);
-	}
+	f = MC_Q3_RNDITM;
+	if ((self.wait == -9) && ULOK3) d = MC_Q3_GAUNTLET + rint(random() * f);
+
+//		if (RUNES) f = MC_NR_RNDITM - 2; // dont rndize runes if server on
 
 	f = MC_T_RNDITM;
 	if ((self.wait == -5) && XMOD)
 	{
-		if (Q_99) f = MC_NR_RNDITM;
 		d = MC_SUPER_SHOTGUN + rint(random() * f);
 	}
 
@@ -3335,27 +3306,19 @@ void(entity e, string md, float dm, float hl, float mt) misc_explodbox_set =
 	oldz = e.origin_z;
 	droptofloor(0,0); // Cataboligne 9.17.3 - fixed this compiler warning
 	if (oldz - e.origin_z > 250)
-		{
+	{
 		dprint ("Barrel fell out of level at ");
 		dprint (vtos (self.origin));
 		dprint ("\n");
-		if (PK_100 || Q_100)
-		{
-			remove (self);
-			return ;
-		}
-		else
-			dtf_handle();
-		}
+
+		dtf_handle(); // randomize somewhere on level
+	}
 //	map_load_flg = map_load_flg - (map_load_flg | FL_MAPITEM);
 //	}
 	pic_test();
 
-	if (!PK_100 && !Q_100)
 	if (self.wad == "q1")
 		master_item_control(self, 0);
-
-	if (Q_100 || PK_100) PlaceItem(); // *100 deal
 
 	if (deathmatch)
 	if (EXPLBOX_RESP < 0) // new mode 2.25.11
@@ -3374,11 +3337,7 @@ void () misc_explobox =
 {
 //	local float oldz;
 
-	if (Q_100)
-	{
-		q100_misc_explobox();
-		return;
-	}
+//		q100_misc_explobox();
 
 	misc_explodbox_set(self, "maps/b_explob.bsp", 160, 20, MOVETYPE_NONE);
 	if (self.class_select == null_string) self.class_select = "quake_item";
@@ -3392,11 +3351,7 @@ void () misc_explobox2 =
 {
 //	local float oldz;
 
-	if (Q_100)
-	{
-		q100_misc_explobox2();
-		return;
-	}
+//		q100_misc_explobox2();
 
 	misc_explodbox_set(self, "maps/b_exbox2.bsp", 160, 20, MOVETYPE_NONE);
 	if (self.class_select == null_string) self.class_select = "quake_item";
@@ -3423,7 +3378,6 @@ void() rnd_pack_ammo =
 	else if (f == 5) self.ammo_slug = 20 * k;
 	else if (f == 6) self.ammo_gaspr = 100 * k;
 
-	if (!Q_99)
 	if (random() < 0.3)
 	{
 		f = rint(random() * 10);

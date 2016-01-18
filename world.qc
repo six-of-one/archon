@@ -384,7 +384,8 @@ void () bodyque =
 
 void () InitBodyQue =
 {
-	if (!Q_100 && !PK_100) return;
+/*
+	if (!Q-100 && !PK-100) return;
 
 	bodyque_head = spawn();
 	bodyque_head.classname = "bodyque";
@@ -395,6 +396,7 @@ void () InitBodyQue =
 	bodyque_head.owner.owner.owner = spawn();
 	bodyque_head.owner.owner.owner.classname = "bodyque";
 	bodyque_head.owner.owner.owner.owner = bodyque_head;
+*/
 };
 
 

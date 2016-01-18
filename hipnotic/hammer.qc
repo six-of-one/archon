@@ -288,7 +288,7 @@ void() HIP_FireMjolnirLightning =
 	if (self.eweapon)
  {
 // explode if under water
-	if (self.waterlevel > 1 && (Q_100 || PK_100 || self.watertype != CONTENT_LAVA))
+	if (self.waterlevel > 1 && (self.watertype != CONTENT_LAVA))
 	{
 		cells = self.ammo_cells;
 		self.currentammo = self.ammo_cells = 0;

@@ -107,7 +107,7 @@ float (entity e, float Thealamount, float ignore) q100_T_Heal =
 //	if (e.health > 250)
 //		e.health = 250;
 
-	if (!Q_100) pk_setDamageSkin(e); // *pk damage skins code
+	pk_setDamageSkin(e); // *pk damage skins code
 	return 1;
 };
 
@@ -427,7 +427,9 @@ WEAPONS
 
 void () bound_other_ammo =
 {
-	if (!Q_100) pk_bound_ammo();  // *pk bound ammo
+	pk_bound_ammo();  // *pk bound ammo
+/*
+	if (!Q-100) pk_bound_ammo();  // *pk bound ammo
 	else
 	{
 	if (other.ammo_shells > 100)
@@ -439,6 +441,7 @@ void () bound_other_ammo =
 	if (other.ammo_cells > 100)
 		other.ammo_cells = 100;
 	}
+*/
 };
 
 
@@ -489,7 +492,7 @@ float () W_BestWeapon;
 
 void () weapon_touch =
 {
-	local	float	hadammo, best, new, old;
+	local	float	hadammo, best, new;
 	local entity stemp;
 	local float leave;
 
@@ -556,20 +559,15 @@ void () weapon_touch =
 		other.ammo_cells = other.ammo_cells + 15;
 	}
 	else
-//		objerror ("weapon_touch: unknown classname");
 	{
-		if (Q_100 && Q_100_OBJERR) objerror("weapon_touch: unknown classname");
-		else
+		if (WARNING)
 		{
-			if (WARNING)
-			{
 			bprint("\n*** warning:\nweapon_touch: unknown classname (");
 			bprint(self.classname);
 			bprint(") - ignoring\n\n");
-			}
-			self.touch = SUB_Null;
-			return;
 		}
+		self.touch = SUB_Null;
+		return;
 	}
 
 	sprint (other,"You got the ");
@@ -582,20 +580,13 @@ void () weapon_touch =
 	bound_other_ammo ();
 
 // change to the weapon
-	old = other.items;
 	other.items = other.items | new;
 
 	stemp = self;
 	self = other;
 
 // PK-NOTE: "old" variable above does nothing...what was iD's plan for it?
-	if (!Q_100)
-		PK_Deathmatch_Weapon (new, 0); // *pk - new wep switch rule for higher risk weps
-	else
-	if (!deathmatch)
-		self.weapon = new;
-	else
-		Deathmatch_Weapon (new);
+	PK_Deathmatch_Weapon (new, 0); // *pk - new wep switch rule for higher risk weps
 
 	W_SetCurrentAmmo ();
 
@@ -834,7 +825,7 @@ void () item_shells =
 {
 	self.touch = ammo_touch;
 
-	if (Q_100 || PK_100 || !self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
+	if (!self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
 	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_shell1.bsp");
@@ -863,7 +854,7 @@ void () item_spikes =
 {
 	self.touch = ammo_touch;
 
-	if (Q_100 || PK_100 || !self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
+	if (!self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
 	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_nail1.bsp");
@@ -892,7 +883,7 @@ void () item_rockets =
 {
 	self.touch = ammo_touch;
 
-	if (Q_100 || PK_100 || !self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
+	if (!self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
 	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_rock1.bsp");
@@ -922,7 +913,7 @@ void () item_cells =
 {
 	self.touch = ammo_touch;
 
-	if (Q_100 || PK_100 || !self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
+	if (!self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
 	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_batt1.bsp");
@@ -1261,7 +1252,7 @@ void () powerup_touch =
 	sprint (other,self.netname);
 	sprint (other,"\n");
 
-	if (Q_100 || Q_99 || (deathmatch != 4)) // *pk - my new rule, logical extrapolation - everything goes away, none comes back
+	if (deathmatch != 4) // *pk - my new rule, logical extrapolation - everything goes away, none comes back
 	if (deathmatch)
 	{
 		self.mdl = self.model;
@@ -1286,7 +1277,7 @@ void () powerup_touch =
 	{
 		other.rad_time = 1;
 		other.radsuit_finished = time + POW_TIME;
-		if (!Q_100 && !PK_100 && VW)
+		if (VW)
 		if (other.mask_x & CB_HUMAN)
 			other.skin = BIOSUIT;  // set skin for suit
 	}

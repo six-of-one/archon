@@ -24,16 +24,16 @@ float cl_items;
 void() Sbar_Init =
 {
 	enginebar = 1;
-	if((cvar("viewsize") >= 114) && (cvar("viewsize") <= 117))
+	if((cvar("viewsize") >= 115) && (cvar("viewsize") <= 119))
 		{
 			compass = 1;
-			ibar_flag = cvar("viewsize") - 113;
+			ibar_flag = cvar("viewsize") - 114;
 			if (ibar_flag == 0 ) ibar = 0;
 			else ibar = 1;
 			if (ibar_flag == 3 ) enginebar = 0;
 			cvar_set("viewsize", "110");
 		}
-	else if((cvar("viewsize") >= 110) && (cvar("viewsize") <= 113))
+	else if((cvar("viewsize") >= 110) && (cvar("viewsize") <= 114))
 		{
 			compass = 0;
 			ibar_flag = cvar("viewsize") - 110;
@@ -63,7 +63,7 @@ void() Sbar_Shutdown =
 {
 	if((cvar("viewsize") >= 110) && (cvar("viewsize") < 120))
 	{
-		if(compass == 1) cvar_set("viewsize", ftos(110 + ibar_flag + 4));
+		if(compass == 1) cvar_set("viewsize", ftos(110 + ibar_flag + 5));
 		else cvar_set("viewsize", ftos(110 + ibar_flag));
 	}
 	if((cvar("viewsize") >= 100) && (cvar("viewsize") < 110) && compass )
@@ -379,7 +379,7 @@ float(float pow) bar_scale =
 	return(scl);
 }
 // has_* - once a mapcode item is detected, this allows holstered view
-float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left;
+float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left, explflg;
 
 void() Sbar_DrawInventory =
 {
@@ -393,7 +393,7 @@ void() Sbar_DrawInventory =
 	ALPHA_90 = ibar_alpha * 0.9;
 	ALPHA_LOW = ibar_alpha * 0.4;
 
-	float l, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph;
+	float k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph;
 	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone;
 	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff;
 
@@ -526,7 +526,7 @@ sb_align = SB_BOTTOM;
 	if (archon_magic)
 	if (explodeshot > 0)
 		plevel = archon - explodeshot; // archon magic cost
-	if (volspec < 0) plevel = archon - fabs(volspec); // morph cube cost
+	if (volspec < 0) plevel = archon - fabs(volspec); // morph cube cost or power shots
 	if (plevel < 0) plevel = 0; // IMP: warn on - result - red # or such
 
 // IMP: diff colors for archons themselves, show possible spell usage at top of bar (reduction amount)
@@ -556,18 +556,25 @@ sb_align = SB_BOTTOM;
 	if (archon > 0)
 	{
 		Sbar_DrawPic(arc_level, "gfx/inv_archon_bar", p_alph, 1);
-		if  (archon < 4) arc_level_y = arc_level_y + 4 - archon;
+		if  (arc_level_y < 4) arc_level_y = 3;
 		DrawAmmo(arc_level + '20 5 0' - woff, archon, ALPHA_FULL);
 
+		k = arc_level_y;
 		if (archon_magic || (volspec < 0))
 		if (plevel > 0)
 		{
+// make sure we have a visible usage amt at high archon levels where scale is minimal for small amts
+			if (arc_level_y > 100)
 			if ((arc_level_y - p_level_y) < 4) p_level_y = arc_level_y - 3;
-//			arc_level_y = p_level_y;
 			Sbar_DrawPic(p_level, "gfx/inv_archon_bar", ALPHA_FULL, 1);
+// tic line for usage
+			if (p_level_y < 1) p_level_y = 1;
 			Sbar_DrawPic(p_level + '6 0 0', "gfx/spell_bar", ALPHA_FULL, 0.5);
-			if  (plevel < 10) p_level_y = p_level_y + 10 - plevel;
-			DrawAmmo(p_level + '20 0 0' - woff, plevel, ALPHA_FULL);
+
+//			if  (plevel < 10) p_level_y = p_level_y + 10 - plevel;
+			if ((p_level_y < 7) && (arc_level_y > 10)) p_level_y = 7; // hold text amt here if poss.
+			if (p_level_y > 6) DrawAmmo(p_level + '20 0 0' - woff, plevel, ALPHA_FULL);
+			k = p_level_y;
 		}
 	}
 
@@ -575,16 +582,17 @@ sb_align = SB_BOTTOM;
 	{
 		if (archon > 0)
 		{
-			if (chaos_level_y < p_level_y + 4) arc_level_x = -409;
-			if ((chaos_level_y >= (p_level_y - 14)) && (chaos_level_y <= (arc_level_y+ 8))) // dont over write archon pts - hold till passed
-				chaos_level_y = p_level_y - 14;
+			if (chaos_level_y < k + 4) chaos_level_x = -409;
+			if ((chaos_level_y >= (k - 14)) && (chaos_level_y <= (arc_level_y+ 8))) // dont over write archon pts - hold till passed
+				chaos_level_y = k - 14;
+			if (chaos_level_y < 7) chaos_level_y = arc_level_y + 9; // put above if arc level would lower off HUD
 		}
 
-		if  (volspec > 20) // pretty much starts at 20
-			DrawAmmo(chaos_level + '20 5 0' - woff, volspec, ALPHA_FULL);
+		if  (volspec > 0)
+			Sbar_DrawString(chaos_level + '20 5 0', ftos(volspec), ALPHA_FULL, '7 7 0','1 0.5 1');
 	}
 
-	if (volspec < 0) volspec = 0; // done, 0 this cost
+//	if (volspec < 0) volspec = 0; // done, 0 this cost - needed for morph HUD
 
 
 // runes
@@ -612,6 +620,253 @@ sb_align = SB_BOTTOM;
 	cnt_left = 0; // recount every time
 
 // armor, health in bar 2, 3
+// keys, artifacts in bar 3
+
+	wep_step = '55 -10 0'; // morph ID's
+	if (health > 999) wep_step = '65 -10 0';
+	if (ibar_flag == 1) wep_step = '35 -10 0';
+	if (ibar_flag > 2)
+	{
+		wep_step = '30 -27 0';
+		DrawInventory(pwr_step + '10 -15 0' + woff, "gfx/sb_key1", IT_KEY1, 0, ALPHA_FULL, 1.4);
+		DrawInventory(pwr_step + '0 -15 0' + woff, "gfx/sb_key2",IT_KEY2 , 0, ALPHA_FULL, 1.4);
+		if (cl_items & (IT_KEY1 | IT_KEY2)) pwr_step_y = pwr_step_y + 4;
+	}
+
+	if (ibar_flag)
+	{
+		string s;
+		s = strconv(CONV_SAME, CONV_RED, CONV_WHITESPECIAL, "Quake Marine");
+		if (morph == CHAR_Q)
+			Sbar_DrawString(pwr_step + wep_step + woff, s, ALPHA_FULL, '7 7 0','0.5 0.7 1');
+		else if (morph == CHAR_D)
+			Sbar_DrawString(pwr_step + wep_step + woff, "Doom Marine", ALPHA_FULL, '7 7 0','0.16 0.2 0.29');
+		else if (morph == CHAR_Q3)
+			Sbar_DrawString(pwr_step + wep_step + woff, "Sarge", ALPHA_FULL, '7 7 0','0.5 0.7 1');
+		else if (morph == CHAR_PK)
+			Sbar_DrawString(pwr_step + wep_step + woff, "Pain Killer", ALPHA_FULL, '7 7 0','0.2 0.2 1');
+		else if (morph == CHAR_W)
+			Sbar_DrawString(pwr_step + wep_step + woff, "Blaskowitz", ALPHA_FULL, '7 7 0','0.7 0.7 0.7');
+		else if (morph == IMP_MENF)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Enforcer", ALPHA_FULL, '7 7 0','0.5 0.7 1');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '60 0 0', "| Laser bolt", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+		else if (morph == IMP_MOGRE)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Ogre", ALPHA_FULL, '7 7 0','1 0.5 1');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Chainsaw", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_GRENADE_LAUNCHER)
+				Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Grenades", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_ROCKET_LAUNCHER)
+				Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Cluster Grenades", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+		else if (morph == IMP_MHKNIGHT)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Hell Knight", ALPHA_FULL, '7 7 0','1 0.5 1');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '80 0 0', "| Sword", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '80 0 0', "| Magic spikes", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SUPER_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '80 0 0', "| Focused spikes", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_ROCKET_LAUNCHER)
+				Sbar_DrawString(pwr_step + wep_step + woff + '80 0 0', "| Explosive spikes *", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+		else if (morph == IMP_MSHALR)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Vore", ALPHA_FULL, '7 7 0','1 0.5 1');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+			{
+				if (mcode == -505)
+					Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Spike Bomb -->", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				else if (volspec == -1000)
+				{
+					Sbar_DrawString(pwr_step + wep_step + woff + '34 9 0', "| FIRE - summon *", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Sphere of Annihilation", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				}
+				else
+				{
+					if (mcode == -500)
+					{
+						Sbar_DrawString(pwr_step + wep_step + woff + '34 9 0', "| ALT_FIRE - take control", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Sphere of Annihilation - not following", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+					else if (mcode == -504)
+						Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Sphere of Annihilation - out of range", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					else
+					{
+						if (mcode == -501)
+							Sbar_DrawString(pwr_step + wep_step + woff + '34 9 0', "| Mouse wheel - height adjust", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						else if (mcode == -502)
+							Sbar_DrawString(pwr_step + wep_step + woff + '34 9 0', "| Mouse wheel - bearing adjust", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + wep_step + woff + '34 27 0', "| FIRE - banish *", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + wep_step + woff + '34 18 0', "| ALT_FIRE / M3 - change control mode", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Sphere of Annihilation - following", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+				}
+			}
+			if (currentweap == IT_LIGHTNING)
+				Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Lightning", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SUPER_NAILGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Magic spikes", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_ROCKET_LAUNCHER)
+				Sbar_DrawString(pwr_step + wep_step + woff + '34 0 0', "| Spike Bomb", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+		else if (morph == IMP_MSHAMBLR)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Shambler", ALPHA_FULL, '7 7 0','1 0.5 1');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '60 0 0', "| Claws", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_LIGHTNING)
+				Sbar_DrawString(pwr_step + wep_step + woff + '60 0 0', "| Lightning", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+		else if (morph == IMP_MDEMON)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Fiend", ALPHA_FULL, '7 7 0','1 0.5 1');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| Hack & Slash", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| Head spike", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+// demon rage explosion
+			if (explodeshot == -501)
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  Pentagram power surges beyond rage", ALPHA_FULL, '7 7 0','1 0.2 0.2');
+			else if (explodeshot == -505)
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  Not enough Archon power for RAGE", ALPHA_FULL, '7 7 0','1 0.2 0.2');
+			else if (explodeshot == -506)
+			{
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  Runes failed your RAGE", ALPHA_FULL, '7 7 0','1 0.2 0.2');
+				explflg = 0;
+			}
+			else if (explodeshot == -504)
+			{
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  B--O--O--M", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+				explflg = 0;
+			}
+			if (currentweap == IT_GRENADE_LAUNCHER)
+			{
+				if (explodeshot > 0 || explflg)
+				{
+					explflg = 1;
+					Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| RAGE - Gonna pop in      or less", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+					if (explodeshot > 0)
+						Sbar_DrawString(pwr_step + wep_step + woff + '200 0 0', ftos(explodeshot), ALPHA_FULL, '7 7 0','1 0.1 0.1');
+					else
+						Sbar_DrawString(pwr_step + wep_step + woff + '200 0 0', "**", ALPHA_FULL, '7 7 0','0 0 0');
+
+					if (explodeshot < 5)
+					{
+						if (cl_items & IT_INVULNERABILITY)
+							Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  Everyone will be blown straight to HELL!", ALPHA_FULL, '7 7 0','1 0.2 0.2');
+						else if (rune_flag & (RUNE_FLG_HS |TECH_TEIM))
+							Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  Hurry", ALPHA_FULL, '7 7 0','1 0.2 0.2');
+					}
+				}
+				else
+				{
+					if (explodeshot == -502)
+						Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  * - you will lose runes of power", ALPHA_FULL, '7 7 0','1 0.2 0.2');
+					if (explodeshot == -503)
+						Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  RAGE has overcome you...\n", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+					if (cl_items & IT_INVULNERABILITY)
+						Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| Fiendish onslaught of DOOM!", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+					else
+						Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| RAGE", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+				}
+			}
+		}
+		else if (morph == IMP_MWIZARD)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Scrag", ALPHA_FULL, '7 7 0','0 0.8 0');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| Pain field", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| Acid Spikes", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SUPER_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| Focused spikes", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_ROCKET_LAUNCHER)
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 0 0', "| Explosive spikes *", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+		else if (morph == IMP_MZOMBIE)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Zomby", ALPHA_FULL, '7 7 0','1 0.5 1');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '41 0 0', "| Stench cloud", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '41 0 0', "| Rotten flesh", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SUPER_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '41 0 0', "| Plague flesh", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_NAILGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '41 0 0', "| Gib fountain", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+		else if (morph == IMP_MCTHON)
+		{
+			if (mcode == -503 || mcode == -502 || mcode == -501)
+			{
+				Sbar_DrawString(pwr_step + wep_step + woff, "Cthon", ALPHA_FULL, '7 7 0','1 0.2 0');
+				Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  ALT_FIRE - return to Lava Bomb", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				if (mcode == -502)
+				{
+					if (random() < 0.03) explflg = 1;
+					if (explflg)
+						Sbar_DrawString(pwr_step + wep_step + woff + '40 18 0',   "HURRY!  Hit ALT_FIRE now or find more Lava fast!", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					else
+						Sbar_DrawString(pwr_step + wep_step + woff + '40 18 0',   "HURRY!  Find more Lava fast!", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				}
+				if (mcode == -501)
+					Sbar_DrawString(pwr_step + wep_step + woff + '40 9 0', "  Cthon cannot exist away from Lava", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			}
+			else
+			{
+				explflg = 0;
+				Sbar_DrawString(pwr_step + wep_step + woff, "Lava Bomb", ALPHA_FULL, '7 7 0','1 0.2 0');
+				if (mcode == -504) // in lava code
+					Sbar_DrawString(pwr_step + wep_step + woff + '66 9 0', "| ALT_FIRE - become Cthon !", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				if (currentweap == IT_AXE)
+				if (pk_wep == PK_IT_AXE)
+					Sbar_DrawString(pwr_step + wep_step + woff + '66 0 0', "| Lava balls", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				if (currentweap == IT_NAILGUN)
+					Sbar_DrawString(pwr_step + wep_step + woff + '66 0 0', "| Lava nails", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				if (currentweap == IT_ROCKET_LAUNCHER)
+					Sbar_DrawString(pwr_step + wep_step + woff + '66 0 0', "| Lava bombs *", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			}
+		}
+		else if (morph == IMP_MSCOURGE)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Scourge", ALPHA_FULL, '7 7 0','1 0.5 1');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '58 0 0', "| Stinger", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '58 0 0', "| 4 x perforator", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_LIGHTNING)
+				Sbar_DrawString(pwr_step + wep_step + woff + '58 0 0', "| Lasrs", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_GRENADE_LAUNCHER)
+				Sbar_DrawString(pwr_step + wep_step + woff + '58 0 0', "| Proximity bombs", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+		else if (morph == IMP_MGREMLIN_F || morph == IMP_MGREMLIN_L)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff, "Gremlin", ALPHA_FULL, '7 7 0','0 0.7 0');
+			if (morph == IMP_MGREMLIN_F)
+				Sbar_DrawString(pwr_step + wep_step + woff + '50 9 0', "| Flyer", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_AXE)
+			if (pk_wep == PK_IT_AXE)
+				Sbar_DrawString(pwr_step + wep_step + woff + '50 0 0', "| Bite", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (currentweap == IT_SHOTGUN)
+				Sbar_DrawString(pwr_step + wep_step + woff + '50 0 0', "| Claws", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+		}
+	}
+
 	if (ibar_flag > 1)
 	{
 		
@@ -624,7 +879,7 @@ sb_align = SB_BOTTOM;
 			DrawAmmo(pwr_step + '27 -10 0', health, ALPHA_FULL);
 
 			cnt_left = pwr_step_y;
-			pwr_step_y = pwr_step_y + 30;
+			pwr_step_y = pwr_step_y + 27;
 		}
 
 // IMP: archons have shield here - dont use armor icons
@@ -639,8 +894,40 @@ sb_align = SB_BOTTOM;
 		{
 			DrawAmmo(pwr_step + '27 -10 0', armorval, ALPHA_FULL);
 			cnt_left = pwr_step_y;
-			pwr_step_y = pwr_step_y + 30;
+			pwr_step_y = pwr_step_y + 27;
 		}
+	}
+
+	if (ibar_flag > 2)
+	{
+		if (cl_items & IT_INVISIBILITY)
+		{
+			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_invis",    ALPHA_LOW, 1.5);
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 27;
+		}
+
+		if (cl_items & IT_SUIT)
+		{
+			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_suit",    ALPHA_MEDIUM, 1.5);
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 27;
+		}
+
+		if (cl_items & IT_QUAD)
+		{
+			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_quad",    ALPHA_FULL, 1.5);
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 27;
+		}
+
+		if (cl_items & IT_INVULNERABILITY)
+		{
+			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_invuln",    ALPHA_FULL, 1.5);
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 27;
+		}
+//		DrawInventory('60 48 0', "gfx/sb_invuln", IT_INVULNERABILITY, 0, ALPHA_MEDIUM, 1.5);
 	}
 
 // ammo pack deal
@@ -707,28 +994,30 @@ sb_align = SB_BOTTOM;
 		pwr_step_y = pwr_step_y + 30;
 	}
 
-	DrawInventory('40 48 0', "gfx/sb_invis",  IT_INVISIBILITY, 0, ALPHA_LOW, 1.5);
-	DrawInventory('60 48 0', "gfx/sb_invuln", IT_INVULNERABILITY, 0, ALPHA_MEDIUM, 1.5);
-	DrawInventory('80 48 0', "gfx/sb_suit",   IT_SUIT, 0, ALPHA_MEDIUM, 1.5);
-	DrawInventory('100 48 0',"gfx/sb_quad",   IT_QUAD, 0, ALPHA_FULL, 1.5);
+	if (enginebar) // always above bar while it is there
+	{
+		DrawInventory('40 48 0', "gfx/sb_invis",  IT_INVISIBILITY, 0, ALPHA_LOW, 1.5);
+		DrawInventory('60 48 0', "gfx/sb_invuln", IT_INVULNERABILITY, 0, ALPHA_MEDIUM, 1.5);
+		DrawInventory('80 48 0', "gfx/sb_suit",   IT_SUIT, 0, ALPHA_MEDIUM, 1.5);
+		DrawInventory('100 48 0',"gfx/sb_quad",   IT_QUAD, 0, ALPHA_FULL, 1.5);
 
-	if (enginebar)
-	DrawInventory('120 48 0',"gfx/sb_mega",   IT_SUPERHEALTH, 0, ALPHA_FULL, 0.19);
+		DrawInventory('120 48 0',"gfx/sb_mega",   IT_SUPERHEALTH, 0, ALPHA_FULL, 0.19);
 
 // IMP: needs detection
-//	DrawInventory('120 48 0', "gfx/sb_eshld", 0, HIP_IT_EMPATY_SHIELD, ALPHA_FULL, 1.5);
-//	DrawInventory('140 48 0', "gfx/sb_wsuit", 0, HIP_IT_WETSUIT, ALPHA_FULL, 1.5);
+//		DrawInventory('120 48 0', "gfx/sb_eshld", 0, HIP_IT_EMPATY_SHIELD, ALPHA_FULL, 1.5);
+//		DrawInventory('140 48 0', "gfx/sb_wsuit", 0, HIP_IT_WETSUIT, ALPHA_FULL, 1.5);
 
-	DrawInventory('170 48 0', "gfx/sb_sigil1", 0, 32, ALPHA_MEDIUM, 1.5);
-	DrawInventory('190 48 0', "gfx/sb_sigil2", 0, 64, ALPHA_MEDIUM, 1.5);
-	DrawInventory('210 48 0', "gfx/sb_sigil3", 0, 128, ALPHA_MEDIUM, 1.5);
-	DrawInventory('230 48 0', "gfx/sb_sigil4", 0, 256, ALPHA_MEDIUM, 1.5);
+		DrawInventory('170 48 0', "gfx/sb_sigil1", 0, 32, ALPHA_MEDIUM, 1.5);
+		DrawInventory('190 48 0', "gfx/sb_sigil2", 0, 64, ALPHA_MEDIUM, 1.5);
+		DrawInventory('210 48 0', "gfx/sb_sigil3", 0, 128, ALPHA_MEDIUM, 1.5);
+		DrawInventory('230 48 0', "gfx/sb_sigil4", 0, 256, ALPHA_MEDIUM, 1.5);
+	}
 
 	if (archon_magic)
 	{
 		if (explodeshot == -6)
 		{
-			Sbar_DrawString(pwr_step + '20 -5 0', "Spell cancelled...", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			Sbar_DrawString(pwr_step + '20 -5 0' + woff, "Spell cancelled...", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 20;
 		}
@@ -1096,22 +1385,22 @@ sb_align = SB_BOTTOM_RIGHT;
 
 	if (morph > 60) // dont display for non humans unless they got some
 	{
-		if (shells)
+		if (shells > 0)
 		{
 			DrawInventoryAmmo('302 50 0', "gfx/sb_shells", ALPHA_FULL, 0.5);  
 			DrawAmmo('280 45 0', shells, ALPHA_MEDIUM);
 		}
-		if (nails)
+		if (nails > 0)
 		{
 			DrawInventoryAmmo('302 70 0', "gfx/sb_nails", ALPHA_FULL, 0.5);
 			DrawAmmo('280 65 0', nails, ALPHA_MEDIUM);
 		}
-		if (rockets)
+		if (rockets > 0)
 		{
 			DrawInventoryAmmo('302 90 0', "gfx/sb_rocket", ALPHA_FULL, 0.5);
 			DrawAmmo('280 85 0', rockets, ALPHA_MEDIUM);
 		}
-		if (cells)
+		if (cells > 0)
 		{
 			DrawInventoryAmmo('302 110 0',"gfx/sb_cells", ALPHA_FULL, 0.5);
 			DrawAmmo('280 105 0', cells, ALPHA_MEDIUM);		

@@ -363,12 +363,6 @@ void() start_loopcyc =
 {
 	local entity e;
 
-	if (Q_100 || PK_100)
-	{
-		remove(self);
-		return;
-	}
-
 	self.nextthink = time + 15; // recheck every 10 secs?
 
 // no sense in cycling removed items or constantly rndize items

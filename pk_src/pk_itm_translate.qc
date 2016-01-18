@@ -13,7 +13,6 @@
 
 
 // TDO: finish translate codes - what is left?
-// XXX: restore wad == "q1" item with doom item deactivate / pk_100 mode on (if ever allowed in map)
 
 void() tr_set_touch =
 {
@@ -45,16 +44,11 @@ string(entity e, float TR) map_trans =
 	{
 		wr = MC_W_KNIFE + floor(random() * (MC_W_RNDITM));
 		dr = MC_D_SAW + floor(random() * (MC_D_RNDITM - 1));
-		if (Q_100 || PK_100) // translating items when these are set
-		{
-			qr = MC_SUPER_SHOTGUN + floor(random() * (MC_RNDITM));
-			if (RUNES) qr = MC_SUPER_SHOTGUN + floor(random() * (MC_NR_RNDITM)) - 2;
-		}
-		else
-		{
-			qr = MC_AXE + floor(random() * (MC_RNDITM + 2));
-			if (RUNES) qr = MC_AXE + floor(random() * (MC_NR_RNDITM));
-		}
+
+//			qr = MC_SUPER_SHOTGUN + floor(random() * (MC_RNDITM));
+//			if (RUNES) qr = MC_SUPER_SHOTGUN + floor(random() * (MC_NR_RNDITM)) - 2;
+		qr = MC_AXE + floor(random() * (MC_RNDITM + 2));
+		if (RUNES) qr = MC_AXE + floor(random() * (MC_NR_RNDITM));
 
 		q2r = MC_Q2_BLASTER + rint(random() * MC_Q2_RNDITM);
 		q3r = MC_Q3_GAUNTLET + rint(random() * MC_Q3_RNDITM);
@@ -277,12 +271,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_weapon_shotgun");
 		if (TR == FL_TR_QUAKE)
 		{
-			if (Q_100 || PK_100)
-			{
-				if (random() < 0.1) return("weapon_grenadelauncher");
-				return("weapon_supershotgun");
-			}
-			else return("weapon_shotgun");
+			return("weapon_shotgun");
 		}
 		if (TR == FL_TR_Q2) return("q2_weapon_shotgun");
 		if (TR == FL_TR_Q3) return("q3_weapon_shotgun"); // IDEA: need bg code here?
@@ -296,12 +285,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_weapon_pistol");
 		if (TR == FL_TR_QUAKE)
 		{
-			if (Q_100 || PK_100)
-			{
-				if (random() < 0.75) return("weapon_nailgun");
-				return("weapon_supershotgun");
-			}
-			else return("weapon_shotgun");
+			return("weapon_shotgun");
 		}
 		if (TR == FL_TR_Q2) return("q2_blaster");
 		if (TR == FL_TR_Q3) return("weapon_gauntlet");
@@ -315,12 +299,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_weapon_saw");
 		if (TR == FL_TR_QUAKE)
 		{
-			if (Q_100 || PK_100)
-			{
-				if (random() < 0.05) return("weapon_lightning");
-				return("weapon_supershotgun");
-			}
-			else return("weapon_axe");
+			return("weapon_axe");
 		}
 		if (TR == FL_TR_Q2) return("q2_weapon_blaster");
 		if (TR == FL_TR_Q3) return("weapon_gauntlet");
@@ -613,24 +592,9 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE)
 		{
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
-			else if (TR_NOT == FL_NOTRN_BG || Q_100 || PK_100)
+			else if (TR_NOT == FL_NOTRN_BG)
 			{
 				if (random() < 0.2) return("item_health_15");
-				if (Q_100) return("RMV");
-				if (PK_100)
-				{
-					e.enemy = spawn();
-					e.enemy.enemy = e;
-					e.enemy.think = tr_set_touch;
-					e.enemy.nextthink = time + 0.1;
-					e.enemy.pk_touch = painkeep_weapon_touch;
-					if (random() < 0.5) return("weapon_grapgun");
-					if (random() < 0.3) return("weapon_airfist");
-					if (random() < 0.1) return("weapon_chainlg");
-					e.enemy.pk_touch = painkeep_touch;
-					if (random() < 0.2) return("item_painkeep_turret");
-					return("RMV");
-				}
 				if (TR_Q1DEF) // if true and not *100 - try this
 				{
 					e.touch = painkeep_touch;
@@ -682,23 +646,8 @@ string(entity e, float TR) map_trans =
 		{
 //			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
-			else if (TR_NOT == FL_NOTRN_BG || Q_100 || PK_100)
+			else if (TR_NOT == FL_NOTRN_BG)
 			{
-				if (Q_100) return("RMV");
-				if (PK_100)
-				{
-					e.enemy = spawn();
-					e.enemy.enemy = e;
-					e.enemy.think = tr_set_touch;
-					e.enemy.nextthink = time + 0.1;
-					e.enemy.pk_touch = painkeep_touch;
-					if (random() < 0.5) return("item_painkeep_beartrap");
-					if (random() < 0.3) return("item_painkeep_turret");
-					if (random() < 0.1) return("item_painkeep_gwell");
-					e.enemy.pk_touch = ammo_touch;
-					if (random() < 0.2) return("item_painkeep_expshells");
-					return("RMV");
-				}
 				if (TR_Q1DEF) // if true and not *100 - try this
 				{
 					e.touch = painkeep_touch;
@@ -2072,109 +2021,57 @@ string(entity e, float TR) map_trans =
 /// hipnotic - for now just removes in case of *100
 	else if (e.scode == MC_HIP_MJOLNIR)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_HIP_LASERCAN)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_HIP_PROXGUN)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_HIP_WETSUIT)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_HIP_EMPSH)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_HIP_CORNUCOPIA)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 
 /// chaos - for now just removes in case of *100
 	else if (e.scode == MC_REGGUN)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_TALLBALL)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_DEEPSLEEP)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_C_FLAMER)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_C_AGAS)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_C_AGAS_LG)
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 
 	else // scode not recognized
 	{
-		if (Q_100 || PK_100)
-		{
-			return("RMV");
-		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 		if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 //		else if (TR_NOT == FL_NOTRN_BG) return(null_string);
@@ -2232,8 +2129,7 @@ void(entity e, float trv) master_item_control =
 {
 	if (e.classname == "func_make") return; // override
 
-	if (XMOD)
-	if (!PK_100 && !Q_100) // turned back on - come here from loop
+	if (XMOD)			// turned back on - come here from loop
 	{
 		if (cvar("pk_place_item") == 1) return;
 		if (e.wad == "q1")
@@ -2323,12 +2219,6 @@ float(entity e, float q1ck, string itm) noxtr_item_control =
 				if (find(world,wad,"q1")) Q1WT = TRUE;
 			}
 
-			if (Q_100 || PK_100)
-			if (Q1WT)
-			{
-				hide_item (e);
-				return(TRUE);
-			}
 		}
 
 		if (itm != null_string)

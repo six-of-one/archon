@@ -742,7 +742,6 @@ void (float skl) AddAnotherBot =
 */
 	if (!NOSAVE)
 	if (DARKPLACES || chaos) th_bot_changeParms(12.5);
-	if (BOTFREEZE) bot_froze(newbot); // Cataboligne - 6.9.10 - bots get really cold now - dev code
 };
 
 void (entity ply, float n) addTeamBots =

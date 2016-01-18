@@ -1749,10 +1749,16 @@ float(entity e) IS_MISSILE =
 	if (e.classname == "spike") f = TRUE;
 //	else if (e.classname == "pulse_spike") f = TRUE;
 	else if (e.classname == "grenade") f = TRUE;
+	else if (e.classname == "ogre_grenade") f = TRUE;
 	else if (e.classname == "missile") f = TRUE;
 	else if (e.classname == "laser") f = TRUE;
 	else if (e.classname == "plasma") f = TRUE;
 	else if (e.classname == "proximity_grenade") f = TRUE;
+	else if (e.classname == "MultiGrenade") f = TRUE;
+	else if (e.classname == "MiniGrenade") f = TRUE;
+	else if (e.classname == "vomisss") f = TRUE;
+	else if (e.classname == "vomisexplod") f = TRUE;
+	else if (e.classname == "cluster_bomb") f = TRUE;
 	else if (e.classname == "fireballwep") f = TRUE;
 	else if (e.classname == "lavaspike") f = TRUE;
 	else if (e.classname == "fireballmissle") f = TRUE;
@@ -1760,6 +1766,7 @@ float(entity e) IS_MISSILE =
 	else if (e.classname == "knightspike") f = TRUE;
 //	else if (e.classname == "zombyflesh") f = TRUE;
 	else if (e.classname == "gib_tracer") f = TRUE;
+	else if (e.classname == "beacon") f = TRUE;
 //	else if (e.classname == "fireball") f = TRUE;
 //	else if (e.classname == "calderashard") f = TRUE;
 	return(f);
@@ -1834,19 +1841,6 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 void (entity e) CopyToBodyQue =
 {
 	if ((e.model == null_string) || (e.model == "progs/null.mdl")) return;
-
-	if (PK_100 || Q_100)
-	{
-		if (!bodyque_head || !bodyque_first)
-		{
-			InitBodyQue(); // set *100 before any corpse made
-			bodyque_first = bodyque_head;
-		}
-		else
-		if (!bodyque_head.owner) bodyque_head.owner = bodyque_first; // poss q100 turned on before loop was complete - TEST:
-		q100_CopyToBodyQue(e);
-		return;
-	}
 
 	if (DEAD_BODYCOUNT < 1)
 	{

@@ -119,15 +119,6 @@ void() x_weapon_touch =
 		return ;
 	}
 
-	if (PK_100 || Q_100)
-	{
-		if (self.mcode >= MC_PULSE_NAILGUN)
-			painkeep_weapon_touch();
-		else
-			weapon_touch();
-		return;
-	}
-
 	new = self.items; // what weap slot does it go in, by bit - ie, the old q1 IT_* weapon bits, which control the slot position
 
 	if (deathmatch == 2 || deathmatch == 3 || coop)
@@ -306,23 +297,19 @@ void() x_weapon_touch =
 /// classname not detected - code needs updated
 
 	{
-		if (PK_100 && PK_100_OBJERR) objerror("x_weapon_touch: unknown classname");
-		else
+		if (WARNING)
 		{
-			if (WARNING)
-			{
-			bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
-			bprint(self.classname);
-			if (self.event == "dynamic_item")
-			{
-				bprint(" - ");
-				bprint(self.wad);
-			}
-			bprint(") - ignoring\n\n");
-			}
-			self.touch = SUB_Null;
-			return;
+		bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
+		bprint(self.classname);
+		if (self.event == "dynamic_item")
+		{
+			bprint(" - ");
+			bprint(self.wad);
 		}
+		bprint(") - ignoring\n\n");
+		}
+		self.touch = SUB_Null;
+		return;
 	}
 
 	if (cls == "weapon_hook" || cls == "q2_weapon_grapple" || cls == "weapon_grapplinghook")
@@ -354,13 +341,8 @@ void() x_weapon_touch =
 	e = self;
 	self = other;
 
-	if (!Q_100)
-		PK_Deathmatch_Weapon (new, 0); // *pk - new wep switch rule for higher risk weps
-	else
-	if (!deathmatch)
-		self.weapon = new;
-	else
-		Deathmatch_Weapon (new);
+	PK_Deathmatch_Weapon (new, 0); // *pk - new wep switch rule for higher risk weps
+//		Deathmatch_Weapon (new); - q100 deal
 
 	W_SetCurrentAmmo ();
 
@@ -598,7 +580,7 @@ void(entity e, void () tch, float dm) Track_Missile =
 	e.think = ShalHome;
 	e.enemy = self.enemy;
 	e.touch = tch;
-	if (!Q_100) AddToSplash(e); // *pk - Make this entity splash
+	AddToSplash(e); // *pk - Make this entity splash
 };
 
 
@@ -648,7 +630,7 @@ void() melee_hit =
 	}
 };
 
-// new touch - does things
+// new nail touch - does "stuff"
 
 void() pulse_rebound;
 
@@ -659,12 +641,6 @@ void() spike_touch =
 	if (other) // exclude world - need to impact walls
 	if (other == self.owner)
 		return;
-
-	if (Q_100 || PK_100)
-	{
-		if (pointcontents(self.origin) == CONTENT_SKY) { SUB_Remove(); return; }
-	}
-	else
 
 	if (sky_touch(null_string, v0, self))
 	{
@@ -706,16 +682,16 @@ void() spike_touch =
 
 		if (self.model == "progs/pnail.mdl") // pulse spikes reflect off solids
 		{
-			if (!(Q_100 || PK_100))
-			{
-				v_forward = normalize(self.velocity);
+//			if (!(Q-100 || PK-100))
+
+			v_forward = normalize(self.velocity);
 //				off = lava_shot(self.origin, LAVA_SHOT, v0, self.dmg / 9);
-				if (off != v0 && random() > SPIKE_STICK)
-				{
-					SUB_Remove();
-					return;
-				}
- 			}
+			if (off != v0 && random() > SPIKE_STICK)
+			{
+				SUB_Remove();
+				return;
+			}
+
 		// play ricochet sound
 			rn = random() * 100;
 			if (rn < 33)		sound (self, CHAN_AUTO, "pulse/ric_1.wav", 1, ATTN_NORM);
@@ -731,7 +707,6 @@ void() spike_touch =
 		}
 // code sticks spikes in solids
 		else
-		if (!(Q_100 || PK_100))
 		{
 			v_forward = normalize(self.velocity);
 //			off = lava_shot(self.origin, LAVA_SHOT, v0, self.dmg / 9);
@@ -949,7 +924,7 @@ void () X_FireHitscan =
 		if (d < 1) // NOTE: can this ever happen?
 		{
 			self.weapon = W_BestWeapon ();
-			if (!Q_100 && !Q_99) self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
+			self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
 			W_SetCurrentAmmo ();
 			if (self.classname == "pk*bot")
 				self.think = self.th_run;
@@ -999,10 +974,10 @@ void(float ns) mgchg_shot =
 	else
 	{
 		if (WARNING) bprint("*** Warning -  EWEAP fn() call and eweapon is NULL!\n");
-			self.weapon = W_BestWeapon ();
-			if (!Q_100 && !Q_99) self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
+		self.weapon = W_BestWeapon ();
+		self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
 		W_SetCurrentAmmo ();
-			if (self.classname == "pk*bot") self.think = self.th_run;
+		if (self.classname == "pk*bot") self.think = self.th_run;
 	}
 };
 

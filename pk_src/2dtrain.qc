@@ -44,14 +44,10 @@ void() func_train_2d_use =
 {
 	   if (!other.cnt)
 		{
-	        if (PK_100 && PK_100_OBJERR) objerror("func_train_2d_use: button does not specify direction in cnt");
-	        else
-			  {
-				  if (WARNING) bprint("\n*** warning:\nfunc_train_2d_use: button does not specify direction in cnt - removing\n\n");
-				  MAP_OBSTR = TRUE;
-				  remove(self);
-				  return;
-			  }
+			  //if (WARNING) bprint("\n*** warning:\nfunc_train_2d_use: button does not specify direction in cnt - removing\n\n");
+			  MAP_OBSTR = TRUE;
+			  remove(self);
+			  return;
 		}
 
 	   if (self.think == func_train_2d_find)
@@ -79,14 +75,10 @@ void(float n) func_train_2d_next =
 	             self.target = targ.target1;
 	        else
 			  {
-					if (PK_100 && PK_100_OBJERR) objerror("func_train_2d_next: path_corner has no target1");
-					else
-					{
-						if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: path_corner has no target1 - removing\n\n");
-						MAP_OBSTR = TRUE;
-						remove(self);
-						return;
-					}
+					//if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: path_corner has no target1 - removing\n\n");
+					MAP_OBSTR = TRUE;
+					remove(self);
+					return;
 			  }
 	   }
 	   else if (n == 2)
@@ -95,14 +87,10 @@ void(float n) func_train_2d_next =
 	             self.target = targ.target2;
 	        else
 			  {
-					if (PK_100 && PK_100_OBJERR) objerror("func_train_2d_next: path_corner has no target2");
-					else
-					{
-						if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: path_corner has no target2 - removing\n\n");
-						MAP_OBSTR = TRUE;
-						remove(self);
-						return;
-					}
+					//if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: path_corner has no target2 - removing\n\n");
+					MAP_OBSTR = TRUE;
+					remove(self);
+					return;
 			  }
 	   }
 
@@ -111,14 +99,10 @@ void(float n) func_train_2d_next =
 
 	   if (!self.target)
 			{
-					if (PK_100 && PK_100_OBJERR) objerror("func_train_2d_next: no next target");
-					else
-					{
-						if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: no next target - removing\n\n");
-						MAP_OBSTR = TRUE;
-						remove(self);
-						return;
-					}
+					//if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: no next target - removing\n\n");
+					MAP_OBSTR = TRUE;
+					remove(self);
+					return;
 			}
 
 	   self.wait = 0;
@@ -142,14 +126,10 @@ void() func_train_2d =
 		self.speed = 100;
 	if (!self.target)
 			{
-					if (PK_100 && PK_100_OBJERR) objerror("func_train_2d without a target");
-					else
-					{
-						if (WARNING) bprint("\n*** warning:\nfunc_train_2d without a target - removing\n\n");
-						MAP_OBSTR = TRUE;
-						remove(self);
-						return;
-					}
+					//if (WARNING) bprint("\n*** warning:\nfunc_train_2d without a target - removing\n\n");
+					MAP_OBSTR = TRUE;
+					remove(self);
+					return;
 			}
 	if (!self.dmg)
 		self.dmg = 2;

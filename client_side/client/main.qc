@@ -127,13 +127,14 @@ float(float event, float parama) CSQC_InputEvent =
 		if (event == INPUT_KEYDOWN)
 			{		
 				if((cvar("viewsize") >= 100) && (cvar("viewsize") < 110))
-				{	ibar = 1; ibar_flag = 1; return FALSE;	}
+				{	ibar = 1; ibar_flag = 0; return FALSE;	}
 				
 				if((cvar("viewsize") >= 110) && (cvar("viewsize") < 120))
 				{
+					if(ibar_flag == 0) {ibar = 1; ibar_flag = 1; enginebar = 1; return TRUE;}
 					if(ibar_flag == 1) {ibar = 1; ibar_flag = 2; enginebar = 1; return TRUE;}
 					if(ibar_flag == 2) {ibar = 1; ibar_flag = 3; enginebar = 0; return TRUE;}
-					if(ibar_flag == 3) {ibar = 0; ibar_flag = 0; enginebar = 1; return TRUE;}
+					if(ibar_flag == 3) {ibar = 0; ibar_flag = 3; enginebar = 0; return TRUE;}
 					else return FALSE;
 				}
 				if((cvar("viewsize") < 100)) {cvar_set("viewsize", "100"); return TRUE;}
@@ -149,8 +150,9 @@ float(float event, float parama) CSQC_InputEvent =
 					else 
 					{
 						if (ibar_flag == 3 ) { ibar_flag = 2; ibar = 1; enginebar = 1; return TRUE; }
-						if (ibar_flag == 2 ) { ibar_flag = 1; ibar = 1; return TRUE; }
-						if (ibar_flag == 1 ) { ibar_flag = 0; ibar = 0; return FALSE; }
+						if (ibar_flag == 2 ) { ibar_flag = 1; ibar = 1; enginebar = 1; return TRUE; }
+						if (ibar_flag == 1 ) { ibar_flag = 0; ibar = 1; enginebar = 1; return TRUE; }
+						else return FALSE;
 					}
 				}
 				if((cvar("viewsize") < 110)) {cvar_set("viewsize", "100"); return TRUE;}

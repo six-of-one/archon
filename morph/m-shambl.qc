@@ -126,7 +126,7 @@ void() player_CastLightning =
 	
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
-	if(self.waterlevel > 1 && (Q_100 || self.watertype != CONTENT_LAVA)) {
+	if(self.waterlevel > 1 && (self.watertype != CONTENT_LAVA)) {
 		T_RadiusDamage(self, self, self.health, world); /* We all die! */
 		return;
 	}
@@ -264,14 +264,16 @@ void() player_shambler_impulse =
 
 	morph_impulse();
 
+/*
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		sprint(self, "Shambler using ( Claws )\n");
+//		sprint(self, "Shambler using ( Claws )\n");
 	}
+*/
 	if (self.weapon == IT_LIGHTNING)
 	{
-		sprint(self, "Shambler using ( Lightning )\n");
+//		sprint(self, "Shambler using ( Lightning )\n");
 		self.items = self.items | IT_CELLS;
 	}
 

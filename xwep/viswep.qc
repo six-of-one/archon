@@ -57,11 +57,11 @@ float(entity e, float qw, float pkw) FL_MELEE =
 	Q_MELEE = IT_AXE;
 	PK_MELEE = PK_IT_AXE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_BEARTRAP | PK_IT_CANPAB | PKPLUS_IT_EGO | PKPLUS_IT_TOMB | PKPLUS_IT_ACTOR | PKPLUS_IT_PHONE;
 
-	if (PK_100 || !VW) PK_MELEE = PK_IT_AXE;
+	if (!VW) PK_MELEE = PK_IT_AXE;
 
 	c = FALSE;
 
-	if (pkw && !Q_100)
+	if (pkw)
 	{
 		if (pkw & PK_MELEE) c = TRUE;
 		return(c);
@@ -85,11 +85,11 @@ float(entity e, float qw, float pkw) FL_RANGE =
 	Q_RANGE = IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
 	PK_RANGE = PK_IT_GRAPGUN | PK_IT_AIRGUN | PK_IT_CLIGHT;
 
-	if (PK_100 || !VW) PK_RANGE = PK_RANGE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_BEARTRAP | PK_IT_CANPAB | PKPLUS_IT_EGO | PKPLUS_IT_TOMB | PKPLUS_IT_ACTOR | PKPLUS_IT_PHONE;
+	if (!VW) PK_RANGE = PK_RANGE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_BEARTRAP | PK_IT_CANPAB | PKPLUS_IT_EGO | PKPLUS_IT_TOMB | PKPLUS_IT_ACTOR | PKPLUS_IT_PHONE;
 
 	c = FALSE;
 
-	if ((pkw & PK_RANGE) && !Q_100) c = TRUE;
+	if (pkw & PK_RANGE) c = TRUE;
 	else if (qw & Q_RANGE) c = TRUE;
 
 	if (e.eweapon)
@@ -602,57 +602,16 @@ void() viswep_post =
 
 //	qld = FALSE;
 
-	if (PK_100 || Q_100)
-	{
-		if (!vhead)
-		{
-			vload(self, 8388608);
-			if (!FL_RANGE(self.eweapon, self.weapon, self.pk_currentitem))
-//			if (self.weapon == IT_AXE && (Q_100 || !PK || self.pk_currentitem == PK_IT_AXE))
-				vload(self, IT_AXE);
-		}
-		else
-		{
-			if (!FL_RANGE(self.eweapon, self.weapon, self.pk_currentitem))
-//			else if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
-//			if (self.weapon == IT_AXE && (Q_100 || !PK || self.pk_currentitem == PK_IT_AXE))
-//			if (self.weapon == IT_AXE && (Q_100 || PK && self.pk_currentitem == PK_IT_AXE))
-			{
-				if (!self.vwepent.vwepent) vload(self, IT_AXE);
-			}
-			else
-			{
-				if (self.vwepent.vwepent.weapon == IT_AXE)
-				{
-					setattachment(self.vwepent.vwepent, world, null_string);
-					remove(self.vwepent.vwepent);
-					self.vwepent.vwepent = world;
-				}
-				else if (self.vwepent.weapon == IT_AXE)
-				{
-					self.vwepent = vhead.vwepent;
-					setattachment(vhead, world, null_string);
-					remove(vhead);
-					self.vwepent.vwepent = world;
-				}
-			}
-		}
-	}
-	else
-	{
-
 	if (!vhead)
 		viswep_ld(self, 1);
 	else
-		{
+	{
 		if (self.items & qweps != vhead.items) qld = TRUE;
 		if (!qld && vhead.armorvalue != self.armortype) qld = VW_ARMOR; // if vw armor display - update on armor changes
 
 		if (vhead.pk_items != pkbits || qld) viswep_ld(self, 1);
-		}
-	
 	}
-
+	
 	if (!self.mask_x & CB_HUMAN) // because non humans dont have vwepents for pki - test never happens below
 		if (self.pkprevweapon != self.pk_currentitem) PK_SetCurrentAmmo();
 
@@ -724,7 +683,7 @@ void() viswep_post =
 			}
 			else	if ((vhead.owner.prevweapon != vhead.owner.weapon) || (vhead.owner.pkprevweapon != vhead.owner.pk_currentitem) || (vhead.owner.forcewchange == 1)) PK_SetCurrentAmmo();
 		}
-		else if (!PK_100 && !Q_100)
+		else
 		{
 			if (!VW)
 			{
@@ -852,7 +811,7 @@ void() viswep_post =
 				if( ! (vhead.owner.cam_x & CHSCAM_ON) ) vhead.exteriormodeltoclient = vhead.owner; // darkplaces - works for dp!
 				else vhead.exteriormodeltoclient = world;
 
-				if (PK_100 || Q_100 || !VW)
+				if (!VW)
 				{
 					if (vhead.weapon != IT_AXE && dwep != IT_AXE) qld = TRUE;
 					else if (vhead.pk_currentitem != PK_IT_AXE && pkdwep != PK_IT_AXE) qld = TRUE;

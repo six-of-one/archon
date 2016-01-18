@@ -1368,6 +1368,16 @@ void(float sel, vector torg) spawn_chaos_monster =
 
 	self.charmer.charmer = self;
 	self.charmer.charmed = 1;
+
+	norm = self.charmer.origin;
+	norm_z = norm_z + self.charmer.mins_z;
+	gsf = 250;
+	while ((pointcontents(norm) == CONTENT_SOLID) && gsf > 0) // try to move out of solid because source ent has lower origin than monsters
+	{
+		norm_z = norm_z + 2;
+		gsf = gsf - 1;
+	}	
+	if (gsf < 250 && gsf > 0) setorigin(self.charmer, norm);
 };
 
 /*
@@ -1996,9 +2006,9 @@ void() archon_target =
 // 3000 - traceline targeting range
 	traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + v_forward * 3000, FALSE, self);
 
-   v1 = trace_plane_normal;
-   v1_x = 0 - v1_x;
-   v1_y = 0 - v1_y;
+   norm = trace_plane_normal;
+   norm_x = 0 - norm_x;
+   norm_y = 0 - norm_y;
 
 // run a free roaming reticle - not tied to a specific target
 	if (self.pkplus_actorammo & 1)
@@ -2020,7 +2030,7 @@ void() archon_target =
 		setorigin(self.bolt_targetNext, trace_endpos -  (v_forward * 6));
 
 // set facing on roaming reticle
-		self.bolt_targetNext.mangle = vectoangles( v1 );
+		self.bolt_targetNext.mangle = vectoangles( norm );
 
 		if (self.bolt_targetNext.angles_x != self.bolt_targetNext.mangle_x) self.bolt_targetNext.angles = self.bolt_targetNext.mangle;
 		
@@ -2100,7 +2110,7 @@ void() archon_target =
 		trace_ent.bolt_target.view_ofs_z = 7;
 	}
 
-   trace_ent.bolt_target.angles = vectoangles( v1 );
+   trace_ent.bolt_target.angles = vectoangles( norm );
 
 	if (trace_ent.bolt_target.angles_x == 90 || trace_ent.bolt_target.angles_x == 270)
 		trace_ent.bolt_target.avelocity_y = 20;

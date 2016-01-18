@@ -393,10 +393,10 @@ float (entity e, float healamount6, float ignore) T_Heal =
 {
 	local float heala, f;
 
-	if (Q_100 || PK_100)
-	{
-		return(q100_T_Heal(e, healamount6, ignore));
-	}
+//		return(q100_T_Heal(e, healamount6, ignore));
+
+	if (e.mask_x & MORPH_ARCHON)
+		return 0;
 
 	if (e.health <= 0)
 		return 0;
@@ -433,7 +433,7 @@ float (entity e, float healamount6, float ignore) T_Heal =
 
 // NOTE: q2 deal will bork display bar if anyone can collect enough (and its pretty easy with a tank...)
 
-	if (!Q_100) pk_setDamageSkin(e); // *pk damage skins code
+	pk_setDamageSkin(e); // *pk damage skins code
 
 	return 1;
 };
@@ -465,11 +465,7 @@ void() health_touch =
 	local	float amount, smax, vmax;
 	local	string	s1;
 
-	if (Q_100 || PK_100)
-	{
-		q100_health_touch();
-		return;
-	}
+//		q100_health_touch();
 
 	vmax = amount = 0;
 
@@ -644,7 +640,7 @@ void() x_pwr_touch =
 	sprint (other,self.netname);
 	sprint (other,"\n");
 
-	if (Q_99 || (deathmatch != 4)) // *pk - my new rule, logical extrapolation
+	if (deathmatch != 4) // *pk - my new rule, logical extrapolation
 	if (deathmatch)
 	{
 		self.mdl = self.model;
@@ -674,7 +670,7 @@ void() x_pwr_touch =
 
 	if (self.netname == "Wetsuit")
 	{
-		if (!Q_100 && !PK_100 && VW)
+		if (VW)
 		if (self.lip > 0) 
 		if (other.mask_x & CB_HUMAN)
 			other.skin = self.lip;  // set skin for suit
@@ -688,7 +684,7 @@ void() x_pwr_touch =
 
 	if (self.items == IT_SUIT)
 	{
-		if (!Q_100 && !PK_100 && VW)
+		if (VW)
 		if (self.lip > 0) 
 		if (other.mask_x & CB_HUMAN)
 			other.skin = self.lip;  // set skin for suit

@@ -429,6 +429,7 @@ void() player_gremlin_attack =
 		self.attack_finished = time + 0.8;
 	}
 
+// NOTE: see if this causes the viswep bug
 //	if (self.eweapon || (self.weapon != IT_AXE && self.weapon != IT_SHOTGUN) ) // not sure this will ever be the case
 	if (self.weapon != IT_AXE && self.weapon != IT_SHOTGUN)
 	{
@@ -455,7 +456,7 @@ void() player_gremlin_impulse =
 
 	if (self.weapon == IT_SHOTGUN)
 	{
-		sprint(self, "Gremlin using ( claws )\n");
+//		sprint(self, "Gremlin using ( claws )\n");
 		self.eweapon = world;
 		self.weaponmodel = null_string;
 		self.pk_currentitem = PK_IT_AXE;
@@ -464,7 +465,7 @@ void() player_gremlin_impulse =
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		sprint(self, "Gremlin using ( bite )\n");
+//		sprint(self, "Gremlin using ( bite )\n");
 		self.eweapon = world;
 		self.weaponmodel = null_string;
 	}

@@ -504,12 +504,6 @@ void () fire_fly_touch =
 	if (other == self.owner)
 		return;
 
-	if (Q_100 || PK_100)
-	{
-		if (pointcontents(self.origin) == CONTENT_SKY) { SUB_Remove(); return; }
-	}
-	else
-
 	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();

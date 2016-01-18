@@ -739,15 +739,10 @@ void() d_weapon_bfg =
 //	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, null_string))
 	{
+		weapon_chainlg();
 		self.touch = painkeep_touch;
-		self.pk_touch = weapon_touch;
-		self.classname = "weapon_lightning";
-		if (!Q_100 & !Q_99)
-		{
-			weapon_chainlg();
-			self.pk_touch = painkeep_weapon_touch;
-			self.classname = "weapon_chainlg";
-		}
+		self.pk_touch = painkeep_weapon_touch;
+		self.classname = "weapon_chainlg";
 		return;
 	}
 

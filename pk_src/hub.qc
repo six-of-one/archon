@@ -151,7 +151,6 @@ void() hub_teleport =
 	// error check
 	if (!self.map)
 	{
-		if (PK_100 && PK_100_OBJERR) objerror("hub_teleport without map");
 		if (WARNING) bprint("\n*** warning:\nhub_teleport without map - removing, this portal will not cull votes.\n\n");
 		remove(self);
 		return;
@@ -159,9 +158,6 @@ void() hub_teleport =
 
 	InitTrigger ();
 
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - q compat mode
-		self.touch = changelevel_touch; // else hubs are broke
-	else
 	self.touch = hub_teleport_touch;
 
 	self.th_weight = triggerweight; // *bot
@@ -215,15 +211,6 @@ float() check_custom_hub =
 void() hub_custom =
 {
 	local entity e;
-//	local vector v;
-
-	if (PK_100 || Q_100 || Q_99) // Cataboligne - 8.15.9 - pk compat mode, q compat mode
-	{
-		custom_hub_fail = TRUE; // fail it - dumb hub
-		inHubMap = FALSE;
-		remove(self);
-		return;
-	}
 
 	if (!self.map) // we set arc_hub map in case this hub is non functional - i.e. no proper vote portals
 	{
@@ -468,12 +455,6 @@ void() hub_control_use =
 	// error
 	if (highest == world)
 	{
-// NOTE: found in wrong place - orig code has no remove here!
-//		if (PK_100)
-//		{
-//			remove(self);
-//			return;
-//		}
 		bprint("hub_control_use: highest vote not found\n");
 		return;
 	}
@@ -721,13 +702,6 @@ void() hub_control =
 //	local entity timer;
 	local float temp1;
 
-	if (Q_100 || Q_99 || custom_hub_fail) // Cataboligne - 8.16.9 - q compat mode
-	{
-		inHubMap = FALSE;
-		remove(self); // no hub controls in q mode, would be confusing
-		return;
-	}
-
 	// if we're not in deathmatch, then we remove this thing
 	if (!deathmatch)
 	{
@@ -737,7 +711,6 @@ void() hub_control =
 
 	if (theHub)
 	{
-		if (PK_100 && PK_100_OBJERR) objerror("Only 1 hub may be in existance.");
 // Cataboligne 10.2.8 - improvment:
 // already have a hub - why not remove and continue?
 		if (WARNING) bprint("\n*** warning:\nMap tried to create a second hub - removing.\n\n");
@@ -757,13 +730,6 @@ void() hub_control =
 	// activated or timeout?
 	else 
 	{
-		if (PK_100 && !self.wait)
-		{
-			if (PK_100_OBJERR) objerror("hub_control without targetname OR wait");
-			if (WARNING) bprint("\n*** warning:\nhub_control without targetname OR wait - removing.\n\n");
-			remove(self);
-			return;			
-		}
 		if (!self.wait) self.wait = 120; // Cataboligne - if no self.wait, why not just pick a default?
 		self.think = hub_control_use;
 		// create timer

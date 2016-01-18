@@ -3,6 +3,8 @@
    Copyright (c)1996 Hipnotic Interactive, Inc.
    All rights reserved.
    Distributed (unsupported) on 3.12.97
+
+	mod: Cataboligne - 9.24.13 - got rid of linked list, holes think to remove anyway - net effect - if max count is hit it stop making stains until some go away
 */
 
 /*QUAKED wallsprite (0 1 0) (-8 -8 -8) (8 8 8)
@@ -33,113 +35,56 @@ void() wallsprite =
 	makestatic (self);
    };
 
-void() Initstain_set =
-   {
-   precache_model ("progs/s_bullet.spr");
-
-   stain_set = nullstain;
-   last_stain = nullstain;
-   num_stains = 0;
-   };
 
 void() remove_stain =
 {
-   local entity ent;
-
-   // There is a possibility that this is not the first bullet
-   // in the list, but it doesn't really matter.  All that
-   // matters is there is one less bullet.  Just make sure
-   // we don't remove the world!
-   if ( stain_set == nullstain )
-      {
-      if (Q_100) objerror("remove_stain_decor: stain_set == nullstain! " );
-		else if (WARNING)
-			{
-				bprint("*** remove_stain_decor: stain_set == nullstain! ");
-				stain_set = last_stain = world;
-				num_stains = 0;
-				return;
-			}
-      }
-
-   ent = stain_set;
-   if ( ent.classname != "stain_decor" )
-      {
-      if (Q_100) objerror("remove_stain_decor: Tried to remove non-stain_decor!\n");
-		else if (WARNING)
-			{
-				bprint("*** remove_stain_decor: Tried to remove non-stain_decor!\n");
-				stain_set = last_stain = world;
-				num_stains = 0;
-				return;
-			}
-      }
-
-   stain_set = stain_set.lastvictim;
-   remove( ent );
-   if ( last_stain == ent )
-      {
-      last_stain = nullstain;
-      }
-   num_stains = num_stains - 1;
-
-	if (num_stains < 0) num_stains = 0;
+	if ( self.classname == "stain_decor" )
+	{
+		remove(self);
+		num_stains = num_stains - 1;
+		if (num_stains < 0) num_stains = 0; // oops
+	}
+	else
+	{
+		if (WARNING) bprint("*** remove_stain_decor: Tried to remove non-stain_decor!\n");
+		return;
+	}
 };
 
 entity( vector pos, string stain, void() thk, float ttm ) placestain =
 {
-   local entity new;
-//   local entity ent;
-   local vector norm;
-	local string stainv;
+   local entity e;
 
-	stainv = stain;
-	if (!stainv) stainv = "progs/s_rlspg.spr";
-   new = spawn();
-   new.owner = new;
-   new.movetype = MOVETYPE_NONE;
-   new.solid = SOLID_NOT;
-   new.classname = "stain_decor";
-//   setmodel( new, "progs/s_bullet.spr" );
-   setmodel( new, stainv );
-   setsize (new, '0 0 0', '0 0 0');
-//	if (stainv == "progs/s_rlspg.spr" || stainv == "progs/s_plspg.spr") new.scale = 8; // TDO: redo sprites & get rid of scale
-	new.alpha = 1;
+	if (!stain) stain = "progs/s_rlspg.spr"; // default to rail stain
+   e = spawn();
+   e.classname = "stain_decor";
+   setmodel( e, stain );
+   setsize (e, '0 0 0', '0 0 0');
+//	if (stain == "progs/s_rlspg.spr" || stain == "progs/s_plspg.spr") e.scale = 8; // redid sprites & got rid of scale
 
    norm = trace_plane_normal;
    norm_x = 0 - norm_x;
    norm_y = 0 - norm_y;
-   new.angles = vectoangles( norm );
+   e.angles = vectoangles( norm );
    makevectors(self.angles);
-   setorigin( new, pos - ( v_forward * 0.2 ) );
+   setorigin( e, pos - ( v_forward * 0.2 ) );
 
-//	if (thk != SUB_Null && thk != (void()) 0)
-	if (thk != SUB_Null && thk)
-		new.think = thk;		
+//	if (thk != SUB_Null && thk != (void()) 0) // frikqcc method
+	if (thk != SUB_Null && thk) // fteqcc method
+		e.think = thk;		
 	else
-		new.think = remove_stain;
+		e.think = remove_stain;
 
 	if (ttm)
-		new.nextthink = time + ttm;
+		e.nextthink = time + ttm;
 	else
-		new.nextthink = time + 300;
+		e.nextthink = time + 30;
 
    num_stains = num_stains + 1;
-   if ( num_stains > 150 )
+   if ( num_stains > 200 ) // NOTE: removes current stain, not first
       {
       remove_stain();
       }
 
-   if ( last_stain != nullstain )
-      {
-      last_stain.lastvictim = new;
-      }
-   else
-      {
-      stain_set = new;
-      }
-   new.lastvictim = nullstain;
-   last_stain = new;
-
-	return(new);
+	return(e);
 };

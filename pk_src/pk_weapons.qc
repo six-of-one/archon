@@ -226,7 +226,7 @@ void(float ox) W_FirePulseSpikes =
 		dir = botaim ();
 	else
 	dir = aim (self, 1000);
-	if (PK_100 || Q_100)
+	if (autocvar_sv_centerwep)
 		launch_spike (self.origin + ' 0 0 16' + v_right*ox, dir);
 	else
 		launch_spike (self.origin + v_up * VWZ_PNAILG + v_right * (ox / 2.5) + v_right * VWY_PNAILG + v_forward * VWX_PNAILG, dir);
@@ -357,7 +357,7 @@ void() PK_SetCurrentAmmo =
 		{
 // GRAPPLING_START
 			self.currentammo = 1;
-			if (PK_100 || Q_100)
+			if (autocvar_sv_centerwep)
 				self.weaponmodel = "progs/v_harp.mdl";
 			else
 				self.weaponmodel = "progs/v2_harp.mdl";
@@ -461,7 +461,7 @@ void() PK_SetCurrentAmmo =
 
 		} else {
 			self.currentammo = self.ammo_shells;
-			if (PK_100 || Q_100)
+			if (autocvar_sv_centerwep)
 			self.weaponmodel = "progs/v_shot.mdl";
 			else
 			self.weaponmodel = "progs/v2_shot.mdl";
@@ -480,7 +480,7 @@ void() PK_SetCurrentAmmo =
 
 		} else {
 			self.currentammo = self.ammo_shells;
-			if (PK_100 || Q_100)
+			if (autocvar_sv_centerwep)
 			self.weaponmodel = "progs/v_shot2.mdl";
 			else
 			self.weaponmodel = "progs/v2_shot2.mdl";
@@ -496,14 +496,14 @@ void() PK_SetCurrentAmmo =
 // PULSE_GUN_START
 		if (PK)
 		{
-			if (PK_100 || Q_100)
+			if (autocvar_sv_centerwep)
 				self.weaponmodel = "progs/v_fnail.mdl";
 			else
 				self.weaponmodel = "progs/v2_pulsenail.mdl";
 		}
 		else
 		{
-			if (PK_100 || Q_100)
+			if (autocvar_sv_centerwep)
 				self.weaponmodel = "progs/v_nail.mdl";
 			else
 				self.weaponmodel = "progs/v2_nail.mdl";
@@ -521,7 +521,7 @@ void() PK_SetCurrentAmmo =
 	else if (self.weapon == IT_SUPER_NAILGUN)
 	{
 		self.currentammo = self.ammo_nails;
-		if (PK_100 || Q_100)
+		if (autocvar_sv_centerwep)
 			self.weaponmodel = "progs/v_nail2.mdl";
 		else
 			self.weaponmodel = "progs/v2_nail2.mdl";
@@ -533,7 +533,7 @@ void() PK_SetCurrentAmmo =
 	else if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
 		self.currentammo = self.ammo_rockets;
-		if (PK_100 || Q_100)
+		if (autocvar_sv_centerwep)
 			self.weaponmodel = "progs/v_rock.mdl";
 		else
 			self.weaponmodel = "progs/v2_rock.mdl";
@@ -557,7 +557,7 @@ void() PK_SetCurrentAmmo =
 	else if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
 		self.currentammo = self.ammo_rockets;
-		if (PK_100 || Q_100)
+		if (autocvar_sv_centerwep)
 			self.weaponmodel = "progs/v_rock2.mdl";
 		else
 			self.weaponmodel = "progs/v2_rock2.mdl";
@@ -785,7 +785,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		} else {
 			f.currentammo = f.ammo_shells;
 			if (!f.eweapon)
-			if (PK_100 || Q_100)
+			if (autocvar_sv_centerwep)
 			f.weaponmodel = "progs/v_shot.mdl";
 			else
 			f.weaponmodel = "progs/v2_shot.mdl";
@@ -803,7 +803,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		} else {
 			f.currentammo = f.ammo_shells;
 			if (!f.eweapon)
-			if (PK_100 || Q_100)
+			if (autocvar_sv_centerwep)
 			f.weaponmodel = "progs/v_shot2.mdl";
 			else
 			f.weaponmodel = "progs/v2_shot2.mdl";
@@ -1569,16 +1569,14 @@ void() PK_Attack =
 		else if (self.pk_currentitem == PK_IT_CANPAB)
 		{
 			float smax;
-			if (PK_100) smax = 299; // 249 + 50 subbed off below
-			else smax = morph_healmax(self.health_modifier, Q_MEGA_MAX);
+//			if (PK_100) smax = 299; // 249 + 50 subbed off below
+//			else 
+			smax = morph_healmax(self.health_modifier, Q_MEGA_MAX);
 			if (self.health > (smax - 50) ) // for PK100 this val is 249
 			{
-				if (!PK_100)
-				{
-					sprint(self, "You have plenty of health, item not used...\n");
-					self.attack_finished = time + 0.5; // dont auto fire next item selected
-					pk_cycleObjects();
-				}
+				sprint(self, "You have plenty of health, item not used...\n");
+				self.attack_finished = time + 0.5; // dont auto fire next item selected
+				pk_cycleObjects();
 				return;
 			}
 
@@ -2139,6 +2137,8 @@ void() PK_ImpulseCommands =
 	else if (self.impulse == 50)
 	{
 		grap_releaseHarpoon();
+
+		if (!self.mask_x & MORPH_NOCUBE) // dont change this for internal morphers
 		if (self.state) self.state = 0;
 		else self.state = self.morphy;
 	}

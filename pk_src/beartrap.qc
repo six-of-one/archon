@@ -171,7 +171,6 @@ void() beartrap_dropBearTrap =
 		PK_BT_TIMETOFOLLOW = 15;
 		PK_BT_DMG = 2;
 
-		if (!PK_100)
 		if (DARKPLACES || chaos)
 		{
 			PK_BT_TIME = cvar("pk_bt_time");

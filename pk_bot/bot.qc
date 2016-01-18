@@ -428,8 +428,7 @@ void(entity targ, entity attacker) bot_kill =
 		f.classname = "player";
 	}
 
-	if (!Q_100) PK_ClientObituary(targ, damage_inflictor, attacker); // *pk - pk death handler
-	else ClientObituary(targ, attacker);
+	PK_ClientObituary(targ, damage_inflictor, attacker); // *pk - pk death handler
 
 	if (e) e.classname = "pk*bot";
 	if (f) f.classname = "pk*bot";
@@ -586,7 +585,7 @@ void(entity e) bot_BackpackSetup =
 {
 	if (!e) return;
 	e.pk_touch = e.touch; // *pk
-	if (!Q_100) e.touch = painkeep_touch; // *pk
+	e.touch = painkeep_touch; // *pk
 
 // bot functions that op. w/o painkeep - masked off here because painkeep_touch does bot_touch and more
 //	e.bot_item_touch = e.touch;
@@ -819,53 +818,6 @@ void (entity e) bot_freeze =
 		e.think = e.think1; // if this is spuriously called this is not good
 		e.nextthink = time + 0.1;
 		b_ufr = b_ufr + 1;
-	}
-};
-
-void (entity e) bot_froze =
-{
-	local entity f;
-	local string srch;
-
-	if (BOTFREEZE != cvar("sv_c_botfreeze"))
-		BOTFREEZE = cvar("sv_c_botfreeze");
-
-	b_frz = b_ufr= 0;
-	if (e)
-		bot_freeze(e);
-	else
-	{
-		srch = "player";
-		f = find(world, classname, "player");
-		while (f != world)
-			{
-				if (f.class_select == "class_bot")
-					bot_freeze(f);
-
-				f = find(f, classname, srch);
-
-				if (!f)
-				if (srch != "pk*bot" )
-				{
-					srch = "pk*bot";
-					f = find(world, classname, srch);
-				}
-			}
-	}
-	if (WARNING)
-	{
-		if (b_frz)
-		{
-			bprint("*** Bot froze - ");
-			bprint(ftos(b_frz));
-			bprint(" bots \n");
-		}
-		if (b_ufr)
-		{
-			bprint("*** Bot unfroze - ");
-			bprint(ftos(b_ufr));
-			bprint(" bots \n");
-		}
 	}
 };
 

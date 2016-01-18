@@ -37,11 +37,7 @@
 
 void () SUB_regen =
 {
-	if (Q_100)
-	{
-		q100_SUB_regen();
-		return;
-	}
+//		q100_SUB_regen();
 
 	if (self.event == "dynamic_item") // just in case catch - cubes prob. come here
 	{
@@ -62,22 +58,6 @@ void () SUB_regen =
 	pk_item_position();  // *pk - reposition moved items (horn & harp effects) on respawn
 };
 
-void() thinkpr =
-{
-bprint(self.netname);
-
-remove(self);	
-};
-
-void(string g) tbprint =
-{
-	local entity e;
-	
-	e = spawn();
-	e.netname = g;
-	e.think = thinkpr;
-	e.nextthink = time + 10; // FIX: for actual use in server runes
-};
 
 void () PlaceItem =
 {
@@ -94,7 +74,8 @@ void () PlaceItem =
 	self.mcode = pk_mcode(null_string, self); // put map code on ent
 	if (!self.scode) self.scode = self.mcode;
 
-	if (Q_100 || PK_100) // || !XMOD)
+/*
+	if (!XMOD)
 	{
 		f = 0;
 		if (TR_Q1QRY > 0)
@@ -118,6 +99,7 @@ void () PlaceItem =
 		else if (self.mcode == MC_SHOTGUN) master_item_control(self, f);
 		if (self.think == PlaceItem) self.think = SUB_Null; // create calls start item - fix infinite loop because item_call sub regen not used in *100
 	}
+*/
 
 	if (self.scode == MC_Q2_BARREL || self.scode == MC_D_BARREL || self.scode == MC_Q3_BARREL || self.scode == MC_EXPLOD1 || self.scode == MC_EXPLOD1){
 
@@ -127,12 +109,6 @@ bprint("placeitem barrel return\n");
 		return;
 
 }
-
-	if (Q_100)
-	{
-		q100_PlaceItem(); // always encoding now
-		return;
-	}
 
 	self.mdl = self.model;		// so it can be restored on respawn
 	self.flags = FL_ITEM;		// make extra wide
@@ -146,13 +122,7 @@ bprint("placeitem barrel return\n");
 		dprint ("Bonus item fell out of level at ");
 		dprint (vtos (self.origin));
 		dprint ("\n");
-		if (PK_100)
-		{
-			remove (self);
-			return ;
-		}
-		else
-			dtf_handle();
+		dtf_handle();
 	}
 	pk_placeitem(); // *pk - set item details
 
@@ -237,18 +207,14 @@ void () painkeep_weapon_touch =
 	}
 	else
 	{
-		if (PK_100 && PK_100_OBJERR) objerror("painkeep_weapon_touch: unknown classname");
-		else
+		if (WARNING)
 		{
-			if (WARNING)
-			{
 			bprint("\n*** warning:\npainkeep_weapon_touch: unknown classname (");
 			bprint(self.classname);
 			bprint(") - ignoring\n\n");
-			}
-			self.touch = SUB_Null;
-			return;
 		}
+		self.touch = SUB_Null;
+		return;
 	}
 
 	sprint (other,"You got the ");
@@ -306,22 +272,10 @@ new QUAKED weapon_airfist (0 .5 .8) (-15 -9 25) (17 9 43)
 
 void () weapon_airfist =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		remove(self);
-		return;
-	}
-
-	if (PK_100)
-	{
-		precache_model ("progs/g_airgun.mdl");
-		setmodel (self,"progs/g_airgun.mdl");
-	}
-	else
-	{
-		precache_model ("progs/g_airgun2.mdl");
-		setmodel (self,"progs/g_airgun2.mdl");
-	}
+//		precache_model ("progs/g_airgun.mdl");
+//		setmodel (self,"progs/g_airgun.mdl");
+	precache_model ("progs/g_airgun2.mdl");
+	setmodel (self,"progs/g_airgun2.mdl");
 	self.pk_currentitem = PK_IT_AIRGUN;
 	self.netname = "AirFist";
 	self.touch = painkeep_weapon_touch;
@@ -346,17 +300,6 @@ void () weapon_rmine =
 
 void () weapon_chainlg =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		if (Q_100) remove(self);
-		else
-		{
-			q100_weapon_lightning();
-			self.classname = "weapon_lightning";
-		}
-		return;
-	}
-
 	precache_model ("progs/g_clight.mdl");
 	setmodel (self,"progs/g_clight.mdl");
 	self.pk_currentitem = PK_IT_CLIGHT;
@@ -375,12 +318,6 @@ void () weapon_chainlg =
 
 void () weapon_grapgun =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		remove(self);
-		return;
-	}
-
 	self.touch = painkeep_weapon_touch;
 
 	precache_model ("progs/g_harp.mdl");
@@ -967,12 +904,6 @@ bprint(")\n");
 */
 void () item_painkeep_gwell =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		remove(self);
-		return;
-	}
-
 	self.touch = painkeep_touch;
 
 	self.noise = "items/protect.wav";
@@ -992,12 +923,6 @@ void () item_painkeep_gwell =
 */
 void () item_painkeep_turret =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		remove(self);
-		return;
-	}
-
 	self.touch = painkeep_touch;
 
 	precache_model ("progs/tpower.mdl");
@@ -1024,12 +949,6 @@ void () item_painkeep_lantern =
 */
 void () item_painkeep_can =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		remove(self);
-		return;
-	}
-
 	self.touch = painkeep_touch;
 
 	precache_model ("progs/beans.mdl");
@@ -1047,12 +966,6 @@ void () item_painkeep_can =
 */
 void () item_painkeep_beartrap =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		remove(self);
-		return;
-	}
-
 	self.touch = painkeep_touch;
 
 	precache_model ("progs/bearpick.mdl");
@@ -1073,12 +986,6 @@ Currently exactly the same as a small wall torch
 */
 void () light_painkeep_candle =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		remove(self);
-		return;
-	}
-
 	precache_model("progs/candle.mdl");
 	setmodel (self,"progs/candle.mdl");
 	FireAmbient ();
@@ -1091,12 +998,6 @@ void () light_painkeep_candle =
 
 void () item_painkeep_expshells =
 {
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-	{
-		remove(self);
-		return;
-	}
-
 	self.touch = pk_ammo_touch;
 
 	precache_model ("maps/b_eshel0.bsp");
@@ -1230,11 +1131,7 @@ void() BackpackTouch =
 	local entity e;
 	local float acount;
 
-	if (Q_100)
-	{
-		q100_BackpackTouch();
-		return;
-	}
+//		q100_BackpackTouch();
 
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
 	{
@@ -1705,18 +1602,13 @@ void() DropBackpack =
 //	local entity e;
 	local float bkt;
 
-	if (Q_100)
-	{
-		q100_DropBackpack();
-		return;
-	}
+//		q100_DropBackpack();
 
 	newmis = world;
 
 // toss limits Q, PK, q / pk guy code
 // CHECK: what d, q2, q3 guy drop in dm when dead
 
-	if (!PK_100)
 	if ((MAP_MODE != "Q") && (MAP_MODE != "PK"))
 	if (self.class_select != "class_monster")
 	if (self.morphy != CHAR_Q)
@@ -1968,16 +1860,13 @@ void() pk_placeitem =
 	if (self.class_select == null_string) self.class_select = "quake_item";
 
 //	if (XMOD)
-	if (!PK_100 && !Q_100)
-	{
-		if (self.wad == "q1") master_item_control(self, 0); // TEST: comment for q1 item comparison
-		else 
-					if ((TR_ALL || TR_WOLF) && self.class_select == "wolf_item")  master_item_control(self, TR_WOLF);
-		else if ((TR_ALL || TR_DOOM) && self.class_select == "doom_item")  master_item_control(self, TR_DOOM);
-		else if ((TR_ALL || TR_QUAKE) && self.class_select == "quake_item")  master_item_control(self, TR_QUAKE);
-		else if ((TR_ALL || TR_Q2) && self.class_select == "q2_item")  master_item_control(self, TR_Q2);
-		else if ((TR_ALL || TR_Q3) && self.class_select == "q3_item")  master_item_control(self, TR_Q3);
-	}
+	if (self.wad == "q1") master_item_control(self, 0); // TEST: comment for q1 item comparison
+	else 
+				if ((TR_ALL || TR_WOLF) && self.class_select == "wolf_item")  master_item_control(self, TR_WOLF);
+	else if ((TR_ALL || TR_DOOM) && self.class_select == "doom_item")  master_item_control(self, TR_DOOM);
+	else if ((TR_ALL || TR_QUAKE) && self.class_select == "quake_item")  master_item_control(self, TR_QUAKE);
+	else if ((TR_ALL || TR_Q2) && self.class_select == "q2_item")  master_item_control(self, TR_Q2);
+	else if ((TR_ALL || TR_Q3) && self.class_select == "q3_item")  master_item_control(self, TR_Q3);
 
 
 // Cataboligne - added check here because new mode (not permanently PK & loaded a PK map can set PK mode after nailguns get loaded on map

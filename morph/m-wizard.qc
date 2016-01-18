@@ -438,7 +438,16 @@ void() player_wizard_impulse =
 {
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	if (self.archon < 11)
+	if (!self.builtin & IT_ROCKET_LAUNCHER)
+	{
+		if (self.archon > 100) // ARCHON_MORPH_XMIN - minimum archon pts req to activate powers
+		{
+			self.builtin = self.builtin | IT_ROCKET_LAUNCHER;
+			self.items = self.items | self.builtin;
+		}
+	}
+	else
+	if (self.archon < 11) // ARCHON_MORPH_BLAST + 1 - pts required by morph explosive weps
 		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER);
 	else
 		self.items = self.items | IT_ROCKET_LAUNCHER;	
@@ -447,25 +456,27 @@ void() player_wizard_impulse =
 
 	self.volume = 0;
 
+/*
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		sprint(self, "Scragg  using ( Pain field )\n");
+//		sprint(self, "Scragg  using ( Pain field )\n");
 	}
+*/
 	if (self.weapon == IT_SHOTGUN)
 	{
-		sprint(self, "Scragg using ( Spikes )\n");
+//		sprint(self, "Scragg using ( Spikes )\n");
 		self.items = self.items | IT_CELLS;
 	}
 	if (self.weapon == IT_SUPER_SHOTGUN)
 	{
-		sprint(self, "Scragg using ( Super Spikes )\n");
+//		sprint(self, "Scragg using ( Super Spikes )\n");
 		self.items = self.items | IT_CELLS;
 	}
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
-		self.volume = -10;
-		sprint(self, "Scragg using ( Explosive spike )\n");
+		self.volume = -10; // ARCHON_MORPH_BLAST - pts required by morph explosive weps
+//		sprint(self, "Scragg using ( Explosive spike )\n");
 		self.items = self.items | IT_CELLS;
 	}
 };
@@ -507,8 +518,8 @@ void(float silent) player_wizard_become =
 
 	setmodel(self,"progs/wizard.mdl");
 
-	self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
-	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
+	self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN;
 	self.weapon = IT_SUPER_SHOTGUN;
 
 	self.msight = "wizard/wsight.wav";

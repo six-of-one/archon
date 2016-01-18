@@ -132,6 +132,25 @@ void() player_ShalMissile =
 	newmis.morphy = self.morphy;
 };
 
+// fire a shalrath spike (purple version of knight spike) from v2
+// 	- target = trace_endpos
+
+void(vector v2) shal_spike =
+{
+	v2_x = v2_x + crandom() * 10;
+	v2_y = v2_y + crandom() * 10;
+	v2_z = v2_z + crandom() * 10;
+	hk_fire_spike(v2);
+	newmis.skin = 1;
+	newmis.modelflags = MF_TRACER3;
+	newmis.velocity = normalize(trace_endpos - v2);
+	newmis.angles  = vectoangles(newmis.velocity);
+	newmis.velocity = newmis.velocity * (300 + crandom() * 50);
+	makevectors(newmis.angles);
+	newmis.origin = newmis.origin + random() * 40 * v_forward;
+};
+
+
 void() player_shalrath_attack1 = [ $attack1, player_shalrath_attack2 ]
 {
 	local vector v;
@@ -167,20 +186,36 @@ void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 
 	if (random() < 0.2) wdmg = 5 + 15 * random();
 
-	org = self.origin + ' 0 0 14' + v_forward * 11 + v_right * 22;				// right half y split
+	v1 = org = self.origin + ' 0 0 14' + v_forward * 11 + v_right * 22;				// right half y split
 	traceline (org, self.origin + v_forward* B_SPLIT, TRUE, self);
-	multi_beam(org, trace_endpos,  0);
+	if (self.weapon == IT_LIGHTNING) multi_beam(org, trace_endpos,  0);
 
-	org = self.origin + ' 0 0 14' + v_forward * 11 + v_right * -19;			// left half y split
+	norm = org = self.origin + ' 0 0 14' + v_forward * 11 + v_right * -19;			// left half y split
 	traceline (org, self.origin + v_forward* B_SPLIT, TRUE, self);
-	multi_beam(org, trace_endpos,  0);
+	if (self.weapon == IT_LIGHTNING) multi_beam(org, trace_endpos,  0);
 
 	org = self.origin + ' 0 0 14' + v_forward *  B_SPLIT * 0.6;									// main strike beam
 	traceline (org, self.origin + v_forward*600, TRUE, self);
-	multi_beam(org, trace_endpos,  0);
+	if (self.weapon == IT_LIGHTNING)
+	{
+		multi_beam(org, trace_endpos,  0);
 
-	LightningDamage_x(FALSE, org, trace_endpos + v_forward*4, self, 20 + wdmg);
-	sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
+		LightningDamage_x(FALSE, org, trace_endpos + v_forward*4, self, 20 + wdmg);
+		sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
+	}
+	if (self.weapon == IT_SUPER_NAILGUN)
+	{
+		shal_spike(v1);
+		shal_spike(norm);
+		shal_spike(v1);
+		shal_spike(norm);
+		shal_spike(v1);
+		if (random() < 0.7) shal_spike(norm);
+		if (random() < 0.3) shal_spike(v1);
+		if (random() < 0.3) shal_spike(norm);
+		if (random() < 0.13) shal_spike(norm);
+		if (random() < 0.13) shal_spike(v1);			
+	}
 };
 void() player_shalrath_lightning3 = [ $attack11, player_stand1 ] {};
 
@@ -191,7 +226,11 @@ void() player_shalrath_attack =
 		sphere_attack();
 	else
 	 {
-		if ((self.weapon == IT_AXE) && (self.volume < 0))
+		if (sphere_a.owner == self)
+		if (vlen(sphere_a.origin - sphere_a.owner.origin) > SP_MAXDIST) self.mcode = -504; // oor
+		else self.volume = -250;
+
+		if ((self.weapon == IT_AXE) && (self.volume < 0)) // note: volume setting for regaining sphere control!
 		{
 			if (self.class_select == "class_bot") // TEST: block bots from using sphere, see if bad wolf bug goes away
 			{
@@ -209,18 +248,27 @@ void() player_shalrath_attack =
 					sprint(self,"Sphere of annihilation already summoned!\n"); // IDEA: attempt (at risk) take control of not own idle sphere
 				return;
 			}
+			stuffcmd(self, "exec cfg/morph/m-shalrath-soa.cfg\n");
 			sprint(self,"You summoned a Sphere of Annihilation!\n");
 			self.attack_finished = time + 1;
 			sphere_annihilation_spawn();
+			self.mcode = sphere_a.state; // tells HUD sphere state
 // use archon power
 			if (self.volume < 0)
 				self.archon = self.archon + self.volume;
+			self.volume = -250; // can banish imm. if power is there
 		}
 		else if (self.weapon == IT_LIGHTNING)
 		{
 			if (rune_haste(0.4))
 				self.attack_finished = time + 0.75;
 			player_shalrath_lightning1(); // lightning
+		}
+		else if (self.weapon == IT_SUPER_NAILGUN)
+		{
+			if (rune_haste(0.4))
+				self.attack_finished = time + 0.75;
+			player_shalrath_lightning1(); // spikes, same framing
 		}
 		else
 		{
@@ -250,35 +298,38 @@ void() player_shalrath_impulse =
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		if ((self.archon > 1000) || (sphere_a != world))
+		if ((self.archon > 1000 && !sphere_a) || (sphere_a && sphere_a.owner == self))
 		{
-			self.items = self.items | IT_CELLS;
-			sprint(self, "Press fire to summon / dismiss Sphere of annihilation\n"); 
-			if (sphere_a == world) self.volume = -1000;
+//			sprint(self, "Press fire to summon / dismiss Sphere of annihilation\n"); 
+			self.mcode = sphere_a.state; // tells HUD sphere state
+			if (!sphere_a) self.volume = -1000;
+			else if (vlen(sphere_a.origin - sphere_a.owner.origin) > SP_MAXDIST) self.mcode = -504; // oor
+			else self.volume = -250;
 		}
 		else
 		{
+			self.mcode = -505; // tells HUD bomb in slot 1
 			self.items = self.items | IT_ROCKETS;
-			sprint(self, "Shalrath firing ( Spiked bomb )\n"); 
+//			sprint(self, "Shalrath firing ( Spiked bomb )\n"); 
 		}
 	}
 
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
 		self.items = self.items | IT_ROCKETS;
-		sprint(self, "Shalrath firing ( Spiked bomb )\n"); 
+//		sprint(self, "Shalrath firing ( Spiked bomb )\n"); 
 	}
 
 	if (self.weapon == IT_LIGHTNING)
 		{
-		sprint(self, "Shalrath using ( Lightning )\n");
+//		sprint(self, "Shalrath using ( Lightning )\n");
 		self.items = self.items | IT_CELLS;
 		}
 
 		if (self.weapon == IT_SUPER_NAILGUN)
 		{
-		sprint(self, "Shalrath using ( Spikes )\n");
-		self.items = self.items | IT_NAILS;
+//		sprint(self, "Shalrath using ( Spikes )\n");
+		self.items = self.items | IT_CELLS;
 		}
 };
 
@@ -320,7 +371,8 @@ void(float silent) player_shalrath_become =
 
 	self.builtin = IT_AXE | IT_SUPER_NAILGUN | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
 	self.items = self.items | self.builtin;
-	self.weapon = IT_ROCKET_LAUNCHER;
+	self.weapon = IT_SUPER_NAILGUN;
+	self.mcode = 0;
 
 	self.msight = "shalrath/sight.wav";
 	self.noise2 = "shalrath/pain.wav";

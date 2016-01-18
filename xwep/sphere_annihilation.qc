@@ -7,10 +7,10 @@
 // sphere special flags
 float FL_ANNIHILATED			= 8192; // something has already been annihilated once - like monsters
 // sphere move states
-float ST_FREEZE				= 0;
-float ST_FOLLOW				= 1;
-float ST_ANGLE					= 3;
-float ST_VOLUME				= 5;
+float ST_FREEZE				= -500;
+float ST_FOLLOW				= -501;
+float ST_ANGLE					= -502;
+float ST_VOLUME				= -503;
 float SP_MAXDIST				= 150; // cant control from further away than this
 
 
@@ -244,14 +244,6 @@ void() annihilate =
 
 	self.nextthink = time + 0.1;
 
-	if (self.class_select == "class_missile") f = TRUE;
-	else if (IS_MISSILE(self)) f = TRUE;
-
-	if (f)
-	{
-		self.angles = vectoangles(normalize(self.dest1) * -1); // point missiles at sphere
-	}
-
 	if (self.flags & FL_ITEM) 						// get rid of respawns right away - avoids repositioning issues with using setorigin
 //	if (self._stand == SUB_regen)			// regen respawn items - to do other wise would make shalraths really cruel
 	if (self.event != "dynamic_item")
@@ -326,7 +318,7 @@ float(entity g) annihilation_check =
 
 	if (g == world) t = FALSE;
 	else if (g == sphere_a) t = FALSE;
-	else if (g.think == annihilate) t = FALSE;
+	else if (g.think == annihilate) t = FALSE; // already annihilating
 	else if (g.model == null_string) t = FALSE;
 	else if (g.classname == "whirl") t = FALSE;
 	else if (g.classname == OBSERVER) t = FALSE;
@@ -384,14 +376,7 @@ if (WARNING)
 	g.attack_finished = time + 20;
 //	content_clear(g);
 //	if (g.flags & FL_HELD) {drop_held(g, v0); if (WARNING) bprint("sphere annihilate - item drop\n");} // item_held()
-	g.cnt = 6;
-//now unused missile turning code
-//			if (vlen(other.velocity) > 50) other.velocity = normalize(other.velocity) * 50; // touched the sphere already - slow way down
-//			other.yaw_speed = vlen(other.velocity) / 5.0;
-//			other.ideal_yaw = vectoyaw(sphere_a.origin - other.origin);
-//				if (vlen(head.velocity) > 400) head.velocity = normalize(head.velocity) * 400; // catching a missile - slow it down
-//			head.yaw_speed = vlen(head.velocity) / 5.0;
-//			head.ideal_yaw = vectoyaw(sphere_a.origin - head.origin);
+	g.cnt = 2;
 	g.velocity = v0;
 	g.dest1 = g.origin - sphere_a.origin + ' 0 0 12';
 };
@@ -497,14 +482,14 @@ void() sphere_annihilation_phys_move =
 
 	if (sphere_a.classname != "sphere_annihilation") // something has gone wrong with the pointer!
 	{
-		head = find(world, map, "sphere_annihilation");
-		if (head) remove(head); // get rid of it - cant control with global and we'd rather not reass.
-		sphere_a = world; // finally - clear it
+		sphere_a = find(world, map, "sphere_annihilation");
+//		if (head) remove(head); // get rid of it - cant control with global and we'd rather not reass.
+//		sphere_a = world; // finally - clear it
 		return;
 	}
 
 	if (sphere_a.owner)
-	if(sphere_a.state & ST_FOLLOW == ST_FOLLOW) // move sphere with controlling player
+	if(sphere_a.state != ST_FREEZE) // move sphere with controlling player
 	{
 		local float d1;
 		local vector an;
@@ -516,8 +501,8 @@ void() sphere_annihilation_phys_move =
 		setorigin(sphere_a,  sphere_a.owner.origin + sphere_a.dest2 + d1 * v_forward);
 	}
 
-//	sphere_a.weaponframe = framecount;
-	head = findradius(sphere_a.origin, SPHERE_HORIZON); // check for things flying by
+
+	head = findradius(sphere_a.origin, SPHERE_HORIZON); // check for things flying by - suck missiles out of the air
 	if (sphere_a.delay < time)
 	{
 		sphere_a.delay = time + 0.05;
@@ -525,7 +510,30 @@ void() sphere_annihilation_phys_move =
 		{
 			if (annihilation_check(head))
 			{
-				set_annihilate(head);
+				f = FALSE;
+				if (head.class_select == "class_missile") f = TRUE;
+				else if (IS_MISSILE(head)) f = TRUE;
+				if (head.classname == "fireball") f = TRUE;
+				if (head.classname == "bubble") f = TRUE;
+
+				if (f)
+				{
+					head.dest1 = head.origin - sphere_a.origin;
+					if (vlen(head.dest1) > 20)
+ 					{
+						head.touch = SUB_Null;
+						head.cnt = vlen(head.velocity);
+						head.velocity = normalize(head.dest1) * -1;
+						head.velocity = head.velocity * head.cnt;
+						head.angles = vectoangles(normalize(head.velocity)); // point missiles at sphere
+					}
+					else
+					{
+						set_annihilate(head);
+						head.cnt = -1; // zap missiles instantly
+					}
+				}
+//				set_annihilate(head);
 			}
 			head = head.chain;
 		}
@@ -605,34 +613,48 @@ void() sphere_attack =
 		if (sphere_a.state == ST_FOLLOW)
 		{
 			sphere_a.state = ST_ANGLE; // adjust sphere angle
-			sprint(self,"You can adjust the Sphere's bearing.\n");
+//			sprint(self,"You can adjust the Sphere's bearing.\n");
 		}
 		else if (sphere_a.state == ST_ANGLE)
 		{
 			sphere_a.state = ST_FREEZE;
-			sprint(self,"Sphere is now idle - it will not follow you.\n");
+//			sprint(self,"Sphere is now idle - it will not follow you.\n");
+			if (self.morphy == IMP_MSHALR) stuffcmd(self, "exec cfg/morph/m-shalrath.cfg\n");
+			self.mcode = -662; // tell HUD sphere is fixed position
 		}
 		else
 		{
 			sphere_a.dest1 = sphere_a.origin - sphere_a.owner.origin; // position from holder
 			if (vlen(sphere_a.dest1) > SP_MAXDIST)
 			{
-				sprint(self,"Cannot regain control of sphere - it is too far away.\n");
+				self.mcode = -504; // tell HUD sphere is out of range
+//				sprint(self,"Cannot regain control of sphere - it is too far away.\n");
 				return;
 			}
 			sphere_a.state = ST_FOLLOW;
+			if (self.morphy == IMP_MSHALR) stuffcmd(self, "exec cfg/morph/m-shalrath-soa.cfg\n");
+			self.mcode = 0; // tell HUD back in control
 		}
+	self.mcode = sphere_a.state; // tells HUD sphere state
 	return;
 	}
 	if (sphere_a.wait < time)
 	{
 		if (vlen(sphere_a.dest1) > SP_MAXDIST)
 			sprint(self,"Cannot control sphere - it is too far away.\n");
+		else if (self.archon < 251)
+			sprint(self,"Cannot banish sphere - not enough archon power.\n");
 		else
 		{
+			if (self.morphy == IMP_MSHALR) stuffcmd(self, "exec cfg/morph/m-shalrath.cfg\n");
 			sprint(self,"Sphere of annihilation is banished.\n");
 			sphere_a.think = sphere_annihilation_death;
 			self.attack_finished = time + 1;
+// use archon power
+			if (self.volume < 0)
+				self.archon = self.archon + self.volume;
+			self.volume = 0;
+			self.weapon = IT_SUPER_NAILGUN;
 		}
 	}
 };

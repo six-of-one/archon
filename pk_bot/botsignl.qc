@@ -38,8 +38,7 @@ void () t_botmovetarget =
 	}
 	if (self.classname != "BotTarget")
 	{
-		if (Q_100 && Q_100_OBJERR) objerror ("bad bot target in bot_touch! 1\n");
-		if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch - 1.\n\n");
+		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 1
 		ai_botstand();
 		return;
 	}
@@ -118,8 +117,7 @@ void () t_botmovetarget =
 	}
 	if (self.classname != "BotTarget")
 	{
-		if (Q_100 && Q_100_OBJERR) objerror ("bad bot target in bot_touch! 2\n");
-		if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch - 2.\n\n");
+		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 2
 		ai_botstand();
 		return;
 	}
@@ -166,8 +164,7 @@ void (entity bot) bot_triggered =
 		org_z = (Botgoal.goalentity.absmin_z + 1);
 		if (Botgoal.classname != "BotTarget")
 		{
-			if (Q_100 && Q_100_OBJERR) objerror ("bad bot target in bot_touch! 3\n");
-			if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch - 3.\n\n");
+		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 3
 			ai_botstand();
 			return;
 		}
@@ -191,8 +188,7 @@ void () bot_touched =
 	self = other.goalentity;
 	if (self.classname != "BotTarget")
 	{
-		if (Q_100 && Q_100_OBJERR) objerror ("bad bot target in bot_touch! 4\n");
-		if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch - 4.\n\n");
+		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 4
 		ai_botstand();
 		return;
 	}
@@ -247,8 +243,7 @@ void () enemy_touched =
 		self.search_time = (time + 4);
 		if (self.goalentity.classname != "BotTarget")
 		{
-			if (Q_100 && Q_100_OBJERR) objerror ("bad bot target in bot_touch! 5\n");
-			if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch - 5.\n\n");
+		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 5
 			ai_botstand();
 			return;
 		}
@@ -258,8 +253,7 @@ void () enemy_touched =
 	}
 	if (self.goalentity.classname != "BotTarget")
 	{
-			if (Q_100 && Q_100_OBJERR) objerror ("bad bot target!\n");
-			if (WARNING) bprint("\n*** warning:\nbad bot target.\n\n");
+			//if (WARNING) bprint("\n*** warning:\nbad bot target.\n\n");
 			ai_botstand();
 			return;
 	}

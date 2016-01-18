@@ -352,14 +352,7 @@ void() Admin_dmmapmenu2 =
 
 void() Admin_dmmapmenu =
 {
-	if (Q_99)
-	{
-	self.message =
-					"\b  Quake map Menu:\n\b+------------------------+\n    01:  dn1    20: e2m4  \n    02:  dm2    21: e2m5 \n    03:  dm3    22: e2m6  \n    04:  dm4    23: e2m7  \n    05:  dm5    24: e3m1  \n    06:  dm6    25: e3m2 \n    07:  start  26: e3m3  \n    08:  end    27: e3m4  \n    09:  e1m1   28: e3m5  \n    10:  e1m2   29: e3m6  \n    11:  e1m3   30: e3m7  \n    12:  e1m4   31: e4m1  \n    13:  e1m5   32: e4m2  \n    14:  e1m6   33: e4m3  \n    15:  e1m7   34: e4m4  \n    16:  e1m8   35: e4m5  \n    17:  e2m1   36: e4m6  \n    18:  e2m2   37: e4m7  \n    19:  e2m3   38: e4m8  \n   666:  main menu        \n  admin impulse exits     \n\b+------------------------+\n\b Enter code: ";
-//    60:  new maps         \n
-//    61:  list hub links   \n
-	}
-	else if (PK_ADHUB)
+	if (PK_ADHUB)
 	{
 	self.message =
 					"\b  Painkeep map Menu:\n\b+------------------------+\n    01:  pk1    11: pk11  \n    02:  pk2    12: pk12  \n    03:  pk3    13: pk13  \n    04:  pk4    14: pk14  \n    05:  pk5    15: pk15  \n    06:  pk6    16: pk16  \n    07:  pk7    17: pk17  \n    08:  pk8    18: pk18  \n    09:  pk9    19: pk0   \n    10:  pk10   21: hub   \n    20:  painkeep         \n    60:  new maps         \n    61:  list hub links   \n   666:  main menu        \n  admin impulse exits     \n\b+------------------------+\n\b Enter code: ";
@@ -497,8 +490,7 @@ float() MapDM =
 {
 	local string mname;
 
-	if (Q_99) mname = MapQ99();
-	else if (PK_ADHUB && self.cnt && self.admin_input < 60) mname = MapDM2();
+	if (PK_ADHUB && self.cnt && self.admin_input < 60) mname = MapDM2();
 	else if (self.admin_input == A_PAINKEEP) mname = "painkeep";
 	else if (self.admin_input == A_PK0) mname = "pk0";
 	else if (self.admin_input == A_PK1) mname = "pk1";
@@ -826,16 +818,8 @@ string() build_itemmenu =
 
 void() Admin_itemmenu =
 {
-	if (Q_99)
-	{
-	self.message =
-"\b     Admin Items Menu:     \n\b+--------------------------+\n  +------- \bweapons\b ------+  \n  01: Double shotgun        \n  02: Nailgun               \n  03: Preforator            \n  04: Grenade launcher      \n  05: Rocket launcher       \n  06: Lightning gun         \n  +------ \bartifacts\b -----+  \n  08: Quad damage           \n  09: Invulnerability       \n  10: Radiation suit        \n  11: Ring of shadows       \n  +-------- \barmor\b -------+  \n  12: Green Armor           \n  13: Yellow Armor          \n  14: Red Armor             \n  +------- \bhealth\b -------+  \n  15: 15 Health             \n  16: 25 Health             \n  17: Mega Health           \n  +------ \bcontrols\b ------+  \n  18: Only these items      \n  19: None of these items   \n  20: Substitute removed    \n  21: Infinite ammo         \n  22: Cycle selected items  \n  29: All bits off          \n  30: Show item bits        \n  31: Update map now        \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
-//  07: Painkeep items        \n" // 64
-	}
-	else
-	{
 	self.message = build_itemmenu();
-	}
+
 	self.wad = null_string;
 	self.admin = 26;
 	self.admin_input = 0;
@@ -1024,10 +1008,6 @@ Painkeep impulses
 */
 void() Admin_pkmenu =
 {
-	if (PK_100)
-	self.message =
-				       "\b    Admin Painkeep Menu:    \n\b+--------------------------+\n  01: SFX toggle            \n  02: HUB mode toggle       \n  03: Duty check toggle     \n  04: settings list         \n  07: Server map loop       \n    : PK v1.11 Compatible   \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
-	else
 	self.message =
 				       "\b    Admin Painkeep Menu:    \n\b+--------------------------+\n  01: SFX toggle            \n  02: HUB mode toggle       \n  03: Duty check toggle     \n  04: settings list         \n  05: PK dynamic items      \n  06: Spike traps           \n  07: Server map loop       \n    : PK 2.X server         \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
 //  05: PK dynamic items      \n"
@@ -1046,23 +1026,7 @@ AdminCommands
 */
 void() Admin_mainmenu =
 {
-	if (Q_99)
-	{
-	self.message =
-					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  start map load      \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
-//  24:  painkeep control    \n"
-//  60:  PK mode toggle      \n"
-//  ---  PK mode = TRUE      \n"
-	}
-	else if (PK_100)
-	{
-	self.message =
-					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  hub map load        \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  30:  kick players        \n  ---  PK mode = TRUE      \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
-//  25:  item control        \n"
-//  26:  monster control     \n"
-//  60:  PK mode toggle      \n"
-	}
-	else if (PK) // menu with PK only entries
+	if (PK) // menu with PK only entries
 	{
 	self.message =
 					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  hub map load        \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  60:  PK mode toggle      \n  ---  PK mode = TRUE      \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
@@ -1189,23 +1153,21 @@ void() AdminCommands =
 		if (self.admin_input == A_BOTS) Admin_botmenu(); else
 		if (self.admin_input == A_PKCON)
 		{
-			if (!Q_99)  Admin_pkmenu();
+			Admin_pkmenu();
 		}
 		else
 		if (self.admin_input == A_ITEM)
 		{
-			if (!PK_100) Admin_itemmenu();
+			Admin_itemmenu();
 		}	
 		else
 		if (self.admin_input == A_MONST) // Cat - 9.19.11 - added monster controls to admin interface
 		{
-			if (!PK_100) Admin_monstermenu();
+			Admin_monstermenu();
 		}	
 		else
 		if (self.admin_input == A_PKMOD)
 		{
-		  if (!PK_100 && !Q_99)
-		 {
 			f = pk_flags & PK_MAP;
 			pk_flags = pk_flags - f;
 			if (f & PK_ALWAYS)
@@ -1231,7 +1193,6 @@ void() AdminCommands =
 			admin_sv_cfg();
 			Admin_mainmenu();
 			self.wad = str;
-		 }
 		}
 		else
 		if (self.admin_input == A_SKICK)
@@ -1589,27 +1550,19 @@ void() AdminCommands =
 			else
 				sprint(self, "Status Off\n");	 
 
-			if (!PK_100)
-			{
-				if (!(pk_flags & PK_SPIKER))
-					sprint(self, "Spike traps enabled in PK mode\n");
-				else
-					sprint(self, "Spike traps DISABLED in PK mode\n");
-
-				if (pk_flags & PK_DYNAMIC)
-					sprint(self, "Dynamic Painkeep items \bON\b  - (pk_dyn_*)\n");
-				else
-					sprint(self, "Dynamic Painkeep items Off - (pk_dyn_*)\n");
-			}
+			if (!(pk_flags & PK_SPIKER))
+				sprint(self, "Spike traps enabled in PK mode\n");
 			else
-			{
-				sprint(self, "PK_100 set:\n");
-				sprint(self, "Spkike traps DISABLED\n");
-				sprint(self, "Dynamic Painkeep items Off\n");
-			}
+				sprint(self, "Spike traps DISABLED in PK mode\n");
+
+			if (pk_flags & PK_DYNAMIC)
+				sprint(self, "Dynamic Painkeep items \bON\b  - (pk_dyn_*)\n");
+			else
+				sprint(self, "Dynamic Painkeep items Off - (pk_dyn_*)\n");
+
 			sprint(self, "\b-----------------------\n\n");
 		}
-		else if (self.admin_input == 5 && !PK_100)
+		else if (self.admin_input == 5)
 		{
 			if (pk_flags & PK_DYNAMIC)
 			{
@@ -1632,7 +1585,7 @@ void() AdminCommands =
 				}
 			}
 		}
-		else if (self.admin_input == 6 && !PK_100)
+		else if (self.admin_input == 6)
 		{
 			if (pk_flags & PK_SPIKER)
 			{
@@ -1688,7 +1641,7 @@ void() AdminCommands =
 		{
 			self.admin_input = self.admin_input - 1;
 			f = AdminBitFlag(self.admin_input);
-			if (Q_99  && self.admin_input == 6) f = 0;
+			if (self.admin_input == 6) f = 0;
 			if (pk_itemovr & f)
 				pk_itemovr = pk_itemovr - (pk_itemovr & f);
 			else
@@ -1765,7 +1718,7 @@ void() AdminCommands =
 		{
 			self.admin_input = self.admin_input - 1;
 			f = AdminBitFlag(self.admin_input);
-//			if (Q_99  && self.admin_input == 6) f = 0;
+//			if (Q-99  && self.admin_input == 6) f = 0;
 			if (pk_monster_set & f)
 				pk_monster_set = pk_monster_set - (pk_monster_set & f);
 			else
@@ -1949,8 +1902,6 @@ void() PK_AdminImpulse =
 
 	if (self.admin == USER_MENU) // process user menu (impulse 39) here + impulse 53, drop menu
 	{
-		if (Q_100 || Q_99) return; // Cataboligne - 8.16.9 - quake compatability mode
-
 		if (cvar("chase_active") > 0) stuffcmd(self, "chase_active 0\n");
 
 		crosshair_off(self);

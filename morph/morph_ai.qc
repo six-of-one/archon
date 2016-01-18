@@ -99,7 +99,6 @@ void() movetarget_f =
 {
 	if (!self.targetname)
 	{
-		if (Q_100 && Q_100_OBJERR) objerror ("monster_movetarget: no targetname");
 		remove(self); // just go away, we dont need no stinking move target here.
 	}
 		
@@ -260,9 +259,6 @@ if (WARNING)
 
 void() followtarget_f =
 {
-//   if (!self.targetname)
-//      objerror ("monster_followtarget: no targetname");
-
 	self.solid = SOLID_TRIGGER;
    self.touch = t_followtarget;
    setmodel (self, self.model);  // set size and link into world
@@ -591,8 +587,6 @@ local float	rsnd;
 
 void() FoundTarget =
 {
-	if (!Q_100)
-
 	if (self.enemy)
 	{
 		if (morph_clichk(self.enemy)) return; // we used to be friends, so others wont wake or see...
@@ -776,7 +770,6 @@ float() FindTarget =
 		}
 	}
 
-	if (!Q_100)
 	if (morph_clichk(client)) return FALSE; // friends...for now
 //
 // got one
@@ -814,22 +807,16 @@ float() FindTarget =
 
 void(float dist) ai_forward =
 {
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
 
 	walkmove (self.angles_y, dist);
 };
 
 void(float dist) ai_back =
 {
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
 
 	walkmove ((self.angles_y + 180), dist);
 };
@@ -864,11 +851,8 @@ stagger back a bit
 */
 void(float dist) ai_painforward =
 {
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
 
 	walkmove (self.ideal_yaw, dist);
 };
@@ -895,11 +879,8 @@ void(float dist) ai_walk =
 
 	movedist = ddist;
 
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen\
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
 
 	if (self.classname == "monster_dragon") // do we need this?
 	{
@@ -930,11 +911,8 @@ The monster is staying in one place for a while, with slight angle turns
 */
 void() ai_stand =
 {
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
 
 	if (FindTarget ())
 		return;
@@ -958,11 +936,8 @@ don't move, but turn towards ideal_yaw
 */
 void() ai_turn =
 {
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
 
 	if (FindTarget ())
 		return;
@@ -986,11 +961,8 @@ void() ai_turn_in_place =
 {
 	local float delta;
 
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
 
 	self.nextthink = time + 0.1;
 	enemy_yaw = vectoyaw(self.enemy.origin - self.origin);
@@ -1139,11 +1111,8 @@ void() ai_run_slide =
 {
 	local float	ofs;
 	
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
 
 	self.ideal_yaw = enemy_yaw;
 	ChangeYaw ();
@@ -1173,11 +1142,9 @@ void() ai_run_dodge =
 	local float	ofs;
 	local float newyaw;
 
-	if (!Q_100)
-	{
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
-		if (self.flags & FL_FROZEN) return; // monster frozen
-	}
+	if (self.flags & FL_FROZEN) return; // monster frozen
+
 /*
 // attempt to jump over missiles
 	if (self.enemy.weaponframe == 1)
@@ -1244,7 +1211,6 @@ void(float dist) ai_run =
 	}
 
 // see if the enemy is dead
-	if (!Q_100)
 	if (self.flags & FL_MONSTER)
 	{
 		if (self.flags & FL_FROZEN) return; // monster frozen

@@ -881,7 +881,7 @@ void() player_zombie_impulse =
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
 	morph_impulse();
-
+/*
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
@@ -906,6 +906,7 @@ void() player_zombie_impulse =
 		sprint(self, "Zombie using ( gib fountain )\n");
 //		self.items = self.items | IT_NAILGUN;
 	}
+*/
 };
 
 

@@ -227,14 +227,14 @@ float() grap_maintainRope =
 	// for each segment between corners
 	corner = self;
 // Cataboligne - 4.4.11 - start point of rope at end of harpoon gun, new vw calc
-  	if (!PK_100)
-	{
-		v3 = cornerOrigin = corner.origin + grap_vw_adj(corner);
-		segfr = 1; // use longer segment - 7.12.11
-	}
+//  	if (!PK-100) - NOTE: test point if grap issues with striated rope shows up again
+//	{
+	v3 = cornerOrigin = corner.origin + grap_vw_adj(corner);
+	segfr = 1; // use longer segment - 7.12.11
+/*	}
 	else
 		cornerOrigin = corner.origin + '0 0 16';
-
+*/
 	sf = 300; // = SAFE_LOOP
 	while(corner.grap_cornerchainNext && sf > 0)
 	{
@@ -249,18 +249,18 @@ float() grap_maintainRope =
 	}
 
 // Cataboligne - 4.4.11 - set closest seg to start point
-  	if (!PK_100)
+//  	if (!PK-100) - NOTE: test point if grap issues with striated rope shows up again
+//	{
+	corner = self.grap_cornerchainNext.grap_ropechainPrev;
+	while (corner.grap_ropechainPrev)
+		corner = corner.grap_ropechainPrev;
+	if (corner)
 	{
-		corner = self.grap_cornerchainNext.grap_ropechainPrev;
-		while (corner.grap_ropechainPrev)
-			corner = corner.grap_ropechainPrev;
-		if (corner)
-		{
-			v1 = normalize(corner.origin - v3);
-			setorigin(corner, v3 + (v1 * ROPE_FWD));
-			corner.frame = segfr; // fixed - 8.25.11, set frame to correct rope piece
-		}
+		v1 = normalize(corner.origin - v3);
+		setorigin(corner, v3 + (v1 * ROPE_FWD));
+		corner.frame = segfr; // fixed - 8.25.11, set frame to correct rope piece
 	}
+//	}
 
 	return totalLength;
 };
@@ -632,7 +632,7 @@ void() grap_goToOwner =
 
 	if (self.grap_checkTimeout < time)
 	{
-		if (self.origin == self.oldorigin || (!PK_100 && vlen(self.origin - self.grap_owner.origin) < 50))
+		if (self.origin == self.oldorigin || (vlen(self.origin - self.grap_owner.origin) < 50))
 	  { // stuck on wall or something
 	  	other = self.grap_owner;
 	    grap_touchOwner();
@@ -813,9 +813,8 @@ void() grap_maintainHarpoon =
 
 	if (self.grap_state == GRAP_TOHARPOON)
 	{
-		local vector normDir;
-		normDir = normalize(self.grap_cornerchainNext.origin - (self.origin + '0 0 16'));
-		self.velocity = normDir * 500;
+		norm = normalize(self.grap_cornerchainNext.origin - (self.origin + '0 0 16'));
+		self.velocity = norm * 500;
 	}
 };
 

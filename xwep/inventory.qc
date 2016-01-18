@@ -207,8 +207,6 @@ void(entity e) set_defaults =
 	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
 	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;
 
-	if (Q_100 || PK_100) return;
-
 // NOTE: muddy area for morphs.  how to handle all this - maybe convert health by modifier?
 //					check to see if morph can use any of the give away eweaps?
 	if (!self.mask_x & CB_HUMAN) return;

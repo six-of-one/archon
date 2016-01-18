@@ -30,7 +30,6 @@ void() turret_attackEnemy;
 void() turret_deathAnim;
 //void() turret_deathAnimBase;
 void(vector org, vector vec) turret_launchNail;
-void() turret_nailTouch;
 void() turret_checkIfCanBeSolid;
 void(string gibname, float dm) turret_throwGib;
 void() turret_gibTouch;
@@ -81,7 +80,6 @@ void() turret_dropTurret =
 		PK_TUR_CRITICALMASS = 10; // more than this many
 		PK_TUR_CRITICALMASS_DIST = 100; // critical mass distance
 
-		if (!PK_100)
 		if (DARKPLACES || chaos)
 		{
 			PK_TUR_AMMO = cvar("pk_tur_ammo");
@@ -129,30 +127,28 @@ void() turret_dropTurret =
 	turret.cnt = 0;
 	turret.AIRG_Flags = AIRG_EXCLUDEENTITY; // dont blow turret - just base
 	turret.dmg = 15;
-	if (!PK_100)
+
+	local float ri;
+	ri = random();
+	turret.state = 0;
+	if ((PK_TUR_VARIETY & 1) && ri < 0.6) turret.state = 1;
+	else if ((PK_TUR_VARIETY & 2) && ri < 0.8) turret.state = 2;
+	else if ((PK_TUR_VARIETY & 4) && ri < 0.9) turret.state = 4;
+	else if ((PK_TUR_VARIETY & 8) && ri < 0.95) turret.state = 8;
+	else if ((PK_TUR_VARIETY & 16) && ri < 0.99) turret.state = 16;
+
+	ri = 1;
+	if (!turret.state)
+	while (ri < 32 && !turret.state)
 	{
-		local float ri;
-		ri = random();
-		turret.state = 0;
-		if ((PK_TUR_VARIETY & 1) && ri < 0.6) turret.state = 1;
-		else if ((PK_TUR_VARIETY & 2) && ri < 0.8) turret.state = 2;
-		else if ((PK_TUR_VARIETY & 4) && ri < 0.9) turret.state = 4;
-		else if ((PK_TUR_VARIETY & 8) && ri < 0.95) turret.state = 8;
-		else if ((PK_TUR_VARIETY & 16) && ri < 0.99) turret.state = 16;
-
-		ri = 1;
-		if (!turret.state)
-		while (ri < 32 && !turret.state)
-		{
-			if (ri & PK_TUR_VARIETY) turret.state = ri;
-			ri = ri * 2;
-		}
-
-		if (turret.state == 2) turret.dmg = 25;
-		else if (turret.state == 4) turret.dmg = 27;
-		else if (turret.state == 8) turret.dmg = 30;
-		else if (turret.state == 16) turret.dmg = 33.3;
+		if (ri & PK_TUR_VARIETY) turret.state = ri;
+		ri = ri * 2;
 	}
+
+	if (turret.state == 2) turret.dmg = 25;
+	else if (turret.state == 4) turret.dmg = 27;
+	else if (turret.state == 8) turret.dmg = 30;
+	else if (turret.state == 16) turret.dmg = 33.3;
 
 // set direction
 	turret.angles = self.angles;
@@ -170,10 +166,8 @@ void() turret_dropTurret =
 	turret.nextthink = time + 0.1;
 	turret.think = turret_searchForEnemy;
 
-	if (PK_100)
-		setmodel (turret, "progs/turtop.mdl");
-	else
-		setmodel (turret, "progs/turtop2.mdl"); // removed orange barrel flare - looks wrong with variety
+//		setmodel (turret, "progs/turtop.mdl"); -- remove model
+	setmodel (turret, "progs/turtop2.mdl"); // removed orange barrel flare - looks wrong with variety
 
 	setsize (turret, '-15 -14 -18', '21 7 10');
 //	setorigin (turret, self.origin + self.view_ofs);
@@ -491,7 +485,7 @@ void() turret_attackEnemy =
 	else
 	{
 	  // Not enough ammo
-		if (!PK_100 && random() < PK_TUR_RELOAD) self.ammo_cells = PK_TUR_AMMO + random() * PK_TUR_AMMO; // reloaded
+		if (random() < PK_TUR_RELOAD) self.ammo_cells = PK_TUR_AMMO + random() * PK_TUR_AMMO; // reloaded
 		else
 		if (self.frame != 5)
 	  {
@@ -839,11 +833,11 @@ void(vector org, vector vec) turret_launchNail =
 
 	newmis.nextthink = time + 5;
 	newmis.think = SUB_Remove;
-	newmis.touch = turret_nailTouch;
+	newmis.touch = spike_touch;
 
 // new damage setting
 	newmis.dmg = self.dmg; // 15
-	if (random() < 0.03 && !PK_100) newmis.dmg = (self.dmg * 2) + random() * self.dmg; // some nails are "super", must be the orange kryptonite
+	if (random() < 0.03) newmis.dmg = (self.dmg * 2) + random() * self.dmg; // some nails are "super", must be the orange kryptonite
 
 	// For the correct death messages
 	newmis.pk_currentitem = PK_IT_TURRET;
@@ -865,7 +859,7 @@ void(vector org, vector vec) turret_launchNail =
 		sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM);
 };
 
-
+/* removed for spike_touch
 void() turret_nailTouch =
 {
 	local vector org;
@@ -900,7 +894,7 @@ void() turret_nailTouch =
 
 	remove(self);
 };
-
+*/
 
 void() turret_checkIfCanBeSolid =
 {

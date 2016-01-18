@@ -626,9 +626,9 @@ float(entity thing) priority_for_thing =
 
 // painkeep hub support - Cataboligne - 9.29.9
 
-		else if (thing.classname == "hub_teleport" && ! Q_100 && !Q_99)
+		else if (thing.classname == "hub_teleport")
 			thisp = 75;
-		else if (thing.classname == "hub_custom" && ! Q_100 && !Q_99)
+		else if (thing.classname == "hub_custom")
 			thisp = 75;
 
 // painkeep weapon support - Cataboligne - 9.29.9

@@ -100,8 +100,6 @@ void() PK_init =
 		XMOD = 1;
 	}
 
-	if (Q_100 || PK_100) XMOD = FALSE;
-
 	if (!XMOD) // possible to run qc w/o paks
 	{
 		ULOKW = ULOKD = ULOK2 = ULOK3 = FALSE;
@@ -136,12 +134,6 @@ void() PK_init =
 
 	PK_ADMIN = 6; // code sets allow admin here - can be disabled by admin menu, 3 is base menu set
 
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake compatability mode starts here
-	{
-		if (!Q_99) PK_ADMIN = 0;
-		PK_ART = PK_100 = 0;
-	}
-
 	local entity e;
 
 	if (PK_ADMIN)
@@ -157,8 +149,6 @@ void() PK_init =
 		pk_adminpwdmask = TRUE;
 	}
 
-  if (!PK_100 && !Q_100)
- {
 	pk_itemovr = pk_itemovr_ck = cvar("saved3"); // admin override of map items
 
 // causes item overrides to happen on map load
@@ -172,7 +162,7 @@ void() PK_init =
 			e.nextthink = time + 2; // do this well after items spawn
 		}
 	}
- }
+
 
 // set PK mode based on engine var | saved*
 
@@ -182,8 +172,8 @@ void() PK_init =
 // genre for init stuff
 
 	MAP_MODE = "Q";
-	if (!Q_100) 
-	if (pk_map || PK_100) MAP_MODE = "PK";
+
+	if (pk_map) MAP_MODE = "PK";
 	else if (world.wad == "wolftex.wad" && ULOKW) MAP_MODE = "W";
 	else if (world.wad == "doomtex.wad" && ULOKD) MAP_MODE = "D";
 	else if (world.wad == "doom2tex.wad" && ULOKD) MAP_MODE = "D";
@@ -196,10 +186,7 @@ void() PK_init =
 // got mode, set PK master switch
 	PK = FALSE;
 
-  if (!Q_100 && !Q_99) // server not cfg for quake compatibility - set pk mode based on map / admin
- {
-	if (PK_100) PK = TRUE;
-	else if (pk_flags & PK_ALWAYS)
+	if (pk_flags & PK_ALWAYS)
 		PK = TRUE;
 	else if (pk_flags & PK_NEVER)
 		PK = FALSE;
@@ -208,7 +195,7 @@ void() PK_init =
 		PK = PK_mapmode(world.model);
 	}
 
-	if (!PK_100) custom_hub_loaded = pk_flags & PK_HUB2; // see if we came from a custom hub
+	custom_hub_loaded = pk_flags & PK_HUB2; // see if we came from a custom hub
 	if (world.model == "maps/start.bsp" && world.message == "HUB")
 	{
 		pk_flags = pk_flags - (pk_flags & PK_HUB2);
@@ -216,12 +203,10 @@ void() PK_init =
 		localcmd("alias hubmap \"bf\"\n"); // always deactivate
 	}
 	admin_sv_cfg();
- }
 
 // setup dynamic items
 
 	if (!DARKPLACES && !chaos) // admin menu only control
-	if (!PK_100 && !Q_100 && !Q_99)
 	if (pk_flags & PK_DYNAMIC || DYN_OVR || DYN_FORCE || DYN_ARTFR) // wont see DYN_* stuff here unless it is compiler set
 	{
 		if (!(pk_flags & PK_DYNAMIC) && !DYN_OVR && !DYN_FORCE) DYN_ARTFR_ONLY = DYN_ARTFR;
@@ -349,20 +334,17 @@ string (string s) precache_model =
 
 	if (time < PIC_TO) // only do this for map load items
 	{
-		if (!Q_100 && !Q_99)
+		if (s == "progs/g_airgun.mdl" || s == "progs/g_airgun2.mdl" || s == "progs/g_clight.mdl" || s == "progs/g_harp.mdl" || s == "progs/tpower.mdl" || s == "progs/beans.mdl" || s == "progs/bearpick.mdl" || s == "maps/b_eshel0.bsp" )
 		{
-			if (s == "progs/g_airgun.mdl" || s == "progs/g_airgun2.mdl" || s == "progs/g_clight.mdl" || s == "progs/g_harp.mdl" || s == "progs/tpower.mdl" || s == "progs/beans.mdl" || s == "progs/bearpick.mdl" || s == "maps/b_eshel0.bsp" )
-			{
-				if (!(pk_flags & PK_MAP) && !PK) PK = TRUE; // *pk - in map mode, set PK for painkeep mode
-			}
-
-			if (s == "progs/ego.mdl" || s == "progs/tomb.mdl" || s == "progs/actor.mdl" || s == "progs/phone.mdl") // pkpitems.qc
-			{
-				if (!(pk_flags & PK_MAP) && !PK) PK = TRUE; // *pk - in map mode, set PK for painkeep mode
-			}
+			if (!(pk_flags & PK_MAP) && !PK) PK = TRUE; // *pk - in map mode, set PK for painkeep mode
 		}
 
-			return(precache_model__(s));
+		if (s == "progs/ego.mdl" || s == "progs/tomb.mdl" || s == "progs/actor.mdl" || s == "progs/phone.mdl") // pkpitems.qc
+		{
+			if (!(pk_flags & PK_MAP) && !PK) PK = TRUE; // *pk - in map mode, set PK for painkeep mode
+		}
+
+		return(precache_model__(s));
 	}
 
 	return(string_null);// Cataboligne - 8.7.13 - compiler warning
@@ -758,17 +740,13 @@ void() pk_liveupd =
 {
 	local entity e;
 	local float f;
-
+	
 // server controls
 
-	Q_100_OBJERR = cvar("sv_q100_objerr");
-	PK_100_OBJERR = cvar("sv_pk100_objerr");
 	ADMINLOCK = cvar("sv_c_adminlock");
 	WARNING = cvar("sv_c_warning");
 
 // bots
-	if (BOTFREEZE != cvar("sv_c_botfreeze")) bot_froze(world);
-
 	f = cvar("saved1");
 
 	if (f == 268226) // frik botcam toggle code
@@ -804,7 +782,8 @@ void() pk_liveupd =
 		bot_fixer();
 
 // toggle for q1 def item translation
-	if (PK_100 || Q_100)
+/*
+	if (PK-100 || Q-100) - never runs this
 	if (TR_Q1QRY == 0)
 	if (TR_Q1DEF != cvar("pk_tr_q1def"))
 	{
@@ -819,13 +798,7 @@ void() pk_liveupd =
 		master_item_control_loop("hip_item", f);
 		master_item_control_loop("x_item", f);
 	}
-	
-	if (Q_100)
-	{
-		Q1_CELLAMMO_MAX = 100;
-		XENV = TRUE;
-		return;
-	}
+*/	
 
 // cam stuff
 	DCAMTO = cvar("sv_cam_timeout");
@@ -845,12 +818,6 @@ void() pk_liveupd =
 	}
 
 	XENV = cvar("sv_c_xenv");
-
-	if (Q_99) // IMP: might need some stuff from below - like maxs (do they need changed?...) - this is not a sig item
-	{
-		item_control_menu();
-		return;
-	}
 
 // pk basics - if a cvar is changed, update status bit
 
@@ -875,13 +842,6 @@ void() pk_liveupd =
 		pk_bas_update(st_pk_cmap, "Painkeep custom server maps ");
 	}
 
-	if (PK_100)
-	{
-		XENV = FALSE;
-		PK_ART = FALSE;
-		return;
-	}
-	
 // vars server controls
 
 	SV_FALLEN = cvar("sv_c_fallen");
@@ -991,10 +951,7 @@ void() pk_liveupd =
 	Q1_SHELLAMMO_MAX				= cvar("q1_shellammo_max");
 	Q1_NAILAMMO_MAX					= cvar("q1_nailammo_max");
 	Q1_ROCKETAMMO_MAX				= cvar("q1_rocketammo_max");
-	if (Q_100 || Q_99)
-		Q1_CELLAMMO_MAX					= cvar("q1_cellammo_max");
-	else 
-		Q1_CELLAMMO_MAX					= cvar("pk_cellammo_max");
+	Q1_CELLAMMO_MAX					= cvar("pk_cellammo_max");
 
 // item ammo levels - NOTE: limit to what can be carried tween levels is fixed! (at 3) - CHECK: tween levels storage code - as 4 could be 0, 5 -> 1, etc - any over 3 should be 3
 	PK_GRAVITYWELLAMMO_MAX	= cvar("pk_max_gravitywellammo");
@@ -1312,7 +1269,6 @@ void() pk_monitor =
 
 // place item controls - wait for PIC_TO to do this
 // 		not done in live update because we dont want it to fire off right after a map load when things are settling down
-	if (!Q_100 && !PK_100)
 	if (pic_tsk != cvar("pk_place_item"))
 	if (!pic_tsk) // only init loop when it was intially off - every loop call starts more control ents
 		place_item_control_loop();
@@ -1357,11 +1313,10 @@ void() pk_srvcmd_load =
 	localcmd("exec cfg/map/pk_7.cfg\n"); // module X - wont exec until after first map load - this should be ok, because first map of server should always be a hub
 	localcmd("exec cfg/map/pk_8.cfg\n");
 
-	PK_100 = cvar("sv_pk100");
-
-// q1
-	Q_99 = cvar("sv_q99");
-	Q_100 = cvar("sv_q100");
+// removal items
+	PK_100 = 0;
+	Q_99 = 0;
+	Q_100 = 0;
 	
 	pk_liveupd(); // load live now, set all cfg changed vars
 };
@@ -1423,13 +1378,11 @@ void() pk_srvcmd_set =
 	ARCHON_WEP = 0.1; // points per gen weapon
 	ARCHON_WEP_EXT = 0.2; // points per advanced weapon
 	ARCHON_MONSTER = 50; // 100 health at spawn = 2 pts
-	ARCHON_RUNE = 2; // points added per rune every time run_runes runs
+	ARCHON_RUNE = 1; // points added per rune every time run_runes runs - every 3 secs
 	ARCHON_POINT = 1;
 	ARCHON_GEN = 0.1; // generic points
 
 // pk control
-	PK_100 = FALSE; // if true run 100% true to pk v1.11 - i n theory, dev purposes only
-	PK_100_OBJERR = FALSE;
 	ADMINLOCK = FALSE;
 	XENV = FALSE;
 	WARNING = FALSE;
@@ -1442,11 +1395,6 @@ void() pk_srvcmd_set =
 // limits for exits with no detectable exits
 	NOEXIT_TIMEOUT = 0;
 	NOEXIT_FRAGLIMIT = 0;
-
-// q1 control
-	Q_99 = FALSE; // quake mode with all env effects / extra weps
-	Q_100 = FALSE; // if true run 100% true to quake v106 - in theory, really for dev purposes only
-	Q_100_OBJERR = FALSE;
 
 // runes
 	RUNES = 0;
@@ -1516,6 +1464,7 @@ void() pk_srvcmd_set =
 	VW_ARMOR = FALSE; /// has issues - can be turned on with sv_vw_armor 1
 	VW_HOLSTER = TRUE;
 	VW = TRUE;
+	var float autocvar_sv_centerwep = 0;
 
 // dynamic item defaults
 	DYN_SHOW = FALSE;
@@ -1748,13 +1697,6 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		addstat(64, 2, volume);
 		addstat(65, 2, morphy);
 		addstat(66, 2, archon);
-
-
-// TDO: on the remove list
-		registercvar("sv_q99", "0");
-		registercvar("sv_q100", "0");
-		registercvar("sv_q100_objerr", "0");
-
 	}
 /*
 		if (pk_srvcmd)
@@ -1852,7 +1794,7 @@ void(vector pos, string samp, float vol, float atten) ambientsound =
 
 	psamp = samp; // sample that actually plays
 
-	if (!PK || Q_100 || Q_99) // not in PK mode, play alternate sounds
+	if (!PK) // not in PK mode, play alternate sounds
 	{
 		if (samp == "ambience/fl_hum1.wav") psamp = "alt_ambience/fl_hum1.wav";
 		else if (samp == "ambience/buzz1.wav") psamp = "alt_ambience/buzz1.wav";

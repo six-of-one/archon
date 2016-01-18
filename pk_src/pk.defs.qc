@@ -30,6 +30,7 @@ float z0 = 0;
 float gsf;										// loop safety global - this MUST be watched CAREFULLY
 //				usage list:			m-gremlin, m-chaos, morph, bot_way **, grap **
 vector v1;
+vector norm; 									// for trace_plane_normal manipulations
 
 string sg;
 string null_string = "";
@@ -77,9 +78,6 @@ float Q_100;								// quake 1 compatability mode - if true run 100% true to qua
 float Q_99;									// quake 1 99% compatability mode - if true pk stuff is removed, but admin, item enhancements & env remain - provide an "enhanced" q1 SP experience - may not work well in use
 float PK_100;								// painkeep compatability mode - if true run 100% true to pk v1.11, no extras (has menus) - 
 //
-												// many object errors are tweaked to simply remove the offending component - if these 2 vars are set true, an objerror will be generated
-float PK_100_OBJERR;						// if true objerr that would have exited game (and have since been fixed) will cause an objerr
-float Q_100_OBJERR;						// if true objerr that would have exited game (and have since been fixed) will cause an objerr
 
 // q100 stuff
 void() q100_PlayerPreThink;
@@ -226,7 +224,6 @@ string ADMINTIME				= "float3\n"; // load the time out
 float BOTFREEZE;							// if true stop bots cold
 float BOTCAM;								// turning off frikbot botcam - 268226 in saved1 to turn on
 float NODECOR;								// sv decor controls
-void (entity e) bot_froze;
 void(float tm) th_bot_changeParms; // save bot parms to cvar or parm*
 
 void(entity e) admin_clear;
@@ -299,7 +296,6 @@ vector(entity e, float s, vector p) getsurfaceclippedpoint;
 
 
 // for serverflags drop
-void(string g) tbprint; // just for this - code is a test temp
 
 float SVR1						= 131072;
 float SVR2						= 262144;
@@ -1404,7 +1400,7 @@ void() player_nail3;
 float VW; // viswep support - set to 0 to return to generic gun / axe
 float VW_ARMOR; // viswep armor support - eventually admin controlled & cvar
 float VW_HOLSTER; // viswep - show holstered weps when true
-
+var float autocvar_sv_centerwep;
 
 // Cataboligne - projectile / cartridge fire(d) positioning - 9.30.9
 
@@ -1855,7 +1851,6 @@ float PK_SF_HUB				= 1024;	// moved to pk_flags
 float PK_TP_TIMEMASK			= 63;
 float inHubMap;
 float custom_hub_loaded;				// if TRUE custom hub is used
-float custom_hub_fail;				// if TRUE custom hub was removed but inhubmap may be set
 
 .float voteIntermission;
 string() hub_select;

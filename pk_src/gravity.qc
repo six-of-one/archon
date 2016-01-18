@@ -328,7 +328,6 @@ void() drop_gravity =
 
 		PK_GRV_TIME = 3.2; // def
 
-		if (!PK_100)
 		if (DARKPLACES || chaos)
 		{
 			PK_GRV_TIME = cvar("pk_grv_time");

@@ -59,9 +59,6 @@ string (float bt) ammo_by_bit =
 	if (bt == WEP_ROCKET) return("item_rockets");
 	if (bt == WEP_THUNDER) return("item_cells");
 	if (bt == WEP_PKI) return("pki");
-
-	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-		return(null_string);
 	
 // pk item subs by special bits
 	if (bt == WEP_GWELL) return("item_painkeep_gwell");
@@ -524,7 +521,6 @@ void(string cls) item_call =
 	if (self.event != "dynamic_item") // dont do these for dyn items
 	{
 		if (!NO_PI) pk_placeitem();
-		if (!Q_100 && !PK_100) // if *100 translate dont do this stuff
 		{
 			self.think = SUB_regen; // dont go thru place_item - use regen method
 			self.nextthink = time + 1 + 3 * random(); // spread em out
@@ -757,8 +753,6 @@ float(float cn, entity e, string op) ammo_con =
 	local entity tr;
 
 	f = cn;
-
-	if (Q_100 || PK_100) return(f);
 
 	if (op == null_string) // operation not specced - assume 0 cn if inf or ...
 	{
@@ -1118,9 +1112,8 @@ void() dyn_item =
 	float cd, f, b;
 	entity e;
 
-	if (PK_100 || Q_100 || !(pk_flags & PK_DYNAMIC || DYN_OVR || DYN_FORCE || DYN_ARTFR)) // Cataboligne - 8.15.9 - pk compat mode, just in case
+	if (!pk_flags & (PK_DYNAMIC || DYN_OVR || DYN_FORCE || DYN_ARTFR)) // dynamic items - this sort turned off - pki
 	{
-//		bprint("*** Warning - dynamic items deactivated\n");
 		remove(self);
 		return;
 	}
@@ -1311,7 +1304,6 @@ bprint("\n");
 		else if (k < 23)
 		{
 				f = AdminBitFlag(k - 1);
-				if (Q_99  && k == 6) f = 0;
 				if (pk_itemovr & f)
 					pk_itemovr = pk_itemovr - (pk_itemovr & f);
 				else
@@ -1357,12 +1349,6 @@ void() func_dynitem =
 {
 	local float rv, sb;
 	local entity e;
-
-	if (PK_100 || Q_100)
-	{
-//	remove(self); // let these hang out in those modes, mode could get turned off
-	return;
-	}
 
 // clear any of this
 	self.solid = SOLID_NOT;
@@ -1780,7 +1766,6 @@ string(entity e) item_ident =
 
 void() pic_test =
 {
-	if (!Q_100 && !PK_100)
 	if (chaos || DARKPLACES)
 	if (time < PIC_TO)
 	if (self.map != "nopic")

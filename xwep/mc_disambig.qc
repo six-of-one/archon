@@ -333,14 +333,11 @@ void () item_health =
 	}
 
 	q100_item_health();
-	if (!Q_100)
-	{
-//		self.healtype = self.healtype + 1; // changed items.qc values due to *_100 conflicts
-		self.volume = 100;
-		if (self.spawnflags & 2)
-			self.volume = Q_MEGA_MAX;
 
-	}
+//	self.healtype = self.healtype + 1; // changed items.qc values due to *_100 conflicts
+	self.volume = 100;
+	if (self.spawnflags & 2) self.volume = Q_MEGA_MAX;
+
 	self.mask_x = MORPH_ALL; // everyone can get health
 
 	self.archon = ARCHON_ITEM;

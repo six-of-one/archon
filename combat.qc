@@ -111,9 +111,9 @@ void(entity targ, entity attacker) Killed =
 	if (self.classname == "pk*bot" || attacker.classname == "pk*bot") 
 		bot_kill(self, attacker); // *bot - tie in to count bot kills / deaths
 	else
-	if (!Q_100) PK_ClientObituary(self, damage_inflictor, attacker);
-	else
-	ClientObituary(self, attacker);
+	PK_ClientObituary(self, damage_inflictor, attacker);
+
+//	ClientObituary(self, attacker);
 
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;
@@ -228,7 +228,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 // save damage based on the target's armor level
 
 	// PAINKEEP_START Ignore armor stuff, used for drowning
-	if (Q_100 || !ignorearmor)
+	if (!ignorearmor)
 	{
 		pwr_save = power_armor(targ, inflictor, damage); // calc damage taken by power armor
 
@@ -356,7 +356,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 
 	ax_dmg = take; // Cataboligne - 10.11.11 - bot endless axe war preventative deal
 
-	if (!Q_100) pk_setDamageSkin(targ); // *pk damage skin support
+	pk_setDamageSkin(targ); // *pk damage skin support
 
 // crate being busted open - hear it now
 	if (targ.netname == "Crate")

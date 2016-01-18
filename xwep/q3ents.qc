@@ -589,15 +589,10 @@ void () q3_weapon_bfg =
 //	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, null_string))
 	{
+		weapon_chainlg();
 		self.touch = painkeep_touch;
-		self.pk_touch = weapon_touch;
-		self.classname = "weapon_lightning";
-		if (!Q_100 & !Q_99)
-		{
-			weapon_chainlg();
-			self.pk_touch = painkeep_weapon_touch;
-			self.classname = "weapon_chainlg";
-		}
+		self.pk_touch = painkeep_weapon_touch;
+		self.classname = "weapon_chainlg";
 		return;
 	}
 
@@ -1080,7 +1075,7 @@ void () q3_weapon_railgun =
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
 		self.classname = "weapon_lightning";
-		if (!Q_100 & !Q_99)
+		if (random() < 0.5)
 		{
 			weapon_chainlg();
 			self.pk_touch = painkeep_weapon_touch;
@@ -1838,7 +1833,7 @@ void() q3_pwr_touch =
 
 	self.mdl = self.model;
 
-	if (Q_99 || (deathmatch != 4)) // *pk - my new rule, logical extrapolation --- NOTE: why q99 here?
+	if (deathmatch != 4) // *pk - my new rule, logical extrapolation
 	if (deathmatch)
 	{
 		if (self.wait && self.class_select == "q3_item")
@@ -2145,8 +2140,6 @@ void() holdable_medkit =
 		return;
 	}
 
-	if (PK_100) return;
-
 	self.netname = "Holdable Medkit";
 	self.touch = x_pwr_touch;
 	self.pk_currentitem = PK_IT_CANPAB;
@@ -2192,8 +2185,6 @@ void() holdable_teleporter =
 	{
 		return;
 	}
-
-	if (PK_100) return;
 
 	self.netname = "Holdable Teleport";
 
@@ -2454,7 +2445,6 @@ void() misc_teleporter_dest =
 	self.origin = self.origin + '0 0 27';
 	if (!self.targetname)
 	{
-		if (Q_100 && Q_100_OBJERR) objerror ("no targetname");
 		bprint("q3 - misc_teleporter_dest missing name! please repair the map...\n");
 		self.targetname = ftos(floor(random() * 65535));
 	}

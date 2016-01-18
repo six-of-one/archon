@@ -71,9 +71,5 @@ float AS_DODGING     = 5;
 
 // wall stains
 
-entity nullstain;
-entity stain_set;
-entity last_stain;
-
 float num_stains;
 

@@ -232,13 +232,11 @@ void() pk_harpoon_frames =
 			{
 				self.weaponframe = self.weaponframe + 1;
 			}
-			if (!PK_100) //stuffcmd( self, "cl_bob 0\n" ); // dont bob while pulling in
-				cam_setbob(null_string);
+			cam_setbob(null_string);
 		}
 		else
 		{
 			self.weaponframe = 8;
-			if (!PK_100)
 			if ( !(self.cam_x & CHSCAM_ON) ) //stuffcmd( self, CL_BOBSET );
 				cam_setbob(CL_BOBSET);
 		}
@@ -246,7 +244,6 @@ void() pk_harpoon_frames =
 	else
 	{
 		self.weaponframe=0;
-		if (!PK_100)
 		if ( !(self.cam_x & CHSCAM_ON) ) //stuffcmd( self, CL_BOBSET );
 				cam_setbob(CL_BOBSET);
 	}

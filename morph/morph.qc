@@ -522,6 +522,7 @@ void() morph_cube_use =
 	if (self.state == self.morphy) // morphed - take away points, does this ever need any verification?
 		self.archon = self.archon - c.archon;
 
+	self.volume = 0; // used for powers & such, dont let HUD look bad
 	self.impulse = 0;
 	remove(c);
 	cube_rearm(); // re arm player
@@ -599,6 +600,7 @@ void() morph_cube =
 	if (self.mask_x == MORPH_ARCHON) /// imp - this needs expand along with set code above - there should only be 1 archon item among all morph cubes
 	{
 		setmodel(self, "progs/8ray_arc.bsp");
+		self.scale = 0.5;
 		self.netname = "Archon Spirit";
 	}
 
@@ -769,7 +771,7 @@ float(entity atk, entity trg) morph_ffchk =
 	local entity mon, oth;
 
 	l = FALSE;
-	if (MORPH_FF || Q_100) return(l); // IMP: sv_
+	if (MORPH_FF) return(l); // IMP: sv_
 	if ((trg.flags & FL_CLIENT) && (atk.flags & FL_CLIENT)) return(trg.morphy == atk.morphy);
 	if ((trg.flags & FL_MONSTER) | (atk.flags & FL_CLIENT)) 
 	{

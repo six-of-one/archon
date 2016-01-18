@@ -254,7 +254,6 @@ void () tomb_launch =
 // defs
 		PKPLUS_TOMB_TIME = 90;
 
-		if (!PK_100)
 		if (DARKPLACES || chaos)
 		{
 			PKPLUS_TOMB_TIME = cvar("pk_tomb_time");

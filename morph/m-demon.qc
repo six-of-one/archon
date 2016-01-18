@@ -168,12 +168,15 @@ void() player_demon_explode =
 	if (self.attack_finished < time)
 	{
 //		if (self.class_select != "dead_body") setmodel(self, null_string);							// dont allow for corpse after explosion
+		self.volume = 0;
 		self.flags = self.flags - (self.flags & FL_DEMONBOOM);
 		if ((self.items & IT_INVULNERABILITY) && !self.rune_flag)
 		{
+			self.pk_explode_ammo = -506;
 			self.weapon = IT_AXE;
 			return;
 		}
+		self.pk_explode_ammo = -504;
 
 		f = 1; // health multiplier
 		if (self.items & IT_SUPERHEALTH) f = 2;
@@ -219,7 +222,8 @@ void() player_demon_explode =
 				if (v > DEMONBOOM_FALLOFF) f = k * (DEMONBOOM_FALLOFF / v);
 
 				if (e != sv)
-				if (e.classname != OBSERVER) // note: archons immune?
+				if (e.classname != OBSERVER)
+				if (!e.mask_x & MORPH_ARCHON) // note: archons immune
 				if (e.takedamage && e.health > 0)
 				{
 					v = 0.1;
@@ -261,7 +265,7 @@ void() player_demon_explode =
 		damage_inflictor = world;
 
 // note: wonky obit possible here
-		fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, ZOMBIE_FLSH_VEL, null_string, null_string, 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
+		fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, ZOMBIE_FLSH_VEL, null_string, null_string, 0, 8, 12, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
 //		if (self.class_select == "dead_body") SUB_Remove(); // already dead, remove corpse
 		self.nextthink = -1;
 		return;
@@ -274,16 +278,18 @@ void() player_demon_explode =
 		self.AIRG_FireCount = self.AIRG_FireCount - 1;
 		if ( (self.rune_flag & RUNE_FLG_HS) || (self.rune_flag & TECH_TEIM) )
 		{
-			self.AIRG_FireCount = self.AIRG_FireCount - 0.333;
-			if (random() < 0.333)
-				self.AIRG_FireCount = self.AIRG_FireCount - random();
+//			self.AIRG_FireCount = self.AIRG_FireCount - 0.333;
+			if (random() < 0.06)
+				self.AIRG_FireCount = self.AIRG_FireCount - (random() * 0.5);
 		}
-		if (self.AIRG_FireCount < 0) self.AIRG_FireCount = random();
+//		if (self.AIRG_FireCount < 0) self.AIRG_FireCount = random() * 2;
 
-		if ((self.items & IT_INVULNERABILITY) && self.rune_flag)
-		if (self.attack_finished < (time + 2))
-			sprint(self, "Everyone will be blown straight to HELL - ");
+//		if ((self.items & IT_INVULNERABILITY) && self.rune_flag)
+//		if (self.attack_finished < (time + 2))
+//			sprint(self, "Everyone will be blown straight to HELL - ");
 
+		self.pk_explode_ammo = ceil(self.AIRG_FireCount);
+/*
 		sprint(self, "Gonna pop in ");
 		sprint(self,ftos(ceil(self.AIRG_FireCount)));
 		sprint(self, " or less");
@@ -291,6 +297,7 @@ void() player_demon_explode =
 		if (self.attack_finished < (time + 3))
 			sprint(self, " - HURRY");
 		sprint(self, "!\n");
+*/
 	}
 // use archon power
 	if (self.volume < 0)
@@ -383,7 +390,8 @@ void() player_demon_attack =
 		self.attack_finished = self.AIRG_FireCount + time;
 		self.flags = self.flags | FL_DEMONBOOM; // demon go boom!
 		if (self.AIRG_FireCount > 9) self.AIRG_FireCount = 10;
-		sprint(self,"Rage has overcome you...\n");
+		self.pk_explode_ammo = -503;
+//		sprint(self,"Rage has overcome you...\n");
 		self.volume = -1;
 	}
 };
@@ -398,42 +406,44 @@ void() player_demon_impulse =
 	morph_impulse();
 
 	self.volume = 0;
+	self.pk_explode_ammo = 0;
 
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		sprint(self, "Demon using ( Hack & Slash )\n"); 
+//		sprint(self, "Demon using ( Hack & Slash )\n"); 
 	}
 
 	if (self.weapon == IT_SHOTGUN)
 	{
-		sprint(self, "Demon using ( Head Spike )\n");
+//		sprint(self, "Demon using ( Head Spike )\n");
 		self.items = self.items | IT_NAILS;
 	}
 
 	if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
-		if (((self.items & IT_INVULNERABILITY) && !self.rune_flag) || self.archon < 170)
+		if (((self.items & IT_INVULNERABILITY) && !self.rune_flag) || self.archon < 150)
 		{
-			if (self.archon > 169)
-			{
-				sprint(self, "Pentagrams power surges beyond rage");
-				if (random() < 0.3)
-					sprint(self, " - try Hack & Slash & Jump");
-				sprint(self, "\n");
-			}
+			if (self.archon > 149)
+				self.pk_explode_ammo = -501;
+//				sprint(self, "Pentagrams power surges beyond rage");
+//				if (random() < 0.3)
+//					sprint(self, " - try Hack & Slash & Jump");
+//				sprint(self, "\n");
+			else
+				self.pk_explode_ammo = -505;
+				
 			self.weapon = IT_AXE;
 		}
 		else
 		{
-			self.volume = -160;
-			if (self.items & IT_INVULNERABILITY)
-				sprint(self, "Fiendish onslaught of DOOM!");
-			else
-			sprint(self, "Fiend getting enraged");
-			if (self.rune_flag)
-				sprint(self, " - you will lose runes of power");
-			sprint(self, "\n");
+			self.volume = -150; // potential cost - its 1 pt per 1/10 sec
+//			if (self.items & IT_INVULNERABILITY)
+//				sprint(self, "Fiendish onslaught of DOOM!");
+//			else
+//			sprint(self, "Fiend getting enraged");
+			if (self.rune_flag) self.pk_explode_ammo = -502;
+//			if (self.rune_flag) self.stack1 = " * - you will lose runes of power";
 			self.items = self.items | IT_ROCKETS;
 //			if (self.items & IT_INVULNERABILITY) player_demon_attack(); // unstoppable
 		}
@@ -483,6 +493,8 @@ void(float silent) player_demon_become =
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_GRENADE_LAUNCHER;
 	self.items = self.items | self.builtin;
 	self.weapon = IT_SHOTGUN;
+	self.volume = 0;
+	self.pk_explode_ammo = 0;
 
 	self.msight = "demon/sight2.wav";
 	self.noise2 = "demon/dpain1.wav";

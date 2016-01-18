@@ -142,6 +142,12 @@ void() Lavablob_JumpTouch;
 	self.frame = $walk1 + self.walkframe;
 	self.walkframe = self.walkframe + self.lip;
 
+	self.mcode = 0;
+	if (self.watertype == CONTENT_LAVA)
+	{
+		self.mcode = -504;
+		if (self.weapon != IT_ROCKET_LAUNCHER) self.volume = -100;
+	}
 };
 
 
@@ -198,6 +204,13 @@ void() player_lavablob_run = [ $run1, player_run ]
 		}
 	self.frame = frm + self.walkframe;
 	self.walkframe = self.walkframe + 1;
+
+	self.mcode = 0;
+	if (self.watertype == CONTENT_LAVA)
+	{
+		self.mcode = -504;
+		if (self.weapon != IT_ROCKET_LAUNCHER) self.volume = -100;
+	}
 };
 
 
@@ -461,7 +474,13 @@ void() lavablob_slimeflare =
 void() cthonme =
 {
 	if (self.watertype == CONTENT_LAVA)
+	{
+// use archon power
+		if (self.volume < 0)
+			self.archon = self.archon + self.volume;
+// emerge
 		player_lavacthon_become();
+	}
 	else
 		sprint(self, "You must be in lava to emerge\n");
 }
@@ -534,6 +553,15 @@ void() player_lavablob_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
+	if (!self.builtin & IT_ROCKET_LAUNCHER)
+	{
+		if (self.archon > 60) // ARCHON_MORPH_XMIN - minimum archon pts req to activate powers
+		{
+			self.builtin = self.builtin | IT_ROCKET_LAUNCHER;
+			self.items = self.items | self.builtin;
+		}
+	}
+	else
 	if (self.archon < 7)
 		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER);
 	else
@@ -553,20 +581,20 @@ void() player_lavablob_impulse =
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		sprint(self, "Lava Bomb using ( Lava balls )\n");
+//		sprint(self, "Lava Bomb using ( Lava balls )\n");
 		self.items = self.items | IT_CELLS;
 	}
 
 	if (self.weapon == IT_NAILGUN)
 	{
-		sprint(self, "Lava Bomb using ( Lava nails )\n");
+//		sprint(self, "Lava Bomb using ( Lava nails )\n");
 		self.items = self.items | IT_NAILS;
 	}
 
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
 		self.volume = -6;
-		sprint(self, "Lava Bomb using ( lava bombs! )\n");
+//		sprint(self, "Lava Bomb using ( lava bombs! )\n");
 		self.items = self.items | IT_ROCKETS;
 	}
 };
@@ -617,9 +645,11 @@ void(float silent) player_lavablob_become =
 	setmodel(self,"progs/lavabomb.mdl");
 	self.modelindex_morph = self.modelindex;
 
-	self.builtin = IT_AXE | IT_NAILGUN | IT_ROCKET_LAUNCHER;
+	self.builtin = IT_AXE | IT_NAILGUN;
 	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
+	self.volume = 0; // because of swap
+	self.mcode = 0; // in case we came back from cthon - for hud
 
 	self.skin = 0;
 

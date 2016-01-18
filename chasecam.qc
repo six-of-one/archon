@@ -112,7 +112,7 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 //		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 	}
 
-	if (Q_100 || PK_100 || NO_CAM || cam_owner.class_select == "class_bot") // Cataboligne - 8.16.9 - quake compatability mode - 9.19.11 dont allow bots in here
+	if (NO_CAM || cam_owner.class_select == "class_bot") // Cataboligne - 8.16.9 - quake compatability mode - 9.19.11 dont allow bots in here
 	{
 		return;
 	}
@@ -853,12 +853,6 @@ void() Chase_cam_level_start =
 
 	self.oldenemy = world;
 
-	if (Q_100 || PK_100)
-	{
-		stuffcmd(self, "chase_active 0\n"); // Cataboligne - 9.24.11 - stuff must get turned back off
-		return;
-	}
-
 	e = spawn();
 	e.owner = self;
 	e.nextthink = time + 0.2;
@@ -929,19 +923,6 @@ void(float opt) Chase_cam_change_zmult =
 	sprint( self, "\n" );
 };
 
-/*
-Reads current values of cvar temp1:
-opt:
-	0 = into player.cam_y (chasecam distance)
-	1 = into player.cam_z (zmult)
-*/
-void(float opt) Chase_cam_read_temp1 =
-{
-	if (!opt)
-		Chase_cam_change_dist(2);
-	else
-		Chase_cam_change_zmult(2);
-};
 
 // fn(cam_parms) - manage parms between levels
 
@@ -963,7 +944,7 @@ void(float sel) cam_parms =
 //		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 	}
 
-	if (Q_100 || PK_100 || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
+	if (NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
 
 	if (!sel)
 	{
@@ -1012,8 +993,6 @@ void () dead_cam_set =
 	if (CAM_DEF & DPCAM_ON) stuffcmd(self, "chase_active 0\n");
 
 
-	if (Q_100 || PK_100) return; // || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
-
 // limit on frags from fire & forget implementation
 
 	if (self.flags & FL_CLIENT || self.class_select == "class_bot") // should just be FL_CLIENT
@@ -1057,7 +1036,7 @@ void () ccb_impulse_check =
 //		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 	}
 
-	if (Q_100 || PK_100 || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
+	if (NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
 
 	CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam - check here in case it was changed
 
@@ -1075,9 +1054,6 @@ void () ccb_impulse_check =
 	else if (self.impulse == 233) Chase_cam_change_zmult(1); // plus
 	else if (self.impulse == 234) Chase_cam_change_dist(0); // minus
 	else if (self.impulse == 235) Chase_cam_change_dist(1); // plus
-
-	else if (self.impulse == 238) Chase_cam_read_temp1(0); // read cvar temp1 into player.cam_y (cam distance)
-	else if (self.impulse == 239) Chase_cam_read_temp1(1); // read cvar temp1 into player.cam_z (cam height)
 
 //	else if (self.impulse == 231) LaserTargeterToggle( self );
 	if (CAM_DEF & DPCAM_ON)

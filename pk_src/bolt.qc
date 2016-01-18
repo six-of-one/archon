@@ -64,9 +64,11 @@ void() bolt_fire =
 		self.punchangle_x = -2;
 		cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 
-	if (PK_100 || Q_100)
+/* not needed with lg
+	if (autocvar_sv_centerwep)
 		org = self.origin + '0 0 16';
 	else
+*/
 		org = self.origin + v_right * VWY_CHTHUNDER + v_forward * VWX_CHTHUNDER + v_up * VWZ_CHTHUNDER;
 
 		traceline (org, org + v_forward*600, TRUE, self);

@@ -320,7 +320,7 @@ void() player_enf_impulse =
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		sprint(self, "Enforcer using ( Laser )\n");
+//		sprint(self, "Enforcer using ( Laser )\n");
 		self.items = self.items | IT_CELLS;
 		self.eweapon = world;
 		self.weaponmodel = null_string;

@@ -1313,7 +1313,6 @@ void() Gremlin_MeleeAttack =
       {
       if (self.stoleweapon == 1)
          {
-         if (Q_100 && Q_100_OBJERR) objerror("gremlin meleeing with stolen weapon");
 			self.stoleweapon = FALSE; // it wasnt me, I didnt do it! honest...
          gremlin_claw1 ();
          }
