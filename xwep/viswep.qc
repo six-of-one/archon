@@ -746,7 +746,7 @@ void() viswep_post =
 						{
 							v3 = grap_vw_adj(vhead.owner) + vhead.owner.origin; // point of rope start - end of harp gun
 							v1 = normalize(e.origin - v3); // dir to move rope piece
-							setorigin(e, v3 + (v1 * 18));
+							setorigin(e, v3 + (v1 * ROPE_FWD));
 						}
 					}
 					vofs = ' 0 0 0';
@@ -1936,7 +1936,7 @@ void() vw_config =
 			if (vv == world)
 			{
 				vv = spawn();
-//				setmodel(vv, "progs/player.mdl");
+				setmodel(vv, "progs/player.mdl");
 //				setmodel(vv, "progs/baseq2/players/male/tris.md2");
 				setorigin(vv, self.origin);
 				vv.vwepent = spawn();
@@ -1946,6 +1946,7 @@ void() vw_config =
 //				setmodel(vv.vwepent, "progs/vw_shovel.mdl");
 //				setmodel(vv.vwepent, "progs/vw_q2_rock2.mdl");
 //				setmodel(vv.vwepent, "progs/vw_airgun2b.mdl");
+				setmodel(vv.vwepent, "progs/vw_q3_gauntlet.mdl");
 //				setmodel(vv.vwepent, "maps/vs_vent_main_.bsp");
 //				vv.vwepent.skin = 2;
 //				setmodel(vv.vwepent, "progs/bit.mdl");

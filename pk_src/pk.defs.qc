@@ -654,6 +654,7 @@ void() hip_precache;
 
 // wolf
 
+.float wolfscore // scoring of wolf items
 void() wolf_precache;
 void() wchg2_weapon_touch;
 
@@ -861,6 +862,7 @@ float VWZ_CHTHUNDER			= 16;
 float VWX_HARP_IDLE			= 4;	// harpoon is fired, player standing idle
 float VWY_HARP_IDLE			= -10;
 float VWZ_HARP_IDLE			= -6;
+float ROPE_FWD					= 24; // distance to move last seg fwd when it is longer rope piece
 
 float VWX_HARP_RETR			= 8;	// harpoon being retracted
 float VWY_HARP_RETR			= 8;
@@ -908,6 +910,7 @@ float SVC_SETVIEWANGLES		= 10;
 // '.float speed'  bit-flag defines:
 //float CHSCAM_MONSTER  = ;
 float CHSCAM_ON				= 1;
+float DPCAM_ON					= 2;
 float LASERTARG_ON			= 4;
 float LASERTARG_LIT			= 32;
 

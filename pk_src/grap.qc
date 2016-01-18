@@ -197,7 +197,7 @@ float() grap_maintainRope =
 {
 	local entity corner;
 	local vector cornerOrigin, v1, v3;
-	local float totalLength,sf;
+	local float totalLength,sf, segfr;
 
 	totalLength = 0;
 	// play rope sounds needed...
@@ -229,7 +229,7 @@ float() grap_maintainRope =
   	if (!PK_100)
 	{
 		v3 = cornerOrigin = corner.origin + grap_vw_adj(corner);
-		self.frame = 2; // use longer segment - 7.12.11
+		segfr = 1; // use longer segment - 7.12.11
 	}
 	else
 		cornerOrigin = corner.origin + '0 0 16';
@@ -256,7 +256,8 @@ float() grap_maintainRope =
 		if (corner)
 		{
 			v1 = normalize(corner.origin - v3);
-			setorigin(corner, v3 + (v1 * 18));
+			setorigin(corner, v3 + (v1 * ROPE_FWD));
+			corner.frame = segfr; // fixed - 8.25.11, set frame to correct rope piece
 		}
 	}
 

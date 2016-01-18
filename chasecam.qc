@@ -115,14 +115,20 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 		return;
 	}
 
+	// turn on bit-flag
+	cam_owner.cam_x = cam_owner.cam_x | CHSCAM_ON;
+
+	if (CAM_DEF == DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
+	{
+		cvar_set("chase_active", "1");
+		return;
+	}
+
 	stuffcmd( cam_owner, CAM_FOV );
 
 	chase_cam = spawn();
 
 	chase_cam.owner=cam_owner;
-
-	// turn on bit-flag
-	chase_cam.owner.cam_x = chase_cam.owner.cam_x | CHSCAM_ON;
 
 	chase_cam.solid = SOLID_NOT;
 	chase_cam.movetype = MOVETYPE_FLY;
@@ -706,6 +712,8 @@ local string s1;
 // called by player only
 void() Toggle_chase_cam =
 {
+	local float tg;
+
 	if (self.admin) return; // pk mods
 	if (self.classname == OBSERVER) return;
 
@@ -717,6 +725,9 @@ void() Toggle_chase_cam =
 		// will be noticed by next think-
 		// of player's chase cam entity
 		self.cam_x = self.cam_x - CHSCAM_ON;
+
+		if (CAM_DEF == DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
+			cvar_set("chase_active","0");
 	}
 	else
 		Start_chase_cam( self, '0 0 0' );
@@ -846,8 +857,8 @@ void(float sel) cam_parms =
 	if (DARKPLACES || chaos) // IDEA: move to live upd
 	{
 		CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam
-		if (chaos)
-		if (cvar("cl_cam_def") != CAM_DEF) CAM_DEF = cvar("cl_cam_def");
+//		if (chaos)
+//		if (cvar("cl_cam_def") != CAM_DEF) CAM_DEF = cvar("cl_cam_def"); // Cataboligne - 8.26.11 - temp disable testing dpcam
 
 		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
 		if (chaos)
@@ -868,6 +879,12 @@ void(float sel) cam_parms =
 		self.cam_y = (parm14 & 65280)/256;
 		self.cam_z = ((parm14 & 16711680)/65536)  * 0.01;
 //		self.dest1_y = parm15;
+		if (CAM_DEF == DPCAM_ON)
+		{
+			cvar_set("chase_active", "1"); // Cataboligne - 8.26.11 - support for dpcam
+			self.cam_y = cvar("chase_back");
+			self.cam_z = cvar("chase_up") / 100;
+		}
 		}
 	else
 		{
@@ -918,8 +935,10 @@ void () dead_cam_set =
 //		if (chaos)
 //		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 //	}
+	if (CAM_DEF == DPCAM_ON) cvar_set("chase_active", "0");
 
-	if (Q_100 || PK_100) return; // || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
+
+	if (Q_100 || PK_100 || CAM_DEF == DPCAM_ON) return; // || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
 
 // limit on frags from fire & forget implementation
 
@@ -975,9 +994,6 @@ void() cam_punch =
 
 void () ccb_impulse_check =
 {
-
-//	else if (self.impulse == 231) LaserTargeterToggle( self );
-
 	if (IROBOT(self)) return; // no cam for bots - not sure how they would get here...
 
 	if (DARKPLACES || chaos)
@@ -989,6 +1005,12 @@ void () ccb_impulse_check =
 
 	if (Q_100 || PK_100 || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
 
+		return;
+
+	{
+		self.cam_y = cvar("chase_back");
+		self.cam_z = cvar("chase_up") / 100;
+	}
 //chase cam code
 	if (self.impulse == 230) Toggle_chase_cam();
 
@@ -999,6 +1021,13 @@ void () ccb_impulse_check =
 
 	else if (self.impulse == 238) Chase_cam_read_temp1(0); // read cvar temp1 into player.cam_y (cam distance)
 	else if (self.impulse == 239) Chase_cam_read_temp1(1); // read cvar temp1 into player.cam_z (cam height)
+
+//	else if (self.impulse == 231) LaserTargeterToggle( self );
+	if (CAM_DEF == DPCAM_ON)
+	{
+		cvar_set("chase_back", ftos(self.cam_y));
+		cvar_set("chase_up", ftos(self.cam_z * 100));
+	}
 
 };
 

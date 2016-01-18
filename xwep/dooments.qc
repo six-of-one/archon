@@ -1948,6 +1948,8 @@ void() w_item_cross =
 
 	self.wait = -1; // RSP_TIME; // no respawn for these, ever
 
+	self.wolfscore = 100; // points for collecting
+
 	self.noise = "wolf/pickup_gdy.wav";
 	setmodel (self, "progs/w_cross.bsp");
 	self.noise4 = "wolf/w_resp.wav";

@@ -15,12 +15,12 @@ void() PK_init =
 	chaos = cvar("chaos"); // glquake mod engine
 	DARKPLACES = cvar("pr_checkextension"); // check for dp engine
 
-// info string set by server
+// info strings set by server
 	localcmd("alias version \"echo quake-c: chaos archon alpha 3.0\"\n");
 	localcmd("alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
-	localcmd("alias codesite \"echo http://www.moddb.com/members/invadercat/\"\n");
+	localcmd("alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
 	localcmd("alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
-	localcmd("alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo codesite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
+	localcmd("alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
 
 	pk_precache();
 	q1_precache();
@@ -1284,6 +1284,9 @@ POW_TIME = 30;
 		registercvar("pk_tr_all", "0");
 		registercvar("pk_tr_not", "2"); // 0 - leave items with no translation, 1 - remove, 2 - best guess, 3 - randomize
 		registercvar("pk_translate", "0");
+
+		registercvar("pk_wolfscorefrag", "0"); // how much wolf score you need to get 1 frag for wolf treasures
+																						// 0 - no frags, (x) - frag every x pts, - (x) - frag for every x items collected
 
 		registercvar("pk_doom_alpha", "0"); // sort of a translate - use doom alpha / pre-beta models, for use with alpha maps
 														// 04 - doom alpha level 0.4
