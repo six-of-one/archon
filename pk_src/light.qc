@@ -142,7 +142,9 @@ void() light_lightning =
 	// error checking
 	if (self.style != 14)
 	{
-		//if (WARNING) bprint("\n*** warning:\nlight_lightning with style != 14 - removing.\n\n");
+#ifdef warning
+		if (WARNING & 128) bprint("\n*** warning:\nlight_lightning with style != 14 - removing.\n\n");
+#endifdef
 		remove(self);
 		return;
 	}

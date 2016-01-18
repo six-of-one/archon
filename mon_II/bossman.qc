@@ -115,7 +115,8 @@ void() boss_blahblah =
 			T_Damage (e, self, self, BOSS_BLAH_DMG + f);
 
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 4)
 {
 bprint("boss blah attack: ");
 bprint(item_ident(e));
@@ -123,6 +124,7 @@ bprint(" - dmg = ");
 bprint(ftos(f + 1));
 bprint("\n");
 }
+#endifdef
 
 
 

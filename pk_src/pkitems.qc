@@ -41,8 +41,10 @@ void () SUB_regen =
 
 	if (self.event == "dynamic_item") // just in case catch - cubes prob. come here
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 			bprint("*** - WARNING - Removed a dyn item in SUB_regen!\n");
+#endifdef
 		pk_ditems = pk_ditems - 1; // havent verified this in some time, likely its totally borked re: map crates that dont respawn use this
 		remove(self);
 		return;
@@ -103,8 +105,10 @@ void () PlaceItem =
 
 	if (self.scode == MC_Q2_BARREL || self.scode == MC_D_BARREL || self.scode == MC_Q3_BARREL || self.scode == MC_EXPLOD1 || self.scode == MC_EXPLOD1){
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 2)
 bprint("placeitem barrel return\n");
+#endifdef
 
 		return;
 
@@ -119,9 +123,11 @@ bprint("placeitem barrel return\n");
 //	oldz = self.origin_z;
 	if (!droptofloor(0,0)) // Cataboligne 9.17.3 - fix compiler warning
 	{
+#ifdef warning
 		dprint ("Bonus item fell out of level at ");
 		dprint (vtos (self.origin));
 		dprint ("\n");
+#endifdef
 		dtf_handle();
 	}
 	pk_placeitem(); // *pk - set item details
@@ -134,12 +140,14 @@ bprint("placeitem barrel return\n");
 
 
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 2)
 {
 	bprint(" *** WARNING: item with no archon pts: ");
 	bprint(item_ident(self));
 	bprint("\n");	
 }
+#endifdef
 
 
 //
@@ -207,12 +215,14 @@ void () painkeep_weapon_touch =
 	}
 	else
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 		{
 			bprint("\n*** warning:\npainkeep_weapon_touch: unknown classname (");
 			bprint(self.classname);
 			bprint(") - ignoring\n\n");
 		}
+#endifdef
 		self.touch = SUB_Null;
 		return;
 	}
@@ -590,12 +600,14 @@ void() painkeep_touch =
 
 
 
+#ifdef warning
 if (!self.mask_x)
 {
 	bprint("------------------- ** WARNING - item with no mask x = ");
 	bprint(self.model);
 	bprint("\n");
 }
+#endifdef
 
 
 // morphic
@@ -617,7 +629,8 @@ if (!self.mask_x)
 
 
 // testing touch select for morphs, etc
-if (WARNING)
+#ifdef warning
+if (WARNING & 2)
 if (self.theowner != other) // debounce
 //if (self.classname == "Backpack")
 {
@@ -634,6 +647,7 @@ if (self.theowner != other) // debounce
 	bprint(ftos(other.mask_x & CB_HUMAN));
 	bprint("\n");
 }
+#endifdef
 
 
 
@@ -672,12 +686,14 @@ if (self.theowner != other) // debounce
 //	if (self.pk_touch == (void()) 0)
 	if ((self.pk_touch == SUB_Void) || !self.pk_touch)
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 		{
 		bprint("\b *** warning: in painkeep_touch for: ");
 		bprint(self.classname);
 		bprint(" and pk_touch is (void) 0 | SUB_Void - reloading\n");
 		}
+#endifdef
 		if (self.event != "dynamic_item") item_call(self.classname);
 		else if (self.wad != null_string) item_call(self.wad);
 		else if (self.scode) item_call(item_by_mcode(self.scode));
@@ -692,12 +708,14 @@ if (self.theowner != other) // debounce
 
 
 
+#ifdef warning
 if (self.classname == null_string)
 {
 	bprint("*** - blank classname in touch fn = ");
 	bprint(self.model);
 	bprint("\n");
 }
+#endifdef
 
 
 /// NOTE: IMP: no nodules do stack ***
@@ -772,7 +790,8 @@ if (ae != self && a2 != self && a3 != self) // TEST
 
 
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 2)
 {
 bprint("\b *** respawn: time set in painkeep_touch for: ");
 bprint(item_ident(self));
@@ -780,6 +799,7 @@ bprint(", time = (");
 bprint(ftos(self.nextthink - time));
 bprint(")\n");
 }
+#endifdef
 
 
 
@@ -1617,7 +1637,6 @@ string(float itm, entity e) swep_id =
 void() DropBackpack =
 {
 //	local entity e;
-	local float bkt;
 
 //		q10-_DropBackpack();
 
@@ -1656,7 +1675,7 @@ void() DropBackpack =
 	newmis.pk_items = 0;
 	newmis.classname = "backpack";
 
-	bkt = BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
+	newmis.ltime = BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
 
 	if (self.eweapon && (DEAD_XPACK == 1)) // xweap was unholstered - see if it goes in pack
 	{
@@ -1669,7 +1688,7 @@ void() DropBackpack =
 		newmis.eweapon.items = self.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
 																						  // had to do this because laser cannon was getting wrong weapon value & not selectable
 		xwep_ammo(newmis.eweapon, self);
-		dyn_remove(newmis.eweapon, bkt + REMOVE_DV + 1, SUB_Null); // set up an eventual remove if pack uncollected
+		dyn_remove(newmis.eweapon, newmis.ltime + 1, SUB_Null); // set up an eventual remove if pack uncollected
 	}
 	else
 
@@ -1725,7 +1744,7 @@ void() DropBackpack =
 	setsize (newmis, '-16 -16 0', '16 16 56');
 	newmis.touch = BackpackTouch;
 
-	newmis.nextthink = time + bkt;
+	newmis.nextthink = time + newmis.ltime;
 	newmis.think = SUB_Remove; // poss. chaos vector
 	AddToSplash(newmis); // *pk - splash tossed items
 
@@ -1828,7 +1847,7 @@ float cfm_spread; // spread out think times on items
 
 void() pk_item_position_init =
 {
-//	if (WARNING) if (!PK) bprint("*** warning: pk_item_position_init called when not in PK mode.\n");
+//	if (WARNING & 2) if (!PK) bprint("*** warning: pk_item_position_init called when not in PK mode.\n");
 
 	if (self.ip_orgOrigin == v0 || self.delay == RE_LOC)
 		self.ip_orgOrigin = self.origin;
@@ -1842,8 +1861,10 @@ void() pk_item_position_init =
 	
 
 // dynamic items should not end up here
-	if (WARNING)  if (self.event == "dynamic_item")
+#ifdef warning
+	if (WARNING & 2)  if (self.event == "dynamic_item")
 		bprint("*** warning: dynamic item in pk_item_position_init() \n");
+#endifdef
 
 };
 

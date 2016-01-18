@@ -151,7 +151,9 @@ void() hub_teleport =
 	// error check
 	if (!self.map)
 	{
-		if (WARNING) bprint("\n*** warning:\nhub_teleport without map - removing, this portal will not cull votes.\n\n");
+#ifdef warning
+		if (WARNING & 1) bprint("\n*** warning:\nhub_teleport without map - removing, this portal will not cull votes.\n\n");
+#endifdef
 		remove(self);
 		return;
 	}
@@ -713,7 +715,9 @@ void() hub_control =
 	{
 // Cataboligne 10.2.8 - improvment:
 // already have a hub - why not remove and continue?
-		if (WARNING) bprint("\n*** warning:\nMap tried to create a second hub - removing.\n\n");
+#ifdef warning
+		if (WARNING & 1) bprint("\n*** warning:\nMap tried to create a second hub - removing.\n\n");
+#endifdef
 		remove(self);
 		return;
 	}

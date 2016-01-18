@@ -550,7 +550,9 @@ void() rotate_train_next =
    targ = find (world, targetname, self.path );
    if ( targ.classname != "path_rotate" )
       {
-		if (WARNING) bprint( "\n*** warning:\nNext target is not path_rotate - removed.\n\n" );
+#ifdef warning
+		if (WARNING & 16) bprint( "\n*** warning:\nNext target is not path_rotate - removed.\n\n" );
+#endifdef
 		MAP_OBSTR = TRUE;
 		remove(self);
 		return;
@@ -566,7 +568,9 @@ void() rotate_train_next =
    self.path = targ.target;
    if (!self.path )
       {
-		if (WARNING) bprint( "\n*** warning:\nrotate_train_next: no next target - removed.\n\n" );
+#ifdef warning
+		if (WARNING & 16) bprint( "\n*** warning:\nrotate_train_next: no next target - removed.\n\n" );
+#endifdef
 	  MAP_OBSTR = TRUE;
 		remove(self);
 		return;
@@ -670,7 +674,9 @@ void() rotate_train_next =
 
          if (!self.speed)
 			{
-				if (WARNING) bprint( "\n*** warning:\nNo speed is defined - default 50.\n\n" );
+#ifdef warning
+				if (WARNING & 16) bprint( "\n*** warning:\nNo speed is defined - default 50.\n\n" );
+#endifdef
 				self.speed = 50;
 			}
 
@@ -724,7 +730,9 @@ void() rotate_train_find =
    targ = find ( world, targetname, self.path);
    if ( targ.classname != "path_rotate" )
       {
-		if (WARNING) bprint( "\n*** warning:\nNext target is not path_rotate - removed.\n\n" );
+#ifdef warning
+		if (WARNING & 16) bprint( "\n*** warning:\nNext target is not path_rotate - removed.\n\n" );
+#endifdef
 	  MAP_OBSTR = TRUE;
 		remove(self);
 		return;
@@ -790,7 +798,9 @@ sounds
 
 void() rotate_train =
 {
-	if (WARNING) bprint("\n*** warning:\n\brotate_train entities should be changed to rotate_object with\nfunc_rotate_train controllers\n\n");
+#ifdef warning
+	if (WARNING & 16) bprint("\n*** warning:\n\brotate_train entities should be changed to rotate_object with\nfunc_rotate_train controllers\n\n");
+#endifdef
 	MAP_OBSTR = TRUE;
 	remove(self);
 };
@@ -801,7 +811,9 @@ void() func_rotate_train =
 		self.speed = 100;
 	if (!self.target)
       {
-		if (WARNING) bprint( "\n*** warning:\nrotate_train without a target - removed.\n\n" );
+#ifdef warning
+		if (WARNING & 16) bprint( "\n*** warning:\nrotate_train without a target - removed.\n\n" );
+#endifdef
 	  MAP_OBSTR = TRUE;
 		remove(self);
 		return;
@@ -1143,7 +1155,9 @@ void() func_rotate_door =
    {
    if (!self.target)
       {
-		if (WARNING) bprint( "\n*** warning:\nrotate_door without target - removed.\n\n" );
+#ifdef warning
+		if (WARNING & 16) bprint( "\n*** warning:\nrotate_door without target - removed.\n\n" );
+#endifdef
 	  MAP_OBSTR = TRUE;
 		remove(self);
 		return;

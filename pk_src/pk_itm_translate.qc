@@ -2176,7 +2176,8 @@ void(entity e, float trvs) item_translate =
 	if (TR_ALL > 0) k = TR_ALL;
 	mcc = map_trans(e, k);
 
-	if (WARNING)
+#ifdef warning
+	if (WARNING & 2)
 	{
 		bprint("*** Translate - ");
 		bprint(e.classname);
@@ -2188,11 +2189,14 @@ void(entity e, float trvs) item_translate =
 		if (mcc != null_string) bprint(mcc);
 		else bprint("NOT TRANSLATING");
 	}
+#endifdef
 
 	if (mcc == "RMV") // no translation - removed
 	{
 		hide_item (e);
-		if (WARNING) bprint(" - Hidden!");
+#ifdef warning
+		if (WARNING & 2) bprint(" - Hidden!");
+#endifdef
 	}
 	else if (mcc != null_string)
 	{
@@ -2206,7 +2210,9 @@ void(entity e, float trvs) item_translate =
 			e.touch = painkeep_touch;
 		}
 	}
-	if (WARNING) bprint("\n");
+#ifdef warning
+	if (WARNING & 2) bprint("\n");
+#endifdef
 };
 
 void(entity e, float trv) master_item_control =
@@ -2242,15 +2248,17 @@ void(entity e, float trv) master_item_control =
 	}
 	else
 	{
+#ifdef warning
 		if (e.event == "dynamic_item") // NOTE: should never happen, pk100 has no dyn (unless func_dyn)
 		{
-			if (WARNING)
+			if (WARNING & 2)
 			{
 				bprint("*** Warning - dynamic items: pk_100 and dynamic made a ");
 				bprint(e.class_select);
 				bprint(" - hiding\n");
 			}
 		}
+#endifdef
 		hide_item (e);
 	}
 };
@@ -2375,12 +2383,14 @@ void() check_translate =
 			if (!TR_ALL) TR_ALL = FL_TR_RESTORE; // turned off & we need restore controls
 			tr_all_fire =  TR_ALL;
 
-			if (WARNING)
+#ifdef warning
+			if (WARNING & 2)
 			{
 			bprint("*** Translate: ALL to ");
 			bprint(tran_str(TR_ALL));
 			bprint("\n\n");
 			}
+#endifdef
 			master_item_control_loop("hip_item", tr_all_fire); // catch for remove codes
 			master_item_control_loop("pkplus_item", tr_all_fire);
 			master_item_control_loop("x_item", tr_all_fire);
@@ -2391,12 +2401,14 @@ void() check_translate =
 			TR_WOLF = fabs(cvar("it_tr_wolf" ));
 			if (!TR_WOLF) TR_WOLF = FL_TR_RESTORE; // turned off & we need restore controls
 
-			if (WARNING)
+#ifdef warning
+			if (WARNING & 2)
 			{
 			bprint("*** Translate: Wolf to ");
 			bprint(tran_str(TR_WOLF));
 			bprint("\n");
 			}
+#endifdef
 
 			master_item_control_loop("wolf_item", TR_WOLF);
 		}
@@ -2406,12 +2418,14 @@ void() check_translate =
 			TR_DOOM = fabs(cvar("it_tr_doom" ));
 			if (!TR_DOOM) TR_DOOM = FL_TR_RESTORE; // turned off & we need restore controls
 
-			if (WARNING)
+#ifdef warning
+			if (WARNING & 2)
 			{
 			bprint("*** Translate: DooM to ");
 			bprint(tran_str(TR_DOOM));
 			bprint("\n");
 			}
+#endifdef
 
 			master_item_control_loop("doom_item", TR_DOOM);
 		}
@@ -2421,12 +2435,14 @@ void() check_translate =
 			TR_QUAKE = fabs(cvar("it_tr_quake" ));
 			if (!TR_QUAKE) TR_QUAKE = FL_TR_RESTORE; // turned off & we need restore controls
 
-			if (WARNING)
+#ifdef warning
+			if (WARNING & 2)
 			{
 			bprint("*** Translate: Quake to ");
 			bprint(tran_str(TR_QUAKE));
 			bprint("\n");
 			}
+#endifdef
 
 			master_item_control_loop("quake_item", TR_QUAKE);
 		}
@@ -2436,12 +2452,14 @@ void() check_translate =
 			TR_Q2 = fabs(cvar("it_tr_q2" ));
 			if (!TR_Q2) TR_Q2 = FL_TR_RESTORE; // turned off & we need restore controls
 
-			if (WARNING)
+#ifdef warning
+			if (WARNING & 2)
 			{
 			bprint("*** Translate: Quake 2 to ");
 			bprint(tran_str(TR_Q2));
 			bprint("\n");
 			}
+#endifdef
 
 			master_item_control_loop("q2_item", TR_Q2);
 		}
@@ -2451,12 +2469,14 @@ void() check_translate =
 			TR_Q3 = fabs(cvar("it_tr_q3" ));
 			if (!TR_Q3) TR_Q3 = FL_TR_RESTORE; // turned off & we need restore controls
 
-			if (WARNING)
+#ifdef warning
+			if (WARNING & 2)
 			{
 			bprint("*** Translate: Quake 3 to ");
 			bprint(tran_str(TR_Q3));
 			bprint("\n");
 			}
+#endifdef
 
 			master_item_control_loop("q3_item", TR_Q3);
 		}

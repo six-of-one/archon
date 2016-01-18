@@ -46,7 +46,9 @@ void() remove_stain =
 	}
 	else
 	{
-		if (WARNING) bprint("*** remove_stain_decor: Tried to remove non-stain_decor!\n");
+#ifdef warning
+		if (WARNING & 16) bprint("*** remove_stain_decor: Tried to remove non-stain_decor!\n");
+#endifdef
 		return;
 	}
 };

@@ -528,7 +528,9 @@ void() touch_theft =
 	self.wait = time + STEAL_TIME;
 	sv = self;
 
-if (WARNING) bprint("theft attemp\n");
+#ifdef warning
+if (WARNING & 4) bprint("theft attemp\n");
+#endifdef
 
 	/* IMP: major recode - prob via. drop item code
 	if (random() < STEAL_BASE)
@@ -545,7 +547,7 @@ if (WARNING) bprint("theft attemp\n");
 			self = ew;
 			weapon_touch();
 			if (!glot) {self = sv; return; } // cant steal, no inventory room
-if (WARNING) bprint("theft wep success\n");
+if (WARNING & 4) bprint("theft wep success\n");
 			el = spawn(); // temp inv ent
 			el.lefty = sv.weapon;
 			el.weapon = sv.impulse;
@@ -569,7 +571,7 @@ if (WARNING) bprint("theft wep success\n");
 			if (ew.weaponframe == AMMO_NONE) return;
 			if (self.weapon >= MC_CARRYABLE) return;
 			if (!a) return;
-if (WARNING) bprint("theft ammo success\n");
+if (WARNING & 4) bprint("theft ammo success\n");
 			if (w > 3) w = w + rint((w / 2) * crandom());
 			if (w > a) w = a;
 			wep_ref(WMOD_ADDA,0,w,other,ew.weaponframe); // stole some ammo
@@ -692,12 +694,14 @@ void(float cn) gremlin_spawn =
 
 	if (sf > GREM_MAX) return; // gremlins maxed out
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 4)
 {
 bprint("spawning gremlins, count: ");
 bprint(ftos(sf));
 newline(world);
 }
+#endifdef
 
 	sf = 100; // limit loop - NOT gsf
 	ts = 80; // test value
@@ -722,7 +726,9 @@ newline(world);
 		{
 
 
-if (WARNING) bprint("made a gremlin\n");
+#ifdef warning
+if (WARNING & 4) bprint("made a gremlin\n");
+#endifdef
 
 
 			self.show_hostile = time + 1;
@@ -744,7 +750,9 @@ if (WARNING) bprint("made a gremlin\n");
 		{
 
 
-if (WARNING) bprint("gremlin spawn fail\n");
+#ifdef warning
+if (WARNING & 4) bprint("gremlin spawn fail\n");
+#endifdef
 
 
 			if (sf < ts) { lv = lv * 2; ts = ts - 20; }

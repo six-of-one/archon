@@ -976,8 +976,10 @@ float(string sc, entity e) pk_mcode =
 
 	if (tsc == null_string)
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 			bprint("\b *** pk_mcode - entry with no classname\n");
+#endifdef
 		return(0); 
 	}
 
@@ -1284,7 +1286,8 @@ float(string sc, entity e) pk_mcode =
 // q3 - translates classname for now
 //	else if (tsc == null_string)								return(MC_);
 
-	if (WARNING)
+#ifdef warning
+	if (WARNING & 2)
 //	if (tsc != "dyn_item") // && mc == 0) // again - test will always be true now, deprecated
 	{
 		bprint("\b *** item with no map code translation:\n");
@@ -1292,6 +1295,7 @@ float(string sc, entity e) pk_mcode =
 		bprint(tsc);
 		bprint("\n");
 	}
+#endifdef
 
 	return(0);
 
@@ -2029,7 +2033,9 @@ void() painkeep_cube_use =
 
 		if (c.wad != "pk_cube")
 		{
-			if (WARNING)	bprint("*** WARNING - in cube use and dont have a cube or a crate!\n");
+#ifdef warning
+			if (WARNING & 2)	bprint("*** WARNING - in cube use and dont have a cube or a crate!\n");
+#endifdef
 			return;
 		}
 		c.think = SUB_Null;
@@ -2215,12 +2221,7 @@ void() painkeep_cube_use =
 //	item_translate(self, FL_TR_RANDOM);
 
 
-//TEST
-//	if (random() > 0.15 || crate) // crates always give goody
-
-
-
-	if (crate) // crates always give goody
+	if (random() > 0.15 || crate) // crates always give goody
 	{
 		self.pk_touch = painkeep_touch;
 		d = pk_mcode(self.wad, world);
@@ -2278,9 +2279,6 @@ void() painkeep_cube_use =
 // pk cube fix - spawned something and fns are reversed
 		if (self.class_select != "class_monster")
 		{
-// was prob for bfg - and it was borking reggun ammo load
-//			if (self.ammo_cells < 0) self.ammo_cells = self.currentammo = self.currentammo + 30 + 50 * random();
-//			if (self.ammo_shells < 0) self.ammo_shells = self.currentammo = self.currentammo + 30 + 30 * random();
 			if (self.pk_touch == painkeep_touch)
 			if (self.touch != painkeep_touch)
 			{
@@ -2404,7 +2402,10 @@ void() cube_touch =
 		return;
 
 	if (sphere_a.owner == other) // no cubes while controlling sphere
-	{if (WARNING) bprint("\b *** warning: nocubes: SOA\n");
+	{
+#ifdef warning
+if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
+#endifdef
 		return;
 	}
 
@@ -2935,7 +2936,9 @@ void(float mc, vector vo, string wd) fn_make =
 			if (!e) e = findradius(world.origin, 256000);
 			if (!e) 
 			{
-				if (WARNING) bprint("*** warning: fn_make could not find a random (or any) location - giving up\n");
+#ifdef warning
+				if (WARNING & 2) bprint("*** warning: fn_make could not find a random (or any) location - giving up\n");
+#endifdef
 				return; // crap - no location
 			}
 			v1 = e.origin + ' 0 0 16';
@@ -2971,7 +2974,8 @@ void(float mc, vector vo, string wd) fn_make =
 		self = sv;
 
 	}
-	else if (WARNING)
+#ifdef warning
+	else if (WARNING & 2)
 	{
 		bprint("\b *** fn_make: map code or func call with no item translation:\n");
 		bprint(" -------------->  ");
@@ -2983,6 +2987,7 @@ void(float mc, vector vo, string wd) fn_make =
 		}
 		bprint("\n");
 	}
+#endifdef
 };
 
 /*QUAKED func_make (0 .5 .8) (-8 -8 -8) (8 8 8) RNDLOC RESPAWN REMOVE OLREM
@@ -3015,7 +3020,7 @@ count: if not 0 spawn this many items and go away
 delay: if not 0 wait this long and spawn another ent.
        you might want random locations for this
 
-mean: time to dynamic removal
+mean: time to dynamic removal - 180 sec default
 stdev: deviation from removal time
 
 --- monster bits ---
@@ -3131,7 +3136,7 @@ void() func_make =
 	if (self.spawnflags & 12)
 	{
 		f = self.mean;
-		if (!f) f = PK_DYNTO;
+		if (!f) f = 180; // FUNC_MAKE_DFRTO = 180
 
 		if (newmis.class_select == "class_monster" || (self.spawnflags & 8))
 			dyn_remove(newmis, f + (crandom() * self.stdev), dyn_rem); // monsters think & have to go old style

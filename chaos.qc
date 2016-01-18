@@ -33,11 +33,15 @@ entity(float mvt, float sd, float flg, float ct, vector org, vector smin, vector
 
 	chaos_e = reset;
 	if (chaos_e == world) chaos_e = spawn ();
+#ifdef warning
 	else 
-		if (WARNING) {bprint("chaos_spawn() resetting: "); bprint(chaos_e.classname); bprint("\n"); }
+		if (WARNING & 1) {bprint("chaos_spawn() resetting: "); bprint(chaos_e.classname); bprint("\n"); }
+#endifdef
 	if (chaos_e == world) // failed to spawn, call fn still needs to check if live ent
 		{
-		if (WARNING) bprint("chaos_spawn() - ERROR: spawn() failed, returned world!\n");
+#ifdef warning
+		if (WARNING & 1) bprint("chaos_spawn() - ERROR: spawn() failed, returned world!\n");
+#endifdef
 		return(world);
 		}
 
@@ -1095,11 +1099,7 @@ void() th_saver =
 			ClearSpawnPoint(spot); // *pk
 		}
 
-		if (!spot) // FAILED!
-		{
-			if (WARNING) bprint("func_saver - FAIL: no teleport desitnation available, check map code\n");
-		}
-		else
+		if (spot)
 		{
 			self.aiment.frags = self.aiment.frags - self.frags;
 
@@ -1114,6 +1114,10 @@ void() th_saver =
 
 			spawn_tdeath (self.aiment.origin,self.aiment);
 		}
+#ifdef warning
+		else
+			if (WARNING & 1) bprint("func_saver - FAIL: no teleport desitnation available, check map code\n");
+#endifdef
 	}
 	if (self.delay < 1 || self.button0)
 	{

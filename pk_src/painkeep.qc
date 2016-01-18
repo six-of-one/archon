@@ -735,7 +735,9 @@ void() pk_liveupd =
 // server controls
 
 	ADMINLOCK = cvar("sv_c_adminlock");
+#ifdef warning
 	WARNING = cvar("sv_c_warning");
+#endifdef
 
 // bots
 	f = cvar("saved1");
@@ -1169,13 +1171,15 @@ void() pk_liveupd =
 
 	if (!PK_ART && ((DYN_ART && (DYN_OVR || DYN_FORCE) ) || DYN_ARTFR))
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 		{
 			bprint("*** Warning - pk_art deactivated and dynamic controls enabled: ");
 			if (DYN_ART) bprint("DYN_ART ");
 			if (DYN_ARTFR) bprint("DYN_ARTFR ");
 			bprint("- ignored, to use these - set: sv_pk_art 1\n");
 		}
+#endifdef
 		DYN_ART = FALSE;
 		DYN_ARTFR = FALSE;
 	}
@@ -1205,7 +1209,9 @@ void() pk_liveupd =
 		e = find(world,classname,"dyn_spawner");
 		while (e)
 		{
-			if (WARNING) bprint("*** Warning - dynamic items deactivated, spawner removed\n");
+#ifdef warning
+			if (WARNING & 2) bprint("*** Warning - dynamic items deactivated, spawner removed\n");
+#endifdef
 			e.nextthink = -1;
 			remove(e);
 			e = find(e,classname,"dyn_spawner");
@@ -1371,7 +1377,9 @@ void() pk_srvcmd_set =
 // pk control
 	ADMINLOCK = FALSE;
 	XENV = FALSE;
+#ifdef warning
 	WARNING = FALSE;
+#endifdef
 	BOTFREEZE = 0;
 	BOTCAM = 0;
 

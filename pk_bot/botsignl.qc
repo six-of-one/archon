@@ -38,7 +38,9 @@ void () t_botmovetarget =
 	}
 	if (self.classname != "BotTarget")
 	{
-		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 1
+#ifdef warning
+		if (WARNING & 8) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 1
+#endifdef
 		ai_botstand();
 		return;
 	}
@@ -117,7 +119,9 @@ void () t_botmovetarget =
 	}
 	if (self.classname != "BotTarget")
 	{
-		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 2
+#ifdef warning
+		if (WARNING & 8) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 2
+#endifdef
 		ai_botstand();
 		return;
 	}
@@ -164,7 +168,9 @@ void (entity bot) bot_triggered =
 		org_z = (Botgoal.goalentity.absmin_z + 1);
 		if (Botgoal.classname != "BotTarget")
 		{
-		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 3
+#ifdef warning
+		if (WARNING & 8) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 3
+#endifdef
 			ai_botstand();
 			return;
 		}
@@ -188,7 +194,9 @@ void () bot_touched =
 	self = other.goalentity;
 	if (self.classname != "BotTarget")
 	{
-		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 4
+#ifdef warning
+		if (WARNING & 8) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 4
+#endifdef
 		ai_botstand();
 		return;
 	}
@@ -243,7 +251,9 @@ void () enemy_touched =
 		self.search_time = (time + 4);
 		if (self.goalentity.classname != "BotTarget")
 		{
-		//if (WARNING) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 5
+#ifdef warning
+		if (WARNING & 8) bprint("\n*** warning:\nbad bot target in bot_touch.\n\n"); // 5
+#endifdef
 			ai_botstand();
 			return;
 		}
@@ -253,7 +263,9 @@ void () enemy_touched =
 	}
 	if (self.goalentity.classname != "BotTarget")
 	{
-			//if (WARNING) bprint("\n*** warning:\nbad bot target.\n\n");
+#ifdef warning
+			if (WARNING & 8) bprint("\n*** warning:\nbad bot target.\n\n");
+#endifdef
 			ai_botstand();
 			return;
 	}

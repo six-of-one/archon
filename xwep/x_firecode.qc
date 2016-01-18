@@ -297,17 +297,19 @@ void() x_weapon_touch =
 /// classname not detected - code needs updated
 
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 32)
 		{
-		bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
-		bprint(self.classname);
-		if (self.event == "dynamic_item")
-		{
-			bprint(" - ");
-			bprint(self.wad);
+			bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
+			bprint(self.classname);
+			if (self.event == "dynamic_item")
+			{
+				bprint(" - ");
+				bprint(self.wad);
+			}
+			bprint(") - ignoring\n\n");
 		}
-		bprint(") - ignoring\n\n");
-		}
+#endifdef
 		self.touch = SUB_Null;
 		return;
 	}
@@ -994,7 +996,9 @@ void(float ns) mgchg_shot =
 	}
 	else
 	{
-		if (WARNING) bprint("*** Warning -  EWEAP fn() call and eweapon is NULL!\n");
+#ifdef warning
+		if (WARNING & 32) bprint("*** Warning -  EWEAP fn() call and eweapon is NULL!\n");
+#endifdef
 		self.weapon = W_BestWeapon ();
 		self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
 		W_SetCurrentAmmo ();
@@ -1264,7 +1268,10 @@ void () Plasma_MissileTouch =
 	sound (self, CHAN_ITEM, self.noise3, TRUE, ATTN_NORM);
 
 	if (!self.dmg)
-	{																		if (WARNING) bprint("plasma missle touch set def damage\n");
+	{
+#ifdef warning
+																			if (WARNING & 32) bprint("plasma missle touch set def damage\n");
+#endifdef
 //		if (self.frame == 1) self.dmg = 75;
 //		else 
 			self.dmg = 15;
@@ -1280,9 +1287,9 @@ void () Plasma_MissileTouch =
 // explosive plasma - bigger bolt
 /*
 	if (self.frame == 1)
-	{																		if (WARNING) bprint("plasma explosive\n");
+	{																		if (WARNING & 32) bprint("plasma explosive\n");
 		if ((org != v0) && (random() < LAVA_PLASMA_MLT))
-		{ 																if (WARNING) bprint("plasma bomb failed in lava\n");
+		{ 																if (WARNING & 32) bprint("plasma bomb failed in lava\n");
 			content_clear(self);
 			self.th_stand = self.touch = SUB_Null;
 			move_stop(self, "misc/null.wav");
@@ -1701,7 +1708,8 @@ float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 		{
 
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 32)
 if (trace_fraction < 1)
 {
 bprint(" *** CHT: trace fail ent (");
@@ -1710,6 +1718,7 @@ bprint(") - frac = ");
 bprint(ftos(trace_fraction));
 bprint(".\n");
 }
+#endifdef
 
 
 			if (trace_fraction < 1) return(FALSE);

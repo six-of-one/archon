@@ -142,12 +142,14 @@ void(entity e) pkplus_item_control =
 		return;
 	}
 
+#ifdef warning
 	if (e.event == "dynamic_item")
 		{
-			if (WARNING) bprint("*** Warning - dynamic items: pk_art is off and dynamic made a pkplus item - hiding\n");
+			if (WARNING & 2) bprint("*** Warning - dynamic items: pk_art is off and dynamic made a pkplus item - hiding\n");
 		}
 //		else
-//		if (WARNING) bprint("*** Warning - pk_art is off and code made a pkplus item - hiding\n");
+//		if (WARNING & 2) bprint("*** Warning - pk_art is off and code made a pkplus item - hiding\n");
+#endifdef
 
 	if (!cvar("pk_art_rep"))
 		{

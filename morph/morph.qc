@@ -421,7 +421,9 @@ void() morphic_impulse =
 
 		if (!f)
 		{
-			if (WARNING) bprint("*** Warning - morphic cube with no selection options! - removed\n");
+#ifdef warning
+			if (WARNING & 4) bprint("*** Warning - morphic cube with no selection options! - removed\n");
+#endifdef
 			done = TRUE;
 			sv = 0;
 		}
@@ -510,7 +512,9 @@ void() morph_cube_use =
 		self.pk_currentitem = W_BestPKWeapon();
 		self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
 		W_SetCurrentAmmo();
-		if (WARNING)	bprint("*** WARNING - in morphic cube use and dont have a cube!\n");
+#ifdef warning
+		if (WARNING & 4)	bprint("*** WARNING - in morphic cube use and dont have a cube!\n");
+#endifdef
 		return;
 	}
 
@@ -1162,9 +1166,11 @@ void() morph_impulse =
 				PK_SetCurrentAmmo();
 			}
 		}
+#ifdef warning
 		else
-			if (WARNING)
+			if (WARNING & 4)
 				bprint("Warning - this morph form has no base weapon - it cannot select painkeep items\n");
+#endifdef
 	}
 	else if ((self.impulse == 2) && (self.builtin & IT_SHOTGUN))
 	{
@@ -1886,7 +1892,9 @@ void() random_monster =
 */
 	if ((self.cnt < 1) && (self.count < 1))
 	{
-		if (WARNING) bprint("*** WARNING - random monster spawn found no bits - check sv_monster_rnd!\n");
+#ifdef warning
+		if (WARNING & 4) bprint("*** WARNING - random monster spawn found no bits - check sv_monster_rnd!\n");
+#endifdef
 		return;
 	}
 
@@ -1908,7 +1916,8 @@ void() random_monster =
 
 		if (self.wad == null_string)
 		{
-			if (WARNING)
+#ifdef warning
+			if (WARNING & 4)
 			{
 				bprint("*** WARNING - random monster spawn assign fail - returning\n");
 				bprint("*** Assign bit: ");
@@ -1917,6 +1926,7 @@ void() random_monster =
 				bprint(ftos(M));
 				bprint("\n");
 			}
+#endifdef
 			remove(self);
 			self = c;
 			return;
@@ -1941,7 +1951,8 @@ void() random_monster =
 	}
 
 
-	if (WARNING) // dont normally post random monster info
+#ifdef warning
+	if (WARNING & 4) // dont normally post random monster info
 	{
 		bprint("*** Random monster spawned: ");
 		bprint(self.wad);
@@ -1954,6 +1965,7 @@ void() random_monster =
 			bprint(" on the map");
 		bprint("\n");
 	}
+#endifdef
 	self = c;
 };
 

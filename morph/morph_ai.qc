@@ -220,10 +220,11 @@ void() t_followtarget =
 	other = temp;
 
 	self.goalentity = self.movetarget = find (world, targetname, other.target);
-/*
-if (WARNING)
+
+#ifdef warning
+if (WARNING & 4)
 {
-   bprint("target ");
+   bprint("follow target ");
    bprint(other.target);
    bprint(" targetname ");
    bprint(self.goalentity.targetname);
@@ -231,7 +232,8 @@ if (WARNING)
    bprint(vtos(self.goalentity.origin));
    bprint("\n");
 }
-*/
+#endifdef
+
    self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
    self.wetsuit_finished = time + 2;
 	if (!self.movetarget)
@@ -1225,7 +1227,7 @@ void(float dist) ai_run =
 		if (self.origin == self.oldorigin && self.wait < time)
 		if (self.movetarget.classname != "chaos_teleport_restore")
 		{
-if (WARNING) bprint("monster move check\n");
+if (WARNING & 4) bprint("monster move check\n");
 			self.movetarget = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "chaos_teleport_restore", null_string, SUB_Null, 1, chaos_teleport_restore_think, SUB_Null, self, world);
 			self.movetarget.search_time = time + 3;
 			self.movetarget.oldorigin = self.origin;

@@ -229,6 +229,75 @@ void() Sbar_DrawCompass =
 };
 
 //-----------------------------------------------------------------------------
+// item by classic bite
+//-----------------------------------------------------------------------------
+
+// op -
+// 	- 1 - quake items
+
+string (float bc, float op) item_by_clbit =
+{
+	if (bc == IT_AXE)														return("an Axe");
+	if (bc == IT_SHOTGUN)												return("a Shotgun");
+	if (bc == IT_SUPER_SHOTGUN)										return("a Double barrel shotgun");
+	if (bc == IT_NAILGUN)												return("a Nailgun");
+	if (bc == IT_SUPER_NAILGUN)										return("a Perforator");
+	if (bc == IT_GRENADE_LAUNCHER)									return("a Grenade launcher");
+	if (bc == IT_ROCKET_LAUNCHER)										return("a Rocket launcher");
+	if (bc == IT_LIGHTNING)												return("a Lightning gun");
+	if (bc == IT_MJOLNIR)												return("Mjolnir");
+
+	if (bc == IT_INVULNERABILITY)										return("item_artifact_invulnerability");
+	if (bc == IT_SUIT)													return("an Environmental suit");
+	if (bc == IT_INVISIBILITY)											return("item_artifact_invisibility");
+	if (bc == IT_QUAD)													return("a Quad damage");
+
+	if (bc == IT_ARMOR1)													return("Green Armor");
+	if (bc == IT_ARMOR2)													return("Yellow Armor");
+	if (bc == IT_ARMOR3)													return("Red Armor");
+
+	if (bc == IT_SUPERHEALTH)											return("Mega Health");
+
+	if (bc == IT_KEY1)													return("Silver key");
+	if (bc == IT_KEY2)													return("Gold key");
+
+	if (bc == IT_SHELLS)													return("a box of Shells");
+	if (bc == IT_NAILS)													return("a box of Spikes");
+	if (bc == IT_ROCKETS)												return("a box of Rockets");
+	if (bc == IT_CELLS)													return("a box of Cells");
+
+/// op 2
+
+//	if (bc == MC_HEALTHROT)												return("item_health_15");
+//	if (bc == MC_HEALTH)													return("item_health");
+//	if (bc == MC_SIGIL1)													return("item_sigil1");
+//	if (bc == MC_SIGIL2)													return("item_sigil2");
+//	if (bc == MC_SIGIL4)													return("item_sigil4");
+//	if (bc == MC_SIGIL8)													return("item_sigil8");
+
+//	if (bc == MC_SIGIL16)												return("item_sigil16");
+//	if (bc == MC_SIGIL32)												return("item_sigil32");
+//	if (bc == MC_SIGIL64)												return("item_sigil64");
+
+/// op 3
+/*
+	if (bc == WEP_GWELL) return("item_painkeep_gwell");
+	if (bc == WEP_TURRET) return("item_painkeep_turret");
+	if (bc == WEP_BTRAP) return("item_painkeep_beartrap");
+	if (bc == WEP_EXPSH) return("item_painkeep_expshells");
+	if (bc == WEP_GRAP) return("weapon_grapgun");
+	if (bc == WEP_AIRG) return("weapon_airfist");
+	if (bc == WEP_CPNB) return("item_painkeep_can");
+
+	if (bc == WEP_EGO) return("item_pkplus_ego");
+	if (bc == WEP_TOMB) return("item_pkplus_tomb");
+	if (bc == WEP_ACTOR) return("item_pkplus_actor");
+	if (bc == WEP_PHONE) return("item_pkplus_phone");
+*/
+	return("");
+};
+
+//-----------------------------------------------------------------------------
 // monster names
 //-----------------------------------------------------------------------------
 
@@ -450,7 +519,7 @@ float(float pow) bar_scale =
 
 // has_* - once a mapcode item is detected, this allows holstered view
 float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left, explflg;
-float inv, quad, ring, suit;
+float inv, quad, ring, suit, xplast, xpltime;
 
 // hud special messaging system for cfg scripts
 float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
@@ -469,7 +538,7 @@ void() Sbar_DrawInventory =
 
 	float k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
 	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag;
-	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff;
+	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v;
 
 	string wep_sg, wep_ssg, wep_nail, wep_snail, wep_gren, wep_rock, wep_light, wep_mj, wep_prox, wep_laser, wep_harp, wep_airgun, wep_clg, wep_axe, wep_pnail;
 	string target1, target2, instr;
@@ -652,6 +721,30 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		Sbar_DrawPic(arc_level, "gfx/inv_archon_bar", p_alph, 1);
 		if  (arc_level_y < 4) arc_level_y = 3;
 		DrawAmmo(arc_level + '20 5 0' - woff, archon, ALPHA_FULL);
+
+//		if (!archon_magic)
+//		if (morph != IMP_MCHAOS)
+//		if (morph != IMP_MORDER)
+
+		if (xp > xplast) xplast = xp;
+
+		if ((xp < xplast) || (xpltime > time))
+		if (xp > 0)
+		{
+			if (xp != xplast) xpltime = time + 4;
+			xplast = xp;
+			Sbar_DrawString(arc_level + '20 14 0', "(", ALPHA_FULL, '7 7 0','1 0.5 1');
+			Sbar_DrawString(arc_level + '28 15 0', ftos(floor(xp)), ALPHA_FULL, '7 7 0','1 0.5 1');
+			v = '36 14 0';
+			if (xp > 9) v = '43 14 0';
+			k = floor(xp);
+			while (k > 99)
+			{
+				k = floor(k / 10);
+				v_x = v_x + 7;
+			}
+			Sbar_DrawString(arc_level + v, ")", ALPHA_FULL, '7 7 0','1 0.5 1');
+		}
 
 		k = arc_level_y;
 		if (archon_magic || (volspec < 0))
@@ -1502,6 +1595,36 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 							Sbar_DrawString('275 40 0' + woff, "Monster slower", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast monster speed spell";
 					}
+				}
+				if (currentweap == IT_SUPER_NAILGUN) // spell list 1 - poly
+				{
+					if (bullets == 3)
+					{
+						Sbar_DrawString('242 40 0' + woff, "Create power point", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+					if (bullets == 5)
+					{
+						Sbar_DrawString('220 40 0' + woff, "Create chaos teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+					if (bullets == 7)
+					{
+						Sbar_DrawString('286 40 0' + woff, "Create items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '60 -5 0' + woff, item_by_clbit(pk_bt, 1), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+						
+					}
+					if (bullets == 11)
+					{
+						Sbar_DrawString('246 40 0' + woff, "Create painkeep items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '60 -5 0' + woff, item_by_clbit(pk_bt, 1), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+						
+					}
+					instr = "*FIRE - cast create spell";
 				}
 				if (currentweap == IT_LIGHTNING) // spell list 1 - poly
 				{

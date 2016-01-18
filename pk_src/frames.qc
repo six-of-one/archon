@@ -204,14 +204,18 @@ void() func_frame =
 	if (!self.targetname)
 	{
 		// no targetname, no way to group
-		if (WARNING) bprint("\n*** warning:\nfunc_frame without a targetname - removing,\n\n");
+#ifdef warning
+		if (WARNING & 128) bprint("\n*** warning:\nfunc_frame without a targetname - removing,\n\n");
+#endifdef
 		remove(self);
 		return;
 	}
 	if (!self.cnt)
 	{
 		// no cnt, no way to know which frame this is
-		if (WARNING) bprint("\n*** warning:\nfunc_frame without a cnt - removing,\n\n");
+#ifdef warning
+		if (WARNING & 128) bprint("\n*** warning:\nfunc_frame without a cnt - removing,\n\n");
+#endifdef
 		remove(self);
 		return;
 	}

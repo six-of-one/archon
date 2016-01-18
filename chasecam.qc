@@ -217,7 +217,9 @@ void () cam_deathview =
 	{
 		vw_chain(self);
 		viswep_ld(self, -2);
-		if (WARNING) bprint(" *** WARNING: viswep found in cam_deathview, should not be so.\n");
+#ifdef warning
+		if (WARNING & 1) bprint(" *** WARNING: viswep found in cam_deathview, should not be so.\n");
+#endifdef
 	}
 
 // wait for fry model to end before cam tests
@@ -243,7 +245,7 @@ void () cam_deathview =
 	else
 	if (self.wait < time + 3  && self.owner.model != null_string  && self.owner.solid == SOLID_NOT) // once corpse settles, dont let player move it
 	{
-		if (self.admin) CopyToBodyQue (self.owner);
+		CopyToBodyQue (self.owner);
 		self.owner.model = null_string;
 	}
 

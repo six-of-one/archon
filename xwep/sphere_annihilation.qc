@@ -134,8 +134,8 @@ void() sphere_annihilation_move =
 	}
 
 
-
-if (WARNING)
+#ifdef warning
+if (WARNING & 32)
 if (self.classname != "chaos_teleport_icon")
 {
 		bprint("*** dev: sphere_annihilation_move classn = ");
@@ -145,7 +145,7 @@ if (self.classname != "chaos_teleport_icon")
 //		bprint(item_ident(self));
 		bprint("\n");
 }
-
+#endifdef
 
 
 
@@ -153,7 +153,10 @@ if (self.classname != "chaos_teleport_icon")
 	{
 		if (self.model != self.mdl) {self.model = self.mdl; // CHECK: fix attempt for sum cube made sphere issue - maybe remove later
 
+#ifdef warning
 bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
+#endifdef
+
 }
 
 /* TEST
@@ -262,12 +265,16 @@ void() annihilate =
 	if (self.cnt < 0)
 	{
 // suck sounds - mebbe 3
-if (WARNING)
+
+#ifdef warning
+if (WARNING & 32)
 {
 		bprint("Destroying ");
 		bprint(self.classname);
 		bprint("\n");
 }
+#endifdef
+
 		self.nextthink = -1;
 		self.rad_time = 0;
 		if ((self.flags & FL_MONSTER) && ! self.flags & FL_ANNIHILATED)
@@ -289,6 +296,7 @@ if (WARNING)
 				CheckPowerups();
 				T_Damage (self, world, world, self.health * 5 + 100); // this shit can kill anybody
 
+				if (self.flags & FL_CLIENT)
 				if (self.mask_x & MORPH_ARCHON)
 				if (self.AIRG_Timeout != -6)
 				{
@@ -371,7 +379,8 @@ void(entity g) set_annihilate =
 
 
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 32)
 {
 		bprint("*** dev: set_annihilate on - ");
 		bprint(item_ident(g));
@@ -379,6 +388,7 @@ if (WARNING)
 		bprint(item_ident(self));
 		bprint("\n");
 }
+#endifdef
 
 
 
@@ -389,7 +399,7 @@ if (WARNING)
 	g.effects = 0;
 	g.attack_finished = time + 20;
 //	content_clear(g);
-//	if (g.flags & FL_HELD) {drop_held(g, v0); if (WARNING) bprint("sphere annihilate - item drop\n");} // item_held()
+//	if (g.flags & FL_HELD) {drop_held(g, v0); if (WARNING & 32) bprint("sphere annihilate - item drop\n");} // item_held()
 	g.cnt = 2;
 	g.velocity = v0;
 	g.dest1 = g.origin - sphere_a.origin + ' 0 0 12';
@@ -400,8 +410,8 @@ void() sphere_annihilation_touch =
 	local entity e;
 
 
-
-if (WARNING)
+#ifdef warning
+if (WARNING & 32)
 {
 		bprint("*** dev: sphere_annihilation_touch classn = ");
 		bprint(self.classname);
@@ -414,6 +424,7 @@ if (WARNING)
 //		bprint(item_ident(self));
 		bprint("\n");
 }
+#endifdef
 
 
 
@@ -448,7 +459,8 @@ void() sphere_annihilation_spawn =
 
 
 
-if (1) //WARNING)
+#ifdef warning
+if (WARNING & 32)
 {
 		bprint("*** dev: sphere_annihilation_spawn classn = ");
 		bprint(self.classname);
@@ -457,6 +469,7 @@ if (1) //WARNING)
 //		bprint(item_ident(self));
 		bprint("\n");
 }
+#endifdef
 
 
 

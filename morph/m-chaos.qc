@@ -177,9 +177,22 @@ void(float dt) chaos_constant =
 		chaos_constant(1 + dx);
 		dx = dx * (0.5 + random() * 0.3);
 	}
-//
-													if (WARNING) if (TRUE) { bprint("next burst: "); bprint(ftos(MAX_CHAOS_LVL)); bprint(", lvl: "); bprint(ftos(self.volume)); bprint(", beam: "); bprint(ftos(CHAOS_BEAM_MIN)); bprint(", dt: "); bprint(ftos(dt)); newline(world); }
-//
+
+#ifdef warning
+													if (WARNING & 4)
+													{
+														bprint("next burst: ");
+														bprint(ftos(MAX_CHAOS_LVL));
+														bprint(", lvl: ");
+														bprint(ftos(self.volume));
+														bprint(", beam: ");
+														bprint(ftos(CHAOS_BEAM_MIN));
+														bprint(", dt: ");
+														bprint(ftos(dt));
+														newline(world);
+													}
+#endifdef
+
 	if (MAX_CHAOS_LVL > CHAOS_ABSOLUTE) chaos_constant(0); // this really needs to fire of total levelwide chaos
 };
 
@@ -1167,12 +1180,14 @@ void() chaos_item =
 					{
 						misc_explodbox_set(newmis, ci_md, ci_fr, 10 + random() * 40, MOVETYPE_TOSS);
 						newmis._stand = SUB_Remove; // in case of respawn being called
-																														if (WARNING)
+#ifdef warning
+																														if (WARNING & 4)
 																														{
 																															bprint("chaos_item(explode box) = ");
 																															bprint(newmis.model);
 																															newline(world);
 																														}
+#endifdef
 					}
 				}
 				else
@@ -1657,9 +1672,15 @@ void() chaos_beam =
 		if (rent == world) return;
 		spawn_chaos_monster(0, rent.origin);
 //		}
-
-																						if (trace_ent != world) if (WARNING) { bprint("beam hit "); bprint(trace_ent.classname); newline(world); }
-
+#ifdef warning
+																						if (trace_ent != world)
+																						if (WARNING & 4)
+																						{
+																							bprint("beam hit ");
+																							bprint(trace_ent.classname);
+																							newline(world);
+																						}
+#endifdef
 //setorigin(x3, trace_endpos); // TEST
 
 };
@@ -1916,6 +1937,132 @@ void() monster_speed =
 	self.attack_finished = time + 1; //debounce
 };
 
+/// create spells
+
+void() archon_makepp =
+{
+	newmis = spawn();
+	newmis.spawnflags = 1;
+	setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
+	newmis.wad = "archon_power";
+
+	item_call_save(newmis, newmis.wad);
+	newmis.touch = archon_power_touch;
+	newmis.owner = self;
+	
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 3; //debounce
+};
+
+void() archon_maketele =
+{
+	chaos_teleport(self.bolt_targetNext.origin - v_forward * 15, null_string, world);
+	
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
+};
+
+/* quake stuff archons can make
+
+bits = 6377471
+
+IT_QUAD
+IT_SUIT
+IT_SUPERHEALTH
+IT_ARMOR2
+IT_CELLS
+IT_ROCKETS
+IT_NAILS
+IT_SHELLS
+IT_LIGHTNING
+IT_EXTRA_WEAPON - mjolnir
+IT_ROCKET_LAUNCHER
+IT_GRENADE_LAUNCHER
+IT_SUPER_NAILGUN
+IT_NAILGUN
+IT_SUPER_SHOTGUN
+IT_SHOTGUN
+*/
+
+// items by classic bits
+
+// op -
+// 	- 1 - quake items
+
+string (float bc, float op) item_by_clbit =
+{
+	if (bc == IT_AXE)														return("weapon_axe");
+	if (bc == IT_SHOTGUN)												return("weapon_shotgun");
+	if (bc == IT_SUPER_SHOTGUN)										return("weapon_supershotgun");
+	if (bc == IT_NAILGUN)												return("weapon_nailgun");
+	if (bc == IT_SUPER_NAILGUN)										return("weapon_supernailgun");
+	if (bc == IT_GRENADE_LAUNCHER)									return("weapon_grenadelauncher");
+	if (bc == IT_ROCKET_LAUNCHER)										return("weapon_rocketlauncher");
+	if (bc == IT_LIGHTNING)												return("weapon_lightning");
+	if (bc == IT_MJOLNIR)												return("weapon_mjolnir");
+
+	if (bc == IT_INVULNERABILITY)										return("item_artifact_invulnerability");
+	if (bc == IT_SUIT)													return("item_artifact_envirosuit");
+	if (bc == IT_INVISIBILITY)											return("item_artifact_invisibility");
+	if (bc == IT_QUAD)													return("item_artifact_super_damage");
+
+	if (bc == IT_ARMOR1)													return("item_armor1");
+	if (bc == IT_ARMOR2)													return("item_armor2");
+	if (bc == IT_ARMOR3)													return("item_armorInv");
+
+	if (bc == IT_SUPERHEALTH)											return("item_health_mega");
+
+	if (bc == IT_KEY1)													return("item_key1");
+	if (bc == IT_KEY2)													return("item_key2");
+
+	if (bc == IT_SHELLS)													return("item_shells_lg");
+	if (bc == IT_NAILS)													return("item_spikes_lg");
+	if (bc == IT_ROCKETS)												return("item_rockets_lg");
+	if (bc == IT_CELLS)													return("item_cells_lg");
+
+/// op 2
+
+//	if (bc == MC_HEALTHROT)												return("item_health_15");
+//	if (bc == MC_HEALTH)													return("item_health");
+//	if (bc == MC_SIGIL1)													return("item_sigil1");
+//	if (bc == MC_SIGIL2)													return("item_sigil2");
+//	if (bc == MC_SIGIL4)													return("item_sigil4");
+//	if (bc == MC_SIGIL8)													return("item_sigil8");
+
+//	if (bc == MC_SIGIL16)												return("item_sigil16");
+//	if (bc == MC_SIGIL32)												return("item_sigil32");
+//	if (bc == MC_SIGIL64)												return("item_sigil64");
+
+/// op 3
+/*
+	if (bc == WEP_GWELL) return("item_painkeep_gwell");
+	if (bc == WEP_TURRET) return("item_painkeep_turret");
+	if (bc == WEP_BTRAP) return("item_painkeep_beartrap");
+	if (bc == WEP_EXPSH) return("item_painkeep_expshells");
+	if (bc == WEP_GRAP) return("weapon_grapgun");
+	if (bc == WEP_AIRG) return("weapon_airfist");
+	if (bc == WEP_CPNB) return("item_painkeep_can");
+
+	if (bc == WEP_EGO) return("item_pkplus_ego");
+	if (bc == WEP_TOMB) return("item_pkplus_tomb");
+	if (bc == WEP_ACTOR) return("item_pkplus_actor");
+	if (bc == WEP_PHONE) return("item_pkplus_phone");
+*/
+	return(null_string);
+};
+
+void() archon_makeit =
+{
+	self.stack3 = item_by_clbit(self.pk_beartrapammo, 1);
+	newmis = spawn();
+	setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
+
+	newmis.class_select = "chaos_item";
+	item_call_save(newmis, self.stack3);
+	
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
+};
 /// archon I & II spells
 
 void() archon_heal =
@@ -2523,6 +2670,13 @@ void() spell_target =
 		if (self.ammo_rockets == 5) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_gwell; }
 		if (self.ammo_rockets == 7) { self.pk_explode_ammo = 5; self.pkplus_actorammo = 35; self.th_melee = monster_speed; if (self.bolt_target == self) self.bolt_target = world; }
 	}
+	if (self.weapon == IT_SUPER_NAILGUN)
+	{
+		if (!self.ammo_bullet) self.ammo_bullet = 3;
+		if (self.ammo_bullet == 3) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_makepp; }
+		if (self.ammo_bullet == 5) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_maketele; }
+		if (self.ammo_bullet == 7) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
+	}
 	if (self.weapon == IT_LIGHTNING)
 	{
 		if (self.bolt_target == self) self.bolt_target = world;
@@ -2797,6 +2951,7 @@ void() player_chaos_impulse =
 		if (self.weapon == IT_SHOTGUN) self.impulse = 2;
 		if (self.weapon == IT_SUPER_SHOTGUN) self.impulse = 3;
 		if (self.weapon == IT_NAILGUN) self.impulse = 4;
+		if (self.weapon == IT_SUPER_NAILGUN) self.impulse = 5;
 		if (self.weapon == IT_LIGHTNING) self.impulse = 8;
 	}
 	else if (self.impulse == 16) // aux spell loops
@@ -2813,6 +2968,10 @@ void() player_chaos_impulse =
 			else self.AIRG_Flags = 71;
 			if (self.ammo_rockets == 3) aux_bits(self.AIRG_Flags);
 			if (self.ammo_rockets == 7) aux_bits(3);
+		}
+		if (self.weapon == IT_SUPER_NAILGUN)
+		{
+			if (self.ammo_bullet == 7) aux_bits(6377471);
 		}
 		if (self.weapon == IT_LIGHTNING)
 		{
@@ -2883,7 +3042,22 @@ void() player_chaos_impulse =
 //		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
 		self.weapon = IT_NAILGUN;
 	}
-	if (self.impulse == 8) // spell list archon legacy
+	if (self.impulse == 5) // spell list 4 - create
+	{
+		if (self.weapon == IT_SUPER_NAILGUN) // loop thru spell set
+		{
+			if (self.ammo_bullet == 3) self.ammo_bullet = 5;
+			else if (self.ammo_bullet == 5) self.ammo_bullet = 7;
+			else if (self.ammo_bullet == 7) self.ammo_bullet = 3;
+
+			if (self.ammo_bullet == 7)
+			{
+				if (! self.pk_beartrapammo & 6377471) self.pk_beartrapammo = 1;
+			}
+		}
+		self.weapon = IT_SUPER_NAILGUN;
+	}
+	if (self.impulse == 8) // spell list - archon legacy
 	{
 		if (self.weapon == IT_LIGHTNING) // loop thru spell set
 		{
@@ -2979,7 +3153,7 @@ void(float silent) player_chaos_become =
 
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
-	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_LIGHTNING;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_LIGHTNING;
 	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;
@@ -2988,6 +3162,7 @@ void(float silent) player_chaos_become =
 	self.ammo_nails = 3;
 	self.ammo_rockets = 3;
 	self.ammo_cells = 3;
+	self.ammo_bullet = 3;
 	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	self.pk_explode_ammo = 0; // spell cost

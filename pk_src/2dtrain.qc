@@ -44,7 +44,9 @@ void() func_train_2d_use =
 {
 	   if (!other.cnt)
 		{
-			  //if (WARNING) bprint("\n*** warning:\nfunc_train_2d_use: button does not specify direction in cnt - removing\n\n");
+#ifdef warning
+			  if (WARNING & 128) bprint("\n*** warning:\nfunc_train_2d_use: button does not specify direction in cnt - removing\n\n");
+#endifdef
 			  MAP_OBSTR = TRUE;
 			  remove(self);
 			  return;
@@ -75,7 +77,9 @@ void(float n) func_train_2d_next =
 	             self.target = targ.target1;
 	        else
 			  {
-					//if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: path_corner has no target1 - removing\n\n");
+#ifdef warning
+					if (WARNING & 128) bprint("\n*** warning:\nfunc_train_2d_next: path_corner has no target1 - removing\n\n");
+#endifdef
 					MAP_OBSTR = TRUE;
 					remove(self);
 					return;
@@ -87,7 +91,9 @@ void(float n) func_train_2d_next =
 	             self.target = targ.target2;
 	        else
 			  {
-					//if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: path_corner has no target2 - removing\n\n");
+#ifdef warning
+					if (WARNING & 128) bprint("\n*** warning:\nfunc_train_2d_next: path_corner has no target2 - removing\n\n");
+#endifdef
 					MAP_OBSTR = TRUE;
 					remove(self);
 					return;
@@ -99,7 +105,9 @@ void(float n) func_train_2d_next =
 
 	   if (!self.target)
 			{
-					//if (WARNING) bprint("\n*** warning:\nfunc_train_2d_next: no next target - removing\n\n");
+#ifdef warning
+					if (WARNING & 128) bprint("\n*** warning:\nfunc_train_2d_next: no next target - removing\n\n");
+#endifdef
 					MAP_OBSTR = TRUE;
 					remove(self);
 					return;
@@ -126,7 +134,9 @@ void() func_train_2d =
 		self.speed = 100;
 	if (!self.target)
 			{
-					//if (WARNING) bprint("\n*** warning:\nfunc_train_2d without a target - removing\n\n");
+#ifdef warning
+					if (WARNING & 128) bprint("\n*** warning:\nfunc_train_2d without a target - removing\n\n");
+#endifdef
 					MAP_OBSTR = TRUE;
 					remove(self);
 					return;

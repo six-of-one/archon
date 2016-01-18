@@ -199,7 +199,15 @@ void() Wiz_MissileTouch =
 		return;
 	}
 
-	if (!self.dmg) {self.dmg = 60; if (WARNING) bprint("wiz missle touch set def damage\n");}
+	if (!self.dmg)
+	{
+		self.dmg = 60;
+
+#ifdef warning
+if (WARNING & 4) bprint("wiz missle touch set def damage\n");
+#endifdef
+
+	}
 
 	org = v0;
 	v_forward = normalize(self.velocity);
@@ -209,7 +217,7 @@ void() Wiz_MissileTouch =
 		self.origin = org;
 /*
 		if (random() < LAVA_PLASMA_MLT)
-		{ if (WARNING) bprint("wiz plasma bomb failed in lava\n");
+		{ if (WARNING & 4) bprint("wiz plasma bomb failed in lava\n");
 			content_clear(self);
 			self.th_stand = self.touch = SUB_Null;
 			move_stop(self, "misc/null.wav");
@@ -364,7 +372,10 @@ void() player_wizard_painleech3 = [ $pain2,   player_wizard_painleech4 ]
 					if (self.health < self.max_health * self.health_modifier) T_Heal(self, head.cnt * 0.8 * (FULL_EFFECT_DIST / dist), FALSE);	// 50% heal from damage if < max health
 					else if (random() < 0.35) T_Heal(self, head.cnt * 0.05 * (FULL_EFFECT_DIST / dist), TRUE);																			// 5% heal, ignore max
 				}
-if (WARNING)
+
+
+#ifdef warning
+if (WARNING & 4)
 {
 bprint("p vic: ");
 bprint(head.classname);
@@ -372,6 +383,9 @@ bprint(" dmg: ");
 bprint(ftos(head.cnt * (FULL_EFFECT_DIST / dist)));
 bprint("\n");
 }
+#endifdef
+
+
 				dist = 1 + random() * 1.7;
 //				if (random() < 0.1) mlt = 2 + random() * 9;
 				head.cnt = head.cnt * dist;

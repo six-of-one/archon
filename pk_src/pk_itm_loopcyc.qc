@@ -136,7 +136,8 @@ void() loopcyc_think =
 
 
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 2)
 if (!e.flags & FL_ITEM)
 {
 bprint("***     warning: loopcyc - no FL_ITEM set on = ");
@@ -148,6 +149,7 @@ bprint(ftos(self.delay));
 bprint("\n");
 e.button12 = 65536+random();
 }
+#endifdef
 
 
 
@@ -182,7 +184,9 @@ e.button12 = 65536+random();
 				else
 				if (!f)
 				{
-					if (WARNING) bprint("\b*** warning: loop code changed on live item loop - restoring item.\n");
+#ifdef warning
+					if (WARNING & 2) bprint("\b*** warning: loop code changed on live item loop - restoring item.\n");
+#endifdef
 					lc_item_call_save(e, item_by_mcode(e.scode));
 				}
 				else

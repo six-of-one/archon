@@ -535,7 +535,9 @@ void () teleport_touch =
 		t = find (world,targetname,targ);
 		if (!t)
 		{
-			if (WARNING) bprint("\n*** warning:\nTeleporter target not found!\n");
+#ifdef warning
+			if (WARNING & 1) bprint("\n*** warning:\nTeleporter target not found!\n");
+#endifdef
 			return;
 		}
 	}
@@ -658,7 +660,9 @@ void () trigger_teleport =
 	// find the destination
 	if (!self.target)
 	{
-		if (WARNING) bprint("Teleporter - no target -- removed\n");
+#ifdef warning
+		if (WARNING & 1) bprint("Teleporter - no target -- removed\n");
+#endifdef
 		remove(self);
 		return;
 	}

@@ -481,7 +481,9 @@ void () goForAir =
 	botTarget.goalentity = botTarget;
 	if (self.goalentity.classname != "BotTarget")
 	{
-		//if (WARNING) bprint("\n*** warning:\nbad bot target in botgoal - 1.\n\n");
+#ifdef warning
+		if (WARNING & 8) bprint("\n*** warning:\nbad bot target in botgoal - 1.\n\n");
+#endifdef
 		ai_botstand();
 		return;
 	}
@@ -827,7 +829,9 @@ void () aibot_chooseGoal =
 	}
 	if (botTarget.classname != "BotTarget")
 	{
-		//if (WARNING) bprint("\n*** warning:\nbad bot target in botgoal - 2.\n\n");
+#ifdef warning
+		if (WARNING & 8) bprint("\n*** warning:\nbad bot target in botgoal - 2.\n\n");
+#endifdef
 		ai_botstand();
 		return;
 	}

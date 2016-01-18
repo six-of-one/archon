@@ -556,11 +556,13 @@ void(entity e, entity p) rune_id =
 	}
 
 
-	if (WARNING)
+#ifdef warning
+	if (WARNING & 64)
 	if (!RUNES)
 	{
 		sprint(p, "*** Rune server is turned off.\n\n");
 	}
+#endifdef
 
 	if (e == p) sprint(p, "\nYou have");
 	else
@@ -965,7 +967,9 @@ void() rune_maker =
 			if (!f)
 			{
 				self.aflag = self.aflag + 1;
-				if (WARNING) bprint("*** warning: rune_make could not find a rune that fit mask rules - giving up\n");
+#ifdef warning
+				if (WARNING & 64) bprint("*** warning: rune_make could not find a rune that fit mask rules - giving up\n");
+#endifdef
 				remove(e);
 //				remove(self);
 				return;
@@ -1004,7 +1008,7 @@ void() rune_maker =
 						f = f * 2;
 					if (f > RUNE_MASK_ALL) // failed somehow to make any rune that fit rules
 					{
-						if (WARNING) bprint("*** warning: rune_make could not find a rune that fit mask rules - giving up\n");
+						if (WARNING & 64) bprint("*** warning: rune_make could not find a rune that fit mask rules - giving up\n");
 						remove(self);
 						return;
 					}
@@ -1020,7 +1024,9 @@ void() rune_maker =
 			if (!e) e = findradius(world.origin, 256000);
 			if (!e) 
 			{
-				if (WARNING) bprint("*** warning: rune_make could not find a random (or any) location - giving up\n");
+#ifdef warning
+				if (WARNING & 64) bprint("*** warning: rune_make could not find a random (or any) location - giving up\n");
+#endifdef
 				remove(self);
 				return; // crap - no location
 			}
@@ -1821,7 +1827,9 @@ void () item_sigil =
 
 	if (!self.spawnflags)
 	{
-		if (WARNING) bprint("\n*** warning:\nsigil with no spawnflags - randomizing.\n");
+#ifdef warning
+		if (WARNING & 64) bprint("\n*** warning:\nsigil with no spawnflags - randomizing.\n");
+#endifdef
 
 		self.spawnflags = rnd_bit_mask(15);
 	}

@@ -731,7 +731,8 @@ void() cloudkill =
 						SpawnBlood (head.origin, ' 0 0 0', head.cnt * (FULL_EFFECT_DIST / dist));
 				}
 */
-if (WARNING)
+#ifdef warning
+if (WARNING & 4)
 {
 bprint("cloud vic: ");
 bprint(head.classname);
@@ -741,17 +742,24 @@ if (self.dmg_take > 20)
 else
 	bprint(ftos(self.dmg));
 }
+#endifdef
 
 				if (self.rad_time) // sudden death
 				if (self.lefty)
 				if (mult == 1)
 				if (head.cnt  < time)
-				if (random() < self.lefty) { if (WARNING) bprint("\ndied!");
+				if (random() < self.lefty)
+				{
+#ifdef warning
+if (WARNING & 4) bprint("\ndied!");
+#endifdef
 					T_Damage (head, self, self.owner, head.health + 5);
-}
+				}
 
 
-if (WARNING) bprint("\n");
+#ifdef warning
+if (WARNING & 4) bprint("\n");
+#endifdef
 
 			}
 		}

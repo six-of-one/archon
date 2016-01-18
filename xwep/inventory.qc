@@ -929,7 +929,9 @@ entity(float mc, string cls, entity de, vector vb) drop_item =
 
 	if (!scls)
 	{
-		if (WARNING) bprint("*** warning: drop_item did not get a valid function - giving up\n");
+#ifdef warning
+		if (WARNING & 2) bprint("*** warning: drop_item did not get a valid function - giving up\n");
+#endifdef
 		return(world);
 	}
 

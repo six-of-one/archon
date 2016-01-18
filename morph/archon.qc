@@ -109,15 +109,14 @@ void() archon_ppp_thk =
 void() altar_touch =
 {
 	if (self.attack_finished > time) return;
-	self.attack_finished = time + self.wait;
+	self.attack_finished = time + self.delay;
 
 	if (other.xp > self.aflag)
 	{
 		other.archon = other.archon + 1;
 		other.xp = other.xp - self.aflag;
+		if (random() < 0.01) sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	}
-
-	if (random() < 0.1) sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
 	if (time > 240) self.aflag = 64;
 	else if (time > 180) self.aflag = 32;
@@ -129,11 +128,11 @@ void() altar_touch =
 
 void() archon_altar =
 {
-	self.netname = "Altar";
+	self.netname = "\bArchon Altar\b";
 	if (!self.model)
 	{
 		setmodel (self,"progs/flag.mdl");
-		if (!self.skin) self.skin = rint(3 + random());
+		if (!self.skin) self.skin = rint(2.7 + random());
 	}
 	else
 	setmodel (self, self.model);
@@ -144,7 +143,7 @@ void() archon_altar =
 	self.touch = altar_touch;
 
 	if (!self.aflag) self.aflag = 1; // conversion ratio
-	if (!self.wait) self.wait = 0.25; // allow retouch every
+	if (!self.delay) self.delay = 0.125; // allow retouch every
 
 	StartItem ();
 };
@@ -168,9 +167,25 @@ void() archon_nodule =
 	StartItem ();
 };
 
+
+void() archon_ppp =
+{
+	archon_nodule(); // made from a nodule
+
+	if (random() < 0.3) self.modelflags = self.modelflags | 128; // purple light
+
+	self.netname = "Portable power point";
+	self.mask_x = MORPH_ALL;
+	setmodel (self,"progs/arc_pp.bsp");
+	self.scale = 0.2;
+	self.x_items = X_PP;
+};
+
 // random nodule maker
 
 // also randomly makes collectable portable power points
+
+entity altar; // altar for archon pts
 
 void() archon_nodule_rnd =
 {
@@ -184,7 +199,21 @@ void() archon_nodule_rnd =
 	gsf = rint(random() * 6);
 
 //	if (gsf == 0) setmodel (self,"progs/nodule1.mdl"); // 3, 4
-	if (1 || (time > 240) && (random() < 0.05) && !god_particle) // god particle - only one - TEST!
+	if ((time > 30) && (random() < 0.1) && !altar) // random altar - only one on smaller maps - TEST!
+	{
+		altar = self;
+		self.model = null_string;
+		self.modelflags = 0;
+
+		archon_altar();
+//		setsize (self,'-16 -16 -24','16 16 16');
+		self.effects = EF_BRIGHTFIELD; 
+		self.button13 = -666; // tell dyn_rem to relocate this guy
+		self.wait = 240; // long time to relocation cycle
+		bprint("***  the \bArchon Altar\b has spawned \b!\n");
+	}
+//	else if ((time > 240) && (random() < 0.05) && !god_particle) // god particle - only one - TEST line -restore
+	else if ((time > 60) && (random() < 0.05) && !god_particle) // god particle - only one - TEST!
 	{
 		god_particle = self;
 		self.netname = "\bGod Particle\b";
@@ -210,6 +239,7 @@ void() archon_nodule_rnd =
 //		}
 		if (random() < 0.3) self.modelflags = self.modelflags | 128; // purple light
 //		if ((time > 60) && random() < 0.06) // TEST
+		if ((time > 60) && random() < 0.15) // TEST - remove
 		{
 			self.netname = "Portable power point";
 			self.mask_x = MORPH_ALL;

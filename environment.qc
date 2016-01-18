@@ -466,10 +466,9 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 			fire_missile(v, mvt, 0, ct, self.origin, ' 0 0 0', cln, md, null_string, SUB_Null, 5 + (random() * 10), meltthink, SUB_Null);
 		else
 		{
-			if (WARNING)
-			{
-			bprint("\n------------------- ** fire_burst (environment.qc, 491) called with bad parms\n");
-			}
+#ifdef warning
+			if (WARNING & 128) bprint("\n------------------- ** fire_burst (environment.qc, 491) called with bad parms\n");
+#endifdef
 			return; // no fn, no model, nothing to do
 		}
 
@@ -752,13 +751,19 @@ entity(float rd, entity e) find_tselect =
 {
 	local float r;
 	r = floor(random() * rd);
-																								if (WARNING)
-																								if (FALSE) {
+
+#ifdef warning
+																								if (WARNING & 128)
+																								if (FALSE)
+																								{
 																									bprint("find_dest random: ");
 																									bprint(ftos(r));
 																									bprint(" unit selected - ent: ");
 																									bprint(e.classname);
-																									bprint(" \n"); }
+																									bprint(" \n");
+																								}
+#endifdef
+
 	while (r > 0)
 	{
 		r = r - 1;
@@ -878,17 +883,21 @@ entity(float fl, string clsn) find_tdest =
 	if (cit)
 		p = find_tselect(cit, it); // select an item from approved list
 
-	return(p);
-
-/*
-																								if (WARNING)
-																								if (FALSE) {
+#ifdef warning
+// note - does not catch returns above
+																								if (WARNING & 128)
+																								{
 																									bprint("find_dest selected: ");
 																									bprint(p.classname);
 																									bprint(", ");
 																									bprint(vtos(p.origin));
-																									bprint("\n"); }
-*/
+																									bprint("\n");
+																								}
+#endifdef
+
+	return(p);
+
+
 };
 
 // IDEA - nemesis of sphere annihilation | something similar to sphere bomb
@@ -1270,27 +1279,33 @@ void() lavapdl_touch =
 
 	if (other.health > 0)
 	if (other.dmgtime < time)
-		{
-if (WARNING)
+	{
+
+
+#ifdef warning
+if (WARNING & 128)
 {
 bprint("doing ");
 bprint(ftos(self.dmg));
 bprint(" damage\n");
 }
+#endifdef
+
+
 		if (other.morphy == IMP_MCTHON) 
-			{
+		{
 			self.dmg = self.dmg * 0.75; // really a heal of another player lava morph at this point
 			if (self.dmg < 1)
-				{
+			{
 				self.wait = time; // ran out of heat, freeze it
 				self.lefty = -1;
-				}
-			T_FireDamage (other, self, self.owner, self.dmg); // dont want flame touch for lava
 			}
+			T_FireDamage (other, self, self.owner, self.dmg); // dont want flame touch for lava
+		}
 		else 
 			FlameTouch();
 		other.dmgtime = time + 0.09 + random();
-		}
+	}
 }
 
 // fn(lavapdl_live) - hot puddle flow, handle player spawned launcher
@@ -1313,7 +1328,9 @@ void() lavapud_live =
 	pco = pointcontents(self.origin + ' 0 0 1'); // for actual lavapud contain
 	pcf = pointcontents(self.origin + ' 0 0 -4'); // for lavapud floating on lava
 
-if (WARNING)
+
+#ifdef warning
+if (WARNING & 128)
 if (FALSE)
 {
 bprint("lavapud content: ");
@@ -1322,6 +1339,8 @@ bprint(", at float: ");
 bprint(ftos(pcf));
 newline(world);
 }
+#endifdef
+	
 	
 	if (self.classname != "lavapud") // not initialized, do a setup
 		{
@@ -1383,26 +1402,32 @@ newline(world);
 
 	if ((self.wait < time) || (pco == CONTENT_WATER) || self.skin == LAVA_DEADSKIN) // cold now
 		{
-		if (pcf == CONTENT_LAVA && self.skin != LAVA_DEADSKIN)
-		if (random() < (0.5 + (self.lefty / 30.0))) // on or in lava
-			{																																								if (WARNING) bprint("time extend\n");
-			self.wait = time + 5 + random() * 15;
-			self.lefty = 5 + random() * 25;
-			return;
+			if (pcf == CONTENT_LAVA && self.skin != LAVA_DEADSKIN)
+			if (random() < (0.5 + (self.lefty / 30.0))) // on or in lava
+			{
+#ifdef warning
+																																												if (WARNING & 128) bprint("time extend\n");
+#endifdef
+				self.wait = time + 5 + random() * 15;
+				self.lefty = 5 + random() * 25;
+				return;
 			}
-		if (pcf != CONTENT_LAVA) self.skin = LAVA_DEADSKIN;
-		self.dmg = 0;
-		self.nextthink = time + 20; // gone in 20 secs, hey who stole my lava puddle?!
-		self.dest_y = 16;
-		self._stand = self.think = meltthink;
-		self.classname = "lavacool";
+			if (pcf != CONTENT_LAVA) self.skin = LAVA_DEADSKIN;
+			self.dmg = 0;
+			self.nextthink = time + 20; // gone in 20 secs, hey who stole my lava puddle?!
+			self.dest_y = 16;
+			self._stand = self.think = meltthink;
+			self.classname = "lavacool";
 		}
 
 	if (!self.flags & FL_HELD)
 	if (pcf == CONTENT_EMPTY && !self.aflag) // item_held() - try to ground puddles
-		{																																									if (WARNING) bprint("adjusting z\n");
+	{
+#ifdef warning
+																																									if (WARNING & 128) bprint("adjusting z\n");
+#endifdef
 		self.th_run = lavapud_live;
 		lavapud_ground();
-		}
+	}
 
 };

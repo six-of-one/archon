@@ -292,14 +292,17 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 // no rubble if env turned off or in *_100 mode
 	if (XENV) return;
 
-																											if (WARNING)
-																											if (FALSE) {
+#ifdef warning
+																											if (WARNING & 16)
+																											{
 																												bprint("rubble debris: ");
 																												bprint(self.classname);
 																												bprint(" : "); bprint(vtos(rorg));
 																												bprint(" : "); bprint(vtos(vel));
 																												bprint(" : "); bprint(ftos(vibe));
-																												newline(world); }
+																												newline(world);
+																											}
+#endifdef
 
 //	vibe = self.flags;
 	makevectors (vel);
@@ -448,7 +451,9 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 							{
 								if (pointcontents(trace_endpos - vel2) != CONTENT_SOLID)
 								{
-if (WARNING) bprint("menhir ck found open\n");
+#ifdef warning
+if (WARNING & 16) bprint("menhir ck found open\n");
+#endifdef
 									traceline (trace_endpos - vel2, trace_endpos - vel2 - ' 0 0 2400', TRUE, self);
 									vel2 = ' 0 0 4';
 								}
@@ -477,13 +482,16 @@ if (WARNING) bprint("menhir ck found open\n");
 								newmis.noise = msnd;
 								mflg = MLT_LAVA | PF_SOLID | CK_EARTHQUAKE;
 
-																											if (WARNING)
-																											if (FALSE) {
+#ifdef warning
+																											if (WARNING & 16)
+																											{
 																												bprint("******\nmade a menhir (sz): ( ");
 																												bprint(vtos(vel2));
 																												bprint(", ");
 																												bprint(vtos(menhv));
-																												bprint(" )\n******\n"); }
+																												bprint(" )\n******\n");
+																											}
+#endifdef
 							}
 						}
 					}

@@ -241,12 +241,14 @@ void() DeepSleepBlst_tht =
 	self.finaldest = (self.origin + crandom() * self.bulletspread_x * self.pos2 + crandom() * self.bulletspread_y * self.pos1) - self.movedir * k;
 
 
-if (WARNING)
+#ifdef warning
+if (WARNING & 2)
 {
 bprint("\b *** deepsleep blast org: ");
 bprint(vtos(self.finaldest));
 bprint("\n");
 }
+#endifdef
 
 
 	WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
@@ -500,15 +502,19 @@ void() health_touch =
 	else
 	{
 		amount = morph_heal(other, self.healamount); // Cataboligne - check max - 100 rule for morphs
-//
-																							if (WARNING)
-																							if (amount) {
+
+#ifdef warning
+																							if (WARNING & 2)
+																							if (amount)
+																							{
 																								bprint("health boost scale: ");
 																								bprint(ftos(amount));
 																								bprint(", total: ");
 																								bprint(ftos(self.healamount + amount));
-																								newline(world);}
-//
+																								newline(world);
+																							}
+#endifdef
+
 		if (vmax)
 		{
 			if (!T_Heal(other, vmax, 0)) return; //(TRUE);

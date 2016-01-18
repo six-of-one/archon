@@ -269,13 +269,15 @@ entity(vector org) make_waypoint =
 	{
 		self.cnt = self.cnt + 1;
 
-			if (WARNING)
-		if (self.cnt < 5)
-		{
-			bprint("*** Warning - ent tried to make way point in solid: ");
-			bprint(self.classname);
-			bprint("\n");
-		}
+#ifdef warning
+			if (WARNING & 8)
+			if (self.cnt < 5)
+			{
+				bprint("*** Warning - ent tried to make way point in solid: ");
+				bprint(self.classname);
+				bprint("\n");
+			}
+#endifdef
 		return(world);
 	}
 

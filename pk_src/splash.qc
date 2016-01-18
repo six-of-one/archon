@@ -171,12 +171,14 @@ void() CheckWaterLevels =
 
 
 
-							if (WARNING)
+#ifdef warning
+							if (WARNING & 128)
 							{
 								bprint("*** warning: lava splash rune - model = ");
 								bprint(e.model);
 								bprint("\n");
 							}
+#endifdef
 
 
 						}
@@ -228,12 +230,14 @@ void() CheckWaterLevels =
 
 
 
-									if (WARNING)
+#ifdef warning
+									if (WARNING & 128)
 									{
 										bprint("*** warning: solid splash rune - model = ");
 										bprint(e.model);
 										bprint("\n");
 									}
+#endifdef
 
 
 							}
@@ -247,13 +251,15 @@ void() CheckWaterLevels =
 							e.velocity = v0;
 	//						e.think = ip_checkForMovement;
 	//						e.nextthink = time + CFM_TIME;
-							if (WARNING)
+#ifdef warning
+							if (WARNING & 128)
 							{
 								bprint("*** warning: falling item reset - ");
 								bprint(item_ident(e));
 								if (e.movetype == MOVETYPE_NONE) bprint(" - FROZEN");
 								bprint("\n");
 							}
+#endifdef
 						}
 					}
 					else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT)
@@ -306,12 +312,14 @@ void() CheckWaterLevels =
 					}
 					else if (e.classname != "player")
 					{
-						if (WARNING)
+#ifdef warning
+						if (WARNING & 128)
 						{
 							bprint("*** warning: removed falling item - ");
 							bprint(item_ident(e));
 							bprint("\n");
 						}
+#endifdef
 						if (e.classname == "turret") remove(e.turret_base);
 						remove(e); // remove all else
 					}
@@ -337,12 +345,14 @@ void() CheckWaterLevels =
 
 
 
-							if (WARNING)
+#ifdef warning
+							if (WARNING & 128)
 							{
 								bprint("*** warning: noway splash rune - model = ");
 								bprint(e.model);
 								bprint("\n");
 							}
+#endifdef
 
 
 				}

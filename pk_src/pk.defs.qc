@@ -7,8 +7,21 @@
 vector v0						= ' 0 0 0'; // zero vector | dimension
 float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 
+// **************************************
+// code weaver section
+
+// **************************************
+
 // dont list unused vars warning when compiling
-#pragma warning disable Q302
+//#pragma warning disable Q302
+
+// note - defines MUST be commented out - you cannot define null or 0 to clear them
+// control whether warning code is compiled in
+
+//#define warning
+
+#ifdef warning
+#endifdef
 
 // **************************************
 // engine section
@@ -146,6 +159,12 @@ float ARCHON_UNCOL = 0;					// if true allow uncollectable items (touching healt
 
 float ARCHON_MORPH_MIN = 100;			// minimum archon points to morph
 
+void() archon_altar;
+void() archon_nodule_rnd;
+void() archon_ppp;
+void() archon_power;
+
+
 // Archon spell casting
 void() archon_target;
 void(entity e) archon_target_clear;
@@ -163,8 +182,19 @@ float P_RELOAD = 4;
 
 // **************************************
 
-float WARNING;									// display warnings - dev work mainly
-
+#ifdef warning
+float WARNING;								// display warnings - dev work mainly - now uses the following bit flags for specific warning sets
+#endifdef
+												// & 1 - server ops
+												// & 2 - items
+												// & 4 - monsters / morphs
+												// & 8 - bot warnings
+												// & 16 - hipnotic warnings
+												// & 32 - weapons
+												// & 64 - runes
+												// & 128 - environment
+												// & 256 - non bit mask elements
+//
 // dev - only enable this for painkeep maps or force pk mode (sv_ control) - any maps that loads a pk item / func
 float PK;									// if set true painkeep code is enabled
 float PK_MAP					= 6144;	// bit * = FALSE -- map sets painkeep mode  - PK = TRUE if: any pk*.bsp loaded, start.bsp loaded and message == "hub", a map loads any painkeep map item, PK = FALSE otherwise
@@ -211,7 +241,6 @@ float PK_DYNTO;							// timeout in 120 secs
 float PK_DYNRAD				= 8000;	// dynamic radius search 8000 units
 void(entity e, float tm, void() rmv) dyn_remove;
 void() dyn_rem;
-float REMOVE_DV 				= 30; // some deviation to spread things out
 
 float PK_ADMIN;							// allow admin - set this to 0 to completely disable all admin
 float pk_adminimp;						// impulse set in admin.cfg to access admin commands, defaults to 255
@@ -1077,6 +1106,8 @@ float X_PWR_ARM_MASK			= 12; // pwr armor on bits
 
 
 string(float xi) x_key_print;
+
+// X inventory flags
 
 float X_BASE_KEY				= 48; // first two keys (bits 16 & 32 call key_touch) for translated items
 

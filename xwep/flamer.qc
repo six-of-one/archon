@@ -119,7 +119,11 @@ void () BurnThem =
 {
 	// water level check first
 	if (self.enemy.waterlevel >= 1)
-	{																											if (WARNING) if (FLAME_CHECK) bprint("fire out - water\n");
+	{
+#ifdef warning
+																											if (WARNING & 32) if (FLAME_CHECK) bprint("fire out - water\n");
+#endifdef
+
 		NewBubbles(6,self.enemy.origin);
 
 // make extinguish noise
@@ -128,20 +132,31 @@ void () BurnThem =
 		self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONFIRE);
 	}
 	else if (self.enemy.items & IT_SUIT)
-	{																											if (WARNING) if (FLAME_CHECK) bprint("fire out - suit\n");
+	{
+#ifdef warning
+																												if (WARNING & 32) if (FLAME_CHECK) bprint("fire out - suit\n");
+#endifdef
 		self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONFIRE);
 	}
 	else if (self.enemy.health <= 0 || self.enemy.deadflag) // NOTE: could turn into burning corpse - doesnt seem too - also makes burning deathcam effect
 	{
 		if (random() < 0.5) {self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONFIRE); // NOTE: must xfer to corpse in morph die
-																														if (WARNING) if (FLAME_CHECK) bprint("fire out - dead\n");}
-		else if (WARNING) if (FLAME_CHECK) bprint("corpse on fire\n");
+#ifdef warning
+																														if (WARNING & 32) if (FLAME_CHECK) bprint("fire out - dead\n");
+#endifdef
+			}
+#ifdef warning
+																														else if (WARNING & 32) if (FLAME_CHECK) bprint("corpse on fire\n");
+#endifdef
 	}
 	else if (self.enemy.health > 0) // NOTE: remove d_b when all things die
 	{
 
 		if (self.enemy.healtype > HEAL_NORM) // stopped by any special heal - IDEA: includes d_berserk and q2_adrenaline
-		{																											if (WARNING) if (FLAME_CHECK) bprint("fire out - mega heal\n");
+		{
+#ifdef warning
+																													if (WARNING & 32) if (FLAME_CHECK) bprint("fire out - mega heal\n");
+#endifdef
 //		self.enemy.healtype = -1; box stops all plague ents
 			self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONFIRE);
 		}	
@@ -149,7 +164,10 @@ void () BurnThem =
 		{
 //	if ((random() * 100) < (self.healamount * 0.5))
 			if (random() < ST_HEALFIRE) // % chance reg health puts out fire - base 10%
-			{																											if (WARNING) if (FLAME_CHECK) { bprint("fire out - heal type: "); bprint(ftos(self.enemy.healtype)); newline(world); }
+			{
+#ifdef warning
+																														if (WARNING & 32) if (FLAME_CHECK) { bprint("fire out - heal type: "); bprint(ftos(self.enemy.healtype)); newline(world); }
+#endifdef
 				self.enemy.healtype = -1; // box only stops one flame ent
 				self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONFIRE);
 			}
@@ -165,7 +183,9 @@ void () BurnThem =
 	else // default case - should not get here
 	{
 		self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONFIRE);
-if (WARNING) if (FLAME_CHECK) bprint("put out fire - dont know why!\n");
+#ifdef warning
+																														if (WARNING & 32) if (FLAME_CHECK) bprint("put out fire - dont know why!\n");
+#endifdef
 	}
 
 	if (!self.enemy.flags & FL_ONFIRE) // fire was put out
@@ -208,8 +228,10 @@ void () FlameTouch =
 		fire = self; // this is self if FL_REMOVE is set
 		if (!self.flags & FL_REMOVE) // lava puddle or some other hot ent
 			{
-												if (WARNING) if (FLAME_CHECK) bprint("spawned flame touch fire ent\n");
-			fire = spawn(); //
+#ifdef warning
+																														if (WARNING & 32) if (FLAME_CHECK) bprint("spawned flame touch fire ent\n");
+#endifdef
+			fire = spawn();
 			fire.owner = self.owner;
 			fire.dmg = self.dmg;
 			}
@@ -345,16 +367,19 @@ void() slime_flare =
 
 	setf = 0.33 * (time - self.count); // upped from .25, doesnt seem to happen often enough
 	if (setf > MAX_FLARE_CHANCE) setf = MAX_FLARE_CHANCE;
-													if (WARNING)
+#ifdef warning
+													if (WARNING & 32)
 													if (!(self.flags & FL_SUBFLARE) && FLAME_CHECK)
 													{
 														bprint("flare chance ");
 														bprint(ftos(setf));
 														bprint("\n");
 													}
+#endifdef
 	if ((self.flags & FL_SUBFLARE) | ((self.flags & FL_FLARE) && self.state)  | (random() < setf)) // create the flare
 		{
-													if (WARNING)
+#ifdef warning
+													if (WARNING & 32)
 													if (FLAME_CHECK)
 													if (!(self.flags & FL_SUBFLARE)) 
 														{
@@ -362,9 +387,11 @@ void() slime_flare =
 														bprint(ftos(setf));
 														bprint("\n");
 														}
+#endifdef
 
 		setf = 1 + rint(random() * 3); // start more fires
-														if (WARNING)
+#ifdef warning
+														if (WARNING & 32)
 														if (FLAME_CHECK && !self.aflag)
 														{
 															if (self.flags & FL_SUBFLARE) bprint("sub flare ");
@@ -372,6 +399,7 @@ void() slime_flare =
 															bprint(ftos(setf));
 															bprint(" fires\n");
 														}
+#endifdef
 
 		if (self.flags & FL_FLARE && !self.aflag)  // we started the flare up
 			{
@@ -393,13 +421,15 @@ void() slime_flare =
 			self.aflag = setf;
 //			self.rad_time = time + 0.5 + random() * 0.5; // before we can start more fires
 			pwn = self; // self is owner
-														if (WARNING)
+#ifdef warning
+														if (WARNING & 32)
 														if (FLAME_CHECK)
 														{
 															bprint("total fires left: ");
 															bprint(ftos(pwn.state));
 															bprint("\n");
 														}
+#endifdef
 			}
 
 		if (self.flags & FL_SUBFLARE && !self.aflag) 
@@ -417,7 +447,7 @@ void() slime_flare =
 				{
 //				if (self.state < 0) return;
 //				self.flags = (self.flags - FL_SUBFLARE) | FL_FLARE;
-//														if (WARNING) if (FLAME_CHECK) bprint("took over for owner\n");
+//														if (WARNING & 32) if (FLAME_CHECK) bprint("took over for owner\n");
 				self.flags = self.flags - (self.flags & FL_SUBFLARE);
 				if (random() < 0.1) self.flags = self.flags | FL_FLARE;
 				self.rad_time = time + 1 + random() * 0.6; // before we can start more fires
@@ -429,13 +459,15 @@ void() slime_flare =
 			}
 //		while (setf > 0)
 //			{
-														if (WARNING)
+#ifdef warning
+														if (WARNING & 32)
 														if (FLAME_CHECK)
 														{
 															bprint("loop fires left: ");
 															bprint(ftos(self.aflag));
 															bprint("\n");
 														}
+#endifdef
 			fl = spawn_napalm(self.origin);
 			if (!fl) return;
 //			content_clear(fl);

@@ -67,6 +67,7 @@ void() gravity_touch =
 
 		T_Damage(other, self, self.owner, 5000);
 	}
+	if (other.flags & FL_CLIENT)
 	if (other.mask_x & MORPH_ARCHON)
 	if (other.AIRG_Timeout != -6)
 	{

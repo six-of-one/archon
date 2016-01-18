@@ -1055,7 +1055,9 @@ float(float weaponnum, float pknum) HasAmmo =
 			}
 			else if (e.eweapon.lip)
 			{
-				if (WARNING) bprint(" *** Warning: eweapon ammo type not recognized.\n");
+#ifdef warning
+				if (WARNING & 32) bprint(" *** Warning: eweapon ammo type not recognized.\n");
+#endifdef
 				return FALSE;
 			}
 		}
@@ -1275,13 +1277,15 @@ float(float rot) PK_CheckLivEnt =
 	}
 	else return(TRUE);
 
-	if (WARNING)
+#ifdef warning
+	if (WARNING & 32)
 	{
 	bprint(" *** warning: too many live ents to fire selected weapon, cnt = ");
 	bprint(ftos(pk_livent));
 	bprint(".\n");
 	}
 	else
+#endifdef
 	{
 	sprint(self, " *** warning: too many live ents to fire selected weapon, cnt = ");
 	sprint(self, ftos(pk_livent));

@@ -559,12 +559,14 @@ void () weapon_touch =
 	}
 	else
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 		{
 			bprint("\n*** warning:\nweapon_touch: unknown classname (");
 			bprint(self.classname);
 			bprint(") - ignoring\n\n");
 		}
+#endifdef
 		self.touch = SUB_Null;
 		return;
 	}

@@ -458,6 +458,11 @@ void(string cls) item_call =
 	else if (cls == "ammo_gas") ammo_gas();
 	else if (cls == "ammo_gas_lg") ammo_gas_lg();
 
+/// archon
+	else if (cls == "archon_altar") archon_altar();
+	else if (cls == "archon_ppp") archon_ppp();
+	else if (cls == "archon_power") archon_power();
+
 // monsters - random spawns
 	else if (cls == "monster_army") monster_army(A_MONSTER);
 	else if (cls == "monster_boss") monster_boss(A_MONSTER);
@@ -892,17 +897,18 @@ void() remove_fade =
 			}
 		}
 		else
-		{
-			if (e != self) remove(self);
 			remove(e);
-		}
+
+		if (e != self) remove(self);
+		return;
 	}
-	else self.nextthink = time + 0.15;
+	self.nextthink = time + 0.15;
 };
 
 // note: this has very few qualifications for a selected ent - not anymore - protected by hash code
 
-// kept for the old style remove on cubes and anything with a think
+// enemy - remove item
+// button13 - store both hash codes, must match because collected items can already be removed
 
 void() dyn_rem =
 {
@@ -913,7 +919,7 @@ void() dyn_rem =
 			if (!self.wait) self.wait = PK_CUBE_TIME + random() * 66;
 			self.nextthink = time + self.wait + random() * 6;
 			self.wait = self.wait - random() * 6; // relocates faster every time
-			if (self.wait < 10) self.wait = 15 + random() * 30; // till this
+			if (self.wait < 10) self.wait = 15 + random() * 45; // till this
 
 			newmis = dyn_rndloc();
 			if (!newmis) newmis= findradius(world.origin, 256000);
@@ -925,48 +931,42 @@ void() dyn_rem =
 		else
 		if (self.button13 == self.enemy.button13) // hash good - destroy it
 		{
-			if (self.wait) // new ops - set sub rem & exit
+			if (self.enemy.wad == "pk_cube" || self.enemy.wad == "morph_cube") // dont remove an active cube
+			if (self.enemy.owner)
 			{
-				self.think = remove_fade;
-				self.nextthink = time + self.wait;
+				self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 4; // give a held cube some more time
+				return;
 			}
-			else // old ops
-			{
-				if (self.enemy.wad == "pk_cube" || self.enemy.wad == "morph_cube") // dont just remove an active cube
-				if (self.enemy.owner)
-				{
-					self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 4;
-					return;
-				}
-				self.think = remove_fade; //SUB_Remove;
-				self.nextthink = time + 0.1;
-	//			pk_ditems = pk_ditems - 1; // this is really meaningless - and its done in item_call
-			}
+			self.enemy.touch = SUB_Null;
+
+			self.think = remove_fade;
+			self.nextthink = time + 0.1;
 			return;
 		}
 		else
 		{
 			if (self.enemy.class_select == "class_monster") // NOTE: these might have issues!
 			{
-//				if (MONSTER_TRANSPARENT)
 				self.enemy.alpha = 0.4; // TEST - remove - should _now_ (10.11.13) not happen in server
 				self.enemy.netname = "I might have issues!"; // TEST - remove
 			}
+#ifdef warning
 			else
-			if (WARNING)
+			if (WARNING & 2)
 			{
 				bprint(" *** WARNING: dynamic remove hash fail: ");
 				bprint(item_ident(self.enemy));
-				bprint(" - supposed 2B: ");
-				bprint(self.target1);
+				bprint(" -  "); // targeted
+				bprint(self.target1); // class
 				bprint(" - ");
-				bprint(self.netname);
-				bprint(" - hash: ");
+				bprint(self.netname); // name
+				bprint(" - hash: "); // hash
 				bprint(ftos(self.enemy.button13));
-				bprint(" - dr hash: ");
+				bprint(" - hash: "); // my hash
 				bprint(ftos(self.button13));
 				bprint("\n");
 			}
+#endifdef
 		}
 	}
 	remove(self);
@@ -977,10 +977,6 @@ void() dyn_rem =
 // e - remove this ent
 // tm - time to live
 // rmv - alternate remve fn - for any ent that has think for something
-
-//float REMOVE_DV = 30; // some deviation to spread things out
-
-float DYN_REM_TIME = 6; // 6 secs then set sub_remove
 
 float system_hash;
 
@@ -994,16 +990,15 @@ void(entity e, float tm, void() rmv) dyn_remove =
 	f = spawn();
 	f.classname = "dyn_removal";
 	f.think = dyn_rem;
-	f.nextthink = time + DYN_REM_TIME; // 6 secs
 
-	f.netname = e.netname; // in case of hash fail
+	f.netname = e.netname; // in case of hash fail - warning note
 	f.target1 = e.classname; // just for warning above - REMOVE
 	f.enemy = e;
 
 	f.button13 = e.button13 = system_hash;
 	system_hash = system_hash + 1 + rint(random() * 5);
 
-	dv = REMOVE_DV;
+	dv = 30; // REMOVE_DV; - remove deviation, only used here so...
 
 	if (tm)
 	if (dv > tm) dv = tm * 0.2;
@@ -1014,22 +1009,13 @@ void(entity e, float tm, void() rmv) dyn_remove =
 		f.wait = MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
 	else if (e.wad == "pk_cube")
 		f.wait = PK_CUBE_TIME + crandom() * PK_CUBE_DV;
-	else
-	f.wait = PK_DYNTO + crandom() * 55;
 
-	if (f.wait < 1) {f.wait = 5 + random() * 10; // why ?
+	if (f.wait < 6) f.wait = PK_DYNTO + crandom() * 55; // REMOVE_DV_DEF = 55 - less than 6 secs - default it
 
-
-bprint(" *** dyn_remove f.wait failed\n");
-}
-
+	f.nextthink = time + f.wait;
 
 	if (rmv != SUB_Null) // old style or something else = direct think
-	{
 		f.think = rmv;
-		f.nextthink = time + f.wait;
-		f.wait = 0;
-	}
 };
 
 entity rseu; // random spawn ent origin used
@@ -1179,8 +1165,10 @@ void() dyn_item =
 		if (DYN_FORCE || DYN_ARTFR_ONLY) self.count = pk_ditems + DYN_FORCE_CNT;
 		if (!DYN_FORCE && !DYN_ARTFR && pk_ditems > 6)
 		{	
-			if (WARNING)
+#ifdef warning
+			if (WARNING & 2)
 				bprint("*** Warning - dynamic items: no force flags and pk items > 6, dyn_spawner going away\n");
+#endifdef
 			remove(self);
 		}
 		else
@@ -1333,7 +1321,7 @@ bprint("\n");
 
 			bprint(" *** Use map code (");
 			bprint(ftos(MC_SHOTGUN - 2));
-			bprint(") for 07 painkeep items with pk_tog_mcode\n\n");
+			bprint(") for 07 painkeep items with it_tog_mcode\n\n");
 			m = build_itemmenu();
 			bprint(m);
 bprint("\n");
@@ -1394,7 +1382,7 @@ bprint("\n");
 // dest1 - weapon & q item admin bit codes to select from
 // dest2 - ammo & pk item admin bit codes to select from
 
-// pk_dyn_func_stop - stop func_dynitem processing
+// it_dyn_func_stop - stop func_dynitem processing
 
 // CHECK: what happens here when pk_art gets turned off on a live server
 
@@ -1416,7 +1404,7 @@ void() func_dynitem =
 	self.nextthink = time + self.wait + rv;
 
 // stop item spawn when set true - leaves func_ ents on map
-	if (cvar("pk_dyn_func_stop")) return;
+	if (cvar("it_dyn_func_stop")) return;
 
 // dont make dyn while place item control handles map items
 	if (time < (PIC_TO + 2)) return;
@@ -1459,7 +1447,7 @@ void() func_dynitem =
 			self.delay = fabs(MORPH_CUBE_DV);
 		}
 		else
-		if (self.netname == "sv_nodule_maker") // makin cubes
+		if (self.netname == "sv_nodule_maker") // makin nodes
 		{
 			e.wad = "archon_nodule";
 			self.wait = PK_CUBE_TIME;
@@ -1549,12 +1537,14 @@ void(string cb) cube_handle =
 	}
 	else
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 		{
 			bprint("*** Warning - ");
 			bprint(cb);
 			bprint(": invalid in cube handler!\n");
 		}
+#endifdef
 		
 		return;
 	}
@@ -1562,13 +1552,15 @@ void(string cb) cube_handle =
 	if (cv > cbv && cv > 0)
 	{
 		f =  cv - cbv; //cvar("pk_cubes"); // adding some spawners
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 		if (f > 10)
 		{
 			bprint("*** Warning - ");
 			bprint(cb);
 			bprint(": making more than 10 cubes | crates!\n");
 		}
+#endifdef
 
 		while (f > 0)
 		{
@@ -1692,12 +1684,14 @@ void() rndize_item =
 	}
 	else
 	{
-		if (WARNING)
+#ifdef warning
+		if (WARNING & 2)
 		{
 			bprint("*** Warning - rndize items: unlnown map code:");
 			bprint(ftos(self.owner.mcode));
 			bprint(" - no change\n");
 		}
+#endifdef
 		if (cvar("it_place_item") == 2 || cvar("it_place_item") == 3)
 		{
 			self.nextthink = time + 10 + random() * 10;

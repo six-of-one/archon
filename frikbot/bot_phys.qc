@@ -599,7 +599,9 @@ void() SV_FlyMove =
 				self.phys_obj = spawn();
 				self.phys_obj.owner = self;
 				self.phys_obj.stack1 = "insta spawn phys_obj"; // test: nothing spawn test
-				if (WARNING) bprint("WARNING: No physics entity spawned!\nMake sure BotInit was called\n");
+#ifdef warning
+				if (WARNING & 8) bprint("WARNING: No physics entity spawned!\nMake sure BotInit was called\n");
+#endifdef
 			}
 		}
 	}
@@ -681,14 +683,15 @@ void() SV_Physics_Client =
 		PlayerPostThink();
 		BotAI();
 	}
+#ifdef warning
 	else
 	{
-//		if (WARNING)
+//		if (WARNING & 8)
 		bprint("--- WARNING: SV_Physics_Client: Bad Movetype (BOT) = ");
 		bprint(item_ident(self));
 		bprint("\n");
-
 	}
+#endifdef
 
 };
 
