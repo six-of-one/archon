@@ -2123,6 +2123,9 @@ void() cube_touch =
 	other.prevweapon = other.weapon; // save for pack on morphic
 	other.theowner = other.eweapon;
 
+	self.style = FL_MELEE_WEP; // use melee frames - they look better
+	self.eweapon = self;
+
 	other.weapon = 0;
 	other.eweapon = self;
 	self.effects = self.effects | EF_DIMLIGHT;

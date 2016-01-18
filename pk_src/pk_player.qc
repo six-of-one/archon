@@ -81,7 +81,7 @@ $frame dthrow1 dthrow2 dthrow3 dthrow4 dthrow5
 
 void(float ab, float gb, float amx, float gmx) wk_frames =
 {
-	if (self.eweapon && FL_MELEE(self.eweapon, 0, 0)) //self.weapon, self.pk_currentitem ))
+	if (self.eweapon && FL_MELEE(self.eweapon, 0, 0)) //self.weapon, self.pk_currentitem )) // note: must be q2 gren hack - this ignores any weapon select a xwep has and relies on flag
 	{
 		if (self.walkframe >= amx)
 			self.walkframe = 0;
@@ -111,6 +111,8 @@ void() pk_stand_frames =
 
 	wk_frames($axstnd1, $stand1, 12, 5);
 	return;
+
+/*
 //	if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
 	if (self.weapon == IT_AXE && FL_MELEE(self.eweapon, self.weapon, self.pk_currentitem ))
 //	if (FL_MELEE(self.eweapon, self.weapon, self.pk_currentitem ))
@@ -125,6 +127,7 @@ void() pk_stand_frames =
 			self.walkframe = 0;
 		self.frame = $stand1 + self.walkframe;
 	}
+*/
 };
 
 void() pk_run_frames =
@@ -146,6 +149,8 @@ void() pk_run_frames =
 			self.velocity = self.velocity * (f / vlen(self.velocity));
 	}
 	return;
+
+/*
 //	if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
 	if (self.weapon == IT_AXE && FL_MELEE(self.eweapon, self.weapon, self.pk_currentitem ))
 //	if (FL_MELEE(self.eweapon, self.weapon, self.pk_currentitem ))
@@ -160,6 +165,7 @@ void() pk_run_frames =
 			self.walkframe = 0;
 		self.frame = self.frame + self.walkframe;
 	}
+*/
 };
 
 

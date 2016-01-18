@@ -963,11 +963,14 @@ void(float sel) cam_parms =
 		self.cam_x = parm14 & 255;
 		self.cam_y = (parm14 & 65280)/256;
 		self.cam_z = ((parm14 & 16711680)/65536)  * 0.01;
+
+		if (!self.cam_x & CAM_DPLOAD)
 		if (CAM_DEF & DPCAM_ON)
 		{
 //			cvar_set("chase_active", ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
 			self.cam_y = cvar("chase_back");
 			self.cam_z = cvar("chase_up") / 100;
+			self.cam_x = self.cam_x | CAM_DPLOAD;
 		}
 		else stuffcmd(self, "chase_active 0\n"); // so it doesnt get left on changing parm between levels or something
 	}
@@ -1095,10 +1098,12 @@ void () ccb_impulse_check =
 
 	CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam - check here in case it was changed
 
+	if (!self.cam_x & CAM_DPLOAD)
 	if (CAM_DEF & DPCAM_ON)
 	{
 		self.cam_y = cvar("chase_back");
 		self.cam_z = cvar("chase_up") / 100;
+		self.cam_x = self.cam_x | CAM_DPLOAD;
 	}
 //chase cam code
 	if (self.impulse == 230) Toggle_chase_cam();
@@ -1114,8 +1119,12 @@ void () ccb_impulse_check =
 //	else if (self.impulse == 231) LaserTargeterToggle( self );
 	if (CAM_DEF & DPCAM_ON)
 	{
-		cvar_set("chase_back", ftos(self.cam_y));
-		cvar_set("chase_up", ftos(self.cam_z * 100));
+		stuffcmd(self, "chase_back ");
+		stuffcmd(self, ftos(floor(self.cam_y)));
+		stuffcmd(self, "\n");
+		stuffcmd(self, "chase_up ");
+		stuffcmd(self, ftos(floor(self.cam_z * 100)));
+		stuffcmd(self, "\n");
 	}
 
 };

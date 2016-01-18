@@ -374,6 +374,9 @@ float BACKPACK_TIME_DV		= 30; // deviation on time (+/-)
 
 // dead rules
 
+float corpse_solid;
+float SOLID_CORPSE			= 5;
+
 float DEAD_THROW;
 float DEAD_THROW_ARMOR;
 float DEAD_THROW_PKI;
@@ -817,6 +820,8 @@ float(entity e, float q1ck, string itm) noxtr_item_control;
 void() x_pwr_touch;
 void() x_pack_touch;
 void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, string cname, string md, string sd, void() tch, float tht, void() thk, void() thd) fire_missile;
+void(float recurse, vector p1, vector p2, entity from, float damage) LightningDamage_x;
+
 void() melee_hit;
 void() player_plasma1;
 void() X_FireHitscan;
@@ -1001,6 +1006,22 @@ float EXPLOSIVE				= 114688; // for things that explode - chaos mod
 // viswep
 
 // **************************************
+
+// attachs e to a tag on tagentity (note: use "" to attach to entity origin/angles instead of a tag)
+//description:
+//allows entities to be visually attached to model tags (which follow animations perfectly) on other entities, for example attaching a weapon to a player's hand, 
+// or upper body attached to lower body, allowing it to change angles and frame separately (note: origin and angles are relative to the tag, use '0 0 0' for both 
+// if you want it to follow exactly, this is similar to viewmodelforclient's behavior).
+
+//note 2: if the tag is not found, it defaults to "" (attach to origin/angles of entity)
+//note 3: attaching to world turns off attachment
+//note 4: the entity that this is attached to must be visible for this to work
+
+.entity tag_entity; // entity this is attached to (call setattachment to set this)
+.float tag_index; // which tag on that entity (0 is relative to the entity, > 0 is an index into the tags on the model if it has any) (call setattachment to set this)
+//builtin definitions:
+void(entity e, entity tagentity, string tagname) setattachment = #443;
+
 float qweps, pkweps; // inventory bit masks for weps
 .entity vwepent; // vis wep entity pointers
 .entity eweapon; // vis wep pointer
@@ -1131,6 +1152,7 @@ void() cam_waterjump;
 
 float CAM_TELE = 8; // flag saying owner was teleported - go along 
 // this is mostly for the across the room teleport or respawn so cam doesnt fly across distance
+float CAM_DPLOAD = 16; // flag saying dp cam values were loaded - only do once
 
 
 // message protocol defines

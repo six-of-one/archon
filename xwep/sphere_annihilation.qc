@@ -59,12 +59,21 @@ void() sphere_gravity_pulse16 = [ $grvbomb16, sphere_gravity_pulse17 ] { gravity
 void() sphere_gravity_pulse17 = [ $grvbomb16, sphere_gravity_pulse18 ] { gravity_pull(); };
 void() sphere_gravity_pulse18 = [ $grvbomb16, sphere_gravity_pulse19 ] { gravity_pull(); };
 void() sphere_gravity_pulse19 = [ $grvbomb16, sphere_gravity_pulse20 ] { gravity_pull(); };
-void() sphere_gravity_pulse20 = [ $grvbomb16, sphere_gravity_pulse1 ] { gravity_pull(); };
+void() sphere_gravity_pulse20 = [ $grvbomb16, sphere_gravity_pulse1 ]
+{
+	gravity_pull();
+	if ((self.attack_finished - time) > 8)
+	if ((time & 7) == 4)
+		sound (self, CHAN_BODY, "misc/ambient/machine6.wav", 1, ATTN_NORM); // TDO: better sound
+};
 
 void() sphere_become_gravbomb =
 {
 	sphere_a = world;
-	self.attack_finished = time + 4.0 + random() * 4;
+	if (self.count)
+		self.attack_finished = self.count;
+	else
+		self.attack_finished = time + 4.0 + random() * 4;
 	self.touch = gravity_touch;
 	self.effects = self.effects | EF_BRIGHTLIGHT;
 	self.think = sphere_gravity_pulse1;
@@ -289,11 +298,12 @@ void(entity g) set_annihilate =
 	if (g.classname == "gravity") // whoopsie
 	{
 		t = g.attack_finished - time; // time left on grav well
+		if (t < 0) t = 2 + random() * 4;
 		remove(g);
-		sphere_become_gravbomb();
-		self.attack_finished = time + (t * 48) + random() * 100 + 60;
+		sphere_a.think = sphere_become_gravbomb; // self might not be sphere
+		sphere_a.count = time + (t * 48) + random() * 100;
 		sphere_a = world; // free now
-		bprint("\nSome idiots just put a sphere of annihilation and a gravity well together!\nSmooth move on making a \bReality Bomb\b genius!");
+		bprint("\nSome idiots just put a sphere of annihilation and a gravity well together!\nSmooth move on making a \bReality Bomb\b genius!\n");
 		return;
 	}
 

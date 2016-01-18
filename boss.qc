@@ -198,6 +198,12 @@ void(vector p) boss_missile =
 	local	vector	org, vec, d;
 	local	float	t;
 
+	if (self.enemy.mask_x & CB_CTHON) // dont attack soc
+	{
+		boss_idle1 ();
+		return;
+	}
+
 	offang = vectoangles (self.enemy.origin - self.origin);	
 	makevectors (offang);
 

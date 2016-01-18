@@ -691,6 +691,13 @@ void() viswep_post =
 		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
 		else if (vhead.vv_draw != (void()) 0) // new vw paradigm - code set models
 		{
+			if (DARKPLACES) // TEST: - trying movement deal
+			if (!vhead.tag_entity)
+			{
+				vhead.origin = vhead.angles = v0;
+				setattachment(vhead, vhead.owner, "");
+			}
+
 			if (vhead.model == "" || (vhead.oldorigin + vofs) != vhead.owner.origin || vhead.mangle != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
 			{
 				if (vhead.model == "") setmodel(vhead, vmdl);
@@ -722,22 +729,29 @@ void() viswep_post =
 
 					vhead.frame = vv_x_000_y;
 
-					setorigin(vhead, vhead.owner.origin  + v2 + v3 + v4); // ... sync visible weapon model
-					vhead.angles = vhead.owner.angles + vv_a_000;
-
-					if (vv_x_000_x) vhead.angles_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
-					if (vv_x_000_z) vhead.angles_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
-
-					if (vhead.movetype == MOVETYPE_FOLLOW)
+					if (vhead.tag_entity)
 					{
-
-						vhead.view_ofs = vhead.origin - vhead.owner.origin; // relative origin
-						vhead.v_angle = vhead.angles - vhead.owner.angles;
-//						vhead.view_ofs = v2 + v3 + v4; //tr.vwepent.origin - e.origin; // relative origin
-//						vhead.v_angle = vv_a_000; //tr.vwepent.angles - e.angles; // relative angles
+						vhead.origin = v2 + v3 + v4; // relative origin
+						vhead.angles = vv_a_000;
+//						vhead.origin = vhead.origin - vhead.owner.origin; // relative origin
+//						vhead.angles = vhead.angles - vhead.owner.angles;
 //						if (vv_x_000_x) vhead.v_angle_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
 //						if (vv_x_000_z) vhead.v_angle_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
+						if (cvar("saved1") == -888888)
+						{
+							if (vv_x_000_x) vhead.angles_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
+							if (vv_x_000_z) vhead.angles_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
+						}
 					}
+					else
+					{
+						setorigin(vhead, vhead.owner.origin  + v2 + v3 + v4); // ... sync visible weapon model
+						vhead.angles = vhead.owner.angles + vv_a_000;
+						if (vv_x_000_x) vhead.angles_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
+						if (vv_x_000_z) vhead.angles_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
+					}
+
+
 				}
 				else 
 					vhead.model = "";
@@ -745,6 +759,12 @@ void() viswep_post =
 		}
 		else // old method - brute force animated models
 		{
+			if (DARKPLACES) // TEST: - trying movement deal
+			if (!vhead.tag_entity)
+			{
+				vhead.origin = vhead.angles = v0;
+				setattachment(vhead, vhead.owner, "");
+			}
 			if (vhead.model == "" || (vhead.origin + vofs) != vhead.owner.origin || vhead.angles != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
 			{
 				if (vhead.model == "") setmodel(vhead, vmdl);
@@ -795,11 +815,14 @@ void() viswep_post =
 
 					} // IDEA: viswframe weps on gremlins back for special frames
 				vhead.frame = vframe + vadd - gremlin_frame_adjust - grap_frame_adjust;
-				if (vhead.movetype != MOVETYPE_FOLLOW)
+				if (!vhead.tag_entity)
 				{
 					setorigin(vhead, vhead.owner.origin + vofs); // ... sync visible weapon model
 					vhead.angles = vhead.owner.angles;
 				}
+				else
+				if (vhead.origin_z > 2)
+					vhead.origin = v0; // for pistol deal  - this really needs to be timed
 			}
 		}
 		vhead = vhead.vwepent;

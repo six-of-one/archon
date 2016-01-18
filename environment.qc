@@ -954,6 +954,12 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 
 
 
+// fn(item_throwGib) - for stuff that needs to toss gibs
+
+void(string gibname, float dm, string cls, float tm, float fr) item_throwGib =
+{
+	
+};
 
 // goes back in volcano
 

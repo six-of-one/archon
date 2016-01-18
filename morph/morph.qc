@@ -55,6 +55,7 @@ void() morph_precache =
 	m_precache_wizard();
 	m_precache_shambler();
 	m_precache_lavablob();
+	m_precache_gremlin();
 };
 
 
@@ -919,11 +920,11 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MCTHON) player_lavablob_become(pls);
 		else if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
 		else if (cmd == IMP_MENF) player_enforcer_become(pls);
+		else if (cmd == IMP_MGREMLIN) player_gremlin_become(pls);
 
 		else if (cmd == IMP_MANODEX) player_anode_become(pls);
 		else player_human_become(pls);
 	/*
-		else if (cmd == IMP_MGREMLIN) player_gremlin_become(pls);
 		else if (cmd == IMP_MIMP) player_imp_become(pls);
 		else if (cmd == IMP_MCYBER) player_cyber_become(pls);
 		else if (cmd == IMP_MARACHN) player_arachn_become(pls);
@@ -947,6 +948,64 @@ void(float cmd, float pls) polymorph_check =
 
 //	if (cmd != IMP_MWIZARD && cmd != IMP_MCHAOS && cmd != IMP_MWRAITH) self.movetype = MOVETYPE_WALK; // only spawned flyers
 	}
+};
+
+
+
+// gib frames in gib_m.mdl - custom is just a variable base
+$frame internal slab chunk armlet torso arm leg custom thrchunk thrarm thrleg
+
+// fn(GibMorph) - provide morph state gibbage
+// returns true if gib occured
+// hd - head model, hf - head frame if needed
+// hl - health level to gib
+// sz - size, determins gib counts, default 10
+string gibsz; // gib array of sizes for each gib frame
+// g* - custom gib model
+// gf - first gib frame in model
+// rd - chance to throw each gib, defaults to 50%
+// flg - flags 												 v- size weight
+float FL_INTORG				= 1;			// 1 - internal organ
+float FL_INTSLAB				= 2;			// 2 - slab of internal meat (orig)
+float FL_GIBCHUNK			= 4;			// 1 - chunk of gibblet
+float FL_ARMLET				= 8;			// 2 - original amrlet gib
+float FL_TORSO				= 16;			// 3 - original torso gib
+float FL_ARMGIB				= 32;			// 4 - perquake arm gib
+float FL_LEGGIB				= 64;			// 4 - perquake leg gib
+float FL_HUMANGIB			= 127;		// use all (gib_m.mdl) gibs
+float FL_HUMANORG			= 26;			// original quake gibs (gib1 - gib3 mdl), size wt = 9
+float FL_ONLYHUMGIB			= 120;		// use only (human appearing) gibs
+float FL_NONHUMGIB			= 7;			// use no (human appearing) gibs
+float FL_CUSTOMGIB			= 128;		// 1 - use custom gib (string g1) mdl, frame gf
+float FL_CUSTOMGIB2			= 256;		// 2 - use custom gib (string g1) mdl, frame gf+1
+float FL_CUSTOMGIB3			= 512;		// 3 - use custom gib (string g1) mdl, frame gf+2
+float FL_ALLCUST				= 896;		// all custom frames above
+float FL_ANYGIB				= 1023;		// need at least 1 gib flag to throw anything but a head
+float FL_HUMANSND			= 1024;		// use all human sounds
+float FL_NOHUMSND			= 2048;		// use only generic sounds
+float FL_NOSND				= 4096;		// no sounds
+float FL_HEADGIB				= 8192;		// 2 - head is set to orig. qc specific parms
+float FL_MORPHSND			= 16384;		// use a preset morph sound
+float FL_PLAGUE				= 32768;		// make a plague check for gib
+float GIB_TWITCH				= 0.5; 		// chance of throwing a gib that twitches
+
+// original GibPlayer
+// if ( GibMorph ("progs/h_player.mdl", 0, FL_HEADGIB | FL_HUMANORG, 1, -40, 9, 0, "") ) return;
+//GibMorph ("progs/h_shams.mdl", 0, FL_HEADGIB | FL_NONHUMGIB, 0, -60, 30, 0, "")  // shambler
+//GibMorph ("progs/h_mega.mdl", 0, FL_HEADGIB | FL_HUMANGIB, 0.5, -45, 12, 0, "") // enforcer
+//GibMorph ("progs/h_ogre.mdl", 0, FL_HEADGIB | FL_NONHUMGIB, 0, -80, 18, 0, "")  // ogre
+
+
+// TDO: unfake this
+
+float (string hd, float hf, float flg, float rd, float hl, float sz, float gf, string g1) GibMorph =
+{
+	if (self.health <= hl)
+	{
+		GibPlayer(); // TDO:	
+		return(1);
+	}
+	return(0);
 };
 
 // fn (morph_die) - morph creature dies - put it out of misery but leave a pretty corpse or gibblets

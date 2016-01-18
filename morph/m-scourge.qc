@@ -136,8 +136,7 @@ void() player_scourge_die =
 {
 	local entity e;
 
-//	if ( GibMorph ("progs/h_scourg.mdl", 0, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND, 0, -95, 9, 0, "") ) return;
-	GibPlayer(); // TDO:
+	if ( GibMorph ("progs/h_scourg.mdl", 0, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND, 0, -95, 9, 0, "") ) return;
 
 // regular death
    sound (self, CHAN_VOICE, "scrg/pain2.wav", 1, ATTN_NORM);

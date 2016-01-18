@@ -77,9 +77,9 @@ float CB_M_TARBABY				= 8192;
 float CB_M_SCOURGE				= 16384;
 float CB_M_SHUBS					= 32768;
 float CB_M_SVORE					= 65536; // super vore
+float CB_M_GREMLIN				= 131072;
 
 /*
-float CB_M_					= 131072;
 float CB_M_					= 262144;
 float CB_M_					= 524288;
 float CB_M_					= 1048576;
@@ -109,10 +109,11 @@ void(entity f, float all) morph_clearparms;
 float(float sel) cb_morph;
 float(entity chk) morph_clichk;
 void() morph_die;
-              void(float r1, string sn, float lts ) morph_sound;
-				  
+void(float r1, string sn, float lts ) morph_sound;
+
 float(entity targ, float sdot, vector vang, vector vorg) infront;
 float(entity ck, float hl) morph_heal;
+void(string ws, float rtime ) morph_walksound;
 
 void(float dx) morph_CycleWeaponCommand;
 
@@ -239,6 +240,7 @@ void(float silent) player_wizard_become;
 void(float silent) player_ogre_become;
 void(float silent) player_shambler_become;
 void(float silent) player_lavablob_become;
+void(float silent) player_gremlin_become;
 
 //morph health modifiers            original code
 float MHUMAN_HEALMOD				= 1.0;	// 100 = 1.0
@@ -282,6 +284,17 @@ float FIREBALL_WEP_VEL			= 300;
 string DEF_MORPH_DEATH1			= " was killed by ";
 string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n"
 
+// gremlin
+
+float ST_CLAW						= 1;
+float ST_BITE						= 2;
+float GREM_AASPAWN = FALSE; // if true always allow monster gremlin to spawn in water
+float GREM_MAX;                                 // = 64; // arbitrary - need per level cnt by mapname, moved to code
+float GREM_FLY_MAXWEP			= 3; // cant fly with more than 3 weps - dont really want flyers heavily armed IDEA - use .mass
+float FL_STEAL						= 524288; // flag for player stealing things
+
+void(float st) W_FireClawBite;
+
 // lava
 
 void(entity e) lavacthon_blobme;
@@ -322,3 +335,4 @@ void() m_precache_wizard;
 void() m_precache_ogre;
 void() m_precache_shambler;
 void() m_precache_lavablob;
+void() m_precache_gremlin;

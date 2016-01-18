@@ -97,6 +97,7 @@ hipnotic/proxmine.qc
 hipnotic/hipnoticents.qc
 hipnotic/hipwater.qc
 hipnotic/hipstain.qc
+hipnotic/gremlin.qc
 
 // runes
 runes.qc
@@ -172,6 +173,7 @@ morph/m-demon.qc
 morph/m-hknigh.qc
 morph/m-ogre.qc
 morph/m-shambl.qc
+morph/m-gremlin.qc
 morph/m-anode.qc
 
 anode.qc

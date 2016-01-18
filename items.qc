@@ -1270,7 +1270,7 @@ void () item_artifact_envirosuit =
 	self.netname = "Biosuit";
 	self.items = IT_SUIT;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL; // everyone can get arts
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 	StartItem ();
 };
 
