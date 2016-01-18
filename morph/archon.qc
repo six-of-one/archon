@@ -2,14 +2,34 @@
  *
  * Cataboligne
  *
- * file: m-cthon.qc
+ * file: archon.qc
  *
  * date: 9/29/13
  *
- * qc - support chaos mod archon being
+ * qc - support chaos mod archon being and powers
  *
  */
- 
+
+/*
+Archon: the power
+
+Notes:
+In the original archon and adept power points did several things.
+They could heal icons, protect against magic attack and in adept, increase the master power level.
+
+The beauty of the new model design - it is from an M.C. Escher print...the one used for archon I box art.  And it was hard to make.
+The eponimus power points will provide archon power, heal, protect against Archon spells and on the hub map, generate the items.
+
+
+"the Story"
+
+The power of the Archons comes from a quantum universe hidden all around us...
+No one knows who made the complex 4D construct, but they were made for Archons to use.
+
+The mathematically twisted power access device transferes that power to living beings.
+
+*/
+
  // return an archon to its previous form, previous morph or human state if archon power is ever < 0
 
 // fn(de_archon_thk) - keep checking to see when an Archon has enough power to return to archon form, return is automatic
@@ -125,7 +145,7 @@ void() archon_nodule_rnd =
 		self.netname = "\bGod Particle\b";
 		setmodel (self,"progs/nodule110110110.bsp");
 //		setsize (self,'-16 -16 -24','16 16 16');
-		self.scale = 0.35;
+		self.scale = 0.6;
 		self.modelflags = self.modelflags | 1; // rocket light
 		self.archon = 4500 + crandom() * 500;	// almost an archon
 		self.alpha = 0.4 + random() * 0.4;
@@ -140,7 +160,7 @@ void() archon_nodule_rnd =
 //		if ((time > 160) && random() > 0.5)
 //		{
 			setmodel (self,"progs/nodule011.bsp");
-			self.scale = 0.25;
+			self.scale = 0.5;
 			self.archon = 180 + crandom() * 80;
 //		}
 		if (random() < 0.3) self.modelflags = self.modelflags | 128; // purple light
@@ -161,7 +181,7 @@ void() archon_nodule_rnd =
 //		if ((time > 120) && random() > 0.5)
 //		{
 			setmodel (self,"progs/nodule010.bsp");
-			self.scale = 0.25;
+			self.scale = 0.5;
 			self.archon = 80 + crandom() * 40;
 //		}
 	}
@@ -170,7 +190,7 @@ void() archon_nodule_rnd =
 //		if ((time > 60) && random() > 0.5)
 //		{
 			setmodel (self,"progs/nodule001.bsp");
-			self.scale = 0.25;
+			self.scale = 0.5;
 			self.archon = 30 + crandom() * 10;
 //		}		
 	}

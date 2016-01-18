@@ -525,7 +525,7 @@ void(string cls) item_call =
 
 		self.think = SUB_regen; // dont go thru place_item - use regen method
 		self.nextthink = time + 1 + 3 * random(); // spread em out
-		self.model = string_null;
+		self.model = null_string;
 
 	}
 	else
@@ -846,32 +846,56 @@ float(float cn, entity e, string op) ammo_con =
 
 void() remove_fade =
 {
-	self.touch = SUB_Null;
+	local entity e;
 
-	if (!self.alpha) self.alpha = 1.03; // make sure the fade doesnt hit 0 and fire this again
+	if (self.classname == "dyn_removal") // dyn_rem on monsters had issues, so we are doing this
+		e = self.enemy;
+	else
+		e = self;
 
-	if (self.solid)
-	if (self.alpha < 0.6)
-		self.solid = SOLID_NOT;
+//	self.think = remove_fade; - things were going to go remove_fade(); - but so far none do
 
-	self.think = remove_fade;
-
-	self.alpha = self.alpha - 0.05;
-	if (self.alpha < 0.05)
+// cant remove fade clients - idea: copytobodyque & send player / bot to dcam / respawn code
+	if (e.flags & FL_CLIENT)
 	{
-		if (self.button4 == -664) // for respawning a banished item
+		if (e != self) remove(self);
+		return;
+	}
+
+	if (e.model == null_string)
+	{
+		if (e != self) remove(self);
+		remove(e);
+		return;
+	}
+
+	e.touch = SUB_Null;
+
+	if (!e.alpha) e.alpha = 1.03; // make sure the fade doesnt hit 0 and fire this again
+
+	if (e.solid)
+	if (e.alpha < 0.6)
+		e.solid = SOLID_NOT;
+
+	e.alpha = e.alpha - 0.05;
+	if (e.alpha < 0.05)
+	{
+		if (e.button4 == -664) // for respawning a banished item
 		{
-			self.model = string_null;
-			self.solid = SOLID_NOT;
+			e.model = null_string;
+			e.solid = SOLID_NOT;
 			if (deathmatch == 1)
 			{
-				self.nextthink = time + RSP_TIME * 4; // takes longer when banished
-				self.think = SUB_regen;
-				self.button4 = 0;
+				e.nextthink = time + RSP_TIME * 4; // takes longer when banished
+				e.think = SUB_regen;
+				e.button4 = 0;
 			}
 		}
 		else
-		remove(self);
+		{
+			if (e != self) remove(self);
+			remove(e);
+		}
 	}
 	else self.nextthink = time + 0.15;
 };
@@ -899,15 +923,12 @@ void() dyn_rem =
 			return;
 		}
 		else
-		if (self.button13 == self.enemy.button13)
+		if (self.button13 == self.enemy.button13) // hash good - destroy it
 		{
 			if (self.wait) // new ops - set sub rem & exit
 			{
-				if (self.enemy.model != null_string)
-					self.enemy.think = remove_fade;
-				else
-					self.enemy.think = SUB_Remove;
-				self.enemy.nextthink = time + self.wait;
+				self.think = remove_fade;
+				self.nextthink = time + self.wait;
 			}
 			else // old ops
 			{
@@ -917,21 +938,18 @@ void() dyn_rem =
 					self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 4;
 					return;
 				}
-				if (self.enemy.model != null_string) // not touched yet
-				{
-					self.enemy.think = remove_fade; //SUB_Remove;
-					self.enemy.nextthink = time + 0.1;
-				}
-				else
-					remove(self.enemy);
+				self.think = remove_fade; //SUB_Remove;
+				self.nextthink = time + 0.1;
 	//			pk_ditems = pk_ditems - 1; // this is really meaningless - and its done in item_call
 			}
+			return;
 		}
 		else
 		{
-			if ((MONSTER_TRANSPARENT) && (self.enemy.class_select == "class_monster")) // NOTE: these might have issues!
+			if (self.enemy.class_select == "class_monster") // NOTE: these might have issues!
 			{
-				self.enemy.alpha = 0.6 + (random() * 0.42);
+//				if (MONSTER_TRANSPARENT)
+				self.enemy.alpha = 0.4; // TEST - remove - should _now_ (10.11.13) not happen in server
 				self.enemy.netname = "I might have issues!"; // TEST - remove
 			}
 			else
@@ -979,7 +997,7 @@ void(entity e, float tm, void() rmv) dyn_remove =
 	f.nextthink = time + DYN_REM_TIME; // 6 secs
 
 	f.netname = e.netname; // in case of hash fail
-	f.target1 = e.classname;
+	f.target1 = e.classname; // just for warning above - REMOVE
 	f.enemy = e;
 
 	f.button13 = e.button13 = system_hash;

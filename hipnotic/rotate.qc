@@ -593,7 +593,7 @@ void() rotate_train_next =
       self.message = current.message;
       SUB_UseTargets();
       self.target = temp;
-      self.message = string_null;
+      self.message = null_string;
       }
 
    if ( current.spawnflags & ANGLES )
@@ -953,7 +953,7 @@ void() func_movewall =
    setmodel (self,self.model);
    if ( !( self.spawnflags & VISIBLE ) )
       {
-      self.model = string_null;
+      self.model = null_string;
       }
    self.think = movewall_think;
    self.nextthink = time + 0.02;

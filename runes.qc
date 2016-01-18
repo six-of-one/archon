@@ -731,7 +731,7 @@ void () rune_sigil_touch =
 	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other,"bf\n");
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = null_string;
 	if (self.duration) // random runes - map run val goes here
 		serverflags = serverflags | (self.duration & 15);
 	else
@@ -831,7 +831,7 @@ void () rune_touch =
 	}
 
 // remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 	self.cnt = 0;
 	self.count = self.count + 0.13; // increment for each grab - more activity = less chance of rune moving
@@ -1286,12 +1286,12 @@ void() run_runes =
 			if (e.rune_flag)
 			{
 				f = bit_cnt(e.rune_flag, FALSE);
-				e.archon = e.archon + (ARCHON_RUNE * f);
+				e.xp = e.xp + (ARCHON_RUNE * f);
 			}
 			if (e.items & 7929856)
 			{
 				f = bit_cnt((e.items & 7929856), FALSE);
-				e.archon = e.archon + (3 * f); // ARCHON_ARTIFACT = 3
+				e.xp = e.xp + (3 * f); // ARCHON_ARTIFACT = 3
 			}
 		}
 		else
@@ -1329,12 +1329,12 @@ void() run_runes =
 		if (e.rune_flag)
 		{
 			f = bit_cnt(e.rune_flag, FALSE);
-			e.archon = e.archon + (ARCHON_RUNE * f);
+			e.xp = e.xp + (ARCHON_RUNE * f);
 		}
 		if (e.items & 7929856)
 		{
 			f = bit_cnt((e.items & 7929856), FALSE);
-			e.archon = e.archon + (3 * f); // ARCHON_ARTIFACT = 3
+			e.xp = e.xp + (3 * f); // ARCHON_ARTIFACT = 3
 		}		
 		e = find(e, class_select, "class_bot");
 	}
@@ -1592,7 +1592,7 @@ note how fcktard complicated the lith regen rune is:
 
 max = 200
 cap = 3.5
-null_string = 0.25 // rune_regen->value
+? = 0.25 // rune_regen->value
 
 	if(player->rune & RUNE_REGEN && player->health < rune_regenmax->value) {
 		float health = player->health + player->client->regen_remainder;

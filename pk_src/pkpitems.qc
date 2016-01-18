@@ -69,7 +69,7 @@ void () pkplus_touch =
 	self = stemp;
 
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = null_string;
 
 	if (deathmatch == 1 || deathmatch == 3)
 	{

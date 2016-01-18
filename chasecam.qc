@@ -200,7 +200,7 @@ void () cam_deathmove =
 //		setorigin(self.owner, self.origin);
 //		set_viewport(self.owner, self.owner); // back to moving players own ent, cams off
 
-		sprint(self.owner,"your spirit is free!\n");
+		stuffcmd(self.owner, "hud_message \"your spirit is free!\"\n");
 	}
 
 	if (cvar("fov") != DCAM_FOV) stuffcmd( self.owner, DCAM_SET_FOV ); // I see short dead dudes - enforce crow vision
@@ -387,9 +387,6 @@ void () dead_cam_set =
 	if (self.disconnectPlayer) return; // dont set for disconnect frikbots that get splash damage!
 	if (self.class_select == "class_bot") return; // no bots past this - they get the code above
 
-// just leave cam on if on, and run this - 0 follow vars
-	stuffcmd(self, "exec cfg/morph/dead.cfg\n");
-
 // NOTE: wraith option still needs checked once we have chaos mod morph deal
 	
 	if (self.flags & FL_CLIENT)
@@ -398,6 +395,9 @@ void () dead_cam_set =
 
 		cam_startdeathview();
 	}
+
+// just leave cam on if on, and run this - 0 follow vars
+	stuffcmd(self, "exec cfg/morph/dead.cfg\n");
 };
 
 // fn(cam_punch) - zero punchangle_x if cam active when firing weps

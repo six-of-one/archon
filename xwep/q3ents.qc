@@ -1875,7 +1875,7 @@ void() q3_pwr_touch =
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
 	other.items = other.items | self.items;
-	self.model = string_null;
+	self.model = null_string;
 
 	e = spawn();
 	if (e) // code contingent for fail

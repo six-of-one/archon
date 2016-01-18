@@ -353,7 +353,7 @@ void() x_weapon_touch =
 		return;
 
 // remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 	if (deathmatch == 1)
 	{
@@ -393,19 +393,21 @@ void() x_item_touch =
 	if (self.netname == "Portable power point")
 		archon_ppp_thk();
 // nodule special
-	else if (self.classname == "archon_nodule") // non Archon only get 10% of nodules power
+	else if (self.classname == "archon_nodule") // non Archon only get xp for nodules that arent a god particle
 	{
 		if (self == god_particle)
+		{
 			god_particle = world;
-		else if (!other.mask_x & MORPH_ARCHON)
-			other.archon = other.archon - self.archon * 0.9;
+			if (! other.mask_x & MORPH_ARCHON) other.archon = other.archon + (self.archon / 2);
+		}
+		if (other.mask_x & MORPH_ARCHON) other.archon = other.archon + self.archon;
 	}
 
 	if (self.noise != null_string)
 		sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
 // remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 	if (deathmatch == 1 || deathmatch == 3)
 	{

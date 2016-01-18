@@ -315,7 +315,7 @@ void() func_spawn =
 
 		// save off monster count so it doesn't get f'ed up
 		temptotal_monsters = total_monsters;
-		if (self.spawnclassname == string_null)
+		if (self.spawnclassname == null_string)
 		{
 			objerror("No spawnclassname defined");
 		}

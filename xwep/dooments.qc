@@ -2439,7 +2439,7 @@ void() wchg2_weapon_touch =
 
 			x_weapon_touch();
 			w_chg_base();
-			self.model = string_null;
+			self.model = null_string;
 			return;
 		}
 	}

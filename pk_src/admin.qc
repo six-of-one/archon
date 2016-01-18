@@ -1072,7 +1072,7 @@ void() AdminCommands =
 
 		morph_clearparms(self, 1);
 		self.solid = SOLID_NOT;
-		cam_startdeathview();
+		cam_startdeathview(); // NOTE: still not in death frames - this leaves some stand frame up
 		
 //		admin_tow();
 

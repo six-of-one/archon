@@ -1311,12 +1311,14 @@ void() info_allow =
 
 // new body que - builds que on the fly
 
-void() InitBodyQue;
 entity bodyque_first; // start up pointer
 entity bodyque_head;
 float body_cnt;
 
 // so other stuff can bodyque
+
+// trm - self terminate body - not part of loop sequence
+
 void(entity e, entity bq, float trm) BodyQueAsset =
 {
 	if (trm) // terminate it later

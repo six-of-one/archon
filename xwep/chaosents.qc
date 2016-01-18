@@ -231,7 +231,7 @@ string() cds_killmsg2 =
 // deepsleep blast effect at target point
 void() DeepSleepBlst_tht =
 {
-	local float f, k;
+	local float k; // , f;
 
 //	f = rint(2 + random());
 
@@ -271,20 +271,18 @@ bprint("\n");
 
 void(vector dir1, vector end1, vector bspread, string snd1) X_DeepSleepBlst =
 {
-	local entity e;
-
-	e = spawn();
-	e.think = DeepSleepBlst_tht;
-	e.nextthink = time + 0.03;
-	e.cnt = 5 + 5 * random();
-	e.owner = EWEAP;
+	newmis = spawn();
+	newmis.think = DeepSleepBlst_tht;
+	newmis.nextthink = time + 0.03;
+	newmis.cnt = 5 + 5 * random();
+	newmis.owner = EWEAP;
 // located
-	e.origin = end1;
-	e.movedir = dir1;
-	e.bulletspread = bspread;
-	e.pos1 = v_up;
-	e.pos2 = v_right;
-	e.noise = snd1;
+	newmis.origin = end1;
+	newmis.movedir = dir1;
+	newmis.bulletspread = bspread;
+	newmis.pos1 = v_up;
+	newmis.pos2 = v_right;
+	newmis.noise = snd1;
 };
 
 void () c_weapon_deepsleep =
@@ -552,7 +550,7 @@ void() health_touch =
 
 	stuffcmd (other, "bf\n");
 	
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
@@ -657,7 +655,7 @@ void() x_pwr_touch =
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
 	other.items = other.items | self.items;
-	self.model = string_null;
+	self.model = null_string;
 
 // so we can say what we need to when done
 	if (self.group) // NOTE: could already have a .message
@@ -840,7 +838,7 @@ void() x_pack_touch =
 	if (self.noise != null_string)
 		sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM); // default is q1 pack grab snd - in bp code
 
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 	if (deathmatch == 1 || deathmatch == 3)
 	{

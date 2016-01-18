@@ -87,7 +87,7 @@ string(entity e, float s) getsurfacetexture =
 	if (DARKPLACES)
 		return(getsurfacetexture_wrap(e, s));
 
-	return(string_null);// Cataboligne - 8.7.13 - compiler warning
+	return(null_string);// Cataboligne - 8.7.13 - compiler warning
 };
 float(entity e, vector p) getsurfacenearpoint =
 {

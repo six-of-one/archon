@@ -2172,7 +2172,7 @@ void() painkeep_cube_use =
 
 // map loaded crates
 		if (crate.items) c.wad = item_by_mcode(crate.items + f);
-		else if (crate.map) c.wad = crate.map;
+		else if (crate.map) c.wad = crate.map; // crate on map specced an item
 		else if (crate.wait)
 		{
 			self = c; // temp ent
@@ -2213,7 +2213,14 @@ void() painkeep_cube_use =
 	self.mask_x = 0; // reset
 	self.style = 0; // so we arent making a melee wep out of a range wep
 //	item_translate(self, FL_TR_RANDOM);
-	if (random() > 0.15 || crate) // crates always give goody
+
+
+//TEST
+//	if (random() > 0.15 || crate) // crates always give goody
+
+
+
+	if (crate) // crates always give goody
 	{
 		self.pk_touch = painkeep_touch;
 		d = pk_mcode(self.wad, world);
@@ -2310,7 +2317,8 @@ void() painkeep_cube_use =
 			self.wad = monster_id(d, MON_FUNC_REG);
 			self.origin_z = self.origin_z + 8;
 			item_call(self.wad);
-			self.button13 = 0; // dont let dyn_rem wack the *_start_go from setting takedamage, etc.
+									self.map = "I came from a cube / crate"; // TEST - remove
+//			self.button13 = 0; // dont let dyn_rem wack the *_start_go from setting takedamage, etc.
 		}
 		else
 		{
@@ -2325,6 +2333,7 @@ void() painkeep_cube_use =
 
 		if (y) remove(y);
 	}
+
 // IDEA: tele-sphere, portal, explosive regular item, nail bomb, chaos effect
 	self = sv;
 
@@ -3210,7 +3219,7 @@ void() barrel_explode =
 
 	self.mdl = self.model;
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = null_string;
 	
 	bdmg = self.currentammo;
 	bsnd = self.noise;

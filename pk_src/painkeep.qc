@@ -325,7 +325,7 @@ string (string s) precache_sound =
 	if (time < PIC_TO)
 		return(precache_sound__(s));
 
-	return(string_null);// Cataboligne - 8.7.13 - compiler warning
+	return(null_string);// Cataboligne - 8.7.13 - compiler warning
 };
 
 string (string s) precache_model =
@@ -347,7 +347,7 @@ string (string s) precache_model =
 		return(precache_model__(s));
 	}
 
-	return(string_null);// Cataboligne - 8.7.13 - compiler warning
+	return(null_string);// Cataboligne - 8.7.13 - compiler warning
 }; 
 
 // set mode based on map name
@@ -750,7 +750,7 @@ void() pk_liveupd =
 	noway_below = cvar("sv_bot_noway_below"); // no bot waypoints below this
 	noway_above = cvar("sv_bot_noway_above"); // bot bot waypoints above this
 
-	if (WORLD_NOWAY)
+	if (1) // WORLD_NOWAY)
 	{
 		if (!noway_below) noway_below = world.mins_z;
 		if (!noway_above) noway_above = world.maxs_z;
@@ -1681,6 +1681,8 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 		addstat(49, 2, wetsuit_finished); // enh powers
 		addstat(50, 2, x_items); // enh powers
+		addstat(51, 2, xp); // xp for stuff
+		addstat(52, 2, deadflag); // for bones
 
 //		addstat(50, 1, stack1); // target string
 //		addstat(51, 1, stack2); // target string

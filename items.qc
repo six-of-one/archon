@@ -200,7 +200,7 @@ void () q100_health_touch =
 
 	stuffcmd (other, "bf\n");
 
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
@@ -345,7 +345,7 @@ void () armor_touch =
 	other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + bit;
 
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = null_string;
   if (deathmatch == 1 || deathmatch == 3)
   {
 		self.nextthink = time + 20;
@@ -595,7 +595,7 @@ void () weapon_touch =
 		return;
 
 // remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
   if (deathmatch == 1)
   {
@@ -802,7 +802,7 @@ void () ammo_touch =
 	self = stemp;
 
 // remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
   if (deathmatch == 1)
 		self.nextthink = time + RSP_TIME;
@@ -1044,7 +1044,7 @@ void () key_touch =
 	if (!coop)
 	{
 		self.solid = SOLID_NOT;
-		self.model = string_null;
+		self.model = null_string;
 	}
 
 	activator = other;
@@ -1180,7 +1180,7 @@ void () sigil_touch =
 	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other,"bf\n");
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = null_string;
 	serverflags = serverflags | (self.spawnflags & 15);
 	self.classname = null_string;		// so rune doors won't find it
 
@@ -1269,7 +1269,7 @@ void () powerup_touch =
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
 	other.items = other.items | self.items;
-	self.model = string_null;
+	self.model = null_string;
 
 // do the apropriate action
 	if (self.classname == "item_artifact_envirosuit") // note: bio is not coming here!

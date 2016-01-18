@@ -535,6 +535,14 @@ void () HookBehavior =
 		return;
 	}
 
+// crate deal - diseng when crate open
+	if (self.enemy.solid == SOLID_TRIGGER)
+	if (self.enemy.wad == "pk_crate")
+	{
+		DropHook();
+		return;
+	}
+		
 	// give some damage to entities that take damage
 	if (self.enemy.takedamage)
 	if (HOOK_DMG || self.dmg)

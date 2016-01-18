@@ -342,7 +342,7 @@ void() horn_touch =
 	}
 
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = null_string;
    sprint (other, "You got the Horn of Conjuring\n");
    sound (other, CHAN_VOICE, self.noise, 1, ATTN_NONE);
 	stuffcmd (other, "bf\n");
@@ -405,7 +405,7 @@ local float		best;
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
    other.items2 = other.items2 | self.items2;
-	self.model = string_null;
+	self.model = null_string;
 
 // do the apropriate action
    if ( self.classname == "item_artifact_wetsuit" )

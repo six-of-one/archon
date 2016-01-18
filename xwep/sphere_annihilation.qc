@@ -248,7 +248,7 @@ void() annihilate =
 //	if (self._stand == SUB_regen)			// regen respawn items - to do other wise would make shalraths really cruel
 	if (self.event != "dynamic_item")
 	{
-		self.model = string_null;
+		self.model = null_string;
 		self.solid = SOLID_NOT;
 		if (deathmatch == 1)
 		{

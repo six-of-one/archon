@@ -105,7 +105,7 @@ void(entity targ, entity attacker) Killed =
 		killed_monsters = killed_monsters + 1;
 		WriteByte (MSG_ALL,SVC_KILLEDMONSTER);
 //		if (attacker.flags & FL_CLIENT)
-			attacker.archon = attacker.archon + self.archon; // pts for monster kills
+			attacker.xp = attacker.xp + self.archon; // pts for monster kills
 	}
 
 	if (self.classname == "pk*bot" || attacker.classname == "pk*bot") // note: handles "player" setting for pk*bot obit fn - we need this

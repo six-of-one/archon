@@ -1113,7 +1113,7 @@ void() chaos_item =
 			else if (ci_fr == 7) HIP_LaunchLaser(v0, v0, rint(random()), "lasercannon/laserg.wav");
 			else if (ci_fr == 8) fire_cbolt();
 			else if (ci_fr == 9) { beartrap_dropBearTrap(); newmis.beartrap_time = time + 9; }
-			else if (ci_fr == 10) { turret_dropTurret(); turret.owner = self; }
+			else if (ci_fr == 10) { turret_dropTurret(); turret.owner = self.owner; }
 			if (newmis)
 			{
 				if (ci_fr == 4) newmis.classname = "chaos_prox";
@@ -2123,7 +2123,7 @@ void() archon_summon =
 
 // makes things go "away" by remove fade - monsters & players are killed first, players _should_ have a respawn penalty
 
-// IDEA: sparks / parts wilst fading
+// IDEA: sparks / parts whilst fading
 
 void() archon_banish =
 {
@@ -2136,13 +2136,15 @@ void() archon_banish =
 	{
 		self.bolt_target.deathtype = "banished";
 		Killed(self.bolt_target, self); // NOTE: throws viswep, pack
-		CopyToBodyQue(self.bolt_target);
+//		CopyToBodyQue(self.bolt_target); // cant be part of loop - it gets removed
+		BodyQueAsset(self.bolt_target, world, TRUE);
 		self.bolt_target.model = null_string;
-		newmis.nextthink = time + 60; // penalty for banish
+		self.bolt_target.think = SUB_Null; // prevent imm. respawn
+		newmis.nextthink = time + 60; // penalty for banish // ARCHON_BANISH_PENALTY
 		bodyque_head.nextthink = time + 1;
 		bodyque_head.think = remove_fade;
 	}
-	if (self.bolt_target.flags & FL_MONSTER)
+	else if (self.bolt_target.flags & FL_MONSTER)
 	{
 		Killed(self.bolt_target, self);
 		self.bolt_target.nextthink = time + 1;
@@ -2170,6 +2172,8 @@ void() archon_banish =
 
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.attack_finished = time + 1; //debounce
+	self.pk_explode_ammo = 0;
+	self.bolt_targetTimeout = 0;	
 };
 
 void() archon_time_flow =

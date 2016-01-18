@@ -400,7 +400,7 @@ float	MSG_INIT		= 3;		// write to the init string
 float movedist;
 float	gameover;		// set when a rule exits
 
-string	string_null;	// null string, nothing should be held here
+//string	string_null;	// null string, nothing should be held here - moved to pk.defs.qc 10.11.13
 float empty_float;
 
 entity	newmis;			// launch_spike sets this after spawning it

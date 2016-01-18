@@ -591,7 +591,7 @@ void() hub_control_status =
 				str2 = first.map;
 			}
 
-			if (self.map == string_null)
+			if (self.map == null_string)
 			{
 				str3 = ftos(first.cnt);
 				centerprint5(self, "\n\n\n\n\n\n\n\n\n\n\nPlease Vote						 Lead: ", str2, " [", str3, "]");
@@ -621,7 +621,7 @@ void() hub_control_status =
 				str2 = second.map;
 			}
 
-			if (self.map == string_null)
+			if (self.map == null_string)
 			{
 				str3 = ftos(second.cnt);
 				centerprint5(self, "\n\n\n\n\n\n\n\n\n\n\nPlease Vote						Second: ", str2, " [", str3, "]");

@@ -467,8 +467,8 @@ void() Sbar_DrawInventory =
 	ALPHA_90 = ibar_alpha * 0.9;
 	ALPHA_LOW = ibar_alpha * 0.4;
 
-	float k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph;
-	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit;
+	float k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
+	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag;
 	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff;
 
 	string wep_sg, wep_ssg, wep_nail, wep_snail, wep_gren, wep_rock, wep_light, wep_mj, wep_prox, wep_laser, wep_harp, wep_airgun, wep_clg, wep_axe, wep_pnail;
@@ -540,6 +540,9 @@ void() Sbar_DrawInventory =
 
 	cl_items = GetStat_FLOAT_TRUNCATED(STAT_ITEMS);
 	x_items = GetStat_FLOAT_TRUNCATED(STAT_X_ITEMS);
+	xp = GetStat_FLOAT_TRUNCATED(STAT_XP);
+
+	deadflag = GetStat_FLOAT_TRUNCATED(STAT_DEADFLAG);
 
 	items = GetStat_BITS(STAT_ITEMS, 0, 23);
 	items2 = GetStat_BITS(STAT_ITEMS, 23, 9);
@@ -802,15 +805,39 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	{
 		k = 1;
 		huds = 0;
+		if (!deadflag)
 		if (cl_items & IT_INVISIBILITY) k = 0.2;
+
+		if (morph == IMP_MCHAOS)
+		{
+			wep_step_x = 35;
+			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/chaos", ALPHA_FULL * k, 0.11);
+			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Archon Chaos", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+			huds = 6;
+		}
+		else if (morph == IMP_MORDER)
+		{
+			wep_step_x = 35;
+			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/order", ALPHA_FULL * k, 0.1);
+			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Archon Order", ALPHA_FULL, '7 7 0','1.0 1.0 1.0');
+			huds = 6;
+		}
+	  else
+	  {
+		if (deadflag)
+		{
+			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/sb_xbones", ALPHA_FULL, 0.19);				
+		}
 		if (morph == CHAR_Q)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/face1", ALPHA_FULL * k, 0.85);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Marine", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 			huds = 4;
 		}
 		else if (morph == CHAR_D)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/dm_face", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "UAC Marine", ALPHA_FULL, '7 7 0','0.16 0.2 0.29');
 			huds = 4;
@@ -821,24 +848,28 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == CHAR_Q3)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/sg_face", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Sarge", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 			huds = 4;
 		}
 		else if (morph == CHAR_PK)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/pk_face", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Pain Killer", ALPHA_FULL, '7 7 0','0.2 0.2 1');
 			huds = 4;
 		}
 		else if (morph == CHAR_W)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/bw_face", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Blaskowitz", ALPHA_FULL, '7 7 0','0.7 0.7 0.7');
 			huds = 4;
 		}
 		else if (morph == IMP_MENF)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/enf_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Enforcer", ALPHA_FULL, '7 7 0','0.5 0.7 1');
@@ -848,6 +879,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MOGRE)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/ogr_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Ogre", ALPHA_FULL, '7 7 0','1 0.5 1');
@@ -861,6 +893,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MHKNIGHT)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/hkn_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Hell Knight", ALPHA_FULL, '7 7 0','1 0.5 1');
@@ -876,6 +909,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MSHALR)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/vr_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Vore", ALPHA_FULL, '7 7 0','1 0.5 1');
@@ -919,6 +953,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MSHAMBLR)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/sham_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Shambler", ALPHA_FULL, '7 7 0','1 0.5 1');
@@ -930,6 +965,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MDEMON)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/fnd_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Fiend", ALPHA_FULL, '7 7 0','1 0.5 1');
@@ -987,6 +1023,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MWIZARD)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/wz_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Scrag", ALPHA_FULL, '7 7 0','0 0.8 0');
@@ -1002,6 +1039,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MZOMBIE)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/zm_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Zomby", ALPHA_FULL, '7 7 0','1 0.5 1');
@@ -1019,6 +1057,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		{
 			if (mcode == -503 || mcode == -502 || mcode == -501)
 			{
+			if (!deadflag)
 				DrawInventoryAmmo(pwr_step + wep_step + '-2 2 0', "gfx/cth_face", ALPHA_FULL * k, 0.11);
 				Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Cthon", ALPHA_FULL, '7 7 0','1 0.2 0');
 				Sbar_DrawString(pwr_step + wep_step + woff + '65 9 0', "  ALT_FIRE - return to Lava Bomb", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -1036,6 +1075,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			else
 			{
 				explflg = 0;
+			if (!deadflag)
 				DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/lv_face", ALPHA_FULL * k, 0.11);
 				Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Lava Bomb", ALPHA_FULL, '7 7 0','1 0.2 0');
 				if (mcode == -504) // in lava code
@@ -1052,6 +1092,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MSCOURGE)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/scr_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Scourge", ALPHA_FULL, '7 7 0','1 0.5 1');
@@ -1067,6 +1108,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MGREMLIN_F || morph == IMP_MGREMLIN_L)
 		{
+			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/grm_face", ALPHA_FULL * k, 0.11);
 			huds = 6;
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Gremlin", ALPHA_FULL, '7 7 0','0 0.7 0');
@@ -1078,20 +1120,8 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			if (currentweap == IT_SHOTGUN)
 				Sbar_DrawString(pwr_step + wep_step + woff + '75 0 0', "| Claws", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 		}
-		else if (morph == IMP_MCHAOS)
-		{
-			wep_step_x = 35;
-			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/chaos", ALPHA_FULL * k, 0.11);
-			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Archon Chaos", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
-			huds = 6;
-		}
-		else if (morph == IMP_MORDER)
-		{
-			wep_step_x = 35;
-			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/order", ALPHA_FULL * k, 0.1);
-			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Archon Order", ALPHA_FULL, '7 7 0','1.0 1.0 1.0');
-			huds = 6;
-		}
+
+		if (!deadflag)
 		if (huds & 6) // drew a face
 		{
 			if (huds == 4) // a hooman
@@ -1107,8 +1137,10 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			if (cl_items & IT_QUAD)
 				DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/face_blue", ALPHA_FULL * k, 0.11);
 		}
+	  }
 	}
 
+	if (!deadflag)
 	if (ibar_flag > 1)
 	{
 		

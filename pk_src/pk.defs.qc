@@ -76,6 +76,11 @@ var float autocvar_it_runemap = 0;  // if true print rune data to console
 
 // **************************************
 
+// global constant search
+
+// ARCHON_
+// WORLD_
+
 
 /*
 frame macro expansion
@@ -677,7 +682,7 @@ float MC_Q3_HOLDTELE;
 
 float ENHANCED					= 1; // adds features that werent originally there in the sub mods (like runes)
 
-float WORLD_NOWAY				= 1; // use world min & max for noway bounds if sv_ bounds not set
+//float WORLD_NOWAY				= 1; // use world min & max for noway bounds if sv_ bounds not set
 
 .float xp; // experience points
 
@@ -688,7 +693,7 @@ float NO_FLOAT					= -671234; // dont float anything with this offset, or?
 
 float MONSTER_DROWN			= FALSE; // if true monsters will take drown damage - NOTE: they dont know how to swim or get out of water yet
 float MONSTER_ZOMBIE_DROWN = FALSE; // even if monsters can drown, zombie never will, and they make mucho noise while taking the damage - ruins SP ambience
-float MONSTER_TRANSPARENT	= TRUE; // take off from dyn_rem bug where some cube monsters ended up transparent
+//float MONSTER_TRANSPARENT	= TRUE; // take off from dyn_rem bug where some cube monsters ended up transparent
 
 .float dmgtime;
 

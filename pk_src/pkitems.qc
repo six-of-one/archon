@@ -253,7 +253,7 @@ void () painkeep_weapon_touch =
 		return ;
 
 // remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 	if (deathmatch == 1)
 	{
@@ -511,7 +511,7 @@ void() pk_ammo_touch =
 	self = sv;
 
 // remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 	if (deathmatch == 1 || deathmatch == 3)
 	{
@@ -601,6 +601,7 @@ if (!self.mask_x)
 // morphic
 	f = FALSE; // dont exit
 
+	if ((self.mcode == MC_QUANTUM) && !other.ishuman) f = TRUE; // no quamtum for bots
 	if (!self.mask_x & other.mask_x) f = TRUE; // morph cant collect
 	if ((other.mask_x & CB_GREMLIN) &&  (other.builtin & self.items)) f = TRUE; // gremlin trying to replace builtin, even if he can collect
 //	if (self.pk_currentitem & PK_IT_CARY)  f = FALSE; // all can get pki (but cthon)
@@ -711,7 +712,7 @@ if (self.classname == null_string)
 // power up archon
 		if (self.solid == SOLID_NOT) // got item
 		{
-			other.archon = other.archon + self.archon;
+			other.xp = other.xp + self.archon;
 // Archons get power when items they made get used
 			if (self.class_select == "chaos_item")
 			if (self.owner.mask_x == CB_CHAOS)
@@ -725,7 +726,7 @@ if (self.classname == null_string)
 		if (self.classname != "archon_nodule")
 		if (self.class_select != "chaos_item")
 		{
-			other.archon = other.archon + (self.archon * ARCHON_UNCOL);
+			other.xp = other.xp + (self.archon * ARCHON_UNCOL);
 		}
 
 
@@ -883,7 +884,7 @@ bprint(")\n");
 
 	// remove object until it is time to respawn
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = null_string;
 	if (deathmatch)
 	if (deathmatch == 1 || deathmatch == 3)
 	{
@@ -1739,7 +1740,7 @@ void() DropBackpack =
 
 void() ip_regen =
 {
-	self.model = string_null;
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 
 	self.nextthink = time + 1;

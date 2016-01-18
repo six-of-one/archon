@@ -289,7 +289,7 @@ void(entity spot) ClearSpawnPoint =
 	 	// crash point!!!
 		// make it respawn...
 		thing.solid = SOLID_NOT;
-		 thing.model = string_null;
+		 thing.model = null_string;
 		thing.nextthink = time + 10;
 		 thing.think = SUB_regen;
 	 }
@@ -1765,7 +1765,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			bprint ("\n");
 
 			attacker.owner.frags = attacker.owner.frags + frag_plus(attacker.owner);
-			attacker.owner.archon = attacker.owner.archon + ARCHON_FRAG;
+			attacker.owner.xp = attacker.owner.xp + ARCHON_FRAG;
 			return;
 		}
 
@@ -1800,7 +1800,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				return;
 			}
 			attacker.frags = (attacker.frags + frag_plus(attacker));
-			attacker.archon = (attacker.archon + ARCHON_FRAG);
+			attacker.xp = (attacker.xp + ARCHON_FRAG);
 			if (rnum < 0.250)
 				bprint (" was impressed by the power of ");
 			else if (rnum < 0.5)
@@ -1833,7 +1833,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				return;
 			}
 			attacker.frags = (attacker.frags + frag_plus(attacker));
-			attacker.archon = (attacker.archon + ARCHON_FRAG);
+			attacker.xp = (attacker.xp + ARCHON_FRAG);
 			if (rnum < 0.250)
 				bprint (" was dragged down by an old friend in ");
 			else if (rnum < 0.5)
@@ -1875,7 +1875,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			bprint (sa);
 			bprint(" sphere of annihilation\n");
 			attacker.frags = (attacker.frags + frag_plus(attacker)); // add it up
-			attacker.archon = (attacker.archon + ARCHON_FRAG);
+			attacker.xp = (attacker.xp + ARCHON_FRAG);
 		return;
 		}
 	
@@ -1899,7 +1899,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 
 		// increase frags & print message.
 			attacker.owner.frags = attacker.owner.frags + frag_plus(attacker.owner);
-			attacker.owner.archon = attacker.owner.archon + ARCHON_FRAG;
+			attacker.owner.xp = attacker.owner.xp + ARCHON_FRAG;
 
 			bprint(" was ventilated by ");
 			bprint(attacker.owner.netname);
@@ -2082,7 +2082,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			else
 			{
 				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below - this includes monsters! 
-				attacker.archon = (attacker.archon + ARCHON_FRAG);
+				attacker.xp = (attacker.xp + ARCHON_FRAG);
 
 				if (attacker.frags > high_score)
 				{

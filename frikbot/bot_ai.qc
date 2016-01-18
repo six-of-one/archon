@@ -171,7 +171,7 @@ void(entity targ, float success) bot_lost =
                 
                 if (targ.flags & FL_ITEM)
                 {
-                        if (targ.model == string_null)
+                        if (targ.model == null_string)
                                 targ._last = world;
                         else
                                 targ._last = self;
@@ -207,7 +207,7 @@ void(entity targ) bot_check_lost =
 	{
 		if (vlen(targ.origin - self.origin) < 32)
 			bot_lost(targ, TRUE);
-		else if (targ.model == string_null)
+		else if (targ.model == null_string)
 			bot_lost(targ, TRUE);
 	}
 	else if (targ.classname == "waypoint")
@@ -612,7 +612,7 @@ float(entity thing) priority_for_thing =
 	thisp = 0;
 	// This is the most executed function in the bot. Careful what you do here.
 
-	if (thing.flags & FL_ITEM) //  && thing.model != string_null && thing.search_time < time) // Cataboligne - pre tested now
+	if (thing.flags & FL_ITEM) //  && thing.model != null_string && thing.search_time < time) // Cataboligne - pre tested now
 	{
 		// ugly hack
                 if (thing._last != self)
@@ -767,7 +767,7 @@ void(float scope) bot_look_for_crap =
 		f = FALSE; // no way!
 		if (foe != self)
 		if (pointcontents(foe.origin) >= -3) //< -3) - in water or empty, exclude lava, slime, sky
-		if ((foe.flags & FL_ITEM) && foe.model != string_null && foe.search_time < time) f = TRUE;
+		if ((foe.flags & FL_ITEM) && foe.model != null_string && foe.search_time < time) f = TRUE;
 		else if (foe.classname == "waypoint") f = TRUE;
 		else if (foe.health > 0)
 		{
