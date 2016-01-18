@@ -6,7 +6,7 @@
 
 // x weapon touch fn
 
-void() d_weapon_touch =
+void() x_weapon_touch =
 {
 	local	float best, new, oldw, camc, ign;
 	local	entity e;
@@ -130,12 +130,12 @@ void() d_weapon_touch =
 	}
 	else
 	{
-		if (PK_100 && PK_100_OBJERR) objerror("d_weapon_touch: unknown classname");
+		if (PK_100 && PK_100_OBJERR) objerror("x_weapon_touch: unknown classname");
 		else
 		{
 			if (WARNING)
 			{
-			bprint("\n*** warning:\nd_weapon_touch: unknown classname (");
+			bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
 			bprint(self.classname);
 			bprint(") - ignoring\n\n");
 			}
@@ -166,6 +166,7 @@ void() d_weapon_touch =
 //		e.touch = self.touch;
 
 		e.weapon = e.items = self.items;
+		e.x_items = self.x_items;
 		e.currentammo = self.currentammo;
 		e.lip = self.lip;
 		e.attack_finished = self.attack_finished;
@@ -230,6 +231,41 @@ void() d_weapon_touch =
 	self.model = string_null;
 	self.solid = SOLID_NOT;
 	if (deathmatch == 1)
+	{
+		self.nextthink = time + RSP_TIME;
+		self.think = SUB_regen;
+	}
+
+	activator = other;
+	SUB_UseTargets();				// fire all targets / killtargets
+};
+
+// players collect x item inventory here
+
+// keys, power armor, etc
+
+void() x_item_touch =
+{
+
+	if (other.classname != "player") // *bot - done in master touch fn
+	{
+		grap_checkIfGrap();
+		return ;
+	}
+	if (other.health <= 0)
+		return;
+
+	if (other.x_items & self.x_items) return; // already got one
+
+	other.x_items = other.x_items | self.x_items;
+
+	if (self.noise != "")
+		sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+
+// remove it in single player, or setup for respawning in deathmatch
+	self.model = string_null;
+	self.solid = SOLID_NOT;
+	if (deathmatch == 1 || deathmatch == 3)
 	{
 		self.nextthink = time + RSP_TIME;
 		self.think = SUB_regen;
@@ -396,13 +432,22 @@ void() melee_hit =
 
 
 // TESTING
+if (cvar("saved1") == -777)
+{
 bprint(" *** eweap ");
 bprint(EWEAP.netname);
+}
 
 
 // TESTING
 	dm = EWEAP.dmg;
 	if (dm == DOOM_ML_DMG) dm = 10 * ceil(random() * 2);
+
+
+
+
+if (cvar("saved1") == -777)
+{
 bprint(", hit dmg = ");
 bprint(ftos(dm));
 //bprint(", splash dmg = ");
@@ -416,7 +461,7 @@ bprint(ftos(dm));
 bprint(".\n");
 fts.dmg = fts.dmg + dm;
 fts.cnt = fts.cnt + 1;
-
+}
 
 
 
@@ -525,12 +570,18 @@ void () X_MissileTouch =
 		remove (self);
 		return ;
 	}
+
+
+if (cvar("saved1") == -777)
+{
 if (self.eweapon) {
 bprint(" *** eweap ");
 bprint(self.eweapon.netname);
 }
 else
 bprint(" *** missile (?) ");
+}
+
 
 	if (!self.dmg) self.dmg = 100 + random() * 20;
 	else if (self.dmg == DOOM_ROCK_DMG) self.dmg = 20 * ceil(random() * 8);
@@ -539,12 +590,15 @@ bprint(" *** missile (?) ");
 
 
 // TESTING
+if (cvar("saved1") == -777)
+{
 bprint(", hit dmg = ");
 bprint(ftos(self.dmg));
 bprint(", splash dmg = ");
 bprint(ftos(self.dodmg));
 fts.dmg_take = fts.dmg_take + self.dmg;
 fts.dmg_save = fts.dmg_save + 1;
+}
 
 
 
@@ -563,10 +617,13 @@ fts.dmg_save = fts.dmg_save + 1;
 
 
 // TESTING
+if (cvar("saved1") == -777)
+{
 bprint(", tot dmg = ");
 bprint(ftos(self.dmg+self.dodmg));
 bprint(".\n");
 fts.dmg = fts.dmg + self.dmg+self.dodmg;
+}
 
 
 
@@ -608,8 +665,11 @@ void (float shotcount, float pdmg, vector dir, vector spread) X_FireBullets =
 
 
 // TESTING
+if (cvar("saved1") == -777)
+{
 bprint(", bdmg = ");
 bprint(ftos(ddmg));
+}
 
 }
 tdmg = tdmg + ddmg;
@@ -642,11 +702,13 @@ void () X_FireHitscan =
 
 
 
-// TESTING
+// TESTING - fire rates
+if (cvar("saved1") == -777)
+{
 bprint(" *** eweap ");
 bprint(EWEAP.netname);
 tdmg = 0;
-
+}
 
 
 	self.punchangle_x = -2 * EWEAP.dmg_save;
@@ -694,12 +756,14 @@ tdmg = 0;
 
 
 // TESTING
+if (cvar("saved1") == -777)
+{
 bprint(", tot dmg = ");
 bprint(ftos(tdmg));
 bprint(".\n");
 fts.dmg = fts.dmg + tdmg;
 if (fts.eweapon._attack == SUB_Null) fts.cnt = fts.cnt + 1;
-
+}
 
 
 
@@ -1022,8 +1086,11 @@ void () X_FireOnePlasma =
 
 
 // TESTING
+if (cvar("saved1") == -777)
+{
 bprint(" *** eweap ");
 bprint(EWEAP.netname);
+}
 
 
 
@@ -1086,6 +1153,8 @@ bprint(EWEAP.netname);
 
 
 // TESTING
+if (cvar("saved1") == -777)
+{
 bprint(", hit dmg = ");
 bprint(ftos(dm));
 bprint(", splash dmg = ");
@@ -1099,6 +1168,9 @@ bprint(ftos(dm+EWEAP.dodmg));
 bprint(".\n");
 fts.dmg = fts.dmg + dm+EWEAP.dodmg;
 fts.cnt = fts.cnt + 1;
+}
+
+
 
 
 };
@@ -1325,7 +1397,7 @@ float pk_livent_brk; // painkeep live ent breakdown according to item flags as f
 //float PK_IT_BEARTRAP			= 128;
 //float PKPLUS_IT_EGO			= 256;
 //float PKPLUS_IT_TOMB			= 512;
-float PKPLUS_IT_CORPSE			= 1024; // special - corpse has health, can takedmg, can be targeted
+float PKPLUS_IT_CORPSE			= 1024; // special - (tomb genned) corpse has health, can takedmg, can be targeted
 
 // targeting fn - IDEA: move?
 // 		- tests to see if an ent can be targeted by an attack / effect under various conditions - maybe chaos vector
@@ -1374,6 +1446,7 @@ float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 		{
 
 
+if (0)
 if (trace_fraction < 1)
 {
 bprint(" *** trace fail ent (");
@@ -1639,11 +1712,14 @@ local entity g;
 
 
 tr = tr + 1;
+if (cvar("saved1") == -777)
+{
 bprint("*** q2 bfg beam hit = ");
 bprint(item_ident(e));
 bprint(", for dmg = ");
 bprint(ftos(f));
 bprint(".\n");
+}
 
 //fts.dmg_take = fts.dmg_take + f;
 //bdm = bdm + f;
@@ -1657,8 +1733,11 @@ bprint(".\n");
 
 
 
+if (cvar("saved1") == -777)
+{
 bprint(", beams fired = ");
 bprint(ftos( tr));
+}
 
 
 
@@ -1680,11 +1759,14 @@ bprint(ftos( tr));
 				v1 = self.enemy.origin;
 				i = vlen(v1) / m;
 
+if (cvar("saved1") == -777)
+{
 bprint(" --- laser vln = ");
 bprint(ftos(vlen(v1)));
 bprint(" - cnt = ");
 bprint(ftos(i));
 bprint(".\n");
+}
 
 				if (self.cnt & 1)
 				while (i > 0)
@@ -1797,11 +1879,14 @@ bprint(".\n");
 	}
 
 
+if (cvar("saved1") == -777)
+{
 bprint("*** doom bfg beam hit = ");
 bprint(item_ident(e));
 bprint(", for dmg = ");
 bprint(ftos(f));
 bprint(".\n");
+}
 
 //fts.dmg_take = fts.dmg_take + f;
 //bdm = bdm + f;
@@ -1823,8 +1908,11 @@ bprint(".\n");
 
 
 
+if (cvar("saved1") == -777)
+{
 bprint(", beams fired = ");
 bprint(ftos(40 - tr));
+}
 
 
 
@@ -1842,11 +1930,14 @@ fts.dmg_take = fts.dmg_take + 40 * 128;
 bdm = bdm + 40 * 128;
 }
 
+
+if (cvar("saved1") == -777)
+{
 bprint(", beams dmg = ");
 bprint(ftos(bdm));
 bprint(".\n");
 fts.dmg = fts.dmg + bdm;
-
+}
 
 
 
@@ -1982,6 +2073,7 @@ void() e_weap_Attack =
 
 
 // TESTING
+if (cvar("saved1") == -777)
 	if (!fts) // testing - rpm
 	{
 		fts = spawn();

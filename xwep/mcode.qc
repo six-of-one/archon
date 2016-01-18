@@ -298,6 +298,8 @@ float MC_Q3_ABFG;
 float MC_Q3_HOLDMEDKIT;
 float MC_Q3_HOLDTELE;
 
+float MC_Q3_BARREL;
+
 float MC_Q3;
 
 float MC_Q3_RNDITM; // # of total items
@@ -586,6 +588,8 @@ void() mcode_load =
 	MC_Q3_HOLDMEDKIT = f = (f + 1);
 	MC_Q3_HOLDTELE = f = (f + 1);
 
+	MC_Q3_BARREL = f = (f + 1);
+
 	MC_Q3 = (f + 1);
 	MC_Q3_RNDITM = f - MC_Q3_GAUNTLET; // # of total items
 
@@ -822,6 +826,7 @@ float(float mcv, entity e) bit_mcode =
 // returns map code value
 
 //  TDO: handle native q3 & converted q2 maps that use disambig code
+// in other words ambiguous items on native maps must set the correct classname for this fn
 
 float(string sc, entity e) pk_mcode =
 {
@@ -913,6 +918,7 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "item_painkeep_beartrap")							return(MC_BEARTRAP);
 	if (tsc == "item_painkeep_expshells")							return(MC_AEXPLSH);
 	if (tsc == "item_painkeep_can")									return(MC_CANOBEANS);
+
 	if (tsc == "item_pkplus_ego")										return(MC_EGO);
 	if (tsc == "item_pkplus_tomb")									return(MC_TOMB);
 	if (tsc == "item_pkplus_actor")									return(MC_MASK);
@@ -946,8 +952,8 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "d_key_redskull")										return(MC_D_KEY_RED_SK);
 	if (tsc == "d_key_blueskull")										return(MC_D_KEY_BLU_SK);
 	if (tsc == "d_key_yellowskull")									return(MC_D_KEY_YEL_SK);
-	if (tsc == "d_key_bluecard")										return(MC_D_KEY_RED_CR);
-	if (tsc == "d_key_redcard")										return(MC_D_KEY_BLU_CR);
+	if (tsc == "d_key_bluecard")										return(MC_D_KEY_BLU_CR);
+	if (tsc == "d_key_redcard")										return(MC_D_KEY_RED_CR);
 	if (tsc == "d_key_yellowcard")									return(MC_D_KEY_YEL_CR);
 
 	if (tsc == "d_ammo_4shell")										return(MC_D_ASHELLS);
@@ -1078,6 +1084,8 @@ float(string sc, entity e) pk_mcode =
 
 	if (tsc == "holdable_medkit")										return(MC_Q3_HOLDMEDKIT);
 	if (tsc == "holdable_teleporter")								return(MC_Q3_HOLDTELE);
+
+	if (tsc == "q3_misc_explobox")									return(MC_Q3_BARREL);
 
 // q3 - translates classname for now
 //	else if (tsc == "")								return(MC_);
@@ -1332,6 +1340,8 @@ string (float mc) item_by_mcode =
 	if (mc == MC_Q3_HOLDMEDKIT)										return("holdable_medkit"); 
 	if (mc == MC_Q3_HOLDTELE)											return("holdable_teleporter"); 
 
+	if (mc == MC_Q3_BARREL)												return("q3_misc_explobox"); 
+
 
 //	if (mc == MC_) return("item_");
 
@@ -1409,7 +1419,7 @@ void () weapon_axe =
 
 void () q100_weapon_shotgun =
 {
-	self.touch = weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = W_FireShotgun;
 	self._fr_attack = player_shot1;
 
@@ -1426,27 +1436,10 @@ void () q100_weapon_shotgun =
 	setmodel (self, "progs/shotgun.mdl");
 	self.weaponmodel = "progs/v2_shot.mdl";
 	self.vwepmdl = "progs/vw_shot.mdl";
-//	self.noise1 = "weapons/ax1.wav"; // missed
 	self.noise3 = "weapons/guncock.wav"; 
 
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
-};
-
-void () weapon_shotgun =
-{
-	if (world.wad == "q2.wad")
-	{
-		q2_weapon_shotgun();
-		return;
-	}
-	else if (world.wad == "")
-	{
-		q3_weapon_shotgun(); 
-		return;
-	}
-
-	q100_weapon_shotgun();
 };
 
 // all quake 1 key load outs
@@ -1858,6 +1851,7 @@ void () misc_explobox =
 	}
 
 	misc_explodbox_set(self, "maps/b_explob.bsp", 160, 20, MOVETYPE_NONE);
+	if (self.class_select == "") self.class_select = "quake_item";
 };
 
 /*QUAKED misc_explobox2 (0 .5 .8) (0 0 0) (32 32 64)
@@ -1875,6 +1869,7 @@ void () misc_explobox2 =
 	}
 
 	misc_explodbox_set(self, "maps/b_exbox2.bsp", 160, 20, MOVETYPE_NONE);
+	if (self.class_select == "") self.class_select = "quake_item";
 };
 
 // rndize (or map item) created pack

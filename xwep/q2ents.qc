@@ -51,16 +51,6 @@ float Q2_BARREL_BLAST		= 150;
 
 void() q2_precache =
 {
-	Q2_POWER_WAIT = RSP_TIME;
-	Q2_POWER_TIME = POW_TIME;
-
-//	precache_model ("");
-//	precache_sound ("");
-
-// items
-//	precache_model ("progs/.mdl");
-// ammo
-//	precache_model ("progs/q2_.mdl");
 // weps
 	precache_model ("progs/q2_bfg.mdl");
 	precache_model ("progs/q2_chain.mdl");
@@ -153,6 +143,8 @@ void() q2_precache =
 	precache_sound ("q2_snd/ar2_pkup.wav");
 	precache_sound ("q2_snd/ar1_pkup.wav");
 	precache_sound ("q2_snd/ar3_pkup.wav");
+	precache_sound ("q2_snd/pwr_arm_on.wav");
+	precache_sound ("q2_snd/pwr_arm_off.wav");
 // weps
 	precache_sound ("q2_snd/bfg_hum.wav");
 	precache_sound ("q2_snd/bfg_f1y.wav");
@@ -193,6 +185,7 @@ void() q2_precache =
 void() q2_ammo_bullets =
 {
 	item_spikes();
+	self.netname = "Bullets";
 	self.touch = pk_ammo_touch;
 
 	self.lip = AMMO_BULLETS;
@@ -200,11 +193,9 @@ void() q2_ammo_bullets =
 	self.wait = RSP_TIME;
 	self.volume = Q2_MAX_BULLETS;
 
-//	self.classname = "ammo_bullets";
 	setmodel (self, "progs/q2_bullets.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Box of bullets";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -212,6 +203,7 @@ void() q2_ammo_bullets =
 void() q2_ammo_rockets =
 {
 	item_rockets();
+	self.netname = "Rockets";
 	self.touch = pk_ammo_touch;
 
 	self.lip = AMMO_ROCKETS;
@@ -222,7 +214,6 @@ void() q2_ammo_rockets =
 	setmodel (self, "progs/q2_rockets.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Box of Rockets";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -231,6 +222,7 @@ void() q2_ammo_rockets =
 void() q2_ammo_shells =
 {
 	item_shells();
+	self.netname = "Shells";
 	self.touch = pk_ammo_touch;
 
 	self.lip = AMMO_SHELLS;
@@ -241,7 +233,6 @@ void() q2_ammo_shells =
 	setmodel (self, "progs/q2_shells.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Box of Shells";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -249,6 +240,7 @@ void() q2_ammo_shells =
 void() q2_ammo_cells =
 {
 	item_cells();
+	self.netname = "Cells";
 	self.touch = pk_ammo_touch;
 
 	self.lip = AMMO_CELLS;
@@ -259,7 +251,6 @@ void() q2_ammo_cells =
 	setmodel (self, "progs/q2_cellbox.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Box of cells";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -267,6 +258,7 @@ void() q2_ammo_cells =
 void() q2_ammo_slugs =
 {
 	item_cells();
+	self.netname = "Slugs";
 	self.touch = pk_ammo_touch;
 
 	self.lip = AMMO_SLUGS;
@@ -277,7 +269,6 @@ void() q2_ammo_slugs =
 	setmodel (self, "progs/q2_slugs.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Box of slugs";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -322,10 +313,9 @@ void() q2_ammo_grenades =
 {
 	item_rockets();
 	self.netname = "Hand Grenades";
-//	self.classname = "q2_ammo_grenades";
 
 // fn
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = X_FireHandGrenade;
 	self._fr_attack = SUB_Null;
 // stats
@@ -366,7 +356,7 @@ void () q2_weapon_bfg =
 	self.netname = "BFG 10000";
 
 // fn
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = SUB_Null;
 	self._fr_attack = player_bfg1;
 // stats
@@ -402,7 +392,7 @@ void () q2_weapon_railgun =
 	q100_weapon_lightning();
 	self.netname = "Rail Gun";
 
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = X_FireRailgun;
 	self._fr_attack = player_rocket1;
 
@@ -435,7 +425,7 @@ void () weapon_hyperblaster =
 	q100_weapon_lightning();
 	self.netname = "Hyper Blaster";
 
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = SUB_Null;
 	self._fr_attack = player_hyper0;
 
@@ -464,9 +454,10 @@ void () weapon_hyperblaster =
 void() q2_weapon_rocketlauncher =
 {
 	q100_weapon_rocketlauncher();
+	self.netname = "Rocket Launcher";
 
 // fn
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = W_FireRocket;
 	self._fr_attack = player_rocket1;
 // stats
@@ -496,9 +487,10 @@ void() q2_weapon_rocketlauncher =
 void () q2_weapon_grenadelauncher =
 {
 	q100_weapon_grenadelauncher();
+	self.netname = "Grenade Launcher";
 
 // fn
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = W_FireGrenade;
 	self._fr_attack = player_rocket1;
 // stats
@@ -530,7 +522,7 @@ void () weapon_chaingun =
 	weapon_supernailgun();
 	self.netname = "Chain Gun";
 
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = SUB_Null;
 	self._fr_attack = player_chain0;
 
@@ -561,6 +553,8 @@ void () weapon_chaingun =
 // doing the same way even tho q2 doesnt offer a dbl yet
 void() q2_mg_base =
 {
+	self.netname = "Machine Gun";
+
 // stats
 	self.items = IT_NAILGUN;
 	self.currentammo = 50;
@@ -573,8 +567,6 @@ void() q2_mg_base =
 	self.punchangle = ' 0.025 0.025 0';
 	self.wait = RSP_TIME;
 
-	self.netname = "Machine Gun";
-
 	setmodel (self, "progs/q2_mgun.mdl");
 	self.weaponmodel = "progs/v_q2_mg.mdl";
 	self.vwepmdl = "progs/vw_q2_mg.mdl";
@@ -585,7 +577,7 @@ void() q2_weapon_machinegun =
 	weapon_nailgun();
 
 	q2_mg_base();
-	self.touch = d_weapon_touch;//wchg2_weapon_touch;
+	self.touch = x_weapon_touch;//wchg2_weapon_touch;
 	self._attack = SUB_Null;
 	self._fr_attack = player_mgchg1;
 
@@ -602,7 +594,7 @@ void () q2_weapon_supershotgun =
 	q100_weapon_supershotgun();
 	self.netname = "Super Shotgun";
 
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = X_FireHitscan;
 	self._fr_attack = player_shot1;
 
@@ -633,7 +625,7 @@ void () q2_weapon_shotgun =
 	q100_weapon_shotgun();
 	self.netname = "Shotgun";
 
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = X_FireHitscan;
 	self._fr_attack = player_shot1;
 
@@ -664,7 +656,7 @@ void () q2_weapon_blaster =
 	q100_weapon_shotgun();
 	self.netname = "Blaster";
 
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = SUB_Null;
 	self._fr_attack = player_pistol1; // FIX - special
 
@@ -829,14 +821,18 @@ void() q2_item_armor_shard =
 void() item_power_shield =
 {
 	item_armor1();
-	setmodel (self, "progs/q2_armorpower.mdl");
-	self.noise = "q2_snd/ar1_pkup.wav";
-	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Energy armor";
+
+	self.touch = x_item_touch;
+	self.x_items = X_PWR_ARMOR;
 	self.volume = -1;
 	self.style = 0;
 	self.currentammo = 0;
 	self.wait = RSP_TIME;
+
+	setmodel (self, "progs/q2_armorpower.mdl");
+	self.noise = "q2_snd/ar1_pkup.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -844,14 +840,18 @@ void() item_power_shield =
 void() item_power_screen =
 {
 	item_armor1();
-	setmodel (self, "progs/q2_armorscreen.mdl");
-	self.noise = "q2_snd/ar1_pkup.wav";
-	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Power screen";
+
+	self.touch = x_item_touch;
+	self.x_items = X_PWR_SCREEN;
 	self.volume = -1;
 	self.style = 0;
 	self.currentammo = 0;
 	self.wait = RSP_TIME;
+
+	setmodel (self, "progs/q2_armorscreen.mdl");
+	self.noise = "q2_snd/ar1_pkup.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -1014,6 +1014,8 @@ void() key_pyramid =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Pyramid Key";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1026,6 +1028,8 @@ void() key_power_cube =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Power Cube";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_CUBE;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1038,6 +1042,8 @@ void() key_pass =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Pass Key";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_PASS;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1050,6 +1056,8 @@ void() key_data_cd =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Data CD";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_DATACD;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1062,6 +1070,8 @@ void() key_data_spinner =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Data Spinner";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_CDSPIN;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1074,6 +1084,8 @@ void() key_airstrike_target =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Airstrike Target";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_AIRSTRK;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1087,6 +1099,8 @@ void() key_blue_key =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Blue Key";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_BLUE;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1094,12 +1108,14 @@ void() key_blue_key =
 
 void() key_red_key =
 {
-	item_key1();
+	item_key2();
 	setmodel(self, "progs/q2_keyrb.mdl");
 	self.skin = 0;
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Red Key";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_RED;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1112,6 +1128,8 @@ void() key_commander_head =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Commanders Head";
+	self.touch = x_item_touch;
+	self.x_items = X_Q2_KEY_CHEAD;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1216,3 +1234,113 @@ void() X_FireBlaster =
 	newmis.think = q2_blaster_thk;
 	newmis.effects = EF_DIMLIGHT;
 };
+
+// return damage saved based on power armor settings and damage done
+
+float(entity e, entity f, float dm) power_armor =
+{
+	float save, pdmg, pwr, pwr_use, dpc;
+
+	pdmg = dm;
+	pwr = e.ammo_cells;
+
+	if (e.health < 0) return 0;
+	if (pwr < 1) return 0;
+
+	if (e.x_items & X_PWR_ARMOR_ON)
+	{
+		dpc = 2; // damage handled per cell
+		pdmg = (2 * pdmg) / 3; // can only cover this much of total damage
+	}
+	else if (e.x_items & X_PWR_SCREEN_ON)
+	{
+		cht_if = 0.3; // in front test
+		if (!can_has_target(e, world, f.origin, 0, TFL_INFR | TFL_IFR_NOZ)) return 0;
+		dpc = 1;
+		pdmg = pdmg / 3;
+	}
+	else
+		return 0; // no armor or armor off line
+
+	save = pwr * dpc; // can stop this much damage
+
+	if (!save) return 0;
+
+	if (save > pdmg) save = pdmg;
+
+	pwr_use = save / dpc; // used this many cells
+
+	e.ammo_cells = e.ammo_cells - pwr_use;
+
+	if (e.ammo_cells <= 0)
+	{
+		e.ammo_cells = 0;
+// not doing this - if armor was on & more cells are gotten its stays on till turned off
+//		e.x_items = e.x_items - (e.x_items & X_PWR_ARM_MASK); // turn off armor - out of cells
+	}
+
+
+
+if (WARNING)
+{
+	bprint("\n*** warning: power armor saved (");
+	bprint(ftos(save));
+	bprint(") pts damage out of (");
+	bprint(ftos(dm));
+	bprint(") damage\n\n");
+}
+
+
+
+	return(save);
+};
+
+void() power_armor_impulse =
+{
+	if (self.health < 0) return;
+	if (! self.flags & FL_CLIENT) return;
+
+	if (! self.x_items & X_PWR_ARM_INV) // no power armor
+	{
+		if (random() < 0.4) sprint(self, "You must collect power armor first to activate it\n");
+		return;
+	}
+
+	if (! self.x_items & X_PWR_ARM_MASK) // none on
+	{
+		if (self.x_items & X_PWR_ARMOR) self.x_items = self.x_items | X_PWR_ARMOR_ON;
+		else
+		if (self.x_items & X_PWR_SCREEN) self.x_items = self.x_items | X_PWR_SCREEN_ON;
+	}
+	else
+	if (self.x_items & X_PWR_ARMOR_ON) // power armor on
+	{
+		if (self.x_items & X_PWR_SCREEN) self.x_items = self.x_items | X_PWR_SCREEN_ON - (self.x_items & X_PWR_ARMOR_ON); // switch to screen if we have it
+		else self.x_items = self.x_items - (self.x_items & X_PWR_ARMOR_ON);
+	}
+	else
+	if (self.x_items & X_PWR_SCREEN_ON) // power screen on
+		self.x_items = self.x_items - (self.x_items & X_PWR_SCREEN_ON); // turn it off
+
+	if ((self.x_items & X_PWR_ARM_INV) == X_PWR_ARM_INV) // tell which is on if both in inventory
+	{
+		if (self.x_items & X_PWR_ARMOR_ON)
+			sprint(self, "Energy Armor turned on.\n");
+		else
+		if (self.x_items & X_PWR_SCREEN_ON)
+			sprint(self, "Power Screen turned on.\n");
+		else
+			sprint(self, "Power Armors turned off.\n");
+	}
+
+	if (! self.x_items & X_PWR_ARM_MASK) // turned off
+	{
+		if (self.ammo_cells > 0)
+			sound (self, CHAN_ITEM, "q2_snd/pwr_arm_off.wav", 1, ATTN_NORM); // TDO: use .noise3
+	}
+	else if (self.ammo_cells < 1)
+		sprint(self, "Power armor protection will activate when you get some cells.\n");
+	else
+		sound (self, CHAN_ITEM, "q2_snd/pwr_arm_on.wav", 1, ATTN_NORM); // TDO: use .noise3
+
+}

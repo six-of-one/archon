@@ -582,7 +582,7 @@ void () weapon_flamer =
 	self.netname = "Flame thrower";
 
 // fn
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = W_FireFlamer;
 	self._fr_attack = player_flamer1;
 

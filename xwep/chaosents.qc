@@ -31,7 +31,7 @@ void() c_weapon_reggun =
 	q100_weapon_supershotgun();
 	self.netname = "Quad shotgun";
 
-	self.touch = d_weapon_touch;
+	self.touch = x_weapon_touch;
 	self._attack = X_FireHitscan;
 	self._fr_attack = player_shot1;
 
@@ -178,29 +178,6 @@ void() health_touch =
 //	return(FALSE);
 };	
 
-
-void () item_health =
-{
-	if (world.wad == "q2.wad")
-	{
-		q2_item_health();
-		return;
-	}
-	else if (world.wad == "")
-	{
-		q3_item_health(); 
-		return;
-	}
-
-	q100_item_health();
-	if (!Q_100)
-	{
-		self.healtype = self.healtype + 1;
-		self.volume = 100;
-		if (self.spawnflags & 2)
-			self.volume = Q_MEGA_MAX;
-	}
-};
 
 // x powerup touch
 
@@ -493,6 +470,67 @@ bprint("\b *** warning: doom pack values set\n");
 		other.ammo_gaspr = gs_mx;
 
 	return(0);
+};
+
+
+// defaults
+
+// TDO: xweap inits & flag rules
+
+void(entity e) set_defaults =
+{
+	if (Q_100 || PK_100) return;
+
+	if (DEF_HEALTH) self.health = fabs(DEF_HEALTH);
+	if (DEF_ARMOR)
+	{
+		self.armorvalue = fabs(DEF_ARMOR);
+		self.armortype = DEF_ATYPE;
+		if (self.armorvalue > 100)
+		{
+			self.armortype = DEF_ATYPE * 2;
+			self.items = self.items | IT_ARMOR2;
+		}
+		else
+			self.items = self.items | IT_ARMOR1;
+	}
+	if (DEF_ITEMS) self.items = self.items | DEF_ITEMS; // NOTE: this is an add in, might need vw coding later
+	if (DEF_WEAPON & WEP_MASK) // NOTE: happens after weapons inits to be coded
+	{
+		if (! self.items & DEF_WEAPON) self.items = self.items | DEF_WEAPON; // TDO: genre specific xweap later
+		self.weapon = DEF_WEAPON;
+	}
+	if (DEF_X_ITEMS) self.x_items = self.x_items | DEF_X_ITEMS; // NOTE: this might entail vw adds later
+
+	if (DEF_PK_ITEMS & PK_ITEM_MASK) // pk items works differently
+	{
+		if (DEF_PK_ITEMS & PK_IT_BEARTRAP) self.pk_beartrapammo = 2;
+		if (DEF_PK_ITEMS & PK_IT_TURRET) self.pk_turretammo = 2;
+		if (DEF_PK_ITEMS & PK_IT_GRAVITYWELL) self.pk_gravitywellammo = 1;
+		if (DEF_PK_ITEMS & PK_IT_CANPAB) self.pk_canpabammo = 1;
+		if (DEF_PK_ITEMS & PKPLUS_IT_EGO) self.pkplus_egoammo = 1;
+		if (DEF_PK_ITEMS & PKPLUS_IT_TOMB) self.pkplus_tombammo =2;
+		if (DEF_PK_ITEMS & PKPLUS_IT_ACTOR) self.pkplus_actorammo = 1;
+		if (DEF_PK_ITEMS & PKPLUS_IT_PHONE) self.pkplus_phoneammo = 1;
+		self.pk_items = self.pk_items | (DEF_PK_ITEMS & (PK_IT_GRAPGUN | PK_IT_AIRGUN | PK_IT_CLIGHT));
+	}
+
+	if (DEF_AMMO_BULLETS) self.ammo_bullet = fabs(DEF_AMMO_BULLETS);
+	if (DEF_AMMO_SHELLS) self.ammo_shells = fabs(DEF_AMMO_SHELLS);
+	if (DEF_AMMO_CELLS) self.ammo_cells = fabs(DEF_AMMO_CELLS);
+	if (DEF_AMMO_ROCKETS) self.ammo_rockets = fabs(DEF_AMMO_ROCKETS);
+	if (DEF_AMMO_NAILS) self.ammo_nails = fabs(DEF_AMMO_NAILS);
+	if (DEF_AMMO_SLUGS) self.ammo_slug = fabs(DEF_AMMO_SLUGS);
+	if (DEF_AMMO_GAS) self.ammo_gaspr = fabs(DEF_AMMO_GAS);
+
+	if (! DEF_WEAPON & WEP_MASK) // didnt set a default & have clg & cells - use it
+	if (self.pk_items & PK_IT_CLIGHT)
+	if (self.ammo_cells > 1)
+	{
+			self.weapon = IT_AXE;
+			self.pk_currentitem = PK_IT_CLIGHT;
+	}
+
 };
 
 // inventory display & control
