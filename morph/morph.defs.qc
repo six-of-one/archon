@@ -169,6 +169,7 @@ void(float dx) morph_CycleWeaponCommand;
 
 float IMP_MFLY						= 15; // switch flight mode / ground mode
 float IMP_MSIGHT					= 14; // shout out
+float IMP_MSELECT					= 16; // select a morph
 
 // morph bit flags
 
@@ -245,9 +246,8 @@ float IMP_MDEMON					= 94;	string STI_MDEMON			= "impulse 194";
 float IMP_MCTHON					= 95;	string STI_MCTHON			= "impulse 195";
 float IMP_MDRAGON					= 96;	string STI_MDRAGON		= "impulse 196";
 float IMP_MSCOURGE				= 97;	string STI_MSCOURGE		= "impulse 197";
-float IMP_MGREMLIN				= 98;	string STI_MGREMLIN		= "impulse 198";
-
-float IMP_MSELECT					= 99;	string STI_MSELECT		= "impulse 158";
+float IMP_MGREMLIN_F				= 98;	string STI_MGREMLIN		= "impulse 198"; // flying gremlin
+float IMP_MGREMLIN_L				= 99;	// landlubber gremlin
 
 
 // evolution
@@ -333,6 +333,8 @@ float NO_TFOG						= -2222; // no telefog when transforming
 //scourges
 
 float (entity p, float heala, float ign) player_scourge_armor;
+void() player_scourge_impulse;
+void() player_scourge_attack;
 
 float SCOURGE_ARMORMAX			= 100;
 float GIVEARMOR					= 333;
@@ -346,6 +348,13 @@ float FL_DEMONBOOM				= 65536; // demon on overload!
 
 float WRAITH_USE_CAM				= FALSE; // if true wraith can use chase cam - NOTE: cam does not work when wraith penetrates solids
 
+// humans
+
+float(string mm) set_char_num;
+
+float BIOSUIT						= 5; // skin 5 bio suit
+float WETSUIT						= 6;
+float RADSUIT						= 7;
 
 float(entity e) IS_ZOMBIE;
 

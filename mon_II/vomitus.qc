@@ -546,4 +546,3 @@ if (ign != A_MONSTER)
 	
 	walkmonster_start ();
 };
-                     

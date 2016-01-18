@@ -337,6 +337,7 @@ void () weapon_chainlg =
 	self.touch = painkeep_weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
 
@@ -645,6 +646,15 @@ void() painkeep_touch =
 		self.pk_touch();
 
 		if (f) self.classname = "dyn_item"; // restore
+
+		if (other.mask_x & CB_SCOURGE) // scourge has to select x_wep so they look right
+		if (self.weapon & (IT_GRENADE_LAUNCHER | IT_LIGHTNING))
+		{
+			e = self;
+			self = other;
+			player_scourge_impulse();
+			self = e;
+		}
 		if (self.solid == SOLID_NOT)
 		if (self.think == SUB_regen)
 		if (deathmatch == 1 || deathmatch == 3)
@@ -686,6 +696,11 @@ bprint(")\n");
 	}
 
 	if (e) e.classname = "pk*bot";
+
+
+	if (other.builtin)
+	if (!other.builtin & IT_AXE) // no axe, cant use pki
+		return;
 
 	// check if it can be picked up
 	if (self.pk_items == PK_IT_BEARTRAP)

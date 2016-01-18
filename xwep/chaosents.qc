@@ -95,6 +95,7 @@ void() c_weapon_reggun =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() c_weapon_shovel =
@@ -129,6 +130,7 @@ void() c_weapon_shovel =
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 void () c_weapon_deepsleep =
@@ -162,6 +164,7 @@ void () c_weapon_deepsleep =
 	self.target = "q2_snd/lashit.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 
@@ -538,8 +541,25 @@ bprint("\n");
 	t = self.dmgtime;
 	if (!t) t = POW_TIME;
 
+	if (self.netname == "Wetsuit")
+	{
+		if (!Q_100 && !PK_100 && VW)
+		if (self.lip > 0) 
+		if (other.mask_x & CB_HUMAN)
+			other.skin = self.lip;  // set skin for suit
+		other.rad_time = 1;
+		if (other.radsuit_finished < time)
+			other.radsuit_finished = time + t;
+		else
+			other.radsuit_finished = other.radsuit_finished + t;
+	}
+
 	if (self.items == IT_SUIT)
 	{
+		if (!Q_100 && !PK_100 && VW)
+		if (self.lip > 0) 
+		if (other.mask_x & CB_HUMAN)
+			other.skin = self.lip;  // set skin for suit
 		other.rad_time = 1;
 		if (other.radsuit_finished < time)
 			other.radsuit_finished = time + t;
@@ -618,6 +638,7 @@ bprint("\n");
 		if (self.items == IT_QUAD)
 			e.enemy.skin = Q3_SH_QUAD;
 		e.items = self.items;
+		e.wad = "art_shell";
 	}
 
 	activator = other;
@@ -978,20 +999,6 @@ void(entity e, float bl) xw_bit_loop =
 // e - ent to set (player or bot)
 // defaults read from server var *
 
-// return numeric (morphic) char code for a given map mode
-float(string mm) set_char_num =
-{
-	local float cn;
-	
-	cn = CHAR_Q;
-	if (mm == "W") cn = CHAR_W;
-	if (mm == "D") cn = CHAR_D;
-	if (mm == "Q") cn = CHAR_Q;
-	if (mm == "PK") cn = CHAR_PK;
-	if (mm == "Q2") cn = CHAR_Q2;
-	if (mm == "Q3") cn = CHAR_Q3;
-	return(cn);
-};
 
 // NOTE: q1 & pk mode wep add can be without ammo
 
@@ -1056,16 +1063,6 @@ void(entity e) set_defaults =
 	if (DEF_AMMO_GAS) e.ammo_gaspr = fabs(DEF_AMMO_GAS);
 
 	DEF_WEAPON = DEF_WEAPON & WEP_MASK; // mask off remove bits
-
-// char init
-
-	if (CHAR_CON)
-	{
-		if (!e.morphy)
-		if (CHAR_CON >= CHAR_W && CHAR_CON  <= CHAR_Q3) e.morphy = CHAR_CON;
-		else e.morphy = set_char_num(MAP_MODE);
-// TDO: set model, mdl, etc - done in morph call
-	}
 
 // x weapon inits
 

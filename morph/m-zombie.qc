@@ -807,9 +807,8 @@ void() player_zombie_impulse =
 
 	morph_impulse();
 
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
-
 	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 //		self.items = self.items | IT_AXE;
 		sprint(self, "Zombie using ( stench cloud )\n"); 
@@ -860,14 +859,18 @@ void(float silent) player_zombie_become =
 	self._killmsg=player_zombie_killmsg;
 	self._killmsg2=player_zombie_killmsg2;
 
+	self.cam_z = 16 / 100;
+	self.cam_y = 28;
+	stuffcmd(self, "chase_up 16\n");
+	stuffcmd(self, "chase_back 28\n");
+	stuffcmd(self, "exec m-zomby.cfg\n");
+
 	setmodel(self,"progs/zombie.mdl");
-//	self.modelindex_morph=self.modelindex;
-//	self.mask_x = CB_ZOMBY;
+
 	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
 	self.weapon = IT_SHOTGUN;
 
-//	self._hk_major = morph_major;
-//	self._hk_lesser = morph_lesser;
+
 	self.msight = "zombie/idle_w2.wav";
 	self.noise2 = "zombie/z_pain1.wav";
 	self.noise2 = "";

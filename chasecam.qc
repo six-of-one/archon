@@ -31,7 +31,7 @@ void() chase_cam_precache =
 };
 
 //original chasecam.qc
-float PR_VIEWPC = 0; // set to 1 to show viewport changes - leaving this test in for significance of viewport hijacks
+float PR_VIEWPC = 1; // set to 1 to show viewport changes - leaving this test in for significance of viewport hijacks
 
 void( entity m_e, entity v_e) set_viewport =
 {

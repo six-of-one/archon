@@ -935,6 +935,7 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 	newmis = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0,  torg, '-12 -12 -12', ' 12 12 12', v0, v0, "chaos_teleport_icon", "progs/sphere_annihilation.mdl", SUB_Null, 2, sphere_annihilation_move, SUB_Null, s, world);
 	newmis.oldorigin = torg;
 	newmis.aflag = -1; //stable
+	newmis.mdl = newmis.model;
 //	newmis.grab_callback = chaos_teleport_grab;
 
 // trigger

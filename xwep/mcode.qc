@@ -1519,7 +1519,7 @@ float(float mcv) valid_wep_mcode =
 
 /// ctf
 
-	if (mcv == MC_HOOK)											return(IT_AXE);
+	if (mcv == MC_HOOK)													return(IT_AXE);
 
 /// hipnotic
 
@@ -1778,6 +1778,7 @@ void () weapon_axe =
 
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN;
 };
 
 /*QUAKED weapon_shotgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -1806,6 +1807,7 @@ void () q100_weapon_shotgun =
 
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 /*QUAKED weapon_hook (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -1863,6 +1865,8 @@ void () weapon_hook =
 	self.target2 = "hook/chain2.wav"; // in + out
 	self.targetname = "weapons/ax1.wav"; // launch snd
 	self.bulletspread_x = 0.85; // damp
+
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 
 };
 
@@ -2034,16 +2038,21 @@ void() abandoned_cube =
 {
 	local entity c;
 	c = self;
-	c.effects = 0;
 
 	if (c.owner)
+	if ((c.count < time) || (c.owner.eweapon != c))
 	{
-		self = self.owner;
-		sprint(self, "Your cube was left alone too long and abanoned you. You rat.\n");
-		c.owner = world;
+		c.effects = 0;
+		if (c.count < time) sprint(c.owner, "Your cube was left alone too long and abanoned you. You rat.\n");
 		c.touch = painkeep_touch;
+		self = c.owner;
+		c.owner = world;
 		cube_rearm(); // re arm player
+		return;
 	}
+
+	c.nextthink = time + 3 + random();
+
 };
 
 // used by pk & morphic cubes
@@ -2149,8 +2158,8 @@ void() cube_touch =
 	}
 
 	self.think = abandoned_cube;
-	self.nextthink = time + 120;
-
+	self.count = time + 70 + random(); // abandoned then
+	self.nextthink = time + 3 + random();
 };
 
 void() pk_cube =

@@ -451,6 +451,7 @@ void () q3_weapon_bfg =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 /*QUAKED weapon_plasmagun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -499,6 +500,7 @@ void() weapon_plasmagun =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 /*QUAKED weapon_machinegun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -552,6 +554,7 @@ void() q3_weapon_machinegun =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 /*QUAKED weapon_shotgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -599,6 +602,7 @@ void() q3_weapon_shotgun =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() q3_weapon_rocketlauncher =
@@ -644,6 +648,7 @@ void() q3_weapon_rocketlauncher =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void () q3_weapon_grenadelauncher =
@@ -689,6 +694,7 @@ void () q3_weapon_grenadelauncher =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 };
 
 
@@ -737,6 +743,7 @@ void () weapon_gauntlet =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 
@@ -800,6 +807,7 @@ void () weapon_grapplinghook =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 void () q3_weapon_lightning =
@@ -844,6 +852,7 @@ void () q3_weapon_lightning =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
 void () q3_weapon_railgun =
@@ -896,6 +905,7 @@ void () q3_weapon_railgun =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() q3_ammo_bullets =
@@ -926,6 +936,7 @@ void() q3_ammo_bullets =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 }
 
 void() q3_ammo_grenades =
@@ -956,6 +967,7 @@ void() q3_ammo_grenades =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
 void() ammo_lightning =
@@ -986,6 +998,7 @@ void() ammo_lightning =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
 void() ammo_bfg =
@@ -1016,6 +1029,7 @@ void() ammo_bfg =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
 // spawnfunc_ - because quake already has variables ammo_* and the function names cannot be used
@@ -1053,6 +1067,7 @@ void() q3_ammo_shells =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 }
 
 void() q3_ammo_rockets =
@@ -1083,6 +1098,7 @@ void() q3_ammo_rockets =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
 void() q3_ammo_cells =
@@ -1113,6 +1129,7 @@ void() q3_ammo_cells =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
 //ammo_slugs
@@ -1145,6 +1162,7 @@ void() q3_ammo_slugs =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 }
 
 // armors + healths
@@ -1608,6 +1626,7 @@ void() q3_pwr_touch =
 			e.think = q3_art_shell;
 			e.nextthink = time + POW_TIME - 1;
 		}
+		e.wad = "art_shell";
 	}
 
 	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
@@ -1802,7 +1821,7 @@ void() item_flight =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL - MORPH_FLY; // everyone can get goody - TDO: gremlin qual
+	self.mask_x = MORPH_ALL - MORPH_FLY; // flyers dont get goody - TDO: gremlin qual
 };
 
 // holdables

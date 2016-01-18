@@ -99,7 +99,8 @@ float(float sel) cb_morph =
 	else if (sel == IMP_MOGRE)			return(CB_OGRE);
 	else if (sel == IMP_MCTHON)		return(CB_CTHON);
 	else if (sel == IMP_MSCOURGE)		return(CB_SCOURGE);
-	else if (sel == IMP_MGREMLIN)		return(CB_GREMLIN);
+	else if (sel == IMP_MGREMLIN_F)	return(CB_GREMLIN);
+	else if (sel == IMP_MGREMLIN_L)	return(CB_GREMLIN);
 	else if (sel == IMP_MENF)			return(CB_ENF);
 	else if (sel == IMP_MIMP)			return(CB_IMP);
 	else if (sel == IMP_MCYBER)		return(CB_CYBER);
@@ -132,7 +133,7 @@ float(float sel) cb_morph =
 	else if (sel == CB_OGRE)			return(IMP_MOGRE);
 	else if (sel == CB_CTHON)			return(IMP_MCTHON);
 	else if (sel == CB_SCOURGE)		return(IMP_MSCOURGE);
-	else if (sel == CB_GREMLIN)		return(IMP_MGREMLIN);
+	else if (sel == CB_GREMLIN)		return(IMP_MGREMLIN_F);
 	else if (sel == CB_ENF)				return(IMP_MENF);
 //Hellion:
 	else if (sel == CB_IMP)				return(IMP_MIMP);
@@ -179,7 +180,7 @@ string(entity p1, float sel, string fp) polymorph_id =
 	else if (sel == IMP_MOGRE)			{s1 = "a skulking Ogre.";				s2 = STI_MOGRE;}
 	else if (sel == IMP_MCTHON)		{s1 = "a Lava Bomb.";					s2 = STI_MCTHON;}
 	else if (sel == IMP_MSCOURGE)		{s1 = "a hissing Scourge.";			s2 = STI_MSCOURGE;}
-	else if (sel == IMP_MGREMLIN)		{s1 = "a nasty Gremlin.";				s2 = STI_MGREMLIN;}
+	else if (sel == IMP_MGREMLIN_F)	{s1 = "a nasty Gremlin.";				s2 = STI_MGREMLIN;}
 	else if (sel == IMP_MENF)			{s1 = "a chief Enforcer.";				s2 = STI_MENF;}
 //Doomer
 	else if (sel == IMP_MIMP)			{s1 = "a Imp.";							s2 = STI_MIMP;}
@@ -401,6 +402,9 @@ void() morph_cube_use =
 
 // evolve here
 
+	if (self.state == IMP_MGREMLIN_F)
+	if (random() < 0.65) self.state = IMP_MGREMLIN_L;
+
 	polymorph_check(self.state, 0);
 
 	remove(c);
@@ -485,7 +489,7 @@ void(string ws, float rtime ) morph_walksound =
 	float fgr;
 
 	fgr = self.flags & FL_ONGROUND;
-	if (self.morphy == IMP_MGREMLIN && self._stand == gremlin_hover) fgr = TRUE;
+	if (self.morphy == IMP_MGREMLIN_F && self._stand == gremlin_hover) fgr = TRUE;
 
 	if (WALKSOUND && ((self.cnt < time) || !fgr))
 		{
@@ -517,7 +521,7 @@ float ofs;
 
 	if (o.morphy == IMP_MZOMBIE) 				ofs = 20;
 	else if (o.morphy == IMP_MCHAOS) 		ofs = 4;
-	else if (o.morphy == IMP_MGREMLIN) 		ofs = 22;
+	else if (o.mask_x & CB_GREMLIN) 		ofs = 22;
 	else if (o.morphy == IMP_MSHALR) 		ofs = 34;
 	else if (o.morphy == IMP_MWIZARD) 		ofs = 28;
 	else if (o.morphy == IMP_MHKNIGHT) 		ofs = 34;
@@ -545,14 +549,20 @@ float ofs;
 
 // fn(morph_test) - test multiple morph nums, return true for any match-
 
-float(entity etest, float m1,float m2,float m3,float m4,float m5,float m6) morph_test =
+float(entity e, float m1,float m2,float m3,float m4,float m5,float m6) morph_test =
 {
-if (etest.morphy == m1 && m1) return TRUE;
-if (etest.morphy == m2 && m2) return TRUE;
-if (etest.morphy == m3 && m3) return TRUE;
-if (etest.morphy == m4 && m4) return TRUE;
-if (etest.morphy == m5 && m5) return TRUE;
-if (etest.morphy == m6 && m6) return TRUE;
+if (m1)
+if ((e.morphy == m1) || (e.mask_x & m1)) return TRUE;
+if (m2)
+if ((e.morphy == m2) || (e.mask_x & m1)) return TRUE;
+if (m3)
+if ((e.morphy == m3) || (e.mask_x & m1)) return TRUE;
+if (m4)
+if ((e.morphy == m4) || (e.mask_x & m1)) return TRUE;
+if (m5)
+if ((e.morphy == m5) || (e.mask_x & m1)) return TRUE;
+if (m6)
+if ((e.morphy == m6) || (e.mask_x & m1)) return TRUE;
 };
 
 // fn(morph_ffchk) - see if morph matches morph / monster under fire conditions
@@ -608,7 +618,7 @@ float(entity atk, entity trg) morph_ffchk =
 	else if (mon.classname == "monster_imp") return(oth.morphy == IMP_MIMP || oth.morphy == IMP_MARACHN);
 	else if (mon.classname == "monster_cyberdemon") return(oth.morphy == IMP_MCYBER);
 	else if (mon.classname == "monster_arachnotron") return(oth.morphy == IMP_MIMP || oth.morphy == IMP_MARACHN);
-	else if (mon.classname == "monster_gremlin") return(oth.morphy == IMP_MGREMLIN);
+	else if (mon.classname == "monster_gremlin") return(oth.mask_x & CB_GREMLIN);
 	else if (mon.classname == "monster_scourge") return(oth.morphy == IMP_MSCOURGE);
 	else if (mon.classname == "monster_gunner") return(oth.morphy == IMP_MGUNNEY || oth.morphy == IMP_MTANK || oth.morphy == IMP_MSUPTANK);
 	else if (mon.classname == "monster_tank") return(oth.morphy == IMP_MGUNNEY || oth.morphy == IMP_MTANK || oth.morphy == IMP_MSUPTANK);
@@ -644,20 +654,20 @@ float(entity chk) morph_clichk =
 if (self.classname == "monster_army") return morph_test(chk,IMP_MENF,IMP_MOGRE,IMP_MZOMBIE,0,0,0); // he's kinda dumb...and a dork
 else if (self.classname == "monster_ogre") return morph_test(chk,IMP_MOGRE,IMP_MHKNIGHT,IMP_MSHALR,IMP_MSCOURGE,0,IMP_MSHAMBLR);
 else if (self.classname == "monster_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,0,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_shambler") return morph_test(chk,IMP_MSHAMBLR,IMP_MGREMLIN,0,0,0,0);
-else if (self.classname == "monster_demon1") return morph_test(chk,IMP_MDEMON,IMP_MGREMLIN,0,0,IMP_MSCOURGE,IMP_MSHAMBLR);
+else if (self.classname == "monster_shambler") return morph_test(chk,IMP_MSHAMBLR,CB_GREMLIN,0,0,0,0);
+else if (self.classname == "monster_demon1") return morph_test(chk,IMP_MDEMON,CB_GREMLIN,0,0,IMP_MSCOURGE,IMP_MSHAMBLR);
 else if (self.classname == "monster_wizard") return morph_test(chk,IMP_MWIZARD,IMP_MHKNIGHT,IMP_MSHALR,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
 else if (self.classname == "monster_zombie") return morph_test(chk,IMP_MZOMBIE,0,0,0,0,0); // zombies get no respect, they are just loathed
 else if (self.classname == "monster_dog") return morph_test(chk,IMP_MOGRE,IMP_MENF,0,0,IMP_MDEMON,IMP_MSHAMBLR);
 else if (self.classname == "monster_hell_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_tarbaby") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MWIZARD,IMP_MGREMLIN,IMP_MCTHON,IMP_MSHAMBLR);
+else if (self.classname == "monster_tarbaby") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MWIZARD,CB_GREMLIN,IMP_MCTHON,IMP_MSHAMBLR);
 else if (self.classname == "monster_boss") return morph_test(chk,IMP_MCTHON,0,0,0,0,0); // cthon likes lava
 else if (self.classname == "monster_enforcer") return morph_test(chk,IMP_MENF,IMP_MHKNIGHT,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_supervore") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,IMP_MGREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
-else if (self.classname == "monster_shalrath") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,IMP_MGREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
-else if (self.classname == "monster_scourge") return morph_test(chk,IMP_MSCOURGE,IMP_MGREMLIN,0,0,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_gremlin") return morph_test(chk,IMP_MSCOURGE,IMP_MGREMLIN,IMP_MDEMON,IMP_MOGRE,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_vomit") return morph_test(chk,IMP_MSCOURGE,IMP_MGREMLIN,IMP_MDEMON,IMP_MCTHON,0,IMP_MSHAMBLR);
+else if (self.classname == "monster_supervore") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,CB_GREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
+else if (self.classname == "monster_shalrath") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,CB_GREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
+else if (self.classname == "monster_scourge") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,0,0,0,IMP_MSHAMBLR);
+else if (self.classname == "monster_gremlin") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MOGRE,0,IMP_MSHAMBLR);
+else if (self.classname == "monster_vomit") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MCTHON,0,IMP_MSHAMBLR);
 // doom monsters - only friendly with doom dimension biengs
 else if (self.classname == "monster_imp") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
 else if (self.classname == "monster_arachnotron") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
@@ -828,26 +838,26 @@ void(float dx) morph_CycleWeaponCommand =
 
 void() morph_impulse =
 {
-	local float f;
 	if (self.impulse == 1) // select builtins with normal impulses
 	{
-		if (self.builtin & IT_AXE) self.weapon = IT_AXE;
-			// toggle through all the objects we have.
-		f = self.weapon;
-		if (f & self.builtin) pk_cycleObjects();
-
-		if (self.pk_currentitem == PK_IT_AXE)
-		{
-			self.weapon = f; // go back to whatever
-			self.weaponmodel = "";
-		}
-		else 
+		if (self.builtin & IT_AXE) 
 		{
 			self.weapon = IT_AXE;
-			PK_SetCurrentAmmo();
-//			sprint(self, "--- press Alt-fire to use this Painkeep item.\n");
-			self.weapon = f;
+			// toggle through all the objects we have.
+			pk_cycleObjects();
+
+			if (self.pk_currentitem == PK_IT_AXE)
+			{
+				self.weaponmodel = "";
+			}
+			else 
+			{
+				PK_SetCurrentAmmo();
+			}
 		}
+		else
+			if (WARNING)
+				bprint("Warning - this morph form has no base weapon - it cannot select painkeep items\n");
 	}
 	else if ((self.impulse == 2) && (self.builtin & IT_SHOTGUN))
 	{
@@ -857,32 +867,26 @@ void() morph_impulse =
 	else if ((self.impulse == 3) && (self.builtin & IT_SUPER_SHOTGUN))
 	{
 		self.weapon = IT_SUPER_SHOTGUN;
-		self.pk_currentitem = PK_IT_AXE;
 	}
 	else if ((self.impulse == 4) && (self.builtin & IT_NAILGUN))
 	{
 		self.weapon = IT_NAILGUN;
-		self.pk_currentitem = PK_IT_AXE;
 	}
 	else if ((self.impulse == 5) && (self.builtin & IT_SUPER_NAILGUN))
 	{
 		self.weapon = IT_SUPER_NAILGUN;
-		self.pk_currentitem = PK_IT_AXE;
 	}
 	else if ((self.impulse == 6) && (self.builtin & IT_GRENADE_LAUNCHER))
 	{
 		self.weapon = IT_GRENADE_LAUNCHER;
-		self.pk_currentitem = PK_IT_AXE;
 	}
 	else if ((self.impulse == 7) && (self.builtin & IT_ROCKET_LAUNCHER))
 	{
 		self.weapon = IT_ROCKET_LAUNCHER;
-		self.pk_currentitem = PK_IT_AXE;
 	}
 	else if ((self.impulse == 8) && (self.builtin & IT_LIGHTNING))
 	{
 		self.weapon = IT_LIGHTNING;
-		self.pk_currentitem = PK_IT_AXE;
 	}
 
 	else if (self.impulse == 10)
@@ -897,6 +901,8 @@ void() morph_impulse =
 			morph_sound(2, self.msight, 3);							// let player morphs "talk"
 		if (self._summon != SUB_Null) self._summon();		// attempt summon - TEST: ing
 	}
+
+	if (self.weapon != IT_AXE) self.pk_currentitem = PK_IT_AXE;
 
 /*
 	if (cmd == IMP_MFIREM)
@@ -915,6 +921,7 @@ void() morph_impulse =
 
 // half morph impulse, half rebular weapons - note: has to have builtin axe - this cant be skipped
 
+
 void() split_morph_impulse =
 {
 
@@ -923,6 +930,7 @@ void() split_morph_impulse =
 		self.eweapon = world; // fixes pk inventory not reporting correctly when selected like this
 		self.weaponmodel = "";
 		W_ChangeWeapon ();
+		self.forcewchange = 0;
 	}
 	else if (self.impulse >= 3 && self.impulse <= 8)
 		W_ChangeWeapon ();
@@ -934,6 +942,11 @@ void() split_morph_impulse =
 		CycleWeaponReverseCommand ();
 	else
 	morph_impulse();
+
+	if (self.weapon != IT_AXE)
+	{
+		self.pk_currentitem = PK_IT_AXE;
+	}
 };
 
 
@@ -966,6 +979,21 @@ void(float mpy) morph_armor_check =
 	}
 };
 
+// return numeric (morphic) char code for a given map mode
+float(string mm) set_char_num =
+{
+	local float cn;
+	
+	cn = CHAR_Q;
+	if (mm == "W") cn = CHAR_W;
+	if (mm == "D") cn = CHAR_D;
+	if (mm == "Q") cn = CHAR_Q;
+	if (mm == "PK") cn = CHAR_PK;
+	if (mm == "Q2") cn = CHAR_Q2;
+	if (mm == "Q3") cn = CHAR_Q3;
+	return(cn);
+};
+
 // fn(polymorph_check) - do a change by code or impulse, handles other morph impulse commands
 // self - entity to morph, note code requirements below for some values
 // cmd - instruction for morphing
@@ -977,6 +1005,17 @@ void(float mpy) morph_armor_check =
 // TEST:ING
 void(float silent) player_human_become = 
 {
+	self.cam_z = 10 / 100;
+	self.cam_y = 30;
+	stuffcmd(self, "chase_up 10\n");
+	stuffcmd(self, "chase_back 30\n");
+	stuffcmd(self, "exec m-human.cfg\n");
+
+
+	if (self.morphy == CHAR_W) setmodel(self, "progs/plyr_bw.mdl");
+	if (self.morphy == CHAR_D) setmodel(self, "progs/plyr_dm.mdl");
+	if (self.morphy == CHAR_Q) setmodel(self, "progs/player.mdl");
+	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
 };
 
 void(float cmd, float pls) polymorph_check =
@@ -1046,7 +1085,8 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MCTHON) player_lavablob_become(pls);
 		else if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
 		else if (cmd == IMP_MENF) player_enforcer_become(pls);
-		else if (cmd == IMP_MGREMLIN) player_gremlin_become(pls);
+		else if (cmd == IMP_MGREMLIN_F) player_gremlin_become(pls);
+		else if (cmd == IMP_MGREMLIN_L) player_gremlin_become(pls);
 
 		else if (cmd == IMP_MANODEX) player_anode_become(pls);
 		else player_human_become(pls);

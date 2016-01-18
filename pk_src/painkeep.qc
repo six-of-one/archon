@@ -1491,7 +1491,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_pk_cmap", "0"); // admin setup custom maps - activate server map loop via pknextmap aliases
 
 // morphic
-		registercvar("sv_morph", "3"); // 2 cubes
+		registercvar("sv_morph", "5"); // TEST: 3"); // 2 cubes
 		registercvar("sv_morph_time", "30"); // TEST: "120");
 		registercvar("sv_morph_dv", "5"); // TEST: "40");
 //		registercvar("cl_morph", "12"); // client ident
@@ -1577,7 +1577,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 		registercvar("pk_def_x_items", "0");
 
-		registercvar("pk_char_con", "0"); // char control - 1 = causes alternate player models based on map mode, 10 - 15, use that char only
+		registercvar("pk_char_con", "1"); // char control - 1 = causes alternate player models based on map mode, 10 - 15, use that char only
 		registercvar("pk_init_con", "0"); // init control - see flags sect. of pk.defs.qc
 																			// these can be a bit mask or map code and replace or add to initial weapons
 		registercvar("pk_init_0_wolf", "0"); // weapons for place 0 / wolf guy | map by bit or map code

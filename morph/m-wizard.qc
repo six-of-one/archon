@@ -408,9 +408,8 @@ void() player_wizard_impulse =
 
 	morph_impulse();
 
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
-
 	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Scragg  using ( Pain field )\n");
 	}
@@ -454,15 +453,19 @@ void(float silent) player_wizard_become =
 //	self._can_get_p=SUB_False;
 	self._killmsg=player_wizard_killmsg;
 	self._killmsg2=player_wizard_killmsg2;
+
+
+	self.cam_z = 36 / 100;
+	self.cam_y = -4;
+	stuffcmd(self, "chase_up 36\n");
+	stuffcmd(self, "chase_back -4\n");
+	stuffcmd(self, "exec m-scragg.cfg\n");
+
 	setmodel(self,"progs/wizard.mdl");
 
 	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
 	self.weapon = IT_SUPER_SHOTGUN;
 
-//	self.mask_x = CB_SCRAG;
-//	W_SetCurrentAmmo(self);
-//	self._hk_major = morph_major;
-//	self._hk_lesser = morph_lesser;
 	self.msight = "wizard/wsight.wav";
 	self.noise2 = "wizard/wpain.wav";
 	self.noise3 = "";

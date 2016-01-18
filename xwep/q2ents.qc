@@ -248,6 +248,7 @@ void() q2_ammo_bullets =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() q2_ammo_rockets =
@@ -275,6 +276,7 @@ void() q2_ammo_rockets =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
 
@@ -303,6 +305,7 @@ void() q2_ammo_shells =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() q2_ammo_cells =
@@ -330,6 +333,7 @@ void() q2_ammo_cells =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
 void() q2_ammo_slugs =
@@ -357,6 +361,7 @@ void() q2_ammo_slugs =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 /* heh heh
@@ -438,6 +443,7 @@ void() q2_ammo_grenades =
 	self.chaosweptime = 1;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 // anything with another genre classname (weapon_bfg - q3) has q2_ prepended
@@ -497,6 +503,7 @@ void () q2_weapon_bfg =
 	self.endtime = 0.87;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void () q2_weapon_railgun =
@@ -541,6 +548,7 @@ void () q2_weapon_railgun =
 	self.endtime = 2.33;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void () weapon_hyperblaster =
@@ -583,6 +591,7 @@ void () weapon_hyperblaster =
 	self.chaosweptime = 1.62;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
 void() q2_weapon_rocketlauncher =
@@ -631,6 +640,7 @@ void() q2_weapon_rocketlauncher =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void () q2_weapon_grenadelauncher =
@@ -674,6 +684,7 @@ void () q2_weapon_grenadelauncher =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 };
 
 
@@ -719,6 +730,7 @@ void () weapon_chaingun =
 	self.chaosweptime = 2.01;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 // doing the same way even tho q2 doesnt offer a dbl yet
@@ -768,6 +780,7 @@ void() q2_weapon_machinegun =
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void () q2_weapon_supershotgun =
@@ -818,6 +831,7 @@ void () q2_weapon_supershotgun =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void () q2_weapon_shotgun =
@@ -861,6 +875,7 @@ void () q2_weapon_shotgun =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void () q2_weapon_blaster =
@@ -904,6 +919,7 @@ void () q2_weapon_blaster =
 	self.target = "q2_snd/lashit.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 void () q2_weapon_grapple =
@@ -962,6 +978,7 @@ void () q2_weapon_grapple =
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 void() q2_item_health_small =

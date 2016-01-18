@@ -276,12 +276,13 @@ void() PK_SetCurrentAmmo =
 		self.pkprevweapon = self.pk_currentitem;
 		self.forcewchange = FALSE;
 
+		if ((!self.weapon & self.builtin) || (self.pk_currentitem != PK_IT_AXE)) // never announce a built in here - will ALAWYS be done in morph code & pki - needs announce
 		wchanged = TRUE;
 		ominous_hum("", 1);
 	}
 
-	wchanged = wchanged & ((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON));
-	if (DARKPLACES && cvar("chase_active")) wchanged = TRUE;
+//	wchanged = wchanged & ((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) || cvar("chase_active"));
+	if (!((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) || cvar("chase_active"))) wchanged = FALSE;
 
 	if (wchanged)
 		sprint(self, "You have selected the ");
@@ -293,6 +294,7 @@ void() PK_SetCurrentAmmo =
 		self.eweapon.fly_sound = 0; // hum local deal
 		self.tomb_time = 0; // rng weps use this
 
+		if (!self.mask_x & CB_SCOURGE)
 		if (wchanged)
 		{
 			sprint(self, self.eweapon.netname);
@@ -521,6 +523,18 @@ void() PK_SetCurrentAmmo =
 			self.weaponmodel = "progs/v2_rock.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_ROCKETS;
+		if (self.mask_x & CB_SCOURGE)
+		{
+			self.weaponmodel = "";
+			if (self.eweapon)
+			if (self.eweapon.pk_touch != cube_touch)
+			{
+				self.eweapon.weaponmodel = "";
+				self.eweapon._attack = player_scourge_attack;
+				self.eweapon._fr_attack = SUB_Null;
+			}
+		}
+		else
 		if (wchanged)
 			sprint(self, "Grenade Launcher\n");
 	}
@@ -542,6 +556,18 @@ void() PK_SetCurrentAmmo =
 		self.weaponmodel = "progs/v_light.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_CELLS;
+		if (self.mask_x & CB_SCOURGE)
+		{
+			self.weaponmodel = "";
+			if (self.eweapon)
+			if (self.eweapon.pk_touch != cube_touch)
+			{
+				self.eweapon.weaponmodel = "";
+				self.eweapon._attack = player_scourge_attack;
+				self.eweapon._fr_attack = SUB_Null;
+			}
+		}
+		else
 		if (wchanged)
 			sprint(self, "Thunderbolt\n");
 	}
@@ -1435,7 +1461,7 @@ void() PK_Attack =
 		{
 			sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
 			r = random();
-			if (r < 0.25 || (self.morphy == IMP_MGREMLIN) )
+			if (r < 0.25 || (self.mask_x & CB_GREMLIN) )
 				player_axe1 ();
 			else if (r<0.5)
 				player_axeb1 ();

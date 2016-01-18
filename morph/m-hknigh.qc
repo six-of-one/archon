@@ -278,9 +278,8 @@ void() player_hknight_impulse =
 
 	morph_impulse();
 
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
-
 	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Hell Knight using ( Sword )\n");
 	}
@@ -336,6 +335,12 @@ void(float silent) player_hknight_become =
 //	self._can_get_p=SUB_False;
 	self._killmsg=player_hknight_killmsg;
 	self._killmsg2=player_hknight_killmsg2;
+
+	self.cam_z = 15 / 100;
+	self.cam_y = 12;
+	stuffcmd(self, "chase_up 15\n");
+	stuffcmd(self, "chase_back 12\n");
+	stuffcmd(self, "exec m-hellknight.cfg\n");
 
 	setmodel(self,"progs/hknight.mdl");
 //	self.modelindex_morph=self.modelindex;

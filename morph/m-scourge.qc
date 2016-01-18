@@ -91,7 +91,7 @@ void() player_scourge_stand = [ $stand1, player_stand1 ] {
 	if (WALKSOUND) sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);  // scourge stopped turn off sound
 	if (self.walkframe == 3) morph_sound(0.08, "scrg/idle.wav", 3);
 	self.frame = $stand1 + self.walkframe;
-//	self.walkframe = self.walkframe + 1;
+	self.walkframe = self.walkframe + 1;
 };
 
 
@@ -102,7 +102,7 @@ void() player_scourge_run = [ $walk1, player_run ]
 	if (self.walkframe == 1) morph_walksound("scrg/walk.wav",0.9);
 	if (self.walkframe == 3) morph_sound(0.05, "scrg/idle.wav", 3);
 	self.frame = $walk1 + self.walkframe;
-//	self.walkframe = self.walkframe + 1;
+	self.walkframe = self.walkframe + 1;
 };
 
 // 5 frames of player_scourge pain to stand1
@@ -183,17 +183,18 @@ void(float ox) player_scourge_FireSpikes =
 	src = self.origin - '0 0 11' + v_right * ox + v_forward * 18;
 
 //	if (wep_ref(WMOD_RDW,self.weapon & 255,0,self,0) == MC_ROTOR)
-	if (self.eweapon)
+	if (self.weapon == IT_LIGHTNING && (self.ammo_cells > 0))
 //	if (self.weapon == 0) // fire some laser bolts, maybe add more later
 		{
-		self.currentammo = self.ammo_cells;//wep_ref(WMOD_RDA,self.weapon & 255,0,self,0);
+		self.currentammo = self.ammo_cells;
 		am = 0;
 		if (fabs(ox) == 24)
 			if (self.currentammo > 0)
 				am = FL_USEAMMO;
 
 		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, am, RM_SKY | PF_LAVA, src, ' 0 0 0', "laser", "progs/laser_m.mdl", "enforcer/enfire.wav", Laser_Blast, 6, SUB_Remove, Laser_Blast);
-		newmis.skin = 7; // white / blue shift
+		if (!self.eweapon) self.ammo_cells = self.ammo_cells - 1;
+		newmis.skin = 8; // white / blue shift
 		newmis.frame = 5; // small slope trap
 //		newmis.effects = EF_DIMLIGHT;
 		}
@@ -268,9 +269,11 @@ void()   player_scourge_atk8 =[ $shoot2,   player_stand1 ]
 
 void() m_Attack_With_Tail =
 {
-	if (self.eweapon)  // we got modded to fire prox mines if we have rockets
+	if (self.weapon == IT_GRENADE_LAUNCHER && (self.ammo_rockets > 0))  // we got modded to fire prox mines if we have rockets
 		{
+		self.currentammo = self.ammo_rockets;
 		W_Fire_Proxmine();
+		if (!self.eweapon) self.ammo_rockets = self.ammo_rockets - 1;
 		self.punchangle_x = 0;
 		}
 	else
@@ -300,7 +303,7 @@ void() player_scourge_attack =
 {
 	if (random() < 0.07) morph_sound(2, self.msight, 3);
 
-	if ( self.weapon == SEL_SCRGTAIL )
+	if ( self.weapon == SEL_SCRGTAIL || (self.weapon == IT_GRENADE_LAUNCHER))
 		{
 		if (rune_haste(0.5))
 		self.attack_finished = time + 1.0;
@@ -325,23 +328,57 @@ void() player_scourge_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	morph_impulse();
-
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
+	split_morph_impulse();
 
 // TDO: eweapon checks - can fire lasers & prox bombs
 // TDO: alt fire
 // TDO: quad & dmg runes increase nail fire (6 slots for runes, 8 slots for quad)
 
+	if (self.weapon == IT_LIGHTNING)
+	{
+		self.items = self.items | IT_CELLS;
+		sprint(self, "Scourge firing ( lazers )\n"); 
+		self.weaponmodel = 	"";
+ 		if (self.eweapon)
+		if (self.eweapon.pk_touch != cube_touch)
+		{
+			self.eweapon.weaponmodel = "";
+			self.eweapon._attack = player_scourge_attack;
+			self.eweapon._fr_attack = SUB_Null;
+			self.eweapon.duration = 0; // dont dbl sound
+		}
+		self.forcewchange = 0;
+	}
+	if (self.weapon == IT_GRENADE_LAUNCHER)
+	{
+		self.items = self.items | IT_ROCKETS;
+		sprint(self, "Scourge firing ( bombs )\n"); 
+		self.weaponmodel = "";
+		if (self.eweapon)
+		if (self.eweapon.pk_touch != cube_touch)
+		{
+			self.eweapon.weaponmodel = "";
+			self.eweapon._attack = player_scourge_attack;
+			self.eweapon._fr_attack = SUB_Null;
+			self.eweapon.duration = 0; // dont dbl sound
+		}
+		self.forcewchange = 0;
+	}
 	if (self.weapon == SEL_SCRGNAIL)
 	{
+		if (self.eweapon.pk_touch != cube_touch)
+		self.eweapon = world;
 		self.items = self.items | IT_NAILS;
 		sprint(self, "Scourge firing ( perforator )\n"); 
 	}
 	if (self.weapon == SEL_SCRGTAIL)
 	{
-//		self.items = self.items | IT_NAILS;
-		sprint(self, "Scourge firing ( stinger )\n"); 
+		if (self.eweapon.pk_touch != cube_touch)
+		self.eweapon = world;		
+		if (self.pk_currentitem == PK_IT_AXE)
+		{
+			sprint(self, "Scourge firing ( stinger )\n"); 
+		}
 	}
 };
 
@@ -441,6 +478,12 @@ void(float silent) player_scourge_become =
 	self._killmsg=player_scourge_killmsg;
 	self._killmsg2=player_scourge_killmsg2;
 
+	self.cam_z = 0;
+	self.cam_y = 10;
+	stuffcmd(self, "chase_up 0\n");
+	stuffcmd(self, "chase_back 10\n");
+	stuffcmd(self, "exec m-scourge.cfg\n");
+
 	setmodel(self,"progs/scor.mdl");
 
 //	self.mask_x = CB_SCOURGE;
@@ -453,7 +496,6 @@ void(float silent) player_scourge_become =
 	self.noise2 = "scrg/pain2.wav";
 	self.noise3 = "";
 	self.view_ofs = ' 0 0 5'; // lowered to 12 first then 7 more
-	self.cam_z = 0;
 //	if(!deathmatch)
 //		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else

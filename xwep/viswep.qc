@@ -193,7 +193,7 @@ vector(entity e, entity l /*, float flg */) viswep_ofs =
 
 	v = ' 0 0 0';
 
-	if (l.morphy == IMP_MGREMLIN)
+	if (l.mask_x & CB_GREMLIN)
 		{
 /*
 		if (flg == SET_ARMED)
@@ -371,11 +371,9 @@ void(entity e, float pkbt) vwep_firecary =
 
 	pkbits = mk_pkbits(e);
 
-	if (!self.mask_x & CB_GREMLIN)
-	if (!self.mask_x & CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
-
 	if (pkbits & pkbt) return; // e' still got one
 
+	e.weaponmodel = ""; // for morphs that dont make vwep from pki
 	vw_chain(e);
 	f = vchk(IT_AXE, pkbt, e.vwepent);
 
@@ -434,9 +432,6 @@ void(entity e, float cd) viswep_ld =
 //		}
 		return;
 	}
-
-	if (!self.mask_x & CB_GREMLIN)
-	if (!self.mask_x & CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
 	
 // have items & check for inventory
 	while (tr)
@@ -522,7 +517,7 @@ void(entity e, float cd) viswep_ld =
 	while ( f & qweps && f < 8388609 ) // NOTE: this will not load an axe
 	{
 		if ((e.items & f) && !(bts & f))
-		if (!(f & e.builtin )) // dont load builtin
+		if (!(f & e.builtin )) // dont load builtin as vwep
 			vload(e, f);
 		f = f * 2;
 	}
@@ -530,6 +525,9 @@ void(entity e, float cd) viswep_ld =
 	f = 1;
 	while ( f & pkweps && f < 8388609 )
 	{
+		if (!self.mask_x & CB_GREMLIN)
+		if (!self.mask_x & CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
+
 		if ((pkbits & f) && !(pkts & f))
 		if (!(f == PK_IT_AXE && (e.builtin & IT_AXE)  )) // dont load axe for builtin wep 1
 			pkvload(e, f);
@@ -599,6 +597,12 @@ void() viswep_post =
 		return;
 	}
 
+	pkbits = mk_pkbits(self);
+	if (!self.vwepent && !pkbits &&  (self.builtin == (self.items & WEP_MASK))) // no pk items, & only builtins - no vw to do
+	{
+		return;
+	}
+
 	vhead = self.vwepent;
 
 //	qld = FALSE;
@@ -647,13 +651,16 @@ void() viswep_post =
 		if (self.items & qweps != vhead.items) qld = TRUE;
 		if (!qld && vhead.armorvalue != self.armortype) qld = VW_ARMOR; // if vw armor display - update on armor changes
 
-		pkbits = mk_pkbits(self);
 		if (vhead.pk_items != pkbits || qld) viswep_ld(self, 1);
 		}
 	
 	}
 
-	if (!self.vwepent) return;
+	if (!self.vwepent)
+	{
+		if (self.pkprevweapon != self.pk_currentitem) PK_SetCurrentAmmo(); // because morphs dont make vwep for pki
+		return;
+	}
 
 // detect changes later
 	vhead = self.vwepent;
@@ -692,10 +699,7 @@ void() viswep_post =
 		if (vhead.weapon == dwep && (vhead.pk_currentitem == pkdwep || vhead.weapon != IT_AXE))
 		{
 			drw = TRUE;
-//			if (pkdwep < 2)
-				vhead.owner.eweapon = vhead.eweapon;
-//			else
-//				vhead.owner.eweapon =  world;
+			vhead.owner.eweapon = vhead.eweapon;
 
 			if (self.ishuman)
 			if ( !(self.cam_x & CHSCAM_ON))
@@ -731,14 +735,26 @@ void() viswep_post =
 				vhead.model = "";
 			}
 		}
+
+		if (!self.mask_x & CB_GREMLIN)
+		if (!self.mask_x & CB_HUMAN)
+		{
+			if (vhead.wad != "art_shell")
+			{
+				vhead.model = "";
+				vwc = FALSE; // non humans / non gremlins with wep / x_wep do not display visweps - but we need the eweapon entries
+			}
+		}
+//いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい//
+
 		if (!VW)
-		if (vhead.weapon > 0)
+		if (vhead.weapon > 0) // make sure its a weapon - other things use viswep code like the q3 artifact shells - other weapon enhancements (like the air tanks & flamer tanks) should disappear in !VW, !vwc, & *100
 		if (!(vhead.weapon == IT_AXE && vhead.pk_currentitem == PK_IT_AXE))
 		if (vhead.mdl != "progs/vw_q2_hgr.mdl")
 		if (vhead.mdl != "progs/vw_axe.mdl" && vhead.mdl != "progs/vw_mjolnir.mdl") vmdl = VW_DEFGUN; // ret from invisible - set non axe to qgun
 
 		if (vwc)
-		if (vhead.owner.items & IT_INVISIBILITY) vhead.model = ""; // heh heh, player invisible
+		if (vhead.owner.items & IT_INVISIBILITY) vhead.model = ""; // heh heh, player invisible - NOTE: art shells may be still visible when invisible
 		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
 		else if (vhead.vv_draw != (void()) 0) // new vw paradigm - code set models
 		{

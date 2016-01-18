@@ -248,6 +248,7 @@ void() weapon_laser_gun =
 
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
 
@@ -286,6 +287,7 @@ void() weapon_proximity_gun =
 
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 };
 
 /*
@@ -408,13 +410,22 @@ void() item_artifact_wetsuit =
 {
 	self.netname = "Wetsuit";
 	self.wait = RSP_TIME;
+	self.touch = x_pwr_touch;
+//	self.dmgtime = ; // just using pow time for now
+	self.group = "Radiation suit is near expiration date\n";
+	self.items = IT_SUIT;
 
    setmodel (self, "progs/wetsuit.mdl");
    setsize (self, '-16 -16 -24', '16 16 32');
    self.noise = "misc/weton.wav";
+   self.noise3 = "misc/wetsuit.wav";
+
+	self.lip = WETSUIT; // skin in human player models
 
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
+	self.mask_x = MORPH_ALL; // everyone can get arts
+
 };
 
 /*

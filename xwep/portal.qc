@@ -638,6 +638,7 @@ void() weapon_portal =
 //	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 

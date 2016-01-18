@@ -188,22 +188,30 @@ void() player_ogre_shoot3 = [ $shoot3, player_ogre_shoot4 ]
 {
 	local float fr;
 	self.effects = self.effects | EF_MUZZLEFLASH;
-	if (self.eweapon)
+	fr = TRUE;
+	if (!self.eweapon)
 	{
 //		if (self.eweapon.weapon == MC_THUNDER) W_FireLightning();
 //		else if (self.eweapon.weapon == MC_LASERCAN) HIP_FireLaser(stat);
-//		if (self.eweapon._attack == fire_toss) { fire_toss_atk(); self.effects = self.effects - (self.effects & EF_MUZZLEFLASH); }
 //		else 
-		if (self.eweapon.weapon & (IT_NAILGUN | IT_SUPER_NAILGUN))
+		if (self.weapon & (IT_NAILGUN | IT_SUPER_NAILGUN))
 			{
 				W_FireSpikes(-12);
 				self.attack_finished = time + 0.2;
 				if (self.button0) self.think = player_ogre_shoot2;
 			}
-//		else if (self.eweapon._hk_major != SUB_Null) self.eweapon._hk_major();
-		else fr = TRUE;
+		else fr = FALSE;
 		if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
-		if (!fr) return;
+		if (fr) return;
+	}
+	else
+	{
+//		if (self.eweapon.weapon == MC_THUNDER) W_FireLightning();
+//		else if (self.eweapon.weapon == MC_LASERCAN) HIP_FireLaser(stat);
+//		else
+		if (self.eweapon._attack != SUB_Null) self.eweapon._attack();
+		else fr = FALSE;
+		if (fr) return;	
 	}
 	W_FireGrenade();
 	if (self.weapon == IT_ROCKET_LAUNCHER) // cluster bomb
@@ -247,11 +255,10 @@ void() player_ogre_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	morph_impulse();
-
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
+	split_morph_impulse();
 
 	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Ogre using ( Chainsaw )\n");
 	}
@@ -294,6 +301,12 @@ void(float silent) player_ogre_become =
 //	self._can_get_p = SUB_False;
 	self._killmsg = player_ogre_killmsg;
 	self._killmsg2 = player_ogre_killmsg2;
+
+	self.cam_z = 15 / 100;
+	self.cam_y = 12;
+	stuffcmd(self, "chase_up 15\n");
+	stuffcmd(self, "chase_back 12\n");
+	stuffcmd(self, "exec m-ogre.cfg\n");
 
 	setmodel(self,"progs/ogre.mdl");
 

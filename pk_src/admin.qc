@@ -2530,13 +2530,13 @@ void() PK_AdminImpulse =
 		if (pk_adminpwdmask) // cute password mask
 		{
 			if			(self.lefty > 9999999999) as	= "***********" ; // alas, my compiler for additive strings, just stop echoing new chars here
-			else if (self.lefty > 999999999) as	= "**********" ;
+			else if (self.lefty > 999999999) as		= "**********" ;
 			else if (self.lefty > 99999999) as		= "*********" ;
 			else if (self.lefty > 9999999) as		= "********" ;
-			else if (self.lefty > 999999) as		= "*******" ;
+			else if (self.lefty > 999999) as			= "*******" ;
 			else if (self.lefty > 99999) as			= "******" ;
 			else if (self.lefty > 9999) as			= "*****" ;
-			else if (self.lefty > 999) as			= "****" ;
+			else if (self.lefty > 999) as				= "****" ;
 			else if (self.lefty > 99) as				= "***" ;
 			else if (self.lefty > 9) as				= "**" ;
 			else if (self.lefty > 0) as				= "*" ;

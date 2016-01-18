@@ -302,9 +302,8 @@ void() player_demon_impulse =
 
 	morph_impulse();
 
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
-
 	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		self.items = self.items | IT_AXE;
 		sprint(self, "Demon using ( Hack & Slash )\n"); 
@@ -338,6 +337,12 @@ void(float silent) player_demon_become =
 //	self._can_get_p=SUB_False;
 	self._killmsg=player_demon_killmsg;
 	self._killmsg2=player_demon_killmsg2;
+
+	self.cam_z = 20 / 100;
+	self.cam_y = 10;	
+	stuffcmd(self, "chase_up 20\n");
+	stuffcmd(self, "chase_back 10\n");
+	stuffcmd(self, "exec m-fiend.cfg\n");
 
 	setmodel(self,"progs/demon.mdl");
 //	self.modelindex_morph=self.modelindex;

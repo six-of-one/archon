@@ -412,6 +412,7 @@ void() d_ammo_ammobox =
 	self.netname = "Box of bullets";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_ammo_clip =
@@ -439,6 +440,7 @@ void() d_ammo_clip =
 	self.netname = "Clip";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_ammo_1rocket =
@@ -467,6 +469,7 @@ void() d_ammo_1rocket =
 	self.netname = "Rocket";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
 void() d_ammo_rockbox =
@@ -494,6 +497,7 @@ void() d_ammo_rockbox =
 	self.netname = "Box of Rockets";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
 void() d_ammo_4shell =
@@ -522,6 +526,7 @@ void() d_ammo_4shell =
 	self.netname = "4 shells";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_ammo_shellbox =
@@ -550,6 +555,7 @@ void() d_ammo_shellbox =
 	self.netname = "Box of Shells";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_ammo_cellbox =
@@ -577,6 +583,7 @@ void() d_ammo_cellbox =
 	self.netname = "Box of cells";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
 void() d_ammo_cellpack =
@@ -605,6 +612,7 @@ void() d_ammo_cellpack =
 	self.netname = "Cells";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
 void() d_barrel =
@@ -693,6 +701,7 @@ void() d_weapon_bfg =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	self.endtime = 0.768;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_weapon_rocketlauncher =
@@ -737,6 +746,7 @@ void() d_weapon_rocketlauncher =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_weapon_chaingun =
@@ -781,6 +791,7 @@ void() d_weapon_chaingun =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 // cn is button0 state - if held, accuracy decreases - may need to add other weps
@@ -843,6 +854,7 @@ void() d_weapon_pistol =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 void() d_weapon_saw =
@@ -889,6 +901,7 @@ void() d_weapon_saw =
 	self.endtime = 0.715;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 
@@ -934,6 +947,7 @@ void() d_weapon_shotgun =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_weapon_supershotgun =
@@ -976,6 +990,7 @@ void() d_weapon_supershotgun =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 
@@ -1019,6 +1034,7 @@ void() d_weapon_plasma =
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_item_pack =
@@ -1049,6 +1065,7 @@ void() d_item_pack =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() d_item_automap =
@@ -1269,6 +1286,7 @@ void() d_art_radsuit =
 	self.items = IT_SUIT;
 	self.wait = D_POWER_WAIT;
 	self.dmgtime = D_POWER_TIME;
+	self.lip = RADSUIT; // skin in human player models
 
 	setmodel (self, "progs/d_radsuit.mdl");
 	self.noise = "doom/dsitemup.wav"; // radsuit finish sounds, proper op
@@ -1494,6 +1512,7 @@ void() w_weapon_machinegun =
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() w_chg_base =
@@ -1542,6 +1561,7 @@ void() w_weapon_chaingun =
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() w_fire_motar =
@@ -1593,6 +1613,7 @@ void() w_weapon_mortar =
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() w_weapon_flamer =
@@ -1639,6 +1660,7 @@ void() w_weapon_flamer =
 	self.chaosweptime = 1.2;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() w_weapon_pistol =
@@ -1684,6 +1706,7 @@ void() w_weapon_pistol =
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 void() w_weapon_knife =
@@ -1728,6 +1751,7 @@ void() w_weapon_knife =
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 
@@ -1755,6 +1779,7 @@ void() w_ammo_clip =
 	self.netname = "Clip";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 // FIX: need ammo model
@@ -1783,6 +1808,7 @@ void() w_ammo_rock =
 	self.netname = "Mortars";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() w_ammo_gas =
@@ -1817,6 +1843,7 @@ void() w_ammo_gas =
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() w_item_pack =
@@ -1846,6 +1873,7 @@ void() w_item_pack =
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() w_art_facesphere =
@@ -2049,11 +2077,11 @@ void() w_barrel =
 
 	self.netname = "Barrel";
 	setmodel (self, "progs/barrel2.mdl");
+	setsize (self, '-12 -12 -24', '12 12 32');
 	self.frame = 1;
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
-//	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
 
@@ -3324,7 +3352,7 @@ void() w_flag =
 
 	precache_model("progs/flag.mdl");
 	setmodel(self,"progs/flag.mdl");
-	self.frame = 1;
+	self.frame = 2; // slightly shorter
 	self.skin = 2;
 
 	self.solid = SOLID_BSP;

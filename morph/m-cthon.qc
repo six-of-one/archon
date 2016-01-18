@@ -359,6 +359,12 @@ void() player_lavacthon_become =
 	self._killmsg=player_cthon_killmsg;
 	self._killmsg2=player_cthon_killmsg2;
 
+	self.cam_z = 108 / 100;
+	self.cam_y = 36;
+	stuffcmd(self, "chase_up 108\n");
+	stuffcmd(self, "chase_back 36\n");
+	stuffcmd(self, "exec m-cthon.cfg\n");
+
 	setmodel(self,"progs/cthon.mdl");
 	self.modelindex_morph = self.modelindex;
 

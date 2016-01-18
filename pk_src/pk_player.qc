@@ -85,7 +85,7 @@ $frame dthrow1 dthrow2 dthrow3 dthrow4 dthrow5
 
 void(float ab, float gb, float amx, float gmx) wk_frames =
 {
-	if (self.morphy == IMP_MGREMLIN)
+	if (self.mask_x & CB_GREMLIN)
 	{
 		if (self.map == "spawn")
 		{
@@ -336,7 +336,10 @@ void() player_bolt1	 =[$lightfatt1, player_bolt2  ]
 		self.weaponframe = 1;
 	SuperDamageSound();
 	bolt_fire();
+	if (rune_haste(0.1))
 	self.attack_finished = time + 0.2;
+
+	if (self.morphy == IMP_MENF) self.frame = 33;
 };
 
 void() player_bolt2	 =[$lightfatt2, player_bolt3  ] // *pk - viswep - Cataboligne - 9.29.9
@@ -350,7 +353,10 @@ void() player_bolt2	 =[$lightfatt2, player_bolt3  ] // *pk - viswep - Catabolign
 		self.weaponframe = 1;
 	SuperDamageSound();
 	bolt_fire();
+	if (rune_haste(0.1))
 	self.attack_finished = time + 0.2;
+
+	if (self.morphy == IMP_MENF) self.frame = 35;
 };
 
 

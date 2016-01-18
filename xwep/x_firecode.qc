@@ -635,7 +635,10 @@ void() player_bolt3	 =[$lightfatt3, player_bolt4  ]
 		self.weaponframe = 1;
 	SuperDamageSound();
 	bolt_fire();
+	if (rune_haste(0.1))
 	self.attack_finished = time + 0.2;
+
+	if (self.morphy == IMP_MENF) self.frame = 33;
 };
 
 void() player_bolt4	 =[$lightfatt4, player_bolt1  ]
@@ -649,7 +652,10 @@ void() player_bolt4	 =[$lightfatt4, player_bolt1  ]
 		self.weaponframe = 1;
 	SuperDamageSound();
 	bolt_fire();
+	if (rune_haste(0.1))
 	self.attack_finished = time + 0.2;
+
+	if (self.morphy == IMP_MENF) self.frame = 35;
 };
 
 

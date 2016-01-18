@@ -238,9 +238,8 @@ void() player_shalrath_impulse =
 
 	morph_impulse();
 
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
-
 	if (self.weapon == SEL_SHAL_ANH)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		self.items = self.items | IT_CELLS;
 		sprint(self, "Press fire to summon / dismiss Sphere of annihilation\n"); 
@@ -286,6 +285,12 @@ void(float silent) player_shalrath_become =
 //	self._can_get_p=SUB_False;
 	self._killmsg=player_shalrath_killmsg;
 	self._killmsg2=player_shalrath_killmsg2;
+
+	self.cam_z = 15 / 100;
+	self.cam_y = 22;
+	stuffcmd(self, "chase_up 15\n");
+	stuffcmd(self, "chase_back 22\n");
+	stuffcmd(self, "exec m-shalrath.cfg\n");
 
 	setmodel(self,"progs/shalrath.mdl");
 

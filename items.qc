@@ -605,6 +605,7 @@ void () q100_weapon_supershotgun =
 	self.touch = weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
 /*QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -619,6 +620,7 @@ void () weapon_nailgun =
 	self.touch = weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN+ CB_GREMLIN + CB_OGRE;
 };
 
 /*QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -633,6 +635,7 @@ void () weapon_supernailgun =
 	self.touch = weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN+ CB_GREMLIN + CB_OGRE;
 };
 
 /*QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -647,6 +650,7 @@ void () q100_weapon_grenadelauncher =
 	self.touch = weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 };
 
 /*QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -661,6 +665,7 @@ void () q100_weapon_rocketlauncher =
 	self.touch = weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
 
@@ -676,6 +681,7 @@ void () q100_weapon_lightning =
 	self.touch = weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 };
 
 
@@ -801,6 +807,7 @@ void () item_shells =
 	self.netname = "shells";
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
 /*QUAKED item_spikes (0 .5 .8) (0 0 0) (32 32 32) big
@@ -826,6 +833,7 @@ void () item_spikes =
 	self.netname = "nails";
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_OGRE;
 };
 
 /*QUAKED item_rockets (0 .5 .8) (0 0 0) (32 32 32) big
@@ -851,6 +859,7 @@ void () item_rockets =
 	self.netname = "rockets";
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 };
 
 
@@ -877,6 +886,7 @@ void () item_cells =
 	self.netname = "cells";
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 };
 
 
@@ -891,6 +901,7 @@ float WEAPON_BIG	 = 8;
 void () item_weapon =
 {
 	self.touch = ammo_touch;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 
 	if (self.spawnflags & WEAPON_SHOTGUN)
 	{
@@ -908,6 +919,7 @@ void () item_weapon =
 		}
 		self.weapon = 1;
 		self.netname = "shells";
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 	}
 
 	if (self.spawnflags & WEAPON_SPIKES)
@@ -926,6 +938,7 @@ void () item_weapon =
 		}
 		self.weapon = 2;
 		self.netname = "spikes";
+		self.mask_x = CB_HUMAN + CB_GREMLIN + CB_OGRE;
 	}
 
 	if (self.spawnflags & WEAPON_ROCKET)
@@ -1207,6 +1220,9 @@ void () powerup_touch =
 	{
 		other.rad_time = 1;
 		other.radsuit_finished = time + POW_TIME;
+		if (!Q_100 && !PK_100 && VW)
+		if (other.mask_x & CB_HUMAN)
+			other.skin = BIOSUIT;  // set skin for suit
 	}
 
 	if (self.classname == "item_artifact_invulnerability")

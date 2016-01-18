@@ -165,7 +165,7 @@ else if (p1.state == IMP_MORDER)
 						 "\bThis WILL NOT be tolerated at all. Use \n"
 						 "\ball your might, cleanse your realm of  \n"
 						 "\bthe pervasive Chaotic influence now.   \n");
-else if (p1.state == IMP_MGREMLIN)
+else if (p1.state == IMP_MGREMLIN_F)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, 

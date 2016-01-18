@@ -429,7 +429,9 @@ float DUD_DEF_DMG				= 20; // defualt base damage for a dud explosive that blow
 
 // inventory flags
 
-float WEP_ITEM_MASK			= 255; // mask of weapon bits in .items
+float WEP_ITEM_MASK			= 255; // mask of range weapon bits in .items
+float PK_ITEM_MASK			= 4094; // mask off non items bits
+float WEP_MASK					= 4351; // mask off other items bits for def weap bits 1 + ... + 128 + 4096
 
 float DROP_ALLOW; // inv bits player is allowed to drop
 
@@ -656,9 +658,6 @@ float DEF_WEAPON; // bit for wep slot - per genre char default action
 float DEF_REMWEP				= 256; // bit set in def_weap - if normal defaults are set - remove them NOTE: axe doesnt remove because of pk item code!
 float DEF_REMAMMO				= 512; // bit set in def_weap - if normal ammo set - remove it
 
-
-float PK_ITEM_MASK			= 4094; // mask off non items bits
-float WEP_MASK					= 4351; // mask off other items bits for def weap bits 1 + ... + 128 + 4096
 
 float DEF_AMMO_BULLETS; // initial ammo defaults if set
 float DEF_AMMO_SHELLS;

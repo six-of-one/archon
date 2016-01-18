@@ -83,14 +83,26 @@ void(float stat) player_enforcer_fire =
 {
 	local float fr;
 	self.effects = self.effects | EF_MUZZLEFLASH;
-	if (self.eweapon)
+	fr = TRUE;
+	if (!self.eweapon)
 	{
-		if (self.eweapon.weapon == MC_THUNDER) W_FireLightning();
-		else if (self.eweapon.weapon == MC_HIP_LASERCAN) HIP_FireLaser(stat);
-		else fr = TRUE;
+		if (self.weapon == IT_LIGHTNING) W_FireLightning();
+		else if (self.weapon == IT_ROCKET_LAUNCHER) W_FireRocket();
+		else if (self.weapon == IT_GRENADE_LAUNCHER) W_FireGrenade();
+		else if (self.weapon == IT_SUPER_SHOTGUN) W_FireSuperShotgun();
+		else if (self.weapon == IT_SHOTGUN) W_FireShotgun();
+		else fr = FALSE;
 		if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
-		if (!fr) return;
+		if (fr) return;
 	}
+	else
+	{
+		if (self.eweapon.mcode == MC_HIP_LASERCAN) HIP_FireLaser(stat);
+		else if (self.eweapon._attack != SUB_Null) self.eweapon._attack();
+		else fr = FALSE;
+		if (fr) return;	
+	}
+
 	fire_enflaser();
 };
 
@@ -150,9 +162,11 @@ void()	player_enf_atk5	=[	$attack5,	player_enf_atk6	] {};
 void()	player_enf_atk6	=[	$attack6,	player_enf_atk7	] {player_enforcer_fire(2);};
 void()	player_enf_atk7	=[	$attack7,	player_enf_atk8	]
 {
-	if (self.eweapon) 
-	if (self.eweapon.weapon == MC_ROCKETL
-		|| self.eweapon.weapon == MC_EXPSHOTGUN || self.eweapon.weapon == MC_GRAP || self.eweapon.weapon < MC_NAILGUN
+	if (self.weapon) 
+	if (self.weapon == IT_LIGHTNING
+		|| self.weapon == IT_ROCKET_LAUNCHER
+		|| self.weapon == IT_GRENADE_LAUNCHER
+		|| self.weapon == IT_SUPER_SHOTGUN || self.weapon == IT_SHOTGUN
 		)
 		self.think = player_enf_atk12; // only shoot these weps once
 };
@@ -251,20 +265,15 @@ void() player_enf_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	morph_impulse();
-
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
+	split_morph_impulse();
 
 	if (self.weapon == IT_AXE)
-	{
-//		self.items = self.items | IT_AXE;
-		sprint(self, "Enforcer using ( Nothing )\n"); 
-	}
-
-	if (self.weapon == IT_SHOTGUN)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Enforcer using ( Laser )\n");
 		self.items = self.items | IT_CELLS;
+		self.eweapon = world;
+		self.weaponmodel = "";
 	}
 };
 /*
@@ -305,12 +314,16 @@ void(float silent) player_enforcer_become =
 	self._killmsg = player_enf_killmsg;
 	self._killmsg2 = player_enf_killmsg2;
 
-	setmodel(self,"progs/enforcer.mdl");
-//	self.modelindex_morph = self.modelindex;
-//	self.mask_x = CB_ENF;
+	self.cam_z = 22 / 100;
+	self.cam_y = 26;
+	stuffcmd(self, "chase_up 22\n");
+	stuffcmd(self, "chase_back 26\n");
+	stuffcmd(self, "exec m-enforcer.cfg\n");
 
-	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN;
-	self.weapon = IT_SHOTGUN;
+	setmodel(self,"progs/enforcer.mdl");
+
+	self.builtin = self.items = self.items | IT_AXE;
+	self.weapon = IT_AXE;
 
 	self.msight = "enforcer/sight1.wav";
 	self.noise2 = "enforcer/pain1.wav";

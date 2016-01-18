@@ -122,6 +122,11 @@ void() sphere_annihilation_move =
 
 	if (self.classname == "chaos_teleport_icon")
 	{
+		if (self.model != self.mdl) {self.model = self.mdl; // CHECK: fix attempt for sum cube made sphere issue - maybe remove later
+
+bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
+}
+
 /* TEST
 		if (random() < 0.02)
 		{

@@ -263,9 +263,8 @@ void() player_shambler_impulse =
 
 	morph_impulse();
 
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
-
 	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Shambler using ( Claws )\n");
 	}
@@ -305,6 +304,13 @@ void(float silent) player_shambler_become = {
 //	self._can_get_p=SUB_False;
 	self._killmsg=player_shambler_killmsg;
 	self._killmsg2=player_shambler_killmsg2;
+
+	self.cam_z = 26 / 100;
+	self.cam_y = 10;
+	stuffcmd(self, "chase_up 26\n");
+	stuffcmd(self, "chase_back 10\n");
+	stuffcmd(self, "exec m-shambler.cfg\n");
+
 	setmodel(self,"progs/shambler.mdl");
 
 		self.builtin = self.items = self.items | IT_AXE | IT_LIGHTNING;

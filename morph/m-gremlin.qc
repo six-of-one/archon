@@ -125,10 +125,15 @@ void() m_precache_gremlin =
 // fn(IS_GREMLIN) - test to see if entity e is a gremlin
 // returns 1 for frame calc in weaponframe distplays
 
+/*
+deprecated - just use .mask_x & CB_GREMLIN
+
 float(entity e) IS_GREMLIN =
 {
-	if (e.morphy == IMP_MGREMLIN) return(1);
+	if (e.mask_x & CB_GREMLIN) return(1);
 };
+*/
+
 /*
 		+---------------------------------------+
 		|  Frame operation code                 | SEC-HEAD
@@ -712,11 +717,16 @@ void(float silent) player_gremlin_become =
 	self._killmsg = player_gremlin_killmsg;
 	self._killmsg2 = player_gremlin_killmsg2;
 
+	self.cam_z = 15 / 100;
+	self.cam_y = 32;
+	stuffcmd(self, "chase_up 15\n");
+	stuffcmd(self, "chase_back 32\n");
+	stuffcmd(self, "exec m-gremlin.cfg\n");
 
-	if (random() < 0.75) // small chance of starting as a flyer
-		setmodel(self,"progs/gremlin.mdl");
-	else
+	if (self.morphy == IMP_MGREMLIN_F) // flyer
 		setmodel(self,"progs/gremlin-fly.mdl");
+	else
+		setmodel(self,"progs/gremlin.mdl");
 	self.mdl = self.model;
 //	self.modelindex_morph=self.modelindex;
 //	self.mask_x = CB_GREMLIN;
@@ -729,7 +739,6 @@ void(float silent) player_gremlin_become =
 	self.noise2 = "gremlin/pain2.wav";
 	self.noise3 = "";
 	self.view_ofs = ' 0 0 22';
-	self.cam_z = 0;
 
 	setsize (self, '-16 -16 -14',  ' 16 16 32');
 	self.health = self.health * MGREMLIN_HEALMOD / self.health_modifier;

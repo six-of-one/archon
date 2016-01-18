@@ -159,9 +159,9 @@ void() CheckWaterLevels =
 // suspect shot stuff is from bots fallen out & not returned yet
 		mv = 0 - cvar("sv_maxvelocity");
 
- 		if (pcc == CONTENT_SOLID || (ceil(e.velocity_z) == -2011 || ceil(e.velocity_z) == mv))
+ 		if (pcc == CONTENT_SOLID || (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv))
 		{
-			if (ceil(e.velocity_z) == -2011 || ceil(e.velocity_z) == mv)
+			if (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv)
 			{
 				if (e.flags & FL_ITEM)
 				{

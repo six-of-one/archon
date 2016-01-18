@@ -10,6 +10,8 @@ void(entity targ)	pk_setDamageSkin =
 	if (targ.classname == "player" || targ.classname == "pk*bot")
 	if (targ.solid != SOLID_NOT ) // Cataboligne - 5.11.10 - doent set skin for dead cam player
 //	if (targ.model != "progs/player_sh.mdl") // Cataboligne - 9.11.11 - q3 shell deal - diff skins
+	if (targ.mask_x & CB_HUMAN) // Cataboligne - 9.27.11 - only humans have dmgskin for now
+	if (targ.skin < 5) // Cataboligne - 9.27.11 - tweak for suits
 	{
 		if (targ.health > 75)
 	  {

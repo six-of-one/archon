@@ -23,6 +23,10 @@ void () pkplus_touch =
 		return ;
 	}
 
+	if (other.builtin)
+	if (!other.builtin & IT_AXE) // no axe, cant use pki
+		return;
+
 	if (self.pk_items == PKPLUS_IT_EGO)
 	{
 		if (other.pkplus_egoammo >= PKPLUS_EGOAMMO_MAX) return ;

@@ -211,7 +211,16 @@ void() DecodeLevelParms =
 	self.msgcount = (parm16 & 255);
 
 	self.morphy = parm15;
-	if (!cb_morph(self.morphy)) self.morphy = IMP_MHUMAN; // should NEVER happen?!  TDO: char_con deal
+
+// char init
+
+	if (!cb_morph(self.morphy))
+	{
+		self.morphy = IMP_MHUMAN; // base human - quake guy
+		if (CHAR_CON)
+		if (CHAR_CON >= CHAR_W && CHAR_CON  <= CHAR_Q3) self.morphy = CHAR_CON; // forced by server admin
+		else self.morphy = set_char_num(MAP_MODE);
+	}
 	self.mask_x = cb_morph(self.morphy);
 
 // NOTE: *** morphy MUST be set prior to this call!
@@ -463,7 +472,6 @@ void() pk_plcfg =
 void() PutClientInServer =
 {
 	local entity spot;
-	local string sm;
 
 	set_initBotLevel(); // *bot
 
@@ -518,7 +526,7 @@ void() PutClientInServer =
 	self._killmsg = SUB_Null;
 	self._killmsg2 = SUB_Null;
 
-	DecodeLevelParms ();
+	DecodeLevelParms (); // note: sets char
 
 //	W_SetCurrentAmmo (); // moved for m0rphic
 
@@ -536,7 +544,6 @@ void() PutClientInServer =
 	self.angles = spot.angles;
 	self.fixangle = TRUE;		// turn this way immediately
 
-	sm = self.mdl;
 	setmodel (self,"progs/eyes.mdl");
 	modelindex_eyes = self.modelindex;
 
@@ -555,16 +562,8 @@ void() PutClientInServer =
 		stuffcmd(self, "exec anode.cfg");
 	}
 
-	self.morphy = IMP_MGREMLIN; // TEST:
+//	self.morphy = IMP_MGREMLIN_F; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
-
-	if (self.morphy == IMP_MGREMLIN) // keep flyer or not once spawned - still fail on map change
-	{
-		if (sm == "progs/gremlin.mdl" || sm == "progs/gremlin-fly.mdl")
-		setmodel(self,sm);
-		setsize (self, '-16 -16 -14',  ' 16 16 32');
-		self.modelindex_morph = self.modelindex;
-	}
 
 	W_SetCurrentAmmo (); // moved for m0rphic
 
@@ -925,6 +924,13 @@ void () CheckPowerups =
 			self.items = self.items - (self.items & IT_SUIT);
 			self.rad_time = 0;
 			self.radsuit_finished = 0;
+// turn off suit skins
+			if (self.mask_x & CB_HUMAN)
+			if (self.skin > 4)
+			{
+				self.skin = 0;
+				pk_setDamageSkin(self);
+			}
 		}
 	}
 
@@ -976,6 +982,13 @@ void () CheckPowerups =
 			self.items = self.items - (self.items & IT_SUIT); // re-breather does not set suit flag
 			self.rad_time = 0;
 			self.wetsuit_finished = 0;
+// turn off suit skins
+			if (self.mask_x & CB_HUMAN)
+			if (self.skin > 4)
+			{
+				self.skin = 0;
+				pk_setDamageSkin(self);
+			}
 		}
 	}
 
@@ -1131,7 +1144,7 @@ bprint("\n");
 		if (self.dmgtime < time && self.radsuit_finished < time)
 		{
 			self.dmgtime = time + 1;
-			if (self.morphy == IMP_MGREMLIN || self.classname == "monster_gremlin")
+			if (self.mask_x & CB_GREMLIN || self.classname == "monster_gremlin")
 				{
 				self.dmgtime = time + 7 + (random() * 5);
 				if (self.health < (66.6 * MGREMLIN_HEALMOD))
@@ -1144,7 +1157,7 @@ bprint("\n");
 	
 	else if (self.watertype == CONTENT_WATER)
 	{
-		if (self.morphy == IMP_MGREMLIN || (self.classname == "monster_gremlin" && (GREM_AASPAWN | !deathmatch)))
+		if (self.mask_x & CB_GREMLIN || (self.classname == "monster_gremlin" && (GREM_AASPAWN | !deathmatch)))
 		if (self.waterlevel > 0)
 			gremlin_spawn(1.0 + random());
 

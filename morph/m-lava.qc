@@ -400,9 +400,8 @@ void() player_lavablob_impulse =
 
 	morph_impulse();
 
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
-
 	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Lava Bomb using ( Jump attack )\n");
 	}
@@ -450,6 +449,12 @@ void(float silent) player_lavablob_become =
 //	self._can_get_p=SUB_False;
 	self._killmsg=player_lavablob_killmsg;
 	self._killmsg2=player_lavablob_killmsg2;
+
+	self.cam_z = 10 / 100;
+	self.cam_y = 36;
+	stuffcmd(self, "chase_up 10\n");
+	stuffcmd(self, "chase_back 36\n");
+	stuffcmd(self, "exec m-lava.cfg\n");
 
 	setmodel(self,"progs/lavabomb.mdl");
 	self.modelindex_morph = self.modelindex;
