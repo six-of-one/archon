@@ -157,7 +157,7 @@ void() X_FireRailgun =
 //		particle (v1 + vp, vp, 208, 1);
 		if (random() < 0.2) particle (v1, v_forward * 30, 250, 2);
 
-		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, v1 + vp, ' 0 0 0', ' 0 0 0', ' 0 0 0', vp + self.velocity, "", "progs/beambit.spr", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
+		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, v1 + vp, v0, v0, v0, vp + self.velocity, "", "progs/beambit.spr", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
 		if (e)
 		{
 			cn = cn + 1;

@@ -1309,16 +1309,6 @@ float(entity e, entity f, float r, float flg) can_has_target =
 	local float k;
 	local vector  v;
 
-
-
-
-bprint(" *** can_has_target testing = ");
-bprint(item_ident(e));
-bprint(".\n");
-
-
-
-
 	if (!e) return(FALSE); // cant target world
 	if (e.classname == "turret_base") return(FALSE); // never target these - not valide
 	if (e.classname == "chase_cam") return(FALSE); // nope
@@ -1357,9 +1347,31 @@ bprint(".\n");
 
 		if (k <= cht_if)
 		{
+
+
+
+bprint(" *** cht_if fail = ");
+bprint(ftos(k));
+bprint(" <= ");
+bprint(ftos(cht_if));
+bprint(" (check val).\n");
+
+
+
 			cht_if = 0; // always cleared - always needs set
 		  return(FALSE);
 		}
+
+
+
+bprint(" *** cht_if sucess = ");
+bprint(ftos(k));
+bprint(" > ");
+bprint(ftos(cht_if));
+bprint(" (check val).\n");
+
+
+
 	}
 	cht_if = 0; // always cleared - always needs set
 
@@ -1407,26 +1419,25 @@ bprint(".\n");
 
 void() bfg_trace_thk =
 {
-	local float f, k, tr, bfl, bfl2;
+	local float f, k, tr, bfl, bfl2, sf;
 	vector org;
 	local entity e, tl;
 
 
-
+/*
 bprint("*** * bfg pre beam think code = ");
 bprint(ftos(self.flags));
 bprint(".\n");
-
+*/
 
 
 	if (self.flags == 0.768) // doom bfg
 	{
-bprint(" *** doom bfg pre beam think\n");
 		self.nextthink = time + (self.flags / 2) - 0.2;
 		self.flags = DOOM_BFG;
 		return;
 	}
-	else
+	else if (self.flags == 0.87)
 	{
 		self.flags = Q2_BFG;
 		self.cnt = 30 + random() * 15; // 30 - 45 traces - TDO: get real info on this too
@@ -1456,10 +1467,8 @@ bprint(" *** doom bfg pre beam think\n");
 
 	if (self.flags == DOOM_BFG)
 	{
-bprint(" *** doom bfg beam damage calc\n");
-		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_PKLV | TFL_INV;
+		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_PKLV | TFL_PLY | TFL_MON | TFL_INV;
 		bfl2 = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR;
-		cht_if = self.punchangle_x;
 		k = 0;
 		tr = 40;
 		self.theowner = world;
@@ -1467,8 +1476,9 @@ bprint(" *** doom bfg beam damage calc\n");
 		self.v_angle = self.angles;
 		org = self.owner.origin; // where ever the player is .38 secs after ball was launched
 		tl = e = findradius(org, DOOM_BFG_TRACE); // find things to dmg in fire cone
-		while (e && k < tr)
+		while (e) // && k < tr)
 		{
+			cht_if = self.origin_x;
 			if (can_has_target(e, self.owner, 0, bfl))
 			{
 				k = k + 1;
@@ -1478,9 +1488,17 @@ bprint(" *** doom bfg beam damage calc\n");
 			e = e.chain;
 		}
 		e = tl;
+
+
+
+if (!self.theowner) bprint("*** doom bfg - no players / monsters to target.\n");
+
+
+
 		if (!self.theowner) // found no players or monsters
-		while (e && k < tr)
+		while (e) // && k < tr)
 		{
+			cht_if = self.origin_x;
 			if (can_has_target(e, self.owner, 0, bfl2))
 			{
 				k = k + 1;
@@ -1490,8 +1508,9 @@ bprint(" *** doom bfg beam damage calc\n");
 			e = e.chain;
 		}
 		tl = self.theowner;
+		sf = 400;
 		if (k && tl)
-		while (tr > 0)
+		while (tr > 0 && sf > 0)
 		{
 			f = rint(random() * k);
 			e = tl;
@@ -1501,12 +1520,49 @@ bprint(" *** doom bfg beam damage calc\n");
 				f = f - 1;
 			}
 			f = 49 + ceil(36 * random());
-			T_Damage (e,self,self.owner,f);
+			if (e.health > 0)
+			{
+				T_Damage (e,self,self.owner,f);
 
 
 
+local vector v1, v2;
+local float i, m;
+local entity g;
+
+	if (e.count == 0)
+	{
+		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, e.origin, v0, v0, v0, v0, "", e.model, SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
+		g.frame = e.frame;
+		e.count = 1;
+	}
+	else
+		e.count = e.count + 2;
 
 
+	v1 = e.origin - org;
+	m = vlen(v1) * 0.025;
+	v2 = normalize(v1) * m;
+	v1 = org;
+	v1_z = org_z + e.count;
+	i = 40;
+	while (i > 0)
+	{
+		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/beambit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
+		if (g)
+		{
+			g.alpha = 0.5;
+		}
+		v1 = v1 + v2;
+		i = i - 1;
+	}
+
+
+bprint("*** doom bfg beam hit = ");
+bprint(item_ident(e));
+bprint(", for dmg = ");
+bprint(ftos(f));
+bprint(".\n");
 
 local float bdm;
 fts.dmg_take = fts.dmg_take + f;
@@ -1516,7 +1572,9 @@ bdm = bdm + f;
 
 
 
-			tr = tr - 1;
+				tr = tr - 1;
+			}
+			sf = sf - 1;
 		}
 	}
 
@@ -1524,6 +1582,8 @@ bdm = bdm + f;
 
 
 
+bprint(", beams fired = ");
+bprint(ftos(40 - tr));
 bprint(", beams dmg = ");
 bprint(ftos(bdm));
 bprint(".\n");
@@ -1572,15 +1632,6 @@ void() player_bfg1   = [$lightfatt1, player_bfg1]
 	newmis.frame = 0;
 	newmis.skin = 1;
 	newmis.effects = EF_BRIGHTLIGHT | EF_BRIGHTFIELD;
-
-
-
-bprint("*** * bfg spawn beam think code = ");
-bprint(ftos(EWEAP.endtime));
-bprint(".\n");
-
-
-
 
 	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.punchangle, v0, v0, self.v_angle, v0, "", "", SUB_Null, 0.2, bfg_trace_thk, SUB_Null, self, world);
 	e.enemy = newmis; // q2
