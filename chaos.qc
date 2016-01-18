@@ -563,12 +563,15 @@ void(string ws, float rtime) ominous_hum =
 
 // fn(newline) print newline to self client screen
 
+/*
+ deprecated - pointless
+
 void(entity e) newline =
 {
 if (e) sprint(e,"\n");
 else bprint("\n");
 }
-
+*/
 
 
 
@@ -1622,8 +1625,8 @@ void(entity e) chaos_mdlsize =
 	if (!e) return;
 
 	vmin = vmax = v0;
-	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -16'; vmax = '16 16 16'; }
-	else if (e.model == "progs/lavaball.mdl" || e.model == "progs/snowball.mdl")
+	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -24'; vmax = '16 16 16'; }
+	else if (e.model == "progs/lavaball.mdl") // || e.model == "progs/snowball.mdl")
 	{
 		if (e.frame == 0 || e.frame == 5)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
 		if (e.frame == 1 || e.frame == 6)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
@@ -1670,6 +1673,7 @@ string(entity e) chaos_bomb_rndmdl =
 	if (e)
 	{
 		setmodel(e, s1);
+		chaos_mdlsize(e); // have to size it or bbox is wrong
 	}
 	return(s1);
 };

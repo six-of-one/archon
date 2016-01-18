@@ -191,7 +191,7 @@ void(float dt) chaos_constant =
 														bprint(ftos(CHAOS_BEAM_MIN));
 														bprint(", dt: ");
 														bprint(ftos(dt));
-														newline(world);
+														bprint("\n");
 													}
 #endifdef
 
@@ -322,7 +322,7 @@ void(entity e) chaos_mdlsize =
 
 	vmin = vmax = v0;
 	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -16'; vmax = '16 16 16'; }
-	else if (e.model == "progs/lavaball.mdl" || e.model == "progs/snowball.mdl")
+	else if (e.model == "progs/lavaball.mdl") // || e.model == "progs/snowball.mdl")
 	{
 		if (e.frame == 0 || e.frame == 5)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
 		if (e.frame == 1 || e.frame == 6)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
@@ -591,10 +591,19 @@ float() chaos_move_effect =
 		if (newmis) 
 		{
 			newmis.owner = self; // fix for chaos bombs just exploding on launch
-			setmodel(newmis, rnd_string('95.0 85.0 40.0',"progs/v_spike.mdl","progs/teleport.mdl","progs/lavaball.mdl","progs/snowball.mdl","progs/snowball.mdl"));
-			if (random() < 0.24) newmis.think = chaos_bomb;
+			setmodel(newmis, rnd_string('95.0 85.0 40.0',"progs/v_spike.mdl","progs/teleport.mdl","progs/lavaball.mdl","progs/lavaball.mdl","progs/lavaball.mdl"));
+			if (random() < 0.4) self.modelflags = EF_NOMODELFLAGS; // former snowball selections
+//#ifdef testset
+//			newmis.think = chaos_bomb; // bomb test - 11.15.13
+//			newmis.touch = SUB_Null;
+//#endifdef
+			if (random() < 0.24)
+			{
+				newmis.think = chaos_bomb;
+				newmis.touch = SUB_Null;
+			}
 			else if (random() < 0.11) newmis.touch = GrenadeTouch;
-			if (newmis.model == "progs/snowball.mdl")
+			if ((newmis.model == "progs/lavaball.mdl") && self.modelflags = EF_NOMODELFLAGS) // == "progs/snowball.mdl"
 			{
 				if (random() < 0.5)
 					newmis.skin = SKSNOW;
@@ -624,7 +633,8 @@ float() chaos_move_effect =
 //				{
 					sprint(self, "chaos bomb launched: ");
 					sprint(self, newmis.model );
-					newline(self);
+					sprint(self, "\n");
+//					eprint(newmis);
 //				}
 #endifdef
 
@@ -1134,6 +1144,13 @@ void() chaos_item =
 		}
 
 	ft = (ci_last == 3 && (f1 & FL_SAME));
+
+// chaos turret test - 11.15.13
+#ifdef testset
+	ft = 1;
+	ci_fr = 9;
+#endifdef
+
 	if (ft || random() < 0.1) // various wep effects
 		{
 			if (!ft) ci_fr = floor(random() * 11.3);
@@ -1236,7 +1253,7 @@ void() chaos_item =
 																														{
 																															bprint("chaos_item(explode box) = ");
 																															bprint(newmis.model);
-																															newline(world);
+																															bprint("\n");
 																														}
 #endifdef
 					}
@@ -1671,7 +1688,7 @@ if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0
 		sprint(self, ", to: ");
 		if (e.netname != null_string) sprint(self, e.netname);
 		else sprint(self, e.classname);
-		newline(self);
+		sprint(self, "\n");
 	}
 	else if (random() < CBEXCH)
 	{
@@ -1732,7 +1749,7 @@ if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0
 		sprint(self, ", with: ");
 		if (rent.netname != null_string) sprint(self, rent.netname);
 		else sprint(self, rent.classname);
-		newline(self);
+		sprint(self, "\n");
 	}
 	else if (random() < CBSUMMON)
 	{
@@ -1758,7 +1775,7 @@ setorigin(x3, trace_endpos); // TEST--
 																						{
 																							bprint("beam hit ");
 																							bprint(trace_ent.classname);
-																							newline(world);
+																							bprint("\n");
 																						}
 #endifdef
 
@@ -2086,7 +2103,10 @@ void() archon_makepp =
 void() archon_maketele =
 {
 	chaos_teleport(self.bolt_targetNext.origin - v_forward * 15, null_string, world);
-	
+
+	if (random() < 0.25) // some not permanent
+		dyn_remove(newmis, (PK_DYNTO * (2 + random() + random()) + (20 * crandom())), chaos_tele_expire);
+			
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.attack_finished = time + 1; //debounce
 };

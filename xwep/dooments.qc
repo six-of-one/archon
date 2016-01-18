@@ -635,6 +635,7 @@ void() d_barrel =
 	self.netname = "Barrel";
 	if (self.class_select == null_string) self.class_select = "doom_item";
 	misc_explodbox_set(self, "progs/barrel.mdl", D_BARREL_BLAST + random() * 8, 20, MOVETYPE_NONE);
+	droptofloor(0,0);
 	self.health = 20 + random() * 16; // heh heh
 	self.wait = RSP_TIME;
 	self.noise = "doom/dsbarexp.wav";
@@ -2357,6 +2358,9 @@ void() w_key_b =
 
 void() w_barl_solid =
 {
+	self.owner.flags = 0; // clear FL_ITEM
+	setsize (self.owner, '-12 -12 0', '12 12 32');
+	self.owner.enemy = world;
 	self.owner.solid = SOLID_BBOX;
 	self.owner.pk_touch = SUB_Null;
 	remove(self);
@@ -2364,8 +2368,6 @@ void() w_barl_solid =
 
 void() w_barrel =
 {
-	local entity e;
-
 	if (!ULOKW)
 //	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "misc_explobox2"))
@@ -2373,18 +2375,16 @@ void() w_barrel =
 		return;
 	}
 
-	e = spawn();
-	if (e)
-	{
-		e.owner = self;
-		e.think = w_barl_solid;
-		e.nextthink = time  + 1;
-	}
+	self.enemy = spawn();
+	self.enemy.owner = self;
+	self.enemy.think = w_barl_solid;
+	self.enemy.nextthink = time  + 1;
+
 	self.wait = RSP_TIME;
 
 	self.netname = "Barrel";
 	setmodel (self, "progs/barrel2.mdl");
-	setsize (self, '-12 -12 -24', '12 12 32');
+	setsize (self, '-12 -12 0', '12 12 32');
 	self.frame = 1;
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -2678,13 +2678,14 @@ void() ddecor_barrel_fire =
 
 	precache_model ("progs/barrel2.mdl");
 	setmodel(self,"progs/barrel2.mdl");
+	setsize (self, '-12 -12 0', '12 12 32');
 	if (sv_decor(self)) return;
 
 	self.frame = 4;
 	self.skin = 4;
 	self.effects = self.effects | EF_DIMLIGHT;
 
-	self.solid = SOLID_BSP;
+	self.solid = SOLID_BBOX;
 	if (self.spawnflags & NOBLOCK)
 		self.solid = SOLID_NOT;
 

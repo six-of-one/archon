@@ -295,6 +295,12 @@ float () CheckDropPath =
 		return (0);
 	}
 
+// dont answer TRUE to path drop that will be out of bounds
+	if (noway_below)
+	if (self.origin_z < noway_below) return (0);
+	if (noway_above)
+	if (self.origin_z > noway_above) return (0);
+
 	carriedPath = self.movetarget;
 	upstreamPath = carriedPath.movetarget;
 	lnd = pointcontents (carriedPath.origin);
@@ -364,6 +370,12 @@ float () CheckDropPath =
 
 void () NewCarriedPath =
 {
+// dont make paths out of bounds
+	if (noway_below)
+	if (self.origin_z < noway_below) return;
+	if (noway_above)
+	if (self.origin_z > noway_above) return;
+
 	self.movetarget = botpath ();
 	self.movetarget.pathtype = CARRIED;
 	setorigin (self.movetarget,self.origin);

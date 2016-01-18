@@ -38,7 +38,7 @@ void() chaos_precache =
 	precache_model ("progs/g_deepsleep.mdl");
 	precache_model ("progs/vw_deepsleep.mdl");
 	precache_model ("progs/steam.mdl");
-	precache_model ("progs/snowball.mdl");
+//	precache_model ("progs/snowball.mdl"); // lavaball with no rocket trail
 	precache_model ("progs/gib_m.mdl");
 
 // map repair - block hollow brush effect
@@ -520,7 +520,7 @@ void() health_touch =
 																								bprint(ftos(amount));
 																								bprint(", total: ");
 																								bprint(ftos(self.healamount + amount));
-																								newline(world);
+																								bprint("\n");
 																							}
 #endifdef
 

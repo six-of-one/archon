@@ -754,8 +754,8 @@ void() pk_liveupd =
 
 	if (1) // WORLD_NOWAY)
 	{
-		if (!noway_below) noway_below = world.mins_z;
-		if (!noway_above) noway_above = world.maxs_z;
+		if (!noway_below) noway_below = world.mins_z - 8; // leave some extra for items that might size out of level
+		if (!noway_above) noway_above = world.maxs_z + 8;
 	}
 
 	NODECOR = cvar("sv_c_nodecor");
@@ -1383,7 +1383,7 @@ void() pk_srvcmd_set =
 #ifdef warning
 	WARNING = FALSE;
 #endifdef
-	BOTFREEZE = 0;
+//	BOTFREEZE = 0;
 	BOTCAM = 0;
 
 	SV_FALLEN = 1;

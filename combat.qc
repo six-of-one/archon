@@ -226,7 +226,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	if (attacker.super_damage_finished > time)
 	if (attacker.pkplus_actortype != PKPLUS_ACTORQUAD) // pk art code here
 	{
-		if ((self.group != "Berserk rage...nearly over...Hulk sad") || (self.eweapon.grap_state == 666000)) // fists only *4 with berserk
+		if ((attacker.group != "Berserk rage...nearly over...Hulk sad") || (attacker.eweapon.grap_state == 666000)) // fists only *4 with berserk
 		{
 			damage = damage * 4;
 #ifdef warning
@@ -309,8 +309,8 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 
 		if (targ.invincible_sound < time)
 		{
-			if ( (self.rune_flag & TECH_DSH) && !(self.rune_flag & RUNE_FLG_RS) )
-				sound (self, CHAN_BODY, tech_dsh_sound, 1, ATTN_NORM);
+			if ( (targ.rune_flag & TECH_DSH) && !(targ.rune_flag & RUNE_FLG_RS) )
+				sound (targ, CHAN_BODY, tech_dsh_sound, 1, ATTN_NORM);
 			else
 				sound (targ, CHAN_ITEM, rune_resist_sound, 1, ATTN_NORM);
 			targ.invincible_sound = time + 2;

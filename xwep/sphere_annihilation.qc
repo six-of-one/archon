@@ -436,12 +436,7 @@ if (WARNING & 32)
 	{
 		set_annihilate(other);
 		if (other.classname == "chaos_teleport_icon") // NOTE: if this is the anti-sphere this is the place to do it
-		{
-			e = self;
-			self = other;
-			chaos_tele_expire();
-			self = e;
-		}
+			dyn_remove(other, 1, chaos_tele_expire); // cant call tele_exp directly
 	}
 };
 

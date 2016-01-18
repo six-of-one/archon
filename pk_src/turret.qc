@@ -217,11 +217,13 @@ void() turret_dropTurret =
 
 void() turret_searchForEnemy =
 {
+/*
 	if (BOTFREEZE) // Cataboligne - 6.9.10 - bot freeze affects these too
 	{
 		self.nextthink = time + 5;
 		return;
 	}
+*/
 
 	if (self.turret_timeout)
 	// check if the turret time is up
@@ -316,7 +318,7 @@ void() turret_findTarget =
 	local float dist, tempDist, e;
 	local entity head, selected;
 
-	if (BOTFREEZE) return; // Cataboligne - 6.9.10 - bot freeze affects these too
+//	if (BOTFREEZE) return; // Cataboligne - 6.9.10 - bot freeze affects these too
 
 	// find the closest target within the current view of the turret.
 
@@ -448,11 +450,13 @@ float (entity e) turret_inFront =
 
 void() turret_attackEnemy =
 {
+/*
 	if (BOTFREEZE) // Cataboligne - 6.9.10 - bot freeze affects these too
 	{
 		self.nextthink = time + 5;
 		return;
 	}
+*/
 
 	if (self.turret_timeout)
 	// check if the turret time is up

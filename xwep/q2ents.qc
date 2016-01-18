@@ -1308,6 +1308,7 @@ void() q2_misc_explobox =
 	self.netname = "Barrel";
 	if (self.class_select == null_string) self.class_select = "q2_item";
 	misc_explodbox_set(self, "progs/q2_barrel.mdl", Q2_BARREL_BLAST, 80, MOVETYPE_NONE);
+	droptofloor(0,0);
 	setsize (self, '-16 -16 0', '16 16 40');
 	self.frame = 0;
 //	self.noise = "doom/dsbarexp.wav";

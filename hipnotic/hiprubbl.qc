@@ -300,7 +300,7 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 																												bprint(" : "); bprint(vtos(rorg));
 																												bprint(" : "); bprint(vtos(vel));
 																												bprint(" : "); bprint(ftos(vibe));
-																												newline(world);
+																												bprint("\n");
 																											}
 #endifdef
 

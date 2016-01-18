@@ -59,6 +59,7 @@ float INPUT_MOUSEMOVE 			= 2;
 // 0 - 31 are reserved for standard engine stats
 // 32 - 128 are for QuakeC modders
 float STAT_HEALTH					= 0;
+//float STAT_FRAGS					= 1; // commented out in engine, not sure why
 float STAT_WEAPONMODEL			= 2;
 float STAT_AMMO					= 3;
 float STAT_ARMOR					= 4;
@@ -73,8 +74,15 @@ float STAT_TOTALMONSTERS		= 12;
 float STAT_SECRETS				= 13; // bumped on client side by svc_foundsecret
 float STAT_MONSTERS				= 14; // bumped by svc_killedmonster
 float STAT_ITEMS					= 15;
+float STAT_VIEWHEIGHT			= 16;
+float STAT_VIEWZOOM				= 21;
 float STAT_HIP_IT_EMPATY_SHIELD		= 56;
 float STAT_HIP_IT_WETSUIT		= 57;
+
+// defined in engine code
+
+float STAT_FRAGLIMIT				= 235;
+float STAT_TIMELIMIT				= 236;
 
 // Archon extended HUD
 float STAT_MCODE 					= 33; // track mcode of current weap in csqc - heh heh
@@ -215,7 +223,7 @@ const float		CONTENT_WATER	= -3;
 const float		CONTENT_SLIME	= -4;
 const float		CONTENT_LAVA	= -5;
 const float		CONTENT_SKY		= -6;
-float		STAT_VIEWHEIGHT		= 16;
+//float		STAT_VIEWHEIGHT		= 16; // defined above with rest
 
 // morph states
 

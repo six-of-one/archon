@@ -324,7 +324,7 @@ void() archon_nodule_rnd =
 			self.archon = 30 + crandom() * 10;
 //		}		
 	}
-	setsize (self,'-16 -16 -24','16 16 24');
+	setsize (self,'-16 -16 -16','16 16 24');
 
 	if (self != god_particle)
 	if (random() < 0.4)

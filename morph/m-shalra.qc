@@ -179,6 +179,7 @@ void() player_shalrath_attack5 = [ $attack10, player_stand1 ] { player_ShalMissi
 
 void() player_shalrath_lightning1 = [ $attack1, player_shalrath_lightning2 ]
 {
+	if (self.class_select == "class_monster") self.flags = self.flags | FL_MONSTER; // make sure
 	if (self.flags & FL_MONSTER) // super vore comes here
 	{
 		ai_face();
@@ -288,7 +289,7 @@ void() player_shalrath_lightning3 = [ $attack11, player_stand1 ]
 	{
 		ai_face();
 		ai_frame(self.walkframe);
-		shal_run1();
+		self.think = self.th_run;
 	}
 };
 

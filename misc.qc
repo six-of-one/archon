@@ -202,24 +202,24 @@ void () misc_fireball =
 
 void () fire_fly =
 {
-	local entity fireball;
+//	local entity fireball;
 
 // TEST: remove once we have chaos_ff
-	newmis = 
-	fireball = spawn ();
-	fireball.solid = SOLID_TRIGGER;
-	fireball.movetype = MOVETYPE_TOSS;
-	fireball.velocity = '0 0 1000';
-	fireball.velocity_x = (random() * 100) - 50;
-	fireball.velocity_y = (random() * 100) - 50;
-	fireball.velocity_z = self.speed + (random() * 200);
-	fireball.classname = "fireball";
-	setmodel (fireball,"progs/lavaball.mdl");
-	setsize (fireball, '0 0 0', '0 0 0');
-	setorigin (fireball,self.origin);
-	fireball.nextthink = time + 5;
-	fireball.think = SUB_Remove;
-	fireball.touch = fire_touch;
+
+	newmis = spawn ();
+	newmis.solid = SOLID_TRIGGER;
+	newmis.movetype = MOVETYPE_TOSS;
+	newmis.velocity = '0 0 1000';
+	newmis.velocity_x = (random() * 100) - 50;
+	newmis.velocity_y = (random() * 100) - 50;
+	newmis.velocity_z = self.speed + (random() * 200);
+	newmis.classname = "fireball";
+	setmodel (newmis,"progs/lavaball.mdl");
+	setsize (newmis, '0 0 0', '0 0 0');
+	setorigin (newmis,self.origin);
+	newmis.nextthink = time + 5;
+	newmis.think = SUB_Remove;
+	newmis.touch = fire_fly_touch; // fire_touch; // upgrade fix chaos bomb issues - 11.15.13
 
 	self.nextthink = time + (random() * 5) + 3;
 	self.think = fire_fly;

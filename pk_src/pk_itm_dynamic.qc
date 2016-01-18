@@ -133,7 +133,7 @@ void(string cls) item_call =
 		self.style = 0; // so we dont get range weps using melee frames
 		self.dodmg = 0; // might give some things extra blast dmg
 		self.wait = 0; // RSP_TIME; // damn q3 respawn time rules - hope this doesnt fxk rndize
-		self.msgcount = 0; // -888 lock in splash.qc
+		self.revotemsg = 0; // -888 lock in splash.qc
 		self.dmgtime = POW_TIME;
 		self.x_items = 0;
 		self.pk_currentitem = 0;
@@ -930,11 +930,14 @@ void() dyn_rem =
 			self.wait = self.wait - random() * 6; // relocates faster every time
 			if (self.wait < 10) self.wait = 15 + random() * 45; // till this
 
+			set_relocate(self.enemy); // use fade relocate
+/*
 			newmis = dyn_rndloc();
 			if (!newmis) newmis= findradius(world.origin, 256000);
 			if (!newmis) return; // nothing found!
 			self.dest = stdv_rndloc(newmis.origin, 50, 124);
 			setorigin(self.enemy, self.dest + '0 0 2');
+*/
 			return;
 		}
 		else
@@ -1060,6 +1063,12 @@ entity() dyn_rndloc =
 	while (e.chain) // count stuff for a random location selection from all these items found in range
 	{
 		if (!e.chain) e = world;
+// 11.12.13 - dont pick out of bounds origins
+		else if (noway_below && (e.chain.origin_z < noway_below)) e.chain = e.chain.chain;
+		else if (noway_above && (e.chain.origin_z > noway_above)) e.chain = e.chain.chain;
+// 11.15.13 - and dont pick solid origins
+		else if ((pointcontents(e.origin) == CONTENT_SOLID) && (pointcontents(e.origin + '0 0 8') == CONTENT_SOLID))  e.chain = e.chain.chain;
+// choose among these empty space items
 		else if (e.chain.flags & FL_ITEM) { ri = ri + 1; e = e.chain; }
 		else if (e.chain.classname == "info_player_deathmatch") { ri = ri + 1; e = e.chain; }
 		else if (e.chain.classname == "info_teleport_destination") { ri = ri + 1; e = e.chain; }

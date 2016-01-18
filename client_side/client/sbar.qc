@@ -587,6 +587,9 @@ float inv, quad, ring, suit, xplast, xpltime, deadtime, conrate;
 // hud special messaging system for cfg scripts
 float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
 
+// scores
+var float autocvar_hud_frags = 6;
+
 void() Sbar_DrawInventory =
 {
 
@@ -960,12 +963,17 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if (cl_items & (IT_KEY1 | IT_KEY2)) pwr_step_y = pwr_step_y + 4;
 	}
 
+// score
+	float plscore;
+	string plname;
+
 /// hud message for cfg scripts - instead of console print which gets lost fast on busy servers
 	
 	var string autocvar_hud_message, autocvar_hud_message2, autocvar_hud_message3, autocvar_hud_message0;
 	var float autocvar_hud_message_buffer = 3; // buffer messages per cvar
 	var float autocvar_hud_message_timer = 10;
 	var float autocvar_hud_message_offset = 250;
+	var float autocvar_hud_message_dualpr = 0;
 	var float autocvar_hud_rels = 0;
 	vector hudoff;
 	float huds, hudtime;
@@ -1000,6 +1008,243 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			}
 		}
 
+float p1, p2, p3, p4, p5, p6, p2nd;
+float mons, secs, tmon, tsec;
+var float autocvar_hud_frags_style = 3;
+
+// scores on new HUD
+// 0 and (-) scores are not displayed
+		if (autocvar_hud_frags > 0)
+		{
+// for single player / coop
+			mons = GetStat_FLOAT_TRUNCATED(STAT_MONSTERS);
+			tmon = GetStat_FLOAT_TRUNCATED(STAT_TOTALMONSTERS);
+			secs = GetStat_FLOAT_TRUNCATED(STAT_SECRETS);
+			tsec = GetStat_FLOAT_TRUNCATED(STAT_TOTALSECRETS);
+
+			k = maxclients;
+			p2 = p3 = p4 = p5 = p6 = 0;
+			p2nd = 0;
+			while (k > 0)
+			{
+				plscore = stof(getplayerkey(k - 1, "frags"));
+//				if (plscore > 32767) plscore = 32767; // this is coming in a signed short
+				if (plscore >= p2nd)
+				{
+					p1 = k;
+					p2nd = plscore;
+				}
+				k = k - 1;
+			}
+
+// nasty brute force trickle down search
+			if (maxclients > 1)
+			{
+				k = maxclients;
+				p2nd = 0;
+				while (k > 0)
+				{
+					if (k != p1)
+					{
+						plscore = stof(getplayerkey(k - 1, "frags"));
+						if (plscore >= p2nd)
+						{
+							p2 = k;
+							p2nd = plscore;
+						}
+					}
+					k = k - 1;
+				}
+
+				if (maxclients > 2)
+				{
+					k = maxclients;
+					p2nd = 0;
+					while (k > 0)
+					{
+						if (k != p1 && k != p2)
+						{
+							plscore = stof(getplayerkey(k - 1, "frags"));
+							if (plscore >= p2nd)
+							{
+								p3 = k;
+								p2nd = plscore;
+							}
+						}
+						k = k - 1;
+					}
+				}
+
+				if (maxclients > 3)
+				{
+					k = maxclients;
+					p2nd = 0;
+					while (k > 0)
+					{
+						if (k != p1 && k != p2 && k != p3)
+						{
+							plscore = stof(getplayerkey(k - 1, "frags"));
+							if (plscore >= p2nd)
+							{
+								p4 = k;
+								p2nd = plscore;
+							}
+						}
+						k = k - 1;
+					}
+				}
+
+				if (maxclients > 4)
+				{
+					k = maxclients;
+					p2nd = 0;
+					while (k > 0)
+					{
+						if (k != p1 && k != p2 && k != p3 && k != p4)
+						{
+							plscore = stof(getplayerkey(k - 1, "frags"));
+							if (plscore >= p2nd)
+							{
+								p5 = k;
+								p2nd = plscore;
+							}
+						}
+						k = k - 1;
+					}
+				}
+
+				if (maxclients > 5)
+				{
+					k = maxclients;
+					p2nd = 0;
+					while (k > 0)
+					{
+						if (k != p1 && k != p2 && k != p3 && k != p4 && k != p5)
+						{
+							plscore = stof(getplayerkey(k - 1, "frags"));
+							if (plscore >= p2nd)
+							{
+								p6 = k;
+								p2nd = plscore;
+							}
+						}
+						k = k - 1;
+					}
+				}
+			}
+
+			k = autocvar_hud_frags;
+			if (k > 6) k = 6;
+			v = '0 0 0';
+			v_x = (vid_conwidth / 2) - 150;
+			v_y = vid_conheight;
+
+			f = plscore = stof(getplayerkey(p1 - 1, "frags"));
+			if (plscore > 0)
+			{
+				plname = getplayerkey(p1 - 1, "name");
+				Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.9 1');
+				while (f > 999)
+				{
+					f = floor(f / 10);
+					v_x = v_x - 7;
+				}
+				DrawAmmo('1 0.1 0.1', v, plscore, ALPHA_FULL);
+				v_y = v_y - 10;
+			}
+			v_x = (vid_conwidth / 2) - 150;
+			k = k - 1;
+			if ((k > 0) && p2 > 0)
+			{
+				f = plscore = stof(getplayerkey(p2 - 1, "frags"));
+				if (plscore > 0)
+				{
+					plname = getplayerkey(p2 - 1, "name");
+					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.9 1');
+					while (f > 999)
+					{
+						f = floor(f / 10);
+						v_x = v_x - 7;
+					}
+					DrawAmmo('1 1 1', v, plscore, ALPHA_FULL);
+					v_y = v_y - 10;
+				}
+				k = k - 1;
+			}
+			v_x = (vid_conwidth / 2) - 150;
+			if ((k > 0) && p3 > 0)
+			{
+				f = plscore = stof(getplayerkey(p3 - 1, "frags"));
+				if (plscore > 0)
+				{
+					plname = getplayerkey(p3 - 1, "name");
+					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.9 1');
+					while (f > 999)
+					{
+						f = floor(f / 10);
+						v_x = v_x - 7;
+					}
+					DrawAmmo('1 1 1', v, plscore, ALPHA_FULL);
+					v_y = v_y - 10;
+				}
+				k = k - 1;
+			}
+			v_x = (vid_conwidth / 2) - 150;
+			if ((k > 0) && p4 > 0)
+			{
+				f = plscore = stof(getplayerkey(p4 - 1, "frags"));
+				if (plscore > 0)
+				{
+					plname = getplayerkey(p4 - 1, "name");
+					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.9 1');
+					while (f > 999)
+					{
+						f = floor(f / 10);
+						v_x = v_x - 7;
+					}
+					DrawAmmo('1 1 1', v, plscore, ALPHA_FULL);
+					v_y = v_y - 10;
+				}
+				k = k - 1;
+			}
+			v_x = (vid_conwidth / 2) - 150;
+			if ((k > 0) && p5 > 0)
+			{
+				f = plscore = stof(getplayerkey(p5 - 1, "frags"));
+				if (plscore > 0)
+				{
+					plname = getplayerkey(p5 - 1, "name");
+					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.9 1');
+					while (f > 999)
+					{
+						f = floor(f / 10);
+						v_x = v_x - 7;
+					}
+					DrawAmmo('1 1 1', v, plscore, ALPHA_FULL);
+					v_y = v_y - 10;
+				}
+				k = k - 1;
+			}
+			v_x = (vid_conwidth / 2) - 150;
+			if ((k > 0) && p6 > 0)
+			{
+				f = plscore = stof(getplayerkey(p6 - 1, "frags"));
+				if (plscore > 0)
+				{
+					plname = getplayerkey(p6 - 1, "name");
+					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.9 1');
+					while (f > 999)
+					{
+						f = floor(f / 10);
+						v_x = v_x - 7;
+					}
+					DrawAmmo('1 1 1', v, plscore, ALPHA_FULL);
+					v_y = v_y - 10;
+				}
+			}
+		}
+
+// new message system - persistent with timeout, settable from cfg files / code
 		if (autocvar_hud_message != "")
 		{
 			huds = autocvar_hud_message_buffer; // # lines in buffer
@@ -1019,6 +1264,12 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					cvar_set("hud_message2", autocvar_hud_message0);
 				}
 				cvar_set("hud_message0", autocvar_hud_message);
+
+				if (autocvar_hud_message_dualpr) // dual print every message to console
+				{
+					print(autocvar_hud_message);
+					print("\n"); // so far none of these <\n> at the end
+				}
 			}
 
 			hudoff_x = autocvar_hud_message_offset;
@@ -1096,7 +1347,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	  {
 		if (deadflag)
 		{
-			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/sb_xbones", ALPHA_FULL, 0.19);				
+			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/sb_xbones", ALPHA_FULL, 0.19);
 		}
 		if (morph == CHAR_Q)
 		{
@@ -1942,7 +2193,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						{
 							cnt_left = pwr_step_y;
 							pwr_step_y = pwr_step_y + 14;
-							Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');							
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');	
 						}
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 18;
@@ -1974,7 +2225,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					{
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 14;
-						Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');							
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');	
 					}
 					cnt_left = pwr_step_y;
 					pwr_step_y = pwr_step_y + 20;
@@ -1986,7 +2237,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				{
 					cnt_left = pwr_step_y;
 					pwr_step_y = pwr_step_y + 14;
-					Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');							
+					Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');	
 				}
 			}
 		}
@@ -2084,7 +2335,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		else
 		{
 			DrawInventoryAmmo(pk_wep_step, "gfx/inv_phn", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_phone, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_phone, ALPHA_MEDIUM);
 		}
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
@@ -2101,7 +2352,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		else
 		{
 			DrawInventoryAmmo(pk_wep_step, "gfx/inv_mask", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_mask, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_mask, ALPHA_MEDIUM);
 		}
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
@@ -2118,7 +2369,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		else
 		{
 			DrawInventoryAmmo(pk_wep_step, "gfx/inv_tomb", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_tomb, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_tomb, ALPHA_MEDIUM);
 		}
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
@@ -2135,7 +2386,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		else
 		{
 			DrawInventoryAmmo(pk_wep_step, "gfx/inv_ego", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_ego, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_ego, ALPHA_MEDIUM);
 		}
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
@@ -2152,7 +2403,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		else
 		{
 			DrawInventoryAmmo(pk_wep_step, "gfx/inv_copb", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_copb, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_copb, ALPHA_MEDIUM);
 		}
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
@@ -2169,7 +2420,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		else
 		{
 			DrawInventoryAmmo(pk_wep_step, "gfx/inv_btrap", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_bt, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_bt, ALPHA_MEDIUM);
 		}
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
@@ -2186,7 +2437,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		else
 		{
 			DrawInventoryAmmo(pk_wep_step, "gfx/inv_turr", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_tur, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_tur, ALPHA_MEDIUM);
 		}
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
@@ -2209,7 +2460,7 @@ sb_align = SB_BOTTOM_RIGHT;
 				DrawInventoryAmmo(pk_wep_step, "gfx/inv_gwell", ALPHA_FULL * inv_alm, 0.125);
 			else
 				DrawInventoryAmmo(pk_wep_step, "gfx/inv_sgwell", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_MEDIUM);
 		}
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
@@ -2239,7 +2490,7 @@ sb_align = SB_BOTTOM_RIGHT;
 
 	if ((pk_wep == PK_IT_AXE) && (currentweap == IT_AXE))
 	if (has_deepsleep)
-		DrawInventoryWeapon(wep_axlv, "gfx/inv_deep_sleep",  "gfx/inv2_deep_sleep",  IT_AXE, 0.125, 0);		
+		DrawInventoryWeapon(wep_axlv, "gfx/inv_deep_sleep",  "gfx/inv2_deep_sleep",  IT_AXE, 0.125, 0);
 	else
 		DrawInventoryWeapon(wep_axlv, "gfx/inv_axe",  wep_axe,  IT_AXE, 0.125, 0);
 
@@ -2306,7 +2557,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		if (cells > 0)
 		{
 			DrawInventoryAmmo('302 110 0',"gfx/sb_cells", ALPHA_FULL, 0.5);
-			DrawAmmo('0 0 0', '280 105 0', cells, ALPHA_MEDIUM);		
+			DrawAmmo('0 0 0', '280 105 0', cells, ALPHA_MEDIUM);
 		}
 		return;
 	}

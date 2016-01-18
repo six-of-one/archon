@@ -706,7 +706,7 @@ if (WARNING & 4)
 {
 bprint("spawning gremlins, count: ");
 bprint(ftos(sf));
-newline(world);
+bprint("\n");
 }
 #endifdef
 

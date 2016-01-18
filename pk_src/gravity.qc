@@ -92,13 +92,14 @@ void() gravity_touch =
 		turret_KillStraker(other, 1 + random() * 5);
 	}
 
+	if (other.classname == "chaos_teleport_icon") dyn_remove(other, 1, chaos_tele_expire);
 };
 
 // IDEA: reality bomb - chaos effects while active
 
 void() gravity_pull =
 {
-	local entity e, g;
+	local entity e;
 	local float d, sgl, i, gp;
 	local vector org, v1;
 	local float gPercent;
@@ -170,18 +171,30 @@ void() gravity_pull =
 					// chance to knock a rune loose
 					rune_pull(e, GRAV_PULL); // not a super pull yet
 
-				if (random() < 0.366)
-				if (can_has_target(e, self, self.origin, 0, sgl)) // check LOS to grav
+// kill tele balls in range
+				self.cnt = 0;
+				if (e.classname == "chaos_teleport_icon") self.cnt = 1;
+
+				if (vlen(e.origin - self.origin) < (gDist * 1.6))
+// makes periodic beams that strike random targets
+				if  ((random() <  0.01) || self.cnt)
+					//self.cnt = 1;
+// or 36% chance to find a valid target - this method never fired lasers - now redacted
+//				if (random() < 0.366 || self.cnt)
+//				if (can_has_target(e, self, self.origin, 0, sgl) || self.cnt) // check LOS to grav
 				{
 					T_Damage (e,self,self.owner,10); // fired black laser
 
+// remove detected tele ball
+					if (self.cnt) dyn_remove(e, 1, chaos_tele_expire); // cant call tele_exp directly
+
 					v1 = e.origin - self.origin;
-					g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.origin, v0, v0, vectoangles(v1), v0, null_string, "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
+					self.aiment = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.origin, v0, v0, vectoangles(v1), v0, null_string, "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
 					i = vlen(v1);
 					i = floor(i / 32);
 					if (i > 63) i = 63;
-					g.frame = i;
-					g.skin = 2;
+					self.aiment.frame = i + 64; // larger size
+					self.aiment.skin = 3; // black beam
 				}
 				gFal = FALSE; // laser beam range item only
 			}
@@ -214,7 +227,7 @@ void() gravity_pull =
 		if (e.classname != "beartrap")
 		if (e.model != "progs/boss.mdl" && e.model != "progs/oldone.mdl" && e.model != "progs/cthon.mdl") // dont pull bosses or cthon morph
 		if (pk_art_movshot_ck(e, "grav")) // Cataboligne 8.12.9 purify - pk artifacts
-		if (e != self.goalentity) // archon grav, wont grab self
+		if (e != self.goalentity) // archon cast grav, wont grab caster
 		if (e.map != "nonmove") // 7.22.13 - func_models we should not suck
 		//if (e != self.owner)
 		if (e.AIRG_Timeout != -6)

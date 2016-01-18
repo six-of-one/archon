@@ -1196,6 +1196,7 @@ void () WaterMove =
 			T_FireDamage (self, world, world, 10*self.waterlevel);
 		}
 	}
+// idea: some monsters damaged by slime, some not
 	else if (self.watertype == CONTENT_SLIME)
 	{	// do damage
 		if (self.dmgtime < time && self.radsuit_finished < time)
@@ -1276,7 +1277,12 @@ void () PlayerPreThink =
 	if (! (self.flags & FL_WATERJUMP))
 		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
 
+#ifdef enhanced
+	cc_frame = cc_frame - 1;
+	if (cc_frame < 1) // 1 in X
+#else
 	if (cc_frame != framecount) // Cataboligne - 6.10.10 - making this a frame check - only way splashes will look "right"
+#endifdef
 	{
 // PAINKEEP SPLASH Check for entities splashing
 		CheckWaterLevels();

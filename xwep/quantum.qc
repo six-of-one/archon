@@ -30,11 +30,11 @@ float PORTAL_FRAGMODE = 24; // - 2 bits, 8 + 16
 
 string PORTAL_FAIL; // alt fail msg
 
-// portals seem to dump players outside the level - this saves them
+// portals sometimes dump players outside the level - this saves them
 
 void() PortalSaver =
 {
-	local float p;
+//	local float p;
 
 	if (self.attack_finished < time)
 	{
@@ -42,7 +42,7 @@ void() PortalSaver =
 		return;
 	}
 
-	if (self.cnt > 10)
+	if (self.cnt > 6)
 	{
 		centerprint (self.owner, "QUANTUM TUNNEL failure: xFF2C1b7A - researcher trapped in dimensional flux\nretrieving!\n");
 		setorigin(self.owner, self.origin + '0 0 16');
@@ -53,11 +53,11 @@ void() PortalSaver =
 
 	self.nextthink = time + 0.5;
 
-	p = pointcontents (self.owner.origin);
-	if (p == CONTENT_SOLID)
+	self.inwater = pointcontents (self.owner.origin);
+	if (self.inwater == CONTENT_SOLID)
 	{
 		self.cnt = self.cnt + 1;
-		self.nextthink = time + 0.1;
+		self.nextthink = time + 0.05;
 	}
 };
 

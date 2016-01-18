@@ -1057,8 +1057,8 @@ void() rune_maker =
 			self.count = 2 + random() * 3.8; // controls no-touch reposition code in check movement deal
 			self.delay = self.cnt = 0;
 
-		  if (DYN_SHOW || !RUNE_SHOW)
-		  {
+//		  if (DYN_SHOW || !RUNE_SHOW)
+//		  {
 				bprint("\n"); // RUNE_MSG_ISO
 				if (self.spawnflags & TECH_MASK_ALL)
 					bprint("\b*** TECH spawned: ");
@@ -1074,47 +1074,14 @@ void() rune_maker =
 				bprint(" on the map");
 				bprint("\n");
 				bprint("\n"); // RUNE_MSG_ISO
-			}
+//			}
 
 			rune_count = rune_count + 1;
 		}
 	}
 };
 
-// relocation code - called by ip_checkForMovement & from splash.qc
-
-// could move anything, effect should prob be client sided
-
-void() fade_relocate =
-{
-	if (!self.alpha) self.alpha = 1.03; // make sure the fade doesnt hit 0 and fire this again
-
-	self.think = fade_relocate;
-	self.nextthink = time + 0.1;
-
-	if (self.alpha < 0.6) self.touch = SUB_Null;
-	else self.touch = painkeep_touch;
-
-	self.alpha = self.alpha + self.lip;
-
-	if (self.lip < 0)
-	if (self.alpha < 0.05)
-	{
-		self.lip = 0.05;
-		setorigin(self, self.ip_orgOrigin);
-		item_eject(self, MED_BOUNCE);		
-	}
-
-	if (self.lip > 0)
-	if (self.alpha > 1)
-	{
-		self.alpha = 1.03;
-		self.lip = 0;
-		self.think = self.th_stand; // done - back to the usual
-		self.th_stand = SUB_Null;
-		self.nextthink = self.lefty;
-	}
-};
+// move a rune with fade relocate
 
 void() rune_relocate =
 {
@@ -1146,20 +1113,21 @@ void() rune_relocate =
 		self.ip_orgOrigin = self.origin; // if no location found it will bounce here
 		self.count = 2 + random() * 3.8; // reset for new location
 		self.cnt = 0;
+		self.revotemsg = 0; // clear out of bounds test - solid, lava, noway
 
 		if (e)
 		{
 			self.ip_orgOrigin = e.origin + '0 0 4'; // something found - move rune here
-		  if (DYN_SHOW || !RUNE_SHOW)
-		  {
-				bprint(RUNE_MSG_ISO);
+//		  if (DYN_SHOW || !RUNE_SHOW) // RUNE_SHOW is currently 0
+//		  {
+				bprint(RUNE_MSG_ISO); // \n to isolate rune messages in console log
 				bprint("\b*** RUNE relocating: ");
 				bprint(self.netname);
 				bprint(" near: ");
 				bprint(item_ident(e));
 				bprint("\n");
 				bprint(RUNE_MSG_ISO);
-			}
+//			}
 		}
 	}
 };

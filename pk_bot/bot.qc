@@ -848,7 +848,7 @@ void() bot_fixer =
 
 	if (self.classname == "bot_fix")
 	{
-		if (!BOTFREEZE)
+//		if (!BOTFREEZE)
 		while (e)
 		{
 			if (BOT_FIXED)

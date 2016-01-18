@@ -166,7 +166,7 @@ void () BurnThem =
 			if (random() < ST_HEALFIRE) // % chance reg health puts out fire - base 10%
 			{
 #ifdef warning
-																														if (WARNING & 32) if (FLAME_CHECK) { bprint("fire out - heal type: "); bprint(ftos(self.enemy.healtype)); newline(world); }
+																														if (WARNING & 32) if (FLAME_CHECK) { bprint("fire out - heal type: "); bprint(ftos(self.enemy.healtype)); bprint("\n"); }
 #endifdef
 				self.enemy.healtype = -1; // box only stops one flame ent
 				self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONFIRE);

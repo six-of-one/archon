@@ -30,6 +30,72 @@ void (entity e, string ns) move_stop =
 };
 
 
+// relocation code - called by ip_checkForMovement & from splash.qc
+
+// could move anything, effect should prob be client sided
+
+void() fade_relocate =
+{
+	if (!self.alpha) self.alpha = 1.03; // make sure the fade doesnt hit 0 and fire this again
+
+	self.think = fade_relocate;
+	self.nextthink = time + 0.1;
+
+	if (self.alpha < 0.6) self.touch = SUB_Null;
+	else self.touch = painkeep_touch;
+
+	self.alpha = self.alpha + self.lip;
+
+	if (self.lip < 0)
+	if (self.alpha < 0.05)
+	{
+		self.lip = 0.05;
+		setorigin(self, self.ip_orgOrigin);
+		item_eject(self, MED_BOUNCE);		
+	}
+
+	if (self.lip > 0)
+	if (self.alpha > 1)
+	{
+		self.alpha = 1.03;
+		self.lip = 0;
+		self.revotemsg = 0;
+		if (self.event == "dynamic_item")
+			self.ip_orgOrigin = v0; // clear for out of bounds ***
+		self.think = self.th_stand; // done - back to the usual
+		self.th_stand = SUB_Null;
+		self.nextthink = self.lefty;
+	}
+};
+
+// fade relocate anything
+
+void(entity e) set_relocate =
+{
+	if (!e) e = self;
+	e.enemy = dyn_rndloc();
+	if (!e.enemy) e.enemy = findradius(world.origin, 256000); // if nothing, it wont move
+
+	e.th_stand = e.think;
+	e.lefty = e.nextthink;
+	e.think = fade_relocate;
+	e.nextthink = time + 0.1;
+	e.lip = -0.05;
+	e.ip_orgOrigin = e.origin; // if no location found it will bounce here
+	if (e.enemy) e.ip_orgOrigin = e.enemy.origin + '0 0 4'; // something found - move rune here
+	e.enemy = world;
+
+#ifdef warning
+						if (WARNING & 2)
+						{
+							bprint("*** warning: fade relocate - ");
+							bprint(item_ident(e));
+							bprint ("\n");
+						}
+#endifdef
+
+};
+
 
 
 // fn(sv_decor) - test decor for server control
@@ -989,6 +1055,22 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 	newmis.aiment = loop_sound(newmis, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, torg, 0, LOOPFOREVER);
 };
 
+/*QUAKED func_chaos_teleport (.7 0 .7) (-8 -8 -8) (8 8 8) NOMOVE
+--------  CAT  -------
+Chaos Mod MK II
+
+Make a chaos teleport point on the map
+
+NOMOVE - dont allow teleport to move
+
+-------- NOTES --------
+"model" - use custom models and skins for chaos teleport
+"skin"
+"target" - teleport destination
+"aflag" -666 - do not change from selected target
+ - if selected target does not exist, a random one is chosen and aflag does not apply
+*/
+
 // map load a chaos teleport
 
 void() func_chaos_teleport =
@@ -1062,6 +1144,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_FireDamage
 	{
 
 #ifdef warning
+if (! WARNING & 262144) // block this warning
 if (WARNING & 128)
 {
 bprint("*** warning: T_FireDamage ( ");
@@ -1154,8 +1237,9 @@ else if (self.watertype == CONTENT_WATER || self.watertype == CONTENT_SLIME)
 //			self.bubble_count = NO_BUBBLES;
 			if (self.skin == DKLAVA)// && self.model == "progs/lavaball.mdl")
 			{
-				setmodel(self, "progs/snowball.mdl");
-				chaos_mdlsize(self);
+//				setmodel(self, "progs/snowball.mdl");
+//				chaos_mdlsize(self);
+				self.modelflags = EF_NOMODELFLAGS; // clear rocket trail
 				self.movetype = MOVETYPE_BOUNCE;
 				sound (self,CHAN_WEAPON,"chaos/freeze.wav",1,ATTN_NORM);
 				self.dmg = 0;
@@ -1358,7 +1442,7 @@ bprint("lavapud content: ");
 bprint(ftos(pco));
 bprint(", at float: ");
 bprint(ftos(pcf));
-newline(world);
+bprint("\n");
 }
 #endifdef
 	

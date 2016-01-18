@@ -2223,6 +2223,7 @@ void() q3_misc_explobox =
 	self.netname = "Barrel";
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	misc_explodbox_set(self, "progs/barrel.mdl", Q3_BARREL_BLAST, 80, MOVETYPE_NONE);
+	droptofloor(0,0);
 
 	r = rint(3 * random());
 	if (r == 1)

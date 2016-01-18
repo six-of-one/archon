@@ -124,9 +124,13 @@ bprint("placeitem barrel return\n");
 	if (!droptofloor(0,0)) // Cataboligne 9.17.3 - fix compiler warning
 	{
 #ifdef warning
-		dprint ("Bonus item fell out of level at ");
-		dprint (vtos (self.origin));
-		dprint ("\n");
+		if (WARNING & 2)
+		{
+			bprint(item_ident(self));
+			bprint ("- bonus item fell out of level at ");
+			bprint (vtos (self.origin));
+			bprint ("\n");
+		}
 #endifdef
 		dtf_handle();
 	}

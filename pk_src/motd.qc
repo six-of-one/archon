@@ -160,7 +160,7 @@ void() updateStatusDisplay =
 		else if ((time & 3) == 2) Line5 = "-";
 		else if ((time & 3) == 3) Line5 = "/";
 
-		if (self.revotemsg)
+		if (self.revotemsg < 0)
 			centerprint(self, "Vote Cancelled.\n\nYou must recast your vote");
 		else
 			centerprint3(self, "To cast your vote, enter the \nteleporter for the level you \nwish to play. Once all players have \nvoted, the winning level will begin.\n\nPress фире To Remove This Message",Line3,Line5);

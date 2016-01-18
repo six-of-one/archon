@@ -44,6 +44,7 @@ float WARNING;								// display warnings - dev work mainly - now uses the follo
 												// & 1024 - hammer
 												// & 2048 - hub ops
 												// & 4096 - archon ops
+												// & 262144 - block some repeating warnings
 //
 // control over test code
 
@@ -303,7 +304,7 @@ string ADMINCODE				= "float1\n"; // local command that loads admin security pas
 //													  //- obscured to keep anyone with casual console access from divining its true meaning
 string ADMINIMPULSE			= "float2\n"; // load the impulse
 string ADMINTIME				= "float3\n"; // load the time out
-float BOTFREEZE;							// if true stop bots cold
+//float BOTFREEZE;							// if true stop bots cold
 float BOTCAM;								// turning off frikbot botcam - 268226 in saved1 to turn on
 float NODECOR;								// sv decor controls
 void(float tm) th_bot_changeParms; // save bot parms to cvar or parm*
@@ -403,6 +404,7 @@ void(entity e, entity p) rune_id;
 void(entity e) rune_drop;
 void() server_rune_follow;
 void() fade_relocate;
+void(entity e) set_relocate;
 void() rune_regen;
 void() rune_vamp;
 float(float atf) rune_haste;
@@ -497,7 +499,7 @@ float RUNE_TECH_DMG_COMB	= 1; // allow damage runes to combind with each other
 float RUNE_TECH_RS_COMB		= 1; // allow resist runes to combind with each other
 float RUNE_NOWAY				= 1; // if true relocate runes past noway bounds for waypoints (quicker than normal relo
 //										  // note: this also enables relocation repair (e.g. nextthink fail fix)
-float RUNE_SHOW				= 0; // if true, rune console info print obeys DYN_SHOW rules
+//float RUNE_SHOW				= 0; // if true, rune console info print obeys DYN_SHOW rules
 string RUNE_MSG_ISO			= ""; // set to "\n" to put blank lines around relocating msg
 
 void() flyer_move; // fly rune for now

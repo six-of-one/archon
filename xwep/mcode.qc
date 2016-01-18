@@ -969,12 +969,12 @@ float(float mcv, entity e) bit_mcode =
 float(string sc, entity e) pk_mcode =
 {
 //	local float mc;
-	local string tsc;
+//	local string tsc;
+//	tsc = sc;
 
-	tsc = sc;
-	if (sc == null_string && e) tsc = e.classname;
+	if (sc == null_string && e) sc = e.classname;
 
-	if (tsc == null_string)
+	if (sc == null_string)
 	{
 #ifdef warning
 		if (WARNING & 2)
@@ -989,23 +989,23 @@ float(string sc, entity e) pk_mcode =
 /// q1
 	if (e) // qualify ent
 	{
-		if ((tsc == "item_shells") && (e.spawnflags & 1))			return(MC_ASHELLS_LG);
-		if ((tsc == "item_spikes") && (e.spawnflags & 1))			return(MC_ANAILS_LG);
-		if ((tsc == "item_rockets") && (e.spawnflags & 1))			return(MC_AROCKETS_LG);
-		if ((tsc == "item_cells") && (e.spawnflags & 1))			return(MC_ACELLS_LG);
-		if ((tsc == "item_health") && (e.spawnflags & 1))			return(MC_HEALTHROT);
-		if ((tsc == "item_health") && (e.spawnflags & 2))			return(MC_HEALTHMEGA);
+		if ((sc == "item_shells") && (e.spawnflags & 1))			return(MC_ASHELLS_LG);
+		if ((sc == "item_spikes") && (e.spawnflags & 1))			return(MC_ANAILS_LG);
+		if ((sc == "item_rockets") && (e.spawnflags & 1))			return(MC_AROCKETS_LG);
+		if ((sc == "item_cells") && (e.spawnflags & 1))			return(MC_ACELLS_LG);
+		if ((sc == "item_health") && (e.spawnflags & 1))			return(MC_HEALTHROT);
+		if ((sc == "item_health") && (e.spawnflags & 2))			return(MC_HEALTHMEGA);
 
-		if ((tsc == "item_sigil") && (e.spawnflags & R_EARTH))	return(MC_SIGIL1);
-		if ((tsc == "item_sigil") && (e.spawnflags & R_BLACK))	return(MC_SIGIL2);
-		if ((tsc == "item_sigil") && (e.spawnflags & R_HELL))		return(MC_SIGIL4);
-		if ((tsc == "item_sigil") && (e.spawnflags & R_ELDER))	return(MC_SIGIL8);
+		if ((sc == "item_sigil") && (e.spawnflags & R_EARTH))	return(MC_SIGIL1);
+		if ((sc == "item_sigil") && (e.spawnflags & R_BLACK))	return(MC_SIGIL2);
+		if ((sc == "item_sigil") && (e.spawnflags & R_HELL))		return(MC_SIGIL4);
+		if ((sc == "item_sigil") && (e.spawnflags & R_ELDER))	return(MC_SIGIL8);
 
-		if ((tsc == "item_sigil") && (e.spawnflags & R_AMMO))		return(MC_SIGIL16);
-		if ((tsc == "item_sigil") && (e.spawnflags & R_FLY))		return(MC_SIGIL32);
-		if ((tsc == "item_sigil") && (e.spawnflags & R_VAMPIRE))		return(MC_SIGIL64);
+		if ((sc == "item_sigil") && (e.spawnflags & R_AMMO))		return(MC_SIGIL16);
+		if ((sc == "item_sigil") && (e.spawnflags & R_FLY))		return(MC_SIGIL32);
+		if ((sc == "item_sigil") && (e.spawnflags & R_VAMPIRE))		return(MC_SIGIL64);
 
-		if (tsc == "item_keyX")
+		if (sc == "item_keyX")
 		{
 			if (!e.cnt)															return(MC_KEY1_0);
 			if (e.cnt == 10)													return(MC_KEY1_0);
@@ -1015,284 +1015,284 @@ float(string sc, entity e) pk_mcode =
 			if (e.cnt == 21)													return(MC_KEY2_1);
 			if (e.cnt == 22)													return(MC_KEY2_2);
 		}
-		if (tsc == "w_key")
+		if (sc == "w_key")
 		{
 			if (e.spawnflags & 1)											return(MC_W_KEY_G);
 			if (e.spawnflags & 2)											return(MC_W_KEY_B);
 		}
 	}
 
-	if (tsc == "weapon_axe")											return(MC_AXE);
-	if (tsc == "weapon_shotgun")										return(MC_SHOTGUN);
-	if (tsc == "weapon_supershotgun")								return(MC_SUPER_SHOTGUN);
-	if (tsc == "weapon_nailgun")										return(MC_NAILGUN);
-	if (tsc == "weapon_nailgun_q1")									return(MC_NAILGUN);
-	if (tsc == "weapon_supernailgun")								return(MC_SUPER_NAILGUN);
-	if (tsc == "weapon_grenadelauncher")							return(MC_GRENADEL);
-	if (tsc == "weapon_rocketlauncher")								return(MC_ROCKETL);
-	if (tsc == "weapon_lightning")									return(MC_THUNDER);
+	if (sc == "weapon_axe")											return(MC_AXE);
+	if (sc == "weapon_shotgun")										return(MC_SHOTGUN);
+	if (sc == "weapon_supershotgun")								return(MC_SUPER_SHOTGUN);
+	if (sc == "weapon_nailgun")										return(MC_NAILGUN);
+	if (sc == "weapon_nailgun_q1")									return(MC_NAILGUN);
+	if (sc == "weapon_supernailgun")								return(MC_SUPER_NAILGUN);
+	if (sc == "weapon_grenadelauncher")							return(MC_GRENADEL);
+	if (sc == "weapon_rocketlauncher")								return(MC_ROCKETL);
+	if (sc == "weapon_lightning")									return(MC_THUNDER);
 // ammo
-	if (tsc == "item_shells")											return(MC_ASHELLS);
-	if (tsc == "item_spikes")											return(MC_ANAILS);
-	if (tsc == "item_rockets")											return(MC_AROCKETS);
-	if (tsc == "item_cells")											return(MC_ACELLS);
+	if (sc == "item_shells")											return(MC_ASHELLS);
+	if (sc == "item_spikes")											return(MC_ANAILS);
+	if (sc == "item_rockets")											return(MC_AROCKETS);
+	if (sc == "item_cells")											return(MC_ACELLS);
 
-	if (tsc == "item_artifact_invulnerability")					return(MC_PENT);
-	if (tsc == "item_artifact_super_damage")						return(MC_QUAD);
-	if (tsc == "item_artifact_invisibility")						return(MC_RING);
-	if (tsc == "item_artifact_envirosuit")							return(MC_SUIT);
+	if (sc == "item_artifact_invulnerability")					return(MC_PENT);
+	if (sc == "item_artifact_super_damage")						return(MC_QUAD);
+	if (sc == "item_artifact_invisibility")						return(MC_RING);
+	if (sc == "item_artifact_envirosuit")							return(MC_SUIT);
 
-	if (tsc == "item_health")											return(MC_HEALTH);
-	if (tsc == "item_armor1")											return(MC_ARMOR1);
-	if (tsc == "item_armor2")											return(MC_ARMOR2);
-	if (tsc == "item_armorInv")										return(MC_ARMOR3);
-	if (tsc == "item_key1")												return(MC_KEY1);
-	if (tsc == "item_key2")												return(MC_KEY2);
-	if (tsc == "item_sigil")											return(MC_SIGIL);
-	if (tsc == "misc_explobox")										return(MC_EXPLOD1);
-	if (tsc == "misc_explobox2")										return(MC_EXPLOD2);
+	if (sc == "item_health")											return(MC_HEALTH);
+	if (sc == "item_armor1")											return(MC_ARMOR1);
+	if (sc == "item_armor2")											return(MC_ARMOR2);
+	if (sc == "item_armorInv")										return(MC_ARMOR3);
+	if (sc == "item_key1")												return(MC_KEY1);
+	if (sc == "item_key2")												return(MC_KEY2);
+	if (sc == "item_sigil")											return(MC_SIGIL);
+	if (sc == "misc_explobox")										return(MC_EXPLOD1);
+	if (sc == "misc_explobox2")										return(MC_EXPLOD2);
 
 // keys special
-	if (tsc == "item_key1_0")											return(MC_KEY1_0);
-	if (tsc == "item_key1_1")											return(MC_KEY1_1);
-	if (tsc == "item_key1_2")											return(MC_KEY1_2);
-	if (tsc == "item_key2_0")											return(MC_KEY2_0);
-	if (tsc == "item_key2_1")											return(MC_KEY2_1);
-	if (tsc == "item_key2_2")											return(MC_KEY2_2);
+	if (sc == "item_key1_0")											return(MC_KEY1_0);
+	if (sc == "item_key1_1")											return(MC_KEY1_1);
+	if (sc == "item_key1_2")											return(MC_KEY1_2);
+	if (sc == "item_key2_0")											return(MC_KEY2_0);
+	if (sc == "item_key2_1")											return(MC_KEY2_1);
+	if (sc == "item_key2_2")											return(MC_KEY2_2);
 
-	if (tsc == "fn_backpack")											return(MC_BACKPACK);
+	if (sc == "fn_backpack")											return(MC_BACKPACK);
 
 /// pk
-	if (tsc == "weapon_airfist")										return(MC_AIRGUN);
-	if (tsc == "weapon_chainlg")										return(MC_CHTHUNDR);
-	if (tsc == "weapon_grapgun")										return(MC_GRAP);
-	if (tsc == "weapon_pulsenail")									return(MC_PULSE_NAILGUN);
-	if (tsc == "item_painkeep_gwell")								return(MC_GRAVITY);
-	if (tsc == "item_painkeep_turret")								return(MC_SENTRY);
-	if (tsc == "item_painkeep_beartrap")							return(MC_BEARTRAP);
-	if (tsc == "item_painkeep_expshells")							return(MC_AEXPLSH);
-	if (tsc == "item_painkeep_can")									return(MC_CANOBEANS);
+	if (sc == "weapon_airfist")										return(MC_AIRGUN);
+	if (sc == "weapon_chainlg")										return(MC_CHTHUNDR);
+	if (sc == "weapon_grapgun")										return(MC_GRAP);
+	if (sc == "weapon_pulsenail")									return(MC_PULSE_NAILGUN);
+	if (sc == "item_painkeep_gwell")								return(MC_GRAVITY);
+	if (sc == "item_painkeep_turret")								return(MC_SENTRY);
+	if (sc == "item_painkeep_beartrap")							return(MC_BEARTRAP);
+	if (sc == "item_painkeep_expshells")							return(MC_AEXPLSH);
+	if (sc == "item_painkeep_can")									return(MC_CANOBEANS);
 
-	if (tsc == "item_pkplus_ego")										return(MC_EGO);
-	if (tsc == "item_pkplus_tomb")									return(MC_TOMB);
-	if (tsc == "item_pkplus_actor")									return(MC_MASK);
-	if (tsc == "item_pkplus_phone")									return(MC_PHONE);
+	if (sc == "item_pkplus_ego")										return(MC_EGO);
+	if (sc == "item_pkplus_tomb")									return(MC_TOMB);
+	if (sc == "item_pkplus_actor")									return(MC_MASK);
+	if (sc == "item_pkplus_phone")									return(MC_PHONE);
 
 /// ctf
 
-	if (tsc == "weapon_hook")											return(MC_HOOK);
+	if (sc == "weapon_hook")											return(MC_HOOK);
 
 /// hipnotic
 	
-	if (tsc == "weapon_mjolnir")										return(MC_HIP_MJOLNIR);
-	if (tsc == "weapon_laser_gun")									return(MC_HIP_LASERCAN);
-	if (tsc == "weapon_proximity_gun")								return(MC_HIP_PROXGUN);
+	if (sc == "weapon_mjolnir")										return(MC_HIP_MJOLNIR);
+	if (sc == "weapon_laser_gun")									return(MC_HIP_LASERCAN);
+	if (sc == "weapon_proximity_gun")								return(MC_HIP_PROXGUN);
 
-	if (tsc == "item_artifact_wetsuit")								return(MC_HIP_WETSUIT);
-	if (tsc == "item_artifact_empathy_shields")					return(MC_HIP_EMPSH);
-	if (tsc == "item_hornofconjuring")								return(MC_HIP_CORNUCOPIA);
+	if (sc == "item_artifact_wetsuit")								return(MC_HIP_WETSUIT);
+	if (sc == "item_artifact_empathy_shields")					return(MC_HIP_EMPSH);
+	if (sc == "item_hornofconjuring")								return(MC_HIP_CORNUCOPIA);
 
 /// doom
-	if (tsc == "d_weapon_shotgun")									return(MC_D_SHOTGUN);
-	if (tsc == "d_weapon_supershotgun")								return(MC_D_BOOMSTICK);
-	if (tsc == "d_weapon_chaingun")									return(MC_D_CHAINGUN);
-	if (tsc == "d_weapon_rocketlauncher")							return(MC_D_ROCKETL);
-	if (tsc == "d_weapon_plasma")										return(MC_D_PLASMA);
-	if (tsc == "d_weapon_bfg")											return(MC_D_BFG);
-	if (tsc == "d_weapon_saw")											return(MC_D_SAW);
-	if (tsc == "d_weapon_pistol")										return(MC_D_PISTOL);
+	if (sc == "d_weapon_shotgun")									return(MC_D_SHOTGUN);
+	if (sc == "d_weapon_supershotgun")								return(MC_D_BOOMSTICK);
+	if (sc == "d_weapon_chaingun")									return(MC_D_CHAINGUN);
+	if (sc == "d_weapon_rocketlauncher")							return(MC_D_ROCKETL);
+	if (sc == "d_weapon_plasma")										return(MC_D_PLASMA);
+	if (sc == "d_weapon_bfg")											return(MC_D_BFG);
+	if (sc == "d_weapon_saw")											return(MC_D_SAW);
+	if (sc == "d_weapon_pistol")										return(MC_D_PISTOL);
 
-	if (tsc == "d_art_berserker")										return(MC_D_BERS);
-	if (tsc == "d_art_invulnerable")									return(MC_D_INVUL);
-	if (tsc == "d_art_invisible")										return(MC_D_INVIS);
-	if (tsc == "d_art_radsuit")										return(MC_D_RADSUIT);
-	if (tsc == "d_art_soulsphere")									return(MC_D_SOULSPH);
-	if (tsc == "d_art_megasphere")									return(MC_D_MEGASPH);
+	if (sc == "d_art_berserker")										return(MC_D_BERS);
+	if (sc == "d_art_invulnerable")									return(MC_D_INVUL);
+	if (sc == "d_art_invisible")										return(MC_D_INVIS);
+	if (sc == "d_art_radsuit")										return(MC_D_RADSUIT);
+	if (sc == "d_art_soulsphere")									return(MC_D_SOULSPH);
+	if (sc == "d_art_megasphere")									return(MC_D_MEGASPH);
 
-	if (tsc == "d_item_spiritarmor")									return(MC_D_ARM_SPR);
-	if (tsc == "d_item_armorgreen")									return(MC_D_ARM_GRN);
-	if (tsc == "d_item_armorblue")									return(MC_D_ARM_BLU);
+	if (sc == "d_item_spiritarmor")									return(MC_D_ARM_SPR);
+	if (sc == "d_item_armorgreen")									return(MC_D_ARM_GRN);
+	if (sc == "d_item_armorblue")									return(MC_D_ARM_BLU);
 
-	if (tsc == "d_item_healthbottle")								return(MC_D_HBOTTLE);
-	if (tsc == "d_item_healthstimpak")								return(MC_D_STIMPAK);
-	if (tsc == "d_item_healthmedkit")								return(MC_D_MEDKIT);
+	if (sc == "d_item_healthbottle")								return(MC_D_HBOTTLE);
+	if (sc == "d_item_healthstimpak")								return(MC_D_STIMPAK);
+	if (sc == "d_item_healthmedkit")								return(MC_D_MEDKIT);
 
-	if (tsc == "d_key_redskull")										return(MC_D_KEY_RED_SK);
-	if (tsc == "d_key_blueskull")										return(MC_D_KEY_BLU_SK);
-	if (tsc == "d_key_yellowskull")									return(MC_D_KEY_YEL_SK);
-	if (tsc == "d_key_bluecard")										return(MC_D_KEY_BLU_CR);
-	if (tsc == "d_key_redcard")										return(MC_D_KEY_RED_CR);
-	if (tsc == "d_key_yellowcard")									return(MC_D_KEY_YEL_CR);
+	if (sc == "d_key_redskull")										return(MC_D_KEY_RED_SK);
+	if (sc == "d_key_blueskull")										return(MC_D_KEY_BLU_SK);
+	if (sc == "d_key_yellowskull")									return(MC_D_KEY_YEL_SK);
+	if (sc == "d_key_bluecard")										return(MC_D_KEY_BLU_CR);
+	if (sc == "d_key_redcard")										return(MC_D_KEY_RED_CR);
+	if (sc == "d_key_yellowcard")									return(MC_D_KEY_YEL_CR);
 
-	if (tsc == "d_ammo_4shell")										return(MC_D_ASHELLS);
-	if (tsc == "d_ammo_shellbox")										return(MC_D_ASHELLS_LG);
-	if (tsc == "d_ammo_clip")											return(MC_D_ABULLETS);
-	if (tsc == "d_ammo_ammobox")										return(MC_D_ABULLETS_LG);
-	if (tsc == "d_ammo_1rocket")										return(MC_D_AROCKET);
-	if (tsc == "d_ammo_rockbox")										return(MC_D_AROCKETS_LG);
-	if (tsc == "d_ammo_cellpack")										return(MC_D_ACELLS);
-	if (tsc == "d_ammo_cellbox")										return(MC_D_ACELLS_LG);
+	if (sc == "d_ammo_4shell")										return(MC_D_ASHELLS);
+	if (sc == "d_ammo_shellbox")										return(MC_D_ASHELLS_LG);
+	if (sc == "d_ammo_clip")											return(MC_D_ABULLETS);
+	if (sc == "d_ammo_ammobox")										return(MC_D_ABULLETS_LG);
+	if (sc == "d_ammo_1rocket")										return(MC_D_AROCKET);
+	if (sc == "d_ammo_rockbox")										return(MC_D_AROCKETS_LG);
+	if (sc == "d_ammo_cellpack")										return(MC_D_ACELLS);
+	if (sc == "d_ammo_cellbox")										return(MC_D_ACELLS_LG);
 
-	if (tsc == "d_item_pack")											return(MC_D_PACK);
-	if (tsc == "d_item_nightvis")										return(MC_D_NIGHTVS);
-	if (tsc == "d_item_automap")										return(MC_D_AUTOMAP);
+	if (sc == "d_item_pack")											return(MC_D_PACK);
+	if (sc == "d_item_nightvis")										return(MC_D_NIGHTVS);
+	if (sc == "d_item_automap")										return(MC_D_AUTOMAP);
 
-	if (tsc == "d_barrel")												return(MC_D_BARREL);
+	if (sc == "d_barrel")												return(MC_D_BARREL);
 
 /// wolf
-	if (tsc == "w_weapon_knife")										return(MC_W_KNIFE);
-	if (tsc == "w_weapon_pistol")										return(MC_W_PISTOL);
-	if (tsc == "w_weapon_machinegun")								return(MC_W_MACHGUN);
-	if (tsc == "w_weapon_chaingun")									return(MC_W_CHAINGUN);
-	if (tsc == "w_weapon_mortar")										return(MC_W_MORTAR);
-	if (tsc == "w_weapon_flamer")										return(MC_W_FLAMER);
+	if (sc == "w_weapon_knife")										return(MC_W_KNIFE);
+	if (sc == "w_weapon_pistol")										return(MC_W_PISTOL);
+	if (sc == "w_weapon_machinegun")								return(MC_W_MACHGUN);
+	if (sc == "w_weapon_chaingun")									return(MC_W_CHAINGUN);
+	if (sc == "w_weapon_mortar")										return(MC_W_MORTAR);
+	if (sc == "w_weapon_flamer")										return(MC_W_FLAMER);
 
-	if (tsc == "w_ammo_clip")											return(MC_W_CLIP);
-	if (tsc == "w_ammo_gas")											return(MC_W_GAS);
-	if (tsc == "w_ammo_rock")											return(MC_W_MORTARS);
-	if (tsc == "w_item_pack")											return(MC_W_PACK);
+	if (sc == "w_ammo_clip")											return(MC_W_CLIP);
+	if (sc == "w_ammo_gas")											return(MC_W_GAS);
+	if (sc == "w_ammo_rock")											return(MC_W_MORTARS);
+	if (sc == "w_item_pack")											return(MC_W_PACK);
 
-	if (tsc == "w_heal_medkit")										return(MC_W_HEALTH);
-	if (tsc == "w_heal_food")											return(MC_W_FOOD);
-	if (tsc == "w_heal_dogfood")										return(MC_W_DOGFOOD);
-	if (tsc == "w_heal_blood")											return(MC_W_BLOOD);
-	if (tsc == "w_heal_bldbns")										return(MC_W_BLDBNS);
-	if (tsc == "w_art_facesphere")									return(MC_W_FACESPHERE);
+	if (sc == "w_heal_medkit")										return(MC_W_HEALTH);
+	if (sc == "w_heal_food")											return(MC_W_FOOD);
+	if (sc == "w_heal_dogfood")										return(MC_W_DOGFOOD);
+	if (sc == "w_heal_blood")											return(MC_W_BLOOD);
+	if (sc == "w_heal_bldbns")										return(MC_W_BLDBNS);
+	if (sc == "w_art_facesphere")									return(MC_W_FACESPHERE);
 
-	if (tsc == "w_key_g")												return(MC_W_KEY_G);
-	if (tsc == "w_key_b")												return(MC_W_KEY_B);
-	if (tsc == "w_item_cross")											return(MC_W_G_CROSS);
-	if (tsc == "w_barrel")												return(MC_W_BARREL);
+	if (sc == "w_key_g")												return(MC_W_KEY_G);
+	if (sc == "w_key_b")												return(MC_W_KEY_B);
+	if (sc == "w_item_cross")											return(MC_W_G_CROSS);
+	if (sc == "w_barrel")												return(MC_W_BARREL);
 
-	if (tsc == "w_item_cross")											return(MC_W_G_CROSS);
-	if (tsc == "w_item_chalice")										return(MC_W_G_CHALICE);
-	if (tsc == "w_item_chest")											return(MC_W_G_CHEST);
-	if (tsc == "w_item_crown")											return(MC_W_G_CROWN);
+	if (sc == "w_item_cross")											return(MC_W_G_CROSS);
+	if (sc == "w_item_chalice")										return(MC_W_G_CHALICE);
+	if (sc == "w_item_chest")											return(MC_W_G_CHEST);
+	if (sc == "w_item_crown")											return(MC_W_G_CROWN);
 
 /// q2
 
-	if (tsc == "q2_weapon_blaster")									return(MC_Q2_BLASTER);
-	if (tsc == "q2_weapon_shotgun")									return(MC_Q2_SHOTGUN);
-	if (tsc == "q2_weapon_supershotgun")							return(MC_Q2_DBLSHOTGUN);
-	if (tsc == "q2_weapon_machinegun")								return(MC_Q2_MACHINEGUN);
-	if (tsc == "weapon_chaingun")										return(MC_Q2_CHAINGUN);
-	if (tsc == "q2_weapon_grenadelauncher")						return(MC_Q2_GRENADEL);
-	if (tsc == "q2_weapon_rocketlauncher")							return(MC_Q2_ROCKETL);
-	if (tsc == "weapon_hyperblaster")								return(MC_Q2_HYPBLASTER);
-	if (tsc == "q2_weapon_railgun")									return(MC_Q2_RAILGUN);
-	if (tsc == "q2_weapon_bfg")										return(MC_Q2_BFG);
-	if (tsc == "q2_weapon_grapple")									return(MC_Q2_GRAPPLE);
+	if (sc == "q2_weapon_blaster")									return(MC_Q2_BLASTER);
+	if (sc == "q2_weapon_shotgun")									return(MC_Q2_SHOTGUN);
+	if (sc == "q2_weapon_supershotgun")							return(MC_Q2_DBLSHOTGUN);
+	if (sc == "q2_weapon_machinegun")								return(MC_Q2_MACHINEGUN);
+	if (sc == "weapon_chaingun")										return(MC_Q2_CHAINGUN);
+	if (sc == "q2_weapon_grenadelauncher")						return(MC_Q2_GRENADEL);
+	if (sc == "q2_weapon_rocketlauncher")							return(MC_Q2_ROCKETL);
+	if (sc == "weapon_hyperblaster")								return(MC_Q2_HYPBLASTER);
+	if (sc == "q2_weapon_railgun")									return(MC_Q2_RAILGUN);
+	if (sc == "q2_weapon_bfg")										return(MC_Q2_BFG);
+	if (sc == "q2_weapon_grapple")									return(MC_Q2_GRAPPLE);
 
-	if (tsc == "q2_item_quad")											return(MC_Q2_QUAD);
-	if (tsc == "item_invulnerability")								return(MC_Q2_INVUL);
-	if (tsc == "q2_item_enviro")										return(MC_Q2_ENVIRO);
-	if (tsc == "item_silencer")										return(MC_Q2_SILENCE);
+	if (sc == "q2_item_quad")											return(MC_Q2_QUAD);
+	if (sc == "item_invulnerability")								return(MC_Q2_INVUL);
+	if (sc == "q2_item_enviro")										return(MC_Q2_ENVIRO);
+	if (sc == "item_silencer")										return(MC_Q2_SILENCE);
 
-	if (tsc == "q2_item_armor_shard")								return(MC_Q2_ARM_SHARD);
-	if (tsc == "item_armor_jacket")									return(MC_Q2_ARM_JAK);
-	if (tsc == "q2_item_armor_combat")								return(MC_Q2_ARM_COMBAT);
-	if (tsc == "q2_item_armor_body")									return(MC_Q2_ARM_BODY);
-	if (tsc == "item_power_shield")									return(MC_Q2_ARM_PSHIELD);
-	if (tsc == "item_power_screen")									return(MC_Q2_ARM_PSCREEN);
+	if (sc == "q2_item_armor_shard")								return(MC_Q2_ARM_SHARD);
+	if (sc == "item_armor_jacket")									return(MC_Q2_ARM_JAK);
+	if (sc == "q2_item_armor_combat")								return(MC_Q2_ARM_COMBAT);
+	if (sc == "q2_item_armor_body")									return(MC_Q2_ARM_BODY);
+	if (sc == "item_power_shield")									return(MC_Q2_ARM_PSHIELD);
+	if (sc == "item_power_screen")									return(MC_Q2_ARM_PSCREEN);
 
-	if (tsc == "q2_item_health_small")								return(MC_Q2_STIMPAK);
-	if (tsc == "q2_item_health")										return(MC_Q2_FIRSTAID);
-	if (tsc == "q2_item_health_large")								return(MC_Q2_MEDKIT);
-	if (tsc == "q2_item_health_mega")								return(MC_Q2_MEGA);
+	if (sc == "q2_item_health_small")								return(MC_Q2_STIMPAK);
+	if (sc == "q2_item_health")										return(MC_Q2_FIRSTAID);
+	if (sc == "q2_item_health_large")								return(MC_Q2_MEDKIT);
+	if (sc == "q2_item_health_mega")								return(MC_Q2_MEGA);
 
-	if (tsc == "key_red_key")											return(MC_Q2_KEY_RED);
-	if (tsc == "key_blue_key")											return(MC_Q2_KEY_BLU);
-	if (tsc == "key_commander_head")									return(MC_Q2_KEY_CHEAD);
-	if (tsc == "key_airstrike_target")								return(MC_Q2_KEY_ATARGET);
-	if (tsc == "key_data_cd")											return(MC_Q2_KEY_CD);
-	if (tsc == "key_data_spinner")									return(MC_Q2_KEY_SPINNER);
-	if (tsc == "key_pass")												return(MC_Q2_KEY_PASS);
-	if (tsc == "key_power_cube")										return(MC_Q2_KEY_POWER);
-	if (tsc == "key_pyramid")											return(MC_Q2_KEY_PYRAMID);
+	if (sc == "key_red_key")											return(MC_Q2_KEY_RED);
+	if (sc == "key_blue_key")											return(MC_Q2_KEY_BLU);
+	if (sc == "key_commander_head")									return(MC_Q2_KEY_CHEAD);
+	if (sc == "key_airstrike_target")								return(MC_Q2_KEY_ATARGET);
+	if (sc == "key_data_cd")											return(MC_Q2_KEY_CD);
+	if (sc == "key_data_spinner")									return(MC_Q2_KEY_SPINNER);
+	if (sc == "key_pass")												return(MC_Q2_KEY_PASS);
+	if (sc == "key_power_cube")										return(MC_Q2_KEY_POWER);
+	if (sc == "key_pyramid")											return(MC_Q2_KEY_PYRAMID);
 
-	if (tsc == "q2_ammo_shells")										return(MC_Q2_ASHELLS);
-	if (tsc == "q2_ammo_bullets")										return(MC_Q2_ABULLETS);
-	if (tsc == "q2_ammo_rockets")										return(MC_Q2_AROCKETS);
-	if (tsc == "q2_ammo_grenades")									return(MC_Q2_AGRENADES);
-	if (tsc == "q2_ammo_cells")										return(MC_Q2_ACELLS);
-	if (tsc == "q2_ammo_slugs")										return(MC_Q2_ASLUGS);
+	if (sc == "q2_ammo_shells")										return(MC_Q2_ASHELLS);
+	if (sc == "q2_ammo_bullets")										return(MC_Q2_ABULLETS);
+	if (sc == "q2_ammo_rockets")										return(MC_Q2_AROCKETS);
+	if (sc == "q2_ammo_grenades")									return(MC_Q2_AGRENADES);
+	if (sc == "q2_ammo_cells")										return(MC_Q2_ACELLS);
+	if (sc == "q2_ammo_slugs")										return(MC_Q2_ASLUGS);
 
-	if (tsc == "item_pack")												return(MC_Q2_PACK);
-	if (tsc == "item_adrenaline")										return(MC_Q2_ADRENALINE);
-	if (tsc == "item_bandolier")										return(MC_Q2_BANDOLIER);
-	if (tsc == "item_breather")										return(MC_Q2_BREATHER);
+	if (sc == "item_pack")												return(MC_Q2_PACK);
+	if (sc == "item_adrenaline")										return(MC_Q2_ADRENALINE);
+	if (sc == "item_bandolier")										return(MC_Q2_BANDOLIER);
+	if (sc == "item_breather")										return(MC_Q2_BREATHER);
 
-	if (tsc == "q2_misc_explobox")									return(MC_Q2_BARREL);
+	if (sc == "q2_misc_explobox")									return(MC_Q2_BARREL);
 
-	if (tsc == "q2_ctf_resist")										return(MC_Q2_TECH_RES);
-	if (tsc == "q2_ctf_regen")											return(MC_Q2_TECH_DOC);
-	if (tsc == "q2_ctf_stren")											return(MC_Q2_TECH_AMP);
-	if (tsc == "q2_ctf_haste")											return(MC_Q2_TECH_TM);
+	if (sc == "q2_ctf_resist")										return(MC_Q2_TECH_RES);
+	if (sc == "q2_ctf_regen")											return(MC_Q2_TECH_DOC);
+	if (sc == "q2_ctf_stren")											return(MC_Q2_TECH_AMP);
+	if (sc == "q2_ctf_haste")											return(MC_Q2_TECH_TM);
 
 /// q3
 
-	if (tsc == "weapon_gauntlet")										return(MC_Q3_GAUNTLET);
-	if (tsc == "weapon_grapplinghook")								return(MC_Q3_GRAPPLE);
-	if (tsc == "q3_weapon_machinegun")								return(MC_Q3_MACHINEGUN);
-	if (tsc == "q3_weapon_shotgun")									return(MC_Q3_SHOTGUN);
-	if (tsc == "q3_weapon_grenadelauncher")						return(MC_Q3_GRENADEL);
-	if (tsc == "q3_weapon_rocketlauncher")							return(MC_Q3_ROCKETL);
-	if (tsc == "weapon_plasmagun")									return(MC_Q3_PLASMA);
-	if (tsc == "q3_weapon_lightning")								return(MC_Q3_LIGHTNING);
-	if (tsc == "q3_weapon_railgun")									return(MC_Q3_RAILGUN);
-	if (tsc == "q3_weapon_bfg")										return(MC_Q3_BFG);
+	if (sc == "weapon_gauntlet")										return(MC_Q3_GAUNTLET);
+	if (sc == "weapon_grapplinghook")								return(MC_Q3_GRAPPLE);
+	if (sc == "q3_weapon_machinegun")								return(MC_Q3_MACHINEGUN);
+	if (sc == "q3_weapon_shotgun")									return(MC_Q3_SHOTGUN);
+	if (sc == "q3_weapon_grenadelauncher")						return(MC_Q3_GRENADEL);
+	if (sc == "q3_weapon_rocketlauncher")							return(MC_Q3_ROCKETL);
+	if (sc == "weapon_plasmagun")									return(MC_Q3_PLASMA);
+	if (sc == "q3_weapon_lightning")								return(MC_Q3_LIGHTNING);
+	if (sc == "q3_weapon_railgun")									return(MC_Q3_RAILGUN);
+	if (sc == "q3_weapon_bfg")										return(MC_Q3_BFG);
 
-	if (tsc == "q3_item_quad")											return(MC_Q3_QUAD);
-	if (tsc == "item_regen")											return(MC_Q3_REGEN);
-	if (tsc == "q3_item_enviro")										return(MC_Q3_ENVIRO);
-	if (tsc == "item_invis")											return(MC_Q3_INVIS);
-	if (tsc == "item_haste")											return(MC_Q3_HASTE);
-	if (tsc == "item_flight")											return(MC_Q3_FLIGHT);
+	if (sc == "q3_item_quad")											return(MC_Q3_QUAD);
+	if (sc == "item_regen")											return(MC_Q3_REGEN);
+	if (sc == "q3_item_enviro")										return(MC_Q3_ENVIRO);
+	if (sc == "item_invis")											return(MC_Q3_INVIS);
+	if (sc == "item_haste")											return(MC_Q3_HASTE);
+	if (sc == "item_flight")											return(MC_Q3_FLIGHT);
 
-	if (tsc == "q3_item_armor_shard")								return(MC_Q3_ARM_SHARD);
-	if (tsc == "q3_item_armor_combat")								return(MC_Q3_ARM_COMBAT);
-	if (tsc == "q3_item_armor_body")									return(MC_Q3_ARM_BODY);
+	if (sc == "q3_item_armor_shard")								return(MC_Q3_ARM_SHARD);
+	if (sc == "q3_item_armor_combat")								return(MC_Q3_ARM_COMBAT);
+	if (sc == "q3_item_armor_body")									return(MC_Q3_ARM_BODY);
 
-	if (tsc == "q3_item_health_small")								return(MC_Q3_HSMALL);
-	if (tsc == "q3_item_health")										return(MC_Q3_HEALTH);
-	if (tsc == "q3_item_health_large")								return(MC_Q3_HLARGE);
-	if (tsc == "q3_item_health_mega")								return(MC_Q3_MEGA);
+	if (sc == "q3_item_health_small")								return(MC_Q3_HSMALL);
+	if (sc == "q3_item_health")										return(MC_Q3_HEALTH);
+	if (sc == "q3_item_health_large")								return(MC_Q3_HLARGE);
+	if (sc == "q3_item_health_mega")								return(MC_Q3_MEGA);
 
-	if (tsc == "q3_ammo_shells")										return(MC_Q3_ASHELLS);
-	if (tsc == "q3_ammo_bullets")										return(MC_Q3_ABULLETS);
-	if (tsc == "q3_ammo_rockets")										return(MC_Q3_AROCKETS);
-	if (tsc == "q3_ammo_grenades")									return(MC_Q3_AGRENADES);
-	if (tsc == "q3_ammo_cells")										return(MC_Q3_ACELLS);
-	if (tsc == "q3_ammo_slugs")										return(MC_Q3_ASLUGS);
-	if (tsc == "ammo_lightning")										return(MC_Q3_ALIGNTNING);
-	if (tsc == "ammo_bfg")												return(MC_Q3_ABFG);
+	if (sc == "q3_ammo_shells")										return(MC_Q3_ASHELLS);
+	if (sc == "q3_ammo_bullets")										return(MC_Q3_ABULLETS);
+	if (sc == "q3_ammo_rockets")										return(MC_Q3_AROCKETS);
+	if (sc == "q3_ammo_grenades")									return(MC_Q3_AGRENADES);
+	if (sc == "q3_ammo_cells")										return(MC_Q3_ACELLS);
+	if (sc == "q3_ammo_slugs")										return(MC_Q3_ASLUGS);
+	if (sc == "ammo_lightning")										return(MC_Q3_ALIGNTNING);
+	if (sc == "ammo_bfg")												return(MC_Q3_ABFG);
 
-	if (tsc == "holdable_medkit")										return(MC_Q3_HOLDMEDKIT);
-	if (tsc == "holdable_teleporter")								return(MC_Q3_HOLDTELE);
+	if (sc == "holdable_medkit")										return(MC_Q3_HOLDMEDKIT);
+	if (sc == "holdable_teleporter")								return(MC_Q3_HOLDTELE);
 
-	if (tsc == "q3_misc_explobox")									return(MC_Q3_BARREL);
+	if (sc == "q3_misc_explobox")									return(MC_Q3_BARREL);
 
 /// chaos
 	
-	if (tsc == "c_weapon_reggun")										return(MC_REGGUN);
-	if (tsc == "c_weapon_tallball")										return(MC_TALLBALL);
-	if (tsc == "c_weapon_deepsleep")									return(MC_DEEPSLEEP);
-	if (tsc == "weapon_quantum")										return(MC_QUANTUM);
-	if (tsc == "weapon_flamer")										return(MC_C_FLAMER);
-	if (tsc == "ammo_gas")												return(MC_C_AGAS);
-	if (tsc == "ammo_gas_lg")											return(MC_C_AGAS_LG);
+	if (sc == "c_weapon_reggun")										return(MC_REGGUN);
+	if (sc == "c_weapon_tallball")										return(MC_TALLBALL);
+	if (sc == "c_weapon_deepsleep")									return(MC_DEEPSLEEP);
+	if (sc == "weapon_quantum")										return(MC_QUANTUM);
+	if (sc == "weapon_flamer")										return(MC_C_FLAMER);
+	if (sc == "ammo_gas")												return(MC_C_AGAS);
+	if (sc == "ammo_gas_lg")											return(MC_C_AGAS_LG);
 
 
 // q3 - translates classname for now
-//	else if (tsc == null_string)								return(MC_);
+//	else if (sc == null_string)								return(MC_);
 
 #ifdef warning
 	if (WARNING & 2)
-//	if (tsc != "dyn_item") // && mc == 0) // again - test will always be true now, deprecated
+//	if (sc != "dyn_item") // && mc == 0) // again - test will always be true now, deprecated
 	{
 		bprint("\b *** item with no map code translation:\n");
 		bprint(" -------------->  ");
-		bprint(tsc);
+		bprint(sc);
 		bprint("\n");
 	}
 #endifdef
@@ -2293,19 +2293,20 @@ void() painkeep_cube_use =
 			self.touch = painkeep_touch;
 			self.solid = SOLID_TRIGGER;	// allow it to be touched again - needed on x weaps
 		}
-		else 				{if (damage_attacker)
-		if (random() < 0.92)
-		if (damage_attacker.flags & FL_CLIENT)
+		else
 		{
-			self.charmer = damage_attacker;
-			self.charmed = 1;
-		}
-// IMP: put warnings in
+			if (damage_attacker)
+			if (random() < 0.92)
+			if (damage_attacker.flags & FL_CLIENT)
+			{
+				self.charmer = damage_attacker;
+				self.charmed = 1;
+			}
 #ifdef warning
-#endifdef
 									self.map = "I came from a cube / crate"; // TEST - remove
-//
-									}
+#endifdef
+			self.flags = FL_MONSTER; // 11.14.13
+		}
 	}
 	else
 	{
@@ -2324,11 +2325,11 @@ void() painkeep_cube_use =
 			self.wad = monster_id(d, MON_FUNC_REG);
 			self.origin_z = self.origin_z + 8;
 			item_call(self.wad);
-// IMP: put warnings in
 #ifdef warning
-#endifdef
 									self.map = "I came from a cube / crate"; // TEST - remove
+#endifdef
 //			self.button13 = 0; // dont let dyn_rem wack the *_start_go from setting takedamage, etc.
+			self.flags = FL_MONSTER; // 11.14.13 - clear item flgs from cube/crate
 		}
 		else
 		{
@@ -2694,6 +2695,7 @@ void() pk_crate =
 	self.th_stand = SUB_Remove;
 	self.think = crate_init; // think to this so we can toss it out and then solidify it
 	self.nextthink = time + 1 + random();
+	AddToSplashBig(self); // Cataboligne - 11.12.13 - crates werent in this - no splash & no solid checks
 };
 
 /*QUAKED func_crate  (0 .5 .8) (-16 -16 0) (16 16 32) LARGE RESPAWN REMOVE
@@ -2775,6 +2777,7 @@ void() func_crate =
 	self.health = 50 + random() * 50;
 	self.th_die = painkeep_cube_use;
 	self.takedamage = DAMAGE_AIM;
+	AddToSplashBig(self); // Cataboligne - 11.12.13 - crates werent in this - no splash & no solid checks
 };
 
 
@@ -3352,12 +3355,17 @@ void(entity e, string md, float dm, float hl, float mt) misc_explodbox_set =
 //	{
 	e.origin_z = e.origin_z + 2;
 	oldz = e.origin_z;
-	droptofloor(0,0); // Cataboligne 9.17.3 - fixed this compiler warning
+//	droptofloor(0,0); // likely only works on self
 	if (oldz - e.origin_z > 250)
 	{
-		dprint ("Barrel fell out of level at ");
-		dprint (vtos (self.origin));
-		dprint ("\n");
+#ifdef warning
+		if (WARNING)
+		{
+			bprint ("Barrel fell out of level at ");
+			bprint (vtos (self.origin));
+			bprint ("\n");
+		}
+#endifdef
 
 		dtf_handle(); // randomize somewhere on level
 	}
@@ -3388,6 +3396,7 @@ void () misc_explobox =
 //		q10-_misc_explobox();
 
 	misc_explodbox_set(self, "maps/b_explob.bsp", 160, 20, MOVETYPE_NONE);
+	droptofloor(0,0);
 	if (self.class_select == null_string) self.class_select = "quake_item";
 };
 
@@ -3402,6 +3411,7 @@ void () misc_explobox2 =
 //		q10-_misc_explobox2();
 
 	misc_explodbox_set(self, "maps/b_exbox2.bsp", 160, 20, MOVETYPE_NONE);
+	droptofloor(0,0);
 	if (self.class_select == null_string) self.class_select = "quake_item";
 };
 
