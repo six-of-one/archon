@@ -118,6 +118,8 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 	// turn on bit-flag
 	cam_owner.cam_x = cam_owner.cam_x | CHSCAM_ON;
 
+	Chase_cam_setweapon( cam_owner );
+
 	if (CAM_DEF == DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
 	{
 		cvar_set("chase_active", "1");
@@ -156,7 +158,6 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 	chase_cam.skin = 1; // let track function handle the remote view
 							  // part, start with "temp. disabled" flag set
 
-	Chase_cam_setweapon( cam_owner );
 	// distance clipping
 	chase_cam.ammo_shells = cam_owner.cam_y / 3;
 
@@ -727,7 +728,10 @@ void() Toggle_chase_cam =
 		self.cam_x = self.cam_x - CHSCAM_ON;
 
 		if (CAM_DEF == DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
+		{
 			cvar_set("chase_active","0");
+			Chase_cam_setweapon( self );
+		}
 	}
 	else
 		Start_chase_cam( self, '0 0 0' );
@@ -857,8 +861,8 @@ void(float sel) cam_parms =
 	if (DARKPLACES || chaos) // IDEA: move to live upd
 	{
 		CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam
-//		if (chaos)
-//		if (cvar("cl_cam_def") != CAM_DEF) CAM_DEF = cvar("cl_cam_def"); // Cataboligne - 8.26.11 - temp disable testing dpcam
+		if (chaos)
+		if (cvar("cl_cam_def") != CAM_DEF) CAM_DEF = cvar("cl_cam_def"); // Cataboligne - 8.26.11 - temp disable testing dpcam
 
 		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
 		if (chaos)
@@ -881,7 +885,7 @@ void(float sel) cam_parms =
 //		self.dest1_y = parm15;
 		if (CAM_DEF == DPCAM_ON)
 		{
-			cvar_set("chase_active", "1"); // Cataboligne - 8.26.11 - support for dpcam
+			cvar_set("chase_active", ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
 			self.cam_y = cvar("chase_back");
 			self.cam_z = cvar("chase_up") / 100;
 		}
@@ -938,7 +942,7 @@ void () dead_cam_set =
 	if (CAM_DEF == DPCAM_ON) cvar_set("chase_active", "0");
 
 
-	if (Q_100 || PK_100 || CAM_DEF == DPCAM_ON) return; // || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
+	if (Q_100 || PK_100) return; // || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
 
 // limit on frags from fire & forget implementation
 
@@ -978,7 +982,7 @@ void () dead_cam_set =
 		if (self.aiment)
 		if (self.aiment.classname == "deadcam") return; // dont make more than one - just in case
 
-		if (! self.cam_x & CHSCAM_ON)
+		if (! self.cam_x & CHSCAM_ON || CAM_DEF == DPCAM_ON)
 			cam_startdeathview();
 	}
 };
@@ -1005,8 +1009,9 @@ void () ccb_impulse_check =
 
 	if (Q_100 || PK_100 || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
 
-		return;
+	CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam - check here in case it was changed
 
+	if (CAM_DEF == DPCAM_ON)
 	{
 		self.cam_y = cvar("chase_back");
 		self.cam_z = cvar("chase_up") / 100;

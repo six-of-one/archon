@@ -906,56 +906,56 @@ void(entity e, float am, string pr) eweap_am =
 	if (am == AMMO_BULLETS && !(am_type & IT_BULLETS))
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.ammo_bullet));
+		sprint(e, ftos(rint(e.ammo_bullet)));
 		sprint(e, " bullets");
 		am_type = am_type | IT_BULLETS;
 	}
 	else if (am == AMMO_SHELLS && !(am_type & IT_SHELLS))
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.ammo_shells));
+		sprint(e, ftos(rint(e.ammo_shells)));
 		sprint(e, " shells");
 		am_type = am_type | IT_SHELLS;
 	}
 	else if (am == AMMO_CELLS && !(am_type & IT_CELLS))
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.ammo_cells));
+		sprint(e, ftos(rint(e.ammo_cells)));
 		sprint(e, " cells");
 		am_type = am_type | IT_CELLS;
 	}
 	else if (am == AMMO_ROCKETS && !(am_type & IT_ROCKETS))
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.ammo_rockets));
+		sprint(e, ftos(rint(e.ammo_rockets)));
 		sprint(e, " rockets");
 		am_type = am_type | IT_ROCKETS;
 	}
 	else if (am == AMMO_GRENADES && !(am_type & IT_ROCKETS))
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.ammo_rockets));
+		sprint(e, ftos(rint(e.ammo_rockets)));
 		sprint(e, " grenades");
 //		am_type = am_type | IT_ROCKETS;
 	}
 	else if (am == AMMO_NAILS && !(am_type & IT_NAILS))
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.ammo_nails));
+		sprint(e, ftos(rint(e.ammo_nails)));
 		sprint(e, " nails");
 		am_type = am_type | IT_NAILS;
 	}
 	else if (am == AMMO_SLUGS && !(am_type & IT_SLUGS))
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.ammo_slug));
+		sprint(e, ftos(rint(e.ammo_slug)));
 		sprint(e, " slugs");
 		am_type = am_type | IT_SLUGS;
 	}
 	else if (am == AMMO_GAS && !(am_type & IT_GAS))
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.ammo_gaspr));
+		sprint(e, ftos(rint(e.ammo_gaspr)));
 		sprint(e, " lbs gas pressure");
 		am_type = am_type | IT_GAS;
 	}

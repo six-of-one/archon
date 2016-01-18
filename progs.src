@@ -9,6 +9,8 @@ pk_src/pk.defs.qc
 bot.defs.qc
 bot_tally.qc
 
+xwep/hook.defs.qc
+
 frikbot/map_dm1.qc
 frikbot/map_dm2.qc
 frikbot/map_dm3.qc
@@ -70,9 +72,10 @@ enforcer.qc
 oldone.qc
 
 chasecam.qc  //Cataboligne MOD 9.11.3
+xwep/hook.qc
 
-xwep/viswep.qc
 xwep/vw_seq.qc
+xwep/viswep.qc
 xwep/mcode.qc
 xwep/flyers.qc
 

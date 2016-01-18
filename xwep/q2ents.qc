@@ -1176,7 +1176,7 @@ void() item_power_screen =
 
 void() item_silencer =
 {
-	item_artifact_invisibility();
+	item_spikes();
 
 	if (!ULOK2)
 	if (!GENERATIONS)
@@ -1184,6 +1184,8 @@ void() item_silencer =
 	{
 		return;
 	}
+	else
+		item_artifact_invisibility();
 
 	self.netname = "Silencer";
 

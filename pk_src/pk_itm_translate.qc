@@ -2274,37 +2274,41 @@ void(string tri, float trv) master_item_control_loop =
 // returns false if item is ok
 // returns true if item is changed / hidden / removed
 
+float Q1WT; // global - once wad == "q1" is true for a map, its always true
+
 float(entity e, float q1ck, string itm) noxtr_item_control =
 {
-	float T;
-
 	if (!GENERATIONS)
 	{
 		if (q1ck) // test to see if its a dual item map - if so, hide this item
 		{
-			T = FALSE;
-			if (world.worldtype == IT0_WQ1) T = TRUE;
-			else if (world.worldtype == IT1_WQ1) T = TRUE;
-			else if (world.worldtype == IT3_WQ1) T = TRUE;
-			else if (world.worldtype == IT4_WQ1) T = TRUE;
-			else
-			if (find(world,wad,"q1")) T = TRUE;
-		
-//			if (e.wad != "q1") // no wad q1 items should ever be tested - just for gens stuff
-			if (T)  hide_item (e);
-			return(TRUE);
+			if (!Q1WT)
+			{
+				if (world.worldtype == IT0_WQ1) Q1WT = TRUE;
+				else if (world.worldtype == IT1_WQ1) Q1WT = TRUE;
+				else if (world.worldtype == IT3_WQ1) Q1WT = TRUE;
+				else if (world.worldtype == IT4_WQ1) Q1WT = TRUE;
+				else
+				if (find(world,wad,"q1")) Q1WT = TRUE;
+			}
+
+			if (Q1WT)
+			{
+				hide_item (e);
+				return(TRUE);
+			}
 		}
 
 		if (itm != "")
-			{
-				NO_PI = 3.1415; // no place item - no mcode set, no subcontrols
-				if(e.map == "repic") e.map = "pic_item";
-				item_call_save(e, itm);
-				e.mcode = pk_mcode("", e);
-				e.sscode = sid_code[(int)(e.mcode - 100) * %4]; // just for doom_alpha code
-			}
-		else
-			hide_item (e);
+		{
+			NO_PI = 3.1415; // no place item - no mcode set, no subcontrols
+			if(e.map == "repic") e.map = "pic_item";
+			item_call_save(e, itm);
+			e.mcode = pk_mcode("", e);
+			e.sscode = sid_code[(int)(e.mcode - 100) * %4]; // just for doom_alpha code
+		}
+//		else
+//			hide_item (e);
 
 		return(TRUE);
 	}

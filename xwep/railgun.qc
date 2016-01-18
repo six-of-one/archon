@@ -114,7 +114,7 @@ void() railsnd_think =
 void() X_FireRailgun =
 {
 	local	vector org, destination, v1, v2, vp;
-	local	float	i, j, k, m, vl, damage, aj,ak, af, al, cn;
+	local	float	i, j, k, m, vl, damage, aj,ak, af, al, cn, ew;
 	local	entity startent, impactent;
 	local entity e;
 
@@ -131,8 +131,11 @@ void() X_FireRailgun =
 	traceline (org, org + v_forward*2048, TRUE, self);
 
 	if (EWEAP)
-	if (EWEAP.lip == AMMO_SLUGS)
-		self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(EWEAP.dmg_save, self, ""); // use ammo
+	{
+		if (EWEAP.lefty == Q3_RAILBEAM) ew = TRUE; // fire q3 style beam
+		if (EWEAP.lip == AMMO_SLUGS)
+			self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(EWEAP.dmg_save, self, ""); // use ammo
+	}
 
 
 	makevectors(self.v_angle);
@@ -149,6 +152,14 @@ void() X_FireRailgun =
 //	while (i < 2000)//(i > 100) // (i != CONTENT_SOLID)
 //	while (i > 100)
 //	while (i < 500)
+	if (ew)
+	{
+		e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, org, v0, v0, vectoangles(v_forward), v0, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
+		cn = ceil(vl / 32);
+		if (cn > 63) cn = 63;
+		e.frame = cn;
+	}
+	else
 	while (i != CONTENT_SOLID)
 	{
 		if (af < 10) af = af + 0.2;

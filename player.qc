@@ -132,9 +132,17 @@ void()	player_stand1 =[	$axstnd1,	player_stand1	]
 
 	if (self.velocity_x || self.velocity_y) // moved - allow frame to be set
 	{
+		if (self.hook & HOOK_IN)
+		{
+			if (self.flags & FL_ONGROUND)
+			{
+				self.walkframe=0;
+				self.think = player_run;
+			}
+			return;
+		}
 		self.walkframe=0;
 		self.think = player_run; // *fixed - run / stand loop
-		return;
 	}
 };
 
@@ -160,11 +168,20 @@ void()	player_run =[	$rockrun1,	player_run	]
 	}
 	self.walkframe = self.walkframe + 1;
 
+	if (self.hook & HOOK_IN)
+	{
+		if (!(self.flags & FL_ONGROUND) )
+		{
+			self.walkframe=0;
+			self.think = player_stand1;
+		}
+		return;
+	}
+
 	if (!self.velocity_x && !self.velocity_y)
 	{
 		self.walkframe=0;
 		self.think = player_stand1; // *fixed - run / stand loop
-		return;
 	}
 };
 

@@ -53,6 +53,7 @@ void() PK_init =
 	if (ULOK3) q3_precache();
 	chaos_precache();
 	hip_precache();
+	hook_precache();  // Cataboligne - hook mod
 	}
 
 	pk_art_precache(); // Cataboligne 8.12.9 purify - pk artifacts
@@ -684,6 +685,26 @@ void() pk_liveupd =
 		return;
 	}
 
+// hook codes
+	HOOK = cvar("sv_c_hook");
+	HOOK_DMG = cvar("sv_c_hook_dmg");
+	HOOK_RANGE = cvar("sv_c_hook_range");
+	HOOK_TIME = cvar("sv_c_hook_time");
+	HOOK_URTO = cvar("sv_c_hook_urto");
+	HOOK_SPEED = cvar("sv_c_hook_speed");
+	MAX_CHAIN_LEN = HOOK_RANGE;
+
+	if (MAP_MODE == "Q2") LASER_HOOK = TRUE;
+	else if (MAP_MODE == "Q3") LTN_HOOK = TRUE;
+
+// overrides
+	if (cvar("sv_c_hook_laser") > 0) LASER_HOOK = TRUE;
+	else if (cvar("sv_c_hook_q3") > 0) LTN_HOOK = TRUE;
+	if (cvar("sv_c_hook_laser") < 0) LASER_HOOK = FALSE;
+	if (cvar("sv_c_hook_q3") < 0) LTN_HOOK = FALSE;
+
+// frag suicide controls - nocides when set dont take frags
+
 	NOCIDE = 	cvar("sv_pl_nocide");
 	NOENVCIDE = cvar("sv_pl_nolavacide");
 	NOPKCIDE = 	cvar("sv_pl_nopkcide");
@@ -1014,6 +1035,19 @@ void() pk_srvcmd_set =
 	R_HELL = RUNE_FLG_HS;
 	R_ELDER = RUNE_FLG_RG;
 
+// hook codes - these should be set for non register cvar, unmoded engines
+	HOOK = 0;
+	HOOK_DMG = 0;
+	HOOK_RANGE = 1200;
+	HOOK_TIME = 0;
+	HOOK_URTO = 0;
+	HOOK_SPEED = 600;
+	LASER_HOOK = 0;
+	LTN_HOOK = 0;
+
+	if (MAP_MODE == "Q2") LASER_HOOK = TRUE;
+	else if (MAP_MODE == "Q3") LTN_HOOK = TRUE;
+
 // cam controls
 	DCAMTO = 0; // RELEASE - final release default should have 2 mins & respawn
 	DCAMTOACT = 0;
@@ -1231,6 +1265,21 @@ POW_TIME = 30;
 		registercvar("sv_c_rune_set", "0");
 		registercvar("sv_c_rune_allowrule1multi", "0"); // if true more than 1 rune can be gotten in rule 1
 		registercvar("sv_c_rune_rule1sfx", "1"); // if true and multi 3 & 4 runes in rule 1 have side effects
+
+// hook controls  - most of the rules will apply to the harpoon, map item hooks may have seperate rules
+
+		registercvar("sv_c_hook", "0"); // give away the hook - ctf style code, set this to 1 and everyone can use the hook effect per map genre by impulse controls
+																		// q1 - q1 ctf hook, q2 - laser beam hook, q3 - lightning hook
+																		// this does not effect map entities like weapon_hook or runes which will still give hook use
+		registercvar("sv_c_hook_dmg", "0"); // how much damage the q1 hook does - does not apply to q2 or q3 hooks
+		registercvar("sv_c_hook_range", "1200"); // how far you can throw it
+		registercvar("sv_c_hook_time", "0"); // how long the hook will stay once reeled in - if 0, hook never releases till player hits release
+		registercvar("sv_c_hook_urto", "0"); // unreeled timeout - if fired and caught, but not reeled in, this will drop the line after timeout
+		registercvar("sv_c_hook_speed", "600"); // pull speed of all hooks but harpoon
+																						// set the next two both to -1 to force the q1 ctf hook at all times for give away - this does not affect map item hooks
+		registercvar("sv_c_hook_laser", "0"); // force give away hook to be lithium style (laser beam), if < 0 dont use laser hook
+		registercvar("sv_c_hook_q3", "0"); // force give away to lightning hook, if < 0 dont use l-hook
+//		registercvar("sv_c_hook_", "0");
 
 		registercvar("sv_c_rsp_time", "30");
 		registercvar("sv_c_pow_time", "30"); // artifact power time

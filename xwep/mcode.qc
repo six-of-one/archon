@@ -1985,6 +1985,8 @@ void() barrel_explode =
 	local float bdmg;
 	local string bsnd;
 
+/*
+// Cataboligjne - 8.29.11 - removed
 	if (self.model == "progs/q2_barrel.mdl")
 	{
 		if (self.frame != 3)
@@ -1995,6 +1997,7 @@ void() barrel_explode =
 		self.frame = 0; // restore
 		setsize (self, '-14 -14 0', '14 14 42');
 	}
+*/
 
 	self.mdl = self.model;
 	self.solid = SOLID_NOT;

@@ -723,6 +723,7 @@ string Q3_DET					= "q3_snd/respawn1.wav"; // against	self.noise4 - NOTE: artifa
 string Q3_BOBHOFF				= "cl_itembobheight 0\n"; // q3 item bob height off setting
 float Q3_POWER_WAIT; // norm = 120
 float Q3_POWER_TIME; // norm = 30
+float Q3_RAILBEAM				= 357811;
 
 void() q3_precache;
 void() q3_suspend;
@@ -788,9 +789,7 @@ void() viswep_togl;
 void() viswep_pre;
 void(entity vh, float cd) viswep_ld;
 float(string wpm) ver_weaponmodel;
-void vw_range_base(float v_frm);
-void vw_melee_base(float v_frm);
-void vw_harpoon_pnt(float v_frm); // harpoon rope point
+
 vector(entity hent) grap_vw_adj;
 .void(float v_frm) vv_draw; // viswep code - weapon drawn
 .void(float v_frm) vv_holster; // viswep code -weapon hosltered

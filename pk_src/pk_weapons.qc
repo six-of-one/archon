@@ -1957,6 +1957,12 @@ void() PK_ImpulseCommands =
 		pk_art_specialimpulse(self.impulse);
 		return;
 	}
+	else if (self.impulse >= 94 && self.impulse <= 98) // Cataboligne 8.29.11 purify - hook
+	{
+		if (HOOK) // TDO: inventory item
+			hook_impulse_check();
+		return;
+	}
 
 // Select best close combat weapon
 	else if (self.impulse == 46)
@@ -2072,9 +2078,8 @@ void() PK_ImpulseCommands =
 		if (pk_admintime > 0) admin_resettimeout();
 	}
 
-	else if (self.impulse == 255){
+	else if (self.impulse == 255)
 		QuadCheat ();
-}
 
 	self.impulse = 0;
 };

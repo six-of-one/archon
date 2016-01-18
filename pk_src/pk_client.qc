@@ -1082,26 +1082,38 @@ void () PlayerPostThink =
 
 	if (self.classname != OBSERVER) // Cataboligne - 8.16.9 - dont need this for observers
 // check to see if player landed and play landing sound
-	if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
+
+	if (!(self.hook & HOOK_ON)) // Cataboligne 9.11.3 purify
 	{
-		if (self.watertype == CONTENT_WATER)
-			sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
-		else if (self.jump_flag < -650)
+		if (self.classname == "player" || self.classname == "pk*bot") // dont thud the cam
+
+		if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
 		{
-			T_Damage (self, world, world, 5);
-			//sound (self, CHAN_VOICE, "player/fall_2.wav", 1, ATTN_NORM);
-			sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
-			self.deathtype = "falling";
+			if (self.watertype == CONTENT_WATER)
+				sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
+			else if (self.jump_flag < -650)
+			{
+				T_Damage (self, world, world, 5);
+				//sound (self, CHAN_VOICE, "player/fall_2.wav", 1, ATTN_NORM);
+				sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
+				self.deathtype = "falling";
+			}
+			else
+				sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
+				//sound (self, CHAN_VOICE, "player/fall_1.wav", 1, ATTN_NORM);
+
+			self.jump_flag = 0;
 		}
-		else
-			sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
-			//sound (self, CHAN_VOICE, "player/fall_1.wav", 1, ATTN_NORM);
 
-		self.jump_flag = 0;
+		if (!(self.flags & FL_ONGROUND))
+			self.jump_flag = self.velocity_z;
+
 	}
-
-	if (!(self.flags & FL_ONGROUND))
-		self.jump_flag = self.velocity_z;
+	else // Cataboligne 9.11.3 purify - this does mean if you are on the hook you dont take hook damage if hooked, yo dawg...
+	{
+//		hook_dmg_check(); TDO: make a server option if (sv_hookdmg) ...
+		self.finaldest = self.velocity;
+	}
 
 	// If it's air blast time, blow entity's
 	if (self.AIRG_BlastTimeout > time)

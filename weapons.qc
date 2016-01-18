@@ -1489,6 +1489,25 @@ Called every frame so impulse events can be handled as well as possible
 */
 void () W_WeaponFrame =
 {
+	// Rob
+	if (self.button2)
+		CheckGrapHookJump (); // cataboligne - 8.29.11 - hook check
+
+	local float t;
+
+/*
+// doesnt work because an impulse key doesnt act like a button and fire again if held down
+
+	if (HOOK && LASER_HOOK)
+	if (self.hook & HOOK_ON) // cataboligne - 8.29.11 - laser hook op
+	{
+		if ((self.impulse == I_HOOK2) || (self.impulse == I_HOOK)) t = TRUE;
+		if (self.button0)  t = TRUE; // NOTE: check alt fire later
+		self.impulse = 0;
+		if (!t) self.hook = self.hook - (self.hook & HOOK_ON);
+	}
+*/
+
 	if (time < self.attack_finished)
 		return;
 

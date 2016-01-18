@@ -76,6 +76,7 @@ float Q3_HEALM_A				= 100;
 
 float Q3_BARREL_BLAST		= 120;
 
+
 vector Q3_LIFT					= ' 0 0 20'; // q3 models sit too "low" - lift them by this on spawn
 
 //string Q3_BOBHOFF				= "cl_itembobheight 0\n"; // q3 item bob height off setting
@@ -129,7 +130,7 @@ void() q3_precache =
 	precache_model ("progs/vw_q3_rail.mdl");
 	precache_model ("progs/vw_q3_rl.mdl");
 	precache_model ("progs/vw_q3_ssg.mdl");
-
+	precache_model ("progs/vw_q3_gauntlet.mdl");
 
 // hear it
 // art
@@ -158,6 +159,8 @@ void() q3_precache =
 	precache_sound ("sound/q3_snd/lg_hum.wav");
 	precache_sound ("sound/q3_snd/bfg_hum.wav");
 	precache_sound ("sound/q3_snd/rg_hum.wav");
+	precache_sound ("sound/q3_snd/gaunthum.wav");
+	precache_sound ("sound/q3_snd/gauntrun.wav");
 	precache_sound ("sound/q3_snd/lg_fire.wav");
 	precache_sound ("sound/q3_snd/railgf1a.wav");
 	precache_sound ("sound/q3_snd/bfg_fire.wav");
@@ -220,6 +223,143 @@ void() q3_suspend =
 {
 	self.map = "Q3";
 	self.movetype = MOVETYPE_NONE;
+};
+
+// fn(X_FireGauntlet) - fire gauntlet & maybe other x weps
+
+void () X_FireGauntlet =
+{
+	local vector source;
+	local vector org;
+	local float gdmg;
+
+	makevectors (self.v_angle);
+	source = self.origin + '0 0 16'; // TWEAK: adjust for actual gauntlet blade pos!
+	if (self.classname == "pk*bot")
+	{
+		source = botaim ();
+	}
+
+	gdmg = 25;
+	if (EWEAP)
+	{
+		if (EWEAP.dmg > 0) gdmg = EWEAP.dmg;
+		if (EWEAP.noise3) sound (self, CHAN_BODY, EWEAP.noise3, 1, ATTN_NORM);
+	}
+
+	traceline (source, source + v_forward*64, FALSE, self);
+	if (trace_fraction == 1.0)
+		return;
+
+	org = trace_endpos - v_forward*4;
+
+	if (trace_ent.takedamage)
+	{
+		trace_ent.axhitme = 1;
+		SpawnBlood (org, '0 0 0', gdmg);
+		T_Damage (trace_ent,self,self,gdmg);
+	}
+	else
+	{	// hit wall
+		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
+		WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST,TE_GUNSHOT);
+		WriteCoord (MSG_BROADCAST,org_x);
+		WriteCoord (MSG_BROADCAST,org_y);
+		WriteCoord (MSG_BROADCAST,org_z);
+	}
+};
+
+// fn(player_gauntlet1) - fire q3 gaunglet melee weapon (an possibly other xwep melee devices
+
+// axatt1 axatt2 axatt3 axatt4 axatt5 axatt6
+// fire frames
+// 84 - main - axatt2 - wait here
+// 85 - slice frame - axatt3
+// 86 - slice down frame - axatt4
+// 83 - release, hold .4
+
+// exit set - holds gauntlet up for 0.4 - which happens to be att fin as well
+
+void() player_gauntlet4 = [$axatt1, player_gauntlet5] { };
+void() player_gauntlet5 = [$axatt1, player_gauntlet6] { };
+void() player_gauntlet6 = [$axatt1, player_gauntlet7] { };
+void() player_gauntlet7 = [$axatt1, player_gauntlet8] { };
+void() player_gauntlet8 = [$axstnd12, player_stand1] { };
+
+void() player_gauntlet1 =
+{
+	self.nextthink = time + 0.1;
+	self.think = player_gauntlet1;
+
+	if (self.tomb_time > GUN_BASE)
+	{
+		if (self.weaponframe > 1)
+			self.weaponframe = self.weaponframe + 1;
+		if (self.weaponframe >= 6)
+			self.weaponframe = 1;
+		self.frame = $axatt2;
+		self.tomb_time = self.tomb_time - 1;
+		if (self.tomb_time <= GUN_BASE) // done - go back
+		{
+			self.tomb_time = 0;
+			player_gauntlet4();
+		}
+		if (!self.button0)
+		{
+			if (self.velocity_x || self.velocity_y)
+			{
+				self.tomb_time = 0;
+				player_run();
+			}
+			return;
+		}
+		else
+		{
+			self.tomb_time = 0;
+			self.weaponframe = 0;
+//			if (self.eweapon)
+//				setorigin(self.eweapon, self.eweapon.origin + ' 0 0 1.33');  // kicked gun up - not using for now
+		}
+	}
+
+	if (self.weaponframe > 3)
+		self.weaponframe = 0;
+
+// NOTE: need to take gauntlet vw model thru blade rotate frames & little elex bolts
+
+	if (self.weaponframe == 3) // fire!
+	{
+		self.frame = $axatt3;
+		EWEAP = self.eweapon;
+		SuperDamageSound();
+		if (EWEAP.mdl == "progs/vw_q3_gauntlet.mdl")
+			X_FireGauntlet();
+		else
+		W_FireAxe();
+
+		self.nextthink = time + EWEAP.attack_finished;
+		if (!rune_haste(EWEAP.attack_finished / 2))
+			self.nextthink = time + EWEAP.attack_finished / 2;
+
+		EWEAP = world;
+		self.tomb_time = GUN_WAIT;
+		return;
+	}
+
+	self.weaponframe = self.weaponframe + 1;
+
+	if (self.weaponframe <= 1) // bring pistol up to fire
+	{
+		if (self.frame < $axatt2)
+			self.frame = $axstnd8;
+		return;
+	}
+	else
+	{
+		self.frame = $axatt2;		
+	}
+
 };
 
 /*
@@ -535,6 +675,7 @@ void () q3_weapon_grenadelauncher =
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
 
+
 void () weapon_gauntlet =
 {
 	weapon_axe();
@@ -552,8 +693,8 @@ void () weapon_gauntlet =
 	self.netname = "Gauntlet";
 
 	self.touch = x_weapon_touch;
-//	self._attack = X_FireHitscan;
-//	self._fr_attack = player_shot1;
+	self._attack = SUB_Null;
+	self._fr_attack = player_gauntlet1;
 
 	self.currentammo = 0;
 	self.aflag = IGN_INV; // swap with axe
@@ -566,12 +707,16 @@ void () weapon_gauntlet =
 	self.dmg_take = 1; // shot cnt
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 
+	self.vv_draw = vw_q3_gaunt;
+
 	setmodel (self, "progs/q3_gauntlet.mdl");
 //	self.weaponmodel = "progs/v_q3_.mdl";
-//	self.vwepmdl = "progs/vw_q3_.mdl";
+	self.vwepmdl = "progs/vw_q3_gauntlet.mdl";
 	self.noise = "q3_snd/w_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
-//	self.noise3 = "q3_snd/sshotf1b.wav";
+	self.noise3 = "q3_snd/gauntrun.wav";
+	self.noise2 = "q3_snd/gaunthum.wav"; // gun hum
+	self.chaosweptime = 1.99;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -618,7 +763,8 @@ void () weapon_grapplinghook =
 //	self.vwepmdl = "progs/vw_q3_.mdl";
 	self.noise = "q3_snd/w_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
-//	self.noise3 = "q3_snd/sshotf1b.wav";
+	self.noise3 = "q3_snd/gauntrun.wav";
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -704,6 +850,7 @@ void () q3_weapon_railgun =
 	self.dmg_save = 1;
 	self.dmg_take = 1; // shot cnt
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
+	self.lefty = Q3_RAILBEAM;
 
 	setmodel (self, "progs/q3_rail.mdl");
 	self.weaponmodel = "progs/v_q3_rail.mdl";

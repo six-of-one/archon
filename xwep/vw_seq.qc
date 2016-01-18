@@ -8,9 +8,73 @@
  *
  */
  
+ // new vw framing - by code, globals
+
+// editing
+// viswep vector - origin, angles, frame & effects
+
+vector vv_o_000, vv_a_000, vv_x_000;
+float vv_pa; // pitch adjust
+
+// return vals
+vector vv_o_0, vv_a_0, vv_x_0;
+
+// editor storage
+vector  vv_o_1,  vv_a_1,  vv_x_1;
+vector  vv_o_2,  vv_a_2,  vv_x_2;
+vector  vv_o_3,  vv_a_3,  vv_x_3;
+vector  vv_o_4,  vv_a_4,  vv_x_4;
+vector  vv_o_5,  vv_a_5,  vv_x_5;
+vector  vv_o_6,  vv_a_6,  vv_x_6;
+vector  vv_o_7,  vv_a_7,  vv_x_7;
+vector  vv_o_8,  vv_a_8,  vv_x_8;
+vector  vv_o_9,  vv_a_9,  vv_x_9;
+vector vv_o_10, vv_a_10, vv_x_10;
+vector vv_o_11, vv_a_11, vv_x_11;
+vector vv_o_12, vv_a_12, vv_x_12;
+vector vv_o_13, vv_a_13, vv_x_13;
+vector vv_o_14, vv_a_14, vv_x_14;
+vector vv_o_15, vv_a_15, vv_x_15;
+vector vv_o_16, vv_a_16, vv_x_16;
+vector vv_o_17, vv_a_17, vv_x_17;
+vector vv_o_18, vv_a_18, vv_x_18;
+vector vv_o_19, vv_a_19, vv_x_19;
+vector vv_o_20, vv_a_20, vv_x_20;
+vector vv_o_21, vv_a_21, vv_x_21;
+vector vv_o_22, vv_a_22, vv_x_22;
+vector vv_o_23, vv_a_23, vv_x_23;
+vector vv_o_24, vv_a_24, vv_x_24;
+vector vv_o_25, vv_a_25, vv_x_25;
+vector vv_o_26, vv_a_26, vv_x_26;
+vector vv_o_27, vv_a_27, vv_x_27;
+vector vv_o_28, vv_a_28, vv_x_28;
+vector vv_o_29, vv_a_29, vv_x_29;
+vector vv_o_30, vv_a_30, vv_x_30;
+vector vv_o_31, vv_a_31, vv_x_31;
+vector vv_o_32, vv_a_32, vv_x_32;
+vector vv_o_33, vv_a_33, vv_x_33;
+vector vv_o_34, vv_a_34, vv_x_34;
+vector vv_o_35, vv_a_35, vv_x_35;
+vector vv_o_36, vv_a_36, vv_x_36;
+vector vv_o_37, vv_a_37, vv_x_37;
+vector vv_o_38, vv_a_38, vv_x_38;
+vector vv_o_39, vv_a_39, vv_x_39;
+vector vv_o_40, vv_a_40, vv_x_40;
+vector vv_o_41, vv_a_41, vv_x_41;
+vector vv_o_42, vv_a_42, vv_x_42;
+vector vv_o_43, vv_a_43, vv_x_43;
+vector vv_o_44, vv_a_44, vv_x_44;
+vector vv_o_45, vv_a_45, vv_x_45;
+vector vv_o_46, vv_a_46, vv_x_46;
+vector vv_o_47, vv_a_47, vv_x_47;
+vector vv_o_48, vv_a_48, vv_x_48;
+vector vv_o_49, vv_a_49, vv_x_49;
+vector vv_o_50, vv_a_50, vv_x_50;
+
+
  // animate the base melee weapon - q1 axe
  
-void vw_melee_base(float v_frm) =
+void (float v_frm) vw_melee_base =
 {
 // zero control vars
 
@@ -650,9 +714,52 @@ void vw_melee_base(float v_frm) =
 
 };
  
+/*
+
+*/
+
+void (float v_frm) vw_q3_gaunt =
+{
+	vw_melee_base(v_frm);
+
+	if (v_frm >= 65 && v_frm <= 76)
+	{
+//		vv_o_000 = ' -2.0   0.0  -1.0';
+		vv_o_000_x = vv_o_000_x - 2;
+		vv_o_000_z = vv_o_000_z - 1;
+//		vv_a_000 = ' -7.0   8.0  20.0';
+		vv_a_000_x = vv_a_000_x - 7;
+		vv_a_000_y = vv_a_000_y + 8;
+		vv_a_000_z = vv_a_000_z + 20;
+	}
+	if (v_frm == 83)
+	{
+		vv_o_000_x = vv_o_000_x + 2;
+		vv_o_000_y = vv_o_000_y - 2;
+	}
+	if (v_frm == 84) // main wait frame with 85 - 86  slice frames
+	{
+		vv_o_000_z = vv_o_000_z - 3;
+		vv_a_000_x = vv_a_000_x + 23;
+	}
+	if (v_frm == 85) // cross slice
+	{
+		vv_a_000_x = vv_a_000_x + 95;
+	}
+	if (v_frm == 86) // down slice | move
+	{
+		vv_o_000_x = vv_o_000_x - 1;
+		vv_o_000_z = vv_o_000_z + 1;
+
+		vv_a_000_x = vv_a_000_x + 109;
+		vv_a_000_y = vv_a_000_y + 58;
+		vv_a_000_z = vv_a_000_z + 75;
+	}
+};
+
  // run fire framing - range weps only
 
-void vw_range_runfired(float v_frm) =
+void (float v_frm) vw_range_runfired =
 {
 // zero control vars
 
@@ -713,7 +820,7 @@ void vw_range_runfired(float v_frm) =
 
  // animate the base range weapon - q1 range weps
  
-void vw_range_base(float v_frm) =
+void (float v_frm) vw_range_base =
 {
 // zero control vars
 
@@ -1157,7 +1264,7 @@ void vw_range_base(float v_frm) =
 
 // animate harpoon gun rope point
 
-void vw_harpoon_pnt(float v_frm) =
+void (float v_frm) vw_harpoon_pnt =
 {
 // zero control vars
 

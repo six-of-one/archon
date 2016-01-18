@@ -135,6 +135,7 @@ void() x_weapon_touch =
 	else if (self.classname == "d_weapon_saw" ||
 		self.classname == "c_weapon_shovel" ||
 		self.classname == "q2_weapon_blaster" ||
+		self.classname == "weapon_gauntlet" ||
 		self.classname == "w_weapon_knife")
 	{
 	camc = 1;
