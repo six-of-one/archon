@@ -222,7 +222,7 @@ void() d_item_healthbottle =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = D_DEF_HBOTTLE;
 		return;
@@ -244,7 +244,7 @@ void() d_item_healthbottle =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav"; // doom respawn sound
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get health
 };
 
@@ -254,7 +254,7 @@ void() d_item_healthmedkit =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 		return;
 
 	setmodel(self, "progs/heal_medkit.mdl");
@@ -268,7 +268,7 @@ void() d_item_healthmedkit =
 	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get health
 };
 
@@ -278,7 +278,7 @@ void() d_item_healthstimpak =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = D_DEF_HSTIMPAK;
 		return;
@@ -295,7 +295,7 @@ void() d_item_healthstimpak =
 	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get health
 };
 
@@ -305,7 +305,7 @@ void() d_item_spiritarmor =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.classname = "item_armor1";
 		self.wad = "armor_toss"; // for alt value
@@ -328,7 +328,7 @@ void() d_item_spiritarmor =
 
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get this armor
 };
 
@@ -339,7 +339,7 @@ void() d_item_armorgreen =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -359,7 +359,7 @@ void() d_item_armorgreen =
 
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
@@ -369,7 +369,7 @@ void() d_item_armorblue =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -389,7 +389,7 @@ void() d_item_armorblue =
 
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
@@ -400,7 +400,7 @@ void() d_ammo_ammobox =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = 50;
 		return;
@@ -418,7 +418,7 @@ void() d_ammo_ammobox =
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Box of bullets";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -429,7 +429,7 @@ void() d_ammo_clip =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -446,7 +446,7 @@ void() d_ammo_clip =
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Clip";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -457,7 +457,7 @@ void() d_ammo_1rocket =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = 1;
 		return;
@@ -475,7 +475,7 @@ void() d_ammo_1rocket =
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Rocket";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
@@ -486,7 +486,7 @@ void() d_ammo_rockbox =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -503,7 +503,7 @@ void() d_ammo_rockbox =
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Box of Rockets";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
@@ -514,7 +514,7 @@ void() d_ammo_4shell =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = 4;
 		return;
@@ -532,7 +532,7 @@ void() d_ammo_4shell =
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "4 shells";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -543,7 +543,7 @@ void() d_ammo_shellbox =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = D_DEF_SHELLBOX;
 		return;
@@ -561,7 +561,7 @@ void() d_ammo_shellbox =
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Box of Shells";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -572,7 +572,7 @@ void() d_ammo_cellbox =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = D_DEF_CELLBOX;
 		return;
@@ -589,7 +589,7 @@ void() d_ammo_cellbox =
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Box of cells";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
@@ -600,7 +600,7 @@ void() d_ammo_cellpack =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = D_DEF_CELLPAK;
 		return;
@@ -618,7 +618,7 @@ void() d_ammo_cellpack =
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Cells";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
@@ -632,7 +632,7 @@ void() d_barrel =
 	}
 
 	self.netname = "Barrel";
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	misc_explodbox_set(self, "progs/barrel.mdl", D_BARREL_BLAST + random() * 8, 20, MOVETYPE_NONE);
 	self.health = 20 + random() * 16; // heh heh
 	self.wait = RSP_TIME;
@@ -658,7 +658,7 @@ string(entity targ, entity attacker) q3plasma_killmsg2;
 string() dssg_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was blown away by ";
 };
@@ -691,7 +691,7 @@ string() q2mg_killmsg2;
 string() dp_killmsg =
 {
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ","",""," was shot by "));
+		return(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ",null_string,null_string," was shot by "));
 
 	return " was shot by ";
 };
@@ -705,7 +705,7 @@ string() dp_killmsg2 =
 string() dsaw_killmsg =
 {
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ","",""," was cut to pieces by "));
+		return(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ",null_string,null_string," was cut to pieces by "));
 
 	return " was cut to pieces by ";
 };
@@ -737,7 +737,7 @@ void() d_weapon_bfg =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -785,7 +785,7 @@ void() d_weapon_bfg =
 	self._killmsg = q2bfg_killmsg;
 	self._killmsg2 = q2bfg_killmsg2;
 
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -795,7 +795,7 @@ void() d_weapon_rocketlauncher =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -834,7 +834,7 @@ void() d_weapon_rocketlauncher =
 	self._killmsg2 = q2rock_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -845,7 +845,7 @@ void() d_weapon_chaingun =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -883,7 +883,7 @@ void() d_weapon_chaingun =
 	self._killmsg2 = q2cg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -911,7 +911,7 @@ void() d_weapon_pistol =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -952,7 +952,7 @@ void() d_weapon_pistol =
 	self._killmsg2 = dp_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
@@ -963,7 +963,7 @@ void() d_weapon_saw =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1003,7 +1003,7 @@ void() d_weapon_saw =
 	self._killmsg2 = dsaw_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
@@ -1015,7 +1015,7 @@ void() d_weapon_shotgun =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = x_weapon_touch;
@@ -1053,7 +1053,7 @@ void() d_weapon_shotgun =
 	self._killmsg2 = q2sg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1063,7 +1063,7 @@ void() d_weapon_supershotgun =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1100,7 +1100,7 @@ void() d_weapon_supershotgun =
 	self._killmsg2 = dssg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1111,7 +1111,7 @@ void() d_weapon_plasma =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1147,7 +1147,7 @@ void() d_weapon_plasma =
 	self._killmsg2 = q3plasma_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1155,7 +1155,7 @@ void() d_item_pack =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -1178,7 +1178,7 @@ void() d_item_pack =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1186,13 +1186,13 @@ void() d_item_automap =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
 
 	q100_weapon_shotgun();
-	self.weaponmodel = "";
+	self.weaponmodel = null_string;
 	self.netname = "Auto Map";
 
 	self.touch = x_item_touch;
@@ -1202,20 +1202,20 @@ void() d_item_automap =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 };
 
 void() d_item_nightvis =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
 
 	q100_weapon_shotgun();
-	self.weaponmodel = "";
+	self.weaponmodel = null_string;
 	self.netname = "Night Vision Goggles";
 
 	self.touch = x_item_touch;
@@ -1227,7 +1227,7 @@ void() d_item_nightvis =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 };
 
 void() d_art_berserker =
@@ -1256,7 +1256,7 @@ void() d_art_berserker =
 	self.noise = "doom/dsitemup.wav"; // CHECK: this
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
@@ -1286,7 +1286,7 @@ void() d_art_soulsphere =
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
@@ -1318,7 +1318,7 @@ void() d_art_megasphere =
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
@@ -1328,7 +1328,7 @@ void() d_art_invulnerable =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1349,7 +1349,7 @@ void() d_art_invulnerable =
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
@@ -1359,7 +1359,7 @@ void() d_art_invisible =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1380,7 +1380,7 @@ void() d_art_invisible =
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
@@ -1390,7 +1390,7 @@ void() d_art_radsuit =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1408,7 +1408,7 @@ void() d_art_radsuit =
 	self.noise = "doom/dsitemup.wav"; // radsuit finish sounds, proper op
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 };
 
@@ -1419,7 +1419,7 @@ void() d_key_redskull =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1434,7 +1434,7 @@ void() d_key_redskull =
 	setmodel (self, "progs/d_skullkey.mdl");
 	self.skin = 0;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
@@ -1444,7 +1444,7 @@ void() d_key_blueskull =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1459,7 +1459,7 @@ void() d_key_blueskull =
 	setmodel (self, "progs/d_skullkey.mdl");
 	self.skin = 1;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
@@ -1469,7 +1469,7 @@ void() d_key_yellowskull =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1484,7 +1484,7 @@ void() d_key_yellowskull =
 	setmodel (self, "progs/d_skullkey.mdl");
 	self.skin = 2;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
@@ -1494,7 +1494,7 @@ void() d_key_redcard =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1509,7 +1509,7 @@ void() d_key_redcard =
 	setmodel (self, "progs/d_cardkey.mdl");
 	self.skin = 0;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
@@ -1519,7 +1519,7 @@ void() d_key_bluecard =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1534,7 +1534,7 @@ void() d_key_bluecard =
 	setmodel (self, "progs/d_cardkey.mdl");
 	self.skin = 1;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
@@ -1544,7 +1544,7 @@ void() d_key_yellowcard =
 
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1559,7 +1559,7 @@ void() d_key_yellowcard =
 	setmodel (self, "progs/d_cardkey.mdl");
 	self.skin = 2;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == null_string) self.class_select = "doom_item";
 	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
@@ -1577,14 +1577,14 @@ string(entity targ, entity attacker) wrock_killmsg =
 	if (targ == attacker) return " blew himself up.\n";
 		
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ","",""," ate "));
+		return(rnd_string(' 90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ",null_string,null_string," ate "));
 
 	return " ate ";
 };
 
 string(entity targ, entity attacker) wrock_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s mortar\n";
 };
 
@@ -1594,14 +1594,14 @@ string(entity targ, entity attacker) wflame_killmsg =
 	if (targ == attacker) return " hurt himself playing with fire.\n";
 		
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ","",""," got burnt by "));
+		return(rnd_string(' 90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ",null_string,null_string," got burnt by "));
 
 	return " got burnt by ";
 };
 
 string(entity targ, entity attacker) wflame_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s flamethrower\n";
 };
 
@@ -1609,7 +1609,7 @@ string(entity targ, entity attacker) wflame_killmsg2 =
 string() wk_killmsg =
 {
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ","",""," was cut down by "));
+		return(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ",null_string,null_string," was cut down by "));
 
 	return " was cut down by ";
 };
@@ -1644,7 +1644,7 @@ void() w_weapon_machinegun =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1681,7 +1681,7 @@ void() w_weapon_machinegun =
 	self._killmsg2 = q2mg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1713,7 +1713,7 @@ void() w_weapon_chaingun =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1734,7 +1734,7 @@ void() w_weapon_chaingun =
 	self._killmsg2 = q2cg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1752,7 +1752,7 @@ void() w_weapon_mortar =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1789,7 +1789,7 @@ void() w_weapon_mortar =
 	self._killmsg2 = wrock_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1799,7 +1799,7 @@ void() w_weapon_flamer =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1840,7 +1840,7 @@ void() w_weapon_flamer =
 	self._killmsg2 = wflame_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1850,7 +1850,7 @@ void() w_weapon_pistol =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1889,7 +1889,7 @@ void() w_weapon_pistol =
 	self._killmsg2 = dp_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
@@ -1899,7 +1899,7 @@ void() w_weapon_knife =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = x_weapon_touch;
@@ -1937,7 +1937,7 @@ void() w_weapon_knife =
 	self._killmsg2 = wk_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
@@ -1948,7 +1948,7 @@ void() w_ammo_clip =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1965,7 +1965,7 @@ void() w_ammo_clip =
 	self.noise4 = "wolf/w_resp.wav";
 	self.netname = "Clip";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1975,7 +1975,7 @@ void() w_ammo_rock =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1992,7 +1992,7 @@ void() w_ammo_rock =
 	self.noise4 = "wolf/w_resp.wav";
 	self.netname = "Mortars";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -2002,7 +2002,7 @@ void() w_ammo_gas =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = 14;
 		return;
@@ -2027,7 +2027,7 @@ void() w_ammo_gas =
 	self.noise = "wolf/pickup_am.wav";
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -2035,7 +2035,7 @@ void() w_item_pack =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2057,7 +2057,7 @@ void() w_item_pack =
 	self.noise = "wolf/pickup_am.wav";
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -2083,7 +2083,7 @@ void() w_art_facesphere =
 	self.volume = Q_MEGA_MAX; // just for limit
 	self.wait = D_POWER_WAIT;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
@@ -2093,7 +2093,7 @@ void() w_heal_medkit =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = D_DEF_HMEDKIT;
 		return;
@@ -2110,7 +2110,7 @@ void() w_heal_medkit =
 	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
@@ -2120,7 +2120,7 @@ void() w_heal_food =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -2135,7 +2135,7 @@ void() w_heal_food =
 	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
@@ -2145,7 +2145,7 @@ void() w_heal_dogfood =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = 4;
 		return;
@@ -2162,7 +2162,7 @@ void() w_heal_dogfood =
 	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
@@ -2172,7 +2172,7 @@ void() w_heal_blood =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = 4;
 		return;
@@ -2188,7 +2188,7 @@ void() w_heal_blood =
 	self.wait = RSP_TIME;
 	self.aflag = NO_REMOVE_TCH;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
@@ -2198,7 +2198,7 @@ void() w_heal_bldbns =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = 4;
 		return;
@@ -2214,7 +2214,7 @@ void() w_heal_bldbns =
 	self.wait = RSP_TIME;
 	self.aflag = NO_REMOVE_TCH;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
@@ -2227,7 +2227,7 @@ void() w_key =
 
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -2241,7 +2241,7 @@ void() w_key =
 	self.netname = "Blue key";
 	if (self.spawnflags & 1) self.netname = "Gold key";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
@@ -2272,7 +2272,7 @@ void() w_treas_touch =
 		remove(self);
 	else
 	{
-		self.model = "";
+		self.model = null_string;
 		self.solid = SOLID_NOT;
 	}
 };
@@ -2281,7 +2281,7 @@ void() w_item_cross =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2300,7 +2300,7 @@ void() w_item_cross =
 
 	self.netname = "Cross";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -2382,7 +2382,7 @@ void() w_barrel =
 	self.frame = 1;
 	self.noise4 = "wolf/w_resp.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "wolf_item";
+	if (self.class_select == null_string) self.class_select = "wolf_item";
 	StartItem ();
 };
 
@@ -2519,7 +2519,7 @@ void() ddecor_blue_firestick =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2543,7 +2543,7 @@ void() ddecor_green_firestick =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2567,7 +2567,7 @@ void() ddecor_red_firestick =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2591,7 +2591,7 @@ void() ddecor_blue_torch =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2615,7 +2615,7 @@ void() ddecor_green_torch =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2639,7 +2639,7 @@ void() ddecor_red_torch =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2665,7 +2665,7 @@ void() ddecor_barrel_fire =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2689,7 +2689,7 @@ void() ddecor_green_pillar =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2712,7 +2712,7 @@ void() ddecor_red_pillar =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2735,7 +2735,7 @@ void() ddecor_green_sht_pillar =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2758,7 +2758,7 @@ void() ddecor_red_sht_pillar =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2781,7 +2781,7 @@ void() ddecor_green_hrt_pillar =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2804,7 +2804,7 @@ void() ddecor_red_skull_pillar =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2827,7 +2827,7 @@ void() ddecor_stalagmite =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2850,7 +2850,7 @@ void() ddecor_tree =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2873,7 +2873,7 @@ void() ddecor_burnttree =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2896,7 +2896,7 @@ void() ddecor_tech_lamp =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2919,7 +2919,7 @@ void() ddecor_tech_sht_lamp =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2942,7 +2942,7 @@ void() ddecor_low_elex_lamp =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2965,7 +2965,7 @@ void() ddecor_techno_pillar =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -2996,7 +2996,7 @@ void() ddecor_candelabra =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3019,7 +3019,7 @@ void() ddecor_evil_eye =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3042,7 +3042,7 @@ void() ddecor_skull_float =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3065,7 +3065,7 @@ void() ddecor_hang_twitch =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3088,7 +3088,7 @@ void() ddecor_hang_armout =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3111,7 +3111,7 @@ void() ddecor_hang_leg_pair =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3134,7 +3134,7 @@ void() ddecor_hang_vic_1leg =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3157,7 +3157,7 @@ void() ddecor_hang_leg =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3210,7 +3210,7 @@ void() ddecor_hang_vic_noguts =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3233,7 +3233,7 @@ void() ddecor_hang_vic_nogutsbrains =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3256,7 +3256,7 @@ void() ddecor_hang_vic_down =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3280,7 +3280,7 @@ void() ddecor_hang_vic_opnskull =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3303,7 +3303,7 @@ void() ddecor_hang_vic_up =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3326,7 +3326,7 @@ void() ddecor_hang_vic_nobrain =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3349,7 +3349,7 @@ void() ddecor_impaled =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3372,7 +3372,7 @@ void() ddecor_impaled_twitch =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3395,7 +3395,7 @@ void() ddecor_skull_pole =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3418,7 +3418,7 @@ void() ddecor_skull_kebob =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3441,7 +3441,7 @@ void() ddecor_skull_pile =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3464,7 +3464,7 @@ void() ddecor_pool_blood =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3490,7 +3490,7 @@ void() ddecor_pool_blood_2 =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3516,7 +3516,7 @@ void() ddecor_pool_brains =
 {
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3543,7 +3543,7 @@ void() ddecor_bloody_mess =
 // for now
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3577,7 +3577,7 @@ void() ddecor_dead_player =
 // for now
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3611,7 +3611,7 @@ void() ddecor_pool_flesh_blood =
 // for now
 	if (!ULOKD)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3646,7 +3646,7 @@ void() w_flag =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3666,7 +3666,7 @@ void() wdecor_armorsuit =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3686,7 +3686,7 @@ void() wdecor_woodbarrel =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3706,7 +3706,7 @@ void() wdecor_chand_grn =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3721,7 +3721,7 @@ void() wdecor_floorlamp =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3740,7 +3740,7 @@ void() wdecor_bed =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3758,7 +3758,7 @@ void() wdecor_column =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3781,7 +3781,7 @@ void() wdecor_hangcage =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3799,7 +3799,7 @@ void() wdecor_hangcageskel =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3811,7 +3811,7 @@ void() wdecor_tablesmall =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3829,7 +3829,7 @@ void() wdecor_stove =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3850,7 +3850,7 @@ void() wdecor_sink =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3869,7 +3869,7 @@ void() wdecor_spears =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3887,7 +3887,7 @@ void() wdecor_vase =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3905,7 +3905,7 @@ void() wdecor_basket =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3925,7 +3925,7 @@ void() wdecor_water =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3945,7 +3945,7 @@ void() wdecor_well =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3963,7 +3963,7 @@ void() wdecor_wellfull =
 {
 	if (!ULOKW)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		return;
 	}
@@ -3993,8 +3993,8 @@ void() door_sounds_wd =
 {
 
 	if (self.sounds == 0)
-	if (self.noise1 == "" || self.noise1 == "misc/null.wav")
-	if (self.noise2 == "" || self.noise2 == "misc/null.wav")
+	if (self.noise1 == null_string || self.noise1 == "misc/null.wav")
+	if (self.noise2 == null_string || self.noise2 == "misc/null.wav")
 	{
 /*dr1_end
 		precache_sound ("doom/dsdorcls.wav");
@@ -4026,10 +4026,10 @@ void() door_sounds_wd =
 
 //		self.noise3 = "doors/basetry.wav";
 
-	if (self.noise1 != "") precache_sound (self.noise1);
-	if (self.noise2 != "") precache_sound (self.noise2);
-	if (self.noise3 != "") precache_sound (self.noise3);
-	if (self.noise4 != "") precache_sound (self.noise4);
+	if (self.noise1 != null_string) precache_sound (self.noise1);
+	if (self.noise2 != null_string) precache_sound (self.noise2);
+	if (self.noise3 != null_string) precache_sound (self.noise3);
+	if (self.noise4 != null_string) precache_sound (self.noise4);
 
 };
 
@@ -4039,7 +4039,7 @@ void() button_sounds_d =
 {
 
 	if (self.sounds == 0)
-	if (self.noise == "")
+	if (self.noise == null_string)
 	{
 //		precache_sound ("doom/dsdorcls.wav");
 //		precache_sound ("doom/dsdoropn.wav");
@@ -4056,6 +4056,6 @@ void() button_sounds_d =
 		}
 	}
 
-	if (self.noise != "") precache_sound (self.noise);
+	if (self.noise != null_string) precache_sound (self.noise);
 
 };

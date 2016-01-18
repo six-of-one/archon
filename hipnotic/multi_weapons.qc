@@ -114,7 +114,7 @@ void() W_FireMultiGrenade =
 	local	entity missile;
 
 // Cat - just use rockets for now
-	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, "");
+	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, null_string);
 //	self.currentammo = self.ammo_multi_rockets = self.ammo_multi_rockets - 1;
 //	UpdateAmmoCounts (self);
 	
@@ -333,7 +333,7 @@ void(float offset, float frameNum) MultiRocketLaunch =
 void() W_FireMultiRocket =
 {
 // Cat - just use rockets for now
-	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, "");
+	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, null_string);
 //	self.currentammo = self.ammo_multi_rockets = self.ammo_multi_rockets - 1;
 //	UpdateAmmoCounts (self);
 	

@@ -158,7 +158,7 @@ void() gravity_pull =
 					T_Damage (e,self,self.owner,10); // fired black laser
 
 					v1 = e.origin - self.origin;
-					g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.origin, v0, v0, vectoangles(v1), v0, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
+					g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.origin, v0, v0, vectoangles(v1), v0, null_string, "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
 					i = vlen(v1);
 					i = floor(i / 32);
 					if (i > 63) i = 63;

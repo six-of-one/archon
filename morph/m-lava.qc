@@ -136,7 +136,7 @@ void() Lavablob_JumpTouch;
 	if (self.walkframe == 2)
 		{
 		morph_sound (0.08, "chaos/lavabidle.wav", 2);
-		if (random() < 0.1) { chaos_fire_fly(""); 	rnd_size(0.5, -1.0, -1.0, ""); }
+		if (random() < 0.1) { chaos_fire_fly(null_string); 	rnd_size(0.5, -1.0, -1.0, null_string); }
 		}
 	if (self.walkframe == 4) if (random() < 0.25) lavablob_slimeflare();
 	self.frame = $walk1 + self.walkframe;
@@ -194,7 +194,7 @@ void() player_lavablob_run = [ $run1, player_run ]
 	if (self.walkframe == 2 || self.walkframe == 20)
 		{
 		morph_sound (0.2, "chaos/lavabidle.wav", 2);
-		if (random() < 0.20) { chaos_fire_fly(""); 	rnd_size(0.3, -1.0, -1.0, ""); }
+		if (random() < 0.20) { chaos_fire_fly(null_string); 	rnd_size(0.3, -1.0, -1.0, null_string); }
 		}
 	self.frame = frm + self.walkframe;
 	self.walkframe = self.walkframe + 1;
@@ -243,14 +243,14 @@ void()	lavablob_jump6	=[	$jump6,lavablob_fly1	] { if (intermission_running) { pl
 
 void() lavablob_eject_particles =
 {
-	rnd_size(0.3, 0.1, -1.0, ""); // randomly size ejecta
+	rnd_size(0.3, 0.1, -1.0, null_string); // randomly size ejecta
 	if (random() > 0.7)
 		particle_burst(self.origin, 30, ' 0 0 0', ' 360 360 360', 3, 2, 3, FL_RNDUR | FL_COL1 | FL_COL2 | FL_PERC, ' 85 64 0 ', ' 10 15 0 ', ' 0.33 1.0 1.0');
 };
 
 void() lavablob_eject =
 {
-	fire_burst (lavaball_shot, self.origin, 0, 0, "", "", 0, 6, 8, ' 120 0 0', ' 300 360 360', lavablob_eject_particles, FL_ANGADR | FL_VELRND, world);
+	fire_burst (lavaball_shot, self.origin, 0, 0, null_string, null_string, 0, 6, 8, ' 120 0 0', ' 300 360 360', lavablob_eject_particles, FL_ANGADR | FL_VELRND, world);
 };
 
 void() lavablob_die_explode1;
@@ -301,14 +301,14 @@ void() lavablob_die_explode8	=	[ $exp,		SUB_Nop ]
 {
 	lavablob_eject();
 
-	setmodel(self, "");
+	setmodel(self, null_string);
 
 //	NO_BLAST = TRUE;
 //	if (random() < 0.02) volcano_spawn(self.origin, 1.1); TDO: restore at some future release date (beta | final?)
 
 	sound (self, CHAN_VOICE, "blob/death1.wav", 1, ATTN_NORM);
 	self.origin = self.origin - 8*normalize(self.velocity);
-//	move_stop(self, "");
+//	move_stop(self, null_string);
 
 //	Explode(0, 120, world, TE_TAREXPLOSION, 0, BecomeExplosion); // dead_body here, not client ent
 
@@ -370,7 +370,7 @@ void() lavablob_mytosis =
 	}
 	setsize (newmis, '-16 -16 -24', '16 16 20');
 
-	chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 1.33 + random(), random_monster_wakey, SUB_Null, newmis, world);
+	chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, 1.33 + random(), random_monster_wakey, SUB_Null, newmis, world);
 	newmis.pausetime = 0;
 };
 
@@ -485,8 +485,11 @@ void() player_lavablob_attack =
 		cthonme();
 		return;
 	}
+	
+	if (self.archon < 7)
+	if (self.weapon == IT_ROCKET_LAUNCHER) self.weapon = IT_NAILGUN;
 
-	if (self.weapon == IT_AXE) // fire a lava ball
+	if (self.weapon != IT_NAILGUN) // fire a lava ball, or explosive bomb
 	{
 		if (rune_haste(0.275))
 		self.attack_finished=time+0.55;
@@ -497,6 +500,15 @@ void() player_lavablob_attack =
 		newmis.frame = floor(1.1 + random());
 		newmis.morphy = self.morphy;
 		newmis.touch = blob_lava_touch;
+
+// use archon power
+		if (self.weapon == IT_ROCKET_LAUNCHER)
+		{
+			newmis.dmg = 60;
+			newmis.touch = newmis.think = newmis.th_die = Wiz_MissileTouch;
+			if (self.volume < 0)
+				self.archon = self.archon + self.volume;
+		}
 	}
 	else // fire spikes - IDEA: will lavablob ever have other attacks?
 	{
@@ -522,6 +534,11 @@ void() player_lavablob_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
+	if (self.archon < 7)
+		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER);
+	else
+		self.items = self.items | IT_ROCKET_LAUNCHER;	
+
 	morph_impulse();
 
 /*
@@ -531,6 +548,8 @@ void() player_lavablob_impulse =
 		sprint(self, "Lava Bomb using ( Jump attack )\n");
 	}
 */
+	self.volume = 0;
+
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
@@ -543,6 +562,13 @@ void() player_lavablob_impulse =
 		sprint(self, "Lava Bomb using ( Lava nails )\n");
 		self.items = self.items | IT_NAILS;
 	}
+
+	if (self.weapon == IT_ROCKET_LAUNCHER)
+	{
+		self.volume = -6;
+		sprint(self, "Lava Bomb using ( lava bombs! )\n");
+		self.items = self.items | IT_ROCKETS;
+	}
 };
 
 /*
@@ -553,7 +579,7 @@ void() player_lavablob_impulse =
 
 string() player_lavablob_killmsg =
 {
-	return(rnd_string(' 60.0 50.0 40.0'," got melted by Lava Bomb ","",""," was blasted by Lava Bomb "," was fired by "));
+	return(rnd_string(' 60.0 50.0 40.0'," got melted by Lava Bomb ",null_string,null_string," was blasted by Lava Bomb "," was fired by "));
 };
 string() player_lavablob_killmsg2 =
 {
@@ -591,20 +617,18 @@ void(float silent) player_lavablob_become =
 	setmodel(self,"progs/lavabomb.mdl");
 	self.modelindex_morph = self.modelindex;
 
-	self.items = self.items | IT_AXE | IT_NAILGUN;
-	self.builtin = IT_AXE | IT_NAILGUN;
+	self.builtin = IT_AXE | IT_NAILGUN | IT_ROCKET_LAUNCHER;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
 
 	self.skin = 0;
 
 	self.msight = "blob/sight1.wav";
 //	self.noise2 = "enforcer/pain1.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 4';
 	self.cam_z = 0.1;  //cam
-//	if(!deathmatch)
-//		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
-//	else
+
 	setsize (self, '-16 -16 -24', '16 16 20');
 	self.health = self.health * MLAVAB_HEALMOD / self.health_modifier;
 	self.health_modifier = MLAVAB_HEALMOD;
@@ -619,7 +643,7 @@ void(float silent) player_lavablob_become =
 	if (!silent) // silent for starting new level as this beasty
 	{
 		bprint(self.netname);
-		bprint(" has become an Lava Bomb.\n"); // owwieee! it burnsies...
+		bprint(" has become a Lava Bomb.\n"); // owwieee! it burnsies...
 	}
 //		player_stand1(); // in case we came from cthon fire frames
 };

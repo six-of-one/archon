@@ -179,7 +179,7 @@ string(entity targ, entity attacker) mjolnir_killmsg =
 {
 	if (targ == attacker)
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got creative with Mjolnir\n"," angered the Gods\n","",""," swung too hard\n"));
+		return(rnd_string(' 90.0 60.0 60.0'," got creative with Mjolnir\n"," angered the Gods\n",null_string,null_string," swung too hard\n"));
 	else if (random() > 0.4 )
 		return (" becomes bored with life\n");
 	else
@@ -190,7 +190,7 @@ string(entity targ, entity attacker) mjolnir_killmsg =
 
 string(entity targ, entity attacker) mjolnir_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s hammer\n";
 };
 
@@ -238,7 +238,7 @@ void() weapon_mjolnir =
 	self._killmsg = mjolnir_killmsg;
 	self._killmsg2 = mjolnir_killmsg2;
 
-	if (self.class_select == "") self.class_select = "hip_item";
+	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 
@@ -277,7 +277,7 @@ void() weapon_laser_gun =
 	self.noise3 = "weapons/lasercannon/laserg.wav";
 	self.target = "weapons/lasercannon/laserric.wav";
 
-	if (self.class_select == "") self.class_select = "hip_item";
+	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 
@@ -316,7 +316,7 @@ void() weapon_proximity_gun =
 	self.noise3 = "weapons/prox/proxbomb.wav";
 	self.target = "weapons/prox/proxwarn.wav";
 
-	if (self.class_select == "") self.class_select = "hip_item";
+	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
 
@@ -369,7 +369,7 @@ void() item_hornofconjuring =
    setsize (self, '-16 -16 0', '16 16 32');
    self.noise = "hipitems/horn.wav";
 
-	if (self.class_select == "") self.class_select = "hip_item";
+	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get arts
 
@@ -440,7 +440,7 @@ void() item_artifact_empathy_shields =
 	self.noise = "hipitems/empathy.wav";
 	self.noise3 = "hipitems/empathy2.wav";
 
-	if (self.class_select == "") self.class_select = "hip_item";
+	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get arts
 
@@ -467,7 +467,7 @@ void() item_artifact_wetsuit =
 
 	self.lip = WETSUIT; // skin in human player models
 
-	if (self.class_select == "") self.class_select = "hip_item";
+	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get arts
 
@@ -487,7 +487,7 @@ void() hip_item_ =
 	self.volume = -1; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "hip_item";
+	if (self.class_select == null_string) self.class_select = "hip_item";
 };
 
 void() hip_item_a =
@@ -503,7 +503,7 @@ void() hip_item_a =
 	self.currentammo = Q2_ARM_BODY; // 100 units
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "hip_item";
+	if (self.class_select == null_string) self.class_select = "hip_item";
 };
 
 */

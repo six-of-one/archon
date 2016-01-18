@@ -430,7 +430,7 @@ void() PlagueTouch =
 	if (random() < CK_PLAGUE_CATCH)
 	if (other.takedamage && (other.classname == "player" || other.classname == "pk*bot" || other.flags & FL_MONSTER))
 	{
-		p = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "plague", "", SUB_Null, 1, ZombiePlague, SUB_Null, self.owner, world);
+		p = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "plague", null_string, SUB_Null, 1, ZombiePlague, SUB_Null, self.owner, world);
 		p.enemy = other;
 		p.dmg = 5.5;
 		p.search_time = time + 120;
@@ -574,7 +574,7 @@ void() cloudkill =
 
 	if (self.classname != "cloudkill") // called as fn - make a cloudkill
 	{
-		head = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", "", SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
+		head = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", null_string, SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
 		head.aflag = -1; // ignore zomby limits - note: for code out of control, this could swamp the server with clouds
 		return;
 	}
@@ -853,7 +853,7 @@ void() player_zombie_attack =
 		if (f)
 		{
 			tot_cloud = tot_cloud + 1;
-			self.trigger_field = p = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", "", SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
+			self.trigger_field = p = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", null_string, SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
 			p.dmg = 2;
 			p.dmg_save = 1;
 			p.dmg_take = 0;
@@ -954,7 +954,7 @@ void(float silent) player_zombie_become =
 
 	self.msight = "zombie/idle_w2.wav";
 	self.noise2 = "zombie/z_pain1.wav";
-	self.noise2 = "";
+	self.noise2 = null_string;
 	self.view_ofs = '0 0 20'; // lowered 2
 	self.cam_z = 0.1;
 	self.lefty = 0; // cam

@@ -107,7 +107,7 @@ void() player_scourge_run = [ $walk1, player_run ]
 void() player_scourge_pain1  =[ $pain1, player_scourge_pain2  ] { };
 void() player_scourge_pain2  =[ $pain2, player_scourge_pain3  ] 
 {
-	morph_sound (0.5, rnd_string(' 70.0 70.0 70.0',"scrg/pain2.wav","","","","scrg/pain.wav"), 1);
+	morph_sound (0.5, rnd_string(' 70.0 70.0 70.0',"scrg/pain2.wav",null_string,null_string,null_string,"scrg/pain.wav"), 1);
 };
 void() player_scourge_pain3  =[ $pain3, player_scourge_pain4  ] { };
 void() player_scourge_pain4  =[ $pain4, player_scourge_pain5  ] { };
@@ -133,7 +133,7 @@ void() player_scourge_die =
 {
 	local entity e;
 
-	if ( GibMorph ("progs/h_scourg.mdl", 0, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND, 0, -95, 9, 0, "") ) return;
+	if ( GibMorph ("progs/h_scourg.mdl", 0, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND, 0, -95, 9, 0, null_string) ) return;
 
 // regular death
    sound (self, CHAN_VOICE, "scrg/pain2.wav", 1, ATTN_NORM);
@@ -337,7 +337,7 @@ void() m_Attack_With_Tail =
 	}
 	else
 		W_FireAxe();
-//	melee_damage(self.origin + '0 0 4', self.origin + '0 0 4' + v_forward*48, (random() + random() + random()) * 40, 20, crandom() * 50, 0, "", "weapons/bounce.wav", "shambler/smack.wav");
+//	melee_damage(self.origin + '0 0 4', self.origin + '0 0 4' + v_forward*48, (random() + random() + random()) * 40, 20, crandom() * 50, 0, null_string, "weapons/bounce.wav", "shambler/smack.wav");
 };
 	
 void()   player_scourge_melee1 =[ $sting1,   player_scourge_melee2 ] { };
@@ -404,14 +404,14 @@ void() player_scourge_impulse =
 	{
 		self.items = self.items | IT_CELLS;
 		sprint(self, "Scourge firing ( lazers )\n"); 
-		self.weaponmodel = 	"";
+		self.weaponmodel = 	null_string;
 		self.forcewchange = 0;
 	}
 	if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
 		self.items = self.items | IT_ROCKETS;
 		sprint(self, "Scourge firing ( bombs )\n"); 
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 		self.forcewchange = 0;
 	}
 	if (self.weapon == IT_SHOTGUN)
@@ -550,7 +550,7 @@ void(float silent) player_scourge_become =
 	
 	self.msight = "scrg/sight.wav";
 	self.noise2 = "scrg/pain2.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 5'; // lowered to 12 first then 7 more
 //	if(!deathmatch)
 //		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);

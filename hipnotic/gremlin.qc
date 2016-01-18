@@ -522,7 +522,7 @@ void()   gremlin_walk1 =[ $rockrun1,      gremlin_walk2 ]
 	}
 
 	if (random() < 0.1)
-		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/idle1.wav","gremlin/idle2.wav","gremlin/sight1.wav","","gremlin/idle3.wav"), 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/idle1.wav","gremlin/idle2.wav","gremlin/sight1.wav",null_string,"gremlin/idle3.wav"), 1, ATTN_IDLE);
 	gremlin_walk(8);
 };
 void()   gremlin_walk2 =[ $rockrun2,      gremlin_walk3 ] {gremlin_walk(8);};
@@ -577,7 +577,7 @@ void()   gremlin_mlrun1 =[ $meleerun1,      gremlin_mlrun2 ]
 	}
 
 	if (random() < 0.05)
-		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/idle1.wav","gremlin/idle2.wav","gremlin/sight1.wav","","gremlin/idle3.wav"), 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/idle1.wav","gremlin/idle2.wav","gremlin/sight1.wav",null_string,"gremlin/idle3.wav"), 1, ATTN_IDLE);
 	gremlin_run(16);
 };
 void()   gremlin_mlrun2 =[ $meleerun2,      gremlin_mlrun3 ] {gremlin_run(14);};
@@ -602,7 +602,7 @@ void()   gremlin_run1 =[ $rockrun1,      gremlin_run2 ]
 	}
 
 	if (random() < 0.05)
-		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/idle1.wav","gremlin/idle2.wav","gremlin/sight1.wav","","gremlin/idle3.wav"), 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/idle1.wav","gremlin/idle2.wav","gremlin/sight1.wav",null_string,"gremlin/idle3.wav"), 1, ATTN_IDLE);
 	gremlin_run(16);
 };
 void()   gremlin_run2 =[ $rockrun2,      gremlin_run3 ] {gremlin_run(14);};
@@ -928,7 +928,7 @@ void(entity attacker, float damage) gremlin_pain =
 //   else
 //   r = random();
 //   if (r<0.33)
-      sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/pain1.wav","gremlin/pain2.wav","","","gremlin/pain3.wav"), 1, ATTN_NORM);
+      sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/pain1.wav","gremlin/pain2.wav",null_string,null_string,"gremlin/pain3.wav"), 1, ATTN_NORM);
 //   else if (r<0.66)
 //      sound (self, CHAN_VOICE, "grem/pain2.wav", 1, ATTN_NORM);
 //   else
@@ -948,7 +948,7 @@ void()   gremlin_spawn1 =[ $spawn1,      gremlin_spawn2 ]
 {
    self.nextthink = time + 0.2;
    self.th_pain = SUB_Null;
-//    sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/idle1.wav","gremlin/idle2.wav","gremlin/sight1.wav","","gremlin/idle3.wav"), 1, ATTN_IDLE);
+//    sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/idle1.wav","gremlin/idle2.wav","gremlin/sight1.wav",null_string,"gremlin/idle3.wav"), 1, ATTN_IDLE);
 };
 void()   gremlin_spawn2 =[ $spawn2,      gremlin_spawn3 ] {self.nextthink = time + 0.2;};
 void()   gremlin_spawn3 =[ $spawn3,      gremlin_spawn4 ] {self.nextthink = time + 0.2;};
@@ -965,7 +965,7 @@ void()   gremlin_spawn10 =[ $spawn10,   gremlin_run1 ] {
 
 void()   gremlin_die1    =[ $death1,    gremlin_die2 ]
 {
-sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav","","","gremlin/minitheme.wav"), 1, ATTN_NORM);
+sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav",null_string,null_string,"gremlin/minitheme.wav"), 1, ATTN_NORM);
 };
 void()   gremlin_die2    =[ $death2,    gremlin_die3 ] { };
 void()   gremlin_die3    =[ $death3,    gremlin_die4 ] { };
@@ -979,7 +979,7 @@ void()   gremlin_die9    =[ $death9,    gremlin_die9 ] { self.classname="deadbod
 
 void()   gremlin_die1b    =[ $deathb1,    gremlin_die2b ]
 {
-sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav","","","gremlin/minitheme.wav"), 1, ATTN_NORM);
+sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav",null_string,null_string,"gremlin/minitheme.wav"), 1, ATTN_NORM);
 };
 void()   gremlin_die2b    =[ $deathb2,    gremlin_die3b ] { };
 void()   gremlin_die3b    =[ $deathb3,    gremlin_die4b ] { };
@@ -1012,7 +1012,7 @@ void()   gremlin_flip1    =[ $flip1.asc,    gremlin_flip2 ]
    self.velocity = '0 0 350' - (v_forward * 200);
 	if (self.flags & FL_ONGROUND)
 		self.flags = self.flags - FL_ONGROUND;
-   sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav","","","gremlin/minitheme.wav"), 1, ATTN_NORM);
+   sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav",null_string,null_string,"gremlin/minitheme.wav"), 1, ATTN_NORM);
    };
 void()   gremlin_flip2    =[ $flip2.asc,    gremlin_flip3 ] {ai_face();};
 void()   gremlin_flip3    =[ $flip3.asc,    gremlin_flip4 ] {};
@@ -1068,7 +1068,7 @@ void() GremlinDropBackpack =
    else if (item.items & IT_MJOLNIR)
       item.netname = "Mjolnir"; */
    else
-		item.netname = "";
+		item.netname = null_string;
 
    item.ammo_shells = self.ammo_shells;
 	item.ammo_nails = self.ammo_nails;
@@ -1532,7 +1532,7 @@ void(float ox) Gremlin_FireLaserGun =
    makevectors(self.v_angle);
    dir = dir + crandom()* 0.1 * v_right + crandom()* 0.1 *v_up;
    dir = normalize(dir);
-   HIP_LaunchLaser(self.origin + '0 0 16', dir, 0, "");
+   HIP_LaunchLaser(self.origin + '0 0 16', dir, 0, null_string);
 };
 
 /*

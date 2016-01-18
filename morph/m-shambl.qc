@@ -326,7 +326,7 @@ void(float silent) player_shambler_become = {
 
 	self.msight = "shambler/ssight.wav";
 	self.noise2 = "shambler/shurt2.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else

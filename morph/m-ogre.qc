@@ -129,7 +129,7 @@ void(float side) player_chainsaw =
 {
 	local float sd1;
 	string miss, whit, fhit;
-	miss = whit = fhit = "";
+	miss = whit = fhit = null_string;
 	if (side)
 	{
 		whit = "player/axhit2.wav";
@@ -325,7 +325,7 @@ void(float silent) player_ogre_become =
 	
 	self.msight = "ogre/ogwake.wav";
 	self.noise2 = "ogre/ogpain1.wav";
-	self.noise3 = ""; //gasp
+	self.noise3 = null_string; //gasp
 	self.view_ofs = ' 0 0 34'; // raised by 2
 	self.cam_z = 0.1;
 

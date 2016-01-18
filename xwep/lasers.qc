@@ -39,7 +39,7 @@ void() Laser_Blast =
 	if (other == self.owner)
 		return;         // don't explode on owner
 
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
 		return;
@@ -49,7 +49,7 @@ void() Laser_Blast =
 	if (self.dmg) dm = self.dmg;
 	if (IS_CHAOS_PURE(self.owner)) dm = rint(20 + (random() * 40));
 
-	if (self.noise3 == "") self.noise3 = "enforcer/enfstop.wav";
+	if (self.noise3 == null_string) self.noise3 = "enforcer/enfstop.wav";
 
 	sound (self, CHAN_ITEM, self.noise3, TRUE, ATTN_NORM);
 
@@ -115,7 +115,7 @@ void(float fl) fire_laser1 =
 		snd = EWEAP.noise3;
 		if (EWEAP.mdl == "progs/vw_q2_hbl.mdl")
 		{
-			snd = "";
+			snd = null_string;
 			lv = LASERCAN_VEL;
 			if ((self.tomb_time & 7) == 1) { fy = 0; fz = 2;}
 			if ((self.tomb_time & 7) == 3) { fy = 2; fz = 0;}
@@ -134,7 +134,7 @@ void(float fl) fire_laser1 =
 		newmis.dmg = EWEAP.dmg;
 		newmis.dodmg = EWEAP.dodmg;
 		if (EWEAP.dmg == DOOM_SHOT_DMG) newmis.dmg = 5 * ceil(random() * 8);
-		if (EWEAP.target != "") newmis.noise3 = EWEAP.target;
+		if (EWEAP.target != null_string) newmis.noise3 = EWEAP.target;
 	}
 
 };

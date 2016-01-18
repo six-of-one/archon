@@ -974,9 +974,9 @@ float(string sc, entity e) pk_mcode =
 	local string tsc;
 
 	tsc = sc;
-	if (sc == "" && e) tsc = e.classname;
+	if (sc == null_string && e) tsc = e.classname;
 
-	if (tsc == "")
+	if (tsc == null_string)
 	{
 		if (WARNING)
 			bprint("\b *** pk_mcode - entry with no classname\n");
@@ -1284,7 +1284,7 @@ float(string sc, entity e) pk_mcode =
 
 
 // q3 - translates classname for now
-//	else if (tsc == "")								return(MC_);
+//	else if (tsc == null_string)								return(MC_);
 
 	if (WARNING)
 //	if (tsc != "dyn_item") // && mc == 0) // again - test will always be true now, deprecated
@@ -1356,7 +1356,7 @@ string (float mc) item_by_mcode =
 	if (mc == MC_EXPLOD2)												return("misc_explobox2");
 
 	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-		return("");
+		return(null_string);
 
 // TDO - q1 backpack cls - & in dyn items call()
 
@@ -1591,7 +1591,7 @@ string (float mc) item_by_mcode =
 
 //	if (mc == MC_) return("item_");
 
-	return("");
+	return(null_string);
 };
 
 // fn(valid_wep_mcode) - validate weapon map codes for fake loads, etc.
@@ -2191,7 +2191,7 @@ void() painkeep_cube_use =
 	else
 	if (c.wad == "pk_cube")
 	{
-		c.model = "";
+		c.model = null_string;
 		if (c.event != "dynamic_item") // a map created cube - should respawn, items will not remove
 		{
 			c.solid = SOLID_NOT;
@@ -2208,7 +2208,7 @@ void() painkeep_cube_use =
 	}
 
 	self = c;
-	self.class_select = ""; // for q3 holds
+	self.class_select = null_string; // for q3 holds
 	self.mask_x = 0; // reset
 	self.style = 0; // so we arent making a melee wep out of a range wep
 //	item_translate(self, FL_TR_RANDOM);
@@ -2219,7 +2219,7 @@ void() painkeep_cube_use =
 
 		if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL) // cause barrels are special
 		{
-			self.event = self.classname = "";
+			self.event = self.classname = null_string;
 			self.scode = -1; // item call tests this for making barrels
 			item_call(self.wad);
 			newmis.th_stand = SUB_Remove; // go away after boom
@@ -2289,7 +2289,7 @@ void() painkeep_cube_use =
 	{
 		if ((random() < 0.5) && (chaos_tele_total < CHAOS_TELE_LIMIT))
 		{
-			chaos_teleport(self.origin, "", world);
+			chaos_teleport(self.origin, null_string, world);
 			newmis.origin_z = newmis.origin_z + 20 + random() * 30;
 			chaos_tele_total = chaos_tele_total + 1;
 
@@ -2356,7 +2356,7 @@ void() cube_touch =
 
 	if (PK_100 || Q_100)
 	{
-		self.model = "";
+		self.model = null_string;
 		self.touch = SUB_Null;
 //		remove(self); // no can - dyn_rem issue
 		return;
@@ -2593,7 +2593,7 @@ void() crate_touch =
 
 	self.duration = time + 2 + random();
 
-	if (self.deathtype != "") // custom touch message for map crates - .message is opened string
+	if (self.deathtype != null_string) // custom touch message for map crates - .message is opened string
 	{
 		centerprint(other, self.deathtype);
 		return;
@@ -2896,7 +2896,7 @@ string(float xi) x_key_print =
 		if (xxi & X_Q2_KEY_CDSPIN) return ("Data Spinner");
 		if (xxi & X_Q2_KEY_CHEAD) return ("Commanders Head");
 	}
-	return("");
+	return(null_string);
 };
 
 // fn_make - make an item from map code value
@@ -2914,10 +2914,10 @@ void(float mc, vector vo, string wd) fn_make =
 	newmis = world;
 	sv = self;
 	sc = wd;
-	if (sc == "")
+	if (sc == null_string)
 		sc = item_by_mcode(mc);
 
-	if (sc != "")
+	if (sc != null_string)
 	{
 		v1 = vo;
 		if (vo == v0) // no origin sent, get random one around some other object
@@ -2943,7 +2943,7 @@ void(float mc, vector vo, string wd) fn_make =
 
 		item_eject(self, GEN_BOUNCE);
 
-		if (self.map == "rune") self.map = ""; // rune server deal
+		if (self.map == "rune") self.map = null_string; // rune server deal
 
 	  if (DYN_SHOW)
 	  {
@@ -3095,7 +3095,7 @@ void() func_make =
 		d = MC_SUPER_SHOTGUN + rint(random() * f);
 	}
 
-	self.wad = "";
+	self.wad = null_string;
 	if (self.wait == -10)
 	{
 		f = MON_FUNC_REG;
@@ -3302,7 +3302,7 @@ void(entity e, string md, float dm, float hl, float mt) misc_explodbox_set =
 	e.solid = SOLID_BBOX;
 	e.movetype = mt; // NOTE: movetype is why an explodbox cant be picked up
 
-	if (md != "")
+	if (md != null_string)
 	{
 		setmodel (e, md);
 		e.mdl = md;
@@ -3381,7 +3381,7 @@ void () misc_explobox =
 	}
 
 	misc_explodbox_set(self, "maps/b_explob.bsp", 160, 20, MOVETYPE_NONE);
-	if (self.class_select == "") self.class_select = "quake_item";
+	if (self.class_select == null_string) self.class_select = "quake_item";
 };
 
 /*QUAKED misc_explobox2 (0 .5 .8) (0 0 0) (32 32 64)
@@ -3399,7 +3399,7 @@ void () misc_explobox2 =
 	}
 
 	misc_explodbox_set(self, "maps/b_exbox2.bsp", 160, 20, MOVETYPE_NONE);
-	if (self.class_select == "") self.class_select = "quake_item";
+	if (self.class_select == null_string) self.class_select = "quake_item";
 };
 
 // rndize (or map item) created pack
@@ -3465,8 +3465,8 @@ void() fn_backpack =
 		rnd_pack_ammo();
 // hide converted item - its now a pack spawner
 		self.touch = SUB_Null;
-		setmodel (self,"");
-		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, 120, fn_bpack_seq, SUB_Null, self, world);
+		setmodel (self,null_string);
+		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, null_string, null_string, SUB_Null, 120, fn_bpack_seq, SUB_Null, self, world);
 	}
 	else
 	{
@@ -3490,7 +3490,7 @@ void() fn_backpack =
 
 void() fn_bpack_seq =
 {
-	if (self.owner.model != "") // done with pack spawning - go away
+	if (self.owner.model != null_string) // done with pack spawning - go away
 	{
 		remove(self);
 		return;

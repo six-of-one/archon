@@ -489,7 +489,7 @@ entity(entity p, float chan, string sd, float vl, float attn, float tm, vector o
 	{
 		org = org1;
 		if (org == v0) org = p.origin;
-		q = chaos_spawn(MOVETYPE_NONE, 0, 0, 0,  org, v0, v0, v0, v0, LOOPSOUND, "", SUB_Null, 0, SUB_Null, SUB_Null, p, world);
+		q = chaos_spawn(MOVETYPE_NONE, 0, 0, 0,  org, v0, v0, v0, v0, LOOPSOUND, null_string, SUB_Null, 0, SUB_Null, SUB_Null, p, world);
 		q.cnt = chan;
 		q.noise1 = sd;
 		q.volume = vl;
@@ -522,7 +522,7 @@ void(string ws, float rtime) ominous_hum =
 			sound (self, hum_chan, "misc/null.wav", 1, ATTN_NORM);
 			if (intermission_running)
 				return;
-			else if (ws != "")
+			else if (ws != null_string)
 			{
 				sound (self, hum_chan, ws, 1, ATTN_NORM);
 				self.chaosweptime = time + rtime;
@@ -579,7 +579,7 @@ float(string surf, vector v, entity e) sky_touch =
 	if (XENV) return(FALSE);
 	if (!DARKPLACES) return(FALSE); // Cat - 8.14.11 - fix fteqw bug
 
-	if (surf == "") // note - no q1 mode qual on surface string
+	if (surf == null_string) // note - no q1 mode qual on surface string
 	{
 		surfnum2 = -1;
 		t = FALSE;
@@ -590,15 +590,15 @@ float(string surf, vector v, entity e) sky_touch =
 
 		if (pointcontents(v) == CONTENT_SKY) t = TRUE;
 
-		last_texture = "";
+		last_texture = null_string;
 		surfnum2 = getsurfacenearpoint(world, v);
 	}
 
 // new sky contents code
 
-	if (surfnum2 >= 0 || surf != "")
+	if (surfnum2 >= 0 || surf != null_string)
 	{
-		if (surf == "") last_texture = getsurfacetexture(world, surfnum2);
+		if (surf == null_string) last_texture = getsurfacetexture(world, surfnum2);
 		else last_texture = surf;
 		if (last_texture == "sky1" || last_texture == "sky4" || last_texture == "sky0" || last_texture == "sky2" || last_texture == "sky6") t = TRUE;
 		else if (last_texture == "firey_") t = TRUE;
@@ -621,7 +621,7 @@ void() sky_touch_pointer =
 {
 
 // UNKNOWN op - decide what is happening with this code
-//	if (sky_touch("", v0, self))
+//	if (sky_touch(null_string, v0, self))
 //	if (self.content_flag & RM_SKY) // has a remove sky setting - wont work after content_clear
 //		SUB_Remove();
 
@@ -648,7 +648,7 @@ string(vector wt, string rs1, string rs2, string rs3, string rs4, string rs5) rn
 	local float w1,w2,w3,w4,rstr,cv;
 	local string sl;
 
-	sl = "";
+	sl = null_string;
 	cv = 1;
 
 	if (wt == ' 0 0 0') wt = ' 80.0 60.0 40.0';
@@ -657,8 +657,8 @@ string(vector wt, string rs1, string rs2, string rs3, string rs4, string rs5) rn
 	w3 = wt_z;
 	w4 = ceil(wt_z * (wt_z / wt_x)); // gives 20 if chances eq. - 80 60 40 20
 
-	if (rs1 != "")
-	while (sl == "") 
+	if (rs1 != null_string)
+	while (sl == null_string) 
 		{
 		rstr = rint(random() * 100); // 1-100
 		sl = rs5;
@@ -712,7 +712,7 @@ void() hurt_switch =
 
 // setup msg - done in map ent
 //	self.deadflag = self.deadflag | 1;
-	if (self.noise2 != "" && self.noise3 != "")
+	if (self.noise2 != null_string && self.noise3 != null_string)
 	{
 		if (self.cnt <= 0) self.cnt = 0.5;
 		if (self.style <= 0) self.style = 0.1;
@@ -720,17 +720,17 @@ void() hurt_switch =
 			self.noise = self.noise2; //" turned into hot slag";
 		else
 			self.noise = self.noise3; // " visits the Volcano God";
-		if (self.noise4 != "")
+		if (self.noise4 != null_string)
 		if (random() < self.style)
 			self.noise = self.noise4; // " is playing geologist again";
 	}
 	else
-	if (self.noise == "" && self.noise2 != "" || self.noise3 != "")
+	if (self.noise == null_string && self.noise2 != null_string || self.noise3 != null_string)
 	{
-		if (self.noise2 != "") self.noise = self.noise2;
-		if (self.noise3 != "") self.noise = self.noise3;
+		if (self.noise2 != null_string) self.noise = self.noise2;
+		if (self.noise3 != null_string) self.noise = self.noise3;
 	}
-	if (self.noise != "")
+	if (self.noise != null_string)
 		self.class_select = "CDM"; // custom death msg
 
 	if (self.wait)
@@ -761,7 +761,7 @@ void() hurt_switch =
 void () trigger_hurt_switch =
 {
 	InitTrigger ();
-	if ((self.spawnflags & 1) && self.targetname != "") // if no targetname is given this becomes a regular hurt trigger!
+	if ((self.spawnflags & 1) && self.targetname != null_string) // if no targetname is given this becomes a regular hurt trigger!
 		self.touch = SUB_Nop;
 	else
 		self.touch = hurt_touch;
@@ -965,7 +965,7 @@ void() th_arcarn =
 				f = self.lefty;
 			self.nextthink = time + self.wait + self.cnt * random() + f;
 			self.alpha = 0;
-			self.model = "";
+			self.model = null_string;
 			self.solid = 0;
 		}
 	}
@@ -1009,7 +1009,7 @@ void() archon_fader =
 		{
 			self.alpha = 0;
 			self.mdl = self.model;
-			self.model = "";
+			self.model = null_string;
 
 			t.model = t.mdl;
 			t.alpha = 1;
@@ -1027,7 +1027,7 @@ void() archon_fader =
 	{
 		if (t)
 		{
-			if (t.model == "")
+			if (t.model == null_string)
 			{
 				t.alpha = 0.01;
 				t.model = t.mdl;
@@ -1046,7 +1046,7 @@ void() archon_fader =
 void() archon_fadeinit =
 {
 	self.mdl = self.model;
-	self.model = "";
+	self.model = null_string;
 };
 
 
@@ -1219,7 +1219,7 @@ void() archon_power =
 	if (self.wait <= 0) self.wait = 10;
 	self.cnt = 74;
 
-	if (self.mdl == "") self.mdl = "progs/arc_pp.bsp";
+	if (self.mdl == null_string) self.mdl = "progs/arc_pp.bsp";
 	setmodel(self, self.mdl);
 
 	self.nextthink = time + 3;
@@ -1314,7 +1314,7 @@ void() archon_power_touch =
 
 void() archon_power_act =
 {
-	self.model = "";
+	self.model = null_string;
 	self.solid = SOLID_NOT;
 	self.use = archon_power_touch;
 };
@@ -1492,7 +1492,7 @@ void() func_arcarn =
 	}
 
 	f = random();
-	if (self.mdl == "")
+	if (self.mdl == null_string)
 	if (f < 0.33)
 		self.mdl = "maps/aarn1.bsp";
 	else if (f < 0.66)
@@ -1536,7 +1536,7 @@ void() func_arcarn =
 
 void() lt_saver =
 {
-	lightning_bolt( self.origin,  self.enemy.origin, 0, "");
+	lightning_bolt( self.origin,  self.enemy.origin, 0, null_string);
 	self.delay = self.delay - 1;
 	if (self.delay) self.nextthink = time + 0.3;
 	else remove(self);
@@ -1554,7 +1554,7 @@ void() th_saver =
 	local string c3, c4, c5, c6;
 	local entity spot;
 
-	c3 = c4 = c5 = c6 = "";
+	c3 = c4 = c5 = c6 = null_string;
 
 	if (self.button0) // player accepted save - it costs .frags
 	{
@@ -1567,7 +1567,7 @@ void() th_saver =
 // if no target, teleport player to a random loc
 		if (!spot)
 		{
-			spot = find_tdest(FL_RSTELE | FL_RSSTART | FL_ITEM, "");
+			spot = find_tdest(FL_RSTELE | FL_RSSTART | FL_ITEM, null_string);
 			ClearSpawnPoint(spot); // *pk
 		}
 
@@ -1593,7 +1593,7 @@ void() th_saver =
 	}
 	if (self.delay < 1 || self.button0)
 	{
-		centerprint(self.aiment, "");
+		centerprint(self.aiment, null_string);
 		self.aiment.movetype = self.lefty;
 		self.aiment.aiment = world;
 		remove(self);
@@ -1833,7 +1833,7 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 
 void (entity e) CopyToBodyQue =
 {
-	if ((e.model == "") || (e.model == "progs/null.mdl")) return;
+	if ((e.model == null_string) || (e.model == "progs/null.mdl")) return;
 
 	if (PK_100 || Q_100)
 	{
@@ -2005,8 +2005,8 @@ void(entity e) print_chain = // TEST fn - print out linked chain of ents
         while (e)
         {
                 bprint(" chain ent: ");
-                if (e.netname != "")    { bprint(e.netname); bprint(" : "); }
-                if (e.classname != "") bprint(e.classname);
+                if (e.netname != null_string)    { bprint(e.netname); bprint(" : "); }
+                if (e.classname != null_string) bprint(e.classname);
                 bprint(" \n");
                 e = e.chain;
         }
@@ -2020,7 +2020,7 @@ entity(entity hent, float flg) rnd_list =
         sel = s2 = world;
         rc = 0.3;
         sr = hent;
- //       set_CLE("calderashard", "", "", "", "", "", "");
+ //       set_CLE("calderashard", null_string, null_string, null_string, null_string, null_string, null_string);
         while (sr) // count stuff
                 {
                 if (move_check(sr, 15999 | 128)) //T_BLAST | T_IGNHELD)) // FIX - remove move_check failures from chain?
@@ -2195,7 +2195,7 @@ void() chaos_bomb =
 	RND_maxdmg = CBOMB_DEF_MAX;
 	
 // really just a fancy bouncing betty
-	fire_burst (wfire, self.origin + ' 0 0 30', 0, 0, "", "", 0, 3, 8, ' 120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
+	fire_burst (wfire, self.origin + ' 0 0 30', 0, 0, null_string, null_string, 0, 3, 8, ' 120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
 	RND_maxdmg = 0; // reset
 	remove(self);
 };

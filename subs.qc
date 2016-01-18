@@ -39,7 +39,7 @@ void() InitTrigger =
 	setmodel (self, self.model);	// set size and link into world
 	self.movetype = MOVETYPE_NONE;
 	self.modelindex = 0;
-	self.model = "";
+	self.model = null_string;
 };
 
 /*
@@ -232,7 +232,7 @@ void() SUB_UseTargets =
 //
 // print the message
 //
-	if (activator.classname == "player" && self.message != "")
+	if (activator.classname == "player" && self.message != null_string)
 	{
 		centerprint (activator, self.message);
 		if (!self.noise)

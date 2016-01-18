@@ -38,7 +38,7 @@ void() copb_checkFart =
 	  { // 75% of the time I'm using small farts...
 		  rs = rint((random() * 2) + 1);
 
-		  fartNoise = "";
+		  fartNoise = null_string;
 		  if (rs == 1)
 		    fartNoise = "weapons/copb/copb_1.wav";
 		  else if (rs == 2)

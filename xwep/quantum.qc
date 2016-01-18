@@ -123,8 +123,8 @@ void () PortalTouch =
 		if (self.target == "md3") // out thru tele - follow those rules
 		{
 			local vector org;
-			e = find_tdest(FL_RSTELE, "");
-			if (!e && PORTAL_M3START) e = find_tdest(FL_RSSTART, "");
+			e = find_tdest(FL_RSTELE, null_string);
+			if (!e && PORTAL_M3START) e = find_tdest(FL_RSSTART, null_string);
 			if (!e) e = self.portal_exit; // failed - use one it opened with
 
 			if (PK) ClearSpawnPoint(e);
@@ -357,8 +357,8 @@ float () PortalExit3 =
 {
 	local entity portal;
 
-	portal = find_tdest(FL_RSTELE, "");
-	if (!portal && PORTAL_M3START) portal = find_tdest(FL_RSSTART, "");
+	portal = find_tdest(FL_RSTELE, null_string);
+	if (!portal && PORTAL_M3START) portal = find_tdest(FL_RSSTART, null_string);
 	if (!portal) return(FALSE);
 
 	self.portal_entrance.target = "md3";
@@ -478,7 +478,7 @@ float (vector dir, float md2) PreparePortalEntrance =
 		tline.attack_finished = (time + 3.8); // how long this bit flies
 		tline.nextthink = (time + 0.1);
 		tline.think = PortalPathThink;
-		setmodel (tline, "");
+		setmodel (tline, null_string);
 		setsize (tline, '0 0 0', '0 0 0');
 		setorigin (tline, trace_endpos);
 	}
@@ -544,7 +544,7 @@ void () W_FirePortal =
 	if (self.eweapon) f = self.eweapon.cnt;
 	else f = PORTAL_MODE;
 	PORTAL_MODE = 0; // always clear this, one shot deal only - NOTE: this will need set on first & second entry for 2x portal
-	PORTAL_FAIL = "";
+	PORTAL_FAIL = null_string;
 
 	if (!f || !self.portal_entrance)
 	if (self.portal_busy)
@@ -729,7 +729,7 @@ void() weapon_quantum =
 //	self.noise4 = "doom/dsitembk.wav";
 //	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "x_item";
+	if (self.class_select == null_string) self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 

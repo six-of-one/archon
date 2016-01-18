@@ -54,7 +54,7 @@ void() hipRubbleTouch =
 		self.pausetime = self.ltime + 0.1;
 		}
 	else
-		if (self.noise != "") sound(self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);
+		if (self.noise != null_string) sound(self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);
 };
 
 // fn(RubbleInSolid) - take care of rubble in solids
@@ -127,7 +127,7 @@ void(string rubblename, float rubblefr, float rubblesk, vector org, string code)
 	newmis.flags = 0;
 	newmis.think = meltthink;
 	newmis.th_die = RubbleInSolid;
-	newmis.noise4 = "";
+	newmis.noise4 = null_string;
 	newmis.nextthink = time + RUBBLE_TIME + crandom()* RUBBLE_TDEV;
 	newmis.classname = "rubble";
 	newmis.class_select = "class_rubble";
@@ -268,7 +268,7 @@ void() menhir_think =
 
 	makevectors(self.angles);
 	setorigin(self, self.origin + normalize(v_up) * self.lip);
-	if (self.noise != "") ominous_hum(self.noise, 2.19);
+	if (self.noise != null_string) ominous_hum(self.noise, 2.19);
 	if (vlen(self.origin - self.oldorigin) > self.distance)
 	{
 		ominous_hum("misc/null.wav", 0);
@@ -316,7 +316,7 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 				vel2_x = crandom() * 1.5; // rnd drift
 				vel2_y = crandom() * 1.5;
 				vel2_z = 0 - 2 - random() * 2; // down vel2
-				if (! sky_touch("", rorg + org, world))
+				if (! sky_touch(null_string, rorg + org, world))
 					particle (rorg + org, vel2, 3 + random() * 7, 1.6);
 			}
 			mr = vibe;
@@ -327,7 +327,7 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 			{
 				mr = -1;
 				m = dm = 0;
-				msnd = "";
+				msnd = null_string;
 				if (self.classname == "shaker")
 				{
 // setup menhirs - quakes only
@@ -451,7 +451,7 @@ if (WARNING) bprint("menhir ck found open\n");
 								vel2_z = vel2_z + 6;
 								m = m - 1;
 							}
-							if (sky_touch("", trace_endpos - ' 0 0 2', world)) m = 0;
+							if (sky_touch(null_string, trace_endpos - ' 0 0 2', world)) m = 0;
 							else
 							if (m > 0) // sky check for q3 maps that may have sky below
 							{
@@ -490,7 +490,7 @@ if (WARNING) bprint("menhir ck found open\n");
 						hipThrowRubble( "progs/rubble_m.mdl", rb, rs, rorg + org, rubblemode );
 						if (!newmis) return;
 						m = 1;
-						if ((random() < 0.5) && (random() > (vibe / 10))) newmis.noise = "";
+						if ((random() < 0.5) && (random() > (vibe / 10))) newmis.noise = null_string;
 					}
 					if (m > 0)
 					{
@@ -510,7 +510,7 @@ void(vector rorg, vector vel, float vibe, float tdev) rubble_debris_think =
 
 	if (self.classname != "rubble_think")
 	{ // flags, origin, maxs
-		chaos_spawn(0, 0, vibe, 0, rorg, vel, vel, v0, v0, "rubble_think", "", SUB_Null, tdev * random(), rubble_debris_think, SUB_Null, self, world);
+		chaos_spawn(0, 0, vibe, 0, rorg, vel, vel, v0, v0, "rubble_think", null_string, SUB_Null, tdev * random(), rubble_debris_think, SUB_Null, self, world);
 		return;
 	}
 

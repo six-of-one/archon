@@ -21,7 +21,7 @@ void() demo_msg =
 	{
 		dmsg_togl = 0;
 		stuffcmd(self, "noadmin_centertime\n");
-		centerprint(self, "");
+		centerprint(self, null_string);
 		return;
 	}
 

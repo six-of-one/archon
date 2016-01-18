@@ -44,13 +44,13 @@ void()	smoke_s2		=	[2,		SUB_Remove] {};
 	deprecated for rubble_debris
 void(vector org, vector vel) SpawnRubble =
 {
-//	chaos_spawn(0, 0, 0, 0, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "temp_ent", "", SUB_Null, 0.01, EffectSpawnRubble, SUB_Null, self, world);
+//	chaos_spawn(0, 0, 0, 0, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "temp_ent", null_string, SUB_Null, 0.01, EffectSpawnRubble, SUB_Null, self, world);
 
 	local string md;
 	local float rand;
 	local entity e;
 
-	if (sky_touch("", org, world)) return;
+	if (sky_touch(null_string, org, world)) return;
 
 	
 	e = chaos_spawn(MOVETYPE_BOUNCE, SOLID_BBOX, 0, FLT_LAVA | MLT_LAVA | CK_EARTHQUAKE | PF_SOLID | PF_WATER | PF_SLIME | FL_NOPART, org, ' 0 0 0', ' 0 0 0', ' 0 0 0',
@@ -82,9 +82,9 @@ void(vector org, vector vel) SpawnRubble =
 
 void(vector org, vector vel) SpawnSmoke =
 {
-	if (sky_touch("", org, world)) return;
+	if (sky_touch(null_string, org, world)) return;
 
-//	chaos_spawn(0, 0, 0, 0, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "smoke", "", SUB_Null, 0.01, EffectSpawnRubble, SUB_Null, self, world);
+//	chaos_spawn(0, 0, 0, 0, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "smoke", null_string, SUB_Null, 0.01, EffectSpawnRubble, SUB_Null, self, world);
 	chaos_spawn(MOVETYPE_NOCLIP, SOLID_NOT, 0, 0, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "smoke", "progs/smoke.mdl", SUB_Null, 0, smoke1, SUB_Null, self, world);
 };
 
@@ -93,7 +93,7 @@ void(vector org, vector vel) SpawnSmoke =
 
 void(vector org, vector vel, float livetm, float mtype) SpawnExitWound =
 {
-	newmis = chaos_spawn(mtype, SOLID_NOT, 0, RM_SKY, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "", "progs/gib1.mdl", SUB_Remove, livetm, SUB_Remove, SUB_Null, self, world);
+	newmis = chaos_spawn(mtype, SOLID_NOT, 0, RM_SKY, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, null_string, "progs/gib1.mdl", SUB_Remove, livetm, SUB_Remove, SUB_Null, self, world);
 
 // *** this code has not been tested in game yet
 
@@ -124,7 +124,7 @@ void() X_FireRailgun =
 	local	entity startent, impactent, e;
 
 //	self.lefty = self.movetype; // temp str
-//	move_stop(self, ""); // mostly for beam appearances
+//	move_stop(self, null_string); // mostly for beam appearances
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
 	if (self.class_select == "class_monster") // enhanced - monster firing a rail beam
@@ -137,14 +137,14 @@ void() X_FireRailgun =
 		org = self.origin + v_up * VWZ_RAILGUN + v_right * VWY_RAILGUN + v_forward * VWX_RAILGUN;
 
 		traceline (org, org + v_forward*2048, TRUE, self);
-		self.ammo_slug = self.ammo_slug - 1; //ammo_con(1, self, ""); // use ammo	
+		self.ammo_slug = self.ammo_slug - 1; //ammo_con(1, self, null_string); // use ammo	
 	}
 	else
 	{
 		self.punchangle_x = -4;
 
 		ominous_hum(EWEAP.noise3, 0);
-		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, EWEAP.endtime, railsnd_think, SUB_Null, self, world);
+		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, null_string, null_string, SUB_Null, EWEAP.endtime, railsnd_think, SUB_Null, self, world);
 
 		makevectors(self.v_angle);
 		org = self.origin + v_up * VWZ_RAILGUN + v_right * VWY_RAILGUN + v_forward * VWX_RAILGUN;
@@ -155,7 +155,7 @@ void() X_FireRailgun =
 		{
 			if (EWEAP.lefty == Q3_RAILBEAM) ew = TRUE; // fire q3 style beam
 			if (EWEAP.lip == AMMO_SLUGS)
-				self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(EWEAP.dmg_save, self, ""); // use ammo
+				self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(EWEAP.dmg_save, self, null_string); // use ammo
 		}
 
 	}
@@ -175,7 +175,7 @@ void() X_FireRailgun =
 //	while (i < 500)
 	if (ew)
 	{
-		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, org, v0, v0, vectoangles(v_forward), self.velocity, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
+		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, org, v0, v0, vectoangles(v_forward), self.velocity, null_string, "progs/lzrbm_seg.mdl", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
 		cn = ceil(vl / 32);
 		if (cn > 63) cn = 63;
 		e.frame = cn;
@@ -190,7 +190,7 @@ void() X_FireRailgun =
 //		particle (v1 + vp, vp, 208, 1);
 		if (random() < 0.2) particle (v1, v_forward * 30, 250, 2);
 
-		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, v1 + vp, v0, v0, v0, vp + self.velocity, "", "progs/beambit.spr", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
+		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, v1 + vp, v0, v0, v0, vp + self.velocity, null_string, "progs/beambit.spr", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
 		if (e)
 		{
 			cn = cn + 1;

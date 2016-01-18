@@ -55,7 +55,7 @@ void () SUB_regen =
 	self.model = self.mdl;		// restore original model
 	self.solid = SOLID_TRIGGER;	// allow it to be touched again
 	if (self.touch == SUB_Null) self.touch = painkeep_touch; // reset from sphere of A
-	if (self.noise4 != "")
+	if (self.noise4 != null_string)
 		sound (self, CHAN_VOICE, self.noise4, 1, ATTN_NORM);	// play respawn sound - doom / other resp sounds
 	else
 		sound (self, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);	// play respawn sound
@@ -91,7 +91,7 @@ void () PlaceItem =
 	bot_item_linx(self); // *bot - item tie in
 
 // used for translate - if *_100 on
-	self.mcode = pk_mcode("", self); // put map code on ent
+	self.mcode = pk_mcode(null_string, self); // put map code on ent
 	if (!self.scode) self.scode = self.mcode;
 
 	if (Q_100 || PK_100) // || !XMOD)
@@ -542,7 +542,7 @@ void() pk_ammo_touch =
 	sprint (other, "You got the ");
 	sprint (other, self.netname);
 	sprint (other, "\n");
-	if (self.noise != "")
+	if (self.noise != null_string)
 		sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	else
 // ammo touch sound
@@ -734,7 +734,7 @@ if (self.theowner != other) // debounce
 		bprint(" and pk_touch is (void) 0 | SUB_Void - reloading\n");
 		}
 		if (self.event != "dynamic_item") item_call(self.classname);
-		else if (self.wad != "") item_call(self.wad);
+		else if (self.wad != null_string) item_call(self.wad);
 		else if (self.scode) item_call(item_by_mcode(self.scode));
 		if (e) e.classname = e.wad;
 		return;
@@ -747,7 +747,7 @@ if (self.theowner != other) // debounce
 
 
 
-if (self.classname == "")
+if (self.classname == null_string)
 {
 	bprint("*** - blank classname in touch fn = ");
 	bprint(self.model);
@@ -755,7 +755,7 @@ if (self.classname == "")
 }
 
 
-
+/// NOTE: IMP: no nodules do stack ***
 		stack_touch(self, other); // save some items model string for drop codes
 //		if (self.event == "dynamic_item")
 //		{
@@ -1486,7 +1486,7 @@ void() BackpackTouch =
 //	remove(self); - deprecated because of bot seq touch code via painkeep_touch does some stuff to self after return
 // this change may have fixed some issues with bots
 		self.solid = SOLID_NOT;
-		self.model = "";
+		self.model = null_string;
 		self.think = SUB_Remove;
 		self.nextthink = time + 0.25;
 	}
@@ -1754,7 +1754,7 @@ void() DropBackpack =
 		newmis.eweapon = self.eweapon;
 		newmis.eweapon.wad = "packwep";
 		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
-		newmis.eweapon.model = "";
+		newmis.eweapon.model = null_string;
 		newmis.eweapon.owner = newmis;
 		newmis.netname = newmis.eweapon.netname;
 		newmis.eweapon.items = self.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
@@ -1965,7 +1965,7 @@ void() pk_placeitem =
 		self.touch = painkeep_touch; // take over - route everything here
 	
 // TESTING - see if we can q1 default class select
-	if (self.class_select == "") self.class_select = "quake_item";
+	if (self.class_select == null_string) self.class_select = "quake_item";
 
 //	if (XMOD)
 	if (!PK_100 && !Q_100)
@@ -1982,7 +1982,7 @@ void() pk_placeitem =
 
 // Cataboligne - added check here because new mode (not permanently PK & loaded a PK map can set PK mode after nailguns get loaded on map
 	if (PK) // pulse nail replace
-	if (self.wad == "") // not a live spawn - i.e. a map spawn
+	if (self.wad == null_string) // not a live spawn - i.e. a map spawn
 	if (self.classname != "weapon_nailgun_q1")
 	if (self.classname == "weapon_nailgun" || self.weapon == IT_NAILGUN)
 	if (self.model == "progs/g_nail.mdl")
@@ -1991,7 +1991,7 @@ void() pk_placeitem =
 		self.netname = "Pulse Rifle";
 	}
 
-	self.mcode = pk_mcode("", self); // put map code on ent - do we need this? placeitem sets these too
+	self.mcode = pk_mcode(null_string, self); // put map code on ent - do we need this? placeitem sets these too
 
 	if (!self.scode) self.scode = self.mcode;
 

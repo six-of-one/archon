@@ -26,7 +26,7 @@ void (entity e, string ns) move_stop =
 {
 	e.velocity = ' 0 0 0';
 	e.movetype = MOVETYPE_NONE; // fails blast_move - removing fails shell casings in lava
-	if (ns != "") sound(e, CHAN_WEAPON, ns, 1, ATTN_NORM);
+	if (ns != null_string) sound(e, CHAN_WEAPON, ns, 1, ATTN_NORM);
 };
 
 
@@ -147,7 +147,7 @@ void() fallingwater_think =
 	v1 = v0;
 	v1_z = self.cnt;
 	setorigin(self, self.origin + v1);
-//	if (self.killtarget != "") self.enemy = find (world, targetname, self.killtarget);
+//	if (self.killtarget != null_string) self.enemy = find (world, targetname, self.killtarget);
 //	if (self.enemy) setorigin(self.enemy, self.origin); // move sibling hurt trigger - .enemy should be vetted
 	self.state = self.state  + 1;
 	self.nextthink = time + self.ltime;
@@ -176,7 +176,7 @@ void() func_fallingwater =
 	self.think = fallingwater_think;
 	self.nextthink = -1;
 
-	if (self.targetname != "")
+	if (self.targetname != null_string)
 		self.use = fallingwater_fire;
 
 	if ( !self.height ) self.height = self.size_z;
@@ -462,8 +462,8 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 				if (flg & FL_VELRND2) newmis.velocity = newmis.velocity + random() * newmis.velocity;//(newmis.velocity * 0.5) + (newmis.velocity * 0.5 *random());
 				}
 			}
-		else if (md != "")
-			fire_missile(v, mvt, 0, ct, self.origin, ' 0 0 0', cln, md, "", SUB_Null, 5 + (random() * 10), meltthink, SUB_Null);
+		else if (md != null_string)
+			fire_missile(v, mvt, 0, ct, self.origin, ' 0 0 0', cln, md, null_string, SUB_Null, 5 + (random() * 10), meltthink, SUB_Null);
 		else
 		{
 			if (WARNING)
@@ -510,7 +510,7 @@ void () fire_fly_touch =
 	}
 	else
 
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
 		return;
@@ -700,7 +700,7 @@ void() effect_item_fall =
 	self.solid = SOLID_TRIGGER;
 	setmodel (self, self.model);	// set size and link into world
 	self.movetype = MOVETYPE_NONE;
-	self.model = "";
+	self.model = null_string;
 
 	if (!self.mdl) self.mdl = "progs/s_rain.spr";
 
@@ -822,7 +822,7 @@ entity(float fl, string clsn) find_tdest =
 		it = self.chain;
 	}
 
-	if (clsn != "")
+	if (clsn != null_string)
 	{
 		if (rng && it != world) cl = it;
 		else cl = self;
@@ -949,7 +949,7 @@ void() chaos_trigger_teleport =
 {
 	InitTrigger ();
 	self.touch = teleport_touch;
-	self.model = "";
+	self.model = null_string;
 	setsize(self, '-16 -16 -16', ' 16 16 16'); // getting bonked somehow
 };
 
@@ -979,7 +979,7 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 	if (trgname) newmis.trigger_field.movetarget = find (world, targetname, trgname);
 	else if (trgent) newmis.trigger_field.movetarget = trgent;
 
-	if (!newmis.trigger_field.movetarget) newmis.trigger_field.movetarget = find_tdest(0, "");
+	if (!newmis.trigger_field.movetarget) newmis.trigger_field.movetarget = find_tdest(0, null_string);
 
 	newmis.aiment = loop_sound(newmis, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, torg, 0, LOOPFOREVER);
 };
@@ -991,17 +991,17 @@ void() func_chaos_teleport =
 	chaos_teleport(self.origin, self.target, world);
 
 // custom model
-	if (self.model != "")
+	if (self.model != null_string)
 	{
 		setmodel(newmis, self.model);
 		newmis.skin  = self.skin;
-		self.model = "";
+		self.model = null_string;
 	}
 
 // never moves
 	if (self.spawnflags & 1) newmis.movetype = MOVETYPE_NONE;
 
-	if (self.target != "")
+	if (self.target != null_string)
 	if ( find (world, targetname, self.target))
 	if (self.aflag == -666) newmis.trigger_field.aflag = -666; // do not retarget
 	remove(self);
@@ -1185,7 +1185,7 @@ void(entity lb, float mvt, vector avl, vector vel, string snd) lavaball_large =
 //		newmis.th_stand = fire_splitter;
 		newmis.oldorigin = newmis.origin;
 		}
-	if (snd != "") sound (newmis, CHAN_WEAPON, snd, 1, ATTN_NORM);
+	if (snd != null_string) sound (newmis, CHAN_WEAPON, snd, 1, ATTN_NORM);
 };
 
 
@@ -1332,7 +1332,7 @@ newline(world);
 	if (self.classname != "lavapud") // not initialized, do a setup
 		{
 //		if (self.model == "progs/snowball.mdl" && self.skin == DKLAVA) self.model = "progs/lavaball.mdl";
-		self.mdl = "";
+		self.mdl = null_string;
 		if(self.owner.morphy == IMP_MCHAOS) self.mdl = self.model; // for chaos bizzare launchers
 // this call sets all this - takes over self
 		newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, 0, self.origin, v0, v0, v0, v0, "lavapud", "progs/volcano.mdl", lavapdl_touch, 0.3, lavapud_live, SUB_Null, self.owner, self);

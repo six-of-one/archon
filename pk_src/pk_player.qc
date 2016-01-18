@@ -233,7 +233,7 @@ void() pk_harpoon_frames =
 				self.weaponframe = self.weaponframe + 1;
 			}
 			if (!PK_100) //stuffcmd( self, "cl_bob 0\n" ); // dont bob while pulling in
-				cam_setbob("");
+				cam_setbob(null_string);
 		}
 		else
 		{
@@ -478,7 +478,7 @@ void(float sec) pk_player_sound =
 	{
 		rs = rint((random() * 6) + 1);
 
-		self.noise = "";
+		self.noise = null_string;
 		if (rs == 1)
 			self.noise = "player/pain_1.wav";
 		else if (rs == 2)
@@ -683,7 +683,7 @@ void() PK_PlayerDie =
 	self.deadflag = DEAD_DYING;
 	self.movetype = MOVETYPE_TOSS;
 
-	self.weaponmodel = "";
+	self.weaponmodel = null_string;
 
 	if (self.grap_cornerchainNext)	// Grappling harpoon is out there, remove...
 	{

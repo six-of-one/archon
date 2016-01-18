@@ -188,7 +188,7 @@ void() PK_init =
 	else if (world.wad == "doomtex.wad" && ULOKD) MAP_MODE = "D";
 	else if (world.wad == "doom2tex.wad" && ULOKD) MAP_MODE = "D";
 	else if (world.wad == "q2.wad" && ULOK2) MAP_MODE = "Q2";
-	else if (world.wad == "" && !pk_map && ULOK3) MAP_MODE = "Q3";
+	else if (world.wad == null_string && !pk_map && ULOK3) MAP_MODE = "Q3";
 
 // single player hack - if hub flag is set and we forced dynamic items level exit returns to hub
 	if (!deathmatch && (pk_flags & PK_SF_HUB)) pk_flags = pk_flags - PK_SF_HUB;
@@ -1132,8 +1132,7 @@ void() pk_liveupd =
 		f = autocvar_no_auto;
 		if (!f) // test auto-launch
 		{
-			autocvar_no_auto = 1;
-//			cvar_set("no_auto", "1"); // only test once
+			cvar_set("no_auto", "1"); // only test once
 			if (!PK_CRATE && !PK_CUBE && !MORPHIC && !RUNES)
 			if (!S_MONSTER && !S_MONSTER_II && !C_MONSTER && !C_MONSTER_II && !M_MONSTER && !M_MONSTER_II)
 			{
@@ -1271,7 +1270,7 @@ void() pk_liveupd =
 		while (f < 1024)
 		{
 			cl =  item_by_mcode(f);
-			if (cl != "")
+			if (cl != null_string)
 			{
 				if (f < 10) bprint(" ");
 				if (f < 100) bprint(" ");
@@ -1297,7 +1296,7 @@ void() pk_liveupd =
 
 	if (cvar("pk_make")) // create item at random location if map code valid
 	{
-		fn_make(cvar("pk_make"), v0, "");
+		fn_make(cvar("pk_make"), v0, null_string);
 //		cvar_set("saved1", ftos(cvar("saved1") + 1)); // TEST
 		cvar_set("pk_make", "0");
 	}
@@ -1403,7 +1402,7 @@ void() pk_srvcmd_set =
 	else if (world.worldtype == IT1_WQ1) ULOKD = TRUE;
 	else if (world.worldtype == IT3_WQ1) ULOK2 = TRUE;
 	else if (world.worldtype == IT4_WQ1) ULOK3 = TRUE;
-	else if (world.wad == "") ULOK3 = TRUE; // Cataboligne - 10.22.12 - was not detecting q3 maps by worldtype
+	else if (world.wad == null_string) ULOK3 = TRUE; // Cataboligne - 10.22.12 - was not detecting q3 maps by worldtype
 */
 
 	ULOKHL = FALSE; // place holder - HL stuff not natively supported yet (if ever) - Cataboligne 10.12.12
@@ -1721,7 +1720,9 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 	{
 // csqc - HUD, etc
 
-// AST_FLOAT = 2 --- see pk.defs for other STAT_* number value idents
+// AST_STRING = 1 --- see pk.defs for other STAT_* number value idents
+// AST_FLOAT = 2
+
 		addstat(33, 2, mcode);
 		addstat(34, 2, rune_flag);
 // pk 
@@ -1741,388 +1742,19 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		addstat(47, 2, ammo_slug); // enh ammos
 		addstat(48, 2, ammo_gaspr); // enh ammos
 
-		addstat(65, 2, volume);
+		addstat(50, 1, stack1); // target string
+		addstat(51, 1, stack2); // target string
+
+		addstat(64, 2, volume);
+		addstat(65, 2, morphy);
 		addstat(66, 2, archon);
 
 
-// server controls
-//		registercvar("no_auto", "0"); // allow everything to be turned off without re-launching defaults
-
-		registercvar("sv_xtras", "1"); // set true when xtras are available
-		registercvar("pk_seven", "0"); // xops
-		registercvar("pk_eight", "0"); // xops
-		registercvar("sv_dmstart", "0");
-		registercvar("sv_c_mapcfg", "1");
-		registercvar("sv_c_srvcfg", "1");
-		registercvar("sv_c_botfreeze", "0"); // for testing
-		registercvar("sv_c_warning", "0");
-		registercvar("sv_c_adminlock", "0"); // if true, admin menu is locked out
-		registercvar("sv_c_xenv", "0"); // if true extra env stuff stops
-		registercvar("sv_c_ammo_max", "0"); // if true server values for max ammo override all genre limits
-																						  // if false genre limits apply
-																						  // if 2 override all limit settings and use server values - this stops rune & pack increases
-		registercvar("sv_c_nodecor", "0"); // decor control - 0: all on, 1: no blocking decor in dm, 2:no decor in dm, 3: no decor ever
-													  // decor also includes shell casins, chaos effects, debris
-		registercvar("sv_c_noexit_timeout", "0"); // a default timelimit for any level that doesnt have a trigger_changelevel
-																							// this is only a partial solution (as with end.bsp) the trigger may not be accessible
-		registercvar("sv_c_noexit_fraglimit", "50"); // a default fraglimit for any level that doesnt have a trigger_changelevel
-		registercvar("sv_c_fallen", "1"); // take action if player falls out of level 0 = none, 1 = return via phone type teleport, 2 = kill (no cide)
-		registercvar("sv_c_holding", "1"); // 0 - no hold, 1 - allow players to pick up moveable stuff (items harp, aircannon or grav well can move, or temp decor)
-		registercvar("sv_c_drop", "1"); // 0 - no drop, 1 - allow players to drop inventory - does not apply to rune rules 1
-
-// pk*bot server control - spawns bots on level changes
-		registercvar("sv_bot_pk", "0"); // bot count . skills non team - replaces parm12
-		registercvar("sv_bot_pktm", "0"); // bot count . skills - team - replaces parm13
-		registercvar("sv_bot_pkset", "0"); // bot stats saved
-
-// bot waypoint
-		registercvar("sv_bot_noway_below", "0"); // no bot waypoints below this
-		registercvar("sv_bot_noway_above", "0"); // bot bot waypoints above this
-
-		registercvar("master_high_score", "0"); // master high score
-
-// rune server
-		registercvar("sv_c_rune", "0");
-		registercvar("sv_c_rune_cnt", "0");
-		registercvar("sv_c_rune_mask", "0"); // can be used to mask off techs, etc. - mask normally comes from rule set mask
-		registercvar("sv_c_rune_3acm", "0.2");
-		registercvar("sv_c_rune_random", "0"); // runes will have random powers
-		registercvar("sv_c_rune_set", "0");
-		registercvar("sv_c_rune_allowrule1multi", "0"); // if true more than 1 rune can be gotten in rule 1
-		registercvar("sv_c_rune_rule1sfx", "1"); // if true and multi 3 & 4 runes in rule 1 have side effects
-
-// hook controls  - most of the rules will apply to the harpoon, map item hooks may have seperate rules
-
-		registercvar("sv_c_hook", "0"); // give away the hook - ctf style code, set this to 1 and everyone can use the hook effect per map genre by impulse controls
-																		// q1 - q1 ctf hook, q2 - laser beam hook, q3 - lightning hook
-																		// this does not effect map entities like weapon_hook or runes which will still give hook use
-		registercvar("sv_c_hook_dmg", "0"); // how much damage the hooks do - overrides weapon stats - does not apply to give away hooks
-		registercvar("sv_c_hook_range", "1200"); // how far you can throw it
-		registercvar("sv_c_hook_time", "0"); // how long the hook will stay once reeled in - if 0, hook never releases till player hits release
-		registercvar("sv_c_hook_urto", "0"); // unreeled timeout - if fired and caught, but not reeled in, this will drop the line after timeout
-		registercvar("sv_c_hook_damp", "0"); // > 0 - damp all final travel speed on all hooks - prevents those wild loop swings from borts code
-																					  // < 0 - refuse to damp laser & lightning hook swings (give away & items)
-		registercvar("sv_c_hook_speed", "600"); // pull speed of all hooks but harpoon
-																						// set the next two both to -1 to force the q1 ctf hook at all times for give away - this does not affect map item hooks
-		registercvar("sv_c_hook_laser", "0"); // force give away hook to be lithium style (laser beam), if < 0 dont use laser hook
-		registercvar("sv_c_hook_ltn", "0"); // force give away to lightning hook, if < 0 dont use l-hook
-//		registercvar("sv_c_hook_", "0");
-
-		registercvar("sv_c_rsp_time", "30");
-		registercvar("sv_c_pow_time", "30"); // artifact power time
-
-		registercvar("sv_vw", "1");
-		registercvar("sv_vw_holster", "1"); // show holstered weps
-		registercvar("sv_vw_armor", "0");
-// painkeep controls
-		registercvar("sv_adm", "0");
-		registercvar("sv_observe", "0"); // allow anyone admin observer priv.
-		registercvar("sv_pk99", "0");
-		registercvar("sv_pk100", "0");
-		registercvar("sv_pk100_objerr", "0");
-		registercvar("sv_pk_art", "1");
-
-		registercvar("sv_pk_sfx", "1");
-		registercvar("sv_pk_hub", "1");
-		registercvar("sv_pk_duty", "0");
-		registercvar("sv_pk_cmap", "0"); // admin setup custom maps - activate server map loop via pknextmap aliases
-
-// morphic
-		registercvar("sv_morph", "0");
-		registercvar("sv_morph_time", "60");
-		registercvar("sv_morph_dv", "10");
-		registercvar("sv_morph_bot", "1"); // if false bots will not morph
-		registercvar("sv_morph_free", "0"); // if true,  no archon points to morph
-//		registercvar("cl_morph", "12"); // client ident
-
-// dm monsters
-		registercvar("sv_monster_hub", "0"); // if true monsters will spawn on hub vote maps
-		registercvar("sv_monster_map", "0"); // bit mask to allow map monsters in dm
-		registercvar("sv_monster_rnd", "0"); // bit mask to allow random spawned monsters in dm
-		registercvar("sv_monster_cnt", "0"); // # of random monster to spawn
-		registercvar("sv_monster_resp", "0"); // bit mask to respawn some map monsters (not random ones)
-		registercvar("sv_monster_list", "0"); // when true, list ,monster bits to console & clear
-// monsters II
-		registercvar("sv_monster_map2", "0"); // bit mask to allow map monsters in dm
-		registercvar("sv_monster_rnd2", "0"); // bit mask to allow extra random spawned monsters in dm
-		registercvar("sv_monster_resp2", "0"); // bit mask to respawn some map monsters (not random ones)
-// fast | slow monsters
-		registercvar("sv_monster_fast", "0"); // make any monsters with bits in flag fast
-		registercvar("sv_monster_slow", "0"); // make any monsters with bits in flag fast
-		registercvar("sv_monster_rnd_fast", "0"); // make extra fast monsters when map monsters of these bits spawn
-		registercvar("sv_monster_rnd_slow", "0"); // make extra slow monsters when map monsters of these bits spawn
-		registercvar("sv_monster_cfs", "0.075"); // chance to make random fast / slow monster - per regular monster of same type
-
-// things dealing with the dead
-
-		registercvar("sv_dead_xpack", "1"); // 0 = no xweap in pack (std op), 1 = include extra weapon held in pack, 2 = no weaps at all, just ammo, 3 = no packs (no applicable to monsters)
-		registercvar("sv_dead_throw", "4"); // 0 = no weps thrown, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 4 = throw weaps, all worky, 8 = randomize throwing (every wep is not thrown), 16 = throw weps when gibbed
-		registercvar("sv_dead_throw_pki", "1"); // 0 = no painkeep items thrown - all in pack, 1 = throw painkieep items, 2 = pain keep items gone
-		registercvar("sv_dead_throw_armor", "1"); // 0 = no armor tossed, 1 = throw armor
-		registercvar("sv_dead_gibpack", "1"); // 0 = dont throw a back pack when gibbed, 1 = throw back pack always, 2 = throw packs in singleplayer
-		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at the ready weapon
-
-// cam controls
-		registercvar("sv_cam_off", "0"); // set to 1 to turn cam off entirely
-		registercvar("sv_cam_def", "3"); // set to 0 to default to no cam view, 1 for code cam, 2 to use dpcam, 3 to start with dpcam
-		registercvar("sv_cam_timeout", "0"); // set to # to timeout dead cam in # secs - limit on deadcam state
-		registercvar("sv_cam_to_action", "0"); // set to 1 - disconnect, 0 - respawn
-
-		registercvar("botlevel", "0"); // when true, post code will call bot_changelevel so manual change will load pk*bs
-		registercvar("sv_botmatch", "0"); // load bots without admin
-		registercvar("sv_pl_ffwlimit", "0"); // limits how long a dead player can collect frags for fire & forget weapons
-		registercvar("sv_pl_nocide", "0"); // dont count suicides as -1 frag
-		registercvar("sv_pl_nolavacide", "0"); // dont count lava /env suicides as -1 frag
-		registercvar("sv_pl_nopkcide", "0"); // dont count pk ffw suicides as -1 frag
-
-// dynamic item controls
-		registercvar("pk_dyn_show", "0"); // tell players about dynamic items in console
-		registercvar("pk_dyn_ovr", "0"); // if set over-ride bit in control flag - gets set by menu command
-		registercvar("pk_dyn_art", "1"); // add artifacts to dyn items
-		registercvar("pk_dyn_force", "0"); // force dynamic items on any map - must set PK true, has no effect if dyn already on
-		registercvar("pk_dyn_art_force", "0"); // force artifacts on map if no dynamic spawner, if spawner exists this is the same as pk_dyn_art
-		registercvar("pk_dyn_force_cnt", "6"); // max force cnt - because forcing can exceed load max for dyn items
-		registercvar("pk_dyn_func_stop", "0"); // stop func_dynitem operation
-		registercvar("pk_art_rep", "1"); // replace artifacts w/pk items when off
-
-		registercvar("pk_explbox_resp", "1"); // respawn boom boxes / barrels, set to negative value to remove in dm
-
-// map translations
-
-		registercvar("pk_tr_q1def", "1"); // if q100 or pk100 and no wad == "q1" on map - default to translate - otherwise hide items | alternate: translate extra doom / q2 /q3 items to pkitems on reg. translate
-		registercvar("pk_tr_wolf", "0");
-		registercvar("pk_tr_doom", "0");
-		registercvar("pk_tr_quake", "0");
-		registercvar("pk_tr_q2", "0");
-		registercvar("pk_tr_q3", "0");
-		registercvar("pk_tr_all", "0");
-		registercvar("pk_tr_not", "2"); // 0 - leave items with no translation, 1 - remove, 2 - best guess, 3 - randomize
-		registercvar("pk_translate", "0");
-
-		registercvar("pk_wolfscorefrag", "0"); // how much wolf score you need to get 1 frag for wolf treasures
-																						// 0 - no frags, (x) - frag every x pts, - (x) - frag for every x items collected
-
-		registercvar("pk_doom_alpha", "0"); // sort of a translate - use doom alpha / pre-beta models, for use with alpha maps
-														// 04 - doom alpha level 0.4
-														// 05 - doom alpha level 0.5
-														// 06 - doom alpha level pre-beta
-
-// defaults & inits - set on respawn or server entry
-
-		registercvar("pk_def_health", "0");
-		registercvar("pk_def_armor", "0");
-		registercvar("pk_def_items", "0"); // makes char genre specific weapons / items if set
-		registercvar("pk_def_pkitems", "0");
-		registercvar("pk_def_weapon", "0"); // char genre specific if set - initial weapon on (re)spawn, adds it if not in _items bits
-
-		registercvar("pk_def_ammo_bullets", "0");
-		registercvar("pk_def_ammo_shells", "0");
-		registercvar("pk_def_ammo_cells", "0");
-		registercvar("pk_def_ammo_rockets", "0");
-		registercvar("pk_def_ammo_nails", "0");
-		registercvar("pk_def_ammo_slugs", "0");
-		registercvar("pk_def_ammo_gas", "0");
-
-		registercvar("pk_def_x_items", "0");
-
-		registercvar("pk_char_con", "1"); // char control - 1 = causes alternate player models based on map mode, 10 - 15, use that char only
-		registercvar("pk_init_con", "0"); // init control - see flags sect. of pk.defs.qc
-																			// these can be a bit mask or map code and replace or add to initial weapons
-		registercvar("pk_init_0_wolf", "0"); // weapons for place 0 / wolf guy | map by bit or map code
-		registercvar("pk_init_1_doom", "0"); // weapons for place 1 / doom guy | map by bit or map code
-		registercvar("pk_init_2_quake", "0");
-		registercvar("pk_init_3_pk", "0"); // not available for genre by char
-		registercvar("pk_init_4_q2", "0");
-		registercvar("pk_init_5_q3", "0");
-		registercvar("pk_init_6_hip", "0"); // not available for genre by char
-		registercvar("pk_init_7", "0");	// extra
-
-// pk items
-
-		registercvar("pk_crates", "0"); // randomly spawn this many crates on a map
-		registercvar("pk_cubes", "0"); // randomly spawn this many companion cubes on a map
-		registercvar("pk_cubes_time", "60"); // cube timeout - respawn every this many secs, if < 0 set 30% of val for deviation from time
-
-		registercvar("pk_bt_time", "90"); // time for beartraps to live
-		registercvar("pk_bt_follow", "15"); // time for beartraps to hold on & bite
-		registercvar("pk_bt_dmg", "2"); // beartrap damage per bite
-
-		registercvar("pk_grv_time", "3.2"); // time for gravity to pull
-		registercvar("pk_grv_rsp", "0"); // gravity respawn timer override
-
-		registercvar("pk_tur_ammo","40");
-		registercvar("pk_tur_time","20");
-		registercvar("pk_tur_health","300");
-		registercvar("pk_tur_targetown","3");
-		registercvar("pk_tur_variety","1"); // 1 - orange kryptonite nails, 2 - lasers, 4 - pulse nails, 8 - lightning, 16 - rockets, 32 - railgun
-		registercvar("pk_tur_quadcon", "0"); // if true allows quad player to take ownership of turrets in death rad
-// q1 ammos
-		registercvar("q1_shellammo_max", "100"); // caution - level transiton limits in parm{*} for all of these
-		registercvar("q1_nailammo_max", "200");
-		registercvar("q1_rocketammo_max", "100");
-		registercvar("q1_cellammo_max", "100");
-
-		registercvar("pk_cellammo_max", "200");
-
-		registercvar("q2_silence", "0.2");
-
-// item ammo levels
-		registercvar("pk_max_gravitywellammo", "1");
-		registercvar("pk_max_turretammo", "3");
-		registercvar("pk_max_canpabammo", "1");
-		registercvar("pk_max_beartrapammo", "3");
-		registercvar("pk_max_explodeammo", "10");
-//  plus items
-		registercvar("pk_max_egoammo", "2");
-		registercvar("pk_max_tombammo", "3");
-		registercvar("pk_max_actorammo", "1");
-		registercvar("pk_max_phoneammo", "1");
-
-		registercvar("pk_tomb_time", "90"); // time for beartraps to live
-
-// other cfg
-		registercvar("pk_laser_fly", "5"); // time lasers fly, laser cannon+
-		registercvar("pk_laser_bounce", "3"); // count lasers bounce, laser cannon+
-
-// x ammos
-		registercvar("pk_bulletammo_max", "200");
-		registercvar("pk_slugammo_max", "50");
-		registercvar("pk_gasammo_max", "400");
-
-// total live ents per server
-		registercvar("pk_max_livent", "256");
-
-// map item upgrade loops
-/// loop master - no individual loops will run - possible to swamp loop sets this way
-// remove / replace
-/// 0 loop id set - ids 1 - 6 all 0, remove these items - 1+ set, change 0 to 1 and loop from there - 0 id never loaded again
-/// 0 loop id set to -666 - remove all items id'ed
-/// 0 loop id set to -{map code} - xfrm all items id'ed into map code
-// plain loop
-/// 0 not set, 1 set - 2 - 6 not set, exit / remove - 2+ set, loop starting with id 1
-
- 		registercvar("pk_cyc_master", "0"); // if true no individual loops
-		registercvar("pk_cyc_halt", "0"); // if true halt all loops, restore original items (0 or 1)
-		registercvar("pk_cyc_dyn", "0"); // if true include dynamic items in loop change
-		registercvar("pk_place_item", "0"); // place_item will if this is:  1 - not load regular map items, 2 - randomize all items in genre (at time < 5 secs), 3 - randomize across all genre
-		registercvar("pk_place_item_reload", "0"); // reload place_item 2 deal every this cnt + this cnt * random
-		registercvar("pk_mapcode", "0"); // if true print mapcode item classname calls to console
-		registercvar("pk_make", "0"); // if set to valid map code, create item at player location
-//		registercvar("pk_runemap", "0"); // if true print rune data to console
-		registercvar("pk_tog_mcode", "0"); // if set toggle mcode item bit in item override
-		registercvar("pk_tog_itemmenu", "0"); // if set run menu cmd item - includes show menu, 32
-
-// lg loop
-		registercvar("pk_cyc_lg_t", "-60"); // time for loop - if (-) neg, 20% val + random() * 80% val
-		registercvar("pk_cyc_lg_0", "0");
-		registercvar("pk_cyc_lg_1", "0");
-		registercvar("pk_cyc_lg_2", "0");
-		registercvar("pk_cyc_lg_3", "0");
-		registercvar("pk_cyc_lg_4", "0");
-		registercvar("pk_cyc_lg_5", "0");
-		registercvar("pk_cyc_lg_6", "0");
-// rl loop
-		registercvar("pk_cyc_rl_t", "-60"); // default = 13 - 60 mins
-		registercvar("pk_cyc_rl_0", "0");
-		registercvar("pk_cyc_rl_1", "0");
-		registercvar("pk_cyc_rl_2", "0");
-		registercvar("pk_cyc_rl_3", "0");
-		registercvar("pk_cyc_rl_4", "0");
-		registercvar("pk_cyc_rl_5", "0");
-		registercvar("pk_cyc_rl_6", "0");
-// gl loop
-		registercvar("pk_cyc_gl_t", "-60");
-		registercvar("pk_cyc_gl_0", "0");
-		registercvar("pk_cyc_gl_1", "0");
-		registercvar("pk_cyc_gl_2", "0");
-		registercvar("pk_cyc_gl_3", "0");
-		registercvar("pk_cyc_gl_4", "0");
-		registercvar("pk_cyc_gl_5", "0");
-		registercvar("pk_cyc_gl_6", "0");
-// sng loop
-		registercvar("pk_cyc_sng_t", "-60");
-		registercvar("pk_cyc_sng_0", "0");
-		registercvar("pk_cyc_sng_1", "0");
-		registercvar("pk_cyc_sng_2", "0");
-		registercvar("pk_cyc_sng_3", "0");
-		registercvar("pk_cyc_sng_4", "0");
-		registercvar("pk_cyc_sng_5", "0");
-		registercvar("pk_cyc_sng_6", "0");
-// ng loop
-		registercvar("pk_cyc_ng_t", "-60");
-		registercvar("pk_cyc_ng_0", "0");
-		registercvar("pk_cyc_ng_1", "0");
-		registercvar("pk_cyc_ng_2", "0");
-		registercvar("pk_cyc_ng_3", "0");
-		registercvar("pk_cyc_ng_4", "0");
-		registercvar("pk_cyc_ng_5", "0");
-		registercvar("pk_cyc_ng_6", "0");
-// ssg loop
-		registercvar("pk_cyc_ssg_t", "-60");
-		registercvar("pk_cyc_ssg_0", "0");
-		registercvar("pk_cyc_ssg_1", "0");
-		registercvar("pk_cyc_ssg_2", "0");
-		registercvar("pk_cyc_ssg_3", "0");
-		registercvar("pk_cyc_ssg_4", "0");
-		registercvar("pk_cyc_ssg_5", "0");
-		registercvar("pk_cyc_ssg_6", "0");
-// pkw loop - painkeep range weps
-		registercvar("pk_cyc_pkw_t", "-60");
-		registercvar("pk_cyc_pkw_0", "0");
-		registercvar("pk_cyc_pkw_1", "0");
-		registercvar("pk_cyc_pkw_2", "0");
-		registercvar("pk_cyc_pkw_3", "0");
-		registercvar("pk_cyc_pkw_4", "0");
-		registercvar("pk_cyc_pkw_5", "0");
-		registercvar("pk_cyc_pkw_6", "0");
-// pkc loop - painkeep fire & forget
-		registercvar("pk_cyc_pkc_t", "-60");
-		registercvar("pk_cyc_pkc_0", "0");
-		registercvar("pk_cyc_pkc_1", "0");
-		registercvar("pk_cyc_pkc_2", "0");
-		registercvar("pk_cyc_pkc_3", "0");
-		registercvar("pk_cyc_pkc_4", "0");
-		registercvar("pk_cyc_pkc_5", "0");
-		registercvar("pk_cyc_pkc_6", "0");
-// art loop
-		registercvar("pk_cyc_art_t", "-60");
-		registercvar("pk_cyc_art_0", "0");
-		registercvar("pk_cyc_art_1", "0");
-		registercvar("pk_cyc_art_2", "0");
-		registercvar("pk_cyc_art_3", "0");
-		registercvar("pk_cyc_art_4", "0");
-		registercvar("pk_cyc_art_5", "0");
-		registercvar("pk_cyc_art_6", "0");
-// ammo loop
-		registercvar("pk_cyc_ammo_t", "-60");
-		registercvar("pk_cyc_ammo_0", "0");
-		registercvar("pk_cyc_ammo_1", "0");
-		registercvar("pk_cyc_ammo_2", "0");
-		registercvar("pk_cyc_ammo_3", "0");
-		registercvar("pk_cyc_ammo_4", "0");
-		registercvar("pk_cyc_ammo_5", "0");
-		registercvar("pk_cyc_ammo_6", "0");
-// itm loop
-		registercvar("pk_cyc_itm_t", "-60");
-		registercvar("pk_cyc_itm_0", "0");
-		registercvar("pk_cyc_itm_1", "0");
-		registercvar("pk_cyc_itm_2", "0");
-		registercvar("pk_cyc_itm_3", "0");
-		registercvar("pk_cyc_itm_4", "0");
-		registercvar("pk_cyc_itm_5", "0");
-		registercvar("pk_cyc_itm_6", "0");
-
-// q1
+// TDO: on the remove list
 		registercvar("sv_q99", "0");
 		registercvar("sv_q100", "0");
 		registercvar("sv_q100_objerr", "0");
-		registercvar("sv_qstart", "0"); // allow single player cfg to load start map once per dp server run
-		registercvar("pk_sp_bt_noplayer", "0"); // single player - if true beartraps wont target players
 
-
-// new client controls - do not work as planned
-//		registercvar("cl_cam_off", "0"); // set to 1 to turn cam off entirely
-//		registercvar("cl_cam_def", "1"); // set to 0 to default to no cam view
 	}
 /*
 		if (pk_srvcmd)

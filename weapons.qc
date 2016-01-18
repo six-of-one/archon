@@ -310,7 +310,7 @@ void () W_FireShotgun =
 
 	self.punchangle_x = -2;
 
-		self.currentammo =self.ammo_shells = self.ammo_shells - ammo_con(1, self, "");
+		self.currentammo =self.ammo_shells = self.ammo_shells - ammo_con(1, self, null_string);
 		if (self.classname == "pk*bot")
 			dir = botaim ();
 		else
@@ -344,7 +344,7 @@ void () W_FireSuperShotgun =
 
 	self.punchangle_x = -4;
 	
-		self.currentammo = self.ammo_shells = self.ammo_shells - ammo_con(2, self, "");
+		self.currentammo = self.ammo_shells = self.ammo_shells - ammo_con(2, self, null_string);
 		if (self.classname == "pk*bot")
 			dir = botaim ();
 		else
@@ -434,7 +434,7 @@ void () W_FireRocket =
 	local	entity missile;
 	vector bfwd;
 
-	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, "");
+	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, null_string);
 
 	sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
 
@@ -656,7 +656,7 @@ void () W_FireLightning =
 		self.punchangle_x = -2;
 		cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 
-		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(1, self, "");
+		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(1, self, null_string);
 	}
 
 	if (PK_100 || Q_100)
@@ -729,7 +729,7 @@ void () GrenadeTouch =
 		return;
 	}
 
-	if (self.noise != "")
+	if (self.noise != null_string)
 		sound (self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);	// bounce sound
 	else
 	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);	// bounce sound
@@ -746,7 +746,7 @@ void () W_FireGrenade =
 {
 	local	entity missile;
 
-	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, "");
+	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, null_string);
 
 	sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
 
@@ -847,7 +847,7 @@ void () W_FireSuperSpikes =
 
 	sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
 	self.attack_finished = time + 0.2;
-	self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(2, self, "");
+	self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(2, self, null_string);
 	if (self.classname == "pk*bot")
 		dir = botaim ();
 	else
@@ -902,7 +902,7 @@ void(float ox) W_FireSpikes =
 	}
 	sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM);
 	self.attack_finished = time + 0.2;
-	self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(1, self, "");
+	self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(1, self, null_string);
 	if (self.classname == "pk*bot")
 		dir = botaim ();
 	else
@@ -1080,7 +1080,7 @@ void () W_SetCurrentAmmo =
 	else
 	{
 		self.currentammo = 0;
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 		self.weaponframe = 0;
 	}
 };

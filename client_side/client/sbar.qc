@@ -23,20 +23,23 @@ float cl_items;
 
 void() Sbar_Init =
 {
-	if((cvar("viewsize") >= 113) && (cvar("viewsize") <= 115))
+	enginebar = 1;
+	if((cvar("viewsize") >= 114) && (cvar("viewsize") <= 117))
 		{
 			compass = 1;
 			ibar_flag = cvar("viewsize") - 113;
 			if (ibar_flag == 0 ) ibar = 0;
 			else ibar = 1;
+			if (ibar_flag == 3 ) enginebar = 0;
 			cvar_set("viewsize", "110");
 		}
-	else if((cvar("viewsize") >= 110) && (cvar("viewsize") <= 112))
+	else if((cvar("viewsize") >= 110) && (cvar("viewsize") <= 113))
 		{
 			compass = 0;
 			ibar_flag = cvar("viewsize") - 110;
 			if (ibar_flag == 0 ) ibar = 0;
 			else ibar = 1;
+			if (ibar_flag == 3 ) enginebar = 0;
 			cvar_set("viewsize", "110");
 		}
 	if(cvar("viewsize") == 101) compass = 1;
@@ -60,7 +63,7 @@ void() Sbar_Shutdown =
 {
 	if((cvar("viewsize") >= 110) && (cvar("viewsize") < 120))
 	{
-		if(compass == 1) cvar_set("viewsize", ftos(110 + ibar_flag + 3));
+		if(compass == 1) cvar_set("viewsize", ftos(110 + ibar_flag + 4));
 		else cvar_set("viewsize", ftos(110 + ibar_flag));
 	}
 	if((cvar("viewsize") >= 100) && (cvar("viewsize") < 110) && compass )
@@ -233,6 +236,7 @@ float items, items2, currentweap, mcode, archon;
 float rune_flag, dmg_flare;
 float pk_inv, pk_wep;
 
+
 //  for the 4 small sized ammo counts on the right side
 void(vector valor, float ammo, float transparencia) DrawAmmo =
 {
@@ -375,24 +379,26 @@ float(float pow) bar_scale =
 	return(scl);
 }
 // has_* - once a mapcode item is detected, this allows holstered view
-float has_laser, has_prox, has_pnail, has_hook, has_flamer1, cnt_left;
+float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left;
 
 void() Sbar_DrawInventory =
 {
 
 	ibar_alpha = cvar("sbar_alpha_fg");
 
-	float ALPHA_FULL, ALPHA_MEDIUM, ALPHA_LOW;
-		
+	float ALPHA_FULL, ALPHA_MEDIUM, ALPHA_LOW, ALPHA_90, p_alph;
+
 	ALPHA_FULL = ibar_alpha;
 	ALPHA_MEDIUM = ibar_alpha * 0.7;
+	ALPHA_90 = ibar_alpha * 0.9;
 	ALPHA_LOW = ibar_alpha * 0.4;
 
-	float k, l, shells, rockets, nails, cells, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, p_level_y, archon_magic;
+	float l, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph;
 	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone;
-	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level;
+	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff;
 
 	string wep_sg, wep_ssg, wep_nail, wep_snail, wep_gren, wep_rock, wep_light, wep_mj, wep_prox, wep_laser, wep_harp, wep_airgun, wep_clg, wep_axe, wep_pnail;
+	string target1, target2, instr;
 
 // active (drawn in hand) weapon icons
 	wep_axe = "gfx/inv2_axe";
@@ -411,21 +417,27 @@ void() Sbar_DrawInventory =
 	wep_clg = "gfx/inv2_clg";
 	wep_pnail = "gfx/inv2_pnail";
 
+// get data from server
+
 	shells  = GetStat_FLOAT_TRUNCATED(STAT_SHELLS);
 	nails   = GetStat_FLOAT_TRUNCATED(STAT_NAILS);
 	rockets = GetStat_FLOAT_TRUNCATED(STAT_ROCKETS);
 	cells   = GetStat_FLOAT_TRUNCATED(STAT_CELLS);
 
+	health = GetStat_FLOAT_TRUNCATED(STAT_HEALTH);
 	armorval = GetStat_FLOAT_TRUNCATED(STAT_ARMOR);
 
-// Archon server
+// Archon data
 	archon = GetStat_FLOAT_TRUNCATED(STAT_ARCHON);
+	morph = GetStat_FLOAT_TRUNCATED(STAT_MORPH);
 	mcode = GetStat_FLOAT_TRUNCATED(STAT_MCODE);
 	rune_flag = GetStat_FLOAT_TRUNCATED(STAT_RUNEFLAG);
 
 	volspec = GetStat_FLOAT_TRUNCATED(STAT_VOL);
+	target1 = GetStat_STRING(STAT_STK1);
+	target2 = GetStat_STRING(STAT_STK2);
 
-// pk
+// pk data
 	pk_inv = GetStat_FLOAT_TRUNCATED(STAT_PKINV);
 	pk_wep = GetStat_FLOAT_TRUNCATED(STAT_PKWEP);
 	explodeshot = GetStat_FLOAT_TRUNCATED(STAT_EXPSHELL);
@@ -441,6 +453,7 @@ void() Sbar_DrawInventory =
 	pk_mask = GetStat_FLOAT_TRUNCATED(STAT_PKMASK);
 	pk_phone = GetStat_FLOAT_TRUNCATED(STAT_PKPH);
 
+// enhanced data
 	bullets = GetStat_FLOAT_TRUNCATED(STAT_AMBUL);
 	slugs = GetStat_FLOAT_TRUNCATED(STAT_AMSLUG);
 	gas = GetStat_FLOAT_TRUNCATED(STAT_AMGAS);
@@ -450,6 +463,7 @@ void() Sbar_DrawInventory =
 	items = GetStat_BITS(STAT_ITEMS, 0, 23);
 	items2 = GetStat_BITS(STAT_ITEMS, 23, 9);
 	currentweap = GetStat_FLOAT_TRUNCATED(STAT_ACTIVEWEAPON);
+// end data
 
 // damage addative in effect for drawn weapon
 // code hot weps - images sbar didnt use in this set and dmg_flare gfx
@@ -460,7 +474,6 @@ void() Sbar_DrawInventory =
 	if (cl_items & IT_QUAD) dmg_flare = dmg_flare + 1;
 	if (dmg_flare)
 	{
-		wep_axe = "gfx/inv2_axe";
 		wep_sg = "gfx/inva2_shotgun";
 		wep_ssg = "gfx/inva2_sshotgun";
 		wep_nail = "gfx/inva2_nailgun";
@@ -468,13 +481,7 @@ void() Sbar_DrawInventory =
 		wep_gren = "gfx/inva2_rlaunch";
 		wep_rock = "gfx/inva2_srlaunch";
 		wep_light = "gfx/inva2_lightng";
-		wep_mj = "gfx/inv2_mjolnir";
-		wep_prox = "gfx/inv2_prox_gren";
 		wep_laser = "gfx/inva2_laser";
-		wep_harp = "gfx/inv2_harp";
-		wep_airgun = "gfx/inv2_aircan";
-		wep_clg = "gfx/inv2_clg";
-		wep_pnail = "gfx/inv2_pnail";
 	}
 
 // things detected by mapcode and stored in global - need global turned off when wep goes away, like with death
@@ -493,6 +500,9 @@ void() Sbar_DrawInventory =
 	if (mcode == MC_HIP_PROXGUN) has_prox = TRUE;
 	if (mcode == MC_C_FLAMER) has_flamer1 = TRUE;
 
+	has_deepsleep = FALSE;
+	if (mcode == MC_DEEPSLEEP) has_deepsleep = TRUE;
+
 	if (! pk_inv & PK_IT_GRAPGUN) has_hook = FALSE;
 	if (mcode == MC_HOOK) has_hook = TRUE;
 
@@ -500,6 +510,10 @@ void() Sbar_DrawInventory =
 if (ibar_flag)
 {
 	weapons_offset = autocvar_hud_weapons_offset;
+
+	if (!enginebar) weapons_offset = weapons_offset - 12;
+	woff = '0 0 0';
+	woff_y = weapons_offset;
 
 sb_align = SB_BOTTOM;
 
@@ -525,31 +539,35 @@ sb_align = SB_BOTTOM;
 	arc_level_y = bar_scale(archon);
 
 // scale plevel result mark
+	p_level = '-412 0 0';
 	p_level_y = bar_scale(plevel);
 
 	if (archon > 0)
 	if (chaos_level_y < arc_level_y + 4)
 		chaos_level_x = -409; // move over for second bar
 
+	p_alph = ALPHA_FULL;
+	if (plevel > 0) p_alph = ibar_alpha * 0.35; // shade spell cost portion
+
 	if (archon_magic == 1)
 	if (volspec > 0)
-		DrawInventoryAmmo(chaos_level, "gfx/inv_chaos_bar", ALPHA_FULL, 1); // chaos / order power
+		Sbar_DrawPic(chaos_level, "gfx/inv_chaos_bar", p_alph * 0.8, 1); // chaos / order power
 
 	if (archon > 0)
 	{
-		DrawInventoryAmmo(arc_level, "gfx/inv_archon_bar", ALPHA_FULL, 1);
+		Sbar_DrawPic(arc_level, "gfx/inv_archon_bar", p_alph, 1);
 		if  (archon < 4) arc_level_y = arc_level_y + 4 - archon;
-		DrawAmmo(arc_level + '20 5 0', archon, ALPHA_FULL);
+		DrawAmmo(arc_level + '20 5 0' - woff, archon, ALPHA_FULL);
 
-		k = arc_level_y;
 		if (archon_magic || (volspec < 0))
 		if (plevel > 0)
 		{
-			if ((k - p_level_y) < 4) p_level_y = k - 3;
-			arc_level_y = p_level_y;
-			DrawInventoryAmmo(arc_level + '6 0 0', "gfx/spell_bar", ALPHA_FULL, 0.5);
-			if  (plevel < 10) arc_level_y = arc_level_y + 10 - plevel;
-			DrawAmmo(arc_level + '20 0 0', plevel, ALPHA_FULL);
+			if ((arc_level_y - p_level_y) < 4) p_level_y = arc_level_y - 3;
+//			arc_level_y = p_level_y;
+			Sbar_DrawPic(p_level, "gfx/inv_archon_bar", ALPHA_FULL, 1);
+			Sbar_DrawPic(p_level + '6 0 0', "gfx/spell_bar", ALPHA_FULL, 0.5);
+			if  (plevel < 10) p_level_y = p_level_y + 10 - plevel;
+			DrawAmmo(p_level + '20 0 0' - woff, plevel, ALPHA_FULL);
 		}
 	}
 
@@ -557,13 +575,13 @@ sb_align = SB_BOTTOM;
 	{
 		if (archon > 0)
 		{
-			if (chaos_level_y < arc_level_y + 4) arc_level_x = -409;
-			if ((chaos_level_y >= (arc_level_y - 14)) && (chaos_level_y <= (k + 8))) // dont over write archon pts - hold till passed
-				chaos_level_y = arc_level_y - 14;
+			if (chaos_level_y < p_level_y + 4) arc_level_x = -409;
+			if ((chaos_level_y >= (p_level_y - 14)) && (chaos_level_y <= (arc_level_y+ 8))) // dont over write archon pts - hold till passed
+				chaos_level_y = p_level_y - 14;
 		}
 
 		if  (volspec > 20) // pretty much starts at 20
-			DrawAmmo(chaos_level + '20 5 0', volspec, ALPHA_FULL);
+			DrawAmmo(chaos_level + '20 5 0' - woff, volspec, ALPHA_FULL);
 	}
 
 	if (volspec < 0) volspec = 0; // done, 0 this cost
@@ -572,24 +590,58 @@ sb_align = SB_BOTTOM;
 // runes
 	pwr_step = '-400 50 0';
 
+	cnt_left = cnt_left + woff_y;
+
 // move runes over for low range digit display
+/*
+// test to find lowest val in left draw coords
+
+// 80 - 1 item		- 68	- lower level (enginebar = 0)
+// 110 - 2nd		- 98
+// 140 - 3rd		- 128
+// 170 - 4				- 158
+// 200 - 5				- 188
+// 
+
+	DrawAmmo('-300 100 0', chaos_level_y, ALPHA_FULL);
+	DrawAmmo('-300 80 0', p_level_y, ALPHA_FULL);
+	DrawAmmo('-300 60 0', arc_level_y, ALPHA_FULL);
+	DrawAmmo('-300 40 0', cnt_left, ALPHA_FULL);
+
 	k = 55;
 	l = 0; // adjust for power level diff digit display
 	if (cnt_left == 2) k = 85;
 	if (cnt_left == 3) { k = 300; l = 80; }
 	if (cnt_left == 4) { k = 900; l = 80; }
+	if (cnt_left == 5) { k = 1450; l = 80; }
+*/
+
+	if ((archon > 0) && (arc_level_y < cnt_left + 2))
+		pwr_step = '-370 50 0';
+	if ((plevel > 0) && (p_level_y < cnt_left + 6))
+		pwr_step = '-370 50 0';
+	if ((volspec > 0) && (chaos_level_y < cnt_left + 2))
+		pwr_step = '-370 50 0';
+
 	cnt_left = 0;
 
-	if ((archon > 0) && (archon < k))
-		pwr_step = '-372 50 0';
-	if ((plevel > 0) && (plevel < k + l))
-		pwr_step = '-372 50 0';
-	if ((volspec > 0) && (volspec < k + l))
-		pwr_step = '-372 50 0';
-
-// armor in bar 2
-	if (ibar_flag == 2)
+// armor, health in bar 2, 3
+	if (ibar_flag > 1)
 	{
+		
+		if (!archon_magic)
+		{
+			if (cl_items & IT_SUPERHEALTH)
+				DrawInventory(pwr_step + '2 0 0' + woff,"gfx/sb_mega",   IT_SUPERHEALTH, 0, ALPHA_FULL, 0.19);
+			else
+				DrawInventoryAmmo(pwr_step + '4 0 0', "gfx/sb_health", ALPHA_FULL, 0.17);
+			DrawAmmo(pwr_step + '27 -10 0', health, ALPHA_FULL);
+
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 30;
+		}
+
+// IMP: archons have shield here - dont use armor icons
 		if (cl_items & IT_ARMOR3)
 			DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor3", ALPHA_FULL, 0.28);
 		else if (cl_items & IT_ARMOR2)
@@ -600,8 +652,8 @@ sb_align = SB_BOTTOM;
 		if (cl_items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3))
 		{
 			DrawAmmo(pwr_step + '27 -10 0', armorval, ALPHA_FULL);
+			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 30;
-			cnt_left = cnt_left + 1;
 		}
 	}
 
@@ -609,70 +661,72 @@ sb_align = SB_BOTTOM;
 	if (rune_flag & RUNE_AMMO)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_pack", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 
 	if (rune_flag & TECH_AMP)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_amp", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & TECH_TEIM)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_tiem", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & TECH_ADOC)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_adoc", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & TECH_DSH)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_dsh", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 
 	if (rune_flag & RUNE_FLG_DM)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_dmg", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & RUNE_FLG_HS)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_hst", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & RUNE_FLG_RG)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_rgn", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & RUNE_FLG_RS)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_res", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & RUNE_VAMPIRE)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_vmp", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
-		cnt_left = cnt_left + 1;
 	}
 
 	DrawInventory('40 48 0', "gfx/sb_invis",  IT_INVISIBILITY, 0, ALPHA_LOW, 1.5);
 	DrawInventory('60 48 0', "gfx/sb_invuln", IT_INVULNERABILITY, 0, ALPHA_MEDIUM, 1.5);
 	DrawInventory('80 48 0', "gfx/sb_suit",   IT_SUIT, 0, ALPHA_MEDIUM, 1.5);
 	DrawInventory('100 48 0',"gfx/sb_quad",   IT_QUAD, 0, ALPHA_FULL, 1.5);
+
+	if (enginebar)
 	DrawInventory('120 48 0',"gfx/sb_mega",   IT_SUPERHEALTH, 0, ALPHA_FULL, 0.19);
 
 // IMP: needs detection
@@ -684,7 +738,129 @@ sb_align = SB_BOTTOM;
 	DrawInventory('210 48 0', "gfx/sb_sigil3", 0, 128, ALPHA_MEDIUM, 1.5);
 	DrawInventory('230 48 0', "gfx/sb_sigil4", 0, 256, ALPHA_MEDIUM, 1.5);
 
-	if (mcode == -666) return; // because archon should not have any stuff
+	if (archon_magic)
+	{
+		if (explodeshot == -6)
+		{
+			Sbar_DrawString(pwr_step + '20 -5 0', "Spell cancelled...", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 20;
+		}
+
+		if (currentweap != IT_AXE) // casting spells
+		{
+			if (plevel > 0)
+			{
+				if (currentweap == IT_SHOTGUN) // spell list 1 - teleports
+				{
+					if (shells == 3)
+					{
+						Sbar_DrawString('314 40 0' + woff, "Teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						instr = "*FIRE - teleport target to reticle";
+					}
+					else if (shells == 5)
+					{
+						Sbar_DrawString('280 40 0' + woff, "Teleport swap", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (target2) instr = "*FIRE - swap targets";
+					}
+					else if (shells == 7)
+					{
+						Sbar_DrawString('280 40 0' + woff, "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (target2) instr = "*FIRE - teleport to reticle";
+					}
+					else if (shells == 11)
+					{
+						if (explodeshot == 20)
+						{
+							Sbar_DrawString('280 40 0' + woff, "Set beacon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							instr = "*FIRE - launch beacon";
+						}
+						else
+						{
+							Sbar_DrawString('248 40 0' + woff, "Teleport to beacon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							instr = "*FIRE - initiate teleport";
+						}
+					}
+//					else Sbar_DrawString('280 40 0', "Unknown Magic", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				}
+				DrawInventoryAmmo('372 50 0', "gfx/reticle.spr_0", ALPHA_FULL, 0.05);
+			}
+
+			if (pk_mask & 2) // spell requires targets
+			{
+				if (ibar_flag > 1) // ibar_f = 1, no instructions
+				{
+					if (!target1)
+					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Select target with reticle", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+					}
+					else
+					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Select alternate target with reticle", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 14;
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "ALT_FIRE - use alternate target", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (instr)
+						{
+							cnt_left = pwr_step_y;
+							pwr_step_y = pwr_step_y + 14;
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');							
+						}
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+					}
+				}
+
+				if (target2)
+				{
+					DrawInventoryAmmo(pwr_step, "gfx/reticle.spr_0", ALPHA_MEDIUM, 0.04);
+					Sbar_DrawString(pwr_step + '22 -7 0' + woff, target2, ALPHA_MEDIUM, '7 7 0','1 0.5 0.5');
+					cnt_left = pwr_step_y;
+					pwr_step_y = pwr_step_y + 23;
+				}
+				if (target1)
+				{
+					DrawInventoryAmmo(pwr_step, "gfx/reticle.spr_0", ALPHA_FULL, 0.04);
+					Sbar_DrawString(pwr_step + '22 -7 0' + woff, target1, ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					cnt_left = pwr_step_y;
+					pwr_step_y = pwr_step_y + 23;
+				}
+			}
+			else
+			if (pk_mask & 1) // spell selects location
+			{
+				if (ibar_flag > 1)
+				{
+					Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Select destination with reticle", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					if (instr)
+					{
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 14;
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');							
+					}
+					cnt_left = pwr_step_y;
+					pwr_step_y = pwr_step_y + 20;
+				}
+			}
+			else if (!pk_mask) // spell just fires off
+			{
+				if (instr)
+				{
+					cnt_left = pwr_step_y;
+					pwr_step_y = pwr_step_y + 14;
+					Sbar_DrawString(pwr_step + '22 -5 0' + woff, instr, ALPHA_FULL, '7 7 0','1 0.5 0.5');							
+				}
+			}
+		}
+		else
+		{
+			DrawInventoryAmmo('362 50 0', "gfx/inv_chaos_shot", ALPHA_FULL, 0.1);
+		}
+
+		return; // because archon should not have any stuff
+	}
 
 sb_align = SB_BOTTOM_RIGHT;
 
@@ -778,8 +954,8 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_PHONE))
 		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
+			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_phn", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_phone, ALPHA_FULL);
 		}
@@ -795,8 +971,8 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_ACTOR))
 		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
+			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_mask", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_mask, ALPHA_FULL);
 		}
@@ -812,8 +988,8 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_TOMB))
 		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
+			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_tomb", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_tomb, ALPHA_FULL);
 		}
@@ -829,8 +1005,8 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_EGO))
 		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
+			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_ego", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_ego, ALPHA_FULL);
 		}
@@ -846,8 +1022,8 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_CANPAB))
 		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
+			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_copb", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_copb, ALPHA_FULL);
 		}
@@ -863,8 +1039,8 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_BEARTRAP))
 		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
+			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_btrap", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_bt, ALPHA_FULL);
 		}
@@ -880,8 +1056,8 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_TURRET))
 		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
+			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_turr", ALPHA_FULL, 0.125);
 			DrawAmmo(wep_step + '-22 -5 0', pk_tur, ALPHA_FULL);
 		}
@@ -897,8 +1073,8 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_GRAVITYWELL))
 		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0', "gfx/dmg_flare3", 0.9, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0', "gfx/spell_bar", 0.9, 0.5);
+			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			if (pk_gwell > 0)
 				DrawInventoryAmmo(wep_step, "gfx/inv_gwell", ALPHA_FULL, 0.125);
 			else
@@ -919,19 +1095,47 @@ sb_align = SB_BOTTOM_RIGHT;
 	if (wep_axlv_y < wep_step_y) wep_axlv_y = wep_step_y;
 
 	if ((pk_wep == PK_IT_AXE) && (currentweap == IT_AXE))
+	if (has_deepsleep)
+		DrawInventoryWeapon(wep_axlv, "gfx/inv_deep_sleep",  "gfx/inv2_deep_sleep",  IT_AXE, 0.125, 0);		
+	else
 		DrawInventoryWeapon(wep_axlv, "gfx/inv_axe",  wep_axe,  IT_AXE, 0.125, 0);
-
-	// for 4 small ammo icon positions
-	DrawInventoryAmmo('302 50 0', "gfx/sb_shells", ALPHA_FULL, 0.5);  
-	DrawInventoryAmmo('302 70 0', "gfx/sb_nails", ALPHA_FULL, 0.5);
-	DrawInventoryAmmo('302 90 0', "gfx/sb_rocket", ALPHA_FULL, 0.5);
-	DrawInventoryAmmo('302 110 0',"gfx/sb_cells", ALPHA_FULL, 0.5);
 
 	if (explodeshot > 0)
 	{
 		DrawInventoryAmmo('302 30 0', "gfx/sb_xpshells", explodsht_alp, 0.125);  
 		DrawAmmo('280 25 0', explodeshot, explodsht_alp);
 	}
+
+// for 4 small ammo icon positions
+
+	if (morph > 60) // dont display for non humans unless they got some
+	{
+		if (shells)
+		{
+			DrawInventoryAmmo('302 50 0', "gfx/sb_shells", ALPHA_FULL, 0.5);  
+			DrawAmmo('280 45 0', shells, ALPHA_MEDIUM);
+		}
+		if (nails)
+		{
+			DrawInventoryAmmo('302 70 0', "gfx/sb_nails", ALPHA_FULL, 0.5);
+			DrawAmmo('280 65 0', nails, ALPHA_MEDIUM);
+		}
+		if (rockets)
+		{
+			DrawInventoryAmmo('302 90 0', "gfx/sb_rocket", ALPHA_FULL, 0.5);
+			DrawAmmo('280 85 0', rockets, ALPHA_MEDIUM);
+		}
+		if (cells)
+		{
+			DrawInventoryAmmo('302 110 0',"gfx/sb_cells", ALPHA_FULL, 0.5);
+			DrawAmmo('280 105 0', cells, ALPHA_MEDIUM);		
+		}
+		return;
+	}
+	DrawInventoryAmmo('302 50 0', "gfx/sb_shells", ALPHA_FULL, 0.5);  
+	DrawInventoryAmmo('302 70 0', "gfx/sb_nails", ALPHA_FULL, 0.5);
+	DrawInventoryAmmo('302 90 0', "gfx/sb_rocket", ALPHA_FULL, 0.5);
+	DrawInventoryAmmo('302 110 0',"gfx/sb_cells", ALPHA_FULL, 0.5);
 
 //highlight of current weapon ammo counter + position of ammo counters
 	if (cl_items & IT_SHELLS)

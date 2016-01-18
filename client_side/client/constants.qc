@@ -98,7 +98,11 @@ float STAT_AMBUL = 46; // enh ammos
 float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
 
-float STAT_VOL = 65; // track morph cost or chaos level
+float STAT_STK1 = 50; // string data
+float STAT_STK2 = 51; // string data
+
+float STAT_VOL = 64; // track morph cost or chaos level
+float STAT_MORPH = 65; // track morph cost or chaos level
 float STAT_ARCHON = 66; // track archon power for power bar display
 
 // fooey.  these will be tricky to maintain since the list is built on the fly
@@ -117,6 +121,7 @@ float MC_HIP_LASERCAN = 150;
 float MC_HIP_PROXGUN = 151;
 float MC_Q2_RAILGUN = 218;
 float MC_C_FLAMER = 293;
+float MC_DEEPSLEEP = 291;
 
 // pk inv - collectables
 float PK_IT_AXE				= 1;

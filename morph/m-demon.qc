@@ -140,7 +140,6 @@ void() player_demon_jump1 = [ $leap1, player_demon_jump1 ] {
 	}
 };
 
-float demon_cntdn; // FIXY - ent var?
 
 // fn(demon_explode_plague) - demon chunks can be plague ridden
 
@@ -154,7 +153,7 @@ void() demon_explode_plague =
 //void() demon_explode_gibs =
 //{
 //	self = self.owner;
-//	fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, 0, "", "", 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
+//	fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, 0, null_string, null_string, 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
 //};
 
 // fn(player_demon_explode) - enraged demon on overload...go BOOM!
@@ -168,7 +167,7 @@ void() player_demon_explode =
 
 	if (self.attack_finished < time)
 	{
-//		if (self.class_select != "dead_body") setmodel(self, "");							// dont allow for corpse after explosion
+//		if (self.class_select != "dead_body") setmodel(self, null_string);							// dont allow for corpse after explosion
 		self.flags = self.flags - (self.flags & FL_DEMONBOOM);
 		if ((self.items & IT_INVULNERABILITY) && !self.rune_flag)
 		{
@@ -254,7 +253,7 @@ void() player_demon_explode =
 
 		self = sv;
 		dead_drop(self); // Cataboligne - 10.7.11 - drop runes+ - otherwise, protected from damage maybe
-		self.model = ""; // no body
+		self.model = null_string; // no body
 
 		self.armorvalue = self.health = 0;
 		damage_inflictor = self;
@@ -262,37 +261,40 @@ void() player_demon_explode =
 		damage_inflictor = world;
 
 // note: wonky obit possible here
-		fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, ZOMBIE_FLSH_VEL, "", "", 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
+		fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, ZOMBIE_FLSH_VEL, null_string, null_string, 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
 //		if (self.class_select == "dead_body") SUB_Remove(); // already dead, remove corpse
 		self.nextthink = -1;
 		return;
 	}
 
-	if ((self.attack_finished - demon_cntdn) < time ) // announce to self approximate countdown
+	if ((self.attack_finished - self.AIRG_FireCount) < time ) // announce to self approximate countdown
 	{
 		SuperDamageSound();
 
-		demon_cntdn = demon_cntdn - 1;
+		self.AIRG_FireCount = self.AIRG_FireCount - 1;
 		if ( (self.rune_flag & RUNE_FLG_HS) || (self.rune_flag & TECH_TEIM) )
 		{
-			demon_cntdn = demon_cntdn - 0.333;
+			self.AIRG_FireCount = self.AIRG_FireCount - 0.333;
 			if (random() < 0.333)
-				demon_cntdn = demon_cntdn - random();
+				self.AIRG_FireCount = self.AIRG_FireCount - random();
 		}
-		if (demon_cntdn < 0) demon_cntdn = random();
+		if (self.AIRG_FireCount < 0) self.AIRG_FireCount = random();
 
 		if ((self.items & IT_INVULNERABILITY) && self.rune_flag)
 		if (self.attack_finished < (time + 2))
 			sprint(self, "Everyone will be blown straight to HELL - ");
 
 		sprint(self, "Gonna pop in ");
-		sprint(self,ftos(ceil(demon_cntdn)));
+		sprint(self,ftos(ceil(self.AIRG_FireCount)));
 		sprint(self, " or less");
 		if ( (self.rune_flag & RUNE_FLG_HS) || (self.rune_flag & TECH_TEIM) )
 		if (self.attack_finished < (time + 3))
 			sprint(self, " - HURRY");
 		sprint(self, "!\n");
 	}
+// use archon power
+	if (self.volume < 0)
+		self.archon = self.archon + self.volume;
 };
 
 void() player_demon_jump =
@@ -377,13 +379,12 @@ void() player_demon_attack =
 	}
 	else if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
-		local float tmo;
-		tmo = 5 + random() * 10;
-		self.attack_finished = tmo + time;
+		self.AIRG_FireCount = 5 + random() * 10;
+		self.attack_finished = self.AIRG_FireCount + time;
 		self.flags = self.flags | FL_DEMONBOOM; // demon go boom!
-		if (tmo < 10) demon_cntdn = tmo;
-		else demon_cntdn = 10;
+		if (self.AIRG_FireCount > 9) self.AIRG_FireCount = 10;
 		sprint(self,"Rage has overcome you...\n");
+		self.volume = -1;
 	}
 };
 
@@ -395,6 +396,8 @@ void() player_demon_impulse =
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
 	morph_impulse();
+
+	self.volume = 0;
 
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
@@ -410,16 +413,20 @@ void() player_demon_impulse =
 
 	if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
-		if ((self.items & IT_INVULNERABILITY) && !self.rune_flag)
+		if (((self.items & IT_INVULNERABILITY) && !self.rune_flag) || self.archon < 170)
 		{
-			sprint(self, "Pentagrams power surges beyond rage");
-			if (random() < 0.3)
-				sprint(self, " - try Hack & Slash & Jump");
-			sprint(self, "\n");
+			if (self.archon > 169)
+			{
+				sprint(self, "Pentagrams power surges beyond rage");
+				if (random() < 0.3)
+					sprint(self, " - try Hack & Slash & Jump");
+				sprint(self, "\n");
+			}
 			self.weapon = IT_AXE;
 		}
 		else
 		{
+			self.volume = -160;
 			if (self.items & IT_INVULNERABILITY)
 				sprint(self, "Fiendish onslaught of DOOM!");
 			else
@@ -479,7 +486,7 @@ void(float silent) player_demon_become =
 
 	self.msight = "demon/sight2.wav";
 	self.noise2 = "demon/dpain1.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.view_ofs = '0 0 12'; // lowered by 10
 	self.cam_z = 0.06;
 //	if(!deathmatch)

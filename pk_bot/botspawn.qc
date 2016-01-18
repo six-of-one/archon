@@ -797,12 +797,12 @@ void(entity e) removeBot =
 // must remove it's entry in the rankings
 // Quake engine sets all fields to 0, can only do the most important here
 		f.b_frags = f.frags = 0;
-		f.netname = "";
-		f.classname = "";
+		f.netname = null_string;
+		f.classname = null_string;
 		f.health = 0;
 		f.items = 0;
 		f.armorvalue = 0;
-		f.weaponmodel = "";
+		f.weaponmodel = null_string;
 		f.b_pants = 0;
 		f.b_shirt = 0;
 		f.ammo_shells = f.ammo_nails = f.ammo_rockets = f.ammo_cells = 0;

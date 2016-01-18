@@ -26,12 +26,12 @@ void() tr_set_touch =
 
 void(entity e) hide_item =
 {
-	setmodel (e,"");
+	setmodel (e,null_string);
 	e.th_stand = e.touch;
 	e.touch = SUB_Null;
 	e.path = e.map;
 	if (time < PIC_TO)
-	if(e.map == "") e.map = "repic"; // because this code fires before pic when xmod and wad=q1 items are hidden
+	if(e.map == null_string) e.map = "repic"; // because this code fires before pic when xmod and wad=q1 items are hidden
 	if (e.map == "pic_item") e.map = "repic"; // hide from pic, allow restore
 };
 
@@ -86,16 +86,16 @@ string(entity e, float TR) map_trans =
 	if (TR == FL_TR_RESTORE)
 	{
 		mc = item_by_mcode(e.scode);
-		if (mc != "")
+		if (mc != null_string)
 			return(mc);
 		else
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
-			else if (TR_NOT == FL_NOTRN_BG) return("");
+			else if (TR_NOT == FL_NOTRN_BG) return(null_string);
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcg);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 	}
 
@@ -104,7 +104,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -117,7 +117,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_weapon_bfg");
 		if (TR == FL_TR_QUAKE) return("weapon_chainlg"); // IDEA: poss. dynamo?
@@ -131,7 +131,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG) // IDEA: sniper rifle, cmod has code, & vw exists
 			{
@@ -144,7 +144,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -160,7 +160,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -176,7 +176,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("q2_weapon_railgun");
 		if (TR == FL_TR_Q3) return("q3_weapon_railgun");
@@ -232,7 +232,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -245,7 +245,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_weapon_supershotgun");
 		if (TR == FL_TR_QUAKE) return("weapon_supershotgun");
@@ -259,7 +259,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -272,7 +272,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_weapon_shotgun");
 		if (TR == FL_TR_QUAKE)
@@ -343,7 +343,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -359,7 +359,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -497,7 +497,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -511,7 +511,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -525,7 +525,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("q2_ammo_slugs");
 		if (TR == FL_TR_Q3) return("q3_ammo_slugs");
@@ -547,7 +547,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("item_pack");
 		if (TR == FL_TR_Q3)
@@ -562,7 +562,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -650,11 +650,11 @@ string(entity e, float TR) map_trans =
 					e.pk_touch = sv;
 					return("RMV");
 				}
-				return("");
+				return(null_string);
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("q2_item_health_small");
 		if (TR == FL_TR_Q3) return("q3_item_health_small");
@@ -667,20 +667,20 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
-				return("");
+				return(null_string);
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_item_spiritarmor");
 		if (TR == FL_TR_QUAKE)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG || Q_100 || PK_100)
 			{
@@ -720,11 +720,11 @@ string(entity e, float TR) map_trans =
 					e.pk_touch = sv;
 					return("RMV");
 				}
-				return("");
+				return(null_string);
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("q2_item_armor_shard");
 		if (TR == FL_TR_Q3) return("q3_item_armor_shard");
@@ -736,15 +736,15 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
-				return("");
+				return(null_string);
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_item_armorblue");
 		if (TR == FL_TR_QUAKE) return("item_armorInv");
@@ -758,15 +758,15 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
-				return("");
+				return(null_string);
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_item_armorgreen");
 		if (TR == FL_TR_QUAKE) return("item_armor2");
@@ -787,7 +787,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_item_armorgreen");
 		if (TR == FL_TR_QUAKE) return("item_armor1");
@@ -802,7 +802,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -810,7 +810,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_art_berserker");
 		if (TR == FL_TR_QUAKE) return("item_artifact_super_damage");
@@ -824,7 +824,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -832,14 +832,14 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_art_invulnerable");
 		if (TR == FL_TR_QUAKE) return("item_artifact_invulnerability");
 		if (TR == FL_TR_Q2) return("item_invulnerability");
 		if (TR == FL_TR_Q3)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -850,7 +850,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -860,7 +860,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -868,7 +868,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_art_invisible");
 		if (TR == FL_TR_QUAKE) return("item_artifact_invisibility");
@@ -882,7 +882,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -890,7 +890,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_art_radsuit");
 		if (TR == FL_TR_QUAKE) return("item_artifact_envirosuit");
@@ -909,7 +909,7 @@ string(entity e, float TR) map_trans =
 			e.mdl = e.model;
 			e.frame = 1;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -918,7 +918,7 @@ string(entity e, float TR) map_trans =
 			e.noise = "doom/dsbarexp.wav";
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -930,7 +930,7 @@ string(entity e, float TR) map_trans =
 			e.mdl = e.model;
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2)
 		{
@@ -938,7 +938,7 @@ string(entity e, float TR) map_trans =
 			e.mdl = e.model;
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -969,7 +969,7 @@ string(entity e, float TR) map_trans =
 				e.skin = q3_regn_fsk;
 			}
 			e.mdl = e.model;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -982,7 +982,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_redskull");
 		if (TR == FL_TR_QUAKE) return("item_key2_0");
 		if (TR == FL_TR_Q2) return("key_red_key");
-		if (TR == FL_TR_Q3) return("");
+		if (TR == FL_TR_Q3) return(null_string);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -993,7 +993,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_blueskull");
 		if (TR == FL_TR_QUAKE) return("item_key1_0");
 		if (TR == FL_TR_Q2) return("key_blue_key");
-		if (TR == FL_TR_Q3) return("");
+		if (TR == FL_TR_Q3) return(null_string);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1004,7 +1004,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_redcard");
 		if (TR == FL_TR_QUAKE) return("item_key2_2");
 		if (TR == FL_TR_Q2) return("key_pyramid");
-		if (TR == FL_TR_Q3) return("");
+		if (TR == FL_TR_Q3) return(null_string);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1015,7 +1015,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_bluecard");
 		if (TR == FL_TR_QUAKE) return("item_key1_2");
 		if (TR == FL_TR_Q2) return("key_power_cube");
-		if (TR == FL_TR_Q3) return("");
+		if (TR == FL_TR_Q3) return(null_string);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1026,7 +1026,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_yellowskull");
 		if (TR == FL_TR_QUAKE) return("item_key2_1");
 		if (TR == FL_TR_Q2) return("key_data_cd");
-		if (TR == FL_TR_Q3) return("");
+		if (TR == FL_TR_Q3) return(null_string);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1037,7 +1037,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_yellowcard");
 		if (TR == FL_TR_QUAKE) return("item_key1_1");
 		if (TR == FL_TR_Q2) return("key_data_spinner");
-		if (TR == FL_TR_Q3) return("");
+		if (TR == FL_TR_Q3) return(null_string);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1084,7 +1084,7 @@ string(entity e, float TR) map_trans =
 	{
 		if (TR == FL_TR_WOLF)
 		{
-//			if (!TR_NOT) return("");
+//			if (!TR_NOT) return(null_string);
 			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
 			else if (TR_NOT == FL_NOTRN_BG)
 			{
@@ -1095,7 +1095,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM) return("d_art_megasphere");
 		if (TR == FL_TR_QUAKE) return("item_artifact_invulnerability");
@@ -1110,7 +1110,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("item_invulnerability");
 		{
@@ -1124,7 +1124,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -1138,7 +1138,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcq3);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1159,7 +1159,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)	return("d_item_nightvis");
 		if (TR == FL_TR_QUAKE)
@@ -1177,7 +1177,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2)
 		{
@@ -1191,7 +1191,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -1205,7 +1205,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1226,7 +1226,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)	return("d_item_automap");
 		if (TR == FL_TR_QUAKE)
@@ -1244,7 +1244,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2)
 		{
@@ -1258,7 +1258,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -1272,7 +1272,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1322,28 +1322,28 @@ string(entity e, float TR) map_trans =
 			setmodel(e, "progs/barrel2.mdl");
 			e.frame = 1;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
 			setmodel(e, "progs/barrel.mdl");
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
 			setmodel(e, "maps/b_explob.bsp");
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2)
 		{
 			setmodel(e, "progs/q2_barrel.mdl");
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -1372,7 +1372,7 @@ string(entity e, float TR) map_trans =
 			e.frame = q3_regn_fsk;
 			e.skin = q3_regn_fsk;
 			}
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1385,28 +1385,28 @@ string(entity e, float TR) map_trans =
 			setmodel(e, "progs/barrel2.mdl");
 			e.frame = 1;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
 			setmodel(e, "progs/barrel.mdl");
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
 			setmodel(e, "maps/b_exbox2.bsp");
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2)
 		{
 			setmodel(e, "progs/q2_barrel.mdl");
 			e.frame = 0;
 			e.skin = 0;
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -1435,7 +1435,7 @@ string(entity e, float TR) map_trans =
 			e.frame = q3_regn_fsk;
 			e.skin = q3_regn_fsk;
 			}
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1468,7 +1468,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("item_bandolier");
 		if (TR == FL_TR_Q3)
@@ -1485,7 +1485,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1503,7 +1503,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -1517,7 +1517,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -1534,7 +1534,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("item_power_shield");
 		if (TR == FL_TR_Q3)
@@ -1551,7 +1551,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1568,7 +1568,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -1582,7 +1582,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -1596,7 +1596,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("item_power_shield");
 		if (TR == FL_TR_Q3)
@@ -1611,7 +1611,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1641,7 +1641,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -1655,7 +1655,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -1666,7 +1666,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2) return("item_breather");
 		if (TR == FL_TR_Q3)
@@ -1681,7 +1681,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
@@ -1772,7 +1772,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -1788,7 +1788,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -1800,7 +1800,7 @@ string(entity e, float TR) map_trans =
 //			}
 //			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 //			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-//			return("");
+//			return(null_string);
 		}
 		if (TR == FL_TR_Q2)
 		{
@@ -1816,7 +1816,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -1843,7 +1843,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -1859,7 +1859,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -1871,7 +1871,7 @@ string(entity e, float TR) map_trans =
 //			}
 //			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 //			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-//			return("");
+//			return(null_string);
 		}
 		if (TR == FL_TR_Q2)
 		{
@@ -1887,7 +1887,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -1914,7 +1914,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -1930,7 +1930,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -1945,7 +1945,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q2)
 		{
@@ -1961,7 +1961,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -1984,7 +1984,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq3);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -1995,7 +1995,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -2010,7 +2010,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -2032,7 +2032,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_DOOM)
 		{
@@ -2043,7 +2043,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_QUAKE)
 		{
@@ -2058,7 +2058,7 @@ string(entity e, float TR) map_trans =
 			}
 			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
+			return(null_string);
 		}
 		if (TR == FL_TR_Q3)
 		{
@@ -2177,12 +2177,12 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 		if (TR_NOT == FL_NOTRN_RMV) return("RMV");
-//		else if (TR_NOT == FL_NOTRN_BG) return("");
+//		else if (TR_NOT == FL_NOTRN_BG) return(null_string);
 //		else if (TR_NOT == FL_NOTRN_RNDIN) return(mcg);
 		if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 	}
 
-	return("");
+	return(null_string);
 };
 
 void(entity e, float trvs) item_translate =
@@ -2204,7 +2204,7 @@ void(entity e, float trvs) item_translate =
 		bprint(" x via: ");
 		bprint(ftos(k));
 		bprint(" to: ");
-		if (mcc != "") bprint(mcc);
+		if (mcc != null_string) bprint(mcc);
 		else bprint("NOT TRANSLATING");
 	}
 
@@ -2213,12 +2213,12 @@ void(entity e, float trvs) item_translate =
 		hide_item (e);
 		if (WARNING) bprint(" - Hidden!");
 	}
-	else if (mcc != "")
+	else if (mcc != null_string)
 	{
 		NO_PI = 3.1415; // no place item - no mcode set, no subcontrols
 		if(e.map == "repic") e.map = "pic_item";
 		item_call_save(e, mcc);
-		e.mcode = pk_mcode("", e);
+		e.mcode = pk_mcode(null_string, e);
 		if (e.touch != painkeep_touch && e.touch != SUB_Null)
 		{
 			e.pk_touch = e.touch;
@@ -2331,12 +2331,12 @@ float(entity e, float q1ck, string itm) noxtr_item_control =
 			}
 		}
 
-		if (itm != "")
+		if (itm != null_string)
 		{
 			NO_PI = 3.1415; // no place item - no mcode set, no subcontrols
 			if(e.map == "repic") e.map = "pic_item";
 			item_call_save(e, itm);
-			e.mcode = pk_mcode("", e);
+			e.mcode = pk_mcode(null_string, e);
 		}
 //		else
 //			hide_item (e);

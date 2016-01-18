@@ -216,7 +216,7 @@ void(entity cent, float pl) chaos_morph_chg =
 
 void() chaos_morph_chgthk =
 {
-	if (self.owner.model != "progs/null.mdl" && self.owner.model != "")
+	if (self.owner.model != "progs/null.mdl" && self.owner.model != null_string)
 		chaos_morph_chg(self.owner, 0);
 //	if (IS_CHAOS(self.owner)) chaos_poly = world;
 	remove(self);
@@ -238,7 +238,7 @@ void(entity e, string md) chaos_flycheck =
 	if (md == "progs/chaos_b3.1col.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/chaos_b3.2rot.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/chaos_b3.3rsm.mdl") mt = MOVETYPE_FLY;
-//	if (md == "") mt = MOVETYPE_FLY;
+//	if (md == null_string) mt = MOVETYPE_FLY;
 
 // cheat a little bit - this should be down below
 	if (mt == MOVETYPE_FLY)
@@ -259,7 +259,7 @@ void(entity e, string md) chaos_base_mdl =
 		chaos_morph_chg(e, 0); // back to our own true morph, restores model - (! IS_CHAOS_PURE(self))
 	else
 	{
-		if (md == "") md2 = "progs/chaos_b2.mdl";
+		if (md == null_string) md2 = "progs/chaos_b2.mdl";
 		else md2 = md;
 		if (self.model != md2)
 		{
@@ -353,7 +353,7 @@ void() chaos_mdlchg =
 	if (self.owner.morphy == IMP_MCHAOS) //(IS_CHAOS_PURE(self.owner))
 	if (chaos_mdlchk(self.owner.model))
 		{
-		if (random() < 0.5) 	chaos_base_mdl(self.owner, "");
+		if (random() < 0.5) 	chaos_base_mdl(self.owner, null_string);
 		else
 			{
 //			while (pointcontents(self.origin + ' 0 0 -26') == CONTENT_SOLID) setorigin(self, self.origin + ' 0 0 1');
@@ -362,7 +362,7 @@ void() chaos_mdlchg =
 			chaos_flycheck(self.owner, self.owner.model);
 			self.owner.modelindex_morph=self.owner.modelindex;
 			if (ci_md != "progs/chaos_b2.mdl")
-				chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", "", SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
+				chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
 			}
 		}
 	remove(self);
@@ -404,7 +404,7 @@ void() chaos_teleport_restore_think =
 		return;
 	}
 
-	if (IS_CHAOS(self.owner)) chaos_base_mdl(self.owner, ""); // restore chaos to plasma flux
+	if (IS_CHAOS(self.owner)) chaos_base_mdl(self.owner, null_string); // restore chaos to plasma flux
 	if (self.owner.flags & FL_MONSTER) self.owner.oldorigin = v0;
 
 	e = world;
@@ -413,7 +413,7 @@ void() chaos_teleport_restore_think =
 	while (t > 0 && !e)
 	{
 		t = t - 1;
-		e = find_tdest(FL_RSALL, ""); //SelectSpawnPoint ();
+		e = find_tdest(FL_RSALL, null_string); //SelectSpawnPoint ();
 	}
 	if (e.flags & FL_ITEM) org = ' 0 0 32';
 	setorigin(self.owner, e.origin + org);
@@ -446,7 +446,7 @@ void(entity e, vector org, float ts) chaos_teleport_restore =
 	if (!(e.health > 0 || e.solid == SOLID_SLIDEBOX)) return;
 
 	t = ts & 255;
-	c = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "chaos_teleport_restore", "", SUB_Null, 1, chaos_teleport_restore_think, SUB_Null, e, world);
+	c = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "chaos_teleport_restore", null_string, SUB_Null, 1, chaos_teleport_restore_think, SUB_Null, e, world);
 	if (t > 0)
 		c.search_time = time + t;
 	else
@@ -505,7 +505,7 @@ float() chaos_move_effect =
 		if (chaos_mdlchk(self.model)) chaos_form(FL_SPIKE);
 		if (self.wait > time) return FALSE;
 		self.wait = time + random() / 2.0;
-		fire_burst (chaos_item, self.origin, 0, 100, "", "", 0, 1, 0, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world);
+		fire_burst (chaos_item, self.origin, 0, 100, null_string, null_string, 0, 1, 0, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world);
 //		if (self.health < (self.max_health * self.health_modifier * 0.30)) self.health = self.health + random() * 10;
 //		else 
 		if (self.health < (self.max_health * self.health_modifier * 0.70)) self.health = self.health + random() * 3;
@@ -553,9 +553,9 @@ float() chaos_move_effect =
 						local vector v;
 						v = newmis.origin;
 						remove(newmis); // gets replaced
-						chaos_teleport(v, "", world);
+						chaos_teleport(v, null_string, world);
 //						newmis.touch = telesph_touch;
-//						if (random() < 0.5) newmis.movetarget = find_tdest(FL_RSALL, "");
+//						if (random() < 0.5) newmis.movetarget = find_tdest(FL_RSALL, null_string);
 						newmis.search_time = time + 0.15 + (0.1 * random());
 					}
 				}
@@ -574,7 +574,7 @@ float() chaos_move_effect =
 		}
 	else if (random() < 0.02)
 		{
-		fire_burst (chaos_item, self.origin, 0, 150, "", "", 0, 1, 0, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world); // IDEA overall chaos affect cnt on this
+		fire_burst (chaos_item, self.origin, 0, 150, null_string, null_string, 0, 1, 0, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world); // IDEA overall chaos affect cnt on this
 		if (self.health < (self.max_health * self.health_modifier * 0.70)) self.health = self.health + random() * 3;
 		}
 
@@ -599,7 +599,7 @@ float() chaos_move_effect =
 			}
 		else
 			{
-			chaos_base_mdl(self, "");
+			chaos_base_mdl(self, null_string);
 			}
 //		chaos_flycheck(self, self.model);
 		}
@@ -698,7 +698,7 @@ void() cbolt_touch =
 	if (other == self.owner)
 		return;
 
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
 		return;
@@ -730,7 +730,7 @@ void() cbolt_touch =
 	else if (other.classname == "worldspawn")
 	{
 //		if (self.classname == "calderashard") calderashard_cb();
-		move_stop(self, "");
+		move_stop(self, null_string);
 	}
 };
 
@@ -740,7 +740,7 @@ void() fire_cbolt =
 {
 	float f1;
 
-	fire_missile(700, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, ' 0 0 0', "chaosbolt", "progs/spike.mdl", "", cbolt_touch, 6 + random() * 6, SUB_Remove, SUB_Nop); // SUB_FadeRemove, SUB_Nop);
+	fire_missile(700, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, ' 0 0 0', "chaosbolt", "progs/spike.mdl", null_string, cbolt_touch, 6 + random() * 6, SUB_Remove, SUB_Nop); // SUB_FadeRemove, SUB_Nop);
 	newmis.frame = CHAOS_FIREBOLT_FRAME_ADJ + floor(random() * 6);
 	newmis.dmg = 30 + random() * 100; // hot plasma is very dangerous
 
@@ -787,7 +787,7 @@ void(float flg) chaos_form =
 		}
 	if (flg & FL_SPIKE) // always the last form in case multiple get set
 		{
-		chaos_base_mdl(self, "");
+		chaos_base_mdl(self, null_string);
 		self.skin = 1;
 		self._stand=player_chaos_stand;
 		self._run=player_chaos_run;
@@ -810,7 +810,7 @@ void()   player_chaos_explode9  =[ $chaos16,  player_chaos_explode10 ]
 {
 	chaos_dynlit = 0; // tenebrae stuff - use cvar
 	if (random() < C_FBPER)
-		fire_burst (fire_cbolt, self.origin, 0, 0, "", "", 0, 8, 28, ' 0 0 0', ' 360 360 360', SUB_Null, FL_VELRND2 /* | FL_OWNOWN */, world);
+		fire_burst (fire_cbolt, self.origin, 0, 0, null_string, null_string, 0, 8, 28, ' 0 0 0', ' 360 360 360', SUB_Null, FL_VELRND2 /* | FL_OWNOWN */, world);
 };
 void()   player_chaos_explode10 =[ $chaos17,  player_chaos_explode11 ] { };
 void()   player_chaos_explode11 =[ $chaos18,  player_chaos_explode12 ] { };
@@ -1001,7 +1001,7 @@ void() chaos_bomb =
 	RND_maxdmg = CBOMB_DEF_MAX;
 	
 // really just a fancy bouncing betty
-	fire_burst (wfire, self.origin + ' 0 0 30', 0, 0, "", "", 0, 3, 8, ' 120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
+	fire_burst (wfire, self.origin + ' 0 0 30', 0, 0, null_string, null_string, 0, 3, 8, ' 120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
 	RND_maxdmg = 0; // reset
 	remove(self);
 };
@@ -1053,7 +1053,7 @@ void() chaos_item =
 		{
 		if (!ft) ci_fr = floor(random() * 2.2);
 		ci_last = 2;
-		chaos_fire_fly("");
+		chaos_fire_fly(null_string);
 		if (newmis)
 			{
 			newmis.frame = ci_fr;
@@ -1067,147 +1067,149 @@ void() chaos_item =
 	ft = (ci_last == 3 && (f1 & FL_SAME));
 	if (ft || random() < 0.1) // various wep effects
 		{
-		if (!ft) ci_fr = floor(random() * 10.3);
-		ci_last = 3;
-		if (ci_fr == 0) W_FireSpikes(0);
-		else if (ci_fr == 1) W_FireLightning(); // IDEA - just use diff lightning code here
-		else if (ci_fr == 2) fire_laser1(0);
-		else if (ci_fr == 3) W_FireGrenade();
-		else if (ci_fr == 4) W_Fire_Proxmine();
-		else if (ci_fr == 5) W_FireRocket();
-		else if (ci_fr == 6) W_FireSpikes(USE_PULSE_SPIKES);
-		else if (ci_fr == 7) HIP_LaunchLaser(v0, v0, rint(random()), "lasercannon/laserg.wav");
-		else if (ci_fr == 8) fire_cbolt();
-		else if (ci_fr == 9) { beartrap_dropBearTrap(); newmis.beartrap_time = time + 9; }
-		else if (ci_fr == 10) { turret_dropTurret(); turret.owner = self; }
-		if (newmis)
-		{
-			if (ci_fr == 4) newmis.classname = "chaos_prox";
-		}
-		chaos_level( 0 - (ci_fr * 5) - 1, self.owner);
-		return;
+			if (!ft) ci_fr = floor(random() * 10.3);
+			ci_last = 3;
+			if (ci_fr == 0) W_FireSpikes(0);
+			else if (ci_fr == 1) W_FireLightning(); // IDEA - just use diff lightning code here
+			else if (ci_fr == 2) fire_laser1(0);
+			else if (ci_fr == 3) W_FireGrenade();
+			else if (ci_fr == 4) W_Fire_Proxmine();
+			else if (ci_fr == 5) W_FireRocket();
+			else if (ci_fr == 6) W_FireSpikes(USE_PULSE_SPIKES);
+			else if (ci_fr == 7) HIP_LaunchLaser(v0, v0, rint(random()), "lasercannon/laserg.wav");
+			else if (ci_fr == 8) fire_cbolt();
+			else if (ci_fr == 9) { beartrap_dropBearTrap(); newmis.beartrap_time = time + 9; }
+			else if (ci_fr == 10) { turret_dropTurret(); turret.owner = self; }
+			if (newmis)
+			{
+				if (ci_fr == 4) newmis.classname = "chaos_prox";
+			}
+			chaos_level( 0 - (ci_fr * 5) - 1, self.owner);
+			return;
 		}
 
 
 	ft = (ci_last == 4 && (f1 & FL_SAME));
 	if (!ft) // IDEA - build list of stuff chaos has touched?
 		{
-		local float CI_EXPL_BASE_DMG = 15; // must be greater than all random frames
-		ci_sk = ci_fr = 0;
-		r1 = floor(random() * 20.3);
-		if (r1 == 0) ci_md = "progs/proxbomb.mdl";
-		else if (r1 == 1) {ci_md = "progs/bolt2.mdl"; ci_fr = floor(random() * 6.3);}
-		else if (r1 == 2) {ci_md = "progs/h_dog.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 20; }
-		else if (r1 == 3) ci_md = "progs/hook.mdl";
-		else if (r1 == 4) {ci_md = "maps/b_rock0.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 50; }
-		else if (r1 == 5) {ci_md = "maps/b_exbox2.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 80; }
-		else if (r1 == 6) ci_md = "progs/flame2.mdl";
-		else if (r1 == 7) ci_md = "progs/end1.mdl";
-		else if (r1 == 8) ci_md = "progs/end2.mdl";
-		else if (r1 == 9) ci_md = "progs/end3.mdl";
-		else if (r1 == 10) ci_md = "progs/end4.mdl";
-		else if (r1 == 11) {ci_md = "progs/drycel6.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
-		else if (r1 == 12) ci_md = "progs/zom_gib.mdl";
-		else if (r1 == 13) ci_md = "progs/s_bubble.spr";
-		else if (r1 == 14) ci_md = "progs/eyes.mdl";
-		else if (r1 == 15) {ci_md = "progs/chaos_b2.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 100; }
-		else if (r1 == 16) ci_md = "progs/grenade.mdl";
-		else if (r1 == 17) {ci_md = "progs/invulner.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
-		else if (r1 == 18) {ci_md = "progs/g_gas.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 80; }
-		else if (r1 == 19) ci_md = "progs/beartrap.mdl";
-		else if (r1 == 20) {ci_md = "maps/b_eshel0.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 50; }
-		else if (r1 == 21) { ci_md = "progs/laser_m.mdl"; ci_sk = floor(random() * 10.4); ci_fr = floor(random() * 10.4); }
+			local float CI_EXPL_BASE_DMG = 15; // must be greater than all random frames
+			ci_sk = ci_fr = 0;
+			r1 = floor(random() * 20.3);
+			if (r1 == 0) ci_md = "progs/proxbomb.mdl";
+			else if (r1 == 1) {ci_md = "progs/bolt2.mdl"; ci_fr = floor(random() * 6.3);}
+			else if (r1 == 2) {ci_md = "progs/h_dog.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 20; }
+			else if (r1 == 3) ci_md = "progs/hook.mdl";
+			else if (r1 == 4) {ci_md = "maps/b_rock0.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 50; }
+			else if (r1 == 5) {ci_md = "maps/b_exbox2.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 80; }
+			else if (r1 == 6) ci_md = "progs/flame2.mdl";
+			else if (r1 == 7) ci_md = "progs/end1.mdl";
+			else if (r1 == 8) ci_md = "progs/end2.mdl";
+			else if (r1 == 9) ci_md = "progs/end3.mdl";
+			else if (r1 == 10) ci_md = "progs/end4.mdl";
+			else if (r1 == 11) {ci_md = "progs/b_batt1.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
+			else if (r1 == 12) ci_md = "progs/zom_gib.mdl";
+			else if (r1 == 13) ci_md = "progs/s_bubble.spr";
+			else if (r1 == 14) ci_md = "progs/eyes.mdl";
+			else if (r1 == 15) {ci_md = "progs/chaos_b2.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 100; }
+			else if (r1 == 16) ci_md = "progs/grenade.mdl";
+			else if (r1 == 17) {ci_md = "progs/invulner.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
+			else if (r1 == 18) {ci_md = "progs/g_gas.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 80; }
+			else if (r1 == 19) ci_md = "progs/beartrap.mdl";
+			else if (r1 == 20) {ci_md = "maps/b_eshel0.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 50; }
+			else if (r1 == 21) { ci_md = "progs/laser_m.mdl"; ci_sk = floor(random() * 10.4); ci_fr = floor(random() * 10.4); }
 		}
 	if (ft || random() < 0.05) // random inert crap
 		{
-		ci_last = 4;
-		newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, RM_SKY | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | CK_EARTHQUAKE | PF_SOLID, v0, v0, v0, v0, v0, "chaos_item", ci_md, sky_touch_pointer, 5 + (random() * 20), meltthink, SUB_Null, self, world);
-		if (newmis)
-			{
-			newmis.th_stand = SUB_Null;
-//			if (random() < 0.717) newmis.th_stand = floaterPointer; // no float yet
-			if (random() < 0.234) newmis.bubble_count = NO_BUBBLES;
-			if (ci_fr > (CI_EXPL_BASE_DMG - 1)) // chance item is explode box - this is dmg ( heh heh )
-			{
-				if (random() < CI_EXPLBOX)
+			ci_last = 4;
+			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, RM_SKY | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | CK_EARTHQUAKE | PF_SOLID, v0, v0, v0, v0, v0, "chaos_item", ci_md, sky_touch_pointer, 5 + (random() * 20), meltthink, SUB_Null, self, world);
+			if (newmis)
 				{
-					misc_explodbox_set(newmis, ci_md, ci_fr, 10 + random() * 40, MOVETYPE_TOSS);
-					newmis._stand = SUB_Remove; // in case of respawn being called
-																													if (WARNING)
-																													{
-																														bprint("chaos_item(explode box) = ");
-																														bprint(newmis.model);
-																														newline(world);
-																													}
-				}
-			}
-			else
-				newmis.frame = ci_fr;
-			newmis.skin = ci_sk;
-			newmis.owner = self.owner;
-			chaos_level(-10, self.owner);
-			if (ci_md == "progs/flame2.mdl")
+				newmis.th_stand = SUB_Null;
+	//			if (random() < 0.717) newmis.th_stand = floaterPointer; // no float yet
+				if (random() < 0.234) newmis.bubble_count = NO_BUBBLES;
+				if (ci_fr > (CI_EXPL_BASE_DMG - 1)) // chance item is explode box - this is dmg ( heh heh )
 				{
-					newmis.content_flag = (newmis.content_flag | FLT_IMM) - (newmis.content_flag & MLT_LAVA);
-					newmis.effects = newmis.effects | EF_DIMLIGHT;
-					newmis.mins_z = newmis.mins_z - 12; // move flame up out of floor
-					newmis.view_ofs = ' 0 0 -12';
-					setsize(newmis, newmis.mins, newmis.maxs);
-					if (random() < CI_FLAMEREAL)
-						newmis.touch = FlameTouch;
+					if (random() < CI_EXPLBOX)
+					{
+						misc_explodbox_set(newmis, ci_md, ci_fr, 10 + random() * 40, MOVETYPE_TOSS);
+						newmis._stand = SUB_Remove; // in case of respawn being called
+																														if (WARNING)
+																														{
+																															bprint("chaos_item(explode box) = ");
+																															bprint(newmis.model);
+																															newline(world);
+																														}
+					}
 				}
-			chaos_mdlsize(newmis);
+				else
+					newmis.frame = ci_fr;
+				newmis.skin = ci_sk;
+				newmis.owner = self.owner;
+				chaos_level(-10, self.owner);
+				if (ci_md == "progs/flame2.mdl")
+					{
+						newmis.content_flag = (newmis.content_flag | FLT_IMM) - (newmis.content_flag & MLT_LAVA);
+						newmis.effects = newmis.effects | EF_DIMLIGHT;
+						newmis.mins_z = newmis.mins_z - 12; // move flame up out of floor
+						newmis.view_ofs = ' 0 0 -12';
+						setsize(newmis, newmis.mins, newmis.maxs);
+						if (random() < CI_FLAMEREAL)
+							newmis.touch = FlameTouch;
+					}
+				chaos_mdlsize(newmis);
+				}
+			if (random() < 0.8) item_eject(newmis, MED_BOUNCE);
+			else if (random() < 0.3) newmis.movetype = MOVETYPE_FLY;
+			if (newmis)
+			if (ci_md == "progs/chaos_b2.mdl")
+			{
+				newmis.movetype = MOVETYPE_FLY;
+				newmis.think = chaos_field_thk; // give some random movement
+				newmis.nextthink = time + random();
+				newmis.aflag = FL_FFLY;
+				if (random() < 0.5) newmis.flags = newmis.flags | FL_FPART;
+				newmis.wait = time + 10 + (random() * 30);
 			}
-		if (random() < 0.8) item_eject(newmis, MED_BOUNCE);
-		else if (random() < 0.3) newmis.movetype = MOVETYPE_FLY;
-		if (newmis)
-		if (ci_md == "progs/chaos_b2.mdl")
-		{
-			newmis.movetype = MOVETYPE_FLY;
-			newmis.think = chaos_field_thk; // give some random movement
-			newmis.nextthink = time + random();
-			newmis.aflag = FL_FFLY;
-			if (random() < 0.5) newmis.flags = newmis.flags | FL_FPART;
-			newmis.wait = time + 10 + (random() * 30);
-		}
-		if (random() < 0.02) newmis.effects = newmis.effects | EF_DIMLIGHT; // light a few of these up for kicks
-		return;
+			if (random() < 0.02) newmis.effects = newmis.effects | EF_DIMLIGHT; // light a few of these up for kicks
+			return;
 		}
 
 	if (random() < 0.08) // real map items
 		{
-		f1 = r1 = floor(random() * 13.4);
-		if (r1 == 1) r1 = MC_KEY2;
-		else if (r1 == 2) r1 = MC_ANAILS;
-		else if (r1 == 3) r1 = MC_ACELLS_LG;
-		else if (r1 == 4) r1 = MC_ACELLS_LG;
-		else if (r1 == 5) r1 = MC_AROCKETS;
-		else if (r1 == 6) r1 = MC_ARMOR2;
-		else if (r1 == 7) r1 = MC_HIP_LASERCAN;
-		else if (r1 == 8) r1 = MC_AEXPLSH;
-		else if (r1 == 9) r1 = MC_RING;
-		else if (r1 == 10) r1 = MC_PENT;
-		else if (r1 == 11) r1 = MC_GRAVITY;
-		else if (r1 == 12) r1 = MC_Q3_RAILGUN;
-		else if (r1 == 13) r1 = MC_REGGUN;
-//		else if (r1 == 13) r1 = MC_DYNAMO; // NOTE: lots of other things
-		else r1 = MC_AXE;
-//		else if (r1 == ) r1 = MC_
-//		proc_dropitem(r1, TRUE);
-		newmis = drop_item(r1, "", self, MED_BOUNCE);
+			f1 = r1 = floor(random() * 13.4);
+			if (r1 == 1) r1 = MC_KEY2;
+			else if (r1 == 2) r1 = MC_ANAILS;
+			else if (r1 == 3) r1 = MC_ACELLS_LG;
+			else if (r1 == 4) r1 = MC_ACELLS_LG;
+			else if (r1 == 5) r1 = MC_AROCKETS;
+			else if (r1 == 6) r1 = MC_ARMOR2;
+			else if (r1 == 7) r1 = MC_HIP_LASERCAN;
+			else if (r1 == 8) r1 = MC_AEXPLSH;
+			else if (r1 == 9) r1 = MC_RING;
+			else if (r1 == 10) r1 = MC_PENT;
+			else if (r1 == 11) r1 = MC_GRAVITY;
+			else if (r1 == 12) r1 = MC_Q3_RAILGUN;
+			else if (r1 == 13) r1 = MC_REGGUN;
+	//		else if (r1 == 13) r1 = MC_DYNAMO; // NOTE: lots of other things
+			else r1 = MC_AXE;
+	//		else if (r1 == ) r1 = MC_
+	//		proc_dropitem(r1, TRUE);
+			newmis = drop_item(r1, null_string, self, MED_BOUNCE);
 
-		if (newmis)
-		{
-			newmis.class_select = "chaos_item";
+			if (newmis)
+			{
+				newmis.class_select = "chaos_item";
 
-			if (f1 > 8) f1 = f1 - 2;
-			chaos_level( 0 - (f1 * 8) - 1, self.owner);
+				if (f1 > 8) f1 = f1 - 2;
+				chaos_level( 0 - (f1 * 8) - 1, self.owner);
 
-// select a random trail
-			r1 = rnd_bit_mask(MF_HAPPYTRAIL);
-			if (r1 < 256) newmis.modelflags = r1;
-		}
-		return;
+	// select a random trail
+				f1 = newmis.modelflags & 8; // keep rotates mostly
+				if (random() < 0.2) f1 = 0;
+				r1 = rnd_bit_mask(MF_HAPPYTRAIL);
+				if (r1 < 256) newmis.modelflags = r1 | f1;
+			}
+			return;
 		}
 
 		if (FALSE) //(flg & FL_RNDBURST) 
@@ -1234,7 +1236,7 @@ void(vector org, float flg) chaos_burst =
 	c1 = 3;// + floor(random() * c2);
 //	if (random() < 0.2) c2 = random() * 30;
 
-	fire_burst (chaos_item, org, 0, 75, "", "", 0, c1, c2, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND2 | FL_FRCORG | FL_NEWSELF /* | FL_OWNOWN */, world);
+	fire_burst (chaos_item, org, 0, 75, null_string, null_string, 0, c1, c2, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND2 | FL_FRCORG | FL_NEWSELF /* | FL_OWNOWN */, world);
 	ci_last = ci_fr = ci_flg = 0;
 };
 
@@ -1315,7 +1317,7 @@ void(vector org) spawn_particle_field =
 {
 	if (particle_fields > MAX_FIELDS) return;
 	particle_fields = fieldadd(1);
-	newmis = chaos_spawn(0, 0, FL_FPART, 0, org, v0, v0, v0, v0, "chaos_field", "", SUB_Null, 0.1, chaos_field_thk, SUB_Null, self, world);
+	newmis = chaos_spawn(0, 0, FL_FPART, 0, org, v0, v0, v0, v0, "chaos_field", null_string, SUB_Null, 0.1, chaos_field_thk, SUB_Null, self, world);
 	if (random() < 0.333) newmis.wait = time + pf_exc + crandom() * pf_dev * 3;
 	else newmis.wait = time + pf_len + crandom() * pf_dev;
 	if (random() < 0.25) newmis.aflag = FL_FJUMP;
@@ -1337,26 +1339,13 @@ void(vector org) spawn_light_field =
 // fn(spawn_chaos_monster) - call fn to creat a random chaos monster
 // torg - target origin
 // monster count for level, SVC msg - done in item_call *
-// pre set codes
-/*
-float scm_dog				= 0;
-float scm_zombie			= 1;
-float scm_wizard			= 2;
-float scm_army				= 3;
-float scm_enforcer		= 4;
-float scm_ogre				= 5;
-float scm_hknight			= 6;
-float scm_tarbaby			= 7;
-float scm_shalrath		= 8;
-float scm_demon1		= 9;
-float scm_shambler		= 10;
-*/
+// pre set codes - use CB_M instead
 
 // NOTE: redo with item_call_save
 
 void(float sel, vector torg) spawn_chaos_monster =
 {
-	self.enemy = chaos_spawn(0, 0, 0, 0, torg, v0, v0, v0, v0, "", "", SUB_Null, 0.0, SUB_Null, SUB_Null, self, world);
+	self.charmer = chaos_spawn(0, 0, 0, 0, torg, v0, v0, v0, v0, null_string, null_string, SUB_Null, 0.0, SUB_Null, SUB_Null, self, world);
 
 	if (!sel) sel = floor(random() * 11.5);
 	if (random() < 0.4)																// float WEAK_MONSTER = 0.4; // percentage chance of weaker monster only
@@ -1375,7 +1364,10 @@ void(float sel, vector torg) spawn_chaos_monster =
 	else if (sel == 10)	sg = "monster_shambler"; 	// monster_shambler(A_MONSTER);
 	else if (sel == 12)	sg = "monster_scourge"; 	// monster_scourge(A_MONSTER);
 
-	item_call_save(self.enemy, sg);
+	item_call_save(self.charmer, sg);
+
+	self.charmer.charmer = self;
+	self.charmer.charmed = 1;
 };
 
 /*
@@ -1455,7 +1447,7 @@ void() chaos_beam =
 	if (random() < lf_per) spawn_light_field(ep);
 
 // try beam struck ent
-//	set_CLE("calderashard", "", "", "", "", "", "");
+//	set_CLE("calderashard", null_string, null_string, null_string, null_string, null_string, null_string);
 	if (trace_ent != world)
 	if (move_check(trace_ent, 15999)) rent = trace_ent; // beam hit something specific
 
@@ -1472,7 +1464,7 @@ void() chaos_beam =
 		if (rent) VolcanoQuake(rent, "chaos beam");
 		else
 		{
-			e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, ep, v0, v0, v0, v0, "quakelocate", "", SUB_Null, 0.1, SUB_Remove, SUB_Null, self, world);
+			e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, ep, v0, v0, v0, v0, "quakelocate", null_string, SUB_Null, 0.1, SUB_Remove, SUB_Null, self, world);
 			VolcanoQuake(e, "chaos beam");
 		}
 	}
@@ -1491,7 +1483,7 @@ void() chaos_beam =
 	else if (rent == world) return;
 	else if (random() < CBTELEP)
 		{
-		e = find_tdest(FL_RSALL, "");
+		e = find_tdest(FL_RSALL, null_string);
 		if (!e) return;
 
 //		makevectors (e.angles);
@@ -1508,15 +1500,15 @@ void() chaos_beam =
 //			spawn_tdeath(org, rent);
 //			rent.velocity = v_forward * 30 * random();
 //			}
-		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  rent.origin , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  rent.origin , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 		f.movetarget = e;
 		force_retouch = 2;
 
 		sprint(self, "teleported: ");
-		if (rent.netname != "") sprint(self, rent.netname);
+		if (rent.netname != null_string) sprint(self, rent.netname);
 		else sprint(self, rent.classname);
 		sprint(self, ", to: ");
-		if (e.netname != "") sprint(self, e.netname);
+		if (e.netname != null_string) sprint(self, e.netname);
 		else sprint(self, e.classname);
 		newline(self);
 		}
@@ -1558,26 +1550,26 @@ void() chaos_beam =
 //			e.velocity = v_forward * 30 * random();
 //			}
 		sprint(self, "Items exchanged: ");
-		if (e.netname != "") sprint(self, e.netname);
+		if (e.netname != null_string) sprint(self, e.netname);
 		else sprint(self, e.classname);
 
 		org = e.origin;
 		org_z = rent.origin_z;
-		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 		f.enemy = e;
 
 		org = rent.origin;
 		org_z = e.origin_z;
-		e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 		e.enemy = rent;
 
-		f.spawnflags = e.spawnflags = 48; // NONDIR, nodeath code
+		f.spawnflags = e.spawnflags = 48 + 128; // NONDIR, nodeath code
 		f.movetarget = e; f.aflag = -6;
 		e.movetarget = f; e.aflag = -6;
 		force_retouch = 2;
 	
 		sprint(self, ", with: ");
-		if (rent.netname != "") sprint(self, rent.netname);
+		if (rent.netname != null_string) sprint(self, rent.netname);
 		else sprint(self, rent.classname);
 		newline(self);
 		}
@@ -1588,22 +1580,186 @@ void() chaos_beam =
 		spawn_chaos_monster(0, rent.origin);
 		}
 
-																						if (TRUE && trace_ent != world) if (WARNING) { bprint("beam hit "); bprint(trace_ent.classname); newline(world); }
+																						if (trace_ent != world) if (WARNING) { bprint("beam hit "); bprint(trace_ent.classname); newline(world); }
 
 //setorigin(x3, trace_endpos); // TEST
 
 };
 
+// spell code
+
+void() multi_teleport =
+{
+	gsf = 0;
+	v1 = self.bolt_target.origin;
+	newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  v1 , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+	newmis.enemy = self.bolt_target;
+
+	v1 = self.enemy.origin;
+	trace_ent = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  v1 , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+	trace_ent.enemy = self.enemy;
+
+// compensate for different relative origin heights from ground
+	if (self.bolt_target.mins_z < self.enemy.mins_z)
+	{
+		gsf = self.enemy.mins_z - self.bolt_target.mins_z;
+		trace_ent.origin_z = trace_ent.origin_z + gsf;
+		newmis.origin_z = newmis.origin_z - gsf;
+	}
+	if (self.enemy.mins_z < self.bolt_target.mins_z)
+	{
+		gsf = self.bolt_target.mins_z - self.enemy.mins_z;
+		trace_ent.origin_z = trace_ent.origin_z - gsf;
+		newmis.origin_z = newmis.origin_z + gsf;
+	}
+//	if (newmis.enemy.movetype == MOVETYPE_NONE) - find out why some stuff doesnt port
+
+
+	trace_ent.spawnflags = newmis.spawnflags = 48 + 128; // NONDIR, nodeath, NOVEL code
+	trace_ent.movetarget = newmis; trace_ent.aflag = -6;
+	newmis.movetarget = trace_ent; newmis.aflag = -6;
+	force_retouch = 2;
+
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.pk_explode_ammo = 0;
+	self.bolt_targetTimeout = 0;	
+};
+
+void() uni_teleport =
+{
+	if (self.bolt_target.classname != "beacon")
+	{
+		gsf = 5;
+		v1 = self.bolt_targetNext.origin;
+
+		if (self.bolt_targetNext.angles_x == 0) // verticle wall
+		{
+			if (self.bolt_target.mins == v0)
+				gsf = self.bolt_target.maxs_x / 2;
+			else
+				gsf = self.bolt_target.maxs_x;
+
+	//		traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + v_forward * 3000, FALSE, self);
+	//		v1 = v1 + trace_plane_normal * (gsf * 1.2);
+			if (self.bolt_target.flags & FL_CLIENT) gsf = gsf * 1.5;
+			v1 = v1 - v_forward * (gsf * 1.2);
+
+			gsf = 0;
+		}
+
+		if (self.bolt_targetNext.angles_x == 270)
+			v1_z = v1_z + gsf - self.bolt_target.maxs_z;
+		else
+		if (self.bolt_targetNext.angles_x == 90)
+		{
+			v1_z = v1_z - gsf - self.bolt_target.mins_z;
+			if (self.bolt_target.class_select == "class_monster") v1_z = v1_z + 16; // because they are chronic floor slippers
+		}
+	}
+	else
+	{
+		if (self.bolt_target.nextthink < time + 60) self.bolt_target.nextthink = time + 60;
+		v1 = self.bolt_target.angles;
+		makevectors(v1);
+		v1 = self.bolt_target.origin;
+		v1 = v1 + v_forward * 32;
+		self.bolt_target = self;
+	}
+
+
+// teleport to this
+	trace_ent = chaos_spawn(MOVETYPE_NONE, 0, 0, 0, v1, v0, v0, v0, v0, "chaos_teleport_dst_temp", null_string, SUB_Null, 0.3, SUB_Remove, SUB_Null, world, world);
+
+	newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, self.bolt_target.origin, '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+	newmis.enemy = self.bolt_target;
+//	if (newmis.enemy.movetype == MOVETYPE_NONE) - find out why some stuff doesnt port
+
+	newmis.spawnflags = 16 + 128; // NONDIR, NOVEL  code - death allowed
+	newmis.movetarget = trace_ent;
+	newmis.aflag = -6; // code to use .enemy instead of other touch entity
+	force_retouch = 2;
+
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.pk_explode_ammo = 0;
+	self.bolt_targetTimeout = 0;	
+};
+
+void() remove_beacon =
+{
+		if (self.owner.goalentity == self)
+		{
+			if (self.owner.goalentity == self.owner.bolt_target) self.owner.bolt_target = world;
+			self.owner.goalentity = world;
+			sprint(self.owner, "Beacon expired.");
+		}
+		remove(self); // IMP: fade remove this later
+};
+
+void() beacon_touch =
+{
+	move_stop(self, "player/axhit2.wav");
+	self.touch = SUB_Null;
+	self.movetype = MOVETYPE_FLY;
+};
+
+void() set_beacon =
+{
+	fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, self.origin, v0, "beacon", "progs/chaos_b3.3rsm.mdl", null_string, beacon_touch, 180,  remove_beacon, remove_beacon);
+	newmis.frame = 11;
+	newmis.morphy = self.morphy;	
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.goalentity = newmis;
+
+// beacon set - teleport mode
+	spell_target();
+};
+
 // setup spells
 
-void() spell_target_30 =
+// pkplus_actorammo - targeting for server & HUD
+// 	0 - no reticles or targets - spell just fires
+//		1 - free roaming reticle
+//		2 - target(s) needed on this spell
+//			- if bit 2 is set, normal targeting will occur - this will always show potential alternates
+//		4 - spell uses 2 targets - for HUD to display both
+
+// 65536 - spell reset req.
+
+void() spell_target =
 {
-	stuffcmd(self, "infobar 30 \"Select a target (swap to secondary with ALT_FIRE)\"\n");
+	self.pk_explode_ammo = 0;
+	self.pkplus_actorammo = 0;
+	if (self.weapon == IT_SHOTGUN)
+	{
+		if (self.ammo_shells == 3) { self.pk_explode_ammo = 15; self.pkplus_actorammo = 3; self.th_melee = uni_teleport; }
+		else if (self.ammo_shells == 5) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 7; self.th_melee = multi_teleport; }
+		else if (self.ammo_shells == 7)
+		{
+			self.pk_explode_ammo = 5;
+			self.pkplus_actorammo = 1;
+			self.th_melee = uni_teleport;
+			self.bolt_target = self;
+		}
+		else if (self.ammo_shells == 11)
+		{
+			self.pk_explode_ammo = 20;
+			self.pkplus_actorammo = 1;
+			self.th_melee = set_beacon;
+ 			if (self.goalentity)
+			if (self.goalentity.classname == "beacon") // beacon has been set
+			{
+				self.pk_explode_ammo = 5;
+				self.pkplus_actorammo = 0;
+				self.th_melee = uni_teleport;
+				self.bolt_target = self.goalentity;
+			}
+		}
+	}
+
 	self.bolt_targetTimeout = time + 30;
-	self.pk_explode_ammo = 30; // spell cost
 	self.mcode = -666; // archon casting spell
-	self.th_missile = spell_target_30;
-}
+	self.th_missile = spell_target;
+};
 
 // main attack
 
@@ -1616,53 +1772,44 @@ void() player_chaos_attack =
 
 	if (self.impulse == ALT_FIRE_IMP)
 	{
-		if (self.weapon != IT_AXE)
+		if (self.weapon != IT_AXE) // in spell casting mode
 		{
+			if (self.pkplus_actorammo & 2) // swap able targets - alt fire main fn in spell mode
 			if (self.bolt_target)
 			if (self.enemy)
 			{
-				self.bolt_targetTimeout = time + 30;
+				self.th_missile();
 				archon_target_clear(self.bolt_target);
 				self.bolt_target = self.enemy;
-//				self.bolt_target.bolt_target.alpha = 1;
+				self.stack1 = self.stack2;
+				self.bolt_target.bolt_target.scale = self.bolt_target.bolt_target.scale * 1.2;
 				self.enemy = world;
+				self.stack2 = null_string;
 			}
-			return;
 		}
-		chaos_beam();
+		else
+			chaos_beam();
 		return;
 	}
-	if (self.weapon == IT_SHOTGUN) // fire a spell
+
+// fire pressed with spell selected
+	if (self.weapon != IT_AXE)
 	{
-		if (!self.bolt_target) // pressing fire after used or after timeout resets spell
+		if (self.pkplus_actorammo & 65536) // spell needs reset
 		{
 			self.attack_finished = time + 1;
 			self.th_missile();
 			return;
 		}
+		if (self.pkplus_actorammo & 2) // spell needs target
+		if (!self.bolt_target) return;
+
+		if (self.pkplus_actorammo & 4) // spell needs 2nd target
 		if (!self.enemy) return;
 
-		org = self.bolt_target.origin;
-		org_z = self.enemy.origin_z;
-		newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
-		newmis.enemy = self.bolt_target;
-
-		org = self.enemy.origin;
-		org_z = self.bolt_target.origin_z;
-		trace_ent = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "", teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
-		trace_ent.enemy = self.enemy;
-
-		trace_ent.spawnflags = newmis.spawnflags = 48; // NONDIR, nodeath code
-		trace_ent.movetarget = newmis; trace_ent.aflag = -6;
-		newmis.movetarget = trace_ent; newmis.aflag = -6;
-		force_retouch = 2;
-		self.archon = self.archon - self.pk_explode_ammo;
-		self.pk_explode_ammo = 0;
-		self.bolt_targetTimeout = 0;
-	}
-
-	if (self.weapon != IT_AXE)
+		self.th_melee(); // cast spell
 		return;
+	}
 
 	if (self.chaosweptime < time) // pick a weapon and some time to fire it
 	{
@@ -1727,7 +1874,7 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 		else  // lava ball
 */
 			{
-			if (self.chaosattnoise) sd ="boss1/throw.wav";//rnd_string(' 95.0 66.6 66.6',"weapons/grenade.wav","weapons/sgun1.wav","","","boss1/throw.wav");
+			if (self.chaosattnoise) sd ="boss1/throw.wav";//rnd_string(' 95.0 66.6 66.6',"weapons/grenade.wav","weapons/sgun1.wav",null_string,null_string,"boss1/throw.wav");
 			fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA | PF_LAVA | CK_EARTHQUAKE, self.origin, ' 0 0 0', "fireballwep", "progs/lavaball.mdl", sd, fire_fly_touch, 5 + (random() * 4), meltthink, fire_fly_adj);
 
 			newmis.frame = floor(random() * 3);
@@ -1743,11 +1890,11 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 	}
 	else if (self.lastweapon & IT_NAILGUN) // fire some spikes
 	{
-//		md = rnd_string(' 66.6 66.6 66.6',"progs/s_spike.mdl","","","","progs/spike.mdl"); 
-		if (self.chaosattnoise) sd = rnd_string(' 95.0 66.6 66.6',"weapons/spike2.wav","chaos/pist1.wav","","","weapons/rocket1i.wav");
+//		md = rnd_string(' 66.6 66.6 66.6',"progs/s_spike.mdl",null_string,null_string,null_string,"progs/spike.mdl"); 
+		if (self.chaosattnoise) sd = rnd_string(' 95.0 66.6 66.6',"weapons/spike2.wav","chaos/pist1.wav",null_string,null_string,"weapons/rocket1i.wav");
 		if (self.lastweapon & IT_LIGHTNING)
 		{
-			if (sd != "" && random() < 0.7) sd = "pulse/pulse_1.wav";
+			if (sd != null_string && random() < 0.7) sd = "pulse/pulse_1.wav";
 			fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "pulse_spike", "progs/spike.mdl", sd, spike_touch, 2 + random() * 4, SUB_Remove, spike_touch);
 			if (random() < 0.5) newmis.dmg = 16 + random() * 4;
 		}
@@ -1762,7 +1909,7 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 	}
 	else if (self.lastweapon & IT_SUPER_NAILGUN)
 	{
-		if (self.chaosattnoise) sd = rnd_string(' 90.0 90.0 90.0',"misc/r_tele3.wav","","","","enforcer/enfire.wav");
+		if (self.chaosattnoise) sd = rnd_string(' 90.0 90.0 90.0',"misc/r_tele3.wav",null_string,null_string,null_string,"enforcer/enfire.wav");
 		if (self.lastweapon & IT_LIGHTNING)
 		{
 			if (random() < 0.5) sd = "lasercannon/laserg.wav";
@@ -1788,7 +1935,7 @@ void(entity e) archon_target_clear =
 	{
 		if (e.bolt_target.model == "gfx/reticle.spr")
 		{
-			remove(e.bolt_target);
+			remove(e.bolt_target); // IMP: fade remove this later
 			e.bolt_target = world;
 		}
 	}
@@ -1798,12 +1945,49 @@ void(entity e) archon_target_clear =
 
 void() clear_target =
 {
-//	if (self.owner.bolt_target.model == "gfx/reticle.spr")
-	if (self.owner.bolt_target.button13 == self.button13)
+	if (self.pkplus_actorammo == -66)
+	{
+		if (self.owner.bolt_targetNext == self)
+			self.owner.bolt_targetNext = world;
+	}
+	else
+	if (self.owner.bolt_target == self)
 		self.owner.bolt_target = world;
-	remove(self);
+	remove(self); // IMP: fade remove this later
 };
 
+// clear all spell parms
+
+void() clear_spell =
+{
+	if (self.bolt_targetNext)
+	if (self.bolt_targetNext.model == "gfx/reticle.spr")
+	{
+		remove(self.bolt_targetNext); // IMP: fade remove this later
+		self.bolt_targetNext = world;
+	}
+
+	if (self.bolt_target)
+		archon_target_clear(self.bolt_target);
+
+	if (self.enemy)
+		archon_target_clear(self.enemy);
+
+	self.enemy = self.bolt_target = world;
+	if (self.pk_explode_ammo > 0) self.pk_explode_ammo = -6; // send cancel code to HUD
+	else self.pk_explode_ammo = 0; // a 2nd clear will zero the cancel message
+/*
+		stuffcmd(self, "infobar 5 \"Spell canceled\"\n");
+	else
+		stuffcmd(self, "infobar 0 \"\"\n");
+	self.pk_explode_ammo = 0;
+*/
+	self.bolt_targetTimeout = 0;
+	self.pkplus_actorammo = 65536; // if a spell is active it needs reset
+	self.th_melee = SUB_Null;
+	self.stack1 = self.stack2 = null_string;
+	self.mcode = -666; // archon casting spell
+};
 // self is archon, sets .bolt_target if world, if not sets potential new target in .enemy
 
 void() archon_target =
@@ -1811,6 +1995,46 @@ void() archon_target =
 	local float f;
 // 3000 - traceline targeting range
 	traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + v_forward * 3000, FALSE, self);
+
+   v1 = trace_plane_normal;
+   v1_x = 0 - v1_x;
+   v1_y = 0 - v1_y;
+
+// run a free roaming reticle - not tied to a specific target
+	if (self.pkplus_actorammo & 1)
+	if (!self.bolt_targetNext)
+	{
+		self.bolt_targetNext = spawn();
+		self.bolt_targetNext.nextthink = time + 31;
+		self.bolt_targetNext.pkplus_actorammo = -66;
+		self.bolt_targetNext.think = clear_target;
+		setmodel(self.bolt_targetNext, "gfx/reticle.spr");
+		self.bolt_targetNext.scale = 0.4;
+		self.bolt_targetNext.owner = self;
+		self.bolt_targetNext.movetype = MOVETYPE_FLY;
+	}
+
+	if (self.bolt_targetNext)
+	if (self.bolt_targetNext.model == "gfx/reticle.spr")
+	{
+		setorigin(self.bolt_targetNext, trace_endpos -  (v_forward * 6));
+
+// set facing on roaming reticle
+		self.bolt_targetNext.mangle = vectoangles( v1 );
+
+		if (self.bolt_targetNext.angles_x != self.bolt_targetNext.mangle_x) self.bolt_targetNext.angles = self.bolt_targetNext.mangle;
+		
+		if (!self.bolt_targetNext.angles_x)
+		if (self.bolt_targetNext.angles_y != self.bolt_targetNext.mangle_y) self.bolt_targetNext.angles = self.bolt_targetNext.mangle;
+
+		self.bolt_targetNext.avelocity = v0;
+		if (self.bolt_targetNext.angles_x == 90 || self.bolt_targetNext.angles_x == 270)
+			self.bolt_targetNext.avelocity_y = 40;
+		else if (self.bolt_targetNext.angles_x == 0)
+			self.bolt_targetNext.avelocity_z = -40;
+	}
+
+	if (! self.pkplus_actorammo & 2) return; // no target aligned reticles needed
 
 // no target on traceline, look for ents the hard way
 	if (!trace_ent)
@@ -1859,32 +2083,26 @@ void() archon_target =
 
 	self.bolt_targetTimeout = time + 30;
 
-// setup reticle
+// setup new target reticle
 	trace_ent.bolt_target = spawn();
 	trace_ent.bolt_target.nextthink = time + 31;
 	trace_ent.bolt_target.think = clear_target;
 	trace_ent.bolt_target.owner = trace_ent;
 	trace_ent.bolt_target.movetype = MOVETYPE_FLY;
-//	trace_ent.bolt_target.scale = 8;
+
 // because bottom point of ammo boxes is mostly on ground - can submerge reticle
 	trace_ent.bolt_target.view_ofs = v0;
-// hash so we dont clobber new reticle when an orphan expires
-	trace_ent.bolt_target.button13 = system_hash;
-	system_hash = system_hash + 1 + rint(random() * 5);
 
-	if (!trace_ent.mins_z) // center ammo boxes with odd co-ords
+	if (!trace_ent.mins) // center ammo boxes with odd co-ords -- not always perfect align because boxes are offset in bounding boxes!
 	{
 		trace_ent.bolt_target.view_ofs_x = trace_ent.maxs_x / 2;
 		trace_ent.bolt_target.view_ofs_y = trace_ent.maxs_y / 2;
-		trace_ent.bolt_target.view_ofs_z = trace_ent.maxs_z / 2;
+		trace_ent.bolt_target.view_ofs_z = 7;
 	}
 
-   v1 = trace_plane_normal;
-   v1_x = 0 - v1_x;
-   v1_y = 0 - v1_y;
    trace_ent.bolt_target.angles = vectoangles( v1 );
 
-	if (trace_ent.bolt_target.angles_x == 90)
+	if (trace_ent.bolt_target.angles_x == 90 || trace_ent.bolt_target.angles_x == 270)
 		trace_ent.bolt_target.avelocity_y = 20;
 	else if (trace_ent.bolt_target.angles_x == 0)
 		trace_ent.bolt_target.avelocity_z = -20;
@@ -1901,20 +2119,22 @@ void() archon_target =
 
 	if (!self.bolt_target)
 	{
-		trace_ent.bolt_target.skin = 0;
-		trace_ent.bolt_target.alpha = 1;
 		self.bolt_target = trace_ent;
 		archon_target_clear(self.enemy);
+		self.stack1 = "Acquired 1";
+		if (trace_ent.netname) self.stack1 = trace_ent.netname;
 		self.enemy = world;
+		self.stack2 = null_string;
 		return;
 	}
+
 // secondary - selected as main with ALT_FIRE
-
-
-//	trace_ent.bolt_target.alpha = 0.65;
 
 	archon_target_clear(self.enemy);
 	self.enemy = trace_ent;
+	trace_ent.bolt_target.scale = trace_ent.bolt_target.scale * 0.8;
+	self.stack2 = "Acquired 2";
+	if (trace_ent.netname) self.stack2 = trace_ent.netname;
 };
 
 /*
@@ -1929,30 +2149,43 @@ void() player_chaos_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	morph_impulse();
+//	morph_impulse();
+
+	if (self.impulse == 1)
+		self.weapon = IT_AXE;
+	else if (self.impulse == 10)
+		morph_CycleWeaponCommand(1);
+	else if (self.impulse == 12)
+		morph_CycleWeaponCommand(-1);
+	else if (self.impulse == 14) // slot loops
+	{
+		if (self.weapon == IT_SHOTGUN) self.impulse = 2;
+		if (self.weapon == IT_SUPER_SHOTGUN) self.impulse = 3;
+	}
 
 	if (self.weapon == IT_AXE)
-	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Chaos firing random bolts\n");
-		self.items = self.items | IT_CELLS;
-
-		self.bolt_targetTimeout = -6;
+		clear_spell(); // timeout any spell in selection
 	}
 
-	if (self.weapon == IT_SHOTGUN) // spell list 1
+	if (self.impulse == 2) // spell list 1 - teleports
 	{
-		spell_target_30();
+		if (self.weapon == IT_SHOTGUN) // loop thru spell set
+		{
+			if (!self.ammo_shells) self.ammo_shells = 3; // teleport
+			else if (self.ammo_shells == 3) self.ammo_shells = 5; // tele swap
+			else if (self.ammo_shells == 5) self.ammo_shells = 7;
+			else if (self.ammo_shells == 7) self.ammo_shells = 11;
+			else if (self.ammo_shells == 11) self.ammo_shells = 3;
+		}
+		self.weapon = IT_SHOTGUN;
 	}
-/*
-	for now alt fire is chaos beam fire
-	
-	if (self.weapon == IT_SHOTGUN)
-	{
-		sprint(self, "Chaos Beam!\n");
-		self.items = self.items | IT_CELLS;
-	}
-*/
+	else if (self.impulse == IMP_MSIGHT)
+		morph_sound(2, self.msight, 3);							// let player morphs "talk"
+
+	if (self.weapon != IT_AXE)
+		spell_target(); // turn on targeter
 };
 
 /*
@@ -1971,7 +2204,7 @@ void() player_chaos_sight =
 
 string() player_chaos_killmsg =
 {
-	return(rnd_string(' 60.0 50.0 40.0'," transcended reality with ",""," danced the hot plasma boogie with "," was touched by the hand of "," felt the wrath of Chaos Lord "));
+	return(rnd_string(' 60.0 50.0 40.0'," transcended reality with ",null_string," danced the hot plasma boogie with "," was touched by the hand of "," felt the wrath of Chaos Lord "));
 };
 string() player_chaos_killmsg2 =
 {
@@ -2017,24 +2250,22 @@ void(float silent) player_chaos_become =
 
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
-	self.items = self.items | IT_AXE | IT_SHOTGUN;
-	self.builtin = IT_AXE | IT_SHOTGUN;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;
 	self.pk_explode_ammo = 0; // spell cost
-	self.bolt_targetTimeout = 0; // spell time out
-	self.th_missile = SUB_Null;
-	self.mcode = -666; // archon casting spell
+	self.th_missile = SUB_Null; // spell target
+	clear_spell();
 
-	self.msight = "";
+	self.msight = null_string;
 	self.noise2 = "boss2/idle.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.movetype = MOVETYPE_FLY;
 	self.aflag = 0; // chaos form states
 	self.view_ofs = ' 0 0 4';
 	self.cam_z = 0.2;  //cam
 
-//		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 	self.health = self.health * MCHAOS_HEALMOD / self.health_modifier;
 	self.health_modifier = MCHAOS_HEALMOD;
 

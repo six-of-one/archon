@@ -44,7 +44,7 @@ string (float bt) item_by_bit =
 	if (bt == HEAL_25) return("item_health");
 	if (bt == HEAL_100) return("item_health_mega");
 
-	return("");
+	return(null_string);
 };
 
 // ammo for a given wep - used for replacements & pk items subs
@@ -61,7 +61,7 @@ string (float bt) ammo_by_bit =
 	if (bt == WEP_PKI) return("pki");
 
 	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
-		return("");
+		return(null_string);
 	
 // pk item subs by special bits
 	if (bt == WEP_GWELL) return("item_painkeep_gwell");
@@ -78,7 +78,7 @@ string (float bt) ammo_by_bit =
 	if (bt == WEP_ACTOR) return("item_pkplus_actor");
 	if (bt == WEP_PHONE) return("item_pkplus_phone");
 
-	return("");
+	return(null_string);
 };
 
 void(string cls) item_call =
@@ -120,7 +120,7 @@ void(string cls) item_call =
 
 		if (f)
 		{
-			self.model = "";
+			self.model = null_string;
 //			self.touch = SUB_Null;
 			self.solid = SOLID_NOT;
 			self.takedamage = DAMAGE_NO;
@@ -141,15 +141,15 @@ void(string cls) item_call =
 		self.x_items = 0;
 		self.pk_currentitem = 0;
 		self.weaponframe = 0;
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 
 		self.frame = 0;
 		self.skin = 0;
-		self.noise = ""; // grab sound items
-		self.noise1 = "";
-		self.noise2 = "";
-		self.noise3 = "";
-		self.noise4 = ""; // respawn sound
+		self.noise = null_string; // grab sound items
+		self.noise1 = null_string;
+		self.noise2 = null_string;
+		self.noise3 = null_string;
+		self.noise4 = null_string; // respawn sound
 	}
 
 	scls = cls;
@@ -507,7 +507,7 @@ void(string cls) item_call =
 	if (self.event == "dyn_monster" || self.class_select == "class_monster")
 	{
 		if (self.stack1 != "no_monster_wakey")
-		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2 + random(), random_monster_wakey, SUB_Null, self, world);
+		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, 2 + random(), random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 
 		total_monsters = t_monsters  + 1;
@@ -555,7 +555,7 @@ void(entity e, string cl) item_call_save =
 
 void() item_down =
 {
-	self.model = "";
+	self.model = null_string;
 	self.touch = SUB_Null;
 	self.solid = SOLID_NOT;
 };
@@ -572,7 +572,7 @@ void(string cls, string rep, string am, string ram) item_repm =
 		if (!e) return;
 		while (e)
 		{
-			if (e.wad == "") e.wad = e.classname;
+			if (e.wad == null_string) e.wad = e.classname;
 			e = find(e,classname,rep);
 		}
 	}
@@ -589,13 +589,13 @@ void(string cls, string rep, string am, string ram) item_repm =
 		if (cls == "rest")
 		{
 			item_call_save(e, rep);
-			if (ram != "")
+			if (ram != null_string)
 			{
-				if (pam == "rem" || pam == "pki") item_repm(pam, ram, "", "");
-				else item_repm("rest", ram, "", "");
+				if (pam == "rem" || pam == "pki") item_repm(pam, ram, null_string, null_string);
+				else item_repm("rest", ram, null_string, null_string);
 			}
 		}
-		else if (cls == "" || cls == "pki" || cls == "rem")
+		else if (cls == null_string || cls == "pki" || cls == "rem")
 		{
 			if ((pk_itemovr & WEP_PKI) && PK && cls == "pki")
 			{
@@ -605,14 +605,14 @@ void(string cls, string rep, string am, string ram) item_repm =
 			}
 			else
 				item_down();
-			if (ram != "")
-			if (ram != pam) item_repm(pam, ram, "", "");
+			if (ram != null_string)
+			if (ram != pam) item_repm(pam, ram, null_string, null_string);
 		}
 		else
 		{
 			item_call_save(e, cls);
-			if (ram != "")
-			if (ram != pam) item_repm(pam, ram, "", "");
+			if (ram != null_string)
+			if (ram != pam) item_repm(pam, ram, null_string, null_string);
 		}
 		e = find(e,wad,rep);
 	}
@@ -673,7 +673,7 @@ void() item_loop =
 	{
 		if (! (pko & CON_RUN))
 		{
-			item_repm("rest", item_by_bit(f), "", ammo_by_bit(f)); // restore
+			item_repm("rest", item_by_bit(f), null_string, ammo_by_bit(f)); // restore
 //			return;
 		}
 		else if (f & pko) // bit active
@@ -692,11 +692,11 @@ void() item_loop =
 			{
 				cl = item_by_bit(e);
 			if (pko & CON_SUBS) item_repm(cl, item_by_bit(f), ammo_by_bit(e), ammo_by_bit(f));
-				else item_repm("", item_by_bit(f), "", ammo_by_bit(f));
+				else item_repm(null_string, item_by_bit(f), null_string, ammo_by_bit(f));
 			}
 			else if (pko & CON_INF) { bprint("repm: restore on rest - con_inf\n");
 
-				item_repm("rest", item_by_bit(f), "", ammo_by_bit(f)); }
+				item_repm("rest", item_by_bit(f), null_string, ammo_by_bit(f)); }
 		}
 		if (pko & CON_CYC) f = lvl;
 		else f = f * 2;
@@ -741,6 +741,16 @@ void() item_loop =
 // e - gun carrier tested (player / bot)
 // op - for load check, "wpck"
 
+// returns -
+
+// null_string in op
+// 	f - return ammo count to use up
+//		0 - return for inf ammo weapon or use no ammo wep
+
+// wpck mode
+//		0 - check ammo
+//		1 - dont check ammo
+
 float(float cn, entity e, string op) ammo_con =
 {
 	local float f;
@@ -750,7 +760,7 @@ float(float cn, entity e, string op) ammo_con =
 
 	if (Q_100 || PK_100) return(f);
 
-	if (op == "") // operation not specced - assume 0 cn if inf or ...
+	if (op == null_string) // operation not specced - assume 0 cn if inf or ...
 	{
 		if (e.weapon & e.builtin) // ins never use ammo
 			return(0);
@@ -867,7 +877,7 @@ void() dyn_rem =
 		{
 			if (self.wait) // new ops - set sub rem & exit
 			{
-				if (self.enemy.model != "")
+				if (self.enemy.model != null_string)
 					self.enemy.think = remove_fade;
 				else
 					self.enemy.think = SUB_Remove;
@@ -881,7 +891,7 @@ void() dyn_rem =
 					self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 4;
 					return;
 				}
-				if (self.enemy.model != "")
+				if (self.enemy.model != null_string)
 				{
 					self.enemy.think = remove_fade; //SUB_Remove;
 					self.enemy.nextthink = time + 0.1;
@@ -1003,7 +1013,7 @@ entity() dyn_rndloc =
 		else if (e.chain.classname == "waypoint") { ri = ri + 1; e = e.chain; } // Cataboligne - 9.19.11 - added bot waypoints - ton of these, might skew stats, and dynamics will nearly always be along bot paths
 		else if (e.chain.classname == "path_corner") { ri = ri + 1; e = e.chain; }
 		else if (e.chain.classname == "hub_custom") { ri = ri + 1; e = e.chain; }
-//		else if (e.chain.classname == "") { ri = ri + 1; e = e.chain; }
+//		else if (e.chain.classname == null_string) { ri = ri + 1; e = e.chain; }
 		else e.chain = e.chain.chain; // skipper!
 	}
 	e = sv;
@@ -1357,7 +1367,7 @@ void() func_dynitem =
 // clear any of this
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_NONE;
-	self.model = "";
+	self.model = null_string;
 
 // loop
 	if (self.delay < 0) rv = crandom() * fabs(self.delay);
@@ -1702,16 +1712,16 @@ void() place_item_control =
 	if (self.event == "dynamic_item")
 		return;
 
-	if(self.map == "") self.map = "pic_item";
+	if(self.map == null_string) self.map = "pic_item";
 
 // have to make sure these got loaded
-	if (!self.mcode) self.mcode = pk_mcode("", self); // put map code on ent
+	if (!self.mcode) self.mcode = pk_mcode(null_string, self); // put map code on ent
 	if (!self.scode) self.scode = self.mcode;
 
 	if (cvar("pk_place_item") == 1) // NOTE: something chaos will not be in control of
 	{
 		pic_tsk = 1;
-		setmodel(self, "");
+		setmodel(self, null_string);
 		self.touch = SUB_Null;
 		if (self.takedamage) // barrels & other exploders
 		{
@@ -1761,9 +1771,9 @@ string(entity e) item_ident =
 	local string f;
 
 	f = "item has no identity!";
-	if (e.netname != "") f = e.netname;
-	else if (e.classname != "") f = e.classname;
-	else if (e.class_select != "") f = e.class_select;
+	if (e.netname != null_string) f = e.netname;
+	else if (e.classname != null_string) f = e.classname;
+	else if (e.class_select != null_string) f = e.class_select;
 
 	return(f);
 };

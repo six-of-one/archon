@@ -117,7 +117,7 @@ void(float shots) W_FireShotgunExploder =
 
 	self.punchangle_x = -2 * shots;
 
-	self.currentammo = self.pk_explode_ammo = self.pk_explode_ammo - shots; // no inf for this! ammo_con(shots, self, "");
+	self.currentammo = self.pk_explode_ammo = self.pk_explode_ammo - shots; // no inf for this! ammo_con(shots, self, null_string);
 
 	if (self.classname == "pk*bot")
 		dir = botaim ();
@@ -221,7 +221,7 @@ void(float ox) W_FirePulseSpikes =
 	makevectors(self.v_angle);
 	sound (self, CHAN_WEAPON, "weapons/pulse/pulse_1.wav", 1, ATTN_NORM);
 	//self.attack_finished = time + 0.4;
-	self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(1, self, "");
+	self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(1, self, null_string);
 	if (self.classname == "pk*bot")
 		dir = botaim ();
 	else
@@ -267,7 +267,7 @@ void() PK_SetCurrentAmmo =
 		self.currentammo = 0;
 		self.weapon = 0;
 		self.weaponframe = 0;
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 		self.eweapon = world;
 		self.mcode = self.scode = 0;
 		return;
@@ -287,7 +287,7 @@ void() PK_SetCurrentAmmo =
 
 		if ((!self.weapon & self.builtin) || (self.pk_currentitem != PK_IT_AXE)) // never announce a built in here - will ALAWYS be done in morph code & pki - needs announce
 		wchanged = TRUE;
-		ominous_hum("", 1);
+		ominous_hum(null_string, 1);
 	}
 
 //	wchanged = wchanged & ((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) || cvar("chase_active"));
@@ -299,7 +299,7 @@ void() PK_SetCurrentAmmo =
 	if (self.eweapon) // display got first
 	{
 		if (self.eweapon.mdl == "progs/vw_q2_hgr.mdl")
-			self.eweapon.noise2 = "";
+			self.eweapon.noise2 = null_string;
 		self.eweapon.fly_sound = 0; // hum local deal
 		self.tomb_time = 0; // rng weps use this
 
@@ -450,7 +450,7 @@ void() PK_SetCurrentAmmo =
 		}
 // end pk_art
 	}
-	else if (self.builtin & self.weapon) self.weaponmodel = "";
+	else if (self.builtin & self.weapon) self.weaponmodel = null_string;
 
 	else if (self.weapon == IT_SHOTGUN)
 	{
@@ -541,11 +541,11 @@ void() PK_SetCurrentAmmo =
 		self.items = self.items | IT_ROCKETS;
 		if (self.mask_x & CB_SCOURGE)
 		{
-			self.weaponmodel = "";
+			self.weaponmodel = null_string;
 			if (self.eweapon)
 			if (self.eweapon.pk_touch != cube_touch)
 			{
-				self.eweapon.weaponmodel = "";
+				self.eweapon.weaponmodel = null_string;
 				self.eweapon._attack = player_scourge_attack;
 				self.eweapon._fr_attack = SUB_Null;
 			}
@@ -574,11 +574,11 @@ void() PK_SetCurrentAmmo =
 		self.items = self.items | IT_CELLS;
 		if (self.mask_x & CB_SCOURGE)
 		{
-			self.weaponmodel = "";
+			self.weaponmodel = null_string;
 			if (self.eweapon)
 			if (self.eweapon.pk_touch != cube_touch)
 			{
-				self.eweapon.weaponmodel = "";
+				self.eweapon.weaponmodel = null_string;
 				self.eweapon._attack = player_scourge_attack;
 				self.eweapon._fr_attack = SUB_Null;
 			}
@@ -590,7 +590,7 @@ void() PK_SetCurrentAmmo =
 	else
 	{
 		self.currentammo = 0;
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 		self.weaponframe = 0;
 		if (wchanged)
 			sprint(self, "An Unknown Weapon???\n");
@@ -639,13 +639,13 @@ void() PK_SetCurrentAmmo =
 		self.weaponmodel = self.eweapon.weaponmodel;
 	}
 
-//	if (!self.mask_x & CB_HUMAN) self.weaponmodel = ""; // morphs can use carryables - this will make them no wep mdls
+//	if (!self.mask_x & CB_HUMAN) self.weaponmodel = null_string; // morphs can use carryables - this will make them no wep mdls
 
 // Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
 		if ( (self.cam_x & CHSCAM_ON) || self.classname == OBSERVER)
 		{
-			self.weaponmodel = "";
+			self.weaponmodel = null_string;
 		}
 
 // xwep change level deal
@@ -672,7 +672,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		f.currentammo = 0;
 		f.weapon = 0;
 		f.weaponframe = 0;
-		f.weaponmodel = "";
+		f.weaponmodel = null_string;
 		f.eweapon = world;
 		return;
 	}
@@ -773,7 +773,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		}
 // end pk_art
 	}
-	else if (f.builtin & self.weapon) self.weaponmodel = "";
+	else if (f.builtin & self.weapon) self.weaponmodel = null_string;
 
 	else if (f.weapon == IT_SHOTGUN)
 	{
@@ -844,7 +844,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 	else
 	{
 		f.currentammo = 0;
-		f.weaponmodel = "";
+		f.weaponmodel = null_string;
 		f.weaponframe = 0;
 	}
 
@@ -890,13 +890,13 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		f.weaponframe = 0;
 	}
 
-//	if (!self.mask_x & CB_HUMAN) self.weaponmodel = ""; // morphs can use carryables - this will make them no wep mdls
+//	if (!self.mask_x & CB_HUMAN) self.weaponmodel = null_string; // morphs can use carryables - this will make them no wep mdls
 
 // Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
 		if ( (f.cam_x & CHSCAM_ON) || f.classname == OBSERVER)
 		{
-			f.weaponmodel = "";
+			f.weaponmodel = null_string;
 		}
 
 };

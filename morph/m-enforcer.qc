@@ -323,7 +323,7 @@ void() player_enf_impulse =
 		sprint(self, "Enforcer using ( Laser )\n");
 		self.items = self.items | IT_CELLS;
 		self.eweapon = world;
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 	}
 };
 /*
@@ -337,14 +337,14 @@ void() player_enf_sight =
 	if (random() < 0.45)
 		{
 		 // halt!, you there, freeze, stop...sheesh sounds like a cop
-		self.msight = rnd_string('70.0 50.0 30.0',"enforcer/sight4.wav","enforcer/sight3.wav", "enforcer/sight2.wav","enforcer/sight1.wav","");
+		self.msight = rnd_string('70.0 50.0 30.0',"enforcer/sight4.wav","enforcer/sight3.wav", "enforcer/sight2.wav","enforcer/sight1.wav",null_string);
 		}
 };
 
 string() player_enf_killmsg =
 {
 	if (!ENHANCED) return " was blasted by an Enforcer\n";
-	return(rnd_string(' 60.0 50.0 40.0'," was blasted by Enforcer ","",""," got pulled over - permanently by "," was arrested by Enforcer "));
+	return(rnd_string(' 60.0 50.0 40.0'," was blasted by Enforcer ",null_string,null_string," got pulled over - permanently by "," was arrested by Enforcer "));
 };
 string() player_enf_killmsg2 =
 {
@@ -385,7 +385,7 @@ void(float silent) player_enforcer_become =
 
 	self.msight = "enforcer/sight1.wav";
 	self.noise2 = "enforcer/pain1.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 24';
 	self.cam_z = 0.1;
 //	if(!deathmatch)

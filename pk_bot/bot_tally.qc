@@ -104,7 +104,7 @@ float (entity e) triggerweight =
 //	if (PK)
 	if (e.classname == "hub_teleport")
 	if (world.message == "hub") // *pk - bots need to see hub portals when on hub
-	if (self.map == "")
+	if (self.map == null_string)
 	{
 //		return(WANT * 2);
 		return(MUST_HAVE);

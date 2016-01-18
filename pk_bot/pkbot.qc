@@ -727,7 +727,7 @@ void () BotDie =
 	self.radsuit_finished = 0;
 	self.modelindex = self.modelindex_morph;
 	DropBackpack ();
-	self.weaponmodel = "";
+	self.weaponmodel = null_string;
 	self.view_ofs = '0 0 -8';
 	self.deadflag = DEAD_DYING;
 	self.solid = SOLID_NOT;

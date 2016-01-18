@@ -359,7 +359,7 @@ local float		rs;
 
 	rs = rint((random() * 5) + 1);
 
-	self.noise = "";
+	self.noise = null_string;
 	if (rs == 1)
 		self.noise = "player/pain1.wav";
 	else if (rs == 2)
@@ -640,7 +640,7 @@ void() PlayerDie =
 	if (deathmatch || coop)
 		DropBackpack();
 	
-	self.weaponmodel="";
+	self.weaponmodel=null_string;
 	self.view_ofs = '0 0 -8';
 	self.deadflag = DEAD_DYING;
 	self.solid = SOLID_NOT;

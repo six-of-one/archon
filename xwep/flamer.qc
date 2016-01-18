@@ -74,7 +74,7 @@ void(float num_bubbles, vector bub_origin) NewBubbles =
 {
 	local entity  bubble_spawner;
 	
-	bubble_spawner = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, bub_origin, ' 0 0 0', ' 0 0 0', ' 0 0 0', ' 0 0 0', "bubblespawn", "", SUB_Null, 0.1, DeathBubblesSpawn, SUB_Null, self, world);
+	bubble_spawner = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, bub_origin, ' 0 0 0', ' 0 0 0', ' 0 0 0', ' 0 0 0', "bubblespawn", null_string, SUB_Null, 0.1, DeathBubblesSpawn, SUB_Null, self, world);
 
 	bubble_spawner.bubble_count = num_bubbles;
 	return;
@@ -228,7 +228,7 @@ void () FlameTouch =
 			fire.think = BurnThem;
 			fire.nextthink = time;
 			fire.solid = SOLID_NOT;
-			setmodel (fire,"");
+			setmodel (fire,null_string);
 			other.effects = other.effects | EF_DIMLIGHT;
 		}
 		else // didnt catch on fire, do some burn damage & extinguish any flames
@@ -240,7 +240,7 @@ void () FlameTouch =
 	}
 	else if (other.classname == "worldspawn") // stop napalm and other shot fires at world (i.e. exclude other stuff that calls flametouch)
 	{
-		if (sky_touch("", v0, self))
+		if (sky_touch(null_string, v0, self))
 		{
 			SUB_Remove();
 		}	
@@ -301,7 +301,7 @@ entity(vector org) spawn_napalm =
 {
 
 	fire_missile(GRENADE_VEL * 0.833335, MOVETYPE_BOUNCE, FL_MSL | FL_USEAMMO , RM_SKY | PF_WATER | FLT_IMM | FLT_LAVA | PF_LAVA | PF_SLIME,// | FLT_SLIME,
-					 org, ' 0 0 0', "fire", "progs/s_explod.spr", "", FlameTouch, 0.15, s_flameburn1, flame_check);
+					 org, ' 0 0 0', "fire", "progs/s_explod.spr", null_string, FlameTouch, 0.15, s_flameburn1, flame_check);
 
 	if (!newmis) return(world); // what happened here?
 	newmis.solid = SOLID_TRIGGER;
@@ -404,8 +404,8 @@ void() slime_flare =
 
 		if (self.flags & FL_SUBFLARE && !self.aflag) 
 			{
-			if (self.noise4 != "") sound (self, CHAN_WEAPON, self.noise4, 1, ATTN_NORM);
-			self.noise4 = "";
+			if (self.noise4 != null_string) sound (self, CHAN_WEAPON, self.noise4, 1, ATTN_NORM);
+			self.noise4 = null_string;
 //			self.th_stand = flame_check; // after flare duties, got to regular test
 //			content_cycle(self, self.content_flag, CONTENT_CHKTM);
 			pwn = self.owner;
@@ -476,8 +476,8 @@ else if (self.watertype == CONTENT_WATER)
 	}
 else if (self.watertype == CONTENT_SLIME)
 	{
-	if (self.noise4 != "") sound (self, CHAN_WEAPON, self.noise4, 1, ATTN_NORM);
-	self.noise4 = "";
+	if (self.noise4 != null_string) sound (self, CHAN_WEAPON, self.noise4, 1, ATTN_NORM);
+	self.noise4 = null_string;
 	if ((self.flags & FL_SUBFLARE) && self.owner && self.owner.state > 0) return; // subflare cant flare till all fires are started
 	if (random() < 0.2) self.dmgtime = self.dmgtime + 1 + random() * 3;
 //	content_clear(self);
@@ -581,7 +581,7 @@ void () weapon_flamer =
 //	self.target = ".wav";
 	self.chaosweptime = 1.2;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "x_item";
+	if (self.class_select == null_string) self.class_select = "x_item";
 };
 
 void() ammo_gas =
@@ -604,7 +604,7 @@ void() ammo_gas =
 //	self.map = " lbs gas cylinder pressure";
 //	self.volume = MAX_GAS;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "x_item";
+	if (self.class_select == null_string) self.class_select = "x_item";
 };
 
 void() ammo_gas_lg =

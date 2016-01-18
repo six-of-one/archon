@@ -246,7 +246,7 @@ void() q2_ammo_bullets =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q2_DEF_BULLETS_BOX;
 		return;
@@ -264,7 +264,7 @@ void() q2_ammo_bullets =
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -274,7 +274,7 @@ void() q2_ammo_rockets =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q2_DEF_ROCKETS_LG;
 		return;
@@ -292,7 +292,7 @@ void() q2_ammo_rockets =
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
@@ -303,7 +303,7 @@ void() q2_ammo_shells =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q2_DEF_SHELLS;
 		return;
@@ -321,7 +321,7 @@ void() q2_ammo_shells =
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -331,7 +331,7 @@ void() q2_ammo_cells =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q2_DEF_CELLPAK;
 		return;
@@ -349,7 +349,7 @@ void() q2_ammo_cells =
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 };
 
@@ -359,7 +359,7 @@ void() q2_ammo_slugs =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q2_DEF_CELLPAK;
 		return;
@@ -377,7 +377,7 @@ void() q2_ammo_slugs =
 	self.noise = "q2_snd/am_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -390,14 +390,14 @@ string(entity targ, entity attacker) q2bfg_killmsg =
 	if (targ == attacker) return " should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was disintegrated by ";
 };
 
 string(entity targ, entity attacker) q2bfg_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s BFG blast\n";
 };
 
@@ -406,7 +406,7 @@ string(entity targ, entity attacker) q2bfg_killmsg2 =
 string() q2rail_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was railed by ";
 };
@@ -422,7 +422,7 @@ string() q2rail_killmsg2 =
 string() q2hbl_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was melted by ";
 };
@@ -438,14 +438,14 @@ string(entity targ, entity attacker) q2rock_killmsg =
 	if (targ == attacker) return " blew himself up.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " ate ";
 };
 
 string(entity targ, entity attacker) q2rock_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s rocket\n";
 };
 
@@ -455,14 +455,14 @@ string(entity targ, entity attacker) q2gren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was popped by ";
 };
 
 string(entity targ, entity attacker) q2gren_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s grenade\n";
 };
 
@@ -472,14 +472,14 @@ string(entity targ, entity attacker) q2hgren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " caught ";
 };
 
 string(entity targ, entity attacker) q2hgren_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s hand grenade\n";
 };
 
@@ -487,7 +487,7 @@ string(entity targ, entity attacker) q2hgren_killmsg2 =
 string() q2ssg_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was blown away by ";
 };
@@ -501,7 +501,7 @@ string() q2ssg_killmsg2 =
 string() q2sg_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was gunned down by ";
 };
@@ -516,7 +516,7 @@ string() q2sg_killmsg2 =
 string() q2cg_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was cut in half by ";
 };
@@ -533,7 +533,7 @@ string() q2cg_killmsg2 =
 string() q2mg_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was machinegunned by ";
 };
@@ -549,7 +549,7 @@ string() q2mg_killmsg2 =
 string() q2blst_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was blasted by ";
 };
@@ -585,7 +585,7 @@ void() q2_ammo_grenades =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q2_DEF_BLAST;
 		return;
@@ -625,7 +625,7 @@ void() q2_ammo_grenades =
 	self._killmsg2 = q2hgren_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
@@ -640,7 +640,7 @@ void () q2_weapon_bfg =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -689,7 +689,7 @@ void () q2_weapon_bfg =
 	self._killmsg2 = q2bfg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -699,7 +699,7 @@ void () q2_weapon_railgun =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -738,7 +738,7 @@ void () q2_weapon_railgun =
 	self._killmsg2 = q2rail_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -748,7 +748,7 @@ void () weapon_hyperblaster =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -785,7 +785,7 @@ void () weapon_hyperblaster =
 	self._killmsg2 = q2hbl_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;// + CB_SCOURGE;
 };
 
@@ -795,7 +795,7 @@ void() q2_weapon_rocketlauncher =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -835,7 +835,7 @@ void() q2_weapon_rocketlauncher =
 	self._killmsg2 = q2rock_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -845,7 +845,7 @@ void () q2_weapon_grenadelauncher =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -883,7 +883,7 @@ void () q2_weapon_grenadelauncher =
 	self._killmsg2 = q2gren_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
 };
 
@@ -894,7 +894,7 @@ void () weapon_chaingun =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -933,7 +933,7 @@ void () weapon_chaingun =
 	self._killmsg2 = q2cg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -965,7 +965,7 @@ void() q2_weapon_machinegun =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -986,7 +986,7 @@ void() q2_weapon_machinegun =
 	self._killmsg2 = q2mg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -996,7 +996,7 @@ void () q2_weapon_supershotgun =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1041,7 +1041,7 @@ void () q2_weapon_supershotgun =
 	self._killmsg2 = q2ssg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1051,7 +1051,7 @@ void () q2_weapon_shotgun =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = x_weapon_touch;
@@ -1089,7 +1089,7 @@ void () q2_weapon_shotgun =
 	self._killmsg2 = q2sg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
@@ -1099,7 +1099,7 @@ void () q2_weapon_blaster =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = x_weapon_touch;
@@ -1137,7 +1137,7 @@ void () q2_weapon_blaster =
 	self._killmsg2 = q2blst_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
@@ -1147,7 +1147,7 @@ void () q2_weapon_grapple =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = painkeep_weapon_touch;
@@ -1196,7 +1196,7 @@ void () q2_weapon_grapple =
 	self.bulletspread_x = 0.75; // damp
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
@@ -1206,7 +1206,7 @@ void() q2_item_health_small =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = Q2_DEF_HBOTTLE;
 		return;
@@ -1221,7 +1221,7 @@ void() q2_item_health_small =
 	self.volume = -1; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1231,7 +1231,7 @@ void() q2_item_health =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = Q2_DEF_HFIRSTAID;
 		return;
@@ -1246,7 +1246,7 @@ void() q2_item_health =
 	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1256,7 +1256,7 @@ void() q2_item_health_large =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = Q2_DEF_HMEDKIT;
 		return;
@@ -1271,7 +1271,7 @@ void() q2_item_health_large =
 	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1297,7 +1297,7 @@ void() q2_item_health_mega =
 	self.volume = Q_MEGA_MAX;
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1311,7 +1311,7 @@ void() q2_misc_explobox =
 	}
 
 	self.netname = "Barrel";
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	misc_explodbox_set(self, "progs/q2_barrel.mdl", Q2_BARREL_BLAST, 80, MOVETYPE_NONE);
 	setsize (self, '-14 -14 0', '14 14 42');
 	self.frame = 0;
@@ -1327,7 +1327,7 @@ void() q2_item_armor_body =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -1345,7 +1345,7 @@ void() q2_item_armor_body =
 	self.currentammo = Q2_ARM_BODY; // 100 units
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
@@ -1355,7 +1355,7 @@ void() q2_item_armor_combat =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -1373,7 +1373,7 @@ void() q2_item_armor_combat =
 	self.currentammo = Q2_ARM_CMBT; // 50 units
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
@@ -1383,7 +1383,7 @@ void() item_armor_jacket =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -1401,7 +1401,7 @@ void() item_armor_jacket =
 	self.currentammo = Q2_ARM_FLAK; // 25 units
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
@@ -1411,7 +1411,7 @@ void() q2_item_armor_shard =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		self.classname = "item_armor1";
 		self.wad = "armor_toss"; // for alt value
@@ -1432,7 +1432,7 @@ void() q2_item_armor_shard =
 	self.currentammo = Q2_ARM_SHRD; // 2 units
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1442,7 +1442,7 @@ void() item_power_shield =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -1463,7 +1463,7 @@ void() item_power_shield =
 	self.noise = "q2_snd/ar1_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
@@ -1473,7 +1473,7 @@ void() item_power_screen =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -1494,7 +1494,7 @@ void() item_power_screen =
 	self.noise = "q2_snd/ar1_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 };
 
@@ -1504,7 +1504,7 @@ void() item_silencer =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1522,7 +1522,7 @@ void() item_silencer =
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1533,7 +1533,7 @@ void() item_invulnerability =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1550,7 +1550,7 @@ void() item_invulnerability =
 	self.noise = "q2_snd/protect.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1560,7 +1560,7 @@ void() q2_item_enviro =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1579,7 +1579,7 @@ void() q2_item_enviro =
 	self.noise3 = "q2_snd/airout.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 };
 
@@ -1589,7 +1589,7 @@ void() q2_item_quad =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1607,7 +1607,7 @@ void() q2_item_quad =
 	self.noise = "q2_snd/damage.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1641,7 +1641,7 @@ void() item_adrenaline =
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1670,7 +1670,7 @@ void() item_bandolier =
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF; // everyone can get arts
 };
 
@@ -1702,7 +1702,7 @@ void() item_pack =
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN; // everyone can get arts
 };
 
@@ -1712,7 +1712,7 @@ void() item_breather =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.classname = "item_artifact_envirosuit";
 		return;
@@ -1732,7 +1732,7 @@ void() item_breather =
 	self.noise3 = "q2_snd/airout.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 };
 
@@ -1742,7 +1742,7 @@ void() key_pyramid =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1755,7 +1755,7 @@ void() key_pyramid =
 	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1765,7 +1765,7 @@ void() key_power_cube =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1778,7 +1778,7 @@ void() key_power_cube =
 	self.x_items = X_Q2_KEY_CUBE;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1788,7 +1788,7 @@ void() key_pass =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1801,7 +1801,7 @@ void() key_pass =
 	self.x_items = X_Q2_KEY_PASS;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1811,7 +1811,7 @@ void() key_data_cd =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1824,7 +1824,7 @@ void() key_data_cd =
 	self.x_items = X_Q2_KEY_DATACD;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1834,7 +1834,7 @@ void() key_data_spinner =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1847,7 +1847,7 @@ void() key_data_spinner =
 	self.x_items = X_Q2_KEY_CDSPIN;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1857,7 +1857,7 @@ void() key_airstrike_target =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1870,7 +1870,7 @@ void() key_airstrike_target =
 	self.x_items = X_Q2_KEY_AIRSTRK;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1880,7 +1880,7 @@ void() key_blue_key =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1894,7 +1894,7 @@ void() key_blue_key =
 	self.x_items = X_Q2_KEY_BLUE;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1904,7 +1904,7 @@ void() key_red_key =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1918,7 +1918,7 @@ void() key_red_key =
 	self.x_items = X_Q2_KEY_RED;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1928,7 +1928,7 @@ void() key_commander_head =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1941,7 +1941,7 @@ void() key_commander_head =
 	self.x_items = X_Q2_KEY_CHEAD;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1963,7 +1963,7 @@ void() q2_ctf_haste =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1980,7 +1980,7 @@ void() q2_ctf_haste =
 	self.wait = RSP_TIME;
 // override
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -1993,7 +1993,7 @@ void() q2_ctf_regen =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -2009,7 +2009,7 @@ void() q2_ctf_regen =
 //	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -2022,7 +2022,7 @@ void() q2_ctf_resist =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -2038,7 +2038,7 @@ void() q2_ctf_resist =
 //	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -2051,7 +2051,7 @@ void() q2_ctf_stren =
 
 	if (!ULOK2)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -2067,7 +2067,7 @@ void() q2_ctf_stren =
 //	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
@@ -2079,8 +2079,8 @@ void() hand_grenade_thk =
 		setorigin(self, self.owner.origin);
 		if (self.owner.flags & FL_CLIENT)
 		{
-			self.owner.currentammo = self.owner.ammo_rockets = self.owner.ammo_rockets - ammo_con(1, self.owner, ""); // use ammo
-			self.owner.eweapon.noise2 = "";
+			self.owner.currentammo = self.owner.ammo_rockets = self.owner.ammo_rockets - ammo_con(1, self.owner, null_string); // use ammo
+			self.owner.eweapon.noise2 = null_string;
 		}
 		else
 			remove(self.owner); // NOTE: danger - bots that dont have FL_CLIENT!
@@ -2092,14 +2092,14 @@ void() hand_grenade_thk =
 		if (!self.owner.eweapon)
 		{
 			sprint(self.owner, "\n\nHand grenade disarmed.\n");
-			centerprint(self.owner, "");
+			centerprint(self.owner, null_string);
 			remove(self);
 			return;
 		}
 		if (self.owner.eweapon.mdl != self.target)
 		{
 			sprint(self.owner, "\n\nHand grenade disarmed.\n");
-			centerprint(self.owner, "");
+			centerprint(self.owner, null_string);
 			remove(self);
 			return;
 		}
@@ -2120,14 +2120,14 @@ void() X_FireHandGrenade =
 
 	if (!EWEAP) return; // oops
 
-	if (EWEAP.noise2 == "") // activate
+	if (EWEAP.noise2 == null_string) // activate
 	{
 		ominous_hum("q2_snd/hgrena1b.wav", 0.678); // activate
 		EWEAP.noise2 = "q2_snd/hgrenc1b.wav";
 		f = EWEAP.dmg_take;
 		if (f < 1) f = 6;
 		if (!EWEAP.chaosweptime) EWEAP.chaosweptime = 1;
-		self.enemy = chaos_spawn(0, 0, f, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, EWEAP.chaosweptime, hand_grenade_thk, SUB_Null, self, world);
+		self.enemy = chaos_spawn(0, 0, f, 0, v0, v0, v0, v0, v0, null_string, null_string, SUB_Null, EWEAP.chaosweptime, hand_grenade_thk, SUB_Null, self, world);
 		self.enemy.dodmg = EWEAP.dodmg;
 		self.enemy.target = EWEAP.mdl;
 		self.enemy.noise = EWEAP.noise2;
@@ -2139,8 +2139,8 @@ void() X_FireHandGrenade =
 	{
 		player_q2hgr1();
 		snd = EWEAP.noise3;
-		if (snd == "") snd = "q2_snd/hgrent1a.wav";
-		EWEAP.noise2 = "";
+		if (snd == null_string) snd = "q2_snd/hgrent1a.wav";
+		EWEAP.noise2 = null_string;
 // more throw power the longer held
 		f = 6 / (self.enemy.endtime - time) * HGREN_VEL;
 		if (f > 600) f = 600;
@@ -2224,7 +2224,7 @@ void() q2_teleport_particles =
 
 void() func_q2_telepart =
 {
-	chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "", "", SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
+	chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, null_string, null_string, SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
 	ambientsound (self.origin + ' 0 0 32', "q2_snd/telehum.wav", 1, ATTN_STATIC);
 	remove(self); // IDEA: when chaos mod, leave this for changes?
 };

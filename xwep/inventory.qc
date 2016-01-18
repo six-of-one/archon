@@ -49,7 +49,7 @@ void(entity ve, float camct, float mcd, string spf, float islot) xwep_fakeload =
 		item_call(spt);
 		self.think = SUB_Remove;
 		self.nextthink = time + 10;
-		self.event = ""; // so pk_mcode will give us valid mcode
+		self.event = null_string; // so pk_mcode will give us valid mcode
 		self.mcode = pk_mcode(spt, self); // put map code on ent
 
 		if (camct < 1) camctp = -0.5;
@@ -280,7 +280,7 @@ void(entity e) set_defaults =
 			if (MAP_MODE == "Q2") xw_bit_loop(e, INIT_4_Q2);
 			if (MAP_MODE == "Q3") xw_bit_loop(e, INIT_5_Q3);
 	//		if (MAP_MODE == "HP") xw_bit_loop(INIT_6_HP);
-	//		if (MAP_MODE == "") xw_bit_loop(INIT_7);
+	//		if (MAP_MODE == null_string) xw_bit_loop(INIT_7);
 			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); // 2 extra map code weps
 			if (INIT_7 > 0) set_xweap(e, INIT_7);
 		}
@@ -304,7 +304,7 @@ void(entity e) set_defaults =
 			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
 			if (e.morphy == CHAR_Q2) xw_bit_loop(e, INIT_4_Q2);
 			if (e.morphy == CHAR_Q3) xw_bit_loop(e, INIT_5_Q3);
-	//		if (e.morphy == "") xw_bit_loop(INIT_7);
+	//		if (e.morphy == null_string) xw_bit_loop(INIT_7);
 			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); // 2 extra map code weps
 			if (INIT_7 > 0) set_xweap(e, INIT_7);
 		}
@@ -405,56 +405,56 @@ void(entity e, float am, string pr) eweap_am =
 
 	if (am == AMMO_BULLETS && !(am_type & IT_BULLETS))
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(rint(e.ammo_bullet)));
 		sprint(e, " bullets");
 		am_type = am_type | IT_BULLETS;
 	}
 	else if (am == AMMO_SHELLS && !(am_type & IT_SHELLS))
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(rint(e.ammo_shells)));
 		sprint(e, " shells");
 		am_type = am_type | IT_SHELLS;
 	}
 	else if (am == AMMO_CELLS && !(am_type & IT_CELLS))
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(rint(e.ammo_cells)));
 		sprint(e, " cells");
 		am_type = am_type | IT_CELLS;
 	}
 	else if (am == AMMO_ROCKETS && !(am_type & IT_ROCKETS))
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(rint(e.ammo_rockets)));
 		sprint(e, " rockets");
 		am_type = am_type | IT_ROCKETS;
 	}
 	else if (am == AMMO_GRENADES && !(am_type & IT_ROCKETS))
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(rint(e.ammo_rockets)));
 		sprint(e, " grenades");
 //		am_type = am_type | IT_ROCKETS;
 	}
 	else if (am == AMMO_NAILS && !(am_type & IT_NAILS))
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(rint(e.ammo_nails)));
 		sprint(e, " nails");
 		am_type = am_type | IT_NAILS;
 	}
 	else if (am == AMMO_SLUGS && !(am_type & IT_SLUGS))
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(rint(e.ammo_slug)));
 		sprint(e, " slugs");
 		am_type = am_type | IT_SLUGS;
 	}
 	else if (am == AMMO_GAS && !(am_type & IT_GAS))
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(rint(e.ammo_gaspr)));
 		sprint(e, " lbs gas pressure");
 		am_type = am_type | IT_GAS;
@@ -464,7 +464,7 @@ void(entity e, float am, string pr) eweap_am =
 //	local entity f;
 //	local string nt;
 
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 /*
 		nt = "Harpoon gun";
 		f = vchk(IT_AXE, am, e.vwepent);
@@ -478,25 +478,25 @@ void(entity e, float am, string pr) eweap_am =
 		sprint(e, "\n");
 */
 		sprint(e, "Harpoon gun\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PK_IT_AIRGUN && e.pk_items & am)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, "Air cannon\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PK_IT_CLIGHT && e.pk_items & am)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, "Chain Thunderbolt cannon");
 		eweap_am(self, AMMO_CELLS, "   -> ");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PK_IT_GRAVITYWELL && e.pk_gravitywellammo != 0)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		if (e.pk_gravitywellammo == -1)
 		{
 			sprint(e, " super gravity well");			
@@ -508,83 +508,83 @@ void(entity e, float am, string pr) eweap_am =
 			if (e.pk_gravitywellammo > 1) sprint(e, "s");
 		}
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PK_IT_TURRET && e.pk_turretammo > 0)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.pk_turretammo));
 		sprint(e, " turret");
 		if (e.pk_turretammo > 1) sprint(e, "s");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PK_IT_CANPAB && e.pk_canpabammo > 0)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.pk_canpabammo));
 		sprint(e, " pork and beans can");
 		if (e.pk_canpabammo > 1) sprint(e, "s");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PK_IT_BEARTRAP && e.pk_beartrapammo > 0)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.pk_beartrapammo));
 		sprint(e, " bear trap");
 		if (e.pk_beartrapammo > 1) sprint(e, "s");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == 4096 && e.pk_explode_ammo > 0) // shells dont have a PK_IT # - jacking this one for the inventory fn
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.pk_explode_ammo));
 		sprint(e, " explode shell");
 		if (e.pk_explode_ammo > 1) sprint(e, "s");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PKPLUS_IT_EGO && e.pkplus_egoammo > 0)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.pkplus_egoammo));
 		sprint(e, " ego");
 		if (e.pkplus_egoammo > 1) sprint(e, "s");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PKPLUS_IT_TOMB && e.pkplus_tombammo > 0)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.pkplus_tombammo));
 		sprint(e, " tomb");
 		if (e.pkplus_tombammo > 1) sprint(e, "s");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PKPLUS_IT_ACTOR && e.pkplus_actorammo > 0)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.pkplus_actorammo));
 		sprint(e, " actors mask");
 		if (e.pkplus_actorammo > 1) sprint(e, "s");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 	else if (am == PKPLUS_IT_PHONE && e.pkplus_phoneammo > 0)
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.pkplus_phoneammo));
 		sprint(e, " cellular phone tele-hack");
 		if (e.pkplus_phoneammo > 1) sprint(e, "s");
 		sprint(self, "\n");
-		pk_pr = "";
+		pk_pr = null_string;
 	}
 /*	else if (am == )
 	{
-		if (pr != "") sprint(e, pr);
+		if (pr != null_string) sprint(e, pr);
 		sprint(e, ftos(e.));
 		sprint(e, " t");
 		if (e. > 1) sprint(e, "s");
@@ -603,43 +603,43 @@ void() loose_ammo =
 	{
 		eweap_am(self, AMMO_SHELLS, pr);
 		sprint(self, "\n");
-		pr = "";
+		pr = null_string;
 	}
 	if (self.ammo_cells  && !(am_type & IT_CELLS))
 	{
 		eweap_am(self, AMMO_CELLS, pr);
 		sprint(self, "\n");
-		pr = "";
+		pr = null_string;
 	}
 	if (self.ammo_nails  && !(am_type & IT_NAILS))
 	{
 		eweap_am(self, AMMO_NAILS, pr);
 		sprint(self, "\n");
-		pr = "";
+		pr = null_string;
 	}
 	if (self.ammo_rockets  && !(am_type & IT_ROCKETS))
 	{
 		eweap_am(self, AMMO_ROCKETS, pr);
 		sprint(self, "\n");
-		pr = "";
+		pr = null_string;
 	}
 	if (self.ammo_bullet  && !(am_type & IT_BULLETS))
 	{
 		eweap_am(self, AMMO_BULLETS, pr);
 		sprint(self, "\n");
-		pr = "";
+		pr = null_string;
 	}
 	if (self.ammo_slug  && !(am_type & IT_SLUGS))
 	{
 		eweap_am(self, AMMO_SLUGS, pr);
 		sprint(self, "\n");
-		pr = "";
+		pr = null_string;
 	}
 	if (self.ammo_gaspr  && !(am_type & IT_GAS))
 	{
 		eweap_am(self, AMMO_GAS, pr);
 		sprint(self, "\n");
-		pr = "";
+		pr = null_string;
 	}
 };
 
@@ -874,7 +874,7 @@ void(entity de, entity ve, vector vb) dropinview =
 
 	if (!de) // called with world, need location now
 	{
-		e = find_tdest(FL_RSALL, "");
+		e = find_tdest(FL_RSALL, null_string);
 		if (!e) return; // might not be good - this ent will be at v0
 		setorigin(ve, e.origin);
 		return;
@@ -1056,7 +1056,7 @@ void(float im, entity p, vector vb) drop_inventory =
 
 		if (RUNES != 1) // CHECK: does run toss need to turn of dyn_item
 		if (ic == "item_sigil")
-			e.event = ""; // not dyn_item - for relocation control code
+			e.event = null_string; // not dyn_item - for relocation control code
 //		if (ic == "item_sigil") e.classname = ic; // make a real item
 
 		if (ic != "item_sigil")
@@ -1318,15 +1318,15 @@ void(entity p, float pg) drop_setup =
 
 	de.grap_firetest = 0; // redo menu
 	de.weapon = 0;
-	de.wad = "";
+	de.wad = null_string;
 
-	de.noise = "";
-	de.noise1 = "";
-	de.noise2 = "";
-	de.noise3 = "";
-	de.noise4 = "";
-	de.target1 = "";
-	de.target2 = "";
+	de.noise = null_string;
+	de.noise1 = null_string;
+	de.noise2 = null_string;
+	de.noise3 = null_string;
+	de.noise4 = null_string;
+	de.target1 = null_string;
+	de.target2 = null_string;
 
 	if (!pg) // set place holders
 	{
@@ -1371,7 +1371,7 @@ void(entity p, float pg) drop_setup =
 	}
 
 	de.cnt = 1;
-	sel = "";
+	sel = null_string;
 
 
 	while (de.cnt < 8)
@@ -1384,7 +1384,7 @@ void(entity p, float pg) drop_setup =
 				{
 					if (p.rune_flag & d)
 					{
-						ic = "";
+						ic = null_string;
 						if (d & RUNE_FLG_HS)
 		//					if (p.target2 == "progs/q3_art.mdl")
 						if (stack_search(p, "item_haste"))
@@ -1394,7 +1394,7 @@ void(entity p, float pg) drop_setup =
 						if (stack_search(p, "item_regen"))
 							ic = "Regeneration ";
 
-						if (ic != "") drop_string(p, ic, d, world);
+						if (ic != null_string) drop_string(p, ic, d, world);
 					}
 
 					a = d & 15; // in case runes are ever > bit 8
@@ -1526,7 +1526,7 @@ void() drop_menu =
 	local float f;
 //	string ln1, ln2, ln3, ln4, ln5;
 
-//	ln1 = ln2 = ln3 = ln4 = ln5 = "";
+//	ln1 = ln2 = ln3 = ln4 = ln5 = null_string;
 
 	if (!self.dropent)
 	{
@@ -1621,49 +1621,49 @@ void() drop_menu =
 
 	sprint(self, head);
 
-	if (self.dropent.noise != "")
+	if (self.dropent.noise != null_string)
 	{
 		sprint(self,"  1: ");
 		sprint(self,self.dropent.noise);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.dropent.noise1 != "")
+	if (self.dropent.noise1 != null_string)
 	{
 		sprint(self,"  2: ");
 		sprint(self,self.dropent.noise1);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.dropent.noise2 != "")
+	if (self.dropent.noise2 != null_string)
 	{
 		sprint(self,"  3: ");
 		sprint(self,self.dropent.noise2);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.dropent.noise3 != "")
+	if (self.dropent.noise3 != null_string)
 	{
 		sprint(self,"  4: ");
 		sprint(self,self.dropent.noise3);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.dropent.noise4 != "")
+	if (self.dropent.noise4 != null_string)
 	{
 		sprint(self,"  5: ");
 		sprint(self,self.dropent.noise4);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.dropent.target1 != "")
+	if (self.dropent.target1 != null_string)
 	{
 		sprint(self,"  6: ");
 		sprint(self,self.dropent.target1);
 		sprint(self,"\n");
 		f = TRUE;
 	}
-	if (self.dropent.target2 != "")
+	if (self.dropent.target2 != null_string)
 	{
 		sprint(self,"  7: ");
 		sprint(self,self.dropent.target2);
@@ -1684,7 +1684,7 @@ void() drop_menu =
 
 	sprint(self, foot);
 
-	if (self.dropent.wad != "")
+	if (self.dropent.wad != null_string)
 	{
 		sprint(self,"\b <ENTER> or <FIRE> confirm drop of:\n");
 		sprint(self,self.dropent.wad);
@@ -1704,7 +1704,7 @@ void() drop_menu =
 	}
 
 /*	
-	if (self.dropent.noise == "")
+	if (self.dropent.noise == null_string)
 	{
 	head =
 					 "\b   Drop Inventory Menu:   \n"
@@ -1753,7 +1753,7 @@ void() drop_menu =
 					 "\b+------------------------+\n"
 					 "\b <ENTER> confirm drop #3  ";
 	}
-	else if (self.dropent.noise != "")
+	else if (self.dropent.noise != null_string)
 	{
 	foot = 
 						"\n"
@@ -1763,10 +1763,10 @@ void() drop_menu =
 					 "\b Enter code: ";
 	}
 
-	if (self.dropent.noise1 != "") ln2 = "\n2: ";
-	if (self.dropent.noise2 != "") ln3 = "\n3: ";
-//	if (self.dropent.noise3 != "") ln4 = "\n4: ";
-//	if (self.dropent.noise4 != "") ln5 = "\n5: ";
+	if (self.dropent.noise1 != null_string) ln2 = "\n2: ";
+	if (self.dropent.noise2 != null_string) ln3 = "\n3: ";
+//	if (self.dropent.noise3 != null_string) ln4 = "\n4: ";
+//	if (self.dropent.noise4 != null_string) ln5 = "\n5: ";
 
 
 //	centerprint8(self, head, self.dropent.noise, ln2, self.dropent.noise1, ln3, self.dropent.noise2, ln4, self.dropent.noise3, ln5, self.dropent.noise4, foot, self.wad);
@@ -1811,7 +1811,7 @@ float(entity e, string ms) force_drop_set =
 	else if (e.dropent.vwepmdl != "forcedrop")
 	{
 
-		if (ms != "") sprint(e, ms);
+		if (ms != null_string) sprint(e, ms);
 		return(TRUE);
 	}
 	return(FALSE);
@@ -1841,7 +1841,7 @@ float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) 
 	{
 		e = spawn(); // note: no record keeping here, and test fail!
 					e.stack1 = "insta spawn drop_one"; // test: nothing spawn test
-		ss = ""; // no fail message possible
+		ss = null_string; // no fail message possible
 		DROP_NOTST = TRUE; // because there are no real player bits to test
 	}
 
@@ -1902,7 +1902,7 @@ rune_map_print(4);
 
 // put classname or other strings of some player touched ents in a string stack
 
-.string stack2, stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
+.string stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
 
 
 // remove empties
@@ -1911,94 +1911,94 @@ float(entity e) stack_compress =
 	local float f;
 
 	f = FALSE;
-	if ((e.stack1 == "") && (e.stack2 != ""))
+	if ((e.stack1 == null_string) && (e.stack2 != null_string))
 	{
 		e.stack1 = e.stack2;
-		e.stack2 = "";
+		e.stack2 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack2 == "") && (e.stack3 != ""))
+	if ((e.stack2 == null_string) && (e.stack3 != null_string))
 	{
 		e.stack2 = e.stack3;
-		e.stack3 = "";
+		e.stack3 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack3 == "") && (e.stack4 != ""))
+	if ((e.stack3 == null_string) && (e.stack4 != null_string))
 	{
 		e.stack3 = e.stack4;
-		e.stack4 = "";
+		e.stack4 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack4 == "") && (e.stack5 != ""))
+	if ((e.stack4 == null_string) && (e.stack5 != null_string))
 	{
 		e.stack4 = e.stack5;
-		e.stack5 = "";
+		e.stack5 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack5 == "") && (e.stack6 != ""))
+	if ((e.stack5 == null_string) && (e.stack6 != null_string))
 	{
 		e.stack5 = e.stack6;
-		e.stack6 = "";
+		e.stack6 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack6 == "") && (e.stack7 != ""))
+	if ((e.stack6 == null_string) && (e.stack7 != null_string))
 	{
 		e.stack6 = e.stack7;
-		e.stack7 = "";
+		e.stack7 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack7 == "") && (e.stack8 != ""))
+	if ((e.stack7 == null_string) && (e.stack8 != null_string))
 	{
 		e.stack7 = e.stack8;
-		e.stack8 = "";
+		e.stack8 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack8 == "") && (e.stack9 != ""))
+	if ((e.stack8 == null_string) && (e.stack9 != null_string))
 	{
 		e.stack8 = e.stack9;
-		e.stack9 = "";
+		e.stack9 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack9 == "") && (e.stack10 != ""))
+	if ((e.stack9 == null_string) && (e.stack10 != null_string))
 	{
 		e.stack9 = e.stack10;
-		e.stack10 = "";
+		e.stack10 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack10 == "") && (e.stack11 != ""))
+	if ((e.stack10 == null_string) && (e.stack11 != null_string))
 	{
 		e.stack10 = e.stack11;
-		e.stack11 = "";
+		e.stack11 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack11 == "") && (e.stack12 != ""))
+	if ((e.stack11 == null_string) && (e.stack12 != null_string))
 	{
 		e.stack11 = e.stack12;
-		e.stack12 = "";
+		e.stack12 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack12 == "") && (e.stack13 != ""))
+	if ((e.stack12 == null_string) && (e.stack13 != null_string))
 	{
 		e.stack12 = e.stack13;
-		e.stack13 = "";
+		e.stack13 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack13 == "") && (e.stack14 != ""))
+	if ((e.stack13 == null_string) && (e.stack14 != null_string))
 	{
 		e.stack13 = e.stack14;
-		e.stack14 = "";
+		e.stack14 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack14 == "") && (e.stack15 != ""))
+	if ((e.stack14 == null_string) && (e.stack15 != null_string))
 	{
 		e.stack14 = e.stack15;
-		e.stack15 = "";
+		e.stack15 = null_string;
 		f = TRUE;
 	}
-	if ((e.stack15 == "") && (e.stack16 != ""))
+	if ((e.stack15 == null_string) && (e.stack16 != null_string))
 	{
 		e.stack15 = e.stack16;
-		e.stack16 = "";
+		e.stack16 = null_string;
 //		f = TRUE; - nothing more to do
 	}
 
@@ -2010,24 +2010,24 @@ float(entity e) stack_compress =
 
 void(entity e, string ss) stack_delete =
 {
-	if (ss == "") return;
+	if (ss == null_string) return;
 
-	if (e.stack1 == ss) e.stack1 = "";
-	if (e.stack2 == ss) e.stack2 = "";
-	if (e.stack3 == ss) e.stack3 = "";
-	if (e.stack4 == ss) e.stack4 = "";
-	if (e.stack5 == ss) e.stack5 = "";
-	if (e.stack6 == ss) e.stack6 = "";
-	if (e.stack7 == ss) e.stack7 = "";
-	if (e.stack8 == ss) e.stack8 = "";
-	if (e.stack9 == ss) e.stack9 = "";
-	if (e.stack10 == ss) e.stack10 = "";
-	if (e.stack11 == ss) e.stack11 = "";
-	if (e.stack12 == ss) e.stack12 = "";
-	if (e.stack13 == ss) e.stack13 = "";
-	if (e.stack14 == ss) e.stack14 = "";
-	if (e.stack15 == ss) e.stack15 = "";
-	if (e.stack16 == ss) e.stack16 = "";
+	if (e.stack1 == ss) e.stack1 = null_string;
+	if (e.stack2 == ss) e.stack2 = null_string;
+	if (e.stack3 == ss) e.stack3 = null_string;
+	if (e.stack4 == ss) e.stack4 = null_string;
+	if (e.stack5 == ss) e.stack5 = null_string;
+	if (e.stack6 == ss) e.stack6 = null_string;
+	if (e.stack7 == ss) e.stack7 = null_string;
+	if (e.stack8 == ss) e.stack8 = null_string;
+	if (e.stack9 == ss) e.stack9 = null_string;
+	if (e.stack10 == ss) e.stack10 = null_string;
+	if (e.stack11 == ss) e.stack11 = null_string;
+	if (e.stack12 == ss) e.stack12 = null_string;
+	if (e.stack13 == ss) e.stack13 = null_string;
+	if (e.stack14 == ss) e.stack14 = null_string;
+	if (e.stack15 == ss) e.stack15 = null_string;
+	if (e.stack16 == ss) e.stack16 = null_string;
 };
 
 float(entity e, string ss) stack_search =

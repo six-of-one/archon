@@ -299,7 +299,7 @@ void() HIP_FireMjolnirLightning =
 		return;
 	}
 
-	self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(self.eweapon.dmg_save, self, "");
+	self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(self.eweapon.dmg_save, self, null_string);
  }
 
 	HIP_SpawnMjolnirBase();
@@ -319,7 +319,7 @@ void() HIP_FireMjolnir =
 	source = self.origin + '0 0 16';
 	makevectors(self.v_angle);
 	traceline (source, source + v_forward*32, FALSE, self); // strike range?
-	if (trace_fraction == 1.0 && (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, "")))
+	if (trace_fraction == 1.0 && (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, null_string)))
 		{
 		source = source + v_forward*32;
 		traceline (source , source - v_up*50, FALSE, self);
@@ -372,7 +372,7 @@ void() player_hammer1;
 
 void()	player_mjolnir1 =
 {
-	if (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, "") && !(self.mask_x & CB_GREMLIN)) // melee wep deal
+	if (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, null_string) && !(self.mask_x & CB_GREMLIN)) // melee wep deal
 		player_mjolnir1b(); // lightning strike
 	else
 		player_hammer1();

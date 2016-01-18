@@ -410,14 +410,14 @@ string(entity targ, entity attacker) q3bfg_killmsg =
 	if (targ == attacker) return " should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was blasted by ";
 };
 
 string(entity targ, entity attacker) q3bfg_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s BFG\n";
 };
 
@@ -428,7 +428,7 @@ string() q3rail_killmsg =
 //	if (targ == attacker) return "should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was railed by ";
 };
@@ -436,7 +436,7 @@ string() q3rail_killmsg =
 //string(entity targ, entity attacker) q3rail_killmsg2 =
 string() q3rail_killmsg2 =
 {
-//	if (targ == attacker) return "";
+//	if (targ == attacker) return null_string;
 	return "\n";
 };
 
@@ -446,14 +446,14 @@ string(entity targ, entity attacker) q3plasma_killmsg =
 	if (targ == attacker) return " melted himself.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was melted by ";
 };
 
 string(entity targ, entity attacker) q3plasma_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s plasmagun\n";
 };
 
@@ -463,14 +463,14 @@ string(entity targ, entity attacker) q3ltn_killmsg =
 	if (targ == attacker) return " blew himself up.\n"; // note: q3 lg doestn blow under water
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was electrocuted by ";
 };
 
 string(entity targ, entity attacker) q3ltn_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "\n";
 };
 
@@ -480,14 +480,14 @@ string(entity targ, entity attacker) q3rock_killmsg =
 	if (targ == attacker) return " blew himself up.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " ate ";
 };
 
 string(entity targ, entity attacker) q3rock_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s rocket\n";
 };
 
@@ -497,14 +497,14 @@ string(entity targ, entity attacker) q3gren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " ate ";
 };
 
 string(entity targ, entity attacker) q3gren_killmsg2 =
 {
-	if (targ == attacker) return "";
+	if (targ == attacker) return null_string;
 	return "'s grenade\n";
 };
 
@@ -514,14 +514,14 @@ string() q3sg_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was gunned down by ";
 };
 
 string() q3sg_killmsg2 =
 {
-//	if (targ == attacker) return "";
+//	if (targ == attacker) return null_string;
 	return "\n";
 };
 
@@ -531,14 +531,14 @@ string() q3mg_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was machinegunned by ";
 };
 
 string() q3mg_killmsg2 =
 {
-//	if (targ == attacker) return "";
+//	if (targ == attacker) return null_string;
 	return "\n";
 };
 
@@ -548,14 +548,14 @@ string() q3g_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was pummeled by ";
 };
 
 string() q3g_killmsg2 =
 {
-//	if (targ == attacker) return "";
+//	if (targ == attacker) return null_string;
 	return "\n";
 };
 
@@ -587,7 +587,7 @@ void () q3_weapon_bfg =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -635,7 +635,7 @@ void () q3_weapon_bfg =
 	self._killmsg2 = q3bfg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
@@ -649,7 +649,7 @@ void() weapon_plasmagun =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -689,7 +689,7 @@ void() weapon_plasmagun =
 	self._killmsg2 = q3plasma_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
@@ -725,7 +725,7 @@ void() q3_weapon_machinegun =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -746,7 +746,7 @@ void() q3_weapon_machinegun =
 	self._killmsg2 = q3mg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
@@ -760,7 +760,7 @@ void() q3_weapon_shotgun =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -798,7 +798,7 @@ void() q3_weapon_shotgun =
 	self._killmsg2 = q3sg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
@@ -809,7 +809,7 @@ void() q3_weapon_rocketlauncher =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -848,7 +848,7 @@ void() q3_weapon_rocketlauncher =
 	self._killmsg2 = q3rock_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
@@ -859,7 +859,7 @@ void () q3_weapon_grenadelauncher =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -898,7 +898,7 @@ void () q3_weapon_grenadelauncher =
 	self._killmsg2 = q3gren_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
 };
@@ -910,7 +910,7 @@ void () weapon_gauntlet =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = x_weapon_touch;
@@ -951,7 +951,7 @@ void () weapon_gauntlet =
 	self._killmsg2 = q3g_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
@@ -967,7 +967,7 @@ void () weapon_grapplinghook =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = painkeep_weapon_touch;
@@ -1008,14 +1008,14 @@ void () weapon_grapplinghook =
 
 	self.killtarget =  "progs/null.mdl";
 	self.target = "q3_snd/lg_hit3.wav"; // hook hit a solid - not damaged
-	self.noise1 = ""; // drop
-	self.target1 = ""; // in + out
-	self.target2 = ""; // in + out
+	self.noise1 = null_string; // drop
+	self.target1 = null_string; // in + out
+	self.target2 = null_string; // in + out
 	self.targetname = "q3_snd/gauntrun.wav"; // launch snd
 	self.bulletspread_x = 0.5; // damp
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
@@ -1026,7 +1026,7 @@ void () q3_weapon_lightning =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1064,7 +1064,7 @@ void () q3_weapon_lightning =
 
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;// + CB_SCOURGE;
 };
@@ -1075,7 +1075,7 @@ void () q3_weapon_railgun =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -1121,7 +1121,7 @@ void () q3_weapon_railgun =
 	self._killmsg2 = q3rail_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
@@ -1135,7 +1135,7 @@ void() q3_ammo_bullets =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q3_BULLET_AMMO;
 		return;
@@ -1153,7 +1153,7 @@ void() q3_ammo_bullets =
 	self.noise = "q3_snd/am_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 }
 
@@ -1166,7 +1166,7 @@ void() q3_ammo_grenades =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q3_GREN_AMMO;
 		return;
@@ -1184,7 +1184,7 @@ void() q3_ammo_grenades =
 	self.noise = "q3_snd/am_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
@@ -1197,7 +1197,7 @@ void() ammo_lightning =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q3_ELEX_AMMO;
 		return;
@@ -1215,7 +1215,7 @@ void() ammo_lightning =
 	self.noise = "q3_snd/am_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
@@ -1228,7 +1228,7 @@ void() ammo_bfg =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q3_ELEX_AMMO;
 		return;
@@ -1246,7 +1246,7 @@ void() ammo_bfg =
 	self.noise = "q3_snd/am_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
@@ -1266,7 +1266,7 @@ void() q3_ammo_shells =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q3_SHOT_AMMO;
 		return;
@@ -1284,7 +1284,7 @@ void() q3_ammo_shells =
 	self.noise = "q3_snd/am_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 }
 
@@ -1297,7 +1297,7 @@ void() q3_ammo_rockets =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q3_ROCK_AMMO;
 		return;
@@ -1315,7 +1315,7 @@ void() q3_ammo_rockets =
 	self.noise = "q3_snd/am_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
@@ -1328,7 +1328,7 @@ void() q3_ammo_cells =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q3_ELEX_AMMO;
 		return;
@@ -1346,7 +1346,7 @@ void() q3_ammo_cells =
 	self.noise = "q3_snd/am_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
 }
 
@@ -1361,7 +1361,7 @@ void() q3_ammo_slugs =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.aflag = Q3_ELEX_AMMO;
 		return;
@@ -1379,7 +1379,7 @@ void() q3_ammo_slugs =
 	self.noise = "q3_snd/am_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 }
 
@@ -1432,7 +1432,7 @@ void() q3_ha_rot_thk =
 			else
 				self.enemy.nextthink = time + 20;
 			self.enemy.think = SUB_regen;
-			self.enemy.map = "";
+			self.enemy.map = null_string;
 			self.enemy.owner = world;
 		}
 		self.owner.items = self.owner.items - (self.owner.items & IT_SUPERHEALTH);
@@ -1483,7 +1483,7 @@ void(entity e, float v) q3_ha_rot =
 							else
 								f.enemy.nextthink = time + 20;
 							f.enemy.think = SUB_regen;
-							f.enemy.map = "";
+							f.enemy.map = null_string;
 							f.enemy.owner = world;
 						}
 						remove(self);
@@ -1499,7 +1499,7 @@ void(entity e, float v) q3_ha_rot =
 
 		if (v > Q3_HA_MAX)
 		{
-			newmis = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "q3_rot", "", SUB_Null, 5, q3_ha_rot_thk, SUB_Null, e, world);
+			newmis = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "q3_rot", null_string, SUB_Null, 5, q3_ha_rot_thk, SUB_Null, e, world);
 			newmis.super_time = time + Q3_ROT_TMAX;
 			newmis.health = newmis.armorvalue = Q3_HA_MAX;
 			if (!other.items & IT_SUPERHEALTH) // we might already be rotting from another mega heal - if so rot down limit set to normal max
@@ -1517,7 +1517,7 @@ void() q3_item_armor_combat =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -1537,7 +1537,7 @@ void() q3_item_armor_combat =
 	self.noise = "q3_snd/ar2_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.skin = 0;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_ENF;
 };
@@ -1548,7 +1548,7 @@ void() q3_item_armor_body =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = armor_touch;
@@ -1568,7 +1568,7 @@ void() q3_item_armor_body =
 	self.noise = "q3_snd/ar3_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.skin = 1;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN + CB_ENF;
 };
@@ -1579,7 +1579,7 @@ void() q3_item_armor_shard =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, FALSE, ""))
+	if (noxtr_item_control(self, FALSE, null_string))
 	{
 		self.classname = "item_armor1";
 		self.wad = "armor_toss"; // for alt value
@@ -1603,7 +1603,7 @@ void() q3_item_armor_shard =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
@@ -1614,7 +1614,7 @@ void() q3_item_health_small =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = Q3_HEAL5_A;
 		return;
@@ -1633,7 +1633,7 @@ void() q3_item_health_small =
 	if (!self.wait) self.wait = RSP_TIME * 1.1666;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
@@ -1644,7 +1644,7 @@ void() q3_item_health =
 	
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 		return;
 
 	self.netname = "25 health";
@@ -1660,7 +1660,7 @@ void() q3_item_health =
 	self.skin = Q3_HEALMD;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
@@ -1671,7 +1671,7 @@ void() q3_item_health_large =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		self.healamount = Q3_HEALLG_A;
 		return;
@@ -1690,7 +1690,7 @@ void() q3_item_health_large =
 	self.skin = Q3_HEALLG;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
@@ -1722,7 +1722,7 @@ void() q3_item_health_mega =
 	self.frame = 1;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
@@ -1733,7 +1733,7 @@ void() q3_item_quad =
 	
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1752,7 +1752,7 @@ void() q3_item_quad =
 	self.skin = q3_quad_fsk;
 	self.alpha = 0.9;
 
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
@@ -1912,7 +1912,7 @@ void() q3_pwr_touch =
 
 void() item_regen =
 {
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 
 	if (!ULOK3)
 //	if (!XMOD)
@@ -1954,7 +1954,7 @@ void() item_invis =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -1974,7 +1974,7 @@ void() item_invis =
 	self.skin = q3_inv_fsk;
 	self.alpha = 0.5;
 
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
@@ -1985,7 +1985,7 @@ void() q3_item_enviro =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -2006,14 +2006,14 @@ void() q3_item_enviro =
 	self.skin = q3_env_fsk;
 	self.alpha = 0.9;
 
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
 };
 
 void() item_haste =
 {
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 
 	if (!ULOK3)
 //	if (!XMOD)
@@ -2072,7 +2072,7 @@ void() item_flight =
 	self.skin = q3_flt_fsk;
 	self.alpha = 0.9;
 
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_GREMLIN | (MORPH_ALL - MORPH_FLY); // flyers dont get goody
 
@@ -2140,7 +2140,7 @@ void() holdable_medkit =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -2171,7 +2171,7 @@ void() holdable_medkit =
 	self.noise3 = "q3_snd/use_medkit.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN | CB_GREMLIN;
 
@@ -2188,7 +2188,7 @@ void() holdable_teleporter =
 
 	if (!ULOK3)
 //	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
+	if (noxtr_item_control(self, TRUE, null_string))
 	{
 		return;
 	}
@@ -2221,7 +2221,7 @@ void() holdable_teleporter =
 	self.noise3 = "q3_snd/telein.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN | CB_GREMLIN;
 
@@ -2236,7 +2236,7 @@ void() q3_misc_explobox =
 {
 	local float r;
 	self.netname = "Barrel";
-	if (self.class_select == "") self.class_select = "q3_item";
+	if (self.class_select == null_string) self.class_select = "q3_item";
 	misc_explodbox_set(self, "progs/barrel.mdl", Q3_BARREL_BLAST, 80, MOVETYPE_NONE);
 
 	r = rint(3 * random());
@@ -2450,7 +2450,7 @@ void() misc_teleporter_dest =
 // this does nothing, just serves as a target spot
 	self.mangle = self.angles;
 	self.angles = '0 0 0';
-	self.model = "";
+	self.model = null_string;
 	self.origin = self.origin + '0 0 27';
 	if (!self.targetname)
 	{
@@ -2475,7 +2475,7 @@ void() misc_teleporter =
 	trigger_teleport();
 	if (world.wad == "q2.wad")
 	{
-		chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "", "", SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
+		chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, null_string, null_string, SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
 		ambientsound (self.origin + ' 0 0 32', "q2_snd/telehum.wav", 1, ATTN_STATIC);
 	}
 };
@@ -2553,7 +2553,7 @@ vector() q3trap_shooter_target =
 	local entity t;
 
 // no target string
-	if (self.target == "") return (self.movedir);
+	if (self.target == null_string) return (self.movedir);
 
 	t = find (world, targetname, self.target);
 // target ent not found
@@ -2566,8 +2566,8 @@ vector() q3trap_shooter_target =
 
 void() q3_spikeshooter_use =
 {
-	if (self.noise3 == "") self.noise3 = "weapons/spike2.wav";
-	if (self.mdl == "") self.mdl = "progs/spike.mdl";
+	if (self.noise3 == null_string) self.noise3 = "weapons/spike2.wav";
+	if (self.mdl == null_string) self.mdl = "progs/spike.mdl";
 	if (self.delay < 100) self.delay = 500;
 
 	sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);

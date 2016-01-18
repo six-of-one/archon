@@ -138,7 +138,7 @@ void HUD_BeginMapNameDisplay()
 		g_vMapNameDisplayLocation_x = (g_nVideoWidth - nWidth) / 2;
 		
 		// Assign Relative Coords
-		g_vMapNameDisplayLocation_y = g_nVideoHeight / 4.5;
+		g_vMapNameDisplayLocation_y = g_nVideoHeight / 3.7;
 		g_vMapNameDisplayLocation_z = 0;
 		// Assign State
 		g_fMapNameDisplayState = HUDEFFECT_STATE_STARTING;

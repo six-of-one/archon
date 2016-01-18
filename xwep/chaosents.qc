@@ -102,7 +102,7 @@ void() chaos_precache =
 string() creg_killmsg =
 {
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ","",""," was blown away by "));
+		return(rnd_string(' 90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ",null_string,null_string," was blown away by "));
 
 	return " was blown away by ";
 };
@@ -156,7 +156,7 @@ void() c_weapon_reggun =
 	self._killmsg2 = creg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "x_item";
+	if (self.class_select == null_string) self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 
 	self.archon = ARCHON_WEP_EXT;
@@ -165,7 +165,7 @@ void() c_weapon_reggun =
 string() csh_killmsg =
 {
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ","",""," was dug a grave by "));
+		return(rnd_string(' 90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ",null_string,null_string," was dug a grave by "));
 
 	return " was dug a grave by ";
 };
@@ -209,7 +209,7 @@ void() c_weapon_shovel =
 	self._killmsg2 = csh_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "x_item";
+	if (self.class_select == null_string) self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 
 	self.archon = ARCHON_WEP_EXT;
@@ -218,7 +218,7 @@ void() c_weapon_shovel =
 string() cds_killmsg =
 {
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ","",""," stopped running for "));
+		return(rnd_string(' 90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ",null_string,null_string," stopped running for "));
 
 	return " stopped running for ";
 };
@@ -260,7 +260,7 @@ bprint("\n");
 	if (self.noise)
 	{
 		sound (self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);
-		self.noise = "";
+		self.noise = null_string;
 	}
 
 	self.cnt = self.cnt - 1;
@@ -322,7 +322,7 @@ void () c_weapon_deepsleep =
 	self._killmsg2 = cds_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "x_item";
+	if (self.class_select == null_string) self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 
 	self.archon = ARCHON_WEP_EXT;
@@ -332,7 +332,7 @@ void () c_weapon_deepsleep =
 string() tsphere_killmsg =
 {
 	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," joined the Tall Man because of "," was given a mind altering experience by ","",""," was drilled by "));
+		return(rnd_string(' 90.0 60.0 60.0'," joined the Tall Man because of "," was given a mind altering experience by ",null_string,null_string," was drilled by "));
 
 	return " joined the Tall Man because of ";
 };
@@ -378,7 +378,7 @@ void () c_weapon_tallball =
 	self._killmsg2 = tsphere_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "x_item";
+	if (self.class_select == null_string) self.class_select = "x_item";
 	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_WEP_EXT;
@@ -766,7 +766,7 @@ void() x_pwr_touch =
 		else
 		{
 			if (!self.movetarget) self.movetarget = spawn(); // make a maker
-			setorigin (self.movetarget, self.origin + ' 0 0 4'); // appears where horn is
+			setorigin (self.movetarget, self.origin + ' 0 0 20'); // appears where horn is - adjusted up 9.22.13, some monsters still bury feet in ground
 			self.movetarget.classname = "func_make";
 			self.movetarget.think = func_make;
 			self.movetarget.spawnflags = 0;
@@ -841,7 +841,7 @@ void() x_pack_touch =
 
 	BackpackTouch();
 
-	if (self.noise != "")
+	if (self.noise != null_string)
 		sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM); // default is q1 pack grab snd - in bp code
 
 	self.model = string_null;

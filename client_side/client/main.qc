@@ -66,7 +66,7 @@ void() CSQC_UpdateView =
 	R_AddEntities(MASK_NORMAL | MASK_ENGINE | MASK_ENGINEVIEWMODELS);
 	R_SetView(VF_DRAWWORLD, 1);
 	R_SetView(VF_DRAWCROSSHAIR, 1);
-	R_SetView(VF_DRAWENGINESBAR, 1);
+	R_SetView(VF_DRAWENGINESBAR, enginebar);
 	R_RenderScene();
 	
 	if((g_fMapNameDisplayState)&&(!intermission)&&(!showscores))
@@ -131,8 +131,9 @@ float(float event, float parama) CSQC_InputEvent =
 				
 				if((cvar("viewsize") >= 110) && (cvar("viewsize") < 120))
 				{
-					if(ibar_flag == 1) {ibar = 1; ibar_flag = 2; return TRUE;}
-					if(ibar_flag == 2) {ibar = 0; ibar_flag = 0; return TRUE;}
+					if(ibar_flag == 1) {ibar = 1; ibar_flag = 2; enginebar = 1; return TRUE;}
+					if(ibar_flag == 2) {ibar = 1; ibar_flag = 3; enginebar = 0; return TRUE;}
+					if(ibar_flag == 3) {ibar = 0; ibar_flag = 0; enginebar = 1; return TRUE;}
 					else return FALSE;
 				}
 				if((cvar("viewsize") < 100)) {cvar_set("viewsize", "100"); return TRUE;}
@@ -144,9 +145,10 @@ float(float event, float parama) CSQC_InputEvent =
 			{		
 				if((cvar("viewsize") >= 110) && (cvar("viewsize") < 120))
 				{
-					if(ibar == 0) {ibar = 1; ibar_flag = 2; return TRUE;}
+					if(ibar == 0) {ibar = 1; ibar_flag = 3; enginebar = 0; return TRUE;}
 					else 
 					{
+						if (ibar_flag == 3 ) { ibar_flag = 2; ibar = 1; enginebar = 1; return TRUE; }
 						if (ibar_flag == 2 ) { ibar_flag = 1; ibar = 1; return TRUE; }
 						if (ibar_flag == 1 ) { ibar_flag = 0; ibar = 0; return FALSE; }
 					}

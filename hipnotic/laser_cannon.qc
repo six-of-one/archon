@@ -50,7 +50,7 @@ void() HIP_LaserTouch =
 	self.cnt = self.cnt - 1;
 
 //	if (pointcontents(self.origin) == CONTENT_SKY) { remove(self); return;	}
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
 		return;
@@ -214,7 +214,7 @@ void(float stat) HIP_FireLaser =
 			return;
 		}
 
-		if (self.ammo_cells < ammo_con(self.eweapon.dmg_save, self, ""))
+		if (self.ammo_cells < ammo_con(self.eweapon.dmg_save, self, null_string))
 		{
 			self.weapon = W_BestWeapon ();
 			W_SetCurrentAmmo ();
@@ -246,7 +246,7 @@ void(float stat) HIP_FireLaser =
    if (stat == 0)
       {
 		if (self.class_select != "class_monster")
-      self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(self.eweapon.dmg_save, self, "");
+      self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(self.eweapon.dmg_save, self, null_string);
 		org = org + (aofs*v_right);
 		org = org - (aofs*v_up);
 		HIP_LaunchLaser(org + v_right * VWY_LASERCAN, dir, 0, lns);
@@ -256,7 +256,7 @@ void(float stat) HIP_FireLaser =
    else if (stat == 1)
       {
 		if (self.class_select != "class_monster")
-      self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(self.eweapon.dmg_save, self, "");
+      self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(self.eweapon.dmg_save, self, null_string);
       org = org + (ofs*v_up);
       if (random()<0.1)
          {

@@ -168,7 +168,7 @@ void() func_spawn =
 		self.spawnmodel = self.model;
 		self.spawnmins = self.mins;
 		self.spawnmaxs = self.maxs;
-		setmodel (self, "");
+		setmodel (self, null_string);
 		setsize (self, self.spawnmins, self.spawnmaxs);
 		//save off solid flag
 		self.spawnsolidtype = self.solid;
@@ -198,7 +198,7 @@ void() func_spawn =
 		self.spawnmodel = self.model;
 		self.spawnmins = self.mins;
 		self.spawnmaxs = self.maxs;
-		setmodel (self, "");
+		setmodel (self, null_string);
 		setsize (self, self.spawnmins, self.spawnmaxs);
 		//save off solid flag
 		self.spawnsolidtype = self.solid;
@@ -228,7 +228,7 @@ void() func_spawn =
 		self.spawnmodel = self.model;
 		self.spawnmins = self.mins;
 		self.spawnmaxs = self.maxs;
-		setmodel (self, "");
+		setmodel (self, null_string);
 		setsize (self, self.spawnmins, self.spawnmaxs);
 		//save off solid flag
 		self.spawnsolidtype = self.solid;
@@ -258,7 +258,7 @@ void() func_spawn =
 		self.spawnmodel = self.model;
 		self.spawnmins = self.mins;
 		self.spawnmaxs = self.maxs;
-		setmodel (self, "");
+		setmodel (self, null_string);
 		setsize (self, self.spawnmins, self.spawnmaxs);
 		//save off solid flag
 		self.spawnsolidtype = self.solid;
@@ -288,7 +288,7 @@ void() func_spawn =
 		self.spawnmodel = self.model;
 		self.spawnmins = self.mins;
 		self.spawnmaxs = self.maxs;
-		setmodel (self, "");
+		setmodel (self, null_string);
 		setsize (self, self.spawnmins, self.spawnmaxs);
 		//save off solid flag
 		self.spawnsolidtype = self.solid;
@@ -330,8 +330,8 @@ void() func_spawn =
 		self.spawnmodel = self.model;
 		self.spawnmins = self.mins;
 		self.spawnmaxs = self.maxs;
-		setmodel (self, "");
-		self.model = "";
+		setmodel (self, null_string);
+		self.model = null_string;
 		setsize (self, self.spawnmins, self.spawnmaxs);
 		//save off solid flag
 		self.spawnsolidtype = self.solid;
@@ -348,7 +348,7 @@ void() func_spawn =
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_NONE;
 	self.modelindex = 0;
-	self.model = "";
+	self.model = null_string;
 	setmodel (self, self.model);  // set size and link into world
 	self.use = spawn_use;
 	self.spawnmaster = monster;

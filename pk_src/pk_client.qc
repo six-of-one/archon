@@ -459,7 +459,7 @@ entity() PK_SelectSpawnPoint =
 	}
 	if (spot || PK_100) return spot;
 	
-	spot = find_tdest(0, "");
+	spot = find_tdest(0, null_string);
 	return spot; // this better pretty damn well be somewhere in the level
 
 };
@@ -486,7 +486,7 @@ void() pk_plcfg =
 		{
 			stuffcmd(self, Q3_BOBHOFF);
 //			if (!pk_map) // not a pk map (some hubX maps have no .wad!)
-//			if (world.wad == "") // q3 map? - then set bob
+//			if (world.wad == null_string) // q3 map? - then set bob
 			if (!Q_100 && !PK_100)
 			if (MAP_MODE == "Q3")
 				q3_bob_height();
@@ -699,7 +699,7 @@ void() PutClientInServer =
 	// PAINKEEP SPLASH Make this entity splash
 	AddToSplashBig(self);
 	
-	ominous_hum("", 1); // clear any stray hum
+	ominous_hum(null_string, 1); // clear any stray hum
 
 	// PAINKEEP Fix the velocity on respawn bug
 	self.velocity = '0 0 0';
@@ -820,7 +820,7 @@ void () CheckPowerups =
 				if (self.group)
 				{
 					sprint (self, self.group);
-					self.group = "";
+					self.group = null_string;
 				}
 				else
 				sprint (self, "Ring of Shadows magic is fading\n");
@@ -867,7 +867,7 @@ void () CheckPowerups =
 				if (self.group)
 				{
 					sprint (self, self.group);
-					self.group = "";
+					self.group = null_string;
 				}
 				else
 				if  (self.pkplus_actortype == PKPLUS_ACTORPENT) // pk art code here
@@ -916,7 +916,7 @@ void () CheckPowerups =
 				if (self.group)
 				{
 					sprint (self, self.group);
-					self.group = "";
+					self.group = null_string;
 				}
 				else
 				if (self.pkplus_actortype == PKPLUS_ACTORQUAD) // pk art code here
@@ -964,12 +964,12 @@ void () CheckPowerups =
 				if (self.group)
 				{
 					sprint (self, self.group);
-					self.group = "";
+					self.group = null_string;
 				}
 				else
 				sprint (self, "Air supply in Biosuit expiring\n");
 				stuffcmd (self, "bf\n");
-				if (self.noise3 != "")
+				if (self.noise3 != null_string)
 					sound (self, CHAN_AUTO, self.noise3, 1, ATTN_NORM);
 				else
 				sound (self, CHAN_AUTO, "items/suit2.wav", 1, ATTN_NORM);
@@ -1012,7 +1012,7 @@ void () CheckPowerups =
 					if (self.group)
 					{
 						sprint (self, self.group);
-						self.group = "";
+						self.group = null_string;
 					}
 					else
 					sprint (self, "Air supply in Re-breather expiring\n"); // IDEA: item stored messages
@@ -1023,7 +1023,7 @@ void () CheckPowerups =
 				if (self.group)
 				{
 					sprint (self, self.group);
-					self.group = "";
+					self.group = null_string;
 				}
 				else
 				sprint (self, "Air supply in Enviro suit expiring\n");
@@ -1070,7 +1070,7 @@ void () CheckPowerups =
 				if (self.group)
 				{
 					sprint (self, self.group);
-					self.group = "";
+					self.group = null_string;
 				}
 				else
 				sprint (self, "Empathy Shields are running out\n");
@@ -1207,7 +1207,7 @@ void () WaterMove =
 
 		if (!Q_100) ignorearmor = TRUE; // *pk - no armor taken when drowning
 			// Cataboligne 9.11.3 purify
-		e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "drowning", "", SUB_Null, 0.01, SUB_Remove, SUB_Null, self, world);
+		e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "drowning", null_string, SUB_Null, 0.01, SUB_Remove, SUB_Null, self, world);
 		T_Damage (self, e, world, self.dmg);
 		ignorearmor = FALSE;
 		self.pain_finished = time + 1;
@@ -1595,7 +1595,7 @@ void () PlayerPostThink =
 	if (WEPHUM)
 	if (self.eweapon)
 	if (self.eweapon.fly_sound != HUMLOCAL)
-	if (self.eweapon.noise2 != "")
+	if (self.eweapon.noise2 != null_string)
 	if (self.chaosweptime < time)
 //		if (self.eweapon.weapon != MC_AIRGUN)
 		ominous_hum(self.eweapon.noise2, self.eweapon.chaosweptime);
@@ -1609,27 +1609,18 @@ void () PlayerPostThink =
 
 // archon spell targeting
 	if (self.mask_x & MORPH_ARCHON)
-	if ((self.weapon != IT_AXE) || (self.bolt_targetTimeout == -6)) // need to timeout when we select fire mode
+	if (self.weapon != IT_AXE) // need to timeout when we select fire mode
 	{
-		if (self.bolt_targetTimeout > time)
+		if (self.bolt_targetTimeout > time) // reticles & targeting
 		{
+			if (self.bolt_target != self) // Archons can teleport self
 			if (self.bolt_target) setorigin(self.bolt_target.bolt_target, self.bolt_target.origin + self.bolt_target.bolt_target.view_ofs);
 			if (self.enemy) setorigin(self.enemy.bolt_target, self.enemy.origin + self.enemy.bolt_target.view_ofs);
 			archon_target();
 		}
 		else
 		{
-			if (self.bolt_target)
-				archon_target_clear(self.bolt_target);
-
-			if (self.enemy)
-				archon_target_clear(self.enemy);
-
-			self.enemy = self.bolt_target = world;
-			if (self.pk_explode_ammo > 0)
-				stuffcmd(self, "infobar 5 \"Spell canceled\"\n");
-			self.pk_explode_ammo = 0;
-			self.bolt_targetTimeout = 0;
+			clear_spell();
 		}
 	}
 
@@ -1653,7 +1644,7 @@ void () PlayerPostThink =
 			if (self.watertype == CONTENT_WATER)
 				sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
 			else if (self.map == "demon_jump") // demon jumping - clear indicator
-				self.map = "";
+				self.map = null_string;
 			else if (self.jump_flag < -650)
 			{
 				T_Damage (self, world, world, 5); // IDEA: falling damage related to dist & velo (*_z)
@@ -1692,6 +1683,7 @@ void () PlayerPostThink =
 // PK_DUTYCHECKING_START
 	if (self.pk_dutychecking == 0)
 	{
+		if (!self.mask_x & MORPH_ARCHON)
 		if (self.bolt_target || self.bolt_targetNext || ((self.bolt_changeModelTimeout < time) && (self.weaponmodel == "progs/v_cl_on.mdl")) )
 			bolt_checkTargets();
 	
@@ -1716,6 +1708,7 @@ void () PlayerPostThink =
 	}
 	else if (time > self.pk_dutychecking)
 	{
+		if (!self.mask_x & MORPH_ARCHON)
 		if (self.bolt_target || self.bolt_targetNext || ((self.bolt_changeModelTimeout < time) && (self.weaponmodel == "progs/v_cl_on.mdl")) )
 			bolt_checkTargets();
 
@@ -1932,7 +1925,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 //		if (targ.watertype != CONTENT_LAVA && (targ.flags & FL_DEMONBOOM || targ.deathtype == "rage") ) // because a dying demon in a rage still explodes...
 		if (targ.watertype != CONTENT_LAVA && (targ.deathtype == "rage") ) // because a dying demon in a rage still explodes...
 		{
-			targ.deathtype = "";
+			targ.deathtype = null_string;
 			bprint (targ.netname);
 			bprint (" went to pieces in a fit of rage!\n");
 			return;
@@ -2035,7 +2028,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 		{
 			local string sa;
 			bprint (targ.netname);
-			deathstring = rnd_string(' 90.0 60.0 60.0'," has is ass crushed by  "," finds out where the black hole goes for ","",""," goes beyond the event horizion of ");
+			deathstring = rnd_string(' 90.0 60.0 60.0'," has is ass crushed by  "," finds out where the black hole goes for ",null_string,null_string," goes beyond the event horizion of ");
 			if (sphere_a.owner)
 			{
 				if (sphere_a.owner ==  targ) // whoopsie - got a wee bit too close
@@ -2044,7 +2037,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 						targ.frags = (targ.frags - frag_minus());
 					if (random() < 0.5)
 					{
-						deathstring = rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n","",""," made a really bad mistake\n");
+						deathstring = rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n",null_string,null_string," made a really bad mistake\n");
 						bprint (deathstring);
 					}
 					else
@@ -2075,7 +2068,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					if (!NOPKCIDE)
 						targ.frags = targ.frags - frag_minus();
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n",null_string,null_string," forgot to hide from his autosentry\n"));
 					else
 					bprint(" forgot to hide from his own AutoSentry!\n");
 				return;
@@ -2102,7 +2095,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_GRAVITYWELL)
 				{
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n","",""," visits another dimension\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n",null_string,null_string," visits another dimension\n"));
 					else
 					bprint (" visits another dimension\n");
 					if (!NOPKCIDE)
@@ -2113,7 +2106,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_BEARTRAP)
 				{
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n","",""," forgot about his beartrap\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n",null_string,null_string," forgot about his beartrap\n"));
 					else
 					bprint (" forget about his beartrap\n");
 					if (!NOPKCIDE)
@@ -2127,28 +2120,28 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				if (inflictor.classname == "cluster_bomb")
 				{
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," checks his cluster bomb spread\n"," went to collect the cluster bombs\n","",""," checked to see if the cluster bombs were duds\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," checks his cluster bomb spread\n"," went to collect the cluster bombs\n",null_string,null_string," checked to see if the cluster bombs were duds\n"));
 					else
 						bprint (" becomes bored with life\n");
 				}
 				if (inflictor.classname == "grenade" || inflictor.classname == "MultiGrenade" || inflictor.classname == "MiniGrenade") // Cataboligne - 11.21.12 - added rogue weps
 				{
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n","",""," tries to put the pin back in\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n",null_string,null_string," tries to put the pin back in\n"));
 					else
 						bprint (" tries to put the pin back in\n");
 				}
 				else if (inflictor.classname == "missile")
 				{
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n","",""," becomes bored with life\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n",null_string,null_string," becomes bored with life\n"));
 					else
 						bprint (" becomes bored with life\n");
 				}
 				else if (inflictor.classname == "laser")
 				{
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n","",""," self cremated\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n",null_string,null_string," self cremated\n"));
 					else if (rnum > 0.4 )
 						bprint (" becomes bored with life\n");
 					else
@@ -2157,35 +2150,35 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 
 //				if (curwep_mapcode(targ, 0) == MC_GRAVITY)
 //				else if (inflictor.classname == "gravity_armed")
-//					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n","",""," visits another dimension\n"));
+//					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n",null_string,null_string," visits another dimension\n"));
 
 //				if (curwep_mapcode(targ, 0) == MC_BEARTRAP)
 //				else if (inflictor.classname == "beartrap_armed")
-//					bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n","",""," forgot about his beartrap\n"));
+//					bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n",null_string,null_string," forgot about his beartrap\n"));
 
 //				else if (inflictor.classname == "turret")
-//					bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
+//					bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n",null_string,null_string," forgot to hide from his autosentry\n"));
 
 //				if (curwep_mapcode(targ, 0) == MC_BOMB)
 				else if (inflictor.classname == "bomb")
-					bprint(rnd_string(' 90.0 60.0 60.0'," parties with Wile E. Coyote\n"," finds his bomb in the dark\n","",""," was too late to snuff the fuse\n"));
+					bprint(rnd_string(' 90.0 60.0 60.0'," parties with Wile E. Coyote\n"," finds his bomb in the dark\n",null_string,null_string," was too late to snuff the fuse\n"));
 
 				else if (inflictor.classname == "democharge")
-					bprint(rnd_string(' 90.0 60.0 60.0'," blew his own ass to hell\n"," forgot to check the safety\n","",""," didnt run fast enough\n"));
+					bprint(rnd_string(' 90.0 60.0 60.0'," blew his own ass to hell\n"," forgot to check the safety\n",null_string,null_string," didnt run fast enough\n"));
 
 				else if (inflictor.classname == "proximity_grenade")
 				{
 					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n","",""," tested the prox grenades motion sensor\n"));
+						bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n",null_string,null_string," tested the prox grenades motion sensor\n"));
 					else
 						bprint (" becomes bored with life\n");
 				}
 
 				else if (inflictor.classname == "ball_lightning")
-					bprint(rnd_string(' 90.0 60.0 60.0'," felt the shaft of the ball lightning\n"," didnt respect the power of the dynamo\n","",""," hung around to watch\n"));
+					bprint(rnd_string(' 90.0 60.0 60.0'," felt the shaft of the ball lightning\n"," didnt respect the power of the dynamo\n",null_string,null_string," hung around to watch\n"));
 
 //				else if (inflictor.classname == "sphere_annihilation")
-//					bprint(rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n","",""," made a really bad mistake\n"));
+//					bprint(rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n",null_string,null_string," made a really bad mistake\n"));
 				else
 				{
 					if (attacker._killmsg)
@@ -2196,7 +2189,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 						if (deathstring == "return") return; // printed in killmsg call, just go back
 
 						deathstring2 = attacker._killmsg2(targ, attacker);
-						if (deathstring == "") // nope, ur?
+						if (deathstring == null_string) // nope, ur?
 						{
 //							deathstring = DEF_MORPH_DEATH1; //   was killed by 
 							deathstring = " was killed"; //   was killed by 
@@ -2210,7 +2203,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					if ((inflictor.weapon == IT_LIGHTNING) || ((inflictor.weapon == IT_AXE) && (targ.pk_currentitem == PK_IT_CLIGHT)) && attacker.waterlevel > 1)
 					{
 						if (ENHANCED)
-							bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n","",""," discharges into the water\n"));
+							bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n",null_string,null_string," discharges into the water\n"));
 						else
 							bprint (" discharges into the water.\n");
 						return;
@@ -2226,7 +2219,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 							if (deathstring == "return") return; // printed in killmsg call, just go back
 
 							deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
-							if (deathstring != "")
+							if (deathstring != null_string)
 							{
 								bprint (deathstring);
 								bprint (deathstring2);
@@ -2733,7 +2726,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 //						if (attacker.eweapon._killmsg2 != (void ()) 0)
 						if (attacker.eweapon._killmsg2)
 						deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
-						if (deathstring == "")
+						if (deathstring == null_string)
 						{
 							deathstring = DEF_WEP_DEATH1; //  was just plain shot with 
 							deathstring2 = "'s experimental weapon\n"; // 's random weapon of choice
@@ -2758,7 +2751,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					if (attacker._killmsg2)
 					deathstring2 = attacker._killmsg2(targ, attacker);
 
-					if (deathstring == "") // nope, ur?
+					if (deathstring == null_string) // nope, ur?
 					{
 						deathstring = DEF_MORPH_DEATH1; //   was killed by 
 						deathstring2 =  DEF_MORPH_DEATH2; // some how, we just arent sure
@@ -2851,7 +2844,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 						deathstring2 = "'s shaft\n";
 				}
 
-				if (deathstring2 == "" && deathstring == "") // no wep kill msg, how strange - use defaults
+				if (deathstring2 == null_string && deathstring == null_string) // no wep kill msg, how strange - use defaults
 				{
 					deathstring = DEF_WEP_DEATH1; //  was just plain shot with 
 					deathstring2 =  DEF_WEP_DEATH2; // 's random weapon of choice
@@ -2958,7 +2951,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
                bprint (" was blasted by a spike mine\n");
 				else // now have generic
 				{
-					deathstring = "";
+					deathstring = null_string;
 //					if (attacker._killmsg != (void()) 0)
 					if (attacker._killmsg)
 						deathstring = attacker._killmsg(targ, attacker);
@@ -3052,7 +3045,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			// fell to their death?
 			if (targ.deathtype == "falling")
 			{
-				targ.deathtype = "";
+				targ.deathtype = null_string;
 				bprint (" fell to his death\n");
 //				noenvcide(targ);
 				return;

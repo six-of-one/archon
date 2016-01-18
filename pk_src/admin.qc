@@ -135,10 +135,10 @@ bprint("\n");
 	else
 		stuffcmd(e, "noadmingamma\n");
 	stuffcmd(e, "noadmin_centertime\n");
-	centerprint(e, "");
+	centerprint(e, null_string);
 	e.impulse = e.admin = 0;
 	e.takedamage = DAMAGE_AIM;	
-	e.wad = e.message = e.path = e.target = "";
+	e.wad = e.message = e.path = e.target = null_string;
 	e.enemy = world;
 	if (CAM_DEF & DPCAM_ON)
 	{
@@ -320,7 +320,7 @@ void() Admin_varmenu =
 	self.message =
 					"\b   Administration Menu:    \n\b+-------------------------+\n      adjust variable      \n +-----------------------+ \n  increment     decrement  \n     1:      1       :6    \n     2:      10      :5    \n     3:      100     :4    \n          by value         \n +-----------------------+ \n   7: save modification    \n   8: enter new value      \n   9: main menu            \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 	}
-	self.wad = "";
+	self.wad = null_string;
 	self.admin = self.lip = 19;
 };
 
@@ -371,7 +371,7 @@ void() Admin_dmmapmenu =
 						"\b  Painkeep DM map Menu:\n\b+------------------------+\n    01:  pk1    11: pk11  \n    02:  pk2    12: pk12  \n    03:  pk3    13: pk13  \n    04:  pk4    14: pk14  \n    05:  pk5    15: pk15  \n    06:  pk6    16: pk16  \n    07:  pk7    17: pk17  \n    08:  pk8    18: pk18  \n    09:  pk9    19: pk0   \n    10:  pk10   21: hub   \n    20:  painkeep         \n    61:  list hub links   \n   666:  main menu        \n  admin impulse exits     \n\b+------------------------+\n\b Enter code: ";
 	}
 
-	self.wad = "";
+	self.wad = null_string;
 	self.admin = 14;
 	self.admin_input = 0;
 };
@@ -381,7 +381,7 @@ void() Admin_dmmapmenu =
 string() MapQ99 =
 {
 	local string mname;
-	mname = "";
+	mname = null_string;
 	if (self.admin_input == 01) mname = "dm1";
 	else if (self.admin_input == 02) mname = "dm2";
 	else if (self.admin_input == 03) mname = "dm3";
@@ -420,7 +420,7 @@ string() MapQ99 =
 	else if (self.admin_input == 36) mname = "e4m6";
 	else if (self.admin_input == 37) mname = "e4m7";
 	else if (self.admin_input == 38) mname = "e4m8";
-//	else if (self.admin_input == 39) mname = "";
+//	else if (self.admin_input == 39) mname = null_string;
 
 	return(mname);
 };
@@ -430,7 +430,7 @@ string() MapQ99 =
 string() MapDM2 =
 {
 	local string mname;
-	mname = "";
+	mname = null_string;
 	if (self.admin_input == 41) mname = "painkeep2";
 	else if (self.admin_input == 01) mname = "pkts01";
 	else if (self.admin_input == 02) mname = "pkts02";
@@ -471,7 +471,7 @@ string() MapDM2 =
 	else if (self.admin_input == 42)
 	{
 		admin_clear(self);
-		mname = "";
+		mname = null_string;
 		bot_changelevel(); // *bot - reload bots on next level, handle intermission
 		bprint("Admin loaded custom hub / start map...\n");
 		check_custom_hub(); 
@@ -579,7 +579,7 @@ float() MapDM =
 					while (f)
 					{
 						if (f.classname == "trigger_multiple")
-						if (f.message != "" && f.message != "\n" && f.message != " ")
+						if (f.message != null_string && f.message != "\n" && f.message != " ")
 						{
 							v2 = (f.mins + f.maxs) * 0.5;
 							if (vlen(v1 - v2) < dx)
@@ -607,7 +607,7 @@ float() MapDM =
 					while (f)
 					{
 						if (f.classname == "trigger_multiple")
-						if (f.message != "" && f.message != "\n" && f.message != " ")
+						if (f.message != null_string && f.message != "\n" && f.message != " ")
 						{
 							bprint(f.message);
 							bprint("\n");
@@ -625,7 +625,7 @@ float() MapDM =
 
 		return(FALSE);
 	}
-	if (mname == "") return(FALSE);
+	if (mname == null_string) return(FALSE);
 
 	bprint("Admin changing map to ");
 	bprint(mname);
@@ -717,7 +717,7 @@ void() Admin_botmenu =
 				       "\b     Admin Bot Menu:     \n\b+--------------------------+\n    pk*bot       frikbot    \n 01: add bot   11: add bot  \n 02: remove 1  12: remove 1 \n 03: 3 *skill  13: 3 *skill \n - add 1 bot of each skill  \n 04: add 4     14: add 4    \n - add 4 bots - same skill  \n 05: verbose                \n 06: update    20: +skill   \n 08: observer mode          \n 09: observer time          \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
 // 07: unrestricted           \n
 
-	self.wad = "";
+	self.wad = null_string;
 	self.admin = 18;
 	self.admin_input = 0;
 };
@@ -757,10 +757,10 @@ void() Admin_itembits =
 
 	while (f != CON_STOP)
 	{
-		it = "";
+		it = null_string;
 		if (f & pk_itemovr)
 			it = item_by_bit(f);
-		if (it != "")
+		if (it != null_string)
 		{
 			bprint(adv);
 			bprint(": ");
@@ -836,7 +836,7 @@ void() Admin_itemmenu =
 	{
 	self.message = build_itemmenu();
 	}
-	self.wad = "";
+	self.wad = null_string;
 	self.admin = 26;
 	self.admin_input = 0;
 };
@@ -1012,7 +1012,7 @@ void() Admin_monstermenu =
 				       "\b     Admin Monster Menu:    \n\b+--------------------------+\n  +------- \bmonster\b ------+  \n  01: Army Grunt            \n  02: Fish                  \n  03: Knight                \n  04: Rabid Dog             \n  05: Fiend                 \n  06: Enforcer              \n  07: Hell Knight           \n  08: Ogre                  \n  09: Shalrath              \n  10: Shambler              \n  11: Scragg                \n  12: Zomby                 \n  13: Cthon                 \n  14: Spawn                 \n  15: Scourge               \n  16: Shubbers              \n  17: Vorerel               \n  18: Gremlin               \n  19: Vomitus               \n  +------ \bcontrols\b ------+  \n  26: Bits -> map monsters  \n  27: Bits -> to random     \n  28: Bits -> to respawn    \n  29: All bits off          \n  30: Show monster bits     \n  31: List all monsters     \n  32: Monster set II        \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
 
 	if (self.cnt) Admin_monstermenu2();
-	self.wad = "";
+	self.wad = null_string;
 	self.admin = 30; //  - this & 3 must = 2
 	self.admin_input = 0;
 };
@@ -1034,7 +1034,7 @@ void() Admin_pkmenu =
 //  06: Spike traps           \n"
 //  07: Extra sound           \n"
 
-	self.wad = "";
+	self.wad = null_string;
 	self.admin = 22;
 	self.admin_input = 0;
 };
@@ -1073,7 +1073,7 @@ void() Admin_mainmenu =
 					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  start map load      \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  60:  PK mode toggle      \n  ---  PK mode = FALSE     \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 	}
 
-	self.target = self.path = self.wad = "";
+	self.target = self.path = self.wad = null_string;
 	self.admin = 6;
 	self.admin_input = 0;
 };
@@ -1244,9 +1244,9 @@ void() AdminCommands =
 		else if (self.admin_input == 97)													// live in game admin - not in menu
 		{
 			self.admin = LIVE_ADMIN;
-			self.wad = self.message = self.path = self.target = "";
+			self.wad = self.message = self.path = self.target = null_string;
 			self.enemy = world;
-			centerprint(self, "");
+			centerprint(self, null_string);
 			self.takedamage = DAMAGE_AIM;
 			self.impulse = 0;
 			if (self.light_lev > 0)
@@ -1278,15 +1278,15 @@ void() AdminCommands =
 		{
 			observer();
 			self.goalentity.effects = 0;
-			setmodel(self.goalentity, ""); // no light on admin observer
+			setmodel(self.goalentity, null_string); // no light on admin observer
 		}
 		else if (self.admin_input == 99)													// admin respawn - exits admin mode
 		{
 			self.impulse = pk_adminimp;
 			PK_AdminImpulse();
-			centerprint(self, "");
+			centerprint(self, null_string);
 			self.classname = "player";
-			setmodel(self, ""); // dont let body que make a copy of a live player
+			setmodel(self, null_string); // dont let body que make a copy of a live player
 			respawn ();
 			return;
 		}
@@ -1315,7 +1315,7 @@ void() AdminCommands =
 		}
 		self.admin = self.lip; // admin level we are on
 		self.wad = self.target;
-		self.target = self.path = "";
+		self.target = self.path = null_string;
 		if (self.lip != 19) self.admin_input = 0;
 	}
 	else if (self.admin == 13)														// dm map from painkeep set
@@ -1489,7 +1489,7 @@ void() AdminCommands =
 		if (self.impulse == 9)
 		{
 			self.cnt = 0;
-			self.wad = self.noise = "";
+			self.wad = self.noise = null_string;
 			Admin_mainmenu();
 			setBotGravity(); // *bots
 		}
@@ -1862,7 +1862,7 @@ void() User_menu =
 {
 	string head, ln1, ln2, ln3, ln4, ln5, foot;
 
-	ln1 = ln2 = ln3 = ln4 = ln5 = "";
+	ln1 = ln2 = ln3 = ln4 = ln5 = null_string;
 
 	if (self.aflag == IMP_DROPI) // drop inv menu
 	{
@@ -1920,7 +1920,7 @@ void() User_menu =
 		ln5 =
 						"  9: Axe                  \n  0: Inventory list       \n  +--------------------+  \n";
 
-	self.wad = "";
+	self.wad = null_string;
 	centerprint7(self, head, ln1, ln2, ln3, ln4, ln5, foot);
 };
 
@@ -1955,7 +1955,7 @@ void() PK_AdminImpulse =
 
 		crosshair_off(self);
 
-		if (self.message == "")
+		if (self.message == null_string)
 		{
 			if (cvar("r_ambient") > 0)
 				self.light_lev = cvar("r_ambient");
@@ -1991,7 +1991,7 @@ void() PK_AdminImpulse =
 			{
 				self.goalentity.nextthink = time + USER_TIMEOUT;
 				drop_setup(self, 1);
-				if (self.dropent.noise == "")
+				if (self.dropent.noise == null_string)
 				{
 					drop_setup(self, 0);
 				}
@@ -2056,7 +2056,7 @@ void() PK_AdminImpulse =
 */
 		f = self.impulse;
 		User_menu();
-//		centerprint3(self, self.message, "", "");
+//		centerprint3(self, self.message, null_string, null_string);
 		if (self.button0 || self.button1 || self.button2 || self.impulse)
 		{
 			admin_clear(self);
@@ -2098,7 +2098,7 @@ void() PK_AdminImpulse =
 
 		if (self.admin && self.admin < LIVE_ADMIN)
 		{
-			centerprint(self, "");
+			centerprint(self, null_string);
 			if (self.admin < 0) // escaped login
 			{
 				self.attack_finished = time + A_TIME; // penalty - cant use this for invulnerable state
@@ -2152,9 +2152,9 @@ void() PK_AdminImpulse =
 //		if (self.impulse == 11 && self.admin_input) self.admin = fabs(self.admin) - 1; // enter - done
 		else if (self.admin > 0) // code for menu select go back now
 		{
-			as ="";
+			as =null_string;
 			if (self.admin_input) as = ftos(self.admin_input);
-			else if (self.admin < 9) self.wad = "";
+			else if (self.admin < 9) self.wad = null_string;
 			if (self.admin < 9) centerprint3(self, self.message, as, "<");
 			else centerprint3(self, self.message, as, self.wad);
 			self.impulse = 0;
@@ -2176,7 +2176,7 @@ void() PK_AdminImpulse =
 		}
 		else if (self.impulse)
 		{
-		as = "";
+		as = null_string;
 		if (pk_adminpwdmask) // cute password mask
 		{
 			if			(self.admin_input > 9999999999) as	= "***********" ; // alas, my compiler for additive strings, just stop echoing new chars here
@@ -2233,7 +2233,7 @@ float() admin_postthink =
 		if (pk_admintime > 0)
 		if (self.goalentity)
 		if (self.goalentity.classname == "admintimer")
-		if (self.goalentity.model != "")
+		if (self.goalentity.model != null_string)
 			setorigin(self.goalentity, self.origin + ' 0 0 60'); // track admin players
 
 		if (self.admin != LIVE_ADMIN) return(TRUE);

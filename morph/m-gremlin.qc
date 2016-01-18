@@ -221,7 +221,7 @@ void() player_gremlin_pain =
 //	ml = !self.holdent.flags & FL_HELD; // item_held()
 	if (self.eweapon) ml = FL_MELEE(self.eweapon, self.weapon, self.pk_currentitem );
 
-	if (random() < 0.4) morph_sound (0.8, rnd_string(v0, "gremlin/pain1.wav","gremlin/pain2.wav","","","gremlin/pain3.wav"), 1);
+	if (random() < 0.4) morph_sound (0.8, rnd_string(v0, "gremlin/pain1.wav","gremlin/pain2.wav",null_string,null_string,"gremlin/pain3.wav"), 1);
 
 	if (ml)
 		player_gremlin_meleepain1();
@@ -269,11 +269,11 @@ void() player_gremlin_die =
 	if ((DEAD_THROW & 16) || !gib)
 		DeadThrowWeps(newmis, self.origin); // newmis is the pack - ammo must be accounted
 
-//	if ( GibMorph ("progs/gremlin.mdl", $severedhead, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND | FL_PLAGUE, 0, -95, 8, 0, "") ) return;
+//	if ( GibMorph ("progs/gremlin.mdl", $severedhead, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND | FL_PLAGUE, 0, -95, 8, 0, null_string) ) return;
    if (gib)
    {		
 // note: diff to pk_gibplayer
-		if (random() < 0.45) sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav","","","gremlin/minitheme.wav"), 1, ATTN_NORM);
+		if (random() < 0.45) sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav",null_string,null_string,"gremlin/minitheme.wav"), 1, ATTN_NORM);
 		else
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 // integrated head
@@ -289,7 +289,7 @@ void() player_gremlin_die =
       return;
    }
 
-	if (random() < 0.65) sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav","","","gremlin/minitheme.wav"), 1, ATTN_NORM);
+	if (random() < 0.65) sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav",null_string,null_string,"gremlin/minitheme.wav"), 1, ATTN_NORM);
 	if (random() < 0.5)
 		player_gremlin_die1();
 	else
@@ -309,7 +309,7 @@ void(float st) W_FireClawBite =
 	local float dist, dm;
 	local string miss;
 
-	miss = "";
+	miss = null_string;
 	dist = 64;
 	dm = 8 + rint(random() + 0.45) * 4;
 	if (st == ST_BITE)
@@ -457,7 +457,7 @@ void() player_gremlin_impulse =
 	{
 		sprint(self, "Gremlin using ( claws )\n");
 		self.eweapon = world;
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 		self.pk_currentitem = PK_IT_AXE;
 	}
 
@@ -466,7 +466,7 @@ void() player_gremlin_impulse =
 	{
 		sprint(self, "Gremlin using ( bite )\n");
 		self.eweapon = world;
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 	}
 };
 
@@ -605,7 +605,7 @@ void() gremlin_spawning =
 		self.frame = $meleestnd2;
 		if (self.flags & FL_CLIENT)
 		{
-			self.map = "";
+			self.map = null_string;
 		}
 		else if (self.flags & FL_MONSTER)
 		{
@@ -726,7 +726,7 @@ if (WARNING) bprint("made a gremlin\n");
 
 			self.show_hostile = time + 1;
 			sv1 = self;
-			self = chaos_spawn(MOVETYPE_STEP, SOLID_SLIDEBOX, 0, 0, spot, ' 0 0 0', ' 0 0 0', ' 0 0 0', ' 0 0 0', "monster_gremlin", "", SUB_Null, 0, SUB_Null, SUB_Null, sv1, world);
+			self = chaos_spawn(MOVETYPE_STEP, SOLID_SLIDEBOX, 0, 0, spot, ' 0 0 0', ' 0 0 0', ' 0 0 0', ' 0 0 0', "monster_gremlin", null_string, SUB_Null, 0, SUB_Null, SUB_Null, sv1, world);
 
 			monster_gremlin(A_MONSTER);
 			if (self.model == "progs/gremlin-fly.mdl")
@@ -788,7 +788,7 @@ void(float silent) player_gremlin_become =
 
 	self.msight = "gremlinsight";
 	self.noise2 = "gremlin/pain2.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 22';
 
 	setsize (self, '-16 -16 -14',  ' 16 16 32');

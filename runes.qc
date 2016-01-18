@@ -411,7 +411,7 @@ void() server_rune_follow =
 	{
 		if ((k & serverflags) && !(f & serverflags))
 		{
-			e = find_tdest(FL_RSALL, "");
+			e = find_tdest(FL_RSALL, null_string);
 			v = e.origin;
 
 			e = spawn();
@@ -437,7 +437,7 @@ void(entity e) dead_artifact =
 {
 	local float f, a;
 
-//	if (force_drop_set(e, "")) return;
+//	if (force_drop_set(e, null_string)) return;
 
 	if (e.items & IT_ARTIFACT)
 	{
@@ -449,35 +449,35 @@ void(entity e) dead_artifact =
 			if (f == IT_SUPERHEALTH)
 			{
 //				drop_string("Mega Health", IT_SUPERHEALTH, world);
-				drop_one(e, "Mega Health", IT_SUPERHEALTH, world, "", MED_BOUNCE_NOW, 0);
+				drop_one(e, "Mega Health", IT_SUPERHEALTH, world, null_string, MED_BOUNCE_NOW, 0);
 			}
 
 			else if (f == IT_INVISIBILITY)
 			{
-				drop_one(e, "Limited Invisibility", IT_INVISIBILITY, world, "", MED_BOUNCE_NOW, 0);
+				drop_one(e, "Limited Invisibility", IT_INVISIBILITY, world, null_string, MED_BOUNCE_NOW, 0);
 			}
 
 // make sure the next two arent actors when tossing out artifact!
 			else if (f == IT_INVULNERABILITY) // note: could only happen with real invuln if admin kick comes thru here
 			{
 				if (!e.pkplus_actortype)
-					drop_one(e, "Invulerability", IT_INVULNERABILITY, world, "", MED_BOUNCE_NOW, 0);
+					drop_one(e, "Invulerability", IT_INVULNERABILITY, world, null_string, MED_BOUNCE_NOW, 0);
 			}
 
 			else if (f == IT_QUAD)
 			{
 				if (!e.pkplus_actortype)
-					drop_one(e, "Quad Damage", IT_QUAD, world, "", MED_BOUNCE_NOW, 0);
+					drop_one(e, "Quad Damage", IT_QUAD, world, null_string, MED_BOUNCE_NOW, 0);
 			}
 
 			else if ( (f == IT_SUIT) && !e.wetsuit_finished)
 			{
-				drop_one(e, "Hazmat Suit", IT_SUIT, world, "", MED_BOUNCE_NOW, 0);
+				drop_one(e, "Hazmat Suit", IT_SUIT, world, null_string, MED_BOUNCE_NOW, 0);
 			}
 
 			else if ( (f == IT_SUIT) && e.wetsuit_finished)
 			{
-				drop_one(e, "Diving Suit", IT_SUIT, world, "", MED_BOUNCE_NOW, 0);
+				drop_one(e, "Diving Suit", IT_SUIT, world, null_string, MED_BOUNCE_NOW, 0);
 			}
 /*
 			if (e.dropent.cnt == 2)
@@ -490,21 +490,21 @@ void(entity e) dead_artifact =
 
 	if (e.empathy_finished)
 	{
-		drop_one(e, "Empathy Shields", 0, world, "", MED_BOUNCE_NOW, 0);
+		drop_one(e, "Empathy Shields", 0, world, null_string, MED_BOUNCE_NOW, 0);
 	}
 
 	a = RUNE_FLG_FLY;
 	if (!(a & RUNE_MASK_ALL))
 	if (e.rune_flag & RUNE_FLG_FLY)
 	{
-		drop_one(e, "Flying Rune", RUNE_FLG_FLY, world, "", MED_BOUNCE_NOW, 0);
+		drop_one(e, "Flying Rune", RUNE_FLG_FLY, world, null_string, MED_BOUNCE_NOW, 0);
 	}
 
 	a = RUNE_AMMO;
 	if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
 	if (e.rune_flag & RUNE_AMMO)
 	{
-		drop_one(e, "Ammo Pack", RUNE_AMMO, world, "", MED_BOUNCE_NOW, 0);
+		drop_one(e, "Ammo Pack", RUNE_AMMO, world, null_string, MED_BOUNCE_NOW, 0);
 	}
 
 	if (e.dropent)
@@ -688,7 +688,7 @@ void () rune_1_expire =
 		if (self.group)
 		{
 			sprint (self.owner, self.group);
-			self.group = "";
+			self.group = null_string;
 			if (self.aflag > 0)
 			{
 				self.aflag = 0;
@@ -736,7 +736,7 @@ void () rune_sigil_touch =
 		serverflags = serverflags | (self.duration & 15);
 	else
 	serverflags = serverflags | (self.spawnflags & 15);
-	self.classname = "";		// so rune doors won't find it		Cat: ??? - huh?
+	self.classname = null_string;		// so rune doors won't find it		Cat: ??? - huh?
 
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets
@@ -1013,7 +1013,7 @@ void() rune_maker =
 			self.wad = item_by_mcode(self.mcode);
 
 //			e = dyn_rndloc();
-			e = find_tdest(FL_RSALL, "");
+			e = find_tdest(FL_RSALL, null_string);
 
 			if (!e) e = findradius(world.origin, 256000);
 			if (!e) 
@@ -1561,7 +1561,7 @@ note how fcktard complicated the lith regen rune is:
 
 max = 200
 cap = 3.5
-"" = 0.25 // rune_regen->value
+null_string = 0.25 // rune_regen->value
 
 	if(player->rune & RUNE_REGEN && player->health < rune_regenmax->value) {
 		float health = player->health + player->client->regen_remainder;
@@ -1785,7 +1785,7 @@ void () item_sigil =
 		}
 		rune = FALSE;
 		if (RUNES != fabs(cvar("sv_c_rune"))) rune = cvar("sv_c_rune"); // map load issue - 1st map loaded has no RUNES val here for map load runes
-		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "", "", SUB_Null, PIC_TO, item_sigil_set, SUB_Null, self, world); // random rune spawnflags fix
+		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, null_string, null_string, SUB_Null, PIC_TO, item_sigil_set, SUB_Null, self, world); // random rune spawnflags fix
 	}
 
 	if (!self.spawnflags)
@@ -1960,7 +1960,7 @@ void () item_sigil =
 
 
 	if (time > PIC_TO)
-	if(self.map == "")
+	if(self.map == null_string)
 		self.map = "rune"; // Cataboligne - 5.32.10 - for rune server
 
 	if (RUNES || rune)

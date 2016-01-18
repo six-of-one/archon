@@ -71,7 +71,7 @@ void() player_ShalMissileTouch =
 	if (other == self.owner)
 		return;		// don't explode on owner
 
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
 		return;
@@ -191,7 +191,7 @@ void() player_shalrath_attack =
 		sphere_attack();
 	else
 	 {
-		if(self.weapon == IT_AXE)
+		if ((self.weapon == IT_AXE) && (self.volume < 0))
 		{
 			if (self.class_select == "class_bot") // TEST: block bots from using sphere, see if bad wolf bug goes away
 			{
@@ -203,15 +203,18 @@ void() player_shalrath_attack =
 
 			if (sphere_a != world)
 			{
-				if (sphere_a.owner == self && self.impulse == ALT_FIRE_IMP) // case of idle sphere - this regains control
+				if (sphere_a.owner == self && self.impulse == ALT_FIRE_IMP) // case of own idle sphere - this regains control
 					sphere_attack();
 				else
-					sprint(self,"Sphere of annihilation already summoned!\n"); // IDEA: take control of idle sphere
+					sprint(self,"Sphere of annihilation already summoned!\n"); // IDEA: attempt (at risk) take control of not own idle sphere
 				return;
 			}
 			sprint(self,"You summoned a Sphere of Annihilation!\n");
 			self.attack_finished = time + 1;
 			sphere_annihilation_spawn();
+// use archon power
+			if (self.volume < 0)
+				self.archon = self.archon + self.volume;
 		}
 		else if (self.weapon == IT_LIGHTNING)
 		{
@@ -242,12 +245,24 @@ void() player_shalrath_impulse =
 
 	morph_impulse();
 
+	self.volume = 0;
+
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		self.items = self.items | IT_CELLS;
-		sprint(self, "Press fire to summon / dismiss Sphere of annihilation\n"); 
+		if ((self.archon > 1000) || (sphere_a != world))
+		{
+			self.items = self.items | IT_CELLS;
+			sprint(self, "Press fire to summon / dismiss Sphere of annihilation\n"); 
+			if (sphere_a == world) self.volume = -1000;
+		}
+		else
+		{
+			self.items = self.items | IT_ROCKETS;
+			sprint(self, "Shalrath firing ( Spiked bomb )\n"); 
+		}
 	}
+
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
 		self.items = self.items | IT_ROCKETS;
@@ -309,7 +324,7 @@ void(float silent) player_shalrath_become =
 
 	self.msight = "shalrath/sight.wav";
 	self.noise2 = "shalrath/pain.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.view_ofs = '0 0 34'; // raised 8
 	self.cam_z = 0.1;
 

@@ -350,6 +350,7 @@ float T_STEALTH = 8;
 //float NONDIR = 16; // Note: zerstorer used this for something - ref: dd
 float T_NODEATH = 32;
 float ALT_TARGET = 64;
+//float NOVEL = 128; // dont add velocity - archon moves especially
 
 void () play_teleport =
 {
@@ -503,7 +504,7 @@ void () teleport_touch =
 // put a tfog where the player was
 	if (!(self.spawnflags & T_STEALTH))
 	{
-		if (PK || (world.wad == "q2.wad")) spawn_tfog2(other.origin, ""); // *pk - new teleport sounds
+		if (PK || (world.wad == "q2.wad")) spawn_tfog2(other.origin, null_string); // *pk - new teleport sounds
 		else
 		spawn_tfog (other.origin);
 	}
@@ -516,7 +517,7 @@ void () teleport_touch =
 			self.touch = SUB_Null;
 		}
 		t = self.movetarget;
-		if (random() < self.aflag) self.movetarget = find_tdest(FL_RSALL, "");
+		if (random() < self.aflag) self.movetarget = find_tdest(FL_RSALL, null_string);
 		if (!t) return;
 	}
 	else
@@ -551,6 +552,17 @@ void () teleport_touch =
 	makevectors (t.mangle);
 	org = t.origin + 32 * v_forward;
 
+	if (self.classname == "chaos_teleport") // chaos teleport attemp to avoid fallen into void - Cataboligne 9.23.13
+	{
+		org_z = org_z + other.mins_z;
+		gsf = 250;
+		while ((pointcontents(org) == CONTENT_SOLID) && gsf > 0)
+		{
+			org_z = org_z + 2;
+			gsf = gsf - 1;
+		}
+	}
+
 	if (!(self.spawnflags & T_STEALTH))
 		spawn_tfog (org);
 
@@ -566,7 +578,8 @@ void () teleport_touch =
 	if (!other.health)
 	{
 		other.origin = t.origin;
-		other.velocity = (v_forward * other.velocity_x) + (v_forward * other.velocity_y);
+		if (!(self.spawnflags & 128))
+			other.velocity = (v_forward * other.velocity_x) + (v_forward * other.velocity_y);
 		return;
 	}
 
@@ -591,7 +604,8 @@ void () teleport_touch =
 		other.bt_immune_time = time + BT_BUFFER; // *pk - beartrap - Note: ssnn issue here
 		if (other.flags & FL_ONGROUND)
 			other.flags = other.flags - FL_ONGROUND;
-		other.velocity = v_forward * 300; // Note: ssnn issue here - causes "jump"
+		if (!(self.spawnflags & 128))
+			other.velocity = v_forward * 300; // Note: ssnn issue here - causes "jump"
 	}
 	other.flags = other.flags - other.flags & FL_ONGROUND;
 };
@@ -604,7 +618,7 @@ void () info_teleport_destination =
 // this does nothing, just serves as a target spot
 	self.mangle = self.angles;
 	self.angles = '0 0 0';
-	self.model = "";
+	self.model = null_string;
 	self.origin = self.origin + '0 0 27';
 	if (!self.targetname)
 		objerror ("no targetname");
@@ -712,13 +726,13 @@ void () trigger_onlyregistered_touch =
 	self.attack_finished = time + 2;
 	if (cvar ("registered"))
 	{
-		self.message = "";
+		self.message = null_string;
 		SUB_UseTargets ();
 		remove (self);
 	}
 	else
 	{
-		if (self.message != "")
+		if (self.message != null_string)
 		{
 			centerprint (other,self.message);
 			sound (other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM);

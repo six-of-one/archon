@@ -327,7 +327,7 @@ float(entity g) annihilation_check =
 	if (g == world) t = FALSE;
 	else if (g == sphere_a) t = FALSE;
 	else if (g.think == annihilate) t = FALSE;
-	else if (g.model == "") t = FALSE;
+	else if (g.model == null_string) t = FALSE;
 	else if (g.classname == "whirl") t = FALSE;
 	else if (g.classname == OBSERVER) t = FALSE;
 	else if (g.flags & FL_CLIENT && g.health <= 0) t = FALSE;

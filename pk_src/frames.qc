@@ -125,9 +125,9 @@ void() func_frame_change_frame =
 		sound (self, CHAN_VOICE, e.noise, 1, ATTN_NORM);
 	else if (self.spawnflags & FF_BACKANDFORTH)
 	{
-		if (self.state && e.noise2 != "")
+		if (self.state && e.noise2 != null_string)
 			sound (self, CHAN_VOICE, e.noise2, 1, ATTN_NORM);
-		else if (!self.state && e.noise1 != "")
+		else if (!self.state && e.noise1 != null_string)
 			sound (self, CHAN_VOICE, e.noise1, 1, ATTN_NORM);
 	}
 		

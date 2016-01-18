@@ -100,6 +100,8 @@ void() player_wizard_pain2 = [ $pain2, player_wizard_pain3 ] { };
 void() player_wizard_pain3 = [ $pain3, player_wizard_pain4 ] { };
 void() player_wizard_pain4 = [ $pain4, player_stand1 ] { };
 
+
+
 // fn(player_Wiz_FastFire) - fire wizard spikes & spike bombs
 // fn(Wiz_MissileTouch) - blow spike bombs, handles other creatures missiles, shoots sub missiles
 // fn(Wiz_fireBolt) - fire off a regular wizard bolt
@@ -112,7 +114,7 @@ void(vector or1) hk_fire_spike;
 
 void(vector dir) Wiz_fireBolt =
 {
-	fire_missile(SCRAGG_SHT_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin, dir, "wizspike", "progs/w_spike.mdl", "", spike_touch, 6, SUB_Remove, spike_touch);
+	fire_missile(SCRAGG_SHT_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin, dir, "wizspike", "progs/w_spike.mdl", null_string, spike_touch, 6, SUB_Remove, spike_touch);
 	newmis.morphy = self.morphy;
 };
 
@@ -128,13 +130,26 @@ void() pointer_hk_fire_spike =
 
 void() Wiz_fireBomb =
 {
-	fire_missile(SCRAGG_SHT_VEL * 0.8, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, self.origin, v0, "missile", "progs/w_spike.mdl", "", Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
+	fire_missile(SCRAGG_SHT_VEL * 0.8, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, self.origin, v0, "missile", "progs/w_spike.mdl", null_string, Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
 	newmis.frame = 1;
 	newmis.dmg = 75;
 	newmis.morphy = self.morphy;
 };
 
+void() lava_burstblast =
+{
+	fireball_missile(FIREBALL_WEP_VEL, "fireballwep", "progs/lavaball.mdl", "boss1/throw.wav", 0);
+	setsize(newmis, v0, v0);
+	newmis.frame = floor(1.1 + random());
+	newmis.morphy = self.morphy;
+	newmis.touch = blob_lava_touch;
 
+	if (random() < 0.05) // a few bursters from these
+	{
+		newmis.dmg = 30;
+		newmis.touch = newmis.think = newmis.th_die = Wiz_MissileTouch;
+	}
+};
 
 
 
@@ -178,7 +193,7 @@ void() Wiz_MissileTouch =
 		return;
 	}
 
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
 		return;
@@ -209,6 +224,8 @@ void() Wiz_MissileTouch =
 		mon = "monster_wizard";
 	else if (self.model == "progs/k_spike.mdl")
 		mon = "monster_hell_knight";
+	else if (self.model == "progs/lavaball.mdl")
+		mon = "monster_lavabomb";
 	else
 		mon = "monster_imp";
 
@@ -222,18 +239,20 @@ void() Wiz_MissileTouch =
 	if (mon == "monster_wizard") // note: can detect morphy now
 	{
 		if (random() > 0.05)
-			fire_burst (pointer_Wiz_fireBolt, self.origin + org, 0, 0, "", "", 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (pointer_Wiz_fireBolt, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
 		else
-			fire_burst (Wiz_fireBomb, self.origin + org, 0, 0, "", "", 0, 2, 1, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (Wiz_fireBomb, self.origin + org, 0, 0, null_string, null_string, 0, 2, 1, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_OWNOWN, world);
 	}
 	else if (mon == "monster_hell_knight")
-			fire_burst (pointer_hk_fire_spike, self.origin + org, 0, 0, "", "", 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (pointer_hk_fire_spike, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
+	else if (mon == "monster_lavabomb")
+			fire_burst (lava_burstblast, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
 	else if (mon == "monster_imp" && random() < 0.4)
 	{
 		if (random() > 0.1)
-			fire_burst (imp_firePlasma, self.origin + org, 0, 0, "", "", 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (imp_firePlasma, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
 		else
-			fire_burst (imp_fireBomb, self.origin + org, 0, 0, "", "", 0, 3, 1, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (imp_fireBomb, self.origin + org, 0, 0, null_string, null_string, 0, 3, 1, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_OWNOWN, world);
 	}
 
 	if (random() < 0.05) wdmg = random() * 50;
@@ -267,6 +286,10 @@ void() player_Wiz_FastFire =
 	{
 		Wiz_fireBomb();
 		newmis.avelocity_z = (crandom () * 300);
+
+// use archon power
+		if (self.volume < 0)
+			self.archon = self.archon + self.volume;
 	}
 	else
 	{
@@ -361,13 +384,13 @@ bprint("\n");
 void() player_wizard_painleech4 = [ $pain1,   player_stand1            ] {};
 	
 void() player_wizard_attack1 = [ $attack1, player_wizard_attack3 ]
-	{
+{
 	if (self.weapon == IT_SHOTGUN)
 	{
 		if (rune_haste(0.5)) self.attack_finished = time + 1.0;				// plain old spikes
 	}
 	else
-		{
+	{
 		if (rune_haste(0.2))
 		self.attack_finished = time + 0.4;
 		if (self.weapon == IT_ROCKET_LAUNCHER)
@@ -375,13 +398,13 @@ void() player_wizard_attack1 = [ $attack1, player_wizard_attack3 ]
 			if (rune_haste(0.55)) self.attack_finished = time + 1.1;
 		}
 		player_Wiz_FastFire();  																// concentrated spikes || spike bomb
-		}
-	};
+	}
+};
 void() player_wizard_attack2 = [ $attack3, player_wizard_attack3 ] { };
 void() player_wizard_attack3 = [ $attack5, player_wizard_attack4 ] 
-	{
+{
 	if (self.weapon == IT_SUPER_SHOTGUN) player_Wiz_FastFire(); 							// concentrated spikes
-	};
+};
 void() player_wizard_attack4 = [ $attack7, player_wizard_attack5 ] 
 	{ sound(self, CHAN_WEAPON, "wizard/wattack.wav", 1, ATTN_NORM); };
 void() player_wizard_attack5 = [ $attack9, player_wizard_attack6 ]
@@ -394,6 +417,9 @@ void() player_wizard_attack7 = [ $attack13, player_stand1 ]
 
 void() player_wizard_attack =
 {
+	if (self.archon < 11)
+	if (self.weapon == IT_ROCKET_LAUNCHER) self.weapon = IT_SUPER_SHOTGUN;
+
 	if(self.weapon == IT_AXE)
 	{
 		if (rune_haste(0.25))
@@ -412,7 +438,14 @@ void() player_wizard_impulse =
 {
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
+	if (self.archon < 11)
+		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER);
+	else
+		self.items = self.items | IT_ROCKET_LAUNCHER;	
+
 	morph_impulse();
+
+	self.volume = 0;
 
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
@@ -431,6 +464,7 @@ void() player_wizard_impulse =
 	}
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
+		self.volume = -10;
 		sprint(self, "Scragg using ( Explosive spike )\n");
 		self.items = self.items | IT_CELLS;
 	}
@@ -479,7 +513,7 @@ void(float silent) player_wizard_become =
 
 	self.msight = "wizard/wsight.wav";
 	self.noise2 = "wizard/wpain.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.movetype = MOVETYPE_FLY;
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);

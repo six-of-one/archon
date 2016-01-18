@@ -172,7 +172,7 @@ void() clinger_die6  =[ $explode2, clinger_respawn  ]
 		SpawnMeatSpray(v, vel);
 		ThrowGib ("progs/gib1.mdl", self.health);
 	}
-	self.model = "";
+	self.model = null_string;
 	self.nextthink = time + 30;
 	if (!deathmatch) // original ops
 		remove(self);
@@ -317,7 +317,7 @@ if (ign != A_MONSTER)
 		if (random() < 0.5) self.cnt = 3 + random() * 10; // 50% random spawns get rnd cnts
 
 		traceline(self.origin + ' 0 0 6', self.origin + ' 0 0 1005', TRUE, self);
-		if (sky_touch("", trace_endpos + ' 0 0 1', world)) trace_fraction = 1; // hit sky brush or surface
+		if (sky_touch(null_string, trace_endpos + ' 0 0 1', world)) trace_fraction = 1; // hit sky brush or surface
 		if (trace_fraction >= 1 || (random() < 0.16)) // no ceiling ? - or occasionally make a floor model
 		{
 			self.angles_x = 180; // try flipping over

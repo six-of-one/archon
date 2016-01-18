@@ -272,7 +272,7 @@ void () spider_poison =
 	poison.classname = "poison";
 	poison.think = PoisonDamage;
 	poison.nextthink = time + 1;
-	setmodel (poison, "");
+	setmodel (poison, null_string);
 	setsize (poison, '0 0 0', '0 0 0');
 };
 

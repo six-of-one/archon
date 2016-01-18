@@ -31,7 +31,7 @@ void() weapon_rpg =
 	if (TRUE)
 //	if (!ULOKHL)
 //	if (!XMOD)
-//	if (noxtr_item_control(self, TRUE, "")) // use for converted maps? but uses sv_xtras tag
+//	if (noxtr_item_control(self, TRUE, null_string)) // use for converted maps? but uses sv_xtras tag
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -71,7 +71,7 @@ void() weapon_rpg =
 	self._killmsg2 = q2rock_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == null_string) self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
   
@@ -117,7 +117,7 @@ void() weapon_gauss =
 	if (TRUE)
 //	if (!ULOKHL)
 //	if (!XMOD)
-//	if (noxtr_item_control(self, TRUE, "")) // use for converted maps? but uses sv_xtras tag
+//	if (noxtr_item_control(self, TRUE, null_string)) // use for converted maps? but uses sv_xtras tag
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -154,7 +154,7 @@ void() weapon_egon =
 	if (TRUE)
 //	if (!ULOKHL)
 //	if (!XMOD)
-//	if (noxtr_item_control(self, TRUE, "")) // use for converted maps? but uses sv_xtras tag
+//	if (noxtr_item_control(self, TRUE, null_string)) // use for converted maps? but uses sv_xtras tag
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
@@ -172,7 +172,7 @@ void() weapon_handgrenade =
 	if (TRUE)
 //	if (!ULOKHL)
 //	if (!XMOD)
-//	if (noxtr_item_control(self, TRUE, "")) // use for converted maps? but uses sv_xtras tag
+//	if (noxtr_item_control(self, TRUE, null_string)) // use for converted maps? but uses sv_xtras tag
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;

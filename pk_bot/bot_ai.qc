@@ -351,7 +351,7 @@ float () BotFoundTarget =
 		{
 			bprint (": Chamber, Yes, transform, Yes, right away, Yes...\n");
 		}
-//		else if (self.netname == "")
+//		else if (self.netname == null_string)
 //		{
 //			bprint ("\n");
 //		}

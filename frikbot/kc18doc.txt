@@ -49,14 +49,14 @@ you would type:
 quake -game kascam
 
 Next, change the name of the client you want to use as the camera into
-"". You can do it at console typing NAME "".
-You can still use old "CamClient" name also, but "" will not appear in the
+null_string. You can do it at console typing NAME null_string.
+You can still use old "CamClient" name also, but null_string will not appear in the
 score table.
 When that client connects it is automaticaly turned into the
 camera. It is a good idea to run the camera on a listen server.
 You can also turn normal player to camera using "IMPULSE 250" command
 without renaming.
-If you don't want to see CamClient in results table, change its name to ""
+If you don't want to see CamClient in results table, change its name to null_string
 
 Every player can change to camera now! There is no limit on one camera per game!
 
@@ -66,7 +66,7 @@ intensive and you will get a slowdown or even 'runaway loop error'.
 --------------------------------------------------------------------------------
 * How it works
 
-The player turns to camera-man when his name is "" or "CamClient" during
+The player turns to camera-man when his name is null_string or "CamClient" during
 connect or when he types "impulse 250" on console.
 
 The camera has eight working modes - five automatic and three manual.
@@ -188,7 +188,7 @@ A: Yes, but you need two computers. One to play on and one for camera. You can
    start in coop and then turn the second player to camera.
 
 Q: How can I remove CamClient from score table?
-A: Change its name to "". You can do it both before or after starting the
+A: Change its name to null_string. You can do it both before or after starting the
    camera.
 
 Q: How can I switch to a saved position if I am in automatic mode?

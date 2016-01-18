@@ -222,10 +222,10 @@ void () func_plat =
 	{
 		if (!DARKPLACES)
 		{
-			if (self.noise != "") precache_sound (self.noise);
-			if (self.noise1 != "") precache_sound (self.noise1);
+			if (self.noise != null_string) precache_sound (self.noise);
+			if (self.noise1 != null_string) precache_sound (self.noise1);
 		}
-		if (self.noise == "" && self.noise1 == "") // in case any old map compiles assume no setting means use sounds 2
+		if (self.noise == null_string && self.noise1 == null_string) // in case any old map compiles assume no setting means use sounds 2
 			self.sounds = 2;
 	}
 

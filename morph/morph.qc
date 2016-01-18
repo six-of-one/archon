@@ -218,7 +218,7 @@ string(float mb, float mode) monster_id =
 {
 	local string s2;
 
-	s2 = "";
+	s2 = null_string;
 
 	if (mode == MON_NAME_REG)
 	{
@@ -652,7 +652,7 @@ void(float r1, string sn, float lts ) morph_sound =
 {
 	if (time < self.soundlock) return; // dont play these too much
 	if (intermission_running) return morph_sound_off();
-	if (sn != "") {
+	if (sn != null_string) {
 		if (random() < r1)
 			{
 			sound (self, CHAN_VOICE, sn, 0.8, ATTN_NORM);
@@ -670,7 +670,7 @@ void(string ws, float rtime ) morph_walksound =
 
 // voted on a hub - turn off walk sounds
 // note: gremlin spawning uses .map var
-	if (inHubMap && self.map != "") hubvt = TRUE;
+	if (inHubMap && self.map != null_string) hubvt = TRUE;
 
 	if (WALKSOUND && ((self.cnt < time) || !fgr) || hubvt)
 	{
@@ -891,10 +891,10 @@ void(entity e, float all) morph_clearparms =
 {
 //	local float f;
 	e.mask = v0;
-	e.noise1 = e.noise2 = e.noise3 = e.noise4 = e.msight = "";
+	e.noise1 = e.noise2 = e.noise3 = e.noise4 = e.msight = null_string;
 
 	e.weaponframe = 0;
-	e.weaponmodel = "";
+	e.weaponmodel = null_string;
 
 // just in case one is left hanging - IDEA: just call admin_clear from here
 	if (e.dropent)
@@ -913,7 +913,7 @@ void(entity e, float all) morph_clearparms =
 	stuffcmd(e, "con_notify_alias\n"); // for some other default
 
 // clear item ident stack
-	e.stack1 = e.stack2 = e.stack3 = e.stack4 = e.stack5 = e.stack6 = e.stack7 = e.stack8 = e.stack9 = e.stack10 = e.stack11 = e.stack12 = e.stack13 = e.stack14 = e.stack15 = e.stack16 = "";
+	e.stack1 = e.stack2 = e.stack3 = e.stack4 = e.stack5 = e.stack6 = e.stack7 = e.stack8 = e.stack9 = e.stack10 = e.stack11 = e.stack12 = e.stack13 = e.stack14 = e.stack15 = e.stack16 = null_string;
 
 // Cataboligne - 9.15.11 - moved from chasecam
 	if (all) // dead or observer - rip it all out
@@ -922,7 +922,7 @@ void(entity e, float all) morph_clearparms =
 		e.invincible_time = e.super_damage_finished = e.radsuit_finished = e.wetsuit_finished = e.invisible_finished = e.invincible_finished =
 		e.empathy_finished = 0;
 		e.effects = 0; // chaos vector for dead camers
-		e.group = ""; // for specials
+		e.group = null_string; // for specials
 		e.armorvalue = e.armortype = 0; // dont clear for not all - some morphs get / keep armor
 	}
 	else // morph change will retain these
@@ -972,7 +972,7 @@ void(float dx) morph_CycleWeaponCommand =
 			else
 				self.weapon = IT_LIGHTNING;
 		}
-		else if (self.weapon == IT_AXE) // && self.pk_currentitem == self.pk_currentInventory)
+		else if (self.weapon == IT_AXE)
 		{
 			if (dx == 1)
 				self.weapon = IT_SHOTGUN;
@@ -1074,7 +1074,7 @@ void() morph_impulse =
 
 			if (self.pk_currentitem == PK_IT_AXE)
 			{
-				self.weaponmodel = "";
+				self.weaponmodel = null_string;
 			}
 			else 
 			{
@@ -1154,7 +1154,7 @@ void() split_morph_impulse =
 	if (self.impulse == 1)
 	{
 		self.eweapon = world; // fixes pk inventory not reporting correctly when selected like this
-		self.weaponmodel = "";
+		self.weaponmodel = null_string;
 		W_ChangeWeapon ();
 		self.forcewchange = 0;
 	}
@@ -1215,7 +1215,7 @@ void(float mpy) morph_armor_check =
 	if (self.armorvalue * self.armortype)
 //	if (self.items & (IT_ARMOR1|IT_ARMOR1|IT_ARMOR3)) // dont really care what item it is if any
 	{	
-		drop_one(self, "Armor", 0, world, "", MED_BOUNCE_NOW, 1);
+		drop_one(self, "Armor", 0, world, null_string, MED_BOUNCE_NOW, 1);
 
 		self.armorvalue = self.armortype = 0;
 	}
@@ -1303,7 +1303,7 @@ void(float cmd, float pls) polymorph_check =
 				}
 				else if (!chaos_poly) // going to another form - set random return code
 				{
-					chaos_poly = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", "", SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
+					chaos_poly = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", null_string, SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
 				}
 			}
 
@@ -1448,10 +1448,10 @@ float FL_PLAGUE				= 32768;		// make a plague check for gib
 float GIB_TWITCH				= 0.5; 		// chance of throwing a gib that twitches
 
 // original GibPlayer
-// if ( GibMorph ("progs/h_player.mdl", 0, FL_HEADGIB | FL_HUMANORG, 1, -40, 9, 0, "") ) return;
-//GibMorph ("progs/h_shams.mdl", 0, FL_HEADGIB | FL_NONHUMGIB, 0, -60, 30, 0, "")  // shambler
-//GibMorph ("progs/h_mega.mdl", 0, FL_HEADGIB | FL_HUMANGIB, 0.5, -45, 12, 0, "") // enforcer
-//GibMorph ("progs/h_ogre.mdl", 0, FL_HEADGIB | FL_NONHUMGIB, 0, -80, 18, 0, "")  // ogre
+// if ( GibMorph ("progs/h_player.mdl", 0, FL_HEADGIB | FL_HUMANORG, 1, -40, 9, 0, null_string) ) return;
+//GibMorph ("progs/h_shams.mdl", 0, FL_HEADGIB | FL_NONHUMGIB, 0, -60, 30, 0, null_string)  // shambler
+//GibMorph ("progs/h_mega.mdl", 0, FL_HEADGIB | FL_HUMANGIB, 0.5, -45, 12, 0, null_string) // enforcer
+//GibMorph ("progs/h_ogre.mdl", 0, FL_HEADGIB | FL_NONHUMGIB, 0, -80, 18, 0, null_string)  // ogre
 
 
 // IMP: gibs per morph as above
@@ -1578,7 +1578,7 @@ void() random_monster_wakey =
 		return;
 	}
 
-	f =  find_tdest(FL_RSTELE | FL_RSSTART | FL_ITEM, "");
+	f =  find_tdest(FL_RSTELE | FL_RSSTART | FL_ITEM, null_string);
 	if (!f) f = findradius(self.owner.origin, PK_DYNRAD);
 
 	if (f) // these should be random monsters - when they get here there should be no enemy
@@ -1785,7 +1785,7 @@ void() random_monster =
 		self = spawn();
 		self.classname = self.wad = monster_id(f, M); // get spawn func
 
-		if (self.wad == "")
+		if (self.wad == null_string)
 		{
 			if (WARNING)
 			{
@@ -1934,12 +1934,12 @@ void() monster_respawn =
 			e = find(world, classname, mn);
 			while (e)
 			{
-				if (e.model != "")
+				if (e.model != null_string)
 				if (e.health <= 0)
 				if (e.think != monster_respawn_fire)
 				{
 					BodyQueAsset(e, world, TRUE); // make a dead body
-					e.model = ""; // hide this guy
+					e.model = null_string; // hide this guy
 					e.think = monster_respawn_fire;
 					e.nextthink = time + 10 + 20 * random();
 				}
@@ -2008,7 +2008,7 @@ void() lavaball_shot =
 	local string sd;
 	local float fl;
 
-	sd = "";
+	sd = null_string;
 	if (self.flags & FL_MONSTER) { sd = "boss1/throw.wav"; fl = FL_CTHONF; }
 
 	fireball_missile(FIREBALL_WEP_VEL, "fireball", "progs/lavaball.mdl", sd, fl);

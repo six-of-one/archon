@@ -465,6 +465,10 @@ float DEMONBOOM_FALLOFF			= 512; // damage falloff beyond this
 float FL_DEMONBOOM				= 65536; // demon on overload!
 void() player_demon_explode;
 
+// spikey arm boy
+
+void() Wiz_MissileTouch;
+
 // wratihs
 
 float WRAITH_USE_CAM				= FALSE; // if true wraith can use chase cam - NOTE: cam does not work when wraith penetrates solids

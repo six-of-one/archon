@@ -339,7 +339,7 @@ string() player_cthon_killmsg =
 {
 	if (!ENHANCED) return " died\n";
 
-	return(rnd_string(' 60.0 50.0 40.0'," met Cthon in battle\n","",""," was blasted by living Lava\n"," was sacraficed to the Volcano God!\n"));
+	return(rnd_string(' 60.0 50.0 40.0'," met Cthon in battle\n",null_string,null_string," was blasted by living Lava\n"," was sacraficed to the Volcano God!\n"));
 };
 string() player_cthon_killmsg2 =
 {
@@ -382,7 +382,7 @@ void() player_lavacthon_become =
 
 	self.msight = "boss1/sight1.wav";
 //	self.noise2 = "enforcer/pain1.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 120';
 	self.cam_z = 1.4;  //cam - FIX may need tweaked
 	setsize (self, '-64 -64 -24', ' 64 64 128');

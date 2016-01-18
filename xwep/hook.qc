@@ -449,7 +449,7 @@ void () MaintainLinks =
 				{
 					newlink.classname = "lightning_hook_beam";
 					newlink.noise2 = self.targetname; // special
-					newlink.model = "";
+					newlink.model = null_string;
 					sound (newlink, CHAN_AUTO, newlink.noise2, 1, ATTN_NORM);
 					newlink.endtime = 1.99; 
 					newlink.chaosweptime = time + newlink.endtime;
@@ -582,7 +582,7 @@ void () HookBehavior =
 		if (self.movetarget)
 		{
 			self.movetarget.nextthink = time + HOOK_TIME;
-			self.movetarget.classname ="";
+			self.movetarget.classname =null_string;
 		}
 	}
 //	else if ( (self.owner.hook & SHRINK_ON) ) 
@@ -593,7 +593,7 @@ void () HookBehavior =
 		if (self.movetarget)
 		{
 			self.movetarget.nextthink = time + HOOK_TIME;
-			self.movetarget.classname ="";
+			self.movetarget.classname =null_string;
 		}
 	}
 	else
@@ -727,7 +727,7 @@ void() HookTouch =
 {
 //	if (pointcontents(self.origin) == CONTENT_SKY) {	DropHook();	return;	}
 
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		DropHook();
 		return;
@@ -853,7 +853,7 @@ void(entity e) InitiateHook =
 		}
 		else if (e.morphy == IMP_MCHAOS)
 		{
-			hk = rnd_string(v0, "progs/v_spike.mdl","progs/hook.mdl","progs/lavaball.mdl","progs/cubel.mdl",rnd_string(v0, "progs/k_spike.mdl","progs/g_bomb.mdl","progs/proxbomb.mdl","progs/missile.mdl","progs/grenade.mdl"));
+			hk = rnd_string(v0, "progs/v_spike.mdl","progs/hook.mdl","progs/lavaball.mdl","progs/cubel.mdl",rnd_string(v0, "progs/k_spike.mdl","progs/h_bossman.mdl","progs/proxbomb.mdl","progs/missile.mdl","progs/grenade.mdl"));
 			setmodel(newhook, hk);
 			newhook.target = "weapons/ax1.wav";
 //			newhook.target1 = "hook/chain1.wav"; // IDEA: randomize
@@ -891,9 +891,9 @@ void(entity e) InitiateHook =
 		{
 			setmodel(newhook, "progs/null.mdl");
 			newhook.target = "q2_snd/lhook_h.wav"; // hook hit a solid - not damaged
-			newhook.noise1 = ""; // drop
-			newhook.target1 = ""; // in + out
-			newhook.target2 = ""; // in + out
+			newhook.noise1 = null_string; // drop
+			newhook.target1 = null_string; // in + out
+			newhook.target2 = null_string; // in + out
 			newhook.targetname = "q2_snd/lhook_l.wav"; // launch snd			
 			newhook.bulletspread_x = 0.5;
 			newhook.speed = 650;
@@ -903,9 +903,9 @@ void(entity e) InitiateHook =
 		{
 			setmodel(newhook, "progs/null.mdl");
 			newhook.target = "q3_snd/lg_hit3.wav"; // hook hit a solid - not damaged
-			newhook.noise1 = ""; // drop
-			newhook.target1 = ""; // in + out
-			newhook.target2 = ""; // in + out
+			newhook.noise1 = null_string; // drop
+			newhook.target1 = null_string; // in + out
+			newhook.target2 = null_string; // in + out
 			newhook.targetname = "q3_snd/gauntrun.wav"; // launch snd
 			newhook.noise3 = "q3_snd/gauntrun.wav"; // continous run sound - ltn hook
 			newhook.bulletspread_x = 0.5;
@@ -952,7 +952,7 @@ void(entity e) InitiateHook =
 	newhook.movetarget = world;
 	if (f > 0)
 	{
-		newhook.movetarget = chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, md, "", SUB_Null, f, hook_timeout, SUB_Null, e, world);
+		newhook.movetarget = chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, md, null_string, SUB_Null, f, hook_timeout, SUB_Null, e, world);
 		newhook.movetarget.enemy = newhook;
 	}
 };

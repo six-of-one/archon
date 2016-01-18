@@ -268,7 +268,7 @@ void() followtarget_f =
    setmodel (self, self.model);  // set size and link into world
 	self.movetype = MOVETYPE_NONE;
 	self.modelindex = 0;
-	self.model = "";
+	self.model = null_string;
 //   setsize (self, '-8 -8 -8', '8 8 8');
 
 };
@@ -576,7 +576,7 @@ local float	rsnd;
 	else if (self.classname == "monster_gremlin")
 	{
 		if (self.stoleweapon == 0)
-		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/sight1.wav","gremlin/sight2.wav","gremlin/sight4.wav","","gremlin/sight3.wav"), 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, rnd_string(v0, "gremlin/sight1.wav","gremlin/sight2.wav","gremlin/sight4.wav",null_string,"gremlin/sight3.wav"), 1, ATTN_NORM);
 	}
 	else if (self.classname == "monster_scourge")
 	{
@@ -1260,10 +1260,10 @@ void(float dist) ai_run =
 		if (self.movetarget.classname != "chaos_teleport_restore")
 		{
 if (WARNING) bprint("monster move check\n");
-			self.movetarget = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "chaos_teleport_restore", "", SUB_Null, 1, chaos_teleport_restore_think, SUB_Null, self, world);
+			self.movetarget = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "chaos_teleport_restore", null_string, SUB_Null, 1, chaos_teleport_restore_think, SUB_Null, self, world);
 			self.movetarget.search_time = time + 3;
 			self.movetarget.oldorigin = self.origin;
-			chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "splinch_kill", "", SUB_Null, 1, splinch_kill, SUB_Null, self, world);
+			chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "splinch_kill", null_string, SUB_Null, 1, splinch_kill, SUB_Null, self, world);
 		}
 */
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters

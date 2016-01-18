@@ -1499,7 +1499,7 @@ void(entity targ, entity attacker) ClientObituary =
 			// fell to their death?
 			if (targ.deathtype == "falling")
 			{
-				targ.deathtype = "";
+				targ.deathtype = null_string;
 				bprint (" fell to his death\n");
 				return;
 			}

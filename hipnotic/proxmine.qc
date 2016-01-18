@@ -78,7 +78,7 @@ void() ProximityGrenadeTouch =
       return;
    if (other.classname == self.classname) //dont blow on touching another mine
       return;
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
 		return;

@@ -167,6 +167,10 @@ void(float offset) player_hknight_shot =
 		newmis.frame = 1;
 		newmis.dmg = 80;
 		newmis.morphy = self.morphy;
+
+// use archon power
+		if (self.volume < 0)
+			self.archon = self.archon + self.volume;
 		return;
 	}
 
@@ -190,7 +194,7 @@ void() player_hknight_slice2 = [ $slice2, player_hknight_slice3 ] { };
 void() player_hknight_slice3 = [ $slice3, player_hknight_slice4 ] { };
 void() player_hknight_slice4 = [ $slice4, player_hknight_slice5 ] { player_hknight_sword("weapons/ax1.wav", "player/axhit2.wav", "zombie/z_hit.wav"); };
 void() player_hknight_slice5 = [ $slice5, player_hknight_slice6 ] { };
-void() player_hknight_slice6 = [ $slice6, player_hknight_slice7 ] { player_hknight_sword("", "", ""); };
+void() player_hknight_slice6 = [ $slice6, player_hknight_slice7 ] { player_hknight_sword(null_string, null_string, null_string); };
 void() player_hknight_slice7 = [ $slice7, player_hknight_slice8 ] { };
 void() player_hknight_slice8 = [ $slice8, player_hknight_slice9 ] { };
 void() player_hknight_slice9 = [ $slice9, player_hknight_slice10 ] { };
@@ -206,9 +210,9 @@ void() player_hknight_smash3 = [ $smash3, player_hknight_smash4 ] { };
 void() player_hknight_smash4 = [ $smash4, player_hknight_smash5 ] { };
 void() player_hknight_smash5 = [ $smash5, player_hknight_smash6 ] { player_hknight_sword("weapons/ax1.wav", "player/axhit2.wav", "zombie/z_hit.wav"); };
 void() player_hknight_smash6 = [ $smash6, player_hknight_smash7 ] { };
-void() player_hknight_smash7 = [ $smash7, player_hknight_smash8 ] { player_hknight_sword("", "", ""); };
+void() player_hknight_smash7 = [ $smash7, player_hknight_smash8 ] { player_hknight_sword(null_string, null_string, null_string); };
 void() player_hknight_smash8 = [ $smash8, player_hknight_smash9 ] { };
-void() player_hknight_smash9 = [ $smash9, player_hknight_smash10 ] { player_hknight_sword("", "", ""); };
+void() player_hknight_smash9 = [ $smash9, player_hknight_smash10 ] { player_hknight_sword(null_string, null_string, null_string); };
 void() player_hknight_smash10 = [ $smash10, player_hknight_smash11 ] { };
 void() player_hknight_smash11 = [ $smash11, player_stand1 ] { };
 
@@ -262,6 +266,9 @@ void() player_hknight_attack =
 		if (random() > 0.66) player_hknight_slice1();
 		else player_hknight_smash1();
 	} else {
+
+		if (self.archon < 11)
+		if (self.weapon == IT_ROCKET_LAUNCHER) self.weapon = IT_SUPER_SHOTGUN;
 		// A magic attack
 //		if (random() > 0.5)
 		if (self.weapon == IT_SHOTGUN)
@@ -278,7 +285,14 @@ void() player_hknight_impulse =
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
+	if (self.archon < 11)
+		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER);
+	else
+		self.items = self.items | IT_ROCKET_LAUNCHER;	
+
 	morph_impulse();
+
+	self.volume = 0;
 
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
@@ -297,6 +311,7 @@ void() player_hknight_impulse =
 	}
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
+		self.volume = -10;
 		sprint(self, "Hell Knight using ( Explosive Spikes )\n");
 		self.items = self.items | IT_CELLS;
 	}
@@ -351,13 +366,13 @@ void(float silent) player_hknight_become =
 
 	setmodel(self,"progs/hknight.mdl");
 
-	self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_SUPER_SHOTGUN;
 
 	self.msight = "hknight/sight1.wav";
 	self.noise2 = "hknight/pain1.wav";
-	self.noise3 = "";
+	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 34'; // raised 12
 	self.cam_z = 0.1;
 //	if(!deathmatch)

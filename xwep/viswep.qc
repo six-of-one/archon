@@ -136,7 +136,7 @@ void() vw_remove =
 	f = find(world,classname,"viswep");
 	while (f)
 	{
-		setattachment(f, world, ""); // clear attachs - in case
+		setattachment(f, world, null_string); // clear attachs - in case
 		remove(f);
 		f = find(f,classname,"viswep");
 	}
@@ -163,7 +163,7 @@ entity(entity e) vw_chain =
 		{
 			f.owner.vwepent = world;
 			f.vwepent = world;
-			setattachment(f, world, ""); // clear attachs
+			setattachment(f, world, null_string); // clear attachs
 			if (f.wad != "packwep") // pack deal
 				remove(f);				
 			else
@@ -238,7 +238,7 @@ entity(entity e, float fl) vload =
 	local entity tr;
 	local string md;
 
-	md = "";
+	md = null_string;
 	tr = e;
 	while (tr.vwepent)
 		tr = tr.vwepent;
@@ -273,7 +273,7 @@ entity(entity e, float fl) vload =
 	}
 	else if (fl == IT_ARMOR1) md = "progs/vw_armor.mdl";
 	else if (fl < 0) md = "progs/null.mdl"; // special cases - set own model
-	if (md == "") md = VW_DEFGUN;
+	if (md == null_string) md = VW_DEFGUN;
 	tr.vwepent.mdl = md;
 	if (fl >0 && fl != IT_AXE && !VW) md = VW_DEFGUN;
 	setmodel(tr.vwepent, md);
@@ -298,7 +298,7 @@ void (entity e, float fl) pkvload =
 
 	tr = vload(e, IT_AXE);
 
-	md = "";
+	md = null_string;
 //	tr = e;
 //	while (tr.vwepent)
 //		tr = tr.vwepent;
@@ -317,7 +317,7 @@ void (entity e, float fl) pkvload =
 	else if (fl == PKPLUS_IT_ACTOR) md = "progs/vw_pkp_actor.mdl";
 	else if (fl == PKPLUS_IT_PHONE) md = "progs/vw_pkp_phone.mdl";
 
-	if (md == "" ) md = VW_DEFGUN;
+	if (md == null_string ) md = VW_DEFGUN;
 	tr.mdl = md;
 	if (!VW) md = VW_DEFGUN;
 	setmodel(tr, md);
@@ -366,14 +366,14 @@ void(entity e, float pkbt) vwep_firecary =
 
 	if (pkbits & pkbt) return; // e' still got one
 
-	e.weaponmodel = ""; // for morphs that dont make vwep from pki
+	e.weaponmodel = null_string; // for morphs that dont make vwep from pki
 	vw_chain(e); // fired carryable, pre chain
 	f = vchk(IT_AXE, pkbt, e.vwepent);
 
 	if (f)
 	{
 		f.vwepent = world;
-		setattachment(f, world, "");
+		setattachment(f, world, null_string);
 		remove(f);
 		vw_chain(e); // cary item removed - rechain
 	}
@@ -409,8 +409,8 @@ void(entity e, float cd) viswep_ld =
 		{
 			pr = tr;
 			tr = tr.vwepent;
-//			pr.mdl = "";
-			setattachment(pr, world, ""); // clear attachs
+//			pr.mdl = null_string;
+			setattachment(pr, world, null_string); // clear attachs
 			pr.vwepent = world;
 			if (pr.wad != "packwep") // pack deal
 				remove(pr);
@@ -436,13 +436,13 @@ void(entity e, float cd) viswep_ld =
 			at = e.armortype;
 			if (!at)
 			{
-//				tr.mdl = "";
+//				tr.mdl = null_string;
 //				tr.think = SUB_Remove;
 //				tr.nextthink = time + 0.01;
-//				tr.model = "";
+//				tr.model = null_string;
 				pr = tr.vwepent;
 				tr.vwepent = world;
-				setattachment(tr, world, "");
+				setattachment(tr, world, null_string);
 				remove(tr);
 				rmv = TRUE;
 			}
@@ -461,7 +461,7 @@ void(entity e, float cd) viswep_ld =
 				{
 					pr = tr.vwepent;
 					tr.vwepent = world;
-					setattachment(tr, world, ""); // clear attachs
+					setattachment(tr, world, null_string); // clear attachs
 					if (tr.wad != "packwep") // pack deal
 						remove(tr);
 					rmv = TRUE;
@@ -475,14 +475,14 @@ void(entity e, float cd) viswep_ld =
 			if (tr.noise != "q3_snd/holdable.wav")
 			if (! tr.pk_currentitem & pkbits)
 			{
-//				tr.mdl = "";
+//				tr.mdl = null_string;
 //				tr.think = SUB_Remove;
 //				tr.nextthink = time + 0.01;
-//				tr.model = "";
+//				tr.model = null_string;
 //				pr.vwepent = tr.vwepent;
 				pr = tr.vwepent;
 				tr.vwepent = world;
-				setattachment(tr, world, ""); // clear attachs
+				setattachment(tr, world, null_string); // clear attachs
 				if (tr.wad != "packwep") // pack deal
 					remove(tr);
 				rmv = TRUE;
@@ -542,7 +542,7 @@ float (string wpm) ver_weaponmodel =
 
 	if (wpm == "progs/v_w_mortar.mdl") return(TRUE);
 	else if (wpm == "progs/v_d_rock.mdl") return(TRUE);
-//	else if (wpm == "") return(TRUE);
+//	else if (wpm == null_string) return(TRUE);
 
 	return(FALSE);
 };
@@ -583,7 +583,7 @@ void() viswep_post =
 //	vw_chain(self);
 
 														// NOTE: check this vs. invisibility for norm & morphs
-	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0' || self.model == "") //(self.admin && self.admin != USER_MENU)) //intermission_running)
+	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0' || self.model == null_string) //(self.admin && self.admin != USER_MENU)) //intermission_running)
 	{
 		if (self.vwepent)
 		{
@@ -624,14 +624,14 @@ void() viswep_post =
 			{
 				if (self.vwepent.vwepent.weapon == IT_AXE)
 				{
-					setattachment(self.vwepent.vwepent, world, "");
+					setattachment(self.vwepent.vwepent, world, null_string);
 					remove(self.vwepent.vwepent);
 					self.vwepent.vwepent = world;
 				}
 				else if (self.vwepent.weapon == IT_AXE)
 				{
 					self.vwepent = vhead.vwepent;
-					setattachment(vhead, world, "");
+					setattachment(vhead, world, null_string);
 					remove(vhead);
 					self.vwepent.vwepent = world;
 				}
@@ -736,12 +736,12 @@ void() viswep_post =
 					vwc = TRUE; // viswep control -  == VW for holstered weps
 					hr1 = FALSE;
 				}
-				if (!vwc) vhead.model = "";
+				if (!vwc) vhead.model = null_string;
 			}
 			else if (!VW_HOLSTER) // dont show holstered weps / items
 			{
 				vwc = FALSE; // dont updated this viswep (only held gun)
-				vhead.model = "";
+				vhead.model = null_string;
 			}
 		}
 
@@ -750,7 +750,7 @@ void() viswep_post =
 		{
 			if (vhead.wad != "art_shell")
 			{
-				vhead.model = "";
+				vhead.model = null_string;
 				vwc = FALSE; // non humans / non gremlins with wep / x_wep do not display visweps - but we need the eweapon entries
 			}
 		}
@@ -763,8 +763,8 @@ void() viswep_post =
 		if (vhead.mdl != "progs/vw_axe.mdl" && vhead.mdl != "progs/vw_mjolnir.mdl") vmdl = VW_DEFGUN; // ret from invisible - set non axe to qgun
 
 		if (vwc)
-		if (vhead.owner.items & IT_INVISIBILITY) vhead.model = ""; // heh heh, player invisible - NOTE: art shells may be still visible when invisible
-		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
+		if (vhead.owner.items & IT_INVISIBILITY) vhead.model = null_string; // heh heh, player invisible - NOTE: art shells may be still visible when invisible
+		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = null_string; // hack to get rid of single chain gun vw_ when dbl chg selected
 //		else if (vhead.vv_draw != (void()) 0) // new vw paradigm - code set models
 		else if (vhead.vv_draw) // new vw paradigm - code set models
 		{
@@ -773,12 +773,12 @@ void() viswep_post =
 			if (!vhead.tag_entity)
 			{
 				vhead.origin = vhead.angles = v0;
-				setattachment(vhead, vhead.owner, "");
+				setattachment(vhead, vhead.owner, null_string);
 			}
 
-			if (vhead.model == "" || (((vhead.oldorigin + vofs) != vhead.owner.origin || vhead.mangle != vhead.owner.angles) && (!vhead.tag_entity) ) || vhead.weaponframe != vhead.owner.frame) // update track
+			if (vhead.model == null_string || (((vhead.oldorigin + vofs) != vhead.owner.origin || vhead.mangle != vhead.owner.angles) && (!vhead.tag_entity) ) || vhead.weaponframe != vhead.owner.frame) // update track
 			{
-				if (vhead.model == "") setmodel(vhead, vmdl);
+				if (vhead.model == null_string) setmodel(vhead, vmdl);
 
 				vhead.oldorigin = vhead.owner.origin; // track player data, but viswep values are all diffferent
 				vhead.mangle = vhead.owner.angles;
@@ -829,7 +829,7 @@ void() viswep_post =
 
 				}
 				else 
-					vhead.model = "";
+					vhead.model = null_string;
 			}
 		}
 		else // old method - brute force animated models
@@ -838,11 +838,11 @@ void() viswep_post =
 			if (!vhead.tag_entity)
 			{
 				vhead.origin = vhead.angles = v0;
-				setattachment(vhead, vhead.owner, "");
+				setattachment(vhead, vhead.owner, null_string);
 			}
-			if (vhead.model == "" || ((vhead.origin + vofs) != vhead.owner.origin || (vhead.angles != vhead.owner.angles) && (!vhead.tag_entity) ) || vhead.weaponframe != vhead.owner.frame) // update track
+			if (vhead.model == null_string || ((vhead.origin + vofs) != vhead.owner.origin || (vhead.angles != vhead.owner.angles) && (!vhead.tag_entity) ) || vhead.weaponframe != vhead.owner.frame) // update track
 			{
-				if (vhead.model == "") setmodel(vhead, vmdl);
+				if (vhead.model == null_string) setmodel(vhead, vmdl);
 				vhead.weaponframe = vhead.owner.frame; // track player frame, vw .frame may not match
 
 				vframe = vhead.owner.frame;
@@ -1007,7 +1007,7 @@ void(entity e, string md, entity p) DeadThrew =
 		newmis.eweapon = e;
 		newmis.noise = e.noise;
 		newmis.eweapon.wad = "packwep";
-		newmis.eweapon.model = "";
+		newmis.eweapon.model = null_string;
 		newmis.eweapon.owner = newmis;
 		newmis.eweapon.think = 
 		newmis.eweapon.touch = SUB_Null;
@@ -1017,7 +1017,7 @@ void(entity e, string md, entity p) DeadThrew =
 		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
 		newmis.netname = newmis.eweapon.netname;
 		newmis.eweapon.items = e.weapon;
-		setattachment(e, world, ""); // clear attachs
+		setattachment(e, world, null_string); // clear attachs
 		if (p) xwep_ammo(newmis.eweapon, p);
 		newmis.mask_x = e.mask_x;
 	}

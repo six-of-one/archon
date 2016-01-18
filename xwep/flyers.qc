@@ -20,7 +20,7 @@ void(entity fent, float fl) flyer_check =
 
 	if (!self.admin)
 	{
-		self.wad = "";
+		self.wad = null_string;
 		centerprint(self,  self.wad);
 	}
 	if (fl)

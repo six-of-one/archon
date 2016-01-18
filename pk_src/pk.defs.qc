@@ -26,11 +26,13 @@ float XTR_SAVED1				= 1195724115; // saved1 test val
 
 // scratch vars
 
+float z0 = 0;
 float gsf;										// loop safety global - this MUST be watched CAREFULLY
 //				usage list:			m-gremlin, m-chaos, morph, bot_way **, grap **
 vector v1;
 
 string sg;
+string null_string = "";
 
 // end engines
 
@@ -143,8 +145,11 @@ float ARCHON_UNCOL = 0;					// if true allow uncollectable items (touching healt
 
 float ARCHON_MORPH_MIN = 100;			// minimum archon points to morph
 
+// Archon spell casting
 void() archon_target;
 void(entity e) archon_target_clear;
+void() clear_spell;
+void() spell_target;
 
 // **************************************
 // ADMIN section
@@ -694,7 +699,7 @@ float DUD_DEF_DMG				= 20; // defualt base damage for a dud explosive that blow
 
 // inventory flags
 
-.string stack1; // here for specials
+.string stack1, stack2; // here for specials
 
 float WEP_ITEM_MASK			= 255; // mask of range weapon bits in .items
 float PK_ITEM_MASK			= 4094; // mask off non items bits
@@ -1308,7 +1313,15 @@ float STAT_AMBUL = 46; // enh ammos
 float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
 
-float STAT_VOL = 65; // track morph cost or chaos level
+float STAT_STK1 = 50; // string data
+float STAT_STK2 = 51; // string data
+
+
+float STAT_HIP_IT_EMPATY_SHIELD			= 56;
+float STAT_HIP_IT_WETSUIT			= 57;
+
+float STAT_VOL = 64; // track morph cost or chaos level
+float STAT_MORPH = 65; // track morph cost or chaos level
 float STAT_ARCHON = 66; // track archon power for power bar display
 
 */

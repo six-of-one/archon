@@ -757,7 +757,7 @@ void(entity e) bot_item_linx =
 */
 
 
-//	else if (e.classname == "")
+//	else if (e.classname == null_string)
 //	{
 //
 //	}
@@ -952,7 +952,7 @@ void() bot_fixer =
 			if (e.button16 == e.frags)
 //			if (e.button15 == e.health)
 			{
-				if (!(inHubMap && e.map != "")) // do nothing on hub maps
+				if (!(inHubMap && e.map != null_string)) // do nothing on hub maps
 				{
 					if (e.deadflag)
 					{

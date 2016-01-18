@@ -246,7 +246,7 @@ void () item_megahealth_rot =
 
 	if (deathmatch == 1 || deathmatch == 3)	// deathmatch 2 is silly old rules // *pk more dm modes
 	{
-		self.map = "";
+		self.map = null_string;
 		self.owner = world;
 		if (self.wait) // because all x item megas use this
 			self.nextthink = time + self.wait;
@@ -1192,7 +1192,7 @@ void () sigil_touch =
 	self.solid = SOLID_NOT;
 	self.model = string_null;
 	serverflags = serverflags | (self.spawnflags & 15);
-	self.classname = "";		// so rune doors won't find it
+	self.classname = null_string;		// so rune doors won't find it
 
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets
@@ -1553,7 +1553,7 @@ void () q100_DropBackpack =
 	else if (item.items == IT_LIGHTNING)
 		item.netname = "Thunderbolt";
 	else
-		item.netname = "";
+		item.netname = null_string;
 
 	item.ammo_shells = self.ammo_shells;
 	item.ammo_nails = self.ammo_nails;

@@ -926,7 +926,7 @@ void() BotAI =
 	// status bars, and the mod probably already compensated for that
 
 	if (self.solid == SOLID_NOT)
-	if (inHubMap && self.map != "")						// Cataboligne - 5.12.10 - bot voted for a level in pk hub, mostly stay voted
+	if (inHubMap && self.map != null_string)						// Cataboligne - 5.12.10 - bot voted for a level in pk hub, mostly stay voted
 	if (random() < 0.96) return;
 
 	if (self.health < 1)

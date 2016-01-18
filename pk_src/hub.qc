@@ -70,7 +70,7 @@ void() hub_teleport_touch =
 	}
 
 	// change of vote?
-	if (other.map != "")
+	if (other.map != null_string)
 	{
 		// is this guy pulling a double vote?
 		if (other.map == self.map)
@@ -113,7 +113,7 @@ void() hub_teleport_touch =
 	notDone = 0;
 	while (spot != world)
 	{
-		if ((spot.disconnectPlayer == 0) && spot.map == "")
+		if ((spot.disconnectPlayer == 0) && spot.map == null_string)
 			notDone = 1;
 		spot = find(spot, classname, srch);
 		if (!spot)
@@ -688,7 +688,7 @@ void() hub_control_status =
 		{
 			if (pl.disconnectPlayer == 0)
 			{
-				if (pl.map != "")
+				if (pl.map != null_string)
 					votecast = votecast + 1;
 
 				maxplayers = maxplayers + 1;
@@ -834,7 +834,7 @@ void() GoBack =
 	if (spot.cnt > 0)
 		spot.cnt = spot.cnt - 1;
 
-	self.map = "";
+	self.map = null_string;
 	T_Damage(self, self, self, 5000);
 
 	// JON: Tell them that they have cancled their vote
@@ -1224,7 +1224,7 @@ void() WaitForVotesThink =
 // NOTE: bots only come here if they touched a vote portal
 	if (self.class_select == "class_bot") // bots dont get status update
 	{
-		self.model = ""; // went thru a vote portal - clear body
+		self.model = null_string; // went thru a vote portal - clear body
 
 		self.nextthink = time + 0.333;
 		if (random() < 0.85) // dont let them exit vote often
@@ -1302,7 +1302,7 @@ void() WaitForVotesThink =
 			{
 				if (pl.disconnectPlayer == 0)
 				{
-					if (pl.map != "")
+					if (pl.map != null_string)
 						votecast = votecast + 1;
 					else if (pl.classname == OBSERVER) novote = novote + 1; // non voting observer
 					else
@@ -1387,7 +1387,7 @@ void(entity e) WaitForVotes =
 	setorigin (e, pos.origin);
 
 	e.currentammo = 0;
-	e.weaponmodel = "";
+	e.weaponmodel = null_string;
 	e.weaponframe = 0;
 
 	// wait a second before allowing coming back
@@ -1416,15 +1416,15 @@ void(entity bt) bot_votereveal =
 // here for common area - means we cant get rid of this fn if we dont want to reveal bot votes
 // bots still seem to leave posed bodys somehow?
 	if (!bt.deadflag)
-		bt.model = "";
+		bt.model = null_string;
 };
 
 // Cataboligne - 10.30.12 - should not have a live body hanging around after voting - set frames for pk*bots that voted
 
 void(entity bt) pk_voteframe =
 {
-//		if (bt.model != "") bt.model = ""; 
-	if (bt.model != "" && bt.deadflag)
+//		if (bt.model != null_string) bt.model = null_string; 
+	if (bt.model != null_string && bt.deadflag)
 	if (bt.frame != $axdeth9)
 	if (bt.frame != $deathb9)
 	if (bt.frame != $deathc15)
@@ -1455,9 +1455,9 @@ float(float cn) bot_vote =
 	local string mpv;
 	local float f, r;
 
-	if (self.map != "") return(TRUE); // voted
+	if (self.map != null_string) return(TRUE); // voted
 	if (self.classname != "player" && self.classname != "pk*bot") return(FALSE); // not eligible
-	if (self.netname == "") return(FALSE); // who are you?
+	if (self.netname == null_string) return(FALSE); // who are you?
 //	if (!inHubMap) return(FALSE); // not on hub
 
 	if (random() < (0.12 * cn))													// copy cat - bot copies some players vote
@@ -1465,14 +1465,14 @@ float(float cn) bot_vote =
 		e = find(world, classname, "player");
 		while (e)
 		{
-			if (e.map != "")
+			if (e.map != null_string)
 			{
-				if (mpv == "") mpv = e.map; // take first we find
+				if (mpv == null_string) mpv = e.map; // take first we find
 				else if (random() < 0.5) mpv = e.map; // randomly take others
 			}
 			e = find(e, classname, "player");
 		}
-		if (mpv != "")
+		if (mpv != null_string)
 		{
 			e = findMap (mpv);
 			if (e)

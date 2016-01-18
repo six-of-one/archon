@@ -340,7 +340,7 @@ void() x_weapon_touch =
 	sprint (other,self.netname);
 	sprint (other,"\n");
 // weapon touch sound - stored in .noise by default
-	if (self.noise != "")
+	if (self.noise != null_string)
 		sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	else
 		sound (other, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
@@ -405,7 +405,7 @@ void() x_item_touch =
 
 	other.x_items = other.x_items | self.x_items;
 
-	if (self.noise != "")
+	if (self.noise != null_string)
 		sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
 // remove it in single player, or setup for respawning in deathmatch
@@ -469,17 +469,17 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 				if (e)
 			{
 					if (e.lip == AMMO_ROCKETS)
-						self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(e.dmg_save, self, ""); // use ammo
+						self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(e.dmg_save, self, null_string); // use ammo
 					else if (e.lip == AMMO_CELLS)
-						self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(e.dmg_save, self, ""); // use ammo
+						self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(e.dmg_save, self, null_string); // use ammo
 					else if (e.lip == AMMO_SLUGS)
-						self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(e.dmg_save, self, ""); // use ammo
+						self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(e.dmg_save, self, null_string); // use ammo
 					else if (e.lip == AMMO_GRENADES)
-						self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(e.dmg_save, self, ""); // use ammo
+						self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(e.dmg_save, self, null_string); // use ammo
 					else if (e.lip == AMMO_GAS)
-						self.currentammo = self.ammo_gaspr = self.ammo_gaspr - ammo_con(e.dmg_save, self, ""); // use ammo
+						self.currentammo = self.ammo_gaspr = self.ammo_gaspr - ammo_con(e.dmg_save, self, null_string); // use ammo
 					else if (e.lip == AMMO_NAILS)
-						self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(e.dmg_save, self, ""); // use ammo
+						self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(e.dmg_save, self, null_string); // use ammo
 			}
 			if (flg & FL_MPUNCH)
 			{
@@ -550,7 +550,7 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 	newmis.pos1 = normalize(newmis.velocity);
 
 //	if (no_sound != self)
-	if (sd != "")
+	if (sd != null_string)
 		{
 		if (flg & FL_SNDMIS) sound (newmis, CHAN_WEAPON, sd, 1, ATTN_NORM);
 		else sound (self, CHAN_WEAPON, sd, 1, ATTN_NORM);
@@ -666,7 +666,7 @@ void() spike_touch =
 	}
 	else
 
-	if (sky_touch("", v0, self))
+	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
 		return;
@@ -742,7 +742,7 @@ void() spike_touch =
 			if (pointcontents (self.origin + v_forward * 16) == CONTENT_SOLID)
 			if (random() < SPIKE_STICK)
 			{
-				move_stop(self, "");
+				move_stop(self, null_string);
 				setorigin(self, self.origin + v_forward * -1 * (2 + 8 * random()));  // backup abit
 				if (!deathmatch)
 					self.nextthink = time + 20 + random() * 100; // max 2 mins - sp | coop
@@ -880,7 +880,7 @@ void () X_MissileTouch =
 
 	BecomeExplosion ();
 
-	if (self.target != "") sound (self, CHAN_WEAPON, self.target, 1, ATTN_NORM);
+	if (self.target != null_string) sound (self, CHAN_WEAPON, self.target, 1, ATTN_NORM);
 };
 
 // handle eweapon hitscan bullet shooters
@@ -937,7 +937,7 @@ void () X_FireHitscan =
 
 	if (EWEAP.lip != AMMO_NONE)
 	{
-		f = f - ammo_con(d, self, ""); // use ammo
+		f = f - ammo_con(d, self, null_string); // use ammo
 		if (f < 0)
 		{
 			d = d + f; // only can fire this many
@@ -987,7 +987,7 @@ void(float ns) mgchg_shot =
 		if (rune_haste(EWEAP.attack_finished / 2))
 			self.attack_finished = time + EWEAP.attack_finished;
 		if (ns)
-		if (EWEAP.noise3 != "")
+		if (EWEAP.noise3 != null_string)
 		{
 			fsnd = EWEAP.noise3;
 			if (fsnd == "q2_bullet_5")
@@ -1256,14 +1256,14 @@ void () Plasma_MissileTouch =
 		return;
 	}
 
-	if (sky_touch("", org, world))
+	if (sky_touch(null_string, org, world))
 	{
 		if (self.enemy) remove (self.enemy);
 		remove(self);
 		return;
 	}
 
-	if (self.noise3 == "") self.noise3 = "doom/dsfirxpl.wav";
+	if (self.noise3 == null_string) self.noise3 = "doom/dsfirxpl.wav";
 
 	sound (self, CHAN_ITEM, self.noise3, TRUE, ATTN_NORM);
 
@@ -1328,7 +1328,7 @@ void () Plasma_MissileTouch =
 	}
 
 	self.velocity = '0 0 0';
-//	move_stop(self, "");
+//	move_stop(self, null_string);
 	self.th_stand = self.touch = SUB_Null;
 	self.solid = SOLID_NOT;
 	plasmaexplode1 ();
@@ -1365,10 +1365,10 @@ void () X_FireOnePlasma =
 //	org = self.origin; // self.origin + (v_forward * 30) + '0 0 11' - arach ref
 	if (EWEAP) 
 	{
-//		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(EWEAP.dmg_save, self, ""); // use ammo
+//		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(EWEAP.dmg_save, self, null_string); // use ammo
 		dm = EWEAP.dmg;
 		snd = EWEAP.noise3;
-		if (EWEAP.mdl == "progs/vw_d_bfg.mdl" || EWEAP.mdl == "progs/vw_q2_bfg.mdl") snd = "";
+		if (EWEAP.mdl == "progs/vw_d_bfg.mdl" || EWEAP.mdl == "progs/vw_q2_bfg.mdl") snd = null_string;
 		if (dm == DOOM_SHOT_DMG) dm = 5 * ceil(random() * 8);
 		else if (dm == DOOM_BFG_DMG)
 		{
@@ -1376,8 +1376,8 @@ void () X_FireOnePlasma =
 			dbfg = DOOM_BFG;
 		}
 		if (EWEAP.noise4 == Q2_DET) dbfg = Q2_BFG; // splash detect
-		if (EWEAP.target1 != "") pls = EWEAP.target1;
-		if (EWEAP.target != "") expl = EWEAP.target;
+		if (EWEAP.target1 != null_string) pls = EWEAP.target1;
+		if (EWEAP.target != null_string) expl = EWEAP.target;
 	}
 
 	makevectors (self.v_angle);
@@ -1813,7 +1813,7 @@ bprint(".\n");
 		if (!pk_livent_brk || (pk_livent_brk & PKPLUS_IT_EGO) && e.classname == "ego") return(FALSE);
 		if (!pk_livent_brk || (pk_livent_brk & PKPLUS_IT_TOMB) && e.classname == "tomb") return(FALSE);
 		if (!pk_livent_brk || (pk_livent_brk & PKPLUS_IT_CORPSE) && e.classname == "corpse") return(FALSE); // from tomb - hounding some ent
-//		if (!pk_livent_brk || (pk_livent_brk & ) && e.classname == "") return(FALSE);
+//		if (!pk_livent_brk || (pk_livent_brk & ) && e.classname == null_string) return(FALSE);
 	}
 
 // IDEA: allow targeting of rockets, etc. - put in fail test
@@ -1930,7 +1930,7 @@ local entity g;
 
 				v1 = e.origin - self.enemy.origin;
 
-				g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.enemy.origin, v0, v0, vectoangles(v1), v0, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
+				g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.enemy.origin, v0, v0, vectoangles(v1), v0, null_string, "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
 				i = vlen(v1);
 				i = floor(i / 32);
 				if (i > 63) i = 63;
@@ -2065,7 +2065,7 @@ void() player_bfg1   = [$lightfatt1, player_bfg1]
 
 	f = 0.2;
 	if (EWEAP.noise4 == DOOM_DET) f = ROCKET_FUSE; // ball flight time max - doom starts think here to get data but it gets activated by plasma hit logic
-	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.bulletspread, v0, v0, self.v_angle, v0, "bfg_laser", "", SUB_Null, f, bfg_trace_thk, SUB_Null, self, world);
+	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.bulletspread, v0, v0, self.v_angle, v0, "bfg_laser", null_string, SUB_Null, f, bfg_trace_thk, SUB_Null, self, world);
 	e.eweapon = EWEAP;
 	e.enemy = newmis; // q2 - fires lasers from ball
 	newmis.enemy = e; // trace blast
@@ -2124,7 +2124,7 @@ void() e_weap_Attack =
 	if (e._fr_attack != SUB_Null) e._fr_attack();
 
 	if (e.duration == SND_OVER)
-	if (e.noise3 != "")
+	if (e.noise3 != null_string)
 		sound (self, CHAN_WEAPON, e.noise3, 1, ATTN_NORM);
 //	e.aflag = self.currentammo;
 

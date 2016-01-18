@@ -165,7 +165,7 @@ e.button12 = 65536+random();
 			f = loop_next(self, 0); // check all 0's
 			if (!f) // keep these ents gone, code0 = -666 goes here
 			{
-				e.model = "";
+				e.model = null_string;
 				e.nextthink = -1;
 				e.pk_touch = e.touch = SUB_Null;
 			}
@@ -177,7 +177,7 @@ e.button12 = 65536+random();
 				self.delay = f = loop_next(self, e.mcode);
 //				e.pk_touch = (void()) 0;
 				e.pk_touch = SUB_Void;
-				if (self.killtarget != "")
+				if (self.killtarget != null_string)
 					item_call_save(e, self.killtarget);
 				else
 				if (!f)
@@ -187,7 +187,7 @@ e.button12 = 65536+random();
 				}
 				else
 					lc_item_call_save(e, item_by_mcode(f)); // set replacement item
-				if (self.map == "rune") self.map = ""; // rune server deal - this is a just in case - map runes should be pic or nopic
+				if (self.map == "rune") self.map = null_string; // rune server deal - this is a just in case - map runes should be pic or nopic
 			}
 		}
 
@@ -234,7 +234,7 @@ void(entity e) init_loopcyc =
 	local float f0, f1, fr, sf;
 
 	e.theowner = world;
-	cl = "";
+	cl = null_string;
 	f0 = cvar(e.noise);
 	f1 = cvar(e.noise1);
 	if (!f0 && !f1)
@@ -247,12 +247,12 @@ void(entity e) init_loopcyc =
 		e.delay = f0;
 		cl = item_by_mcode(f0);
 	}
-	if (cl == "")
+	if (cl == null_string)
 	{
 		if (f0 < 0) // detect mass replace
 		{
 			cl = item_by_mcode(fabs(f0));
-			if (cl != "")
+			if (cl != null_string)
 			{
 				e.killtarget = cl;
 				fr = f1;
@@ -262,7 +262,7 @@ void(entity e) init_loopcyc =
 		e.delay = f1;
 		cl = item_by_mcode(f1);
 	}
-	if (cl == "")
+	if (cl == null_string)
 	{
 		remove(e);
 		return; // failed - 0 or 1 (or both) not valid map codes
@@ -283,7 +283,7 @@ void(entity e) init_loopcyc =
 			{
 				if (!e.theowner)
 				{
-					if (cl != "")
+					if (cl != null_string)
 						e.theowner = s2 = sr = find( world, classname, cl);
 				}
 				if (!sr && !fr)

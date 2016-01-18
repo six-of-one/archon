@@ -119,6 +119,7 @@ void() turret_dropTurret =
 //	turret.solid = SOLID_BBOX;
 	turret.solid = SOLID_NOT;
 	turret.classname = "turret";
+	turret.netname = "Auto sentry";
 	turret.takedamage = TRUE;
 	turret.health = PK_TUR_HEAL;
 	if (PK_TUR_HEAL > 0) turret.th_die = turret_deathAnim;
@@ -185,6 +186,7 @@ void() turret_dropTurret =
 //	turret.turret_base.solid = SOLID_BBOX;
 	turret.turret_base.solid = SOLID_NOT;
 	turret.turret_base.classname = "turret_base";
+	turret.turret_base.netname = "Auto sentry";
 
 // Cataboligne - 6.5.10 - removed base killable because of T_Dam loop deal
 
@@ -288,7 +290,7 @@ void() turret_searchForEnemy =
 			if (MAP_MODE == "PK") f = pk_mcode("item_artifact_invulnerability", world); 
 			if (MAP_MODE == "Q2" || d == 2) f = pk_mcode("item_invulnerability", world); 
 
-			if (!c) fn_make(f, v0, ""); // if we didnt find an invulernable, now make one
+			if (!c) fn_make(f, v0, null_string); // if we didnt find an invulernable, now make one
 		}
 	}
 

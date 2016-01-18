@@ -93,7 +93,7 @@ void () phone_teleport =
 		spawn_tfog2 (self.owner.origin, self.noise1);
 	}
 	else
-	spawn_tfog2 (self.owner.origin, "");
+	spawn_tfog2 (self.owner.origin, null_string);
 
 	self.owner.aiment = world; // Cataboligne - 5.4.10 - telefrag escape for admin, need to reset this
 	if ( !self.owner.health )

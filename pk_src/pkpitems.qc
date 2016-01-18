@@ -151,7 +151,7 @@ void(entity e) pkplus_item_control =
 
 	if (!cvar("pk_art_rep"))
 		{
-			setmodel (e,"");
+			setmodel (e,null_string);
 			e.touch = SUB_Null;
 		}
 	else
@@ -161,7 +161,7 @@ void(entity e) pkplus_item_control =
 //			if (e.mcode > 149 && e.mcode < MC_PK)
 			e.mcode = MC_PULSE_NAILGUN + rint(random() * f); // NOTE: starts with pulse gun - this could change if item order in mcode is changed!
 			e.wad = item_by_mcode(e.mcode);
-			if (e.wad != "")
+			if (e.wad != null_string)
 			{
 //				e.pk_touch = (void()) 0; // so we can touch the new things
 				e.pk_touch = SUB_Void;
@@ -170,7 +170,7 @@ void(entity e) pkplus_item_control =
 			else
 			{
 				e.mcode = e.scode;
-				setmodel (e,"");
+				setmodel (e,null_string);
 				e.touch = SUB_Null;
 			}
 		}
@@ -199,7 +199,7 @@ void() pkplus_item_control_loop =
 			e.owner.mcode = MC_TOMB + rint(random() * 3);
 			e.owner.wad = item_by_mcode(e.owner.mcode);
 			item_call_save(e.owner, e.owner.wad);
-//			e.wad = "";
+//			e.wad = null_string;
 			e = find(e, event, "pkpitem");
 		}
 		return;
@@ -237,7 +237,7 @@ void () item_pkplus_ego =
 	setsize (self,'-16 -16 -24','16 16 32');
 	self.mask_x = MORPH_ALL;
 	StartItem ();
-	if (self.class_select == "") self.class_select = "pkplus_item";
+	if (self.class_select == null_string) self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
 
 	self.archon = ARCHON_WEP + 0.1;
@@ -254,7 +254,7 @@ void () item_pkplus_tomb =
 	setsize (self,'-16 -16 -24','16 16 32');
 	self.mask_x = MORPH_ALL;
 	StartItem ();
-	if (self.class_select == "") self.class_select = "pkplus_item";
+	if (self.class_select == null_string) self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
 
 	self.archon = ARCHON_WEP + 0.1;
@@ -270,7 +270,7 @@ void () item_pkplus_actor =
 	setsize (self,'-16 -16 -24','16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can get arts
 	StartItem ();
-	if (self.class_select == "") self.class_select = "pkplus_item";
+	if (self.class_select == null_string) self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
 
 	self.archon = 0.02;
@@ -286,7 +286,7 @@ void () item_pkplus_phone =
 	setsize (self,'-16 -16 -24','16 16 32');
 	self.mask_x = MORPH_ALL;
 	StartItem ();
-	if (self.class_select == "") self.class_select = "pkplus_item";
+	if (self.class_select == null_string) self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
 
 	self.archon = ARCHON_WEP + 0.05;

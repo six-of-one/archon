@@ -61,7 +61,7 @@ void(string bcm) cam_setbob =
 {
 	if (self.class_select == "class_bot") return; // no bots
 
-	if (bcm == "")
+	if (bcm == null_string)
 	{
 		if (cvar("cl_bob")) stuffcmd( self, "cl_bob 0\n" ); // dont bob view
 	}
@@ -83,8 +83,8 @@ void( entity player_ent ) Chase_cam_setweapon =
 	self = player_ent;
 	if ( (self.cam_x & CHSCAM_ON) )
 	{
-		self.weaponmodel = "";
-		cam_setbob("");
+		self.weaponmodel = null_string;
+		cam_setbob(null_string);
 		stuffcmd( self, CAM_FOV ); // moved here for dpcam
 	}
 	else
@@ -137,7 +137,7 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 
 	chase_cam.solid = SOLID_NOT;
 	chase_cam.movetype = MOVETYPE_FLY;
-	chase_cam.water_notify = ""; // Cataboligne - 6.13.10 - cam splash issue - just in case fix
+	chase_cam.water_notify = null_string; // Cataboligne - 6.13.10 - cam splash issue - just in case fix
 
 
 	chase_cam.angles = chase_cam.owner.angles;
@@ -220,7 +220,7 @@ void( float opt ) Remove_chase_cam =
 	// set view-point back to normal
 	set_viewport( self.owner, self.owner);
 
-	setmodel( self, "" );
+	setmodel( self, null_string );
 	self.velocity = '0 0 0';
 
 //	self.owner.view_ofs_z = 22;
@@ -330,7 +330,7 @@ void () cam_deathmove =
 		stuffcmd(self.owner, " rels) Archon - high score: ");
 		stuffcmd(self.owner, ftos(high_score));
 		stuffcmd(self.owner, " - map: ");
-//		if (world.message != "")
+//		if (world.message != null_string)
 //			stuffcmd(self.owner, world.message); // some world messages fsck the info bar because they have \n in them
 //		else
 			stuffcmd(self.owner, world.model);
@@ -364,7 +364,7 @@ void () cam_deathmove =
 //		self.owner.takedamage = DAMAGE_NO;
 		self.owner.wait = 0;
 		self.owner.view_ofs_z = 1;
-		self.owner.water_notify = ""; // Cataboligne - 6.13.10 - deadcam splash issue
+		self.owner.water_notify = null_string; // Cataboligne - 6.13.10 - deadcam splash issue
 		self.oldorigin = self.owner.origin;
 		setorigin(self.owner, self.origin);
 		set_viewport(self.owner, self.owner); // back to moving players own ent, cams off
@@ -417,10 +417,10 @@ void () cam_deathview =
 		self.think = cam_deathmove;
 	}
 	else
-	if (self.wait < time + 3  && self.owner.model != ""  && self.owner.solid == SOLID_NOT) // once corpse settles, dont let player move it
+	if (self.wait < time + 3  && self.owner.model != null_string  && self.owner.solid == SOLID_NOT) // once corpse settles, dont let player move it
 	{
 		CopyToBodyQue (self.owner);
-		self.owner.model = "";
+		self.owner.model = null_string;
 	}
 
 
@@ -459,7 +459,7 @@ void() cam_startdeathview =
 
 	ang = self.v_angle;
 	ang_x = 30; // pretend was a slight down aim
-	self.weaponmodel = "";
+	self.weaponmodel = null_string;
 
 	self.oldenemy = e = spawn();
 	e.owner = self;

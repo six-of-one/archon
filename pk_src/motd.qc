@@ -26,7 +26,7 @@ if (self.classname == "player" && self.class_select != "class_bot")
 	// The welcome message
 	if (self.msgcount == 0)
 	{
-	  centerprint7(self, "\n", "\n\n", Line3,"\b*\n","\nsee:           \nthe following website","",Line7);
+	  centerprint7(self, "\n", "\n\n", Line3,"\b*\n","\nsee:           \nthe following website",null_string,Line7);
 	}
 	else if (self.msgcount == 1)
 	{
