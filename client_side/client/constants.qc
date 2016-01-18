@@ -98,7 +98,7 @@ float STAT_AMBUL = 46; // enh ammos
 float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
 
-//float STAT_SPELLCOST = 65; // track spell point cost
+float STAT_VOL = 65; // track morph cost or chaos level
 float STAT_ARCHON = 66; // track archon power for power bar display
 
 // fooey.  these will be tricky to maintain since the list is built on the fly

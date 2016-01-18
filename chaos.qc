@@ -2093,7 +2093,7 @@ string(entity e) chaos_bomb_rndmdl =
 	r1 = floor(random() * 17.3);
 
 	s1 = "progs/teleport.mdl";
-	if (r1 > 15) s1 = "progs/gas.mdl";
+	if (r1 > 15) s1 = "progs/g_gas.mdl";
 	else if (r1 > 13) s1 = "progs/grenade.mdl";
 	else if (r1 > 10) s1 = "maps/b_exbox2.bsp";
 	else if (r1 > 8) s1 = "maps/b_rock0.bsp";

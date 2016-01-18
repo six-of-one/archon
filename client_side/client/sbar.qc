@@ -347,8 +347,35 @@ void(vector valor, string pic, float transparencia, float scale) DrawInventoryAm
 	Sbar_DrawPic(v, pic, transparencia, scale);
 }; 
 
+// scale power bar for console display
+
+// pow - power level for bar indicator or sub level
+// return:
+// scl - the scaled value so bar will fit on screen
+
+// scale chart																											1 unit =
+// 0 - 100						- full scale, up to 100 screen units						1
+// 101 - 5000				- 4900 scaled into 101 - 360 screen uinits			0.053
+// 5001 - 60000+	- 55000 scaled into 361 - 480									0.00218
+// max bar position capped at 480
+
+float(float pow) bar_scale =
+{
+	local float scl;
+
+	scl = pow;
+
+	if (pow > 5000)
+		scl = 360 + ((pow - 5000) / 55000) * 120;
+	else if (pow > 100)
+		scl = 100 + ((pow - 100) / 4900) * 260;
+
+	if (scl > 480) scl = 480;
+	
+	return(scl);
+}
 // has_* - once a mapcode item is detected, this allows holstered view
-float has_laser, has_prox, has_pnail, has_hook, has_flamer1;
+float has_laser, has_prox, has_pnail, has_hook, has_flamer1, cnt_left;
 
 void() Sbar_DrawInventory =
 {
@@ -361,9 +388,9 @@ void() Sbar_DrawInventory =
 	ALPHA_MEDIUM = ibar_alpha * 0.7;
 	ALPHA_LOW = ibar_alpha * 0.4;
 
-	float shells, rockets, nails, cells, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas;
+	float k, l, shells, rockets, nails, cells, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, p_level_y, archon_magic;
 	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone;
-	vector pwr_step, wep_step, wep_axlv, arc_level;
+	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level;
 
 	string wep_sg, wep_ssg, wep_nail, wep_snail, wep_gren, wep_rock, wep_light, wep_mj, wep_prox, wep_laser, wep_harp, wep_airgun, wep_clg, wep_axe, wep_pnail;
 
@@ -389,10 +416,14 @@ void() Sbar_DrawInventory =
 	rockets = GetStat_FLOAT_TRUNCATED(STAT_ROCKETS);
 	cells   = GetStat_FLOAT_TRUNCATED(STAT_CELLS);
 
+	armorval = GetStat_FLOAT_TRUNCATED(STAT_ARMOR);
+
 // Archon server
 	archon = GetStat_FLOAT_TRUNCATED(STAT_ARCHON);
 	mcode = GetStat_FLOAT_TRUNCATED(STAT_MCODE);
 	rune_flag = GetStat_FLOAT_TRUNCATED(STAT_RUNEFLAG);
+
+	volspec = GetStat_FLOAT_TRUNCATED(STAT_VOL);
 
 // pk
 	pk_inv = GetStat_FLOAT_TRUNCATED(STAT_PKINV);
@@ -472,88 +503,170 @@ if (ibar_flag)
 
 sb_align = SB_BOTTOM;
 
-// Archon power bar - note vid_conheight and vid_conwidth are very important for this
+// Archon power bar - note vid_conheight and vid_conwidth are very important for this - they need consulted or set
+
+//	if (mcode == -665) archon_magic = 2; // using magic from archon pts - for now we use (-) volume
+	if (mcode == -666) archon_magic = 1; // chaos archon
+	if (mcode == -667) archon_magic = 1; // order archon - for diff color bars
+
+	if (archon_magic)
+	if (explodeshot > 0)
+		plevel = archon - explodeshot; // archon magic cost
+	if (volspec < 0) plevel = archon - fabs(volspec); // morph cube cost
+	if (plevel < 0) plevel = 0; // IMP: warn on - result - red # or such
 
 // IMP: diff colors for archons themselves, show possible spell usage at top of bar (reduction amount)
 
+	chaos_level = '-412 0 0';
+	chaos_level_y = bar_scale(volspec);
+	
+// scale archon level bar
 	arc_level = '-412 0 0';
-	arc_level_y = archon;
+	arc_level_y = bar_scale(archon);
 
-	if (archon > 100) arc_level_y = 100 + (archon / 5000) * 380;
-	if (archon > 5000) arc_level_y = 100 + (archon / 60000) * 380;
+// scale plevel result mark
+	p_level_y = bar_scale(plevel);
+
+	if (archon > 0)
+	if (chaos_level_y < arc_level_y + 4)
+		chaos_level_x = -409; // move over for second bar
+
+	if (archon_magic == 1)
+	if (volspec > 0)
+		DrawInventoryAmmo(chaos_level, "gfx/inv_chaos_bar", ALPHA_FULL, 1); // chaos / order power
 
 	if (archon > 0)
 	{
 		DrawInventoryAmmo(arc_level, "gfx/inv_archon_bar", ALPHA_FULL, 1);
 		if  (archon < 4) arc_level_y = arc_level_y + 4 - archon;
 		DrawAmmo(arc_level + '20 5 0', archon, ALPHA_FULL);
+
+		k = arc_level_y;
+		if (archon_magic || (volspec < 0))
+		if (plevel > 0)
+		{
+			if ((k - p_level_y) < 4) p_level_y = k - 3;
+			arc_level_y = p_level_y;
+			DrawInventoryAmmo(arc_level + '6 0 0', "gfx/spell_bar", ALPHA_FULL, 0.5);
+			if  (plevel < 10) arc_level_y = arc_level_y + 10 - plevel;
+			DrawAmmo(arc_level + '20 0 0', plevel, ALPHA_FULL);
+		}
 	}
 
-	if (mcode == -666)
-	if (explodeshot > 0)
+	if (chaos_level_y > 0) // c/o power numeric
 	{
-		if (archon > 5000) arc_level_y = arc_level_y - (explodeshot  / 60000) - 2;
-		else if (archon > 100) arc_level_y = arc_level_y - (explodeshot / 5000) - 2;
-		else arc_level_y = arc_level_y - explodeshot;
-		DrawInventoryAmmo(arc_level + '6 0 0', "gfx/spell_bar", ALPHA_FULL, 0.5);
-		DrawAmmo(arc_level + '20 -2 0', archon - explodeshot, ALPHA_FULL);
+		if (archon > 0)
+		{
+			if (chaos_level_y < arc_level_y + 4) arc_level_x = -409;
+			if ((chaos_level_y >= (arc_level_y - 14)) && (chaos_level_y <= (k + 8))) // dont over write archon pts - hold till passed
+				chaos_level_y = arc_level_y - 14;
+		}
+
+		if  (volspec > 20) // pretty much starts at 20
+			DrawAmmo(chaos_level + '20 5 0', volspec, ALPHA_FULL);
 	}
+
+	if (volspec < 0) volspec = 0; // done, 0 this cost
+
 
 // runes
 	pwr_step = '-400 50 0';
+
+// move runes over for low range digit display
+	k = 55;
+	l = 0; // adjust for power level diff digit display
+	if (cnt_left == 2) k = 85;
+	if (cnt_left == 3) { k = 300; l = 80; }
+	if (cnt_left == 4) { k = 900; l = 80; }
+	cnt_left = 0;
+
+	if ((archon > 0) && (archon < k))
+		pwr_step = '-372 50 0';
+	if ((plevel > 0) && (plevel < k + l))
+		pwr_step = '-372 50 0';
+	if ((volspec > 0) && (volspec < k + l))
+		pwr_step = '-372 50 0';
+
+// armor in bar 2
+	if (ibar_flag == 2)
+	{
+		if (cl_items & IT_ARMOR3)
+			DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor3", ALPHA_FULL, 0.28);
+		else if (cl_items & IT_ARMOR2)
+			DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor2", ALPHA_FULL, 0.28);
+		else if (cl_items & IT_ARMOR1)
+			DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor1", ALPHA_FULL, 0.28);
+
+		if (cl_items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3))
+		{
+			DrawAmmo(pwr_step + '27 -10 0', armorval, ALPHA_FULL);
+			pwr_step_y = pwr_step_y + 30;
+			cnt_left = cnt_left + 1;
+		}
+	}
 
 // ammo pack deal
 	if (rune_flag & RUNE_AMMO)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_pack", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 
 	if (rune_flag & TECH_AMP)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_amp", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & TECH_TEIM)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_tiem", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & TECH_ADOC)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_adoc", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & TECH_DSH)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_dsh", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 
 	if (rune_flag & RUNE_FLG_DM)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_dmg", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & RUNE_FLG_HS)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_hst", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & RUNE_FLG_RG)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_rgn", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & RUNE_FLG_RS)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_res", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 	if (rune_flag & RUNE_VAMPIRE)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_vmp", ALPHA_FULL, 0.25);
 		pwr_step_y = pwr_step_y + 30;
+		cnt_left = cnt_left + 1;
 	}
 
 	DrawInventory('40 48 0', "gfx/sb_invis",  IT_INVISIBILITY, 0, ALPHA_LOW, 1.5);

@@ -321,9 +321,10 @@ string() chaos_mdlsel =
 	s1 = "spike ball";
 	if (ci_md == "progs/teleport.mdl")				{ ci_md = "maps/b_rock0.bsp";					s1 = "rocket box"; }
 	else if (ci_md == "maps/b_rock0.bsp")			{ ci_md = "maps/b_exbox2.bsp";				s1 = "explode box"; }
-	else if (ci_md == "maps/b_exbox2.bsp")		{ ci_md = "progs/gas.mdl";						s1 = "gas cylinders"; }
-	else if (ci_md == "progs/gas.mdl")				{ ci_md = "progs/drycel6.mdl";				s1 = "batterys"; }
-	else if (ci_md == "progs/drycel6.mdl")		{ ci_md = "progs/quaddama.mdl";				s1 = "quad"; }
+	else if (ci_md == "maps/b_exbox2.bsp")		{ ci_md = "progs/g_gas.mdl";						s1 = "gas cylinders"; }
+//	else if (ci_md == "progs/g_gas.mdl")				{ ci_md = "progs/drycel6.mdl";				s1 = "batterys"; }
+	else if (ci_md == "progs/g_gas.mdl")				{ ci_md = "progs/b_batt1.mdl";				s1 = "batterys"; }
+	else if (ci_md == "progs/b_batt1.mdl")		{ ci_md = "progs/quaddama.mdl";				s1 = "quad"; }
 	else if (ci_md == "progs/quaddama.mdl")		{ ci_md = "progs/g_rock2.mdl";				s1 = "rocket launcher"; }
 	else if (ci_md == "progs/g_rock2.mdl")		{ ci_md = "maps/b_bh100.bsp";					s1 = "health box"; }
 	else if (ci_md == "maps/b_bh100.bsp")			{ ci_md = "progs/chaos_b2.mdl";				s1 = "natural state"; }
@@ -1112,7 +1113,7 @@ void() chaos_item =
 		else if (r1 == 15) {ci_md = "progs/chaos_b2.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 100; }
 		else if (r1 == 16) ci_md = "progs/grenade.mdl";
 		else if (r1 == 17) {ci_md = "progs/invulner.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
-		else if (r1 == 18) {ci_md = "progs/gas.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 80; }
+		else if (r1 == 18) {ci_md = "progs/g_gas.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 80; }
 		else if (r1 == 19) ci_md = "progs/beartrap.mdl";
 		else if (r1 == 20) {ci_md = "maps/b_eshel0.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 50; }
 		else if (r1 == 21) { ci_md = "progs/laser_m.mdl"; ci_sk = floor(random() * 10.4); ci_fr = floor(random() * 10.4); }
@@ -1197,26 +1198,21 @@ void() chaos_item =
 
 		if (newmis)
 		{
-			newmis.classname = "chaos_item";
-/* upgrades are now done by cycle code
-			if (random() < 0.17)
-			if (r1 == MC_REGGUN || r1 == MC_Q3_RAILGUN || r1 == MC_GRAVITY)
-			{
-				newmis.upgrade_mc = 100 + rint(random() * 17); // random upgrade item - this will be made a permanent map item by load fn
-				newmis.upgrade_cnt = random() * 5;
-				newmis.upgrade_time = 5 + random() * 35;
-				newmis.invincible_time = time + newmis.upgrade_time + (random() * 0.3 * newmis.upgrade_time);
-			}
-*/
+			newmis.class_select = "chaos_item";
+
 			if (f1 > 8) f1 = f1 - 2;
 			chaos_level( 0 - (f1 * 8) - 1, self.owner);
+
+// select a random trail
+			r1 = rnd_bit_mask(MF_HAPPYTRAIL);
+			if (r1 < 256) newmis.modelflags = r1;
 		}
 		return;
 		}
 
-	if (FALSE) //(flg & FL_RNDBURST) 
+		if (FALSE) //(flg & FL_RNDBURST) 
 		{
-		return; // less normal stuff here
+			return; // less normal stuff here
 		}
 
 	} // while true
@@ -1340,9 +1336,9 @@ void(vector org) spawn_light_field =
 
 // fn(spawn_chaos_monster) - call fn to creat a random chaos monster
 // torg - target origin
-float WEAK_MONSTER = 0.4; // percentage chance of weaker monster only
-// IDEA: monster count for level, SVC msg
+// monster count for level, SVC msg - done in item_call *
 // pre set codes
+/*
 float scm_dog				= 0;
 float scm_zombie			= 1;
 float scm_wizard			= 2;
@@ -1354,34 +1350,32 @@ float scm_tarbaby			= 7;
 float scm_shalrath		= 8;
 float scm_demon1		= 9;
 float scm_shambler		= 10;
+*/
 
 // NOTE: redo with item_call_save
 
 void(float sel, vector torg) spawn_chaos_monster =
 {
-	local entity sv;
-
-	sv = self;
-	self = chaos_spawn(0, 0, 0, 0, torg, v0, v0, v0, v0, "", "", SUB_Null, 0.0, SUB_Null, SUB_Null, sv, world);
+	self.enemy = chaos_spawn(0, 0, 0, 0, torg, v0, v0, v0, v0, "", "", SUB_Null, 0.0, SUB_Null, SUB_Null, self, world);
 
 	if (!sel) sel = floor(random() * 11.5);
-	if (random() < WEAK_MONSTER)
+	if (random() < 0.4)																// float WEAK_MONSTER = 0.4; // percentage chance of weaker monster only
 		while (sel > 5) sel = floor(random() * 10.5);
 
-	if (sel == 0)				monster_dog(A_MONSTER);
-	else if (sel == 1)	monster_zombie(A_MONSTER);
-	else if (sel == 2)	monster_wizard(A_MONSTER);
-	else if (sel == 3)	monster_army(A_MONSTER);
-	else if (sel == 4)	monster_enforcer(A_MONSTER);
-	else if (sel == 5)	monster_ogre(A_MONSTER);
-	else if (sel == 6)	monster_hell_knight(A_MONSTER);
-	else if (sel == 7)	monster_tarbaby(A_MONSTER);
-	else if (sel == 8)	monster_shalrath(A_MONSTER);
-	else if (sel == 9)	monster_demon1(A_MONSTER);
-	else if (sel == 10)	monster_shambler(A_MONSTER);
-	else if (sel == 12)	monster_scourge(A_MONSTER);
+	if (sel == 0)				sg = "monster_dog"; 		// monster_dog(A_MONSTER);
+	else if (sel == 1)	sg = "monster_zombie"; 		// monster_zombie(A_MONSTER);
+	else if (sel == 2)	sg = "monster_wizard"; 		// monster_wizard(A_MONSTER);
+	else if (sel == 3)	sg = "monster_army"; 		// monster_army(A_MONSTER);
+	else if (sel == 4)	sg = "monster_enforcer"; 	// monster_enforcer(A_MONSTER);
+	else if (sel == 5)	sg = "monster_ogre"; 		// monster_ogre(A_MONSTER);
+	else if (sel == 6)	sg = "monster_hell_knight"; // monster_hell_knight(A_MONSTER);
+	else if (sel == 7)	sg = "monster_tarbaby"; 	// monster_tarbaby(A_MONSTER);
+	else if (sel == 8)	sg = "monster_shalrath"; 	// monster_shalrath(A_MONSTER);
+	else if (sel == 9)	sg = "monster_demon1"; 		// monster_demon1(A_MONSTER);
+	else if (sel == 10)	sg = "monster_shambler"; 	// monster_shambler(A_MONSTER);
+	else if (sel == 12)	sg = "monster_scourge"; 	// monster_scourge(A_MONSTER);
 
-	self = sv;
+	item_call_save(self.enemy, sg);
 };
 
 /*
@@ -1440,12 +1434,6 @@ void() chaos_beam =
 		sound (self, CHAN_WEAPON, beam_hum, 1, ATTN_NORM);
 		if (beam_hum == "chaos/cbeam.1.wav") self.t_width = time + 6.0;
 		else self.t_width = time + 2.954;
-		if (random() < 0.3)
-		{
-			sprint(self, "Master Chaos level ");
-			sprint(self, ftos(self.volume ));
-			newline(self);
-		}
 	}
 
 	self.aflag = self.aflag | FL_MELO;
@@ -1637,7 +1625,6 @@ void() player_chaos_attack =
 				archon_target_clear(self.bolt_target);
 				self.bolt_target = self.enemy;
 //				self.bolt_target.bolt_target.alpha = 1;
-				self.bolt_target.bolt_target.skin = 0;
 				self.enemy = world;
 			}
 			return;
@@ -1807,9 +1794,12 @@ void(entity e) archon_target_clear =
 	}
 };
 
+// think clear reticle
+
 void() clear_target =
 {
-	if (self.owner.bolt_target.model == "gfx/reticle.spr")
+//	if (self.owner.bolt_target.model == "gfx/reticle.spr")
+	if (self.owner.bolt_target.button13 == self.button13)
 		self.owner.bolt_target = world;
 	remove(self);
 };
@@ -1854,6 +1844,11 @@ void() archon_target =
 		if (trace_ent.movetype == MOVETYPE_NOCLIP) return;
 	}
 
+	if (trace_ent.classname == "turret") // target the turrets base so it can be moved - note other spells will be diff
+	if (trace_ent.turret_base)
+	if (trace_ent.turret_base.classname == "turret_base")
+		trace_ent = trace_ent.turret_base;
+
 // already targeted, power point protection or in a clg bolt loop
 /// *** an archon with a primary target will not be targetable!
 	if (trace_ent.bolt_target) return;
@@ -1861,11 +1856,6 @@ void() archon_target =
 // already acquired - ignore
 	if (self.bolt_target == trace_ent) return;
 	if (self.enemy == trace_ent) return;
-
-	if (trace_ent.classname == "turret") // target the turrets base so it can be moved - note other spells will be diff
-	if (trace_ent.turret_base)
-	if (trace_ent.turret_base.classname == "turret_base")
-		trace_ent = trace_ent.turret_base;
 
 	self.bolt_targetTimeout = time + 30;
 
@@ -1878,7 +1868,11 @@ void() archon_target =
 //	trace_ent.bolt_target.scale = 8;
 // because bottom point of ammo boxes is mostly on ground - can submerge reticle
 	trace_ent.bolt_target.view_ofs = v0;
-	if (!trace_ent.mins_z)
+// hash so we dont clobber new reticle when an orphan expires
+	trace_ent.bolt_target.button13 = system_hash;
+	system_hash = system_hash + 1 + rint(random() * 5);
+
+	if (!trace_ent.mins_z) // center ammo boxes with odd co-ords
 	{
 		trace_ent.bolt_target.view_ofs_x = trace_ent.maxs_x / 2;
 		trace_ent.bolt_target.view_ofs_y = trace_ent.maxs_y / 2;
@@ -1898,8 +1892,8 @@ void() archon_target =
 	setorigin(trace_ent.bolt_target, trace_ent.origin + trace_ent.bolt_target.view_ofs);
 //	setmodel(trace_ent.bolt_target, "progs/reticle.mdl");
 	setmodel(trace_ent.bolt_target, "gfx/reticle.spr");
-	if (! trace_ent.flags & FL_ITEM)
-		trace_ent.bolt_target.scale = 1.66;
+	if (trace_ent.flags & FL_ITEM)
+		trace_ent.bolt_target.scale = 0.7;
 
 //	trace_ent.effects = EF_BRIGHTLIGHT; // IMP: reticle, poss HUD info
 	
@@ -1918,7 +1912,6 @@ void() archon_target =
 
 
 //	trace_ent.bolt_target.alpha = 0.65;
-	trace_ent.bolt_target.skin = 1;
 
 	archon_target_clear(self.enemy);
 	self.enemy = trace_ent;

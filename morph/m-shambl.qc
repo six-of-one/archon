@@ -315,8 +315,7 @@ void(float silent) player_shambler_become = {
 
 	self.cam_z = 26 / 100;
 	self.cam_y = 10;
-	stuffcmd(self, "chase_up 26\n");
-	stuffcmd(self, "chase_back 10\n");
+
 	stuffcmd(self, "exec cfg/morph/m-shambler.cfg\n");
 
 	setmodel(self,"progs/shambler.mdl");

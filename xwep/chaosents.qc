@@ -313,7 +313,7 @@ void () c_weapon_deepsleep =
 	self.vv_draw = vw_melee_base;
 
 	setmodel (self, "progs/g_deepsleep.mdl");
-	self.weaponmodel = "progs/v_q2_blst.mdl";
+	self.weaponmodel = "progs/v_deepsleep.mdl";
 	self.vwepmdl = "progs/vw_deepsleep.mdl";
 	self.noise3 = "sound/deepsleep/fire.wav";
 	self.target = "sound/deepsleep/hit.wav";

@@ -30,6 +30,8 @@ float gsf;										// loop safety global - this MUST be watched CAREFULLY
 //				usage list:			m-gremlin, m-chaos, morph, bot_way **, grap **
 vector v1;
 
+string sg;
+
 // end engines
 
 float() SUB_False				= { return 0; }; // Return a false value
@@ -662,11 +664,6 @@ float MC_Q3_HOLDTELE;
 
 
 
-//DP_SV_MODELFLAGS_AS_EFFECTS
-//this extension allows model flags to be specified on entities so you can add a rocket trail and glow to any entity, etc.
-//setting any of these will override the flags the model already has, to disable the model's flags without supplying any of your own you must use EF_NOMODELFLAGS.
-//idea: LordHavoc, Dresk - darkplaces implementation: LordHavoc
-
 // **************************************
 // chaos section
 
@@ -895,7 +892,11 @@ void() trigger_teleport;
 
 float CHAOS_UNSTABLE_TELE; // base percent chance for unstable teleport to change targets
 
-// not used yet
+
+//DP_SV_MODELFLAGS_AS_EFFECTS
+//this extension allows model flags to be specified on entities so you can add a rocket trail and glow to any entity, etc.
+//setting any of these will override the flags the model already has, to disable the model's flags without supplying any of your own you must use EF_NOMODELFLAGS.
+//idea: LordHavoc, Dresk - darkplaces implementation: LordHavoc
 
 .float modelflags;
 .float clientcolors; //controls coloring on scoreboard (using a single number that contains pants and shirt colors (pants + shirt * 16, 0-255 potentially), so be sure to set it for a bot)
@@ -915,6 +916,8 @@ float MF_TRACER  				= 16; // green split trail
 float MF_ZOMGIB  				= 32; // small blood trail
 float MF_TRACER2 				= 64; // orange split trail
 float MF_TRACER3 				= 128; // purple trail
+
+float MF_HAPPYTRAIL			= 1011; // bits to select random trail, > 255 means no trail
 
 // end chaos
 
@@ -1305,6 +1308,7 @@ float STAT_AMBUL = 46; // enh ammos
 float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
 
+float STAT_VOL = 65; // track morph cost or chaos level
 float STAT_ARCHON = 66; // track archon power for power bar display
 
 */
@@ -1967,7 +1971,6 @@ float(float weaponnum, float pknum) HasAmmo;
 float() PK_BestWeapon;
 float() PK_CheckNoAmmo;
 void() PK_ChangeWeapon;
-void() PK_CheatCommand;
 void() PK_CycleWeaponCommand;
 void() PK_CycleWeaponReverseCommand;
 void() PK_ImpulseCommands;

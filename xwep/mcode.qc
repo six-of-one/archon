@@ -1990,7 +1990,8 @@ void() cube_rearm =
 	self.pk_currentitem = W_BestPKWeapon();
 	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
 	W_SetCurrentAmmo();
-	admin_clear(self); // for morphic cube	
+	admin_clear(self); // for morphic cube
+	self.volume = 0; // clear HUD
 };
 
 
@@ -2463,7 +2464,7 @@ void() cube_touch =
 	{
 		other.cnt = -1;
 		other.state = other.morphy;
-		if (other.class_select == "class_player")
+		if (other.class_select == "class_player") // not a bot
 		{
 			stuffcmd(other, "exec hook_release.cfg\n"); // make sure they have wheel select here
 

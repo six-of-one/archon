@@ -1741,6 +1741,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		addstat(47, 2, ammo_slug); // enh ammos
 		addstat(48, 2, ammo_gaspr); // enh ammos
 
+		addstat(65, 2, volume);
 		addstat(66, 2, archon);
 
 

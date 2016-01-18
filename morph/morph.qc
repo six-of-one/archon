@@ -436,6 +436,7 @@ void() morphic_impulse =
 				else
 				if (c.archon < c.volume) c.volume = c.archon;
 			}
+			self.volume = 0 - c.archon; // for HUD
 		}
 		if (MORPH_FREE) sv = 0;
 		else if (self.archon > c.archon) sv = 0;
@@ -595,7 +596,7 @@ void() morph_cube =
 	setmodel(self, "progs/morph_cube.bsp");
 	self.netname = "Evolution Cube";
 
-	if (self.mask_x == MORPH_ARCHON)
+	if (self.mask_x == MORPH_ARCHON) /// imp - this needs expand along with set code above - there should only be 1 archon item among all morph cubes
 	{
 		setmodel(self, "progs/8ray_arc.bsp");
 		self.netname = "Archon Spirit";
@@ -605,10 +606,10 @@ void() morph_cube =
 	self.touch = painkeep_touch;
 	self.pk_touch = cube_touch;
 	self.noise = "items/r_item2.wav";
-	self._alt_fire = morph_cube_use; // fire button to use
-	self._attack = SUB_Null; //morph_cube_use; // fire button to use
-	self._fr_attack = SUB_Null; // fire button to use
-	self.attack_finished = 3;
+	self._alt_fire = morph_cube_use; // hit fire button to use
+	self._attack = SUB_Null; //morph_cube_use;
+	self._fr_attack = SUB_Null;
+	self.attack_finished = 2;
 
 	self.punchangle = ' 210 210 240'; // for ejector
 //	item_eject(self, ' 210 210 240'); // done by pk_place_item with punchangle set

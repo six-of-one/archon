@@ -928,14 +928,14 @@ void() dyn_rem =
 
 float DYN_REM_TIME = 6; // 6 secs then set sub_remove
 
-float dynrem_hash;
+float system_hash;
 
 void(entity e, float tm, void() rmv) dyn_remove =
 {
 	local entity f;
 	local float dv;
 
-	if (!dynrem_hash) dynrem_hash = 10000 + rint(random() * 3000);
+	if (!system_hash) system_hash = 10000 + rint(random() * 3000);
 
 	f = spawn();
 	f.classname = "dyn_removal";
@@ -946,8 +946,8 @@ void(entity e, float tm, void() rmv) dyn_remove =
 	f.target1 = e.classname;
 	f.enemy = e;
 
-	f.button13 = e.button13 = dynrem_hash;
-	dynrem_hash = dynrem_hash + 1 + rint(random() * 5);
+	f.button13 = e.button13 = system_hash;
+	system_hash = system_hash + 1 + rint(random() * 5);
 
 	dv = REMOVE_DV;
 	if (dv > tm) dv = tm * 0.2;

@@ -94,7 +94,7 @@ if (p1.cnt < 0)
 		newmis.think = morph_print_notify;
 		newmis.nextthink = time + 0.5;
 		newmis.enemy = p1;
-		newmis.mask_x = p1.eweapon.mask_x; // would not compile when this was mask = mask
+		newmis.mask_x = p1.eweapon.mask_x; // would not compile when this was .mask = .mask
 
 		p1.cnt = 0; // clear for classpr
 		return;
@@ -102,20 +102,24 @@ if (p1.cnt < 0)
 else if (p1.state == IMP_MCHAOS)
 	{
 	p1.eweapon.archon = 5000;
-	if (p1.archon > p1.eweapon.archon)
-	centerprint3(p1,
+	if (p1.archon > p1.eweapon.archon + 1000)
+ 	centerprint3(p1,
 						 "Archon of Chaos:\n----------------------------------------\n\bA sentient formless mass of energy and \nplasma floating in a dark void with    \nother energy and plasma.  You came to  \nthese worlds on a whim.  You are chaos \nincarnate.  Defeat & defy order.       \nYou can learn to take on _any_ form.   \nYou can use any weapons or spells that \nform can.  Sounds great right?  Just   \ndont count on any \"consistency\" when   \nyou take on this class...              \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MORDER)
 	{
 	p1.eweapon.archon = 5000;
-	if (p1.archon > p1.eweapon.archon)
+	if (p1.archon > p1.eweapon.archon + 1000)
 	centerprint3(p1,
 						 "Archon of Order:\n----------------------------------------\n\bOrder incarnate - you are the reason   \nfor the seaons, why things fall down   \nand every action has a reaction. Your  \nancient enemy Chaos is back, disturbing\nyour realm.                            \nThis WILL NOT be tolerated at all. Use \nall your might, cleanse your realm of  \nthe pervasive Chaotic influence now.   \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MGREMLIN_F)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 35;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 80;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 20;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 200;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1, 
@@ -127,6 +131,10 @@ else if (p1.state == IMP_MGREMLIN_F)
 else if (p1.state == IMP_MENF)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 20;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 45;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 10;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 100;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -135,6 +143,10 @@ else if (p1.state == IMP_MENF)
 else if (p1.state == IMP_MSCOURGE)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 60;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 125;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 40;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -143,6 +155,10 @@ else if (p1.state == IMP_MSCOURGE)
 else if (p1.state == IMP_MSHAMBLR)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 100;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 180;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 80;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 450;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -151,6 +167,10 @@ else if (p1.state == IMP_MSHAMBLR)
 else if (p1.state == IMP_MHKNIGHT)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 60;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 120;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 40;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -159,6 +179,10 @@ else if (p1.state == IMP_MHKNIGHT)
 else if (p1.state == IMP_MSHALR)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 65;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 145;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 45;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -170,6 +194,10 @@ else if (p1.state == IMP_MSHALR)
 else if (p1.state == IMP_MDEMON)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 115;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 200;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 75;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 500;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -178,6 +206,10 @@ else if (p1.state == IMP_MDEMON)
 else if (p1.state == IMP_MOGRE)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 55;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 120;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 35;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -187,6 +219,10 @@ else if (p1.state == IMP_MOGRE)
 else if (p1.state == IMP_MZOMBIE)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 20;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 45;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 10;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 100;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -195,6 +231,10 @@ else if (p1.state == IMP_MZOMBIE)
 else if (p1.state == IMP_MWIZARD)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 45;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 100;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 25;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 200;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
@@ -205,8 +245,12 @@ else if (p1.state == IMP_MWIZARD)
 	}
 else if (p1.state == IMP_MCTHON)
 	{
-	if (!MORPH_FREE) p1.eweapon.archon = 300;
 	if (morph_classpr(p1, SC_BEASTY)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 60;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 125;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 40;
+	else
+	if (!MORPH_FREE) p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Lava Bomb:\n----------------------------------------\n\bYou are the sentient offspring          \nof Cthon. You are very hot under the    \ncollar at your fathers betrayers. You   \nonly exist as a lava bomb blobbng around\nuntil you find a pool of lava. Then you \ncan grow into a small Cthon. Just dont  \nleave the lava without returning to blob\nform.  You are a very hard kill as Cthon\n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -215,6 +259,10 @@ else if (p1.state == IMP_MCTHON)
 else if (p1.state == IMP_MHUMAN) // basic grunt desc.
 	{
 	if (morph_classpr(p1, SC_MARINE)) return;
+	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 25;
+	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 50;
+	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 17;
+	else
 	if (!MORPH_FREE) p1.eweapon.archon = 150;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,

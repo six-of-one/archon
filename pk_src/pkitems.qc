@@ -768,9 +768,17 @@ if (self.classname == "")
 		if (self.solid == SOLID_NOT) // got item
 		{
 			other.archon = other.archon + self.archon;
+// Archons get power when items they made get used
+			if (self.class_select == "chaos_item")
+			if (self.owner.mask_x == CB_CHAOS)
+			if (self.archon > 1)
+				self.owner.archon = self.owner.archon + 5; // intentional items				
+			else
+				self.owner.archon = self.owner.archon + 1; // random items
 		}
 		else
 		if (ARCHON_UNCOL) // item was no collected - may get some pts for touch
+		if (self.class_select != "chaos_item")
 		{
 			other.archon = other.archon + (self.archon * ARCHON_UNCOL);
 		}

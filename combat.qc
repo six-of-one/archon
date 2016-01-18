@@ -156,11 +156,37 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
    if (discharged && targ.wetsuit_finished && (targ.items & IT_SUIT)) // lightning underwater & wearing suit
       return;
 
-// Archons dont use health - no damage & no additive - 9.19.13
-	if (targ.mask_x & MORPH_ARCHON) return;
-
 // used by buttons and triggers to set activator for target firing
 	damage_attacker = attacker;
+
+// Archons dont use health - no damage & no additive - 9.19.13
+	if (targ.mask_x & MORPH_ARCHON)
+	{
+// runes take portion of damage & reduce archon power of an attacked Archon - before multipliers
+		if ((attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & TECH_AMP))
+		{
+				// IMP: magic shield goes here - prevent archon power loss but reduce shield power
+				targ.archon = targ.archon - (damage * 0.25); // reduce by 1/4 damage
+				if (targ.archon < 0) targ.archon = 0; // IMP: *** - de-archon at this point
+		}
+
+		if (attacker.rune_flag & RUNE_VAMPIRE)
+		{
+				// IMP: magic shield goes here - prevent archon power loss but reduce shield power
+				save = damage * 0.25;
+				take = targ.archon - save; // reduce by 1/4 damage
+				if (take < 0) // IMP: *** - de-archon at this point
+				{
+					save = save + take;
+					take = 0;
+				}
+				targ.archon = take;
+				attacker.archon = attacker.archon + save; // add points to attackers
+		}
+
+		return;
+	}
+
 
 // check for quad damage powerup on the attacker
 	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & TECH_AMP) ) ) || ( RUNE_QUAD_COMB || !ENHANCED ) ) // rune overpowers quad on higher rule sets 
@@ -192,6 +218,11 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		damage = damage/2;
 		T_Damage (attacker,targ,targ,damage); // ha - back damage
 		empathy_dmg = 0;
+		if (attacker.mask_x & MORPH_ARCHON) // empathy shield drains archon pts when Archon attacks an player protected by it
+		{
+			// IMP: magic shield goes here - prevent archon power loss but reduce shield power
+			attacker.archon = attacker.archon - (damage * 0.25); // reduce by 1/4 of the 1/2 damage just set
+		}
 	}
 
 // save damage based on the target's armor level
