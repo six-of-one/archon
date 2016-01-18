@@ -367,7 +367,7 @@ void() start_loopcyc =
 {
 	local entity e;
 
-	self.nextthink = time + 15; // recheck every 10 secs?
+	self.nextthink = time + 15; // recheck every 10 rels?
 
 // no sense in cycling removed items or constantly rndize items
 	if (cvar("it_place_item") == 1) return;

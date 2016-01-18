@@ -652,7 +652,7 @@ void()   gremlin_jump10   =[ $meleerun2,     gremlin_jump11   ] {};
 void()   gremlin_jump11   =[ $meleerun3,     gremlin_jump1   ]
    {
    self.nextthink = time + 3;
-   // if three seconds pass, assume gremlin is stuck and jump again
+   // if three rels pass, assume gremlin is stuck and jump again
    };
 
 void()   gremlin_jump12   =[ $meleestnd1,    gremlin_jump13  ] {};
@@ -1022,7 +1022,7 @@ void()   gremlin_flip6    =[ $flip6.asc,    gremlin_flip7 ] {self.touch = Gremli
 void()   gremlin_flip7    =[ $flip7.asc,    gremlin_gib ]
    {
    self.nextthink = time + 3;
-   // if three seconds pass, assume gremlin is stuck and jump again
+   // if three rels pass, assume gremlin is stuck and jump again
    };
 void()   gremlin_flip8    =[ $flip8.asc,    gremlin_flip8 ]
    {

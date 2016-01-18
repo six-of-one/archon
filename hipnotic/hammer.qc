@@ -342,7 +342,7 @@ void() HIP_FireMjolnir =
 //			self.noise3 = "thors_hammer/mjoltink.wav"; // hit wall &| solid
 //			self.noise4 = "zombie/z_hit.wav"; // hit flesh
 		trace_ent.axhitme = 1;
-		SpawnBlood (org, v_forward, damage);
+		SpawnBlood (trace_ent, org, v_forward, damage);
 		T_Damage (trace_ent, self, self, damage);
 	}
    else

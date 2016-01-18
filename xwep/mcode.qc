@@ -144,7 +144,7 @@ float MC_HIP_RNDITM; // # of total items
 
 float MC_D_FIST;
 float MC_D_SAW;
-float MC_D_PISTOL;
+//float MC_D_PISTOL;
 float MC_D_SHOTGUN;
 float MC_D_BOOMSTICK;
 float MC_D_CHAINGUN;
@@ -1753,42 +1753,42 @@ float(float bt, string md) wepbit_mcode =
 
 	else if (md == "D")
 	{
-		if (bt == IT_SHOTGUN)											return(MC_D_SHOTGUN); 		// (IT_);
-		if (bt == IT_SUPER_SHOTGUN)									return(MC_D_BOOMSTICK); 	// (IT_SUPER_SHOTGUN);
-		if (bt == IT_SUPER_NAILGUN)									return(MC_D_CHAINGUN); 		// (IT_SUPER_NAILGUN);
-		if (bt == IT_ROCKET_LAUNCHER)									return(MC_D_ROCKETL); 		// (IT_ROCKET_LAUNCHER);
-		if (bt == IT_LIGHTNING)											return(MC_D_PLASMA); 		// (IT_LIGHTNING);
-		if (bt == IT_EXTRA_WEAPON)										return(MC_D_BFG); 			// (IT_EXTRA_WEAPON);
-		if (bt == IT_NAILGUN)											return(MC_D_SAW); 			// (IT_GRENADE_LAUNCHER); //IT_AXE);
-		if (bt == IT_AXE)													return(MC_D_PISTOL); 		// (IT_NAILGUN);
+		if (bt == IT_SHOTGUN)											return(MC_D_SHOTGUN);
+		if (bt == IT_SUPER_SHOTGUN)									return(MC_D_BOOMSTICK);
+		if (bt == IT_SUPER_NAILGUN)									return(MC_D_CHAINGUN);
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_D_ROCKETL);
+		if (bt == IT_LIGHTNING)											return(MC_D_PLASMA);
+		if (bt == IT_EXTRA_WEAPON)										return(MC_D_BFG);
+		if (bt == IT_NAILGUN)											return(MC_D_SAW);
+		if (bt == IT_AXE)													return(MC_D_PISTOL);
 	}
 
 /// wolf
 
 	else if (md == "W")
 	{
-		if (bt == IT_AXE)													return(MC_W_KNIFE); // (IT_AXE);
-		if (bt == IT_SHOTGUN)											return(MC_W_PISTOL); // (IT_SHOTGUN);
-		if (bt == IT_NAILGUN)											return(MC_W_MACHGUN); // (IT_NAILGUN);
-		if (bt == IT_SUPER_NAILGUN)									return(MC_W_CHAINGUN); // (IT_SUPER_NAILGUN);
-		if (bt == IT_ROCKET_LAUNCHER)									return(MC_W_MORTAR); // (IT_ROCKET_LAUNCHER);
-		if (bt == IT_GRENADE_LAUNCHER)								return(MC_W_FLAMER); // (IT_GRENADE_LAUNCHER);
+		if (bt == IT_AXE)													return(MC_W_KNIFE);
+		if (bt == IT_SHOTGUN)											return(MC_W_PISTOL);
+		if (bt == IT_NAILGUN)											return(MC_W_MACHGUN);
+		if (bt == IT_SUPER_NAILGUN)									return(MC_W_CHAINGUN);
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_W_MORTAR);
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_W_FLAMER);
 	}
 	
 /// q2
 
 	else if (md == "Q2")
 	{
-		if (bt == IT_AXE)													return(MC_Q2_BLASTER); // (IT_EXTRA_WEAPON);
-		if (bt == IT_SHOTGUN)											return(MC_Q2_SHOTGUN); // (IT_SHOTGUN);
-		if (bt == IT_SUPER_SHOTGUN)									return(MC_Q2_DBLSHOTGUN); // (IT_SUPER_SHOTGUN);
-		if (bt == IT_NAILGUN)											return(MC_Q2_MACHINEGUN); // (IT_NAILGUN);
-		if (bt == IT_SUPER_NAILGUN)									return(MC_Q2_CHAINGUN); // (IT_SUPER_NAILGUN);
-		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q2_GRENADEL); // (IT_GRENADE_LAUNCHER);
-		if (bt == IT_ROCKET_LAUNCHER)									return(MC_Q2_ROCKETL); // (IT_ROCKET_LAUNCHER);
-		if (bt == IT_LIGHTNING)											return(MC_Q2_HYPBLASTER); // (IT_LIGHTNING);
-		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q2_RAILGUN); // (IT_ROCKET_LAUNCHER);
-		if (bt == IT_EXTRA_WEAPON)										return(MC_Q2_BFG); // (IT_EXTRA_WEAPON); // NOTE: repeat bits DONT work! - cant default q2 bfg for now
+		if (bt == IT_AXE)													return(MC_Q2_BLASTER);
+		if (bt == IT_SHOTGUN)											return(MC_Q2_SHOTGUN);
+		if (bt == IT_SUPER_SHOTGUN)									return(MC_Q2_DBLSHOTGUN);
+		if (bt == IT_NAILGUN)											return(MC_Q2_MACHINEGUN);
+		if (bt == IT_SUPER_NAILGUN)									return(MC_Q2_CHAINGUN);
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q2_GRENADEL);
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_Q2_ROCKETL);
+		if (bt == IT_LIGHTNING)											return(MC_Q2_HYPBLASTER);
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q2_RAILGUN);
+		if (bt == IT_EXTRA_WEAPON)										return(MC_Q2_BFG); // NOTE: repeat bits DONT work! - cant default q2 bfg for now
 	}
 
 /// q3
@@ -1796,15 +1796,15 @@ float(float bt, string md) wepbit_mcode =
 	else if (md == "Q3")
 	{
 		if (bt == IT_AXE)													return(MC_Q3_GAUNTLET);
-//		if (bt == IT_AXE)													return(MC_Q3_GRAPPLE); // (IT_SHOTGUN);
-		if (bt == IT_SHOTGUN)											return(MC_Q3_MACHINEGUN); // (IT_NAILGUN);
-		if (bt == IT_SUPER_SHOTGUN)									return(MC_Q3_SHOTGUN); // (IT_SUPER_SHOTGUN);
-		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q3_GRENADEL); // (IT_GRENADE_LAUNCHER);
-		if (bt == IT_ROCKET_LAUNCHER)									return(MC_Q3_ROCKETL); // (IT_ROCKET_LAUNCHER);
-		if (bt == IT_SUPER_NAILGUN)									return(MC_Q3_PLASMA); // (IT_SUPER_NAILGUN);
-		if (bt == IT_LIGHTNING)											return(MC_Q3_LIGHTNING); // (IT_LIGHTNING);
-		if (bt == IT_NAILGUN)											return(MC_Q3_RAILGUN); // (IT_ROCKET_LAUNCHER);
-		if (bt == IT_EXTRA_WEAPON)										return(MC_Q3_BFG); // (IT_LIGHTNING);
+//		if (bt == IT_AXE)													return(MC_Q3_GRAPPLE);
+		if (bt == IT_SHOTGUN)											return(MC_Q3_MACHINEGUN);
+		if (bt == IT_SUPER_SHOTGUN)									return(MC_Q3_SHOTGUN);
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q3_GRENADEL);
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_Q3_ROCKETL);
+		if (bt == IT_SUPER_NAILGUN)									return(MC_Q3_PLASMA);
+		if (bt == IT_LIGHTNING)											return(MC_Q3_LIGHTNING);
+		if (bt == IT_NAILGUN)											return(MC_Q3_RAILGUN);
+		if (bt == IT_EXTRA_WEAPON)										return(MC_Q3_BFG);
 	}
 
 	return(0);

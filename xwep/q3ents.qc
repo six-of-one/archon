@@ -287,7 +287,7 @@ void () X_FireGauntlet =
 	if (trace_ent.takedamage)
 	{
 		trace_ent.axhitme = 1;
-		SpawnBlood (org, '0 0 0', gdmg);
+		SpawnBlood (trace_ent, org, '0 0 0', gdmg);
 		T_Damage (trace_ent,self,self,gdmg);
 	}
 	else
@@ -1921,7 +1921,7 @@ void() item_regen =
 	self.volume = Q3_MAX_HEAL; // max add
 //	item_sigil();
 	self.netname = "Regeneration";
-	self.group = "Pain is returning to your life\n";
+	self.group = "Pain is returning to your life";
 
 	self.touch = q3_pwr_touch;
 	self.dmgtime = Q3_POWER_TIME;
@@ -1955,7 +1955,7 @@ void() item_invis =
 	}
 
 	self.netname = "Invisibility";
-	self.group = "Invisibility power is fading\n";
+	self.group = "Invisibility power is fading";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVISIBILITY;
@@ -1986,7 +1986,7 @@ void() q3_item_enviro =
 	}
 
 	self.netname = "Battle Suit";
-	self.group = "Battle suit is about to shut down\n";
+	self.group = "Battle suit is about to shut down";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_SUIT;
@@ -2021,7 +2021,7 @@ void() item_haste =
 	self.duration = 0;
 //	item_sigil();
 	self.netname = "Haste";
-	self.group = "Speedster powers deactivate\n";
+	self.group = "Speedster powers deactivate";
 
 	self.touch = q3_pwr_touch;
 	self.dmgtime = Q3_POWER_TIME;
@@ -2053,7 +2053,7 @@ void() item_flight =
 
 	item_spikes();
 	self.netname = "Flight";
-	self.group = "\bSecure for landing!\n";
+	self.group = "\bSecure for landing!";
 
 	self.touch = q3_pwr_touch;
 	self.spawnflags = RUNE_FLG_FLY;
@@ -2494,8 +2494,8 @@ void() q3_sound_think =
 Sound generating entity that plays .wav files. Normal non-looping sounds play each time the target_speaker is triggered. Looping sounds can be set to play by themselves (no activating trigger) or be toggled on/off by a trigger.
 -------- KEYS --------
 noise : path/name of .wav file to play (eg. sound/world/growl1.wav - see Notes).
-wait : delay in seconds between each time the sound is played ("random" key must be set - see Notes).
-random : random time variance in seconds added or subtracted from "wait" delay ("wait" key must be set - see Notes).
+wait : delay in rels between each time the sound is played ("random" key must be set - see Notes).
+random : random time variance in rels added or subtracted from "wait" delay ("wait" key must be set - see Notes).
 targetname : the activating button or trigger points to this.
 notfree : when set to 1, entity will not spawn in "Free for all" and "Tournament" modes.
 notteam : when set to 1, entity will not spawn in "Teamplay" and "CTF" modes.

@@ -1,12 +1,15 @@
-/*
-		+---------------------------------------+
-		|  Runes code                           | SEC-HEAD
-		+---------------------------------------+
-*/
-
-// implement runes for pk
-
-
+/* ::-::
+ *
+ * Cataboligne
+ *
+ * file: runes.qc
+ *
+ * date: 6/2/10
+ *
+ * qc - implement runes for archon
+ *
+ */
+ 
 
 void(entity e, float f, float r) rune_print =
 {
@@ -83,12 +86,12 @@ void(entity e, float f, float r) rune_print =
 			}
 			else
 			{
-				if (RUNES < 2) 	sprint(e, "Damage = 2 x damage for 30 secs.  8 x damage if combined with quad.\n");
+				if (RUNES < 2) 	sprint(e, "Damage = 2 x damage for 30 rels.  8 x damage if combined with quad.\n");
 				else sprint(e, "Damage = 2 x damage.\n");
 			}
 		}
 		else if (f == RUNE_FLG_HS) sprint(e, "Haste - double fire rate for most weps.\n");
-		else if (f == RUNE_FLG_RG) sprint(e, "Regeneration - add 5 health | armor every 1/2 second\n");
+		else if (f == RUNE_FLG_RG) sprint(e, "Regeneration - add 5 health | armor every 1/2 rel\n");
 		else if (f == RUNE_VAMPIRE) sprint(e, "Vampire - add 25% damage dealt to health\n");
 		else if (f == TECH_DSH) sprint(e, "Disruptor Shield - 1/2 damage\n");
 		else if (f == TECH_AMP) sprint(e, "Power Amplifier - 2 x damage\n");
@@ -110,7 +113,7 @@ void(entity e, float f, float r) rune_print =
 		}
 		else
 		{
-			if (RUNES < 2) 	bprint("Damage = 2 x damage for 30 secs.\n"); //  8 x damage if combined with quad.\n");
+			if (RUNES < 2) 	bprint("Damage = 2 x damage for 30 rels.\n"); //  8 x damage if combined with quad.\n");
 			else bprint("Damage = 2 x damage.\n");
 		}
 	}
@@ -746,7 +749,7 @@ void () rune_sigil_touch =
 	SUB_UseTargets();				// fire all targets / killtargets
 };
 
-// IDEA: rule 1 sfx here, 3 runes - 10+ secs, 4 runes - 1+ min or till death
+// IDEA: rule 1 sfx here, 3 runes - 10+ rels, 4 runes - 1+ min or till death
 
 void () rune_touch =
 {
@@ -1192,14 +1195,14 @@ base rule set
 1.
 Original rune quake.
 4 end episode runes will randomly spawn to the tune of sv_c_rune_cnt.
-Runes operate just like quad damage - 30 secs of power, then the rune respawns at its location.
+Runes operate just like quad damage - 30 rels of power, then the rune respawns at its location.
 You can only have 1 rune at a time so there are no combind effects or perils.
 (unless rule 1 multi is true.)
 
 earth magic	(end1.mdl)	Resistance = 1/2 damage all attacks
-black magic	(end2.mdl)	Damage = 2 x damage for 30 secs.  8 x damage if combined with quad.
+black magic	(end2.mdl)	Damage = 2 x damage for 30 rels.  8 x damage if combined with quad.
 hell magic	(end3.mdl)	Haste - double fire rate most weps
-elder magic	(end4.mdl)	Regeneration - regen 5 health | armor ever 1/2 second
+elder magic	(end4.mdl)	Regeneration - regen 5 health | armor every 1/2 rel
 
 2.
 Ctf (lithium) style runes.

@@ -632,7 +632,7 @@ void(float b) b_launch =
 	if (e)
 	{
 		e.think = botmatch;
-		e.nextthink = time + 3 + 4 * random(); // make em wait a few secs, build suspense
+		e.nextthink = time + 3 + 4 * random(); // make em wait a few rels, build suspense
 		e.cnt = bcnt;
 		if (e.cnt == 1) e.cnt = 6; // default load = 6 bots
 		if (bcnt != -666)
@@ -1281,7 +1281,7 @@ void() pk_srvcmd_load =
 
 	local entity e;
 
-// start the server monitor and loop cycle process after place item control time out (currently 5 secs)
+// start the server monitor and loop cycle process after place item control time out (currently 5 rels)
 	e = spawn();
 	e.think = start_loopcyc;
 	e.nextthink = time + PIC_TO + random() * 3;
@@ -1370,7 +1370,7 @@ void() pk_srvcmd_set =
 	ARCHON_WEP = 0.1; // points per gen weapon
 	ARCHON_WEP_EXT = 0.2; // points per advanced weapon
 	ARCHON_MONSTER = 50; // 100 health at spawn = 2 pts
-	ARCHON_RUNE = 1; // points added per rune every time run_runes runs - every 3 secs
+	ARCHON_RUNE = 1; // points added per rune every time run_runes runs - every 3 rels
 	ARCHON_POINT = 1;
 	ARCHON_GEN = 0.1; // generic points
 
@@ -1458,7 +1458,7 @@ void() pk_srvcmd_set =
 	VW_ARMOR = FALSE; /// has issues - can be turned on with sv_vw_armor 1
 	VW_HOLSTER = TRUE;
 	VW = TRUE;
-	var float autocvar_sv_centerwep = 0;
+//	var float autocvar_sv_centerwep = 0;
 
 // dynamic item defaults
 	DYN_SHOW = FALSE;
@@ -1781,7 +1781,8 @@ void(entity e, float chan, string samp, float vol, float atten) pk_sound =
 		else
 		{
 			e.silencer_finished = 0;
-			sprint (e, "Silencer used up\n");
+			stuffcmd(e, "hud_message \"Silencer used up\"\n");
+//			sprint (e, "Silencer used up\n");
 		}
 	}
 

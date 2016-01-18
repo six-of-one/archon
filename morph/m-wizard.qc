@@ -368,7 +368,7 @@ void() player_wizard_painleech3 = [ $pain2,   player_wizard_painleech4 ]
 				if (!morph_ffchk(self,head))
 				{
 					if (head.cnt * (FULL_EFFECT_DIST / dist) > 8)
-						SpawnBlood (head.origin, ' 0 0 0', head.cnt * (FULL_EFFECT_DIST / dist));
+						SpawnBlood (head, head.origin, ' 0 0 0', head.cnt * (FULL_EFFECT_DIST / dist));
 					if (self.health < self.max_health * self.health_modifier) T_Heal(self, head.cnt * 0.8 * (FULL_EFFECT_DIST / dist), FALSE);	// 50% heal from damage if < max health
 					else if (random() < 0.35) T_Heal(self, head.cnt * 0.05 * (FULL_EFFECT_DIST / dist), TRUE);																			// 5% heal, ignore max
 				}

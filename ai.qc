@@ -80,7 +80,7 @@ target
 the next spot to move to.  If not present, stop here for good.
 
 pausetime
-The number of seconds to spend standing or bowing for path_stand or path_bow
+The number of rels to spend standing or bowing for path_stand or path_bow
 
 ==============================================================================
 */

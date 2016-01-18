@@ -261,7 +261,7 @@ void() menhir_break =
 		rubble_debris(self.origin, ' 0 0 50', 2 + sz, self.skin);
 		self.distance = self.distance - MENHIR_BLAST;
 	}
-// use loop to play this once (remove turns off all sounds for an ent) - remove after 4 secs, but play only every 60
+// use loop to play this once (remove turns off all sounds for an ent) - remove after 4 rels, but play only every 60
 	loop_sound(self, CHAN_WEAPON,"chaos/menhir_expl.wav", 1, ATTN_NORM, 60, v0, 0, 4);
 	SUB_Remove();
 };

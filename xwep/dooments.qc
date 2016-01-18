@@ -886,6 +886,7 @@ void() d_weapon_chaingun =
 // cn is button0 state - if held, accuracy decreases - may need to add other weps
 
 /* deprecated for de loop
+
 void(float cn) doom_pistol_spread =
 {
 	if (!self.eweapon) return;
@@ -1238,7 +1239,7 @@ void() d_art_berserker =
 	}
 
 	self.netname = "Berserker";
-	self.group = "Berserk rage...nearly over...Hulk sad\n";
+	self.group = "Berserk rage...nearly over...Hulk sad";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_QUAD;
@@ -1330,7 +1331,7 @@ void() d_art_invulnerable =
 	}
 
 	self.netname = "Invulnerability";
-	self.group = "Protection from Hells minions is almost gone\n";
+	self.group = "Protection from Hells minions is almost gone";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVULNERABILITY;
@@ -1361,7 +1362,7 @@ void() d_art_invisible =
 	}
 
 	self.netname = "Invisibilty";
-	self.group = "Hell will no longer be blind to your presence\n";
+	self.group = "Hell will no longer be blind to your presence";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVISIBILITY;
@@ -1392,7 +1393,7 @@ void() d_art_radsuit =
 	}
 
 	self.netname = "Radiation Suit";
-	self.group = "Radiation suit is near expiration date\n";
+	self.group = "Radiation suit is near expiration date";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_SUIT;

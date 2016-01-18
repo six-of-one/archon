@@ -639,7 +639,10 @@ void() PK_SetCurrentAmmo =
 				self.currentammo = 1;
 		}
 		self.weaponframe = 0;
+
 		self.weaponmodel = self.eweapon.weaponmodel;
+		if (self.eweapon.grap_state == 666000) // fists
+			self.weaponmodel = null_string;
 	}
 
 //	if (!self.mask_x & CB_HUMAN) self.weaponmodel = null_string; // morphs can use carryables - this will make them no wep mdls
@@ -891,6 +894,9 @@ void(entity e) PK_SetCurrentAmmoOnly =
 				f.currentammo = 1;
 		}
 		f.weaponframe = 0;
+
+		if (f.eweapon.grap_state == 666000) // fists
+			f.weaponmodel = null_string;
 	}
 
 //	if (!self.mask_x & CB_HUMAN) self.weaponmodel = null_string; // morphs can use carryables - this will make them no wep mdls
@@ -1013,6 +1019,8 @@ float(float weaponnum, float pknum) HasAmmo =
 			}
 			else if (e.eweapon.lip == AMMO_BULLETS)
 			{
+				if (e.eweapon.mcode == MC_D_PISTOL) // doom pistol has fists attached - inf ammo
+					return TRUE;
 				if (self.ammo_bullet >= e.eweapon.dmg_save)
 					return TRUE;
 				else
@@ -1595,7 +1603,26 @@ void() pk_cycleObjects =
 	while (1)
 	{
 		if (self.pk_currentitem == PK_IT_AXE)
+		{
+			if (self.eweapon.mcode == MC_D_PISTOL)
+			{
+				if (self.eweapon.grap_state != 666000) // set fists
+				{
+					self.eweapon.grap_state = 666000;
+//					self.eweapon.modelindex_morph = self.eweapon.modelindex; // done in the assigning
+					self.eweapon.modelindex = 0;
+					self.eweapon.noise3 = "weapons/ax1.wav"; // swish
+					return;
+				}
+				else
+				{
+					self.eweapon.grap_state = 0;
+					self.eweapon.modelindex = self.eweapon.modelindex_morph;
+					self.eweapon.noise3 = "doom/dspistol.wav";
+				}
+			}
 			self.pk_currentitem = PK_IT_GRAVITYWELL;
+		}
 		else if (self.pk_currentitem == PK_IT_GRAVITYWELL)
 			self.pk_currentitem = PK_IT_TURRET;
 		else if (self.pk_currentitem == PK_IT_TURRET)
@@ -1626,7 +1653,16 @@ void() pk_cycleObjects =
 		}
 		else if (self.pk_currentitem == PKPLUS_IT_PHONE)
 // end pk_art
+		{
 			self.pk_currentitem = PK_IT_AXE;
+			if (self.eweapon.mcode == MC_D_PISTOL)
+			if (self.eweapon.grap_state == 666000) // clear fists
+			{
+				self.eweapon.grap_state = 0;
+				self.eweapon.modelindex = self.eweapon.modelindex_morph;
+					self.eweapon.noise3 = "doom/dspistol.wav";
+			}
+		}
 		else
 			return;		// get's here when the currentitem == a normal pk weapon
 

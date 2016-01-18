@@ -195,7 +195,7 @@ SUB_UseTargets
 the global "activator" should be set to the entity that initiated the firing.
 
 If self.delay is set, a DelayedUse entity will be created that will actually
-do the SUB_UseTargets after that many seconds have passed.
+do the SUB_UseTargets after that many rels have passed.
 
 Centerprints any self.message to the activator.
 

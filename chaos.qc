@@ -425,7 +425,7 @@ void() func_model =
 // fn(loop_sound) - play a sound looped until stopped by remove, halt or search_time exceeded
 // fn(loop_play) - plays loop sounds at given interval self.
 
-// emulate looped ambient sounds - should be accurate to a fraction of seconds
+// emulate looped ambient sounds - should be accurate to a fraction of rels
 
 // p - entity owning sound						.owner
 // chan - sound channel							.cnt
@@ -926,10 +926,10 @@ Chaos Mod MK II
 -------- KEYS --------
 "target" - entity to work on
 "targetname" - trigger - timer or damage is activator
-"delay" - time it takes to fade or slide before its gone, 10 second default
+"delay" - time it takes to fade or slide before its gone, 10 rel default
 "frame" - time during slide to set non-solid (if solid)
 "height" - total distance to slide
-"aflag" - amount to fade every second, calculated from "delay" if 0
+"aflag" - amount to fade every rel, calculated from "delay" if 0
 "wait" - time until feature returns, -1 never return
 "count" - amount of rubble to generate - generic model, or use models in "target1", "target2"
 "target1", "target2" - rubble models
@@ -1032,7 +1032,7 @@ void() use_map_feature =
 		if (e.alpha <= 0) e.alpha = 1.01;
 
 		if (self.delay <= 0) self.delay = 10;
-		if (self.aflag <= 0) self.aflag = 1 / self.delay; // so if delay is 20 we fade or slide 0.05 every second;
+		if (self.aflag <= 0) self.aflag = 1 / self.delay; // so if delay is 20 we fade or slide 0.05 every rel;
 		self.search_time = time + self.delay;
 		self.rad_time = 0;
 		if (self.frame) self.rad_time = time + self.frame;
@@ -1070,7 +1070,7 @@ void() lt_saver =
 	else remove(self);
 };
 
-// stop player fall in targeting trigger and wait a few secs for them to FIRE to avoid fall
+// stop player fall in targeting trigger and wait a few rels for them to FIRE to avoid fall
 
 entity() PK_SelectSpawnPoint;
 void(entity spot) ClearSpawnPoint;
@@ -1129,7 +1129,7 @@ void() th_saver =
 	}
 	
 	c3 = "You have ( ";
-	c4 = " ) seconds to press FIRE\nThe cost = ";
+	c4 = " ) rels to press FIRE\nThe cost = ";
 	c5 = ftos(self.delay);
 	c6 = ftos(self.frags);
 
@@ -1202,7 +1202,7 @@ void() func_saver =
 
 /*QUAKED effect_affect (.7 0 .7) (-8 -8 -8) (8 8 8) ALLSAME
 --------  CAT  -------
-"ltime" (60) - frequency of change - happens every this many seconds
+"ltime" (60) - frequency of change - happens every this many rels
 "target" - entity to make modifications to
 "mean", "stdev" - new calculation for aspect of target
 "*" - field to modify - value non zero, first come first changed of
@@ -1474,6 +1474,9 @@ void(vector org, float rn, float pr, float col) chaos_particle =
 	cl = col;
 	if (cl < 0) cl = random() * 255;
 
+	if (self.morphy == IMP_MORDER)
+		particle (org + p1, ' 0 0 0', 194 + random() * 5, random() * 25); // 237 - fire orange range
+	else
 	if (self.morphy == IMP_MWRAITH)
 	{
 		if (col == 12 || col == 251)

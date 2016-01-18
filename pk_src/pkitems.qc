@@ -1875,7 +1875,7 @@ void() pk_item_position_init =
 
 };
 
-// called from PlaceItem - sorts many things now - happens 0.2 secs after map load
+// called from PlaceItem - sorts many things now - happens 0.2 rels after map load
 
 void() pk_placeitem =
 {
@@ -1979,7 +1979,7 @@ standard:
 .velocity = used for eject sometimes
 
 .touch = fn for grab
-.nextthink = ip move timeout - 60 secs
+.nextthink = ip move timeout - 60 rels
 .think = ip_checkForMovement (mostly under pk)
 .items = regular item inventory value
 

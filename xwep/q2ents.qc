@@ -1507,7 +1507,7 @@ void() item_silencer =
 		item_artifact_invisibility();
 
 	self.netname = "Silencer";
-	self.group = "Stealth mission is nearly complete\n";
+//	self.group = "Stealth mission is nearly complete"; - not actually used
 
 	self.touch = x_pwr_touch;
 	self.wait = Q2_POWER_WAIT;
@@ -1534,7 +1534,7 @@ void() item_invulnerability =
 	}
 
 	self.netname = "Invulnerability";
-	self.group = "Invulnerability is almost bunred out\n";
+	self.group = "Invulnerability is almost bunred out";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVULNERABILITY;
@@ -1561,7 +1561,7 @@ void() q2_item_enviro =
 	}
 
 	self.netname = "Environmental Suit";
-	self.group = "Environmental Suit is near expiration date\n";
+	self.group = "Environmental Suit is near expiration date";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_SUIT;
@@ -1714,7 +1714,7 @@ void() item_breather =
 	}
 
 	self.netname = "Re-breather";
-	self.group = "Air supply in Re-breather expiring\n";
+	self.group = "Air supply in Re-breather expiring";
 
 	self.touch = x_pwr_touch;
 	self.delay = POW_TIME;
@@ -2161,11 +2161,12 @@ void() X_FireBlaster =
 {
 	fire_laser1(FL_PUNCH);
 	setmodel(newmis, "progs/laser_m.mdl");
+	setsize(newmis, v0, v0);
 	newmis.frame = 11;
 	newmis.skin = 0;
 	newmis.nextthink = time + 0.1;
 	newmis.think = q2_blaster_thk;
-	newmis.effects = EF_DIMLIGHT;
+	newmis.effects = EF_DIMLIGHT | EF_FULLBRIGHT;
 };
 
 // IMP: if an ent is targeted, reload origin

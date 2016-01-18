@@ -31,8 +31,16 @@ Defy chaos.  Defeat the demons.
 
 */
 
-$frame tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 tmp11 tmp12 tmp13 tmp14  tmp15 tmp16 tmp17 tmp18 order1 tmp20
-$frame tmpb1 tmpb2 tmpb3 tmpb4 tmpb5 tmpb6 tmpb7 tmpb8 orderfade1 orderfade2 orderfade3 orderfade4 orderfade5
+// note: combo order form and original form frames - be wary for new code
+
+$frame run1 run2 run3 run4 run5 run6
+$frame runfr1 runfr2 runfr3 runfr4 runfr5 runfr6
+$frame st1 st2 st3 st4 st5
+$frame shoot1
+$frame order1 
+$frame shoot3 shoot4
+$frame shootb1 shootb2 shootb3 shootb4 shootb5 shootb6
+$frame tmpb8 orderfade1 orderfade2 orderfade3 orderfade4 orderfade5
 
 
 
@@ -57,6 +65,13 @@ void() player_order_stand = [ $order1, player_stand1 ]
 	if ( !(self.hook & HOOK_IN) )
 		if ( !(self.flags & FL_ONGROUND) ) self.flags = self.flags | FL_ONGROUND;
 
+	if (self.model == "progs/orderform.mdl")
+	{
+		self.walkframe = self.walkframe + 1;
+		if (self.walkframe > 4) self.walkframe = 0;
+		self.frame = $st1 + self.walkframe;
+	}		
+	else
 	self.frame = $order1;
 
 	self.volume = self.volume + 2;
@@ -77,6 +92,13 @@ void() player_order_run = [ $order1, player_run ]
 	if ( !(self.hook & HOOK_IN) )
 		if ( !(self.flags & FL_ONGROUND) ) self.flags = self.flags | FL_ONGROUND;
 
+	if (self.model == "progs/orderform.mdl")
+	{
+		self.walkframe = self.walkframe + 1;
+		if (self.walkframe > 5) self.walkframe = 0;
+		self.frame = $run1 + self.walkframe;
+	}		
+	else
 	self.frame = $order1;
 
 	self.volume = self.volume + 4;
@@ -109,9 +131,12 @@ void() player_order_attack =
 		}
 		else
 		{
+// sound the beam
+		sound (self, CHAN_WEAPON, "weapons/pbeam/pt_fire.wav", 1, ATTN_NORM);
+
 // display the beam
 			self.dest1 = self.origin;
-			traceline (self.dest1, self.dest1 + v_forward * 910, TRUE, self); // note - can sometimes appear sticking out the back of the archon model
+			traceline (self.dest1, self.dest1 + v_forward * 910, FALSE, self); // note - can sometimes appear sticking out the back of the archon model
 			v1 = self.dest1 - trace_endpos;
 			newmis = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, trace_endpos, v0, v0, vectoangles(v1), v0, null_string, "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
 			newmis.cnt = vlen(v1);
@@ -120,7 +145,81 @@ void() player_order_attack =
 			newmis.frame = newmis.cnt + 64;
 			newmis.skin = 2;
 			newmis.effects = newmis.effects | EF_FULLBRIGHT;
-			self.volume = self.volume - 10;
+
+// take base pnts
+			self.volume = self.volume - 4;
+
+// adjust
+			self.dest2 = trace_endpos;
+			if (trace_ent == world) self.dest2 = trace_endpos - (v_forward * (32 + (64 * random())) ); // move burst away from wall
+
+// check the thing we hit
+			else
+			if (! move_check(trace_ent, 15999)) trace_ent = world; // beam hit something specific, validate
+
+// beam didnt hit anything - pick an ent in beam strike area
+			if (!trace_ent)
+			{
+				self.goalentity = findradius(self.dest2, 64 + random() * 64);
+				trace_ent = rnd_list(self.goalentity, 0); // any random ent in beam strike range
+				self.goalentity = world;
+			}
+
+// particles
+			spawn_particle_field(self.dest2);
+			if (newmis)
+			{
+				newmis.aflag = 0;
+				newmis.movetype = 0;
+				newmis.wait = time + 15;
+				newmis.morphy = self.morphy;
+			}
+
+			if (self.model == "progs/chaos_b2.mdl") self.skin = 4;
+// cant beam Archons
+			if (trace_ent.mask_x & MORPH_ARCHON) return;
+
+			if (trace_ent) // put this ent in order
+			{
+// make chaos things go away
+				if ((trace_ent.class_select == "chaos_item") || (trace_ent.target1 == "chaos_item"))
+				{
+					self.goalentity = spawn();
+					self.goalentity.classname = "dyn_removal";
+					self.goalentity.think = remove_fade;
+					self.goalentity.nextthink = time + 0.1;
+					self.goalentity.enemy = trace_ent;
+					self.goalentity = world;
+					self.volume = self.volume - 6;
+					return;
+				}
+
+				self.volume = self.volume - 2;
+
+// chaos buggered it, fix it
+				if (trace_ent.flags & (FL_MONSTER | FL_ITEM))
+				if (trace_ent.target2)
+				if (trace_ent.target2 != trace_ent.classname)
+				{
+					item_call_save(trace_ent, trace_ent.target2);
+					if (trace_ent.flags & FL_ITEM)
+					{
+						trace_ent.think = SUB_Null; // incase it was a monster
+						trace_ent.takedamage = 0;
+						trace_ent.touch = painkeep_touch;
+					}
+					return;
+				}
+
+// heal things
+				if (trace_ent.health != (trace_ent.max_health * trace_ent.health_modifier))
+					trace_ent.health = (trace_ent.max_health * trace_ent.health_modifier);
+
+// remove powers
+				if (trace_ent.rune_flag) dead_runes(trace_ent);
+				dead_artifact(trace_ent);
+// idea - get rid of strange weps as well?
+			}
 		}
 		return;
 	}
@@ -243,7 +342,6 @@ void() player_order_impulse =
 		{
 			if (self.ammo_nails == 5) aux_bits(421887); // monster set
 			else if (self.ammo_nails == 7) aux_bits(421887); // monster set
-//			else if (self.ammo_nails == 11) aux_bits(1023);
 		}
 		if (self.weapon == IT_NAILGUN)
 		{
@@ -265,6 +363,8 @@ void() player_order_impulse =
 			if (self.ammo_cells == 11) aux_bits(421887); // monster set
 			if (self.ammo_cells == 17) aux_bits(7);
 		}
+
+		if (self.model == "progs/chaos_b2.mdl") self.skin = 4;
 	}
 
 	if (self.impulse == 1) // spell list - attacks
@@ -298,15 +398,10 @@ void() player_order_impulse =
 		{
 			if (self.ammo_nails == 3) self.ammo_nails = 5;
 			else if (self.ammo_nails == 5) self.ammo_nails = 7;
-			else if (self.ammo_nails == 7) self.ammo_nails = 3;
-//			else if (self.ammo_nails == 11) self.ammo_nails = 13; - order CAN NOT tranmogrify
+			else if (self.ammo_nails == 7) self.ammo_nails = 11;
+			else if (self.ammo_nails == 11) self.ammo_nails = 3; // order form
 
-			if (self.ammo_nails == 11)
-			{
-				if (! self.pk_beartrapammo & 1023) self.pk_beartrapammo = 1;
-			}
-			else
-				if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
+			if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
 		}
 		self.weapon = IT_SUPER_SHOTGUN;
 	}

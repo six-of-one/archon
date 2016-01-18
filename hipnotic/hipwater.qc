@@ -29,7 +29,7 @@ Used to emulate water.  To use, create a thin water brush and center it
 on the water line of the body of water to bob.  The amount of the bob
 is the depth of the brush.
 
-"speed" is how long in seconds it takes the brush to do one full bob.
+"speed" is how long in rels it takes the brush to do one full bob.
 */
 void() func_bobbingwater =
 {

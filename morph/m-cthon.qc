@@ -319,7 +319,7 @@ void() cthon_outoflava =
 		if (self.count == 0)
 			{
 //			sprint(self,"\n\n\bHURRY!\b  Find more Lava fast!\n");
-			self.count = 101; // only have 10 secs to get back in lava!
+			self.count = 101; // only have 10 rels to get back in lava!
 			}
 		else if (self.count > 1)
 		{

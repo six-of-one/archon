@@ -158,19 +158,23 @@ void () cam_deathmove =
 // pbserver status bar - time spent observing in rels + "high score"
 		stuffcmd(self.owner, "infobar 2 \"");
 		stuffcmd(self.owner, self.owner.netname);
+/*
+deprecated - doesnt work this way and admin is moving to the client side
+
 		if (self.admin)
+		{
 			stuffcmd(self.owner, " : * admin (");
-		else 
-//		if (self.owner.deadflag)
-			stuffcmd(self.owner, " :dead (");
-		stuffcmd(self.owner, ftos(rint(time - self.ltime)));
-		stuffcmd(self.owner, " rels) Archon - high score: ");
+			stuffcmd(self.owner, ftos(rint(time - self.ltime)));
+			stuffcmd(self.owner, " rels)");
+		}
+*/
+		stuffcmd(self.owner, " -- Chaos mod: Archon - high score: ");
 		stuffcmd(self.owner, ftos(high_score));
 		stuffcmd(self.owner, " - map: ");
 //		if (world.message != null_string)
 //			stuffcmd(self.owner, world.message); // some world messages fsck the info bar because they have \n in them
 //		else
-			stuffcmd(self.owner, world.model);
+		stuffcmd(self.owner, world.model);
 		stuffcmd(self.owner, "\"\n");
 
 // start botmatch in observer

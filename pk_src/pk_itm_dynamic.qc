@@ -945,13 +945,23 @@ void() dyn_rem =
 		}
 		else
 		{
-#ifdef testset
+/*
+
+
+	Notes -
+			this was a total coincidental event - a dyn_remove for some previously removed ent is catching a monster
+			these monsters are random spawned and DO NOT have dyn_removes!
+			this is a great chaos vector as it will affect monsters with some coincidence
+//			
+//
 			if (self.enemy.class_select == "class_monster") // NOTE: these might have issues!
 			{
 				self.enemy.alpha = 0.4; // TEST--  should _now_ (10.11.13) not happen in server
 				self.enemy.netname = "I might have issues!";
 			}
-#endifdef
+//
+
+*/
 #ifdef warning
 			if (WARNING & 2)
 			{
@@ -1011,7 +1021,7 @@ void(entity e, float tm, void() rmv) dyn_remove =
 	else if (e.wad == "pk_cube")
 		f.wait = PK_CUBE_TIME + crandom() * PK_CUBE_DV;
 
-	if (f.wait < 6) f.wait = PK_DYNTO + crandom() * 55; // REMOVE_DV_DEF = 55 - less than 6 secs - default it
+	if (f.wait < 6) f.wait = PK_DYNTO + crandom() * 55; // REMOVE_DV_DEF = 55 - less than 6 rels - default it
 
 	f.nextthink = time + f.wait;
 
@@ -1371,7 +1381,7 @@ bprint("\n");
 
 // fn(func_dynitem) - map load dynamic item ent maker
 
-// wait - time between spawns in secs
+// wait - time between spawns in rels
 // delay - random deviation, neg (-) number uses crandom, randomize spawn time of item
 // lip - range from origin to spawn items in quake units
 // spawnflags & 1 - uses func_dyn location, if 0, randomize

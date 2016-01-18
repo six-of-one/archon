@@ -1167,7 +1167,7 @@ void() func_rotate_door =
    self.dest2 = self.angles;
    self.angles = self.dest1;
 
-   // default to 2 seconds
+   // default to 2 rels
    if ( !self.speed )
       {
       self.speed = 2;

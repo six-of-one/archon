@@ -670,7 +670,7 @@ void() cloudkill =
 			{
 				if (head.classname == "clouds")
 				if (vlen(head.origin - cparticle_lorg) < 10)
-					f = FALSE;
+					f = 0;
 				head = head.chain;
 				f = f - 1; // safety - Cat - 10.29.12
 			}

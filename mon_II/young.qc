@@ -36,13 +36,13 @@ $frame lgrunatt1 lgrunatt2 lgrunatt3 lgrunatt4 lgrunatt5 lgrunatt6 lgrunatt7 lgr
 
 //============================================================================
 
-float YOUNG_LIFE_SM = 10; // secs for a small youngling
-float YOUNG_LIFE_MD = 20; // secs for a med youngling
+float YOUNG_LIFE_SM = 10; // rels for a small youngling
+float YOUNG_LIFE_MD = 20; // rels for a med youngling
 /* TEST
-float YOUNG_LIFE_SM = 30; // secs for a small youngling
-float YOUNG_LIFE_MD = 65; // secs for a med youngling
+float YOUNG_LIFE_SM = 30; // rels for a small youngling
+float YOUNG_LIFE_MD = 65; // rels for a med youngling
 */
-float YOUNG_LIFE_LG = 125; // secs for a large youngling
+float YOUNG_LIFE_LG = 125; // rels for a large youngling
 
 
 // hrm - this should be genericed in watermove dealy
@@ -289,7 +289,7 @@ void()	young_runatt1	=[	$runatt1,		young_runatt2	] {ai_face();};
 void()	young_runatt2	=[	$runatt2,	young_runatt3	] {	ai_face(); young_attack(); };
 void()	young_runatt3	=[	$runatt3,	young_runatt1	] {
 self.nextthink = time + 3;
-// if three seconds pass, assume young is stuck and jump again
+// if three rels pass, assume young is stuck and jump again
 };
 
 void()	young_runatt4	=[	$runatt4,	young_runatt5	] {ai_face();young_slimedamage();};

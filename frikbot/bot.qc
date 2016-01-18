@@ -639,10 +639,8 @@ float () BotPreFrame =
 				WriteByte (MSG_ONE,5);
 				WriteEntity (MSG_ONE, self);
 				PutClientInServer();
-				return TRUE;
 			}
-			else
-				return TRUE;
+			return TRUE;
 		}
 	}
 	if (self.b_frags != self.frags)

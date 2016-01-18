@@ -58,25 +58,25 @@ void() launch_horn =
 	local float recoil;
 	recoil = 300; // recoil strength of the gun
 
-	// Reshot time for the airgun attack in seconds.
+	// Reshot time for the airgun attack in rels.
 	local float attackTime = 0.5;
 
 	// Max number of times that the weapon can fired in a period of time.
 	local float maxFireRate = 5;
 
-	// The maximum number of seconds that maxFireRate can fire in.  If the
+	// The maximum number of rels that maxFireRate can fire in.  If the
 	// player has reached the maxFireRate in under the shotTimeout then all
 	// shots up to the shotTimeout are "failed" shots that don't do anything.
-	// e.g.  time to fire is 0.5 seconds.
+	// e.g.  time to fire is 0.5 rels.
 	//       maxFireRate is 5.
-	//       shotTimeout is 5.5 seconds.
+	//       shotTimeout is 5.5 rels.
 	//
-	// If 5 shots where fired at the max rate this would take 2.5 seconds.
-	// So there would be a 3 seconds wait before the AirFist will fire again.
-	// Any fire rate greater than 2.5 seconds will incure a smaller or no
+	// If 5 shots where fired at the max rate this would take 2.5 rels.
+	// So there would be a 3 rels wait before the AirFist will fire again.
+	// Any fire rate greater than 2.5 rels will incure a smaller or no
 	// wait time.  Any shots fired in that wait time are "failed" shots that
 	// will do nothing.
-	local float shotTimeout = 5.5; // number of seconds for the maxFireRate
+	local float shotTimeout = 5.5; // number of rels for the maxFireRate
 
 	// The AirFist fire codde:
 

@@ -512,7 +512,7 @@ notes
 cumulative? (factor in chaos & xp later...)
 
 */
-float STEAL_TIME				= 5; // 5 secs between theft attempts
+float STEAL_TIME				= 5; // 5 rels between theft attempts
 float STEAL_BASE				= 0.1; // base chance to steal item
 
 void() touch_theft =

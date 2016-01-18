@@ -374,7 +374,7 @@ string(float mb) rune_power =
 // Sbar_DrawInventory
 //-----------------------------------------------------------------------------
 
-float items, items2, currentweap, mcode, archon;
+float items, items2, currentweap, cammo, mcode, archon;
 float rune_flag, dmg_flare;
 float pk_inv, pk_wep;
 
@@ -465,6 +465,9 @@ void(vector valor, string pic1, string pic2, float itemnum, float scale, float s
 // code hasted weps - dbl shadow image on active wep
 			if ((rune_flag & RUNE_FLG_HS) || (rune_flag & TECH_TEIM))
 				Sbar_DrawPic(v + '2 5 0', pic, ibar_alpha * 0.45, scale);
+// idea: find some way to ID infinite ammo weps
+// live ammo count for drawn weapon
+			if (cammo > 0) DrawAmmo(v + y + '-24 4 0', ceil(cammo), 1.0);
 		}
 		else
 			pic = pic1;
@@ -523,7 +526,7 @@ float(float pow) bar_scale =
 
 // has_* - once a mapcode item is detected, this allows holstered view
 float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left, explflg;
-float inv, quad, ring, suit, xplast, xpltime;
+float inv, quad, ring, suit, xplast, xpltime, deadtime;
 
 // hud special messaging system for cfg scripts
 float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
@@ -574,6 +577,7 @@ void() Sbar_DrawInventory =
 	nails   = GetStat_FLOAT_TRUNCATED(STAT_NAILS);
 	rockets = GetStat_FLOAT_TRUNCATED(STAT_ROCKETS);
 	cells   = GetStat_FLOAT_TRUNCATED(STAT_CELLS);
+	cammo   = GetStat_FLOAT_TRUNCATED(STAT_AMMO);
 
 	health = GetStat_FLOAT_TRUNCATED(STAT_HEALTH);
 	armorval = GetStat_FLOAT_TRUNCATED(STAT_ARMOR);
@@ -616,6 +620,8 @@ void() Sbar_DrawInventory =
 	xp = GetStat_FLOAT_TRUNCATED(STAT_XP);
 
 	deadflag = GetStat_FLOAT_TRUNCATED(STAT_DEADFLAG);
+	if (!deadflag) deadtime = 0;
+	else if (!deadtime) deadtime = time;
 
 	items = GetStat_BITS(STAT_ITEMS, 0, 23);
 	items2 = GetStat_BITS(STAT_ITEMS, 23, 9);
@@ -730,19 +736,20 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 //		if (morph != IMP_MCHAOS)
 //		if (morph != IMP_MORDER)
 
+// converting XP to archon points indicator
+
 		if (xp > xplast) xplast = xp;
 
 		if ((xp < xplast) || (xpltime > time))
 		if (xp > 0)
 		{
+			v = '36 14 0';
 			if (xp != xplast) xpltime = time + 4;
 			xplast = xp;
 			Sbar_DrawString(arc_level + '20 14 0', "(", ALPHA_FULL, '7 7 0','1 0.5 1');
 			Sbar_DrawString(arc_level + '28 15 0', ftos(floor(xp)), ALPHA_FULL, '7 7 0','1 0.5 1');
-			v = '36 14 0';
-			if (xp > 9) v = '43 14 0';
 			k = floor(xp);
-			while (k > 99)
+			while (k > 9)
 			{
 				k = floor(k / 10);
 				v_x = v_x + 7;
@@ -893,6 +900,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		{
 			Sbar_DrawString(pwr_step + wep_step + woff + hudoff, autocvar_hud_message3, ALPHA_FULL , '7 7 0','1 0.5 0.5');
 			hudoff_y = hudoff_y + 9;
+		}
+	}
+	else // they get printed if not full custom HUD
+	{
+		if (autocvar_hud_message != "")
+		{
+			print(autocvar_hud_message);
+			cvar_set("hud_message", "");
 		}
 	}
 
@@ -1237,7 +1252,29 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	  }
 	}
 
-	if (!deadflag)
+	if (deadflag) // display dead time and none else
+	{
+		k = time - deadtime;
+		Sbar_DrawString(pwr_step + wep_step + woff + '105 0 0', "| dead (", ALPHA_FULL, '7 7 0','1 1 1');
+		v = '0 0 0';
+		if (k > 0)
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff + '160 1 0', ftos(floor(k)), ALPHA_FULL, '7 7 0','1 1 1');
+			while (k > 9)
+			{
+				k = floor(k / 10);
+				v_x = v_x + 7;
+			}
+		}
+		else
+			Sbar_DrawString(pwr_step + wep_step + woff + '160 1 0', "*", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+		if (k == 1)
+			Sbar_DrawString(pwr_step + wep_step + woff + v + '166 0 0', ") rel", ALPHA_FULL, '7 7 0','1 1 1');
+		else
+			Sbar_DrawString(pwr_step + wep_step + woff + v + '166 0 0', ") rels", ALPHA_FULL, '7 7 0','1 1 1');
+		return;
+	}
+	else
 	if (ibar_flag > 1)
 	{
 		
@@ -1544,14 +1581,23 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					if (nails == 11)
 					{
-						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						cnt_left = pwr_step_y;
-						pwr_step_y = pwr_step_y + 18;
+						if (morph == IMP_MCHAOS)
+						{
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							cnt_left = pwr_step_y;
+							pwr_step_y = pwr_step_y + 18;
 
-						Sbar_DrawString('250 40 0' + woff, "Metamorphose self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Archon becomes: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						Sbar_DrawString(pwr_step + '130 -5 0' + woff, transmogrify(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						instr = "*FIRE - cast transmogrify spell";
+							Sbar_DrawString('250 40 0' + woff, "Metamorphose self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Archon becomes: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString(pwr_step + '130 -5 0' + woff, transmogrify(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							instr = "*FIRE - cast transmogrify spell";
+						}
+						else
+						{
+							Sbar_DrawString('250 40 0' + woff, "Order form", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Choose other form", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							instr = "*FIRE - cast transform spell";
+						}
 					}
 				}
 				if (currentweap == IT_NAILGUN) // spell list 1 - poly
@@ -2124,4 +2170,5 @@ sb_align = SB_BOTTOM_RIGHT;
 		DrawAmmo('280 105 0', cells, ALPHA_MEDIUM);
 	}
 }
+
 };

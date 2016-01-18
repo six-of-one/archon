@@ -235,7 +235,7 @@ void() gravity_pull =
 			// modify the velocity
 			e.velocity = e.velocity + normalize(self.origin - e.origin) * gPower * gPercent;
 
-//			if (random() < 0.1) // only 1o% to try test (curr 5o%) for things getting pulled every 0.1 secs - prob be dead before this ever factored in
+//			if (random() < 0.1) // only 1o% to try test (curr 5o%) for things getting pulled every 0.1 rels - prob be dead before this ever factored in
 				// chance to knock a rune loose
 				rune_pull(e, gp);
 

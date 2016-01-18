@@ -64,6 +64,7 @@ void() m_precache_chaos =
 	precache_sound ("chaos/lava1.wav");
 	precache_sound ("chaos/cbeam.1.wav");
 	precache_sound ("chaos/cbeam.2.wav");
+	precache_sound ("weapons/pbeam/pt_fire.wav");
 
 //archon
 	precache_model ("progs/nodule1.mdl");
@@ -411,7 +412,7 @@ void() chaos_mdlchg =
 
 // NOTE - spawn Must (MUST) be called before changing origin if items are moved, so a think can restore them from solids
 
-// runs tests for 4 secs every .5 sec.  if all checks are non-solid test is removed
+// runs tests for 4 rels every .5 sec.  if all checks are non-solid test is removed
 // other wise self.owner is teleported to a random level location
 // self.oldorigin - test for monster movement from ai_run
 
@@ -472,7 +473,7 @@ void() chaos_teleport_restore_think =
 
 // e - ent for test
 // org - dest org for non move check
-// ts - ts & 255 - seconds spent checking before restore.
+// ts - ts & 255 - rels spent checking before restore.
 // ts & FL_ITEM - apply to non living ents
 
 void(entity e, vector org, float ts) chaos_teleport_restore =
@@ -1310,14 +1311,14 @@ float FL_FPART					= 65536; // particle field
 float fwalk_dist					= 12; // field move velocity max | rnd jump origin additive
 float lf_per						= 0.06; // chance per sec of light field
 float pf_per						= 0.05; // chance per sec of particle field
-float pf_len						= 5.0; // avg field 5 secs
+float pf_len						= 5.0; // avg field 5 rels
 float pf_dev						= 1.5; // +- 1.5
 float pf_exc						= 17.0; // exceptional fields are longer
 float particle_fields;
 
 float(float ad) fieldadd = // field count controls
 {
-	if ((particle_fields + ad) < 1) return 0.0;
+	if ((particle_fields + ad) < 1) return 0.0; // MR, BLUTARSKI...
 	else return(particle_fields + ad);
 };
 
@@ -1333,37 +1334,38 @@ void(entity fe) chaos_fieldmove = // set move vectors for field
 
 void() chaos_field_thk =
 {
-	local float rng, pr;
+	if (random() < 0.5) self.distance = 20 + random() * 200;
+	else self.distance = 85;
+	if (random() < 0.5) self.cnt = 0.333 + random();
+	else self.cnt = 0.8;
 
-	if (random() < 0.5) rng = 20 + random() * 200;
-	else rng = 85;
-	if (random() < 0.5) pr = 0.333 + random();
-	else pr = 0.8;
+	if (self.morphy != IMP_MORDER) // for now order fields wont move - cause they cant move chaotically
 	if (random() < 0.2) chaos_fieldmove(self);
 
-	if (self.flags & FL_FPART) chaos_particle(self.origin, rng, pr, -1);
+	if (self.flags & FL_FPART) chaos_particle(self.origin, self.distance, self.cnt, -1);
 	if (self.flags & FL_FLIT) 
-		{
+	{
 		self.effects = (self.effects - (self.effects & 15)) | EF_BRIGHTFIELD;//FL_rnd(15); // randomly selected effect
 		if (random() < 0.4) self.flags = self.flags - (self.flags & FL_FLIT);
-		}
+	}
 	if (self.aflag == FL_FJUMP) setorigin(self, self.origin + self.view_ofs);
 	if (self.aflag == FL_FFLY) self.velocity = self.view_ofs * 200;
 
 	if (self.wait > time)
-		{
+	{
 		self.nextthink = time + 0.05 + (random() / 4.0);
-		}
+	}
 	else
-		{
+	{
 		if (self.flags & FL_FPART) particle_fields = fieldadd(-1);
 		if ((self.flags & FL_FLIT) || (self.effects & 15)) if (chaos_dynlit > 0) chaos_dynlit = chaos_dynlit - 1;
 		remove(self);
-		}
+	}
 };
 
 void(vector org) spawn_particle_field =
 {
+	newmis = world;
 	if (particle_fields > MAX_FIELDS) return;
 	particle_fields = fieldadd(1);
 	newmis = chaos_spawn(0, 0, FL_FPART, 0, org, v0, v0, v0, v0, "chaos_field", null_string, SUB_Null, 0.1, chaos_field_thk, SUB_Null, self, world);
@@ -1417,6 +1419,7 @@ void(float sel, vector torg) spawn_chaos_monster =
 
 	self.charmer.charmer = self;
 	self.charmer.charmed = 1;
+	self.charmer.target1 = "chaos_item";
 
 	norm = self.charmer.origin;
 	norm_z = norm_z + self.charmer.mins_z;
@@ -1458,8 +1461,9 @@ float CBDROPI						= 0.02; // chance of chaos beam drop item - done in chaos_ite
 float CBXFORM						= 0.03; // chance of chaos beam transform
 float CBSUMMON						= 0.015; // chance of chaos beam summon monster
 
+#ifdef testset
 entity x3;
-
+#endifdef
 
 void() chaos_beam =
 {
@@ -1468,15 +1472,20 @@ void() chaos_beam =
 	local float f1;
 	var string autocvar_hud_vampire_target;
 
-//	if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0, v0, v0, "chaos_item", "progs/chaos_b2.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world); // TEST
+#ifdef testset
+//	if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0, v0, v0, "chaos_item", "progs/chaos_b2.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world); // TEST--
+#endifdef
+
+
 	if (self.aflag & FL_CSB) return;
 	if (self.volume < CHAOS_BEAM_MIN + CHAOS_BEAM_GAIN) return;
 
 	chaos_level(CHAOS_DEC, self);
 	if (self.chaosattnoise < time) // select beam sound
 		{
-		if (random() < 0.5) beam_hum = "chaos/cbeam.2.wav";
-		else beam_hum = "chaos/cbeam.1.wav";
+//		if (random() < 0.5) beam_hum = "chaos/cbeam.2.wav";
+//		else beam_hum = "chaos/cbeam.1.wav";
+			beam_hum = "weapons/pbeam/pt_fire.wav";
 		self.chaosattnoise = time + 10 + (random() * 30);
 //		if (random() < 0.3) self.chaosattnoise = self.chaosattnoise + random() * 100;
 		}
@@ -1489,13 +1498,19 @@ void() chaos_beam =
 	}
 
 	self.aflag = self.aflag | FL_MELO;
-	self.wait = time + random();
+	self.wait = time + random() * random();
 	self.attack_finished = time + 0.1;
 
 	org = self.origin + ' 0 0 4';
-	traceline (org, org + v_forward*900, TRUE, self);
+	traceline (org, org + v_forward*900, FALSE, self);
 	ep = trace_endpos;
+
+//	set_CLE("calderashard", null_string, null_string, null_string, null_string, null_string, null_string);
+
 	if (trace_ent == world) ep = trace_endpos - (v_forward * (32 + (64 * random())) ); // move burst away from wall
+// try beam struck ent
+	else
+	if (move_check(trace_ent, 15999)) rent = trace_ent; // beam hit something specific
 
 //	if (chaos == CHAOS_ENG) cvar_set("findnonsolid","1");
 
@@ -1506,10 +1521,6 @@ void() chaos_beam =
 	if (random() < pf_per) spawn_particle_field(ep);
 	if (random() < lf_per) spawn_light_field(ep);
 
-// try beam struck ent
-//	set_CLE("calderashard", null_string, null_string, null_string, null_string, null_string, null_string);
-	if (trace_ent != world)
-	if (move_check(trace_ent, 15999)) rent = trace_ent; // beam hit something specific
 
 // beam didnt hit anything - pick an ent in beam strike area
 	if (!rent)
@@ -1569,13 +1580,13 @@ void() chaos_beam =
 
 
 	if (random() < CBURST)
-		{
+	{
 		chaos_burst(ep, 0);
-		}
+	}
 // need a validated ent for this code
 	else if (rent == world) return;
 	else if (random() < CBTELEP)
-		{
+	{
 		e = find_tdest(FL_RSALL, null_string);
 		if (!e) return;
 
@@ -1604,9 +1615,9 @@ void() chaos_beam =
 		if (e.netname != null_string) sprint(self, e.netname);
 		else sprint(self, e.classname);
 		newline(self);
-		}
+	}
 	else if (random() < CBEXCH)
-		{
+	{
 //		if (rent == world) return;
 		f1 = list_test(rent, FL_LTALL);
 		if (!f1) return;
@@ -1665,13 +1676,25 @@ void() chaos_beam =
 		if (rent.netname != null_string) sprint(self, rent.netname);
 		else sprint(self, rent.classname);
 		newline(self);
-		}
-//	else if (random() < CBSUMMON)
-//		{
+	}
+	else if (random() < CBSUMMON)
+	{
 		if (rent == world) rent = rnd_list(e, 0);
 		if (rent == world) return;
 		spawn_chaos_monster(0, rent.origin);
-//		}
+	}
+
+#ifdef testset
+		else
+		{
+			if (rent == world) rent = rnd_list(e, 0);
+			if (rent == world) return;
+			spawn_chaos_monster(0, rent.origin);
+		}
+
+//setorigin(x3, trace_endpos); // TEST--
+#endifdef
+
 #ifdef warning
 																						if (trace_ent != world)
 																						if (WARNING & 4)
@@ -1681,7 +1704,6 @@ void() chaos_beam =
 																							newline(world);
 																						}
 #endifdef
-//setorigin(x3, trace_endpos); // TEST
 
 };
 
@@ -1823,6 +1845,7 @@ void() poly_monster =
 	self.stack3 = monster_id(self.pk_beartrapammo, MON_FUNC_REG);
 	self = self.bolt_target;
 	setorigin(self, self.origin + '0 0 32');
+	if (! self.target2) self.target2 = self.classname; // so order can attempt to put it back
 
 	trace_ent.stack4 = self.class_select;
 	if (self.flags & FL_MONSTER) total_monsters = total_monsters - 1; // because this will be bumped and this guy is already a mosnter
@@ -1882,6 +1905,23 @@ void() poly_init =
 
 void() transmogrify =
 {
+	if (self.height == IMP_MORDER)
+	{
+		if (self.model == "progs/orderform.mdl")
+		{
+			setmodel(self,"progs/chaos_b2.mdl");
+			self.skin = 4;
+		}
+		else
+		{
+			setmodel(self,"progs/orderform.mdl");
+			self.skin = 0;
+		}
+		self.modelindex_morph = self.modelindex;
+		self.archon = self.archon - self.pk_explode_ammo;
+		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+		return;
+	}
 	chaos_mdlsel(self.pk_beartrapammo);
 	if (ci_md != self.model)
 	{
@@ -2106,11 +2146,10 @@ void() thing_imprisoned =
 	}
 
 	self.classname = "imprisoned";
-	self.nextthink = time + 3;
-	self.button4 = self.button4 - 3;
+	self.nextthink = time + 0.25;
 
 // NOTE: archon sub-game idea
-	if (self.button4 < 0) // player freed in one complete color exchange, monsters when they die of neglect
+	if (self.button4 <= 0) // player freed in one complete color exchange, monsters when they die of neglect
 	{
 		if (self.enemy.flags & FL_CLIENT)
 		{
@@ -2135,13 +2174,19 @@ void() thing_imprisoned =
 		{
 			self.enemy.movetype = MOVETYPE_NONE;
 		}
+		if (self.enemy.health <= 0) self.button4 = 0;
 		self.enemy.attack_finished = MAXFL;
 		self.enemy.think = SUB_Null; // for bots & monsters
 		self.enemy.event = "imprisoned";
 
-		self.owner.archon = self.owner.archon - 5;
+		if (self.ltime < time) // only fire this every 3 secs
+		{
+			self.ltime = time + 3;
+			self.button4 = self.button4 - 3;
+			self.owner.archon = self.owner.archon - 5;
+		}
 	}
-}
+};
 
 // select next in imprisoned list for a given archon
 
@@ -2199,7 +2244,7 @@ void() archon_release =
 };
 
 // imprison spell - freezes a player, bot or monster
-//						- players are released after 40 secs - 1 complete floor color change on hub map from black to white or VV
+//						- players are released after 40 rels - 1 complete floor color change on hub map from black to white or VV
 //						- monsters stay imprisoned until they die
 
 // makes a think ent to keep prison in effect and take points from archon for maintaining prison
@@ -2219,7 +2264,7 @@ void() archon_imprison =
 		newmis.nextthink = time + 0.1;
 		newmis.owner = self;
 		newmis.enemy = self.bolt_target;
-		newmis.button4 = 40; // 40 secs, black to white on arc_hub floor changes
+		newmis.button4 = 40; // 40 rels, black to white on arc_hub floor changes
 		if (self.bolt_target.flags & FL_CLIENT)
 		{
 			self.bolt_target.movetype = MOVETYPE_NONE;
@@ -2251,7 +2296,9 @@ void() archon_summon =
 
 	newmis.class_select = "class_monster"; // so item_call does right stuff
 	item_call_save(newmis, self.stack3);
-	
+
+	if (self.morphy == IMP_MCHAOS) newmis.target1 = "chaos_item";
+
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.attack_finished = time + 1; //debounce
 };

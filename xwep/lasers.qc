@@ -57,8 +57,7 @@ void() Laser_Blast =
 
 	if (other.takedamage)
 	{
-		if (other.solid == SOLID_SLIDEBOX)  // BLOODCHECK - in case some other bit of gib / dead body can make blood
-			SpawnBlood (org, self.velocity*0.2, 15);
+		SpawnBlood (other, org, self.velocity*0.2, 15);
 		T_Damage (other, self, self.owner, dm);
 	}
 	if (!other.takedamage || other.solid != SOLID_SLIDEBOX)

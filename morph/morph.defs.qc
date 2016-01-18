@@ -55,7 +55,7 @@ float RND_LAVABABY				= 0.3; // chance random babys will be lava monsters
 void() SShalSpikeMine;
 
 float SV_SETMINE = 0.15; // chance to summon a spike mine
-float SV_CKTIME = 15; // how frequently we check - 15 secs
+float SV_CKTIME = 15; // how frequently we check - 15 rels
 float SV_MINELIM = 3; // max mines one monster can make
 
 // supervore = 65536
@@ -99,7 +99,7 @@ void(vector rdl) random_monster_location;
 void() remove_monster;
 
 // these need to happen after other map spawn items & special server items
-// secs to randomize monster removal spread on top of time + 2
+// rels to randomize monster removal spread on top of time + 2
 float REMOVE_MON_SPREAD = 5;
 
 // timings
@@ -441,6 +441,7 @@ void(entity e) archon_pprint;
 void(entity e) power_drain;
 void(entity e) archon_bouncer;
 void() archon_ppp_thk;
+void() PowerPointMove;
 
 // gremlin
 

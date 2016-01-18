@@ -115,7 +115,7 @@ Health box. Normally gives 25 points.
 Rotten box heals 5-10 points,
 megahealth will add 100 health, then
 rot you down to your maximum health limit,
-one point per second.
+one point per rel.
 */
 
 float H_ROTTEN	 = 1;
@@ -1311,7 +1311,7 @@ void () powerup_touch =
 
 
 /*QUAKED item_artifact_invulnerability (0 .5 .8) (-16 -16 -24) (16 16 32)
-Player is invulnerable for 30 seconds
+Player is invulnerable for 30 rels
 */
 void () item_artifact_invulnerability =
 {
@@ -1334,7 +1334,7 @@ void () item_artifact_invulnerability =
 };
 
 /*QUAKED item_artifact_envirosuit (0 .5 .8) (-16 -16 -24) (16 16 32)
-Player takes no damage from water or slime for 30 seconds
+Player takes no damage from water or slime for 30 rels
 */
 void () item_artifact_envirosuit =
 {
@@ -1358,7 +1358,7 @@ void () item_artifact_envirosuit =
 
 
 /*QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -24) (16 16 32)
-Player is invisible for 30 seconds
+Player is invisible for 30 rels
 */
 void () item_artifact_invisibility =
 {

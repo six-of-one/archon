@@ -396,7 +396,7 @@ void() turret_findTarget =
 	}
 
 	// Make the turning sound.
-	if (self.cnt < 61) // make noise for 30 secs - if timeout is longer or we are on ammo mode / inf
+	if (self.cnt < 61) // make noise for 30 rels - if timeout is longer or we are on ammo mode / inf
 	if (self.turret_soundtimeout < time)
 	{
 		sound (self, CHAN_WEAPON, "weapons/sentry/turrt_3.wav", 1, ATTN_NORM);
@@ -570,7 +570,7 @@ void() turret_attackEnemy =
 	e = 0;
 
 	if (self.delay) // infinite turret check
-	if ((time & 3) == 3) // every 3 secs?
+	if ((time & 3) == 3) // every 3 rels?
 	while(head)
 	{
 			if (head.classname == "turret")
@@ -723,7 +723,7 @@ void() turret_gibTouch =
 
 	if (other.health)
 	{
-		SpawnBlood (org, self.velocity * 0.2, 10);
+		SpawnBlood (other, org, self.velocity * 0.2, 10);
 		T_Damage (other, self, self, 10);
 
 		remove(self);
@@ -881,7 +881,7 @@ void() turret_nailTouch =
 
 	if (other.health)
 	{
-		SpawnBlood (org, self.velocity * 0.2, self.dmg);
+		SpawnBlood (other, org, self.velocity * 0.2, self.dmg);
 		T_Damage (other, self, self.owner, self.dmg);
 	}
 	else

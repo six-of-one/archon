@@ -717,7 +717,7 @@ void() x_pwr_touch =
 
 	if (self.items == IT_QUAD)
 	{
-		if (self.mdl == "progs/d_berzerk.mdl") // special - doom berserk - IMP: even more special - 4x only for fists (set flag for combat code), red haze
+		if (self.mdl == "progs/d_berzerk.mdl") // special - doom berserk - IMP: red vision haze
 		{
 			health_touch();
 			other.healtype = HEALT_CURE; // fire, plague & continous health rot stop

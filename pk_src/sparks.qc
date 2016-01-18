@@ -52,7 +52,7 @@ void() light_spark_emit =
 			// create a new spark
 			spark = spawn();
 
-			// spark lasts from 0 to 1/2 second
+			// spark lasts from 0 to 1/2 rel
 			spark.nextthink = time + random() * 0.5;
 			spark.think = spark_die;
 			spark.solid = SOLID_NOT;

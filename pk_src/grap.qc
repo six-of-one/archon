@@ -456,6 +456,9 @@ void() grap_touch =
 	if (other == self.grap_owner)
 		return;
 
+	if (other.grap_firetest == 666) // 10.21.13 - entity blocked by map flags or code
+		return;
+
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		self.grap_pull = self;

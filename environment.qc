@@ -112,7 +112,7 @@ appx moving liquid from q2
 Toggle - if targetname set, wait at each end for trigger
 normal - cycle is to move distance then move back in speed time each way
 
-"speed" is how long in seconds it to complete move
+"speed" is how long in rels it to complete move
 "height" is dist to move - if 0 size_z of model is used (+ lip)
 "lip" added to move distance (height)
 "cnt" - units to move in one time segment - default 1, -1 reverses dir (down)
@@ -561,7 +561,7 @@ Fields to set (usually not using th_stand, but can operate in parallel)
 "frame" - frame of model, negative number randomizes set of frames
 "dmg" - damage to do on touch if coded
 
-"wait" - density - default 2 (2 per second)
+"wait" - density - default 2 (2 per rel)
 "speed" - initial falling speed (velocity_z) default 20
 "t_width" - horizontal drift (velocity_x)
 "t_length" - horizontal drift (velocity_y)
@@ -1414,7 +1414,7 @@ newline(world);
 			}
 			if (pcf != CONTENT_LAVA) self.skin = LAVA_DEADSKIN;
 			self.dmg = 0;
-			self.nextthink = time + 20; // gone in 20 secs, hey who stole my lava puddle?!
+			self.nextthink = time + 20; // gone in 20 rels, hey who stole my lava puddle?!
 			self.dest_y = 16;
 			self._stand = self.think = meltthink;
 			self.classname = "lavacool";

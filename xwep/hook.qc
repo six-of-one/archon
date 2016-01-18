@@ -569,7 +569,7 @@ void () HookBehavior =
 			spray_x = 100 * crandom();
 			spray_y = 100 * crandom();
 			spray_z = 100 * crandom() + 50;
-			SpawnBlood (self.origin, spray, 20);
+			SpawnBlood (self.enemy, self.origin, spray, 20);
 			setorigin (self, self.enemy.origin + self.enemy.mins + self.enemy.size * 0.5);
 		}
 

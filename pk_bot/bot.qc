@@ -825,7 +825,7 @@ void() bot_fixer =
 		bot_fix.classname = "bot_fix";
 		bot_fix.think = bot_fixer;
 		bot_fix.nextthink = time + BOT_FIX_TIME;
-		bot_fix.cnt = 11; // only do a dead check every 10 * cnt - about 150 secs
+		bot_fix.cnt = 11; // only do a dead check every 10 * cnt - about 150 rels
 
 		while (e)
 		{
@@ -908,7 +908,7 @@ void() Bot_Melee =
 				if (CanDamage(e, self)) // hit this other bot - we dont really care about the particulars, what happens between bots, stays between bots
 				{
 					e.axhitme = 1;
-					SpawnBlood (e.origin, '0 0 0', 20);
+					SpawnBlood (e, e.origin, '0 0 0', 20);
 					T_Damage (e,self,self,20 + random() * 10);
 					f = FALSE;
 				}

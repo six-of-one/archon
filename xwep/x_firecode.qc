@@ -73,6 +73,8 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.mask_x = self.mask_x; // for bp touch & such
 
 	setmodel (e, self.vwepmdl);
+	e.modelindex_morph = e.modelindex; // saved only for fists / doom pistol deal
+
 	if (!VW)
 	{
 		if (!(e.weapon == IT_AXE && e.pk_currentitem == PK_IT_AXE)) // any axe replacement
@@ -633,8 +635,7 @@ void() melee_hit =
 		dm = EWEAP.dmg;
 		if (!dm) dm = 20;
 		else if (dm == DOOM_ML_DMG) dm = 10 * ceil(random() * 2);
-		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK
-			SpawnBlood (org, '0 0 0', dm);
+		SpawnBlood (trace_ent, org, '0 0 0', dm);
 		T_Damage (trace_ent,self,self,dm);
 	}
 	else
@@ -692,8 +693,7 @@ void() spike_touch =
 			self.classname = "spike"; // reflective gets removed
 			self.owner = self.theowner; // restore owner - was set to world after bounce
 		}
-		if (other.solid == SOLID_SLIDEBOX || !ENHANCED)  // BLOODCHECK - in case some other bit of gib / dead body can make blood
-			spawn_touchblood (self.dmg);
+		spawn_touchblood (self.dmg);
 		T_Damage (other, self, self.owner, self.dmg);
 	}
 	if (!other.takedamage || (other.solid != SOLID_SLIDEBOX && ENHANCED))
@@ -1101,6 +1101,32 @@ void() player_pistol1 =
 		if (self.eweapon.tag_entity)
 		if (self.eweapon.origin_z > 0)
 			self.eweapon.origin_z = 0;
+
+ // set fists if no doom pistol ammo
+		if (self.eweapon.mcode == MC_D_PISTOL)
+		if (self.ammo_bullet <= 0)
+		{
+			self.eweapon.grap_state = 666000;
+			self.eweapon.modelindex = 0;
+			self.eweapon.noise3 = "weapons/ax1.wav";
+		}
+
+		if (self.eweapon.grap_state == 666000) // use fists
+		{
+//			sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
+			self.eweapon.tomb_time = random();
+			if (self.eweapon.tomb_time < 0.5)
+				player_axe1 ();
+			else if (self.eweapon.tomb_time <0.7)
+				player_axeb1 ();
+			else if (self.eweapon.tomb_time <0.8)
+				player_axec1 ();
+			else
+				player_axed1 ();
+			if (rune_haste(0.25))
+			self.attack_finished = time + 0.5;
+			return;
+		}
 	}
 
 	if (self.tomb_time > GUN_BASE)
@@ -1143,7 +1169,7 @@ void() player_pistol1 =
 		EWEAP = self.eweapon;
 		SuperDamageSound();
 		if (EWEAP.mdl == "progs/vw_deepsleep.mdl")
-			sound (self, CHAN_WEAPON, EWEAP.noise3, 1, ATTN_NORM);
+			sound (self, CHAN_WEAPON, EWEAP.noise3, 1, ATTN_NORM); // should done by fire code below - why do we need this?
 
 		if (EWEAP.mdl == "progs/vw_q2_blst.mdl")
 			X_FireBlaster();
@@ -1305,8 +1331,7 @@ void () Plasma_MissileTouch =
 
 	if (other.health)
 	{
-		if (other.solid == SOLID_SLIDEBOX)  // BLOODCHECK - in case some other bit of gib / dead body can make blood
-			SpawnBlood (org, (self.velocity * 0.2), 15);
+		SpawnBlood (other, org, (self.velocity * 0.2), 15);
 		T_Damage (other, self, self.owner, self.dmg);
 	}
 
@@ -1515,7 +1540,8 @@ void() hyper_fire_fr =
 		else
 		{
 			self.silencer_finished = 0;
-			sprint (self, "Silencer used up\n");
+//			sprint (self, "Silencer used up\n");
+			stuffcmd(self, "hud_message \"Silencer used up\"\n");
 		}
 	}
 
@@ -1960,7 +1986,7 @@ local entity g;
 		self.theowner = tl = world;
 
 		self.v_angle = self.angles;
-		self.origin = self.owner.origin; // where ever the player is .38 secs after ball hits or expires
+		self.origin = self.owner.origin; // where ever the player is .38 rels after ball hits or expires
 
 //		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_PLY | TFL_MON | TFL_INV | TFL_TR_IGM | TFL_IFR_NOZ; // only monsters & players
 		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_TR_IGM | TFL_IFR_NOZ;		// all hittable things
@@ -2104,20 +2130,19 @@ void() X_Fire3BFG =
 
 void() e_weap_Attack =
 {
-	local entity e;
 	local float c;
 
-	EWEAP = e = self.eweapon;
-	if (e._attack == painkeep_cube_use) c = TRUE;
+	EWEAP = self.eweapon;
+	if (EWEAP._attack == painkeep_cube_use) c = TRUE;
 
 // handle haste effects - if rune_haste() returns TRUE there is no haste & we set time for attack here
 
-	if (rune_haste(e.attack_finished / 2))
-		self.attack_finished = time + e.attack_finished;
+	if (rune_haste(EWEAP.attack_finished / 2))
+		self.attack_finished = time + EWEAP.attack_finished;
 
-//	if (e._attack != (void ()) 0)
-	if (e._attack)
-	if (e._attack != SUB_Null) e._attack();
+//	if (EWEAP._attack != (void ()) 0)
+	if (EWEAP._attack)
+	if (EWEAP._attack != SUB_Null) EWEAP._attack();
 
 	if (c) // dont let cube making a weap fire anything
 	{
@@ -2125,33 +2150,34 @@ void() e_weap_Attack =
 		return;
 	}
 
-//	if (e._fr_attack != (void ()) 0)
-	if (e._fr_attack)
-	if (e._fr_attack != SUB_Null) e._fr_attack();
+//	if (EWEAP._fr_attack != (void ()) 0)
+	if (EWEAP._fr_attack)
+	if (EWEAP._fr_attack != SUB_Null) EWEAP._fr_attack();
 
-	if (e.duration == SND_OVER)
-	if (e.noise3 != null_string)
-		sound (self, CHAN_WEAPON, e.noise3, 1, ATTN_NORM);
-//	e.aflag = self.currentammo;
+	if (EWEAP.duration == SND_OVER)
+	if (EWEAP.model != null_string) // fists hack
+	if (EWEAP.noise3 != null_string)
+		sound (self, CHAN_WEAPON, EWEAP.noise3, 1, ATTN_NORM);
+//	EWEAP.aflag = self.currentammo;
 
 // rocket wep specials
-	if (e._attack == W_FireRocket)
+	if (EWEAP._attack == W_FireRocket)
 	if (newmis.classname == "missile")
 	{
 		newmis.touch = X_MissileTouch;
-		newmis.dmg = e.dmg;
-		newmis.dodmg = e.dodmg;
-		newmis.eweapon = e;
-		newmis.target = e.target;
+		newmis.dmg = EWEAP.dmg;
+		newmis.dodmg = EWEAP.dodmg;
+		newmis.eweapon = EWEAP;
+		newmis.target = EWEAP.target;
 	}
 // grenade wep specials
-	if (e._attack == W_FireGrenade)
+	if (EWEAP._attack == W_FireGrenade)
 	if (newmis.classname == "grenade")
 	{
-		newmis.dmg = e.dmg;
-		newmis.dodmg = e.dodmg;
-		newmis.eweapon = e;
-		newmis.noise = e.target;
+		newmis.dmg = EWEAP.dmg;
+		newmis.dodmg = EWEAP.dodmg;
+		newmis.eweapon = EWEAP;
+		newmis.noise = EWEAP.target;
 	}
 
 	EWEAP = world;

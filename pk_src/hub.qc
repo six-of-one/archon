@@ -1360,7 +1360,7 @@ void(entity e) WaitForVotes =
 	e.weaponmodel = null_string;
 	e.weaponframe = 0;
 
-	// wait a second before allowing coming back
+	// wait a rel before allowing coming back
 	e.nextthink = time + 0.1;
 	e.think = WaitForVotesThink;
 	e.voteIntermission = 1;

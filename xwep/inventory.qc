@@ -2076,6 +2076,9 @@ void(entity e, string ss) stack_string =
 
 // idea: replace some classnames with an ascending order system
 
+// p - player
+// e - touched entity
+
 void (entity e, entity p) stack_touch =
 {
 	if (e.model == "progs/q3_art.mdl") stack_string(p, e.classname);

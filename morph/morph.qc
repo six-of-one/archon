@@ -80,6 +80,8 @@ void() morph_precache =
 	precache_model ("gfx/reticle.spr");
 	precache_model ("gfx/reticle2.spr");
 
+	precache_model ("progs/orderform.mdl");
+
 };
 
 
@@ -703,7 +705,7 @@ void() morph_sound_off =
 // settings -
 // r1 - random() < this value to play
 // sn - sound file, will not play if null
-// lts - lock time, will not play a sound again for this many seconds
+// lts - lock time, will not play a sound again for this many rels
 
 void(float r1, string sn, float lts ) morph_sound =
 {
@@ -714,7 +716,7 @@ void(float r1, string sn, float lts ) morph_sound =
 			{
 			sound (self, CHAN_VOICE, sn, 0.8, ATTN_NORM);
 			self.soundlock = time + lts;
-			self.soundoff = time + 2; // CHECK: check to make sure all idle & sight < 2 secs
+			self.soundoff = time + 2; // CHECK: check to make sure all idle & sight < 2 rels
 			}}
 };
 

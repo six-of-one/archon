@@ -486,7 +486,7 @@ float () BotFoundTarget =
 		bprint (": ");
 		bprint (self.enemy.netname);
 		if (random() < 0.4)
-			bprint (" has 5 seconds to beg for mercy, Times up!\n");
+			bprint (" has 5 rels to beg for mercy, Times up!\n");
 		else
 			bprint (" is going to be 6 feet under!\n");
 		}

@@ -433,7 +433,7 @@ void() item_artifact_empathy_shields =
 	self.wait = RSP_TIME;
 	self.touch = x_pwr_touch;
 //	self.dmgtime = ; // just using pow time for now
-//	self.group = "Empathy Shields are running out\n";
+//	self.group = "Empathy Shields are running out";
 
 	setmodel(self, "progs/empathy.mdl");
 	setsize (self, '-16 -16 0', '16 16 32');
@@ -448,7 +448,7 @@ void() item_artifact_empathy_shields =
 };
 
 /*QUAKED item_artifact_wetsuit (0 .5 .8) (-16 -16 -24) (16 16 32)
-Player takes no damage from electrical attacks and swims faster for 30 seconds
+Player takes no damage from electrical attacks and swims faster for 30 rels
 */
 void() item_artifact_wetsuit =
 {
@@ -456,8 +456,9 @@ void() item_artifact_wetsuit =
 	self.wait = RSP_TIME;
 	self.touch = x_pwr_touch;
 //	self.dmgtime = ; // just using pow time for now
-	self.group = "Air tanks are getting low\n";
-//	self.group = "Air supply in Wetsuit is running out\n";
+	if (ENHANCED && (random() < 0.6)) self.group = "Air tanks are getting low";
+	else self.group = "Air supply in Wetsuit is running out";
+
 	self.items = IT_SUIT;
 
 	setmodel (self, "progs/wetsuit.mdl");

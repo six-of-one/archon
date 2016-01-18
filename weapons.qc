@@ -16,7 +16,7 @@ void () ccb_impulse_check;
 void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void () player_run;
 void(entity bomb, entity attacker, float rad, entity ignore) T_RadiusDamage;
-void (vector org, vector vel, float damage) SpawnBlood;
+void (entity e, vector org, vector vel, float damage) SpawnBlood;
 void () SuperDamageSound;
 
 
@@ -71,11 +71,19 @@ void () W_FireAxe =
 
 	if (trace_ent.takedamage)
 	{
+		self.tomb_time = 20; // axe dmg - mod vector
+		if (self.eweapon.grap_state == 666000)
+			self.tomb_time = ceil(10 * random()) + ceil(10 * random()); // fist damage
 		trace_ent.axhitme = 1;
-		if (trace_ent.netname != "Crate") // ick: hack - handle in spawnblood, recode to pass ent
-		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK -  7.29.13
-		SpawnBlood (org, '0 0 0', 20);
-		T_Damage (trace_ent,self,self,20);
+//		if (trace_ent.netname != "Crate") // ick: hack - handle in spawnblood, recode to pass ent
+		SpawnBlood (trace_ent, org, '0 0 0', 20);
+		T_Damage (trace_ent,self,self,self.tomb_time);
+	}
+	else
+	if (self.eweapon.grap_state == 666000)
+	{
+		sound (self, CHAN_WEAPON, "player/axhit1.wav", 1, ATTN_NORM);
+		SpawnBlood (world, org, '0 0 0', 10);
 	}
 	else
 	{	// hit wall
@@ -87,6 +95,7 @@ void () W_FireAxe =
 		WriteCoord (MSG_BROADCAST,org_z);
 	}
 
+// if no axe damage happen in attack, call up special bot melee routine
 	if (!ax_dmg)
 	if (self.class_select == "class_bot")
 		Bot_Melee();
@@ -145,23 +154,32 @@ void (vector org, vector vel) SpawnMeatSpray =
 ================
 SpawnBlood
 ================
+
+10.20.13 - added ent refer so we can do hacks like Archons do not bleed & only have to change this
 */
-void (vector org, vector vel, float damage) SpawnBlood =
+void (entity e, vector org, vector vel, float damage) SpawnBlood =
 {
-	particle (org, vel*0.1, 73, damage*2);
+	if (e.solid == SOLID_SLIDEBOX || !e) // BLOODCHECK
+	if (e.netname != "Crate")
+	if (!e.mask_x & MORPH_ARCHON) // dont let them see you bleed
+		particle (org, vel*0.1, 73, damage*2);
 };
 
 /*
 ================
 spawn_touchblood
 ================
+
+in the case of every call for this fn(), other is the ent
+this will have to be maintained, or change this code
+
 */
 void (float damage) spawn_touchblood =
 {
 	local vector vel;
 
 	vel = wall_velocity () * 0.2;
-	SpawnBlood (self.origin + vel*0.01, vel, damage);
+	SpawnBlood (other, self.origin + vel*0.01, vel, damage);
 };
 
 
@@ -245,7 +263,7 @@ void (float damage, vector dir) TraceAttack =
 //		if (trace_ent.netname != "Crate") // ick: hack - handle in spawnblood, recode to pass ent, include doors & triggers
 		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK
 		{
-			SpawnBlood (org, vel*0.2, damage);
+			SpawnBlood (trace_ent, org, vel*0.2, damage);
 			return;
 		}
 	}
@@ -1655,6 +1673,7 @@ void () SuperDamageSound =
 {
 	if (self.super_damage_finished > time)
 	{
+		if ((self.group != "Berserk rage...nearly over...Hulk sad") || (self.eweapon.grap_state == 666000)) // fists only *4 with berserk
 		if (self.super_sound < time)
 		{
 			self.super_sound = time + 1;

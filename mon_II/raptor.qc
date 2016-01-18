@@ -270,7 +270,7 @@ void()  raptor1_jump8    =[      $leap8,         raptor1_jump9    ] {};
 void()  raptor1_jump9    =[      $leap9,         raptor1_jump10   ] {};
 void()  raptor1_jump10   =[      $leap10,        raptor1_jump11   ] {
 self.nextthink = time + 3;
-// if three seconds pass, assume raptor is stuck and jump again
+// if three rels pass, assume raptor is stuck and jump again
 };
 
 void()  raptor1_jump11   =[      $leap11,        raptor1_jump12   ] {};

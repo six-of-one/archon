@@ -216,7 +216,14 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & TECH_AMP) ) ) || ( RUNE_QUAD_COMB || !ENHANCED ) ) // rune overpowers quad on higher rule sets 
 	if (attacker.super_damage_finished > time)
 	if (attacker.pkplus_actortype != PKPLUS_ACTORQUAD) // pk art code here
-		damage = damage * 4;  // IMP: doom berserk even more special - 4x only for fists
+	{
+		if ((self.group != "Berserk rage...nearly over...Hulk sad") || (self.eweapon.grap_state == 666000)) // fists only *4 with berserk
+{
+			damage = damage * 4;
+
+bprint(" ------------ ***          damage * 4\n"); // TEST: remove
+}
+	}
 
 	r = cvar("sv_c_rune");
 	if (attacker.rune_flag & RUNE_FLG_DM) // dmg rune - idea: could do more under rules > 2

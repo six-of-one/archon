@@ -11,7 +11,7 @@
 
 void() func_fallaway_begin_fall =
 {
-	// last for 7 seconds then remove self
+	// last for 7 rels then remove self
 	self.think = SUB_Remove;
 	self.nextthink = self.ltime + 7;
 	

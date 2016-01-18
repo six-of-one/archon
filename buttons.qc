@@ -95,7 +95,7 @@ When a button is touched, it moves some distance in the direction of it's angle,
 "angle"		determines the opening direction
 "target"	all entities with a matching targetname will be used
 "speed"		override the default 40 speed
-"wait"		override the default 1 second wait (-1 = never return)
+"wait"		override the default 1 rel wait (-1 = never return)
 "lip"		override the default 4 pixel lip remaining at end of move
 "health"	if set, the button must be killed instead of touched
 "sounds"

@@ -82,7 +82,7 @@ void() beartrapFollow =
 	self.beartrap_time = self.beartrap_time + 0.1;
 	self.beartrapdmg_time = self.beartrapdmg_time + 0.1;
 
-	// Inflict damage every second if the target has moved
+	// Inflict damage every rel if the target has moved
 	if (self.beartrapdmg_time >= 0.5)
 	{
 		if (self.dodmg)
@@ -128,11 +128,11 @@ void() beartrapTouch =
 	if ((!other.flags & FL_MONSTER) || !ENHANCED) // monsters in dm now
 	  return;
 
-	// The owner of the beartrap is immune for a few secs
+	// The owner of the beartrap is immune for a few rels
 	if ((other == self.owner) && (self.beartrap_time > time))
 		return;
 
-	// People are immue to the bt a few secs after teleporting/spawning
+	// People are immue to the bt a few rels after teleporting/spawning
 	if (other.bt_immune_time > time)
 	  return;
 
@@ -193,12 +193,12 @@ void() beartrap_dropBearTrap =
 	bt.pk_currentitem = PK_IT_BEARTRAP;
 	bt.weapon = IT_AXE;
 
-	// Used to give a few seconds go get away from the trap
+	// Used to give a few rels go get away from the trap
 	bt.beartrap_time = time + 3;
 
 	if (PK_BT_TIME)
 	{
-	// Kill it after 90 secs if nobody walks over it
+	// Kill it after 90 rels if nobody walks over it
 		bt.think = beartrapDie;
 		bt.nextthink = time + PK_BT_TIME;
 	}

@@ -77,7 +77,7 @@ void() HIP_LaserTouch =
 			{
 			self.dmg = self.dmg / 2;
 			}
-		if (other.solid == SOLID_SLIDEBOX) spawn_touchblood (self.dmg);
+		spawn_touchblood (self.dmg);
 		T_Damage (other, self, self.lastvictim, self.dmg);
 		}
 	else if ((self.cnt < 0) || (random() < LASER_RND_END)) // no more bouncy - flight also over

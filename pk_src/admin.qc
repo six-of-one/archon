@@ -23,7 +23,7 @@ controls bots
 
 // time limit on admin password entry
 float admin_time;
-float A_TIME = 10; // 10 secs for admin password - if this is not set, admin access attempt becomes free invulnerable state!
+float A_TIME = 10; // 10 rels for admin password - if this is not set, admin access attempt becomes free invulnerable state!
 float A_DELAY = 30; // time until you can do anything after failing the admin entry - no shooting, no admin!
 
 // Level impulses
@@ -1062,7 +1062,7 @@ void() AdminCommands =
 		{
 			self.attack_finished = time + A_DELAY; // penalty - cant use this for invulnerable state
 			self.admin = ADMIN_FAILED_LOGIN;
-			centerprint3(self, "admin password entry failure, you must wait ",ftos(A_DELAY)," secs!\n");
+			centerprint3(self, "admin password entry failure, you must wait ",ftos(A_DELAY)," rels!\n");
 			return;
 		}
 		centerprint(self,"Administration privileges enabled, hit \b[ENTER]");
@@ -1806,7 +1806,7 @@ void() PK_AdminImpulse =
 			{
 				self.attack_finished = time + A_TIME; // penalty - cant use this for invulnerable state
 				self.admin = ADMIN_FAILED_LOGIN;
-				centerprint3(self, "admin login escape, you must wait ",ftos(A_TIME)," secs!\n");
+				centerprint3(self, "admin login escape, you must wait ",ftos(A_TIME)," rels!\n");
 				return;
 			}
 			else
@@ -1833,7 +1833,7 @@ void() PK_AdminImpulse =
 			{
 				crosshair_off(self);
 				self.admin = ADMIN_LOGIN; // enter access code
-				admin_time = time + A_TIME; // 10 secs default - NOTE: this is 10 seconds of invulnerability
+				admin_time = time + A_TIME; // 10 rels default - NOTE: this is 10 rels of invulnerability
 			}
 			self.admin_input = 0;
 			self.takedamage = DAMAGE_NO;
@@ -1901,7 +1901,7 @@ void() PK_AdminImpulse =
 		else if (!self.admin_input)
 		{
 			as = ftos(floor(admin_time - time));
-			centerprint3(self, "Enter admin password - seconds left: ", as, "\n");
+			centerprint3(self, "Enter admin password - rels left: ", as, "\n");
 		}
 	}
 };

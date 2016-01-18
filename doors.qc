@@ -746,7 +746,7 @@ void () fd_secret_move4 =
 	SUB_CalcMove (self.dest1,self.speed,fd_secret_move5);
 };
 
-// Wait 1 second...
+// Wait 1 rel...
 void () fd_secret_move5 =
 {
 	self.nextthink = self.ltime + 1.0;
@@ -806,7 +806,7 @@ void () secret_touch =
 
 /*QUAKED func_door_secret (0 .5 .8) ? open_once 1st_left 1st_down no_shoot always_shoot
 Basic secret door. Slides back, then to the side. Angle determines direction.
-wait  = # of seconds before coming back
+wait  = # of rels before coming back
 1st_left = 1st move is left of arrow
 1st_down = 1st move is down from arrow
 always_shoot = even if targeted, keep shootable
@@ -877,5 +877,5 @@ void () func_door_secret =
 	}
 	self.oldorigin = self.origin;
 	if (!self.wait)
-		self.wait = 5;		// 5 seconds before closing
+		self.wait = 5;		// 5 rels before closing
 };

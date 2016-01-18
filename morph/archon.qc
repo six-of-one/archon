@@ -200,9 +200,9 @@ void() archon_nodule_rnd =
 
 // try to create an altar every time we make a nodule
 #ifdef testset
-	if ((time > 30) && !altar) // TEST--
+	if ((time > 10) && !altar) // TEST--
 #else
-	if ((time > 60) && (random() < 0.05) && !altar) // random altar - only one on smaller maps
+	if ((time > 30) && (random() < 0.05) && !altar) // random altar - only one on smaller maps
 #endifdef
 	{
 		altar = self;
@@ -302,7 +302,7 @@ void() archon_nodule_rnd =
 
 // spawnflags & 1 - no test for end of vampire, just take pts
 
-// .archon - pts to take every second
+// .archon - pts to take every rel
 // .owner - give pts to this ent
 // .enemy - take pts from this ent
 
@@ -527,7 +527,7 @@ void() archon_fader =
 	t = find (world, targetname, self.target);
 
 	if (self.delay <= 0) self.delay = 0.05; // default - 20 steps - note: really all need to be the same
-	if (self.wait <= 0) self.wait = 10; // default - 60 secs per color
+	if (self.wait <= 0) self.wait = 10; // default - 60 rels per color
 	if (self.cnt <= 0) self.cnt = 0.1; // default - tenth per alpha seq
 
 	if (t.delay <= 0) t.delay = 0.05;
@@ -611,7 +611,37 @@ void(entity e) archon_pprint =
 	sprint(e, "\n");
 }
 
+// move power points - called once per frame from pre think by player(s)
 
+void() PowerPointMove =
+{
+	local entity e;
+
+	e= find (world,classname,"archon_power");
+	if (e) // found a point
+	{
+		if (e.target) // follow this target
+		{
+			e.enemy = find (world,targetname,e.target);
+			if (e.enemy)
+			{
+				if (e.target2)
+				e.goalentity = find (world,target2,e.target2); // find the trigger that pairs with this pp
+				if (e.goalentity && !e.ip_orgOrigin) e.ip_orgOrigin = e.goalentity.origin - e.origin; // calculate origin sync for the paired trigger field position
+
+				v1 = e.origin;
+				if (e.target1 == "_z") v1_z = e.enemy.origin_z + e.height; // height adjust from target (could be a mover)
+				else if (e.target1 == "mins_z") v1_z = e.enemy.mins_z + e.height;
+				else if (e.target1 == "_both_z") v1_z = e.enemy.origin_z + e.enemy.mins_z + e.height;
+				else if (e.target1 == "_dest") v1 = e.enemy.origin + e.dest;
+				else v1 = e.enemy.origin;
+				if (e.origin != v1) setorigin(e, v1);
+				if (e.goalentity) setorigin(e.goalentity, v1 + e.ip_orgOrigin); // sync the paired trigger field
+			}
+		}
+		e = find (e,classname,"archon_power");
+	}
+};
 
 // spawn flag values - moved for other fn
 //float NOITEM = 1;
@@ -627,28 +657,12 @@ float arc_pwr_item; // unique id for each power point
 // called by .th_die()
 
 // IDEA: other "color" effect besides particle spray - glowing globe ?
+// IDEA: link to item so we know when to make a new one
 
 void() archon_power_fn =
 {
 	local float f;
 	local entity e;
-
-// IMP: this must be moved to physics (pre think) or the point jumps when the plat moves
-
-		if (self.target) // follow this target
-		{
-			e = find (world,targetname,self.target);
-			if (e)
-			{
-				v1 = self.origin;
-				if (self.target1 == "_z") v1_z = e.origin_z + self.height; // height adjust from target (could be a mover)
-				else if (self.target1 == "mins_z") v1_z = e.mins_z + self.height;
-				else if (self.target1 == "_both_z") v1_z = e.origin_z + e.mins_z + self.height;
-				else if (self.target1 == "_dest") v1 = e.origin + self.dest;
-				else v1 = e.origin;
-				if (self.origin != v1) setorigin(self, v1);
-			}
-		}
 
 		if (self.spawnflags & P_RELOAD) // reload model
 		if (self.super_time < time)

@@ -1,6 +1,6 @@
 /* splish splash */
 
-float SOLID_TIME = 120; // secs certain things can spend in solids
+float SOLID_TIME = 120; // rels certain things can spend in solids
 
 float NOT_IN_WATER = 0;
 float pc;								// The content type the last entity to be checked just entered

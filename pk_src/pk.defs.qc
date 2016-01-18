@@ -51,6 +51,9 @@ float XTR_SAVED1				= 1195724115; // saved1 test val
 
 float z0 = 0;
 float gsf;										// loop safety global - this MUST be watched CAREFULLY
+float enhance;									// monster enhance
+float chance;									// monster enhance
+
 //				usage list:			m-gremlin, m-chaos, morph, bot_way **, grap **
 vector v1;
 vector norm; 									// for trace_plane_normal manipulations
@@ -112,7 +115,7 @@ void() framename = [$framenum, nextthink] { ...code...};
 void() framename =
 {
 	self.frame= $framenum;  // the model frame to displayed
-	self.nextthink = time + 0.1;   // next frame happens in 1/10 of second
+	self.nextthink = time + 0.1;   // next frame happens in 1/10 of rel
 	self.think = nextthink; // the function to call at the next frame
 	...code...
 };
@@ -161,7 +164,7 @@ float ARCHON_WEP;							// points per gen weapon
 float ARCHON_WEP_EXT;					// points per advanced weapon
 float ARCHON_GEN;							// generic points
 float ARCHON_MONSTER;					// points per monster = health / {}
-float ARCHON_RUNE;						// points per rune per 3+ secs - run_runes timing
+float ARCHON_RUNE;						// points per rune per 3+ rels - run_runes timing
 float ARCHON_POINT;						// points added per touch on power point if power_act does not spec it on map
 float ARCHON_UNCOL = 0;					// if true allow uncollectable items (touching health box when you are at 100) to add archon pts
 //												// value is factor 1 = full pts, 0.5 = 1/2 pts, etc.
@@ -246,7 +249,7 @@ float pk_xsound;							// set to state of PK_XSOUND bit for sound code toggle
 float pk_itemovr;							// control items - admin override
 float pk_map;								// true if a painkeep map is loaded
 float pk_ditems;							// count painkeep items for dyn_items code
-float PK_DYNTO;							// timeout in 120 secs
+float PK_DYNTO;							// timeout in 120 rels
 float PK_DYNRAD				= 8000;	// dynamic radius search 8000 units
 void(entity e, float tm, void() rmv) dyn_remove;
 void() dyn_rem;
@@ -261,7 +264,7 @@ float LIVE_ADMIN				= 100;	// for being in game with admin privs - previous pain
 float ADMIN_LOGIN				= -2;		// .admin value for login
 float ADMINLOCK;							// polled from sv_c_adminlock
 //float USER_MENU				= -1;		// .admin value that handles user menu - admin code set runs user menus
-float USER_TIMEOUT			= 5;		// timeout user menu in 5 secs
+float USER_TIMEOUT			= 5;		// timeout user menu in 5 rels
 float ADMIN_FAILED_LOGIN	= -777;	// login didnt succeed
 string ADMINCODE				= "float1\n"; // local command that loads admin security password
 //													  //- obscured to keep anyone with casual console access from divining its true meaning
@@ -497,7 +500,7 @@ float DYN_FORCE;
 float DYN_ARTFR;
 float DYN_ARTFR_ONLY; // if set true dynamic only adds artifacts to map
 float DYN_FORCE_CNT; // max forced items to load
-float DYN_START_TIME			= 5;	// seconds till dynamic spawner starts its thing - precache must cutoff before this, leave a couple secs for map load
+float DYN_START_TIME			= 5;	// rels till dynamic spawner starts its thing - precache must cutoff before this, leave a couple rels for map load
 string (float mc) item_by_mcode;
 void(string cls) item_call;
 void(entity e, string cl) item_call_save;
@@ -597,7 +600,7 @@ float CON_CYC					= 2097152; // cycle selected bits in thier group
 float CON_CHAOS				= 2490368; // item chaos it all 3 control bits set
 // excluding inf_ammo from run bits
 float CON_RUN					= 3014656; //4063232; // any control bit CON_* entries above - used by autorun
-float CYC_TIME					= 80; // test: - 240; // seconds for cycle base - 4 mins +|- 2 mins
+float CYC_TIME					= 80; // test: - 240; // rels for cycle base - 4 mins +|- 2 mins
 
 float IT_ARMOR_BITS;
 
@@ -688,7 +691,7 @@ float DEAD_THROW_ARMOR;
 float DEAD_THROW_PKI;
 float DEAD_THROW_LIVERND	= 0.5; // chance a dead threw wep is touchable under rule 2
 float DEAD_THROW_CNTRND		= 0.5; // chance a dead threw wep is NOT under rule 8
-float DEAD_THROW_TIME		= 110;// test: 66; // time (in secs) a deadthrew wep hangs around
+float DEAD_THROW_TIME		= 110;// test: 66; // time (in rels) a deadthrew wep hangs around
 float DEAD_THROW_ARTIFACT	= 1; // if true when dead, any artifacts will be tossed out as inventory dropped
 
 float IT_ARTIFACT = 7929856; // for detecting arts in items - used by rune id & dead drop
@@ -836,7 +839,7 @@ float LAVA_DARKCOOL			= 10; // hot lava cooling - volcano
 float LAVA_DEADSKIN			= 11; // dead skin - volcano / puddle
 
 float VOLCANO_LOC				= 3000; // quake units to settle volcano
-float VOLCANO_ERUPT			= 180;//600; // secs for volcano to erupt before it can change state again
+float VOLCANO_ERUPT			= 180;//600; // rels for volcano to erupt before it can change state again
 float MAX_ASH_CYC				= 128; // max cycles ash will burn
 float LAVA_BLAST				= 0.6; // < % chance of one flare if explosion in lava
 float LAVA_SHOT				= 0.17; // % chance a bullet hitting lava will release a mini lavaball
@@ -1025,6 +1028,8 @@ string DEF_WEP_DEATH2		= "'s random weapon of choice\n";
 
 float ALT_FIRE_IMP			= 13; // impulse for alt fire
 .void(entity ew) _alt_fire;
+
+float MC_D_PISTOL; // for fists test
 
 float DEF_X_ITEMS; // x bit flags
 
@@ -1240,8 +1245,8 @@ void() wchg2_weapon_touch;
 // doom
 
 string DOOM_DET				= "doom/dsitembk.wav"; // vs.	self.noise4
-float D_POWER_WAIT; // seconds major doom powers need to respawn - norm 30
-float D_POWER_TIME; // seconds of power supply
+float D_POWER_WAIT; // rels major doom powers need to respawn - norm 30
+float D_POWER_TIME; // rels of power supply
 
 float DOOR_2S					= -6; // for doors that have a separate open and close sound - like doom / wolf doors, vs. self.sounds
 void() door_sounds_wd;
@@ -1862,7 +1867,7 @@ float PK_BT_TIME;
 
 .float beartrap_time;
 .float bt_immune_time;
-float BT_BUFFER				= 2;	  	// The nuber of secs people are immune to beartraps after spawning
+float BT_BUFFER				= 2;	  	// The nuber of rels people are immune to beartraps after spawning
 
 // grav
 
@@ -2062,7 +2067,7 @@ deathmatch modes
 
 1 = regular quake dm, all items respawn, guns are always taken on touch
 2 = old doom dm rules - guns are not taken as ammo on touch if you have one already, _only_ powerups respawn (if wep is taken it does not dissapear)
-3 = new PK rule - guns are not taken as ammo, ammo respawns in 15 secs, health & armor respawn (if wep is taken it does not dissapear)
+3 = new PK rule - guns are not taken as ammo, ammo respawns in 15 rels, health & armor respawn (if wep is taken it does not dissapear)
 4+ = (unintentional but logical extrapolation from code) - healths & pk weps respawn, ammo, armor, powerups & weapons do not, weapons dissappear (gone till reload!)
 
 

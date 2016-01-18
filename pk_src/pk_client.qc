@@ -712,10 +712,8 @@ void () CheckPowerups =
 	}
 
 	if (self.classname == OBSERVER) // Cataboligne 8.9.9 purify - chase cam (dead) & observer
-	{
-//		morph_clearparms(self, TRUE); // removed cause it should be done in cam / obs code - watch this
 		return;
-	}						// NOTE: great place for some interesting chaos effects
+//								// NOTE: great place for some interesting chaos effects
 
 	if (self.health <= 0)
 		return;
@@ -751,13 +749,14 @@ void () CheckPowerups =
 		{
 			if (self.invisible_time == 1)
 			{
+				stuffcmd(self, "hud_message \"");
 				if (self.group)
-				{
-					sprint (self, self.group);
-					self.group = null_string;
-				}
+					stuffcmd(self, self.group);
 				else
-				sprint (self, "Ring of Shadows magic is fading\n");
+					stuffcmd(self, "Ring of Shadows magic is fading");
+				stuffcmd(self, "\"\n");
+				self.group = null_string;
+
 				stuffcmd (self, "bf\n");
 				sound (self, CHAN_AUTO, "items/inv2.wav", 1, ATTN_NORM);
 				self.invisible_time = time + 1;
@@ -798,16 +797,16 @@ void () CheckPowerups =
 		{
 			if (self.invincible_time == 1)
 			{
+				stuffcmd(self, "hud_message \"");
 				if (self.group)
-				{
-					sprint (self, self.group);
-					self.group = null_string;
-				}
+					stuffcmd(self, self.group);
+				else if  (self.pkplus_actortype == PKPLUS_ACTORPENT) // pk art code here
+					stuffcmd(self, "Get ready to leave the RED stage - Good Performance!");
 				else
-				if  (self.pkplus_actortype == PKPLUS_ACTORPENT) // pk art code here
-					sprint (self,"Get ready to leave the RED stage - Good Performance!\n");
-				else
-					sprint (self, "Protection is almost burned out\n");
+					stuffcmd(self, "Protection is almost burned out");
+				stuffcmd(self, "\"\n");
+				self.group = null_string;
+
 				stuffcmd (self, "bf\n");
 				sound (self, CHAN_AUTO, "items/protect2.wav", 1, ATTN_NORM);
 				self.invincible_time = time + 1;
@@ -846,16 +845,16 @@ void () CheckPowerups =
 		{
 			if (self.super_time == 1)
 			{
+				stuffcmd(self, "hud_message \"");
 				if (self.group)
-				{
-					sprint (self, self.group);
-					self.group = null_string;
-				}
+					stuffcmd(self, self.group);
+				else if (self.pkplus_actortype == PKPLUS_ACTORQUAD) // pk art code here
+					stuffcmd(self, "The BLUE Curtain is dropping - You really frightened them!");
 				else
-				if (self.pkplus_actortype == PKPLUS_ACTORQUAD) // pk art code here
-					sprint (self,"The BLUE Curtain is dropping - You really frightened them!\n");
-				else
-					sprint (self, "Quad Damage is wearing off\n");
+					stuffcmd(self, "Quad Damage is wearing off");
+				stuffcmd(self, "\"\n");
+				self.group = null_string;
+
 				stuffcmd (self, "bf\n");
 				sound (self, CHAN_AUTO, "items/damage2.wav", 1, ATTN_NORM);
 				self.super_time = time + 1;
@@ -894,13 +893,14 @@ void () CheckPowerups =
 		{
 			if (self.rad_time == 1)
 			{
+				stuffcmd(self, "hud_message \"");
 				if (self.group)
-				{
-					sprint (self, self.group);
-					self.group = null_string;
-				}
+					stuffcmd(self, self.group);
 				else
-				sprint (self, "Air supply in Biosuit expiring\n");
+					stuffcmd(self, "Air supply in Biosuit expiring"); // q1 original
+				stuffcmd(self, "\"\n");
+				self.group = null_string;
+
 				stuffcmd (self, "bf\n");
 				if (self.noise3 != null_string)
 					sound (self, CHAN_AUTO, self.noise3, 1, ATTN_NORM);
@@ -941,26 +941,28 @@ void () CheckPowerups =
 			{
 				if (!self.items & IT_SUIT)
 				{
+					stuffcmd(self, "hud_message \"");
 					if (self.group)
-					{
-						sprint (self, self.group);
-						self.group = null_string;
-					}
+						stuffcmd(self, self.group);
 					else
-					sprint (self, "Air supply in Re-breather expiring\n"); // IDEA: item stored messages
+						stuffcmd(self, "Air supply in Re-breather expiring");
+					stuffcmd(self, "\"\n");
+					self.group = null_string;
+
 					sound (self, CHAN_AUTO, "q2_snd/airout.wav", 1, ATTN_NORM);
 				}
 				else
 				{
-				if (self.group)
-				{
-					sprint (self, self.group);
+					stuffcmd(self, "hud_message \"");
+					if (self.group)
+						stuffcmd(self, self.group);
+					else
+						stuffcmd(self, "Air supply in Enviro suit expiring");
+					stuffcmd(self, "\"\n");
 					self.group = null_string;
-				}
-				else
-				sprint (self, "Air supply in Enviro suit expiring\n");
-//				sound (self, CHAN_AUTO, self.noise3, 1, ATTN_NORM);
-				sound (self, CHAN_AUTO, "q3_snd/airout.wav", 1, ATTN_NORM); // IDEA: make item store .noise3 work
+
+	//				sound (self, CHAN_AUTO, self.noise3, 1, ATTN_NORM);
+					sound (self, CHAN_AUTO, "q3_snd/airout.wav", 1, ATTN_NORM); // IDEA: make item store .noise3 work
 				}
 
 				stuffcmd (self, "bf\n");
@@ -998,13 +1000,14 @@ void () CheckPowerups =
 		{
 			if (self.empathy_time == 1)
 			{
+				stuffcmd(self, "hud_message \"");
 				if (self.group)
-				{
-					sprint (self, self.group);
-					self.group = null_string;
-				}
+					stuffcmd(self, self.group);
 				else
-				sprint (self, "Empathy Shields are running out\n");
+					stuffcmd(self, "Empathy Shields are running out");
+				stuffcmd(self, "\"\n");
+				self.group = null_string;
+
 				stuffcmd (self, "bf\n");
 				sound (self, CHAN_AUTO, "items/suit2.wav", 1, ATTN_NORM);
 				self.empathy_time = time + 1;
@@ -1251,8 +1254,12 @@ void () PlayerPreThink =
 		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
 
 	if (cc_frame != framecount) // Cataboligne - 6.10.10 - making this a frame check - only way splashes will look "right"
+	{
 // PAINKEEP SPLASH Check for entities splashing
 		CheckWaterLevels();
+// Archon - moveable power points
+		PowerPointMove();
+	}
 
 	//JIM
 	//WETSUIT
