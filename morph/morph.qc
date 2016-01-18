@@ -1488,6 +1488,7 @@ void(float cmd, float pls) polymorph_check =
 		if (self.deadflag) return;
 
 		if (cmd == IMP_MCHAOS) player_chaos_become(pls);
+		else if (cmd == IMP_MORDER) player_order_become(pls);
 		else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
 		else if (cmd == IMP_MWIZARD) player_wizard_become(pls);

@@ -1669,7 +1669,7 @@ float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 
 	if (!e) return(FALSE); // cant target world
 	if (e.classname == "turret_base") return(FALSE); // never target these - not valide
-	if (e.classname == "chase_cam") return(FALSE); // nope
+//	if (e.classname == "chase_cam") return(FALSE); // nope - no more cam ents
 
 	if ((e == self) && ! (flg & TFL_SELF)) return(FALSE);
 	if ((e == f) && ! (flg & TFL_FENT)) return(FALSE);

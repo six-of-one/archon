@@ -16,7 +16,9 @@
 
 void() de_archon_thk =
 {
-	if (self.owner.archon > CHAOS_BEAM_MIN)
+	self.lefty = 2000;
+	if (self.owner.height == IMP_MCHAOS) self.lefty = CHAOS_BEAM_MIN;
+	if (self.owner.archon > self.lefty)
 	{
 		if (self.owner.goalentity == self) self.owner.goalentity = world;
 		polymorph_check(self.owner.height, 0);
@@ -83,7 +85,7 @@ void() archon_nodule_rnd =
 		god_particle = self;
 		self.netname = "\bGod Particle\b";
 		setmodel (self,"progs/nodule110110110.bsp");
-		setsize (self,'-16 -16 -24','16 16 16');
+//		setsize (self,'-16 -16 -24','16 16 16');
 		self.scale = 0.35;
 		self.modelflags = self.modelflags | 1; // rocket light
 		self.archon = 4500 + crandom() * 500;	// almost an archon
@@ -95,15 +97,37 @@ void() archon_nodule_rnd =
 	if (gsf > 4) // 5,6
 	{
 		setmodel (self,"progs/nodule11.mdl");
-		if (random() < 0.3) self.modelflags = self.modelflags | 128; // purple light
 		if (time > 180) self.archon = 120 + crandom() * 40;
+//		if ((time > 160) && random() > 0.5)
+//		{
+			setmodel (self,"progs/nodule011.bsp");
+			self.scale = 0.25;
+			self.archon = 180 + crandom() * 80;
+//		}
+		if (random() < 0.3) self.modelflags = self.modelflags | 128; // purple light
 	}
 	else 
 	if (gsf < 3) // 0, 1, 2
 	{
 		setmodel (self,"progs/nodule10.mdl");
 		if (time > 120) self.archon = 50 + crandom() * 25;
+//		if ((time > 120) && random() > 0.5)
+//		{
+			setmodel (self,"progs/nodule010.bsp");
+			self.scale = 0.25;
+			self.archon = 80 + crandom() * 40;
+//		}
 	}
+	else // 3, 4
+	{
+//		if ((time > 60) && random() > 0.5)
+//		{
+			setmodel (self,"progs/nodule001.bsp");
+			self.scale = 0.25;
+			self.archon = 30 + crandom() * 10;
+//		}		
+	}
+	setsize (self,'-16 -16 -24','16 16 16');
 
 	if (self != god_particle)
 	if (random() < 0.4)
@@ -463,9 +487,12 @@ void() archon_power_fn =
 		if (random() < 0.2) self.wait = -1;
 
 		self.spawnflags = 2 | 8; // respawn on item - + spawnflag for old dynamic remove
+		self.button4 = -666; // dont catch melee mode yet...
 		func_make();
+		self.goalentity = newmis;
 		newmis.velocity = v0; // stop eject
 		newmis.button14 = e.button14;
+		self.button4 = 0;
 
 // make ammo for weps - can only be gotten one time
 		if (newmis.items & IT_SUPER_SHOTGUN)
@@ -504,6 +531,9 @@ void() archon_power_fn =
 			func_make();
 			newmis.punchangle = MED_BOUNCE_NOW;
 		}
+
+// dont make  non melee items under this rule
+		if (TR_ALL == FL_TR_MELEE) item_translate(self.goalentity, TR_ALL);
 
 		remove(self);
 		self = e;

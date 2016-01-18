@@ -26,6 +26,7 @@ void(entity fent, float fl) flyer_check =
 	if (fl)
 	if	(fent.morphy == IMP_MWIZARD
 		|| fent.morphy == IMP_MCHAOS
+		|| fent.morphy == IMP_MORDER
 		|| fent.morphy == IMP_MWRAITH
 		|| (fent.model == "progs/gremlin-fly.mdl" && fent._stand == gremlin_hover)
 //		|| fent.classname == "deadcam"

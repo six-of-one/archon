@@ -518,8 +518,8 @@ void(float silent) player_wizard_become =
 
 	setmodel(self,"progs/wizard.mdl");
 
-	self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN;
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN;
+	self.items = self.items | self.builtin;
 	self.weapon = IT_SUPER_SHOTGUN;
 
 	self.msight = "wizard/wsight.wav";

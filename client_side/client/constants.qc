@@ -98,6 +98,8 @@ float STAT_AMBUL = 46; // enh ammos
 float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
 
+float STAT_WSUIT = 49; // enh powers
+
 //float STAT_STK1 = 50; // string data
 //float STAT_STK2 = 51; // string data
 

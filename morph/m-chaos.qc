@@ -69,6 +69,9 @@ void() m_precache_chaos =
 	precache_model ("progs/nodule1.mdl");
 	precache_model ("progs/nodule10.mdl");
 	precache_model ("progs/nodule11.mdl");
+	precache_model ("progs/nodule001.bsp");
+	precache_model ("progs/nodule010.bsp");
+	precache_model ("progs/nodule011.bsp");
 	precache_model ("progs/nodule110110110.bsp");
 	precache_sound ("items/r_item2.wav");
 };
@@ -1881,7 +1884,7 @@ void() transmogrify =
 	}
 };
 
-// powers
+/// powers
 
 void() rune_powers =
 {
@@ -1902,6 +1905,44 @@ void() rune_powers =
 	}
 };
 
+void() archon_gwell =
+{
+	drop_gravity();
+	setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
+	newmis.goalentity = self;
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce - or this fires 1 - 4
+};
+
+void() monster_speed =
+{
+	if (! self.bolt_target.flags & FL_MONSTER) return;
+	if (self.pk_beartrapammo == 1)
+		self.bolt_target.speed = self.bolt_target.speed - 0.01;
+	else
+		self.bolt_target.speed = self.bolt_target.speed + 0.01;
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
+};
+
+/// archon I & II spells
+
+void() archon_heal =
+{
+	
+};
+
+void() archon_imprison =
+{
+	
+};
+
+void() archon_banish =
+{
+	
+};
+
+
 // setup spells
 
 void() clear_reticle =
@@ -1920,68 +1961,8 @@ void() clear_reticle =
 		archon_target_clear(self.enemy);
 };
 
-// pkplus_actorammo - targeting for server & HUD
-// 		0 - no reticles or targets - spell just fires
-//			1 - free roaming reticle
-//			2 - target(s) needed on this spell
-//				- if bit 2 is set, normal targeting will occur - this will always show potential alternates
-//			4 - spell uses 2 targets - for HUD to display both
-//			8 - spell target must be a player / bot
-//		 16 - spell can NOT be a client / bot
-//		 32 - spell target must be a monster
+void() spell_target;
 
-
-// 65536 - spell reset req.
-
-void() spell_target =
-{
-	self.pk_explode_ammo = 0;
-	self.pkplus_actorammo = 0;
-	self.cnt = self.pkplus_actorammo & 2; // reticle controls
-	if (self.weapon == IT_SHOTGUN)
-	{
-		if (self.ammo_shells == 3) { self.pk_explode_ammo = 15; self.pkplus_actorammo = 3; self.th_melee = uni_teleport; }
-		else if (self.ammo_shells == 5) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 7; self.th_melee = multi_teleport; }
-		else if (self.ammo_shells == 7)
-		{
-			self.pk_explode_ammo = 5;
-			self.pkplus_actorammo = 1;
-			self.th_melee = uni_teleport;
-			self.bolt_target = self;
-		}
-		else if (self.ammo_shells == 11)
-		{
-			self.pk_explode_ammo = 20;
-			self.pkplus_actorammo = 1;
-			self.th_melee = set_beacon;
- 			if (self.goalentity)
-			if (self.goalentity.classname == "beacon") // beacon has been set
-			{
-				self.pk_explode_ammo = 5;
-				self.pkplus_actorammo = 0;
-				self.th_melee = uni_teleport;
-				self.bolt_target = self.goalentity;
-			}
-		}
-	}
-	if (self.weapon == IT_SUPER_SHOTGUN)
-	{
-		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; self.bolt_target = self; }
-		if (self.ammo_nails == 5) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; if (self.bolt_target == self) self.bolt_target = world; }
-		if (self.ammo_nails == 7) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; if (self.bolt_target == self) self.bolt_target = world; } // repeat last monster poly
-		if (self.ammo_nails == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); } // repeat last monster poly
-	}
-	if (self.weapon == IT_NAILGUN)
-	{
-		if (self.ammo_rockets == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 0; self.th_melee = rune_powers; }
-	}
-
-	if (self.pkplus_actorammo == 0) // changed - remove existing reitcles
-		clear_reticle();
-	self.bolt_targetTimeout = time + 30;
-	self.mcode = -666; // archon casting spell
-	self.th_missile = spell_target;
-};
 
 // main attack
 
@@ -2211,6 +2192,72 @@ void() clear_spell =
 	stuffcmd(self, "hud_target2 \"");
 	stuffcmd(self, "\"\n");
 	self.mcode = -666; // archon casting spell
+};
+
+
+// 65536 - spell reset req.
+
+void() spell_target =
+{
+	self.pk_explode_ammo = 0;
+	self.pkplus_actorammo = 0;
+	self.cnt = self.pkplus_actorammo & 2; // reticle controls
+	if (self.weapon == IT_SHOTGUN)
+	{
+		if (!self.ammo_shells) self.ammo_shells = 3; // teleport
+		if (self.ammo_shells == 3) { self.pk_explode_ammo = 15; self.pkplus_actorammo = 3; self.th_melee = uni_teleport; }
+		else if (self.ammo_shells == 5) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 7; self.th_melee = multi_teleport; }
+		else if (self.ammo_shells == 7)
+		{
+			self.pk_explode_ammo = 5;
+			self.pkplus_actorammo = 1;
+			self.th_melee = uni_teleport;
+			self.bolt_target = self;
+		}
+		else if (self.ammo_shells == 11)
+		{
+			self.pk_explode_ammo = 20;
+			self.pkplus_actorammo = 1;
+			self.th_melee = set_beacon;
+ 			if (self.goalentity)
+			if (self.goalentity.classname == "beacon") // beacon has been set
+			{
+				self.pk_explode_ammo = 5;
+				self.pkplus_actorammo = 0;
+				self.th_melee = uni_teleport;
+				self.bolt_target = self.goalentity;
+			}
+		}
+	}
+	if (self.weapon == IT_SUPER_SHOTGUN)
+	{
+		if (!self.ammo_nails) self.ammo_nails = 3;
+		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; self.bolt_target = self; }
+		if (self.ammo_nails == 5) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; if (self.bolt_target == self) self.bolt_target = world; }
+		if (self.ammo_nails == 7) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; if (self.bolt_target == self) self.bolt_target = world; } // repeat last monster poly
+		if (self.ammo_nails == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); } // repeat last monster poly
+	}
+	if (self.weapon == IT_NAILGUN)
+	{
+		if (!self.ammo_rockets) self.ammo_rockets = 3;
+		if (self.ammo_rockets == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 0; self.th_melee = rune_powers; }
+		if (self.ammo_rockets == 5) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_gwell; }
+		if (self.ammo_rockets == 7) { self.pk_explode_ammo = 5; self.pkplus_actorammo = 35; self.th_melee = monster_speed; if (self.bolt_target == self) self.bolt_target = world; }
+	}
+	if (self.weapon == IT_LIGHTNING)
+	{
+		if (self.bolt_target == self) self.bolt_target = world;
+		if (!self.ammo_cells) self.ammo_cells = 3;
+		if (self.ammo_cells == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 2; self.th_melee = archon_heal; }
+		if (self.ammo_cells == 5) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 2; self.th_melee = archon_imprison; }
+		if (self.ammo_cells == 7) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 2; self.th_melee = archon_banish; }
+	}
+
+	if (self.pkplus_actorammo == 0) // changed - remove existing reitcles
+		clear_reticle();
+	self.bolt_targetTimeout = time + 30;
+	self.mcode = -666; // archon casting spell
+	self.th_missile = spell_target;
 };
 
 // pkplus_actorammo - targeting for server & HUD
@@ -2457,6 +2504,7 @@ void() player_chaos_impulse =
 		if (self.weapon == IT_SHOTGUN) self.impulse = 2;
 		if (self.weapon == IT_SUPER_SHOTGUN) self.impulse = 3;
 		if (self.weapon == IT_NAILGUN) self.impulse = 4;
+		if (self.weapon == IT_LIGHTNING) self.impulse = 8;
 	}
 	else if (self.impulse == 16) // aux spell loops
 	{
@@ -2471,6 +2519,12 @@ void() player_chaos_impulse =
 			if (self.rune_flag) self.AIRG_Flags = 4194375;
 			else self.AIRG_Flags = 71;
 			if (self.ammo_rockets == 3) aux_bits(self.AIRG_Flags);
+			if (self.ammo_rockets == 7) aux_bits(3);
+		}
+		if (self.weapon == IT_LIGHTNING)
+		{
+			if (self.ammo_rockets == 3) aux_bits(3);
+			if (self.ammo_rockets == 5) aux_bits(3);
 		}
 	}
 
@@ -2480,9 +2534,10 @@ void() player_chaos_impulse =
 		clear_spell(); // timeout any spell in selection
 	}
 
+	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
+
 	if (self.impulse == 2) // spell list 1 - teleports
 	{
-		if (!self.ammo_shells) self.ammo_shells = 3; // teleport
 		if (self.weapon == IT_SHOTGUN) // loop thru spell set
 		{
 			if (self.ammo_shells == 3) self.ammo_shells = 5; // tele swap
@@ -2494,7 +2549,6 @@ void() player_chaos_impulse =
 	}
 	if (self.impulse == 3) // spell list 2 - polymorph, transmogrify
 	{
-		if (!self.ammo_nails) self.ammo_nails = 3;
 		if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
 		{
 			if (self.ammo_nails == 3) self.ammo_nails = 5;
@@ -2517,21 +2571,24 @@ void() player_chaos_impulse =
 	}
 	if (self.impulse == 4) // spell list 3
 	{
-		if (!self.ammo_rockets) self.ammo_rockets = 3;
 		if (self.weapon == IT_NAILGUN) // loop thru spell set
 		{
-//			if (self.ammo_rockets == 3) self.ammo_rockets = 5;
-//			else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
-//			else if (self.ammo_rockets == 7) self.ammo_rockets = 11;
-//			else if (self.ammo_rockets == 11) self.ammo_rockets = 13;
-//			else if (self.ammo_rockets == 13) self.ammo_rockets = 17;
-//			else if (self.ammo_rockets == 17) self.ammo_rockets = 19;
-//			else if (self.ammo_rockets == 19) self.ammo_rockets = 23;
-//			else if (self.ammo_rockets == 23) self.ammo_rockets = 29;
-//			else if (self.ammo_rockets == 11) self.ammo_rockets = 3;
+			if (self.ammo_rockets == 3) self.ammo_rockets = 5;
+			else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
+			else if (self.ammo_rockets == 7) self.ammo_rockets = 3;
 		}
 //		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
 		self.weapon = IT_NAILGUN;
+	}
+	if (self.impulse == 8) // spell list archon
+	{
+		if (self.weapon == IT_LIGHTNING) // loop thru spell set
+		{
+			if (self.ammo_rockets == 3) self.ammo_cells = 5;
+			else if (self.ammo_rockets == 5) self.ammo_cells = 7;
+			else if (self.ammo_rockets == 7) self.ammo_cells = 3;
+		}
+		self.weapon = IT_LIGHTNING;
 	}
 	else if (self.impulse == IMP_MSIGHT)
 		morph_sound(2, self.msight, 3);							// let player morphs "talk"
@@ -2585,9 +2642,9 @@ void(float silent) player_chaos_become =
 	self._killmsg=player_chaos_killmsg;
 	self._killmsg2=player_chaos_killmsg2;
 
-	if (self.ammo_nails == CFCBALL)
+	if (self.pkplus_tombammo == CFCBALL) // this doesnt seem to do anything - check mkI
 	{
-		self.ammo_nails = 0;
+		self.pkplus_tombammo = 0;
 		tc = FL_CBALL;
 	}
 	else
@@ -2597,21 +2654,21 @@ void(float silent) player_chaos_become =
 	self.height = IMP_MCHAOS;
 
 	chaos_form(tc);
-	self.dest_y = CB_CHAOS | CB_HUMAN | CB_SHALR | CB_CTHON | CB_SCOURGE | CB_GREMLIN | CB_ENF | CB_SCRAG;
-
 
 	self.cam_z = 10 / 100;
 	self.cam_y = 36;
 
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
-	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_LIGHTNING;
 	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;
-// spell init
+// spell init - done in target
 	self.ammo_shells = 7;
 	self.ammo_nails = 3;
+	self.ammo_rockets = 3;
+	self.ammo_cells = 3;
 
 	self.pk_explode_ammo = 0; // spell cost
 	self.th_missile = SUB_Null; // spell target

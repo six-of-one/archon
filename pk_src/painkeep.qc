@@ -1119,7 +1119,7 @@ void() pk_liveupd =
 	LASER_BOUNCE = cvar("sv_c_laser_bounce");
 
 // map translations
-	check_translate();
+	if (time > 5) check_translate();
 
 // respawn times
 	D_POWER_WAIT = 
@@ -1678,6 +1678,8 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		addstat(46, 2, ammo_bullet); // enh ammos
 		addstat(47, 2, ammo_slug); // enh ammos
 		addstat(48, 2, ammo_gaspr); // enh ammos
+
+		addstat(49, 2, wetsuit_finished); // enh powers
 
 //		addstat(50, 1, stack1); // target string
 //		addstat(51, 1, stack2); // target string

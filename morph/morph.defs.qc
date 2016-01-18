@@ -367,6 +367,7 @@ float HEADSKN_Q3					= 3; // 5;
 
 // evolution
 void(float silent) player_chaos_become;
+void(float silent) player_order_become;
 void(float silent) player_scourge_become;
 void(float silent) player_shalrath_become;
 void(float silent) player_enforcer_become;

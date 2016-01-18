@@ -2234,6 +2234,13 @@ void() painkeep_cube_use =
 
 		item_call(self.wad);
 
+// dont make  non melee items under this rule
+		if (TR_ALL == FL_TR_MELEE)
+		{
+			if (!self.scode) self.scode = pk_mcode(self.classname, world); // for xlate
+			item_translate(self, TR_ALL);
+		}
+
 		if (self.classname == "item_painkeep_gwell")
 		if (random() < 0.333)
 		{
@@ -3104,6 +3111,7 @@ void() func_make =
 	}
 
 	fn_make(d, self.origin, self.wad);
+
 	if (!self.spawnflags & 2)
 	if (newmis.class_select != "class_monster")
 	{
@@ -3131,6 +3139,11 @@ void() func_make =
 
 //	if (newmis.flags & FL_MONSTER)
 //		spawn_tdeath(newmis.origin, newmis); // issue: has eject velocity - flag isnt set till *_go think
+
+	if (self.button4 != -666)
+// dont make  non melee items under this rule
+	if (TR_ALL == FL_TR_MELEE) item_translate(self, TR_ALL);
+
 
 	if (self.count > 0)
 	{

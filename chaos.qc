@@ -1481,7 +1481,7 @@ float (entity e, float t) move_check =
 
 	if (e.model != "progs/boss.mdl" && e.model != "progs/oldone.mdl" && e.model != "progs/cthon.mdl") // dont pull bosses or cthon morph
 //	if (pk_art_movshot_ck(e, "grav")) // Cataboligne 8.12.9 purify - pk artifacts
-	if (e.classname != "chase_cam")
+//	if (e.classname != "chase_cam") - no more cam
 	if (e.map != "nonmove") // 7.22.13 - func_models we should not suck
 	//if (e != self.owner)
 	if (e.classname != OBSERVER)

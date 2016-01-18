@@ -1272,7 +1272,7 @@ void () powerup_touch =
 	self.model = string_null;
 
 // do the apropriate action
-	if (self.classname == "item_artifact_envirosuit")
+	if (self.classname == "item_artifact_envirosuit") // note: bio is not coming here!
 	{
 		other.rad_time = 1;
 		other.radsuit_finished = time + POW_TIME;
@@ -1346,6 +1346,7 @@ void () item_artifact_envirosuit =
 	setmodel (self,"progs/suit.mdl");
 	self.netname = "Biosuit";
 	self.items = IT_SUIT;
+	self.lip = BIOSUIT;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON);
 

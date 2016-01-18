@@ -70,7 +70,7 @@ void () PlaceItem =
 
 	bot_item_linx(self); // *bot - item tie in
 
-// used for translate - if *_100 on
+// used for translate
 	self.mcode = pk_mcode(null_string, self); // put map code on ent
 	if (!self.scode) self.scode = self.mcode;
 
@@ -278,8 +278,8 @@ void () weapon_airfist =
 	setmodel (self,"progs/g_airgun2.mdl");
 	self.pk_currentitem = PK_IT_AIRGUN;
 	self.netname = "AirFist";
-	self.touch = painkeep_weapon_touch;
-	self.pk_touch = painkeep_touch;
+	self.touch = painkeep_touch;
+	self.pk_touch = painkeep_weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	//setsize (self, '-15 -9 25', '17 9 43');
 	StartItem ();
@@ -305,8 +305,8 @@ void () weapon_chainlg =
 	setmodel (self,"progs/g_clight.mdl");
 	self.pk_currentitem = PK_IT_CLIGHT;
 	self.netname = "Chain Thunderbolt";
-	self.touch = painkeep_weapon_touch;
-	self.pk_touch = painkeep_touch;
+	self.touch = painkeep_touch;
+	self.pk_touch = painkeep_weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
@@ -326,7 +326,8 @@ void () weapon_grapgun =
 	setmodel (self,"progs/g_harp.mdl");
 	self.pk_currentitem = PK_IT_GRAPGUN;
 	self.netname = "Harpoon Gun";
-	self.pk_touch = painkeep_touch;
+	self.touch = painkeep_touch;
+	self.pk_touch = painkeep_weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;

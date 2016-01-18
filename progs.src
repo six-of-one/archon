@@ -223,6 +223,7 @@ morph/morph_print.qc
 morph/morph.qc
 morph/archon.qc
 morph/m-chaos.qc
+morph/m-order.qc
 morph/m-scourge.qc
 morph/m-cthon.qc
 morph/m-lava.qc

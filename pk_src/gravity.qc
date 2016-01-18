@@ -196,7 +196,7 @@ void() gravity_pull =
 		if (e.classname != "beartrap")
 		if (e.model != "progs/boss.mdl" && e.model != "progs/oldone.mdl" && e.model != "progs/cthon.mdl") // dont pull bosses or cthon morph
 		if (pk_art_movshot_ck(e, "grav")) // Cataboligne 8.12.9 purify - pk artifacts
-		if (e.classname != "chase_cam")
+		if (e != self.goalentity) // archon grav, wont grab self
 		if (e.map != "nonmove") // 7.22.13 - func_models we should not suck
 		//if (e != self.owner)
 		if ((e.classname == OBSERVER && random() < 0.001666) || e.classname != OBSERVER)
@@ -320,8 +320,6 @@ void() gravity_explode =
 
 void() drop_gravity =
 {
-	local entity gravity;
-
 	if (!PK_GRV_SET)
 	{
 		PK_GRV_SET = TRUE;
@@ -335,39 +333,39 @@ void() drop_gravity =
 	}
 
 	// create a gravity object
-	newmis = gravity = spawn();
-	gravity.classname = "gravity";
-	gravity.owner = self;
-	gravity.solid = SOLID_TRIGGER;
-	gravity.movetype = MOVETYPE_TOSS;
+	newmis = spawn();
+	newmis.classname = "gravity";
+	newmis.owner = self;
+	newmis.solid = SOLID_TRIGGER;
+	newmis.movetype = MOVETYPE_TOSS;
 
 	// set it's placement and velocity
-	setorigin(gravity, self.origin + self.view_ofs);
-	gravity.velocity = self.velocity * 0.5;
-	setmodel(gravity, "progs/cube.mdl");
+	setorigin(newmis, self.origin + self.view_ofs);
+	newmis.velocity = self.velocity * 0.5;
+	setmodel(newmis, "progs/cube.mdl");
 	// TODO get acurate sizing
-	setsize(gravity, '-32 -32 -32', '32 32 32');
+	setsize(newmis, '-32 -32 -32', '32 32 32');
 	newmis.alpha = 1; // has to be set for norm ops to work right
 
 	/*
-	gravity.think = gravity_explode;
-	gravity.nextthink = time + 1.0;
-	gravity.attack_finished = time + 2.1;
+	newmis.think = gravity_explode;
+	newmis.nextthink = time + 1.0;
+	newmis.attack_finished = time + 2.1;
 	*/
-	gravity.think = gravity_explode;
-	gravity.nextthink = time + 2.0;
+	newmis.think = gravity_explode;
+	newmis.nextthink = time + 2.0;
 	sound (self, CHAN_BODY, "misc/grav/grav_new.wav", 1, ATTN_NORM);
 
 	// Throw away from you
 	makevectors (self.angles);
-	gravity.velocity = (v_forward * (200 + random() * 100)) + (v_up * (200 + random() * 100));
+	newmis.velocity = (v_forward * (200 + random() * 100)) + (v_up * (200 + random() * 100));
 
 	// For the correct death messages
-	gravity.pk_currentitem = PK_IT_GRAVITYWELL;
-	gravity.weapon = IT_AXE;
+	newmis.pk_currentitem = PK_IT_GRAVITYWELL;
+	newmis.weapon = IT_AXE;
 
 	// PAINKEEP SPLASH Make this entity splash
-	AddToSplash(gravity);
+	AddToSplash(newmis);
 };
 
 void() drop_gravity_sups =

@@ -522,16 +522,17 @@ void(string cls) item_call =
 	if (self.event != "dynamic_item") // dont do these for dyn items
 	{
 		if (!NO_PI) pk_placeitem();
-		{
-			self.think = SUB_regen; // dont go thru place_item - use regen method
-			self.nextthink = time + 1 + 3 * random(); // spread em out
-			self.model = string_null;
-		}
+
+		self.think = SUB_regen; // dont go thru place_item - use regen method
+		self.nextthink = time + 1 + 3 * random(); // spread em out
+		self.model = string_null;
+
 	}
 	else
 		pk_ditems = pk_ditems + 1;
 	self.solid = SOLID_NOT;
 	NO_PI = 0;
+
 //	bot_item_linx(self); // *bot - item tie in - needs checked for use here -- ??? does anything need done here?
 };
 

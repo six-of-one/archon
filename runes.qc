@@ -1029,6 +1029,9 @@ void() rune_maker =
 
 			item_call(self.wad);
 
+/// works, but no idea why we have to do this?! - not needed when translate is off
+			self.pk_touch = rune_touch; // fix for translate case where rune has no touch on spawn
+
 			self.punchangle = MED_BOUNCE; // for rune_bounce
 
 			AddToSplash(self); // splash code kills lava immersed runes
