@@ -1433,6 +1433,8 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else
 			Sbar_DrawString(pwr_step + wep_step + woff + '160 1 0', "*", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+
+		k = time - deadtime;
 		if (k == 1)
 			Sbar_DrawString(pwr_step + wep_step + woff + v + '166 0 0', ") rel", ALPHA_FULL, '7 7 0','1 1 1');
 		else

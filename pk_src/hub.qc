@@ -438,13 +438,61 @@ entity() getHighestWithoutRandom =
 			highest = e;
 			c = 1;
 		}
-		else if (e.cnt == highest.cnt) // this will choose randomly amongst 0 cnt maps (no vote condition)
+		else
 		{
-			c = c + 1;
-			r = random() * 100;
-			// randomly choose new highest
-			if (r < (100 / c))
-				highest = e;
+			r = 1;
+			if (!e.cnt) // no votes on this map - block locked
+			{
+				if (!m_score_rel1)
+				if (e.target1 == "score_rel1") // bot vote or random must block locked maps
+					r = FALSE;
+		
+				if (!m_score_rel2)
+				if (e.target1 == "score_rel2")
+					r = FALSE;
+		
+				if (deathmatch)
+				if (e.count > 0)
+				{
+					if (ply_count < e.count)
+					if (e.target1 == "player_count")
+						r = FALSE;
+		
+					if (ply_count >= e.count)
+					if (e.target1 == "!player_count")
+						r = FALSE;
+				}
+#ifdef warning
+if (WARNING & 2049)
+{
+	bprint("\b *** warning: hub: \b");
+	bprint(e.map);
+	bprint(" - t1: ");
+	bprint(e.target1);
+	if ((e.target1 == "player_count") || (e.target1 == "!player_count"))
+	{
+		bprint(" - cn: ");
+		bprint(ftos(e.count));
+	}
+	bprint(" - not refused: ");
+	bprint(ftos(r));
+	bprint(" - sel: ");
+	bprint(ftos(c));
+	bprint("\n");
+}
+#endifdef
+			}
+// tie breaker...
+// this will also choose randomly amongst 0 cnt maps (no vote condition)
+			if (r)
+			if (e.cnt == highest.cnt)
+			{
+				c = c + 1;
+				r = random() * 100;
+				// randomly choose new highest
+				if (r < (100 / c))
+					highest = e;
+			}
 		}
 		e = find(e, classname, "hub_teleport");
 	}

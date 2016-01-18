@@ -1381,8 +1381,6 @@ void() player_human_become =
 	self.items = self.items | IT_SHOTGUN | IT_AXE; // make sure humans have def weps before calling def
 	if (self.ammo_shells < 25) self.ammo_shells = 25;
 
-	set_defaults(self);
-
 // must clear when coming from Archons / demi-Archons
 	self._stand = SUB_Null; // make sure these are safe & detectable
 	self._pain = SUB_Null;
@@ -1480,6 +1478,7 @@ void(float cmd, float pls) polymorph_check =
 			}
 		}
 
+		self.cnt = self.morphy;
 		self.morphy = cmd;
 
 		self.mask_x = cb_morph(cmd);
@@ -1517,7 +1516,13 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MWRAITH) player_wraith_become();
 		else if (cmd == IMP_MSHAPESHIFT) player_shapeshifter_become();
 	*/
-		else player_human_become();
+
+// have to be human at this point, since we validate the mask_x value
+		else
+		{
+			player_human_become();
+			if (self.cnt != self.morphy) set_defaults(self); // becoming human from other form - get defaults
+		}
 
 // tell everyone about the change - idea, hud_message ?
 		if (!pls) // silent for starting new level / respawning as this beasty

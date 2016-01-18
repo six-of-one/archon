@@ -205,11 +205,11 @@ void(entity e) set_defaults =
 	e.eweapon = world;
 	e.pkprevweapon = e.pklastweapon = e.prevweapon = e.lastweapon = 0;
 
-	e.x_items = x_item_dm_giveaway; // for door keys in dm - only set by doors in dm
-
 	e.ammo_bullet = e.ammo_slug = e.ammo_gaspr = e.ammo_hgrenade = 0;
 	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
 	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;
+
+	e.x_items = x_item_dm_giveaway; // for door keys in dm - only set by doors in dm
 
 // NOTE: muddy area for morphs.  how to handle all this - maybe convert health by modifier?
 //					check to see if morph can use any of the give away eweaps?

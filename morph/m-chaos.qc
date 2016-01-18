@@ -1153,6 +1153,7 @@ void() chaos_item =
 				newmis = spawn();
 				item_call_save(newmis, "archon_altar");
 				newmis.goalentity = self;
+				dyn_remove(newmis, 160 + crandom() * 60, SUB_Null);
 			}
 			if (newmis)
 			{
@@ -1285,6 +1286,8 @@ void() chaos_item =
 				if (random() < 0.2) f1 = 0;
 				r1 = rnd_bit_mask(MF_HAPPYTRAIL);
 				if (r1 < 256) newmis.modelflags = r1 | f1;
+
+				dyn_remove(newmis, 50 + crandom() * 40, SUB_Null);
 			}
 			return;
 		}
@@ -1530,6 +1533,8 @@ if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0
 	org = self.origin + '0 0 4';
 	traceline (org, org + v_forward*900, FALSE, self);
 	ep = trace_endpos;
+
+	if (pointcontents(ep) == CONTENT_SOLID) return;
 
 //	set_CLE("calderashard", null_string, null_string, null_string, null_string, null_string, null_string);
 
