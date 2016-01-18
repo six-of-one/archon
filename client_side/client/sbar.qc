@@ -1647,7 +1647,69 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		k = 1;
 		huds = 0;
 		if (!deadflag)
-		if (cl_items & IT_INVISIBILITY) k = 0.2;
+		{
+			if (cl_items & IT_INVISIBILITY) k = 0.2;
+
+			if (mcode == MC_PKC)
+			{
+				DrawInventoryAmmo(pwr_step + wep_step + '200 60 0', "gfx/pkcb", ALPHA_FULL * k, 0.5);
+				Sbar_DrawString(pwr_step + wep_step + woff + '202 65 0', "Cube active", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "press fire in range", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 2 0', "or change weapon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			}
+			if (mcode == MC_MCAS || mcode == 1006 || mcode == 1007) // archons
+			{
+				DrawInventoryAmmo(pwr_step + wep_step + '200 60 0', "gfx/mcas", ALPHA_FULL * k, 0.5);
+				Sbar_DrawString(pwr_step + wep_step + woff + '196 65 0', "Archon Spirit", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+				Sbar_DrawString(pwr_step + wep_step + woff + '168 65 0', "***               ***", ALPHA_FULL * flashawep, '7 7 0','1.5 0.1 0.1');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 32 0', "Congradulations!", ALPHA_FULL * flasher, '7 7 0','1 0.5 0.5');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 22 0', "select option with wheel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "press ALT-fire -> Archon", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 2 0', "or change weapon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			}
+			else if (mcode >= MC_MC && mcode < 1100)
+			{
+				DrawInventoryAmmo(pwr_step + wep_step + '200 60 0', "gfx/mcb", ALPHA_FULL * k, 0.5);
+				Sbar_DrawString(pwr_step + wep_step + woff + '202 65 0', "Cube active", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 22 0', "select option with wheel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "press ALT-fire to morph", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 2 0', "or change weapon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			}
+			if (mcode >= MC_MC && mcode < 1100)
+			{
+				float decod;
+				string mctl;
+				decod = mcode - 1000;
+				mctl = "Select a form";
+
+				if (volspec)
+				{
+					if (decod == IMP_MSCOURGE) mctl = "Scourge";
+					if (decod == IMP_MCHAOS) mctl = "Archon Chaos";
+					if (decod == IMP_MORDER) mctl = "Archon Order";
+					if (decod == IMP_MHUMAN) mctl = "Marine";
+					if (decod == CHAR_D) mctl = "UAC Marine";
+					if (decod == CHAR_Q2) mctl = "Space Marine";
+					if (decod == CHAR_Q3) mctl = "Sarge";
+					if (decod == CHAR_PK) mctl = "Pain Killer";
+					if (decod == CHAR_W) mctl = "Blaskowitz";
+					if (decod == IMP_MENF) mctl = "Enforcer";
+					if (decod == IMP_MOGRE) mctl = "Ogre";
+					if (decod == IMP_MHKNIGHT) mctl = "Hell Knight";
+					if (decod == IMP_MSHALR) mctl = "Vore";
+					if (decod == IMP_MSHAMBLR) mctl = "Shambler";
+					if (decod == IMP_MDEMON) mctl = "Fiend";
+					if (decod == IMP_MWIZARD) mctl = "Scrag";
+					if (decod == IMP_MZOMBIE) mctl = "Zomby";
+//					if (decod == IMP_MCTHON) mctl = "Cthon";
+					if (decod == IMP_MCTHON) mctl = "Lava Bomb";
+					if (decod == IMP_MGREMLIN_F) mctl = "Gremlin";
+					if (decod == IMP_MGREMLIN_L) mctl = "Gremlin";
+				}
+
+				Sbar_DrawString(pwr_step + wep_step + woff + '284 42 0', mctl, ALPHA_FULL, '7 7 0','1 1 1');
+			}
+		}
 
 		if (morph == IMP_MCHAOS)
 		{
@@ -2865,6 +2927,10 @@ var float autocvar_hud_spell_vessel_limit = 1;
 		return; // because archon should not have any stuff
 	}
 
+	
+// TEST: display mapcode of currently held item
+// Sbar_DrawString(pwr_step + '44 -5 0' + woff, ftos(mcode), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+
 sb_align = SB_BOTTOM_RIGHT;
 
 //position and size of ibar items
@@ -2921,7 +2987,7 @@ sb_align = SB_BOTTOM_RIGHT;
 		v_b_y = 10; // main icon adjust up + flare
 	}
 
-	if (pk_phone > 0)
+	if (pk_phone > 0 || mcode == MC_Q3_HOLDTELE)
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_PHONE))
 		{
@@ -2932,7 +2998,8 @@ sb_align = SB_BOTTOM_RIGHT;
 			}
 			if (dmg_flare) Sbar_DrawPic(pk_wep_step + v_a + v_b + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15 * bscale);
 			else if (!autocvar_hud_bigwep) Sbar_DrawPic(pk_wep_step + v_a + v_bl + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5 * bscale);
-			DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/inv_phn", ALPHA_FULL, 0.125 * bscale);
+			if (mcode == MC_Q3_HOLDTELE) DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/hld_tel", ALPHA_FULL, 0.125 * bscale);
+			else DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/inv_phn", ALPHA_FULL, 0.125 * bscale);
 			DrawAmmo('0 0 0', pk_wep_step + v_a + '-22 -5 0', pk_phone, ALPHA_FULL);
 		}
 		else
@@ -2994,13 +3061,14 @@ sb_align = SB_BOTTOM_RIGHT;
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
 
-	if (pk_copb > 0)
+	if (pk_copb > 0 || mcode == MC_Q3_HOLDMEDKIT)
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_CANPAB))
 		{
 			if (dmg_flare) Sbar_DrawPic(pk_wep_step + v_a + v_b + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15 * bscale);
 			else if (!autocvar_hud_bigwep) Sbar_DrawPic(pk_wep_step + v_a + v_bl + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5 * bscale);
-			DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/inv_copb", ALPHA_FULL, 0.125 * bscale);
+			if (mcode == MC_Q3_HOLDMEDKIT) DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/hld_med", ALPHA_FULL, 0.125 * bscale);
+			else DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/inv_copb", ALPHA_FULL, 0.125 * bscale);
 			DrawAmmo('0 0 0', pk_wep_step + v_a + '-22 -5 0', pk_copb, ALPHA_FULL);
 		}
 		else

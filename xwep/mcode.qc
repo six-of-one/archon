@@ -691,6 +691,8 @@ void() mcode_load =
 	MC_Q2_TECH_AMP = f = (f + 1);
 	MC_Q2_TECH_TM = f = (f + 1);
 
+/// note - currently 315 & 316 used by both cubes
+
 };
 
 
@@ -982,6 +984,10 @@ float(string sc, entity e) pk_mcode =
 #endifdef
 		return(0); 
 	}
+
+	if (sc == "pk_cube")											return(1000);
+	if (e.mask_x == MORPH_ARCHON)			return(1002);
+	if (sc == "morph_cube")											return(1001);
 
 	if (e)
 	if (e.event == "dynamic_item")									return(0);
@@ -2539,6 +2545,8 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 	self.owner = other;
 	other.prevweapon = other.weapon; // save for pack on morphic
 	other.theowner = other.eweapon;
+	other.mcode = self.mcode; // for HUD
+	other.weaponmodel = null_string;
 
 	self.style = FL_MELEE_WEP; // use melee frames - they look better
 	self.eweapon = self;

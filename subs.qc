@@ -41,7 +41,7 @@ void() InitTrigger =
 	self.modelindex = 0;
 	self.model = null_string;
 // for trigger id
-	self.class_select = "trigger_secret"; // heh heh, its a secret
+	self.class_select = "trigger_secret"; // heh heh, its a secret - note: reuse save
 };
 
 /*

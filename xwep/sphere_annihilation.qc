@@ -4,6 +4,10 @@
 		+---------------------------------------+
 */
 
+// 10.23.14 - added: sphere go wild, random entity suck in, teleport wild sphere to new location
+// 10.22.14 - added: occasionally teleport instead of destroy, try to use ai_walk to move a wild sphere - does not seem to work in game
+
+
 // sphere special flags
 float FL_ANNIHILATED			= 8192; // something has already been annihilated once - like monsters
 // sphere move states
@@ -115,7 +119,50 @@ float SPHERE_AUDIO_LIMIT = 3;
 void() sphere_annihilation_move =
 {
 	local float r1, v1;
-//	local vector v2;
+
+// wild sphere thoughts
+	if (!self.owner)
+	if (self.movetype)
+	{
+		if (self.state == ST_FOLLOW)
+		{
+			if (random() < 0.06) self.state = 0;
+			self.walkframe = 0;
+			ai_walk(self.lefty); // but this does not seem to work ?
+		}
+		else
+		{
+			if (random() < 0.1) self.state = ST_FOLLOW;
+			self.lefty = 2 + random() * 8;
+		}
+	}
+
+// sphere - chance of going wild ever 7 = 7 rels
+	if (time & 7 == 7)
+	if (self.owner)
+	{
+		if (self.dmg > 100)
+		if (random() < 0.05)
+		{
+			self.owner = world; // oh shit - free sphere
+		}
+
+		if (self.dmg > 500)
+		if (random() < 0.1)
+		{
+			self.owner = world;
+		}
+
+		if (self.dmg > 2000)
+		if (random() < (self.dmg / 10000)) // eventually - uncontrollable
+		{
+			self.owner = world;
+		}
+	}
+	else
+	{
+		if (random() < 0.07) archon_bouncer(self); // boink!
+	}
 
 	self.nextthink = time + 0.1 + random();
 	if (random() < 0.2) self.frame = self.frame + crandom();
@@ -352,7 +399,7 @@ float(entity g) annihilation_check =
 	else if (g.classname == "viswep" && g.owner != world) t = FALSE; // viswep held by player
 	else if (! f && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
 	else if (vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON) t = FALSE;
-	else if (g.model == null_model) t = FALSE;
+	else if (g.model == null_model) t = FALSE; // note - not the same as null_string
 	else if (g.solid == SOLID_TRIGGER && g.movetype == MOVETYPE_NONE) t = FALSE;
 	else if (g.solid == SOLID_BSP) t = FALSE;
 	else if (g.movetype == MOVETYPE_PUSH) t = FALSE;
@@ -410,7 +457,6 @@ if (WARNING & 32)
 
 void() sphere_annihilation_touch =
 {
-	local entity e;
 
 
 #ifdef warning
@@ -431,9 +477,15 @@ if (WARNING & 32)
 
 
 
+	if (random() < 0.02) // its other's lucky rel - teleport this one thing
+	{
+		archon_bouncer(other);
+	}
+	else
 
 	if (annihilation_check(other))
 	{
+		self.dmg = self.dmg + 1;
 		set_annihilate(other);
 		if (other.classname == "chaos_teleport_icon") // NOTE: if this is the anti-sphere this is the place to do it
 			dyn_remove(other, 1, chaos_tele_expire); // cant call tele_exp directly
@@ -540,6 +592,21 @@ void() sphere_annihilation_phys_move =
 				else if (IS_MISSILE(head)) f = TRUE;
 				if (head.classname == "fireball") f = TRUE;
 				if (head.classname == "bubble") f = TRUE;
+
+				if (time & 3 == 3)
+				if (!f)
+				{
+					if (self.dmg > 30)
+					if (random() < 0.03) // random suck up
+					{
+						f = TRUE;
+					}
+					if (self.dmg > 300)
+					if (random() < 0.09)
+					{
+						f = TRUE;
+					}
+				}
 
 				if (f)
 				{

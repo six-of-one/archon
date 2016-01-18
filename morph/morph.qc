@@ -449,7 +449,9 @@ void() morphic_impulse =
 					c.aflag = k; // save in case we have fail
 				}
 				else self.state = c.aflag;
+
 				morph_print(self);
+				self.mcode = 1000 + self.state;
 			}
 
 			if (c.archon > 0)		// track this so we know player has options
@@ -685,7 +687,7 @@ void() morph_cube =
 
 	setmodel(self, "progs/morph_cube.bsp");
 	self.netname = "Evolution Cube";
-	self.mcode = -664; // code for HUD
+//	self.mcode = -664; // code for HUD
 
 	if (self.mask_x == MORPH_ARCHON) /// imp - this needs expand along with set code above - there should only be 1 archon item among all morph cubes
 	{
@@ -1687,6 +1689,7 @@ void() morph_die =
 	if (WALKSOUND) sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);
 
 // from player
+	self.mcode = 0;
 	self.solid = SOLID_NOT;
 	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.view_ofs = '0 0 -8';

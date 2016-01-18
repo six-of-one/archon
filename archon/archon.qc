@@ -475,7 +475,8 @@ void() uni_teleport;
 
 void(entity e) archon_bouncer =
 {
-	trace_ent = self;
+	local entity f;
+	f = self;
 	self = e;
 	self.bolt_target = newmis = spawn();
 	newmis.classname = "beacon";
@@ -487,7 +488,7 @@ void(entity e) archon_bouncer =
 	newmis.think = SUB_Remove;
 	self.AIRG_Timeout = 0;
 	uni_teleport();
-	self = trace_ent;
+	self = f;
 };
 // archon arena block think ops
 

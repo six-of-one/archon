@@ -2154,6 +2154,8 @@ void() holdable_medkit =
 
 	setmodel(self, "progs/q3_hld_med.mdl");
 	self.vwepmdl = "progs/vw_q3_med.mdl";
+	self.weaponmodel = "progs/v_q3_med.mdl";
+
 	self.noise = "q3_snd/holdable.wav";
 	self.noise3 = "q3_snd/use_medkit.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
@@ -2201,6 +2203,8 @@ void() holdable_teleporter =
 
 	setmodel(self, "progs/q3_hld_tel.mdl");
 	self.vwepmdl = "progs/vw_q3_tel.mdl";
+	self.weaponmodel = "progs/v_q3_tel.mdl";
+
 	self.noise = "q3_snd/holdable.wav";
 	self.noise1 = "q3_snd/teleout.wav";
 	self.noise3 = "q3_snd/telein.wav";

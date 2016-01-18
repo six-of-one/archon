@@ -119,8 +119,9 @@ float STAT_VOL 					= 64; // track morph cost or chaos level
 float STAT_MORPH 					= 65; // track morph cost or chaos level
 float STAT_ARCHON 				= 66; // track archon power for power bar display
 
-// fooey.  these will be tricky to maintain since the list is built on the fly
-//					this will need to be UPDATED everytime we add, re-arrange or change items
+/// ***************************************************************************************
+/// fooey.  these will be tricky to maintain since the list is built on the fly
+///					this will need to be UPDATED everytime we add, re-arrange or change items
 
 float MC_AXE 						= 100;
 float MC_SHOTGUN 					= 101;
@@ -142,9 +143,15 @@ float MC_Q2_GRAPPLE				= 220;
 float MC_Q2_RAILGUN 				= 218;
 float MC_Q3_GAUNTLET				= 255;
 float MC_Q3_GRAPPLE				= 256;
+float MC_Q3_HOLDMEDKIT			= 286;
+float MC_Q3_HOLDTELE				= 287;
 float MC_C_FLAMER 				= 293;
 float MC_DEEPSLEEP 				= 291;
 float MC_QUANTUM	  				= 292;
+
+float MC_PKC	  					= 1000;
+float MC_MC	  						= 1001;
+float MC_MCAS 						= 1002;
 
 // pk inv - collectables
 float PK_IT_AXE					= 1;

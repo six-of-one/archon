@@ -1142,8 +1142,8 @@ Keys:
 "health" - health for generator - defaults to 100, -1 health = can not be shot
 "max_health" - if set give any generted monster this health, otherwise default
 "targetname" - if set generator will only be fired by a trigger
-"speed" - if not targeted, generate a monster every {#} seconds
-"delay" - if set pause for wait seconds after generating for delay seconds
+"speed" - if not targeted, generate a monster every {#} rels
+"delay" - if set pause for wait rels after generating for delay rels
  - if negative, slow down generation to count %
 "count" - slow down if delay is negative - generate 1 in this many - default 1 in 4
 "wait" - length of delay pause, -1 to stop

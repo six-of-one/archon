@@ -10,7 +10,7 @@
 
 // spawn an ent & set basic properties, this stuff gets set almost every spawn
 // reset - if not world, then reset parms on this ent
-// ow - owner, overridden by master_own if set
+/// ow - owner, overridden by master_own if set - note: feature did not port
 
 // mvt - movetype
 // sd - solid type
@@ -63,12 +63,23 @@ entity(float mvt, float sd, float flg, float ct, vector org, vector smin, vector
 	if (tch != SUB_Null) chaos_e.touch = tch;
 	if (thd != SUB_Null) chaos_e.th_die = /* chaos_e.th_stand = */ thd; // gen think & content chk
 
+// clear all thoughts when we spawn - keep us out of trouble when we do weird stuff
+//			this is mostly where the engine calls one of these - like with monster ai
+
+	chaos_e.th_pain = SUB_Null;
+	chaos_e.th_die = SUB_Null;
+	chaos_e.th_melee = SUB_Null;
+	chaos_e.th_missile = SUB_Null;
+	chaos_e.th_run = SUB_Null;
+	chaos_e.th_stand = SUB_Null;
+	chaos_e.th_walk = SUB_Null;
+
 	if (thk != SUB_Null) // if we need to think
-		{
+	{
 //		chaos_e._stand = 
 		chaos_e.think = thk;
 		chaos_e.nextthink = time + tht;
-		}
+	}
 
 //	if (ct) content_cycle(chaos_e, ct, CONTENT_CHKTM);
 
@@ -857,7 +868,7 @@ void() hide_hacks =
 	self.nextthink = time + 5;
 
 // get list of players
-	cnt_ent(self, "classname", "player"); // note: dead players
+	cnt_ent(self, "class_select", "class_player");
 	self.goalentity = self.chain;
 
 // get list of hacks
@@ -877,6 +888,7 @@ void() hide_hacks =
 		while (self.dropent)
 		{
 // notes - on multi server, have to check EVERY player origin, even bots - bots could have a much smaller vis radius though
+
 			if (self.dropent.movement == v0) // dont check source placeholders or feature sets
 			if (!self.dropent.spawnflags & 64) // spawnflags say no
 			if (vlen(self.dropent.origin - self.goalentity.origin) > autocvar_sv_c_hackdist)
@@ -916,12 +928,13 @@ void() hide_hacks =
 		hh = self.hh_chn;
 		while (hh)
 		{
-/// note: this system is "fuzzy" - things may be hidden in visible hacks & restored for hidden hacks, and some may even get lost!
+/// note: this system is "fuzzy" with movable ents - things may be hidden in visible hacks & restored for hidden hacks, and some may even get lost!
 			// one improvement would be to use the actual hack bounding box as a double check to things found in the radius
 			self.aiment =  findradius(hh.origin, hh.lefty * 1.46); // radius should cover the whole hack
 			while (self.aiment && hh)
 			{
 				if (self.aiment.classname != "func_maphack") // dont do op on hacks
+				if (self.aiment.class_select != "trigger_secret") // dont do op on triggers - note this id's _all_ trigger fields
 				if (!self.aiment.flags & FL_CLIENT) // dont hide / reveal players or bots
 				if (hh.svthink == -6)
 				{
@@ -951,26 +964,6 @@ void() hide_hacks =
 			if (hh.svthink == 6) hh.svthink = 0;
 			hh = hh.hh_chn;
 		}
-// hide models too - deprecated - everything is hid now
-/*
-	cnt_ent(self, "classname", "func_model");
-	self.dropent = self.enemy = self.chain;
-	while (self.dropent)
-	{
-		if (vlen(self.dropent.origin - self.goalentity.origin) > autocvar_sv_c_hackdist)
-		{
-			self.dropent.model = null_string;
-		}
-		else
-		{
-// note: remove if mdl lost?
-			if (self.dropent.wad != "move") // a move / copy func_model - do not load it
-				setmodel(self.dropent, self.dropent.mdl);
-		}
-		
-		self.dropent = self.dropent.chain;
-	}
-*/
 };
 
 // delete a hack and all its sub ents
@@ -3053,6 +3046,8 @@ float (entity e, float t) move_check =
 	if (e.movetype != MOVETYPE_NONE) // anything that can move
 	if (e.movetype != MOVETYPE_PUSH)
 	if (e.movetype != MOVETYPE_NOCLIP)
+	if (e.model != null_string)
+	if (e.model != null_model) // note - not the same as null_string
 		f = TRUE;
 	return(f);
 };

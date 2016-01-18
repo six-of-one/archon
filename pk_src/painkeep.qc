@@ -325,6 +325,7 @@ void() PK_init =
 
 string (string s) precache_sound =
 {
+	if (0) // TEST: no precache
 	if (time < PIC_TO)
 		return(precache_sound__(s));
 
@@ -335,6 +336,7 @@ string (string s) precache_model =
 {
 /// moved here to simplify code (pkitems.qc)
 
+	if (0) // TEST: no precache
 	if (time < PIC_TO) // only do this for map load items
 	{
 		if (s == "progs/g_airgun.mdl" || s == "progs/g_airgun2.mdl" || s == "progs/g_clight.mdl" || s == "progs/g_harp.mdl" || s == "progs/tpower.mdl" || s == "progs/beans.mdl" || s == "progs/bearpick.mdl" || s == "maps/b_eshel0.bsp" )
