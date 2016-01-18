@@ -159,7 +159,11 @@ bprint("placeitem barrel return\n");
 
 	pic_test();
 
-	if (!self.archon) self.archon = ARCHON_GEN + (random() * 0.1);
+	if (!self.archon)
+	{
+		self.alpha = 0.25; // TEST
+		self.archon = ARCHON_GEN + (random() * 0.1);
+	}
 };
 
 
@@ -719,6 +723,14 @@ if (self.classname == "")
 
 // power up archon
 		if (self.archon) other.archon = other.archon + self.archon;
+
+if (1) // TEST
+{
+	bprint("*** - archon pts = ");
+	bprint(ftos(self.archon));
+	bprint("\n");
+}
+
 
 //		if (f) self.event = "dynamic_item"; // restore
 

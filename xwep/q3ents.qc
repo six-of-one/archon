@@ -1935,6 +1935,8 @@ void() item_regen =
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get goody
+
+	self.archon = ARCHON_ART + 0.2;
 };
 
 void() item_invis =
@@ -2032,6 +2034,8 @@ void() item_haste =
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get goody
+
+	self.archon = ARCHON_ART + 0.1;
 };
 
 void() item_flight =
@@ -2062,6 +2066,8 @@ void() item_flight =
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_GREMLIN | (MORPH_ALL - MORPH_FLY); // flyers dont get goody
+
+	self.archon = ARCHON_ART;
 };
 
 // holdables
@@ -2159,6 +2165,8 @@ void() holdable_medkit =
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN | CB_GREMLIN;
+
+	self.archon = ARCHON_ART;
 };
 
 void() holdable_teleporter =
@@ -2207,6 +2215,8 @@ void() holdable_teleporter =
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	self.mask_x = CB_HUMAN | CB_GREMLIN;
+
+	self.archon = ARCHON_ART;
 };
 
 // hack just to match others - q3 has no explode boxes - and appearances can be deceiving

@@ -143,7 +143,7 @@ float M_MONSTER_II; // bit mask to allow map monsters in dm
 float S_MONSTER_II; // bit mask of monsters to respawn when dead (map monsters only, no random ones) - works in single player too!
 float C_MONSTER_II; // bit mask of monsters to spawn randomly
 
-float MONSTER_MASK_II; // all monster bits
+float MONSTER_MASK_II; // all monster 2 bits
 
 
 float CB_M_BLARG					= 1;
@@ -152,6 +152,7 @@ float CB_M_SPIDER					= 4;	// first 3 featured in ultimate mod
 float CB_M_MANGA					= 8;
 float CB_M_BOSSMAN				= 16; // Bossman by Wendigo - from Blahbalicious
 float CB_M_CLING					= 32; // alien infestation by Lord Havoc
+float CB_M_HEXIMP					= 64;	// Hexen2 Imp by Claus Kruuskopf AKA WiCKeD
 
 float MON_NAME_II					= 2;
 float MON_FUNC_II					= 3;

@@ -181,6 +181,9 @@ void() wolf_precache =
 	precache_model ("progs/w_mortar.mdl");
 	precache_model ("progs/w_pistol.mdl");
 	precache_model ("progs/w_cross.bsp");
+	precache_model ("progs/w_chalice.mdl");
+	precache_model ("progs/w_crown.mdl");
+	precache_model ("progs/treasure_chest.mdl");
 
 
 	precache_sound ("sound/wolf/w_resp.wav");
@@ -2275,6 +2278,7 @@ void() w_item_cross =
 	self.wait = -1; // RSP_TIME; // no respawn for these, ever
 
 	self.xp = 100; // points for collecting
+	self.archon = 1; // same archon pts
 
 	self.noise = "wolf/pickup_gdy.wav";
 	setmodel (self, "progs/w_cross.bsp");
@@ -2290,16 +2294,30 @@ void() w_item_cross =
 void() w_item_chalice =
 {
 	w_item_cross();
+	self.netname = "Chalice";
+	self.xp = 500; // points for collecting
+	self.archon = 5;
+	setmodel (self, "progs/w_chalice.mdl");
 };
 
 void() w_item_chest =
 {
 	w_item_cross();
+	self.netname = "Chest";
+	self.xp = 1000; // points for collecting
+	self.archon = 10;
+	setmodel (self, "progs/treasure_chest.mdl");
+	self.frame = 5;
+	self.skin = 0;
 };
 
 void() w_item_crown =
 {
 	w_item_cross();
+	self.netname = "Crown";
+	self.xp = 5000; // points for collecting
+	self.archon = 50;
+	setmodel (self, "progs/w_crown.mdl");
 };
 
 

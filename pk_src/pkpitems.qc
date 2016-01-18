@@ -268,6 +268,8 @@ void () item_pkplus_ego =
 	StartItem ();
 	if (self.class_select == "") self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
+
+	self.archon = ARCHON_WEP + 0.1;
 };
 
 void () item_pkplus_tomb =
@@ -283,6 +285,8 @@ void () item_pkplus_tomb =
 	StartItem ();
 	if (self.class_select == "") self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
+
+	self.archon = ARCHON_WEP + 0.1;
 };
 
 void () item_pkplus_actor =
@@ -297,6 +301,8 @@ void () item_pkplus_actor =
 	StartItem ();
 	if (self.class_select == "") self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
+
+	self.archon = 0.02;
 };
 
 void () item_pkplus_phone =
@@ -311,6 +317,8 @@ void () item_pkplus_phone =
 	StartItem ();
 	if (self.class_select == "") self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
+
+	self.archon = ARCHON_WEP + 0.05;
 };
 
 

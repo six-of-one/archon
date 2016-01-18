@@ -10,7 +10,7 @@
  *			"Archon"
  *
  */
- 
+
 ./progs.dat
 
 // master define - a good chunk of this MUST match the engine define and CAN NOT be changed!
@@ -113,6 +113,7 @@ mon_II/manga.qc
 mon_II/bossman.qc
 mon_II/young.qc
 mon_II/clinger.qc
+mon_II/heximp.qc
 
 // cam and hook
 

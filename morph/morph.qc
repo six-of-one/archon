@@ -48,7 +48,7 @@ void() morph_setup =
 						CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE + CB_M_GREMLIN + CB_M_VOMIT;
 
 // bonus monster bits
-	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA + CB_M_BOSSMAN + CB_M_CLING;
+	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA + CB_M_BOSSMAN + CB_M_CLING + CB_M_HEXIMP;
 
 // note - no fish, shubs or cthon
 	MONSTER_Q1 = CB_M_ARMY + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
@@ -210,6 +210,20 @@ string(float mb, float mode) monster_id =
 
 	s2 = "";
 
+
+
+bprint("***   monster_id: ");
+bprint("--- Assign bit: ");
+bprint(ftos(mb));
+bprint(" - make mode: ");
+bprint(ftos(mode));
+bprint("\n");
+
+
+
+
+
+
 	if (mode == MON_NAME_REG)
 	{
 		if (mb == CB_M_ARMY) 			s2 = "Army Grunt";
@@ -264,16 +278,26 @@ string(float mb, float mode) monster_id =
 		if (mb == CB_M_MANGA) 			s2 = "Manga Tai";
 		if (mb == CB_M_BOSSMAN) 		s2 = "Like a Boss";
 		if (mb == CB_M_CLING) 			s2 = "Alien pod";
+		if (mb == CB_M_HEXIMP) 			s2 = "Imp";
 	}
 	else
 	if (mode == MON_FUNC_II)
 	{
+
+bprint("*** monster_id - in MON_FUNC_II - s2 = ");
+
+
 		if (mb == CB_M_BLARG) 			s2 = "monster_blarg";
 		if (mb == CB_M_RAPTOR) 			s2 = "monster_raptor";
 		if (mb == CB_M_SPIDER) 			s2 = "monster_spider";
 		if (mb == CB_M_MANGA) 			s2 = "monster_manga";
 		if (mb == CB_M_BOSSMAN) 		s2 = "monster_bossman";
 		if (mb == CB_M_CLING) 			s2 = "monster_clinger";
+		if (mb == CB_M_HEXIMP) 			s2 = "monster_heximp";
+
+bprint(s2);
+bprint("\n");
+
 	}
 	return s2;	
 };

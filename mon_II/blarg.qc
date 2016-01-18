@@ -343,6 +343,14 @@ if (ign != A_MONSTER)
 	precache_sound ("mon_II/blarg/bjump2.wav");
 	precache_sound ("demon/ddeath.wav");
 }
+
+// Cataboligne - 11.14.12 - fast / slow code
+	if (self.speed <= 0) self.speed = MON_NORM;
+	self.lip = 1; // local speed divisor
+// map specced
+	if (self.netname == CFAST) self.speed = MON_FAST;
+	else if (self.netname == CSLOW) self.speed = MON_SLOW;
+
 	self.netname = "Blarg";
 
 	self.solid = SOLID_SLIDEBOX;

@@ -129,6 +129,8 @@ void () q100_item_health =
 {
 	self.touch = health_touch;
 
+	self.archon = ARCHON_ITEM;
+
 	if (self.spawnflags & H_ROTTEN)
 	{
 		precache_model ("maps/b_bh10.bsp");
@@ -149,6 +151,7 @@ void () q100_item_health =
 			self.healamount = 100;
 			self.healtype = HEAL_MEGA; // Cataboligne - 9.8.11 - needed to play nice with q100 / pk100 translate from other genre
 			self.volume = Q_MEGA_MAX; // Cataboligne - 9.20.11 - for chaos mod code
+			self.archon = ARCHON_ART;
 		}
 		else
 		{
@@ -1231,6 +1234,7 @@ void () q100_item_sigil =
 	self.touch = sigil_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can get keys
+	self.archon = ARCHON_ART;
 	StartItem ();
 };
 

@@ -1809,6 +1809,7 @@ void () item_sigil =
 		self.spawnflags = f;
 	}
 	self.mask_x = MORPH_ALL; // everyone can get runes
+	self.archon = ARCHON_ART;
 
 	if (rul < 2 || time < PIC_TO)
 	{

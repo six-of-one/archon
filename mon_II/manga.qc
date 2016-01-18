@@ -327,9 +327,8 @@ void() manga_die =
 	}
 
 	sound (self, CHAN_VOICE, "mon_II/manga/died.wav", 1, ATTN_NORM);
-	
-	
-		manga_die1 ();
+
+	manga_die1 ();
 };
 
 void() manga_melee =
@@ -372,7 +371,7 @@ if (ign != A_MONSTER)
 		if (R_MONSTER)
 			remove(self);
 		return;
-	}	
+	}
 	
 	precache_model ("progs/manga3.mdl");
 	precache_model ("progs/h_ogre.mdl");
@@ -384,6 +383,14 @@ if (ign != A_MONSTER)
 	precache_sound ("mon_II/manga/ha.wav");
 	precache_sound ("mon_II/manga/died.wav");
 }
+
+// Cataboligne - 11.14.12 - fast / slow code
+	if (self.speed <= 0) self.speed = MON_NORM;
+	self.lip = 1; // local speed divisor
+// map specced
+	if (self.netname == CFAST) self.speed = MON_FAST;
+	else if (self.netname == CSLOW) self.speed = MON_SLOW;
+
 	self.netname = "Manga Tai";
 
 	self.solid = SOLID_SLIDEBOX;

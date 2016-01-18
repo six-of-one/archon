@@ -30,12 +30,12 @@ float() SUB_True				= { return 1; }; // Return a true value
 
 // **************************************
 
-// version info - at 1.0.4 - KEEP up to date! - note: files = admin.cfg, archon.txt, readme.txt, alias_codes.txt, cvar.txt
-string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.4\"\n";
-string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.4\"\n";
-string vmotd					= "\\/ersion \b1\b.\b0\b.\b4a\b\n\n";
-string motd2					= "\n\n[\\/\b1\b.\b0\b.\b4a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
-string infobver				= "infobar 30 \"you are playing: Archon 1.0.4 alpha\"\n";
+// version info - at 1.0.5 - KEEP up to date! - note: files = admin.cfg, archon.txt, readme.txt, alias_codes.txt, cvar.txt
+string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.5\"\n";
+string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.5\"\n";
+string vmotd					= "\\/ersion \b1\b.\b0\b.\b5a\b\n\n";
+string motd2					= "\n\n[\\/\b1\b.\b0\b.\b5a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
+string infobver				= "infobar 30 \"you are playing: Archon 1.0.5 alpha\"\n";
 
 // web sites
 string vweb						= "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n";
