@@ -113,6 +113,7 @@ void(vector or1) hk_fire_spike;
 void(vector dir) Wiz_fireBolt =
 {
 	fire_missile(SCRAGG_SHT_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin, dir, "wizspike", "progs/w_spike.mdl", "", spike_touch, 6, SUB_Remove, spike_touch);
+	newmis.morphy = self.morphy;
 };
 
 void() pointer_Wiz_fireBolt =
@@ -130,6 +131,7 @@ void() Wiz_fireBomb =
 	fire_missile(SCRAGG_SHT_VEL * 0.8, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, self.origin, v0, "missile", "progs/w_spike.mdl", "", Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
 	newmis.frame = 1;
 	newmis.dmg = 75;
+	newmis.morphy = self.morphy;
 };
 
 
@@ -143,6 +145,7 @@ void() imp_firePlasma =
 	newmis.skin = 2; // imp plasma ball red skin
 	newmis.frame = 2;
 	newmis.dmg = 15;
+	newmis.morphy = self.morphy;
 //	newmis.avelocity_x = (crandom () * 300);
 //	newmis.avelocity_y = (crandom () * 300);
 };
@@ -153,6 +156,7 @@ void() imp_fireBomb =
 	newmis.skin = 2; // imp plasma ball red skin
 	newmis.frame = 1;
 	newmis.dmg = 85;
+	newmis.morphy = self.morphy;
 };
 
 
@@ -215,7 +219,7 @@ void() Wiz_MissileTouch =
 
 	org = normalize(self.velocity) * -4; // back away from strike surface a bit
 
-	if (mon == "monster_wizard")
+	if (mon == "monster_wizard") // note: can detect morphy now
 	{
 		if (random() > 0.05)
 			fire_burst (pointer_Wiz_fireBolt, self.origin + org, 0, 0, "", "", 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);

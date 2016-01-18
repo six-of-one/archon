@@ -49,15 +49,15 @@ void() PK_init =
 
 	if (!DARKPLACES) // may not use all this - dp auto precaches
 	{
-	if (ULOKW) wolf_precache();
-	if (ULOKD) doom_precache();
-	if (ULOK2) q2_precache();
-	if (ULOK3) q3_precache();
-	chaos_precache();
-	hip_precache();
-	morph_precache();
-	rune_precache();
-	hook_precache();  // Cataboligne - hook mod
+		if (ULOKW) wolf_precache();
+		if (ULOKD) doom_precache();
+		if (ULOK2) q2_precache();
+		if (ULOK3) q3_precache();
+		chaos_precache();
+		hip_precache();
+		morph_precache();
+		rune_precache();
+		hook_precache();  // Cataboligne - hook mod
 	}
 
 	pk_art_precache(); // Cataboligne 8.12.9 purify - pk artifacts
@@ -667,7 +667,8 @@ void() pk_liveupd =
 	NODECOR = cvar("sv_c_nodecor");
 
 // runes
-	run_runes();
+	if (time > 1)
+		run_runes();
  
 // check for botmatch changes
 	if (deathmatch || coop)

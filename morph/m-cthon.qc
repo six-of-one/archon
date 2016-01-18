@@ -292,6 +292,7 @@ void(vector p) lavacthon_fire =
 
 	newmis.avelocity = ' 200 100 300';
 	newmis.dest_y = 16;
+	newmis.morphy = self.morphy;
 };
 
 /*

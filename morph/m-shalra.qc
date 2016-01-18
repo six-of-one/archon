@@ -129,6 +129,7 @@ void() player_ShalMissile =
 	newmis.dest_y = 16;
 	newmis.avelocity = '300 300 300';
 	newmis.dmg = 80;
+	newmis.morphy = self.morphy;
 };
 
 void() player_shalrath_attack1 = [ $attack1, player_shalrath_attack2 ]

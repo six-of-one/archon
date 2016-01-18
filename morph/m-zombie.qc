@@ -254,34 +254,34 @@ void() player_zombie_paine8 = [ $paine8, player_zombie_paine9 ] { };
 void() player_zombie_paine9 = [ $paine9, player_zombie_paine10 ] { };
 void() player_zombie_paine10 = [ $paine10, player_zombie_paine11 ] 
 {
-sound (self, CHAN_BODY, "zombie/z_fall.wav", 1, ATTN_NORM);
-self.solid = SOLID_NOT; // this a good idea?
-self.lefty = CB_ZOMBY; // keep cam unless killed
-self.takedamage = DAMAGE_NO; // take no damage while down - makes morph zombie too vulnerable
+	sound (self, CHAN_BODY, "zombie/z_fall.wav", 1, ATTN_NORM);
+	self.solid = SOLID_NOT; // this a good idea?
+	self.lefty = CB_ZOMBY; // keep cam unless killed
+	self.takedamage = DAMAGE_NO; // take no damage while down - makes morph zombie too vulnerable
 };
 void() player_zombie_paine11 = [ $paine11, player_zombie_paine111 ] { self.nextthink = self.nextthink + 2.5; };
 void() player_zombie_paine111 = [ $paine11, player_zombie_paine12 ] { self.nextthink = self.nextthink + 2.5; };
 void() player_zombie_paine12 = [ $paine12, player_zombie_paine13 ]
 {
-if (self.flags & FL_CLOUDED)
+	if (self.flags & FL_CLOUDED)
 	{
 		if (self.attack_finished > time)
 		{
-		self.think = player_zombie_paine11;
-		return;
+			self.think = player_zombie_paine11;
+			return;
 		}
 		self.flags = self.flags - (self.flags & FL_CLOUDED);
 	}
-else if (random() < 0.1) // player zombie fallen and cant get up - 10%
+	else if (random() < 0.1) // player zombie fallen and cant get up - 10%
 	{
-	self.think = player_zombie_paine11;
-	return;
+		self.think = player_zombie_paine11;
+		return;
 	}
-T_Heal(self, 45, 0);
-sound (self, CHAN_VOICE, "zombie/z_idle.wav", 1, ATTN_IDLE);
+	T_Heal(self, 45, 0);
+	sound (self, CHAN_VOICE, "zombie/z_idle.wav", 1, ATTN_IDLE);
 
-self.solid = SOLID_SLIDEBOX;
-self.lefty = 0;
+	self.solid = SOLID_SLIDEBOX;
+	self.lefty = 0;
 };
 void() player_zombie_paine13 = [ $paine13, player_zombie_paine14 ] { };
 void() player_zombie_paine14 = [ $paine14, player_zombie_paine15 ] { };
@@ -317,25 +317,25 @@ void(entity attacker, float take) player_zombie_pain =
 	self.air_finished = self.pain_finished = time + 3;
 
 	if (take >= (25 + ad)) // hard hit, got knocked down
-		{
+	{
 //		self.inpain = 2;
 		player_zombie_paine1 ();
 		return;
-		}
+	}
 
 	if(random()>0.50) morph_sound (0.75, "zombie/z_pain.wav", 1);
 	else morph_sound(1, self.noise2, 1);
 
 		if(random() < 0.66) 
-			{
+		{
 			if(random() > 0.50) player_zombie_painc1();
 			else player_zombie_paina1();
-			}
+		}
 		else 
-			{
+		{
 			if(random() > 0.35)player_zombie_paind1();
 			else player_zombie_painb1();
-			}
+		}
 //	}
 };
 
@@ -434,6 +434,7 @@ void() PlagueTouch =
 		p.enemy = other;
 		p.dmg = 5.5;
 		p.search_time = time + 120;
+		p.morphy = self.morphy;
 		p.wait = time + MAX_PLAGUE_TIME; // total plague time limit
 	}
 
@@ -471,6 +472,7 @@ void() GibTracer =
 
 		fire_missile(ZOMBIE_FLSH_VEL * 0.833335, MOVETYPE_FLYMISSILE, FL_CTHONF, RM_SKY | MLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 10', self.owner.enemy.origin - self.origin, "grenade", "progs/zom_gib.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 2.5, SUB_Remove, SUB_Null);
 		newmis.dmg = 10 + random() * 5;
+		newmis.morphy = self.morphy;
 		self.health = self.health - newmis.dmg;
 		newmis.avelocity = '3000 1000 2000';
 
@@ -511,6 +513,7 @@ void() player_ZombieFireGrenade =
 		newmis.health = 300;
 		newmis.turret_timeout = 30 + random() * 60 + time;
 		newmis.avelocity = '400 250 500';
+		newmis.morphy = self.morphy;
 		return;
 	}
 	else
@@ -518,6 +521,7 @@ void() player_ZombieFireGrenade =
 
 	newmis.dmg = 10 + random() * 15;  // player stinks a little bit more, thus more dmg
 	newmis.avelocity = '3000 1000 2000';
+	newmis.morphy = self.morphy;
 
 	if (self.weapon == IT_SUPER_SHOTGUN) newmis.touch = PlagueTouch; // plague'd meat - regular shot  + plague touch
 };

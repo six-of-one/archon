@@ -316,7 +316,13 @@ void(entity e) rune_drop =
 			e.dropent = world;
 			return;
 		}
-		drop_inventory(1, e, anti_bounce); // must have anti bounce  here - rune could have been eject manually with impulse
+		drop_inventory(1, e, anti_bounce); // must have anti bounce  here - rune could have been ejected manually with impulse
+		if (e.dropent.map)
+		{
+			sprint(e," You dropped: ");
+			sprint(e, e.dropent.map);
+			sprint(e,"\n");
+		}
 		remove(e.dropent);
 		e.dropent = world;
 	}
@@ -715,8 +721,8 @@ void () rune_touch =
 			return;
 	}
 
-	if (RUNES != 3)
-	if (other.rune_flag & self.spawnflags) // already got one & not in rule 3
+	if ( (RUNES != 3) || (self.spawnflags & TECH_MASK_ALL) )
+	if (other.rune_flag & self.spawnflags) // already got one & not in rule 3 | a tech
 		return;
 
 	if (self.map == "pic_item") rune_sigil_touch(); // map rune (should have pic_item set), do a touch for qstart map serverflags floor op
@@ -839,11 +845,12 @@ void() rune_maker =
 	self.nextthink = time + tm;
 
 
-// fix leak - leak is stopped (apparently not), but the code is staying for now
+// fix leak - leak is stopped (apparently not) - now catch sit, where r_c < R_C but rune_map is full
 
-	if (rune_count >= RUNE_CNT || tm > 60)
+	if (rune_count >= RUNE_CNT || tm > 60 || self.aflag > 5)
 	if (RUNES == 2) // && 4
 	{
+		self.aflag =
 		f = 0;
 		e = find(world, map, "rune"); // excludes q3 items
 		while (e)
@@ -917,6 +924,7 @@ bprint("\n");
 
 			if (!f)
 			{
+				self.aflag = self.aflag + 1;
 				if (WARNING) bprint("*** warning: rune_make could not find a rune that fit mask rules - giving up\n");
 				remove(e);
 //				remove(self);

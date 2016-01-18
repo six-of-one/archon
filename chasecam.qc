@@ -254,6 +254,21 @@ if (PR_VIEWPC) bprint ("set_viewport: remove cam\n");
 };
 
 
+void () dcam_respawnthink =
+{
+	self.nextthink = time + 0.2;
+
+// wait for any button down
+	if (!self.button2 && !self.button1 && !self.button0)
+		return ;
+
+	self.button0 = 0;
+	self.button1 = 0;
+	self.button2 = 0;
+
+	if (!intermission_running) 
+		respawn ();
+};
 // fn(cam_deathmove) - enable death move
 
 void () cam_deathmove =
@@ -313,7 +328,11 @@ if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
 		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta
 		self.owner.takedamage = DAMAGE_NO;
 		self.owner.health = 1; // hack so engine will let you move cam
-		self.owner.think = SUB_Null;
+		if (self.owner.think != dcam_respawnthink)
+		{
+			self.owner.think = dcam_respawnthink;
+			self.owner.nextthink = time + 0.2;
+		}
 		if (self.owner.crosshair_sv > 0) crosshair_off(self.owner);
 
 // pbserver status bar - time spent observing in rels & high score

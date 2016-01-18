@@ -1106,10 +1106,18 @@ void(float im, entity p, vector vb) drop_inventory =
 		ic = "item_sigil";
 
 		if (sel == "Haste ")
+		{
 			ic = "item_haste";
+			stack_delete(p, ic);
+			stack_compress(p);
+		}
 
 		if (sel == "Regeneration ")
+		{
 			ic = "item_regen";
+			stack_delete(p, ic);
+			stack_compress(p);
+		}
 
 		item_call_save(e, ic);
 
@@ -1206,6 +1214,8 @@ void(float im, entity p, vector vb) drop_inventory =
 		dropinview(p, e, vb);
 		p.dropent.map = sel;
 		if (sel == "Limited Invisibility") viswep_post(); // reset viswep
+		stack_delete(p, ic);
+		stack_compress(p);
 		return;
 	}
 
@@ -1223,6 +1233,8 @@ void(float im, entity p, vector vb) drop_inventory =
 
 		dropinview(p, e, vb);
 		p.dropent.map = sel;
+		stack_delete(p, ic);
+		stack_compress(p);
 		return;
 	}
 
@@ -1275,6 +1287,8 @@ void(float im, entity p, vector vb) drop_inventory =
 
 		dropinview(p, e, vb);
 		p.dropent.map = sel;
+		stack_delete(p, ic);
+		stack_compress(p);
 		return;
 	}
 
@@ -1468,7 +1482,7 @@ void(entity p, float pg) drop_setup =
 				a = RUNE_FLG_FLY;
 				if (!(a & RUNE_MASK_ALL))
 				if (p.rune_flag & RUNE_FLG_FLY)
-					drop_string("Flying Rune", RUNE_FLG_FLY, world);
+					drop_string("Flying Rune", RUNE_FLG_FLY, world); // note: if rune ever exists will need to id q3 item
 			}
 
 			if (d == 64)
@@ -1925,6 +1939,132 @@ void(entity e) dead_drop =
 // put classname or other strings of some player touched ents in a string stack
 
 .string stack2, stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
+
+
+// remove empties
+float(entity e) stack_compress =
+{
+	local float f;
+
+	f = FALSE;
+	if ((e.stack1 == "") && (e.stack2 != ""))
+	{
+		e.stack1 = e.stack2;
+		e.stack2 = "";
+		f = TRUE;
+	}
+	if ((e.stack2 == "") && (e.stack3 != ""))
+	{
+		e.stack2 = e.stack3;
+		e.stack3 = "";
+		f = TRUE;
+	}
+	if ((e.stack3 == "") && (e.stack4 != ""))
+	{
+		e.stack3 = e.stack4;
+		e.stack4 = "";
+		f = TRUE;
+	}
+	if ((e.stack4 == "") && (e.stack5 != ""))
+	{
+		e.stack4 = e.stack5;
+		e.stack5 = "";
+		f = TRUE;
+	}
+	if ((e.stack5 == "") && (e.stack6 != ""))
+	{
+		e.stack5 = e.stack6;
+		e.stack6 = "";
+		f = TRUE;
+	}
+	if ((e.stack6 == "") && (e.stack7 != ""))
+	{
+		e.stack6 = e.stack7;
+		e.stack7 = "";
+		f = TRUE;
+	}
+	if ((e.stack7 == "") && (e.stack8 != ""))
+	{
+		e.stack7 = e.stack8;
+		e.stack8 = "";
+		f = TRUE;
+	}
+	if ((e.stack8 == "") && (e.stack9 != ""))
+	{
+		e.stack8 = e.stack9;
+		e.stack9 = "";
+		f = TRUE;
+	}
+	if ((e.stack9 == "") && (e.stack10 != ""))
+	{
+		e.stack9 = e.stack10;
+		e.stack10 = "";
+		f = TRUE;
+	}
+	if ((e.stack10 == "") && (e.stack11 != ""))
+	{
+		e.stack10 = e.stack11;
+		e.stack11 = "";
+		f = TRUE;
+	}
+	if ((e.stack11 == "") && (e.stack12 != ""))
+	{
+		e.stack11 = e.stack12;
+		e.stack12 = "";
+		f = TRUE;
+	}
+	if ((e.stack12 == "") && (e.stack13 != ""))
+	{
+		e.stack12 = e.stack13;
+		e.stack13 = "";
+		f = TRUE;
+	}
+	if ((e.stack13 == "") && (e.stack14 != ""))
+	{
+		e.stack13 = e.stack14;
+		e.stack14 = "";
+		f = TRUE;
+	}
+	if ((e.stack14 == "") && (e.stack15 != ""))
+	{
+		e.stack14 = e.stack15;
+		e.stack15 = "";
+		f = TRUE;
+	}
+	if ((e.stack15 == "") && (e.stack16 != ""))
+	{
+		e.stack15 = e.stack16;
+		e.stack16 = "";
+//		f = TRUE; - nothing more to do
+	}
+
+// recurse for double blank - should not happen yet
+//	if (f) stack_compress(e); // need safety ?
+
+	return(f);
+};
+
+void(entity e, string ss) stack_delete =
+{
+	if (ss == "") return;
+
+	if (e.stack1 == ss) e.stack1 = "";
+	if (e.stack2 == ss) e.stack2 = "";
+	if (e.stack3 == ss) e.stack3 = "";
+	if (e.stack4 == ss) e.stack4 = "";
+	if (e.stack5 == ss) e.stack5 = "";
+	if (e.stack6 == ss) e.stack6 = "";
+	if (e.stack7 == ss) e.stack7 = "";
+	if (e.stack8 == ss) e.stack8 = "";
+	if (e.stack9 == ss) e.stack9 = "";
+	if (e.stack10 == ss) e.stack10 = "";
+	if (e.stack11 == ss) e.stack11 = "";
+	if (e.stack12 == ss) e.stack12 = "";
+	if (e.stack13 == ss) e.stack13 = "";
+	if (e.stack14 == ss) e.stack14 = "";
+	if (e.stack15 == ss) e.stack15 = "";
+	if (e.stack16 == ss) e.stack16 = "";
+};
 
 float(entity e, string ss) stack_search =
 {

@@ -191,7 +191,7 @@ void(float ox) player_scourge_FireSpikes =
 	src_z = src_z + f;	
 	
 	if (self.weapon == IT_LIGHTNING && (self.ammo_cells > 0))
-		{
+	{
 		self.currentammo = self.ammo_cells;
 		am = 0;
 //		if (fabs(ox) == 24)
@@ -200,22 +200,26 @@ void(float ox) player_scourge_FireSpikes =
 
 		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, am, RM_SKY | PF_LAVA, src, ' 0 0 0', "laser", "progs/laser_m.mdl", s1, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 
-		if (s1 == "enforcer/enfire.wav")
-
+		if (s1 == "enforcer/enfire.wav") // if no sound, no ammo use
 		if (self.currentammo > 0)
 			self.currentammo = self.ammo_cells = self.ammo_cells - 1;
+
 		newmis.skin = 8; // white / blue shift
 		newmis.frame = 5; // small slope trap
+		newmis.dmg = 18;
+		newmis.morphy = self.morphy;
 //		newmis.effects = EF_DIMLIGHT;
-		}
+	}
 	else
-		{
+	{
 		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, src, ' 0 0 0', "spike", "progs/spike.mdl", s2, spike_touch, 6, SUB_Remove, spike_touch);
+// dmg default is 9 - idea super spikes with sng touch
 		newmis.frame = 5;
 		newmis.skin = 2;
+		newmis.morphy = self.morphy;
 //		newmis.touch = superspike_touch;				//for when we upgrade nail shooters!
 //		setmodel (newmis, "progs/s_spike.mdl");
-		}
+	}
 };
 
 void()   player_scourge_atk1 =[ $shoot1,   player_scourge_atk2 ]
@@ -326,6 +330,7 @@ void() m_Attack_With_Tail =
 	{
 		self.currentammo = self.ammo_rockets;
 		W_Fire_Proxmine();
+		newmis.morphy = self.morphy;
 //		if (!self.eweapon) 
 			self.ammo_rockets = self.ammo_rockets - 1;
 		self.punchangle_x = 0;
@@ -480,6 +485,7 @@ string(entity targ, entity attacker) player_scourge_killmsg =
 
 	if (attacker.weapon == IT_AXE)
 		return " was stung by ";
+/*
 	else if  (attacker.weapon & IT_GRENADE_LAUNCHER) // FIX: no worky
 		{
 		if (random() < 0.8)
@@ -496,6 +502,9 @@ string(entity targ, entity attacker) player_scourge_killmsg =
 		}
 	else
 		return " was perforated by ";
+	*/
+	else
+		return " was hated by ";
 };
 
 string(entity targ, entity attacker) player_scourge_killmsg2 =

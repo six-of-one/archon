@@ -377,6 +377,9 @@ float ARM_SCRG						= 0.35; // scourge morph built in def armor
 
 // fiends
 
+float DEMONBOOM_RADIUS			= 8192; // pent rune super blow - max radius
+float DEMONBOOM_FALLOFF			= 512; // damage falloff beyond this
+
 float FL_DEMONBOOM				= 65536; // demon on overload!
 void() player_demon_explode;
 

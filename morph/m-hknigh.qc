@@ -135,6 +135,7 @@ void() player_hknight_pain =
 void(vector or1) hk_fire_spike =
 {
 	fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, or1, ' 0 0 0', "knightspike", "progs/k_spike.mdl", "hknight/attack1.wav", spike_touch, 6,  SUB_Remove, spike_touch);
+	newmis.morphy = self.morphy;
 };
 
 void(float offset) player_hknight_shot =
@@ -144,11 +145,11 @@ void(float offset) player_hknight_shot =
 
 	if (self.weapon != IT_ROCKET_LAUNCHER)
 	{
-	offang = self.v_angle;
-	offang_y = offang_y + offset * 6;
-	if (offset == 0) offang_z = offang_z + 4 * random(); // vertical diff for focus shot
-	
-	makevectors (offang);
+		offang = self.v_angle;
+		offang_y = offang_y + offset * 6;
+		if (offset == 0) offang_z = offang_z + 4 * random(); // vertical diff for focus shot
+		
+		makevectors (offang);
 	}
 	else if (offset == 0) return; // explosive shot only happens once
 
@@ -160,12 +161,13 @@ void(float offset) player_hknight_shot =
 
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
-	fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", "progs/k_spike.mdl", "hknight/attack1.wav", Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
-//	fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", "progs/k_spike.mdl", "hknight/attack1.wav", SUB_Remove, ROCKET_FUSE,  SUB_Remove, SUB_Remove);
-	newmis.avelocity_z = (crandom () * 300);
-	newmis.frame = 1;
-	newmis.dmg = 80;
-	return;
+		fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", "progs/k_spike.mdl", "hknight/attack1.wav", Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
+//		fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", "progs/k_spike.mdl", "hknight/attack1.wav", SUB_Remove, ROCKET_FUSE,  SUB_Remove, SUB_Remove);
+		newmis.avelocity_z = (crandom () * 300);
+		newmis.frame = 1;
+		newmis.dmg = 80;
+		newmis.morphy = self.morphy;
+		return;
 	}
 
 	hk_fire_spike(org);

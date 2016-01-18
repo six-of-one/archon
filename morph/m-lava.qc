@@ -268,7 +268,7 @@ void() lavablob_die_explode8	=	[ $exp,		SUB_Nop ]
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
 
-	other = self; // attpempt to fix FSCK: non bot in SV_FlyMove
+	other = self; // fixed FSCK: non bot in SV_FlyMove - seems to work now
 	self = spawn();
 	BecomeExplosion ();
 	self = other;
@@ -348,6 +348,7 @@ void() lavablob_slimeflare =
 		self.count = time - (random());
 		self.flags = FL_FLARE;
 		self.owner = world;
+		self.morphy = sv.morphy;
 		slime_flare();
 		self = sv;
 		}
@@ -384,6 +385,7 @@ void() player_lavablob_attack =
 		fireball_missile(FIREBALL_WEP_VEL, "fireballwep", "progs/lavaball.mdl", "boss1/throw.wav", 0);
 		setsize(newmis, v0, v0);
 		newmis.frame = floor(1.1 + random());
+		newmis.morphy = self.morphy;
 	}
 	else // fire spikes - IDEA: will lavablob ever have other attacks?
 	{
@@ -392,6 +394,7 @@ void() player_lavablob_attack =
 
 		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, ' 0 0 0', "lavaspike", "progs/nail.mdl", "chaos/lava-shot.wav", spike_touch, 6, SUB_Remove, SUB_Nop);
 		newmis.skin = 1;
+		newmis.morphy = self.morphy;
 	}
 };
 

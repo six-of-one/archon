@@ -106,6 +106,7 @@ void()  player_demon_spike3 = [$pain2, player_demon_spike4 ]
 	fire_missile(DEF_VEL, MOVETYPE_FLYMISSILE, 0, PF_LAVA | RM_SKY, self.origin + ' 0 0 16', ' 0 0 0', "spike", "progs/spike.mdl", "gatling/ric1.wav", spike_touch, 6, SUB_Remove, SUB_Nop);
 	newmis.dmg = 40 + random() * 40; // owwie
 	newmis.frame = 1;
+	newmis.morphy = self.morphy;
 };
 void()  player_demon_spike4 = [$pain1, player_demon_spike5 ] {};
 void()  player_demon_spike5 = [$attacka1,  player_stand1  ] {};
@@ -160,20 +161,25 @@ void() demon_explode_plague =
 
 void() player_demon_explode =
 {
-	local entity sv;
-	local float f;
+	local entity sv, e;
+	local float f, k, v;
+
 //	if (!self.flags & FL_DEMONBOOM) return;
 
 	if (self.attack_finished < time)
 	{
 //		if (self.class_select != "dead_body") setmodel(self, "");							// dont allow for corpse after explosion
 		self.flags = self.flags - (self.flags & FL_DEMONBOOM);
-		self.weapon = IT_AXE;
+		if ((self.items & IT_INVULNERABILITY) && !self.rune_flag)
+		{
+			self.weapon = IT_AXE;
+			return;
+		}
 
 		f = 1; // health multiplier
-		if (self.flags & IT_SUPERHEALTH) f = 2;
-		if (self.flags & IT_QUAD) f = 4;
-		if (self.flags & IT_SUIT) f = f * 0.5; // env protect power contains half of blast
+		if (self.items & IT_SUPERHEALTH) f = 2;
+		if (self.items & IT_QUAD) f = 4;
+		if (self.items & IT_SUIT) f = f * 0.5; // env protect power contains half of blast
 
 		if (RUNES)
 		if (ENHANCED)
@@ -187,23 +193,94 @@ void() player_demon_explode =
 		self = spawn(); // cant blow a client ent
 		self.classname = "demonboom";
 		self.owner = sv;
+		sv.deathtype = self.deathtype = "rage";
 		self.origin = sv.origin + ' 0 0 20';
 
 //		Explode(0, random() * 100 + sv.health, world, TE_TAREXPLOSION, 0, BecomeExplosion);
+		if (sv.health < 50)
+			k = 50 + random() * 50 + (sv.health * f) + sv.armorvalue;
+		else
+		k = random() * 100 + (sv.health * f) + sv.armorvalue;
 
 
-local float k;
-k = random() * 100 + (sv.health * f);
-bprint("---- demon boom tot dmg: ");
+
+if (cvar("saved1") == -556)
+{
+bprint("---- demon boom init tot dmg: ");
 bprint(ftos(k));
 bprint(" - * ");
 bprint(ftos(f));
 bprint("\n");
+}
+ 
  
 
+		if (sv.items & IT_INVULNERABILITY)
+		{
+			bprint("\n\n\n\nRune Powered - ");
+			if (sv.items & IT_QUAD) bprint("Quad + ");
+			bprint("Pentagram Fiend Super BOOM - you're all gonna DIE!\n");
+			f = 0;
+			if ((sv.rune_flag & RUNE_FULL) && (sv.rune_flag & TECH_MASK_ALL)) f = 1;
+			k = k * (5 + f);
 
-		// stand in for above fn
-					T_RadiusDamage (self,self.owner,k,sv); //random() * 100 + (sv.health * f),sv); // note: when restoring explode - now doesnt hit owner
+
+if (cvar("saved1") == -556)
+{
+bprint("---- demon super boom tot dmg: ");
+bprint(ftos(k));
+bprint(" - * ");
+bprint(ftos(f + 5));
+bprint("\n");
+} 
+ 
+			
+ 			e = findradius(self.origin, DEMONBOOM_RADIUS);
+			while (e)
+			{
+
+				f = k;
+				v = vlen(self.origin - e.origin);
+				if (v > DEMONBOOM_FALLOFF) f = k * (DEMONBOOM_FALLOFF / v);
+
+				if (e != sv)
+				if (e.classname != OBSERVER) // note: archons immune?
+				if (e.takedamage && e.health > 0)
+				{
+					v = 0.1;
+					if (k > 20000) v = 0.4;
+					else if (k > 10000) v = 0.3;
+					else if (k > 5000) v = 0.2;
+
+					if (e.classname == "door") // cuase secrets always have 10K health set
+						k = k - 50;
+					else
+					k = k -  e.health * v;
+
+					T_Damage(e, self, self.owner, f);
+
+
+if (cvar("saved1") == -556)
+{
+bprint("---- demon boom super dmg: ");
+bprint(ftos(f));
+bprint(" - to ");
+bprint(item_ident(e));
+bprint(" - pts left: ");
+bprint(ftos(k));
+bprint("\n");
+}
+ 
+ 
+				}
+				e = e.chain;
+			}
+		}
+		else
+		{
+ 		// stand in for above fn
+					T_RadiusDamage (self,self.owner,k,sv); // note: when restoring explode - now doesnt hit owner
+		}
 
 					WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
 					WriteByte (MSG_BROADCAST,TE_TAREXPLOSION);
@@ -215,8 +292,13 @@ bprint("\n");
 
 		self = sv;
 		dead_drop(self); // Cataboligne - 10.7.11 - drop runes+ - otherwise, protected from damage maybe
-		self.deathtype = "rage";
-		T_Damage(self, self, world, self.health + 10 );
+		self.model = ""; // no body
+
+		self.armorvalue = self.health = 0;
+		damage_inflictor = self;
+		Killed (self, self);
+		damage_inflictor = world;
+
 // note: wonky obit possible here
 		fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, ZOMBIE_FLSH_VEL, "", "", 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
 //		if (self.class_select == "dead_body") SUB_Remove(); // already dead, remove corpse
@@ -226,6 +308,8 @@ bprint("\n");
 
 	if ((self.attack_finished - demon_cntdn) < time ) // announce to self approximate countdown
 	{
+		SuperDamageSound();
+
 		demon_cntdn = demon_cntdn - 1;
 		if ( (self.rune_flag & RUNE_FLG_HS) || (self.rune_flag & TECH_TEIM) )
 		{
@@ -234,6 +318,11 @@ bprint("\n");
 				demon_cntdn = demon_cntdn - random();
 		}
 		if (demon_cntdn < 0) demon_cntdn = random();
+
+		if ((self.items & IT_INVULNERABILITY) && self.rune_flag)
+		if (self.attack_finished < (time + 2))
+			sprint(self, "Everyone will be blown straight to HELL - ");
+
 		sprint(self, "Gonna pop in ");
 		sprint(self,ftos(ceil(demon_cntdn)));
 		sprint(self, " or less");
@@ -357,9 +446,9 @@ void() player_demon_impulse =
 
 	if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
-		if (self.flags & IT_INVULNERABILITY)
+		if ((self.items & IT_INVULNERABILITY) && !self.rune_flag)
 		{
-			sprint(self, "Pentagram powersurges beyond rage");
+			sprint(self, "Pentagrams power surges beyond rage");
 			if (random() < 0.3)
 				sprint(self, " - try Hack & Slash & Jump");
 			sprint(self, "\n");
@@ -367,24 +456,34 @@ void() player_demon_impulse =
 		}
 		else
 		{
-			sprint(self, "Demon getting enraged");
+			if (self.items & IT_INVULNERABILITY)
+				sprint(self, "Fiendish onslaught of DOOM!");
+			else
+			sprint(self, "Fiend getting enraged");
 			if (self.rune_flag)
 				sprint(self, " - you will lose runes of power");
 			sprint(self, "\n");
 			self.items = self.items | IT_ROCKETS;
+//			if (self.items & IT_INVULNERABILITY) player_demon_attack(); // unstoppable
 		}
 	}
 };
 
-string() player_demon_killmsg =
+string(entity targ, entity attacker) player_demon_killmsg =
 {
 	if (!ENHANCED) return " was eviscerated by a Fiend\n";
+	else if (attacker.deathtype == "rage")
+	{
+		if (attacker.items & IT_INVULNERABILITY) return " was sent straight to HELL by ";
+		return " was blasted by ";
+	}
 	else if (random () < 0.75) 	return " was eviscerated by ";
 	return " was slashed by "; 
 };
-string() player_demon_killmsg2 =
+string(entity targ, entity attacker) player_demon_killmsg2 =
 {
 	if (!ENHANCED) return "noname";
+	else if (attacker.deathtype == "rage") return "'s violent rage\n";
 	return "\n";
 };
 

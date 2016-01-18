@@ -214,6 +214,7 @@ void() player_ogre_shoot3 = [ $shoot3, player_ogre_shoot4 ]
 		if (fr) return;	
 	}
 	W_FireGrenade();
+	newmis.morphy = self.morphy;
 	if (self.weapon == IT_ROCKET_LAUNCHER) // cluster bomb
 	{
 		newmis.think = newmis.th_die = newmis.th_stand = chaos_bomb;

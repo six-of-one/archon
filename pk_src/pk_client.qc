@@ -2243,6 +2243,17 @@ bprint("\n");
             if (inflictor.classname == "proximity_grenade")
 				{
 					bprint (targ.netname);
+					if (inflictor.morphy == IMP_MSCOURGE)
+					{
+						if (random()<0.5)
+							bprint (" was bombed by ");
+						else
+							bprint (" tried to disarm a bomb set by ");
+						bprint (attacker.netname);
+						bprint ("\n");
+						return;
+					}
+
 					if (random()<0.5)
 						bprint (" got too friendly with ");
 					else
@@ -2255,6 +2266,17 @@ bprint("\n");
             if (inflictor.classname == "laser" || inflictor.classname == "plasma")
 				{
 					bprint (targ.netname);
+
+					if (inflictor.morphy == IMP_MSCOURGE)
+					{
+						if (random()<0.7)
+							bprint(" was melted by ");
+						else
+							bprint(" was lasered by ");
+						bprint (attacker.netname);
+						bprint ("\n");
+						return;
+					}
 
 					if (!ENHANCED || random() < 0.8)
 					if (inflictor.weapon == -256) // laser cannon secret code
@@ -2414,7 +2436,19 @@ bprint("\n");
 						bprint ("'s red hot spikes\n");
 						return;
 					}
-					
+
+					if (inflictor.classname == "spike")
+					if (inflictor.morphy == IMP_MSCOURGE)
+					{
+						if (random()<0.7)
+							bprint(" was perforated by ");
+						else
+							bprint(" was nailed up by ");
+						bprint (attacker.netname);
+						bprint ("\n");
+						return;
+					}
+
 					if (inflictor.classname == "wizspike")
 					{
 						bprint (targ.netname);

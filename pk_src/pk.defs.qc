@@ -553,6 +553,8 @@ void(entity e) dead_artifact;
 void(entity e) dead_drop;
 void (entity e, entity p) stack_touch;
 float(entity e, string ss) stack_search;
+void(entity e, string ss) stack_delete;
+float(entity e) stack_compress;
 
 void() chaos_precache;
 
