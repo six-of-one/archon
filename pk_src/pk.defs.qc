@@ -10,14 +10,18 @@ float CHAOS_ENG				= 10100010110111; // chaos engine id
 float DARKPLACES;								// for detecting darkplaces
 float GENERATIONS;							// exclude xtra elements
 float ULOKW, ULOKD, ULOK2, ULOK3;		// unlock codes
-float LOK_STRICT				= 1; // lock deal
+float LOK_STRICT				= 1; 			// lock deal
 float XTR_SAVED1				= 1195724115; // saved1 test val 
 // end engines
 
 float() SUB_False				= { return 0; }; // Return a false value
 float() SUB_True				= { return 1; }; // Return a true value
 
+// **************************************
 // ADMIN section
+
+// **************************************
+
 float WARNING;									// display warnings - dev work mainly
 
 // dev - only enable this for painkeep maps or force pk mode (sv_ control) - any maps that loads a pk item / func
@@ -80,7 +84,7 @@ float REMOVE_DV 				= 30; // some deviation to spread things out
 float PK_ADMIN;							// allow admin - set this to 0 to completely disable all admin
 float pk_adminimp;						// impulse set in admin.cfg to access admin commands, defaults to 255
 float pk_admincode;						// code you must enter to access admin commands - set by admin.cfg, defaults to -1
-float pk_adminpwdmask;					// if true password will be masked with *'s
+float pk_adminpwdmask;					// if true password will be masked with *s
 float pk_admintime;						// if > 0 - inactivity timer for admin mode
 float pk_adminframe;						// only do once per frame
 float LIVE_ADMIN				= 100;	// for being in game with admin privs - previous painkeep admin mode
@@ -109,8 +113,11 @@ void(float msk, float bt) bit_print;
 
 float pk_mapcmd;
 float pk_mapcfg;
+
+// obliviously un-implemented for now
 //string ADMINSRVCMD			= "_srvcmd\n"; // server vars alias cmd
-//float pk_srvcmd				= 1; 		// TDO: admin option later
+//float pk_srvcmd				= 1; 		// ---: admin option later - allow these commands to be denied by admin
+
 float pk_srvcfg;
 
 void() pk_srvcmd_set;
@@ -123,11 +130,13 @@ void() mcode_load;
 .float stdev;
 float (float lMean, float lStDev) meantime;
 
+float ply_count; // count 'em & weep
 float high_score; // best of the best
 float score_rel1				= 50;
 float score_rel2				= 100;
 float FL_SCORE1				= 4096;
 float FL_SCORE2				= 65536;
+float PLY_OBSERVER			= 1; // if true count observers in ply_count
 
 float m_score_rel1;
 float m_score_rel2;
@@ -268,11 +277,12 @@ float DEF_DOC_ARMORTYPE		= 0.6;
 float RUNE_QUAD_COMB			= 1; // allow damage runes to combind with quad
 float RUNE_TECH_DMG_COMB	= 1; // allow damage runes to combind with each other
 float RUNE_TECH_RS_COMB		= 1; // allow resist runes to combind with each other
-float RUNE_NOWAY				= 1; // if true relocate runes past noway bounds for waypoints faster
+float RUNE_NOWAY				= 1; // if true relocate runes past noway bounds for waypoints (quicker than normal relo
+										  // note: this also enables relocation repair (e.g. nextthink fail fix)
 
 void() flyer_move; // fly rune for now
 
-.vector movement; // for haste
+.vector movement; // for haste - this is dp engine supported
 
 // end runes
 
@@ -969,7 +979,7 @@ void() X_FireRailgun;
 void() player_mgchg1;
 void() player_pistol1;
 
-float SPIKE_VEL					= 1000; // TDO: cvar? port to other code
+float SPIKE_VEL					= 1000; // IMP: make these cvar? port to other code
 float DEF_VEL						= 600;
 float ROCKET_VEL					= 1000;
 

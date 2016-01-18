@@ -764,6 +764,7 @@ void () trigger_hurt_switch =
 	if (self.targetname)
 		self.use = hurt_switch;
 };
+
 // fn(notmod) - test to see of entity should be in mod - if not, remove
 // also test dp/c
 
@@ -1029,6 +1030,19 @@ void() archon_fadeinit =
 };
 
 
+/*
+
+ archon power point code
+
+power points must consist of -
+
+1. a map loaded physical model, either brushes, .mdl or .bsp  (must be non blocking | non solid),
+2. an "archon_power" entity (map loaded) that is origin for the power color spray and item creation
+3. a "trigger_multiple"  for players touching the point
+4. an "archon_power_act" entity (map loaded) that gets used when trigger (3) is fired
+
+*/
+
 float arc_pwr_item;
 
 // change points spray color
@@ -1125,6 +1139,9 @@ void() archon_powerclr =
 	}
 };
 
+// place holder for archon power point color spray & create think
+// power point id is used to detect point created items
+
 void() archon_power =
 {
 	local entity e;
@@ -1141,10 +1158,12 @@ void() archon_power =
 	self.button14 = arc_pwr_item;
 	arc_pwr_item = arc_pwr_item + 1 + rint(random() * 6);
 
-// TDO: sounds, powers
+// IMP: sounds, powers
 };
 
 // touching a point when it activates
+
+// touching ent does not have a healtype - set one at random
 
 void(entity e) archon_point_heal =
 {
@@ -1165,7 +1184,9 @@ void(entity e) archon_point_heal =
 	
 };
 
-// TDO: other effects - proof against magic spell attack too
+// IMP: other effects - proof against magic spell attack too - this touch will have to be detected live
+
+// when touch fired by trigger - heal ent that touched
 
 void() archon_power_touch =
 {
@@ -1174,6 +1195,9 @@ void() archon_power_touch =
 	if (activator.health < (activator.max_health * activator.health_modifier * other.health_modifier)) // health < points mod
 		T_Heal(activator,other.healtype + rint(0.33 + random()), 0);
 };
+
+// power point activator - must be targeted by multi trigger
+// calls *_touch when trigger is fired
 
 void() archon_power_act =
 {
@@ -1237,7 +1261,7 @@ void() func_arcarn =
 	self.think = th_arcarn;
 	self.nextthink = time + self.wait + self.cnt * random() + self.lefty;
 
-	if (self.lefty) // small chance of fast starts - TDO: .var
+	if (self.lefty) // small chance of fast starts
 	if (random() < 0.1)
 		self.nextthink = time + self.wait * random();
 

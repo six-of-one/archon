@@ -439,6 +439,38 @@ void() q_startmap =
 	}
 };
 
+// count up players for map overloads
+
+void() player_count =
+{
+	local entity e;
+
+	ply_count = 0;
+	e = find(world,classname,"player");
+	while (e)
+	{
+		ply_count = ply_count + 1;
+		e = find(e,classname,"player");
+	}
+
+	e = find(world,classname,"pk*bot");
+	while (e)
+	{
+		ply_count = ply_count + 1;
+		e = find(e,classname,"pk*bot");
+	}
+
+// count observers
+	e = find(world,classname,OBSERVER);
+	while (e && PLY_OBSERVER)
+	{
+		ply_count = ply_count + 1;
+		e = find(e,classname,OBSERVER);
+	}
+
+	if (cvar("sv_adm")) ply_count = 65536;
+};
+
 // fn(pk_srvcmd_set) - setup new server control vars & load from cfg or alias
 // fn(pk_srvcmd_load) - load new server control vars
 // fn(botmatch) - load bots for bot match
@@ -729,7 +761,7 @@ void() pk_liveupd =
 
 	XENV = cvar("sv_c_xenv");
 
-	if (Q_99) // TDO: needs some stuff below - like maxs (do they need changed?...)
+	if (Q_99) // IMP: might need some stuff from below - like maxs (do they need changed?...) - this is not a sig item
 	{
 		item_control_menu();
 		return;
@@ -950,7 +982,7 @@ void() pk_liveupd =
 
 	if (M_MONSTER != cvar("sv_monster_map"))
 	{
-		M_MONSTER = cvar("sv_monster_map"); // TDO: process loop - turn bits on and off
+		M_MONSTER = cvar("sv_monster_map"); // IMP: process loop - turn bits on and off, remove culled monsters
 //		if (!R_MONSTER) // monsters were not removed when loading map - live controls usefull
 		if (M_MONSTER < 0)
 		if (!deathmatch)
@@ -1320,6 +1352,7 @@ void() pk_srvcmd_set =
 		if (!m_score_rel1)
 		if (world.target1 == "score_rel1")
 		{
+			localcmd("map start\n");
 			localcmd("default_hub\n");
 			return;
 		}
@@ -1327,6 +1360,7 @@ void() pk_srvcmd_set =
 		if (!m_score_rel2)
 		if (world.target1 == "score_rel2")
 		{
+			localcmd("map start\n");
 			localcmd("default_hub\n");
 			return;
 		}

@@ -168,6 +168,18 @@ void() CheckWaterLevels =
 							if ( (e.nextthink > time + 6) || (e.nextthink <= 0) )
 								e.nextthink = time + random() * 4;
 							e.hook = TRUE;
+							if (e.solid == SOLID_NOT) e.solid = SOLID_TRIGGER; // 9.27.12 - make sure think fn() fires relocate
+
+
+
+							if (WARNING)
+							{
+								bprint("*** warning: lava splash rune - model = ");
+								bprint(e.model);
+								bprint("\n");
+							}
+
+
 						}
 					}
 					else if (e.classname == "tomb") // Cataboligne 8.12.9 purify - pk artifacts
@@ -212,7 +224,19 @@ void() CheckWaterLevels =
 								if ( (e.nextthink > time + 6) || (e.nextthink <= 0) )
 									e.nextthink = time + random() * 4;
 								e.hook = TRUE;
+								if (e.solid == SOLID_NOT) e.solid = SOLID_TRIGGER; // 9.27.12 - make sure think fn() fires relocate
+
+
+
+							if (WARNING)
+							{
+								bprint("*** warning: solid splash rune - model = ");
+								bprint(e.model);
+								bprint("\n");
 							}
+
+
+						}
 						}
 						else if (e.ip_orgOrigin != v0) // put items back now
 						{
@@ -295,7 +319,23 @@ void() CheckWaterLevels =
 					e.think = ip_checkForMovement;
 					e.nextthink = time + random() * 4;
 					e.hook = TRUE;
+					if (e.solid == SOLID_NOT) e.solid = SOLID_TRIGGER; // 9.27.12 - make sure think fn() fires relocate
+
+
+
+							if (WARNING)
+							{
+								bprint("*** warning: noway splash rune - model = ");
+								bprint(e.model);
+								bprint("\n");
+							}
+
+
 				}
+
+// fixed lost nextthink
+				if (!e.nextthink) // was ending up 0, consider < 2 test or so, need more qualifier for that
+					e.nextthink = time + CFM_TIME;
 			}
 		}
 

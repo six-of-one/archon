@@ -1306,7 +1306,7 @@ bprint("\n");
 
 // pk_dyn_func_stop - stop func_dynitem processing
 
-// CHK: what happens here when pk_art gets turned off on a live server
+// CHECK: what happens here when pk_art gets turned off on a live server
 
 void() func_dynitem =
 {

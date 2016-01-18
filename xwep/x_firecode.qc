@@ -132,7 +132,7 @@ void() x_weapon_touch =
 
 	ign = FALSE;
 	e = vchk(new, self.pk_currentitem, other.vwepent); // see if we have this item / slot filled
-	if (self.aflag == IGN_INV) // flag says we can ignore existing weps
+	if (self.aflag == IGN_INV) // flag says we can ignore existing weps - this will replace current weapon held in indicated slot - NOTE: check if any ammo can differ here ***
 	{
 		if (e)
 		if (e.mdl != self.vwepmdl)
@@ -167,6 +167,12 @@ void() x_weapon_touch =
 //	if (self.mcode)
 //		cls = item_by_mcode(self.mcode);
 
+
+// ammo added is based on classname detection
+// 	if a q3 weapon is touched (detect via .noise4) the q3 special case of only adding 1 unit of ammo is handled
+
+/// classname indicates a rocket | blast damage type weapon
+
 	if (cls == "q2_weapon_rocketlauncher" || cls == "q3_weapon_rocketlauncher" ||
 		cls == "q3_weapon_grenadelauncher" || cls == "q2_weapon_grenadelauncher" ||
 		cls == "q2_ammo_grenades" ||
@@ -185,6 +191,9 @@ void() x_weapon_touch =
 	other.ammo_rockets = other.ammo_rockets + self.currentammo;
 	camc = other.ammo_rockets;
 	}
+
+/// classname indicates a shotgun | mass pellet hitscan type weapon
+
 	else if (cls == "d_weapon_shotgun" || cls == "d_weapon_supershotgun" ||
 		cls == "q2_weapon_shotgun" || cls == "q2_weapon_supershotgun" ||
 		cls == "weapon_shotgun" || cls == "weapon_supershotgun" ||
@@ -202,6 +211,9 @@ void() x_weapon_touch =
 	other.ammo_shells = other.ammo_shells + self.currentammo;
 	camc = other.ammo_shells;
 	}
+
+/// classname indicates a bullet | hitscan type weaon
+
 	else if (cls == "d_weapon_pistol" || cls == "d_weapon_chaingun"
 					|| cls == "q3_weapon_machinegun" || cls == "q2_weapon_machinegun"
 					|| cls == "w_weapon_machinegun" || cls == "w_weapon_chaingun"
@@ -219,6 +231,9 @@ void() x_weapon_touch =
 	other.ammo_bullet = other.ammo_bullet + self.currentammo;
 	camc = other.ammo_bullet;
 	}
+
+/// classname indicates a plasma | BFG | energy shot type weapon
+
 	else if (cls == "d_weapon_plasma" ||
 		cls == "q3_weapon_lightning" || cls == "weapon_lightning" ||
 		cls == "q3_weapon_bfg" || cls == "weapon_hyperblaster" ||
@@ -238,6 +253,9 @@ void() x_weapon_touch =
 	other.ammo_cells = other.ammo_cells + self.currentammo;
 	camc = other.ammo_cells;
 	}
+
+/// classname indicates a rail slug type weaon
+
 	else if (cls == "q2_weapon_railgun" || cls == "q3_weapon_railgun" ||
 		cls == "weapon_railgun")
 	{
@@ -252,12 +270,18 @@ void() x_weapon_touch =
 	other.ammo_slug = other.ammo_slug + self.currentammo;
 	camc = other.ammo_slug;
 	}
+
+/// classname indicates a flame fuel type weapon
+
 	else if (cls == "weapon_flamer" || 
 		cls == "w_weapon_flamer")
 	{
 	other.ammo_gaspr = other.ammo_gaspr + self.currentammo;
 	camc = other.ammo_gaspr;
 	}
+
+/// classname indicates a melee | infinite ammo | non ammo addative type weapon
+
 	else if (cls == "d_weapon_saw" ||
 		cls == "c_weapon_shovel" ||
 		cls == "q2_weapon_blaster" ||
@@ -272,6 +296,9 @@ void() x_weapon_touch =
 	camc = 1;
 	}
 	else
+
+/// classname not detected - code needs updated
+
 	{
 		if (PK_100 && PK_100_OBJERR) objerror("x_weapon_touch: unknown classname");
 		else
@@ -306,7 +333,7 @@ void() x_weapon_touch =
 	sprint (other,"You got the ");
 	sprint (other,self.netname);
 	sprint (other,"\n");
-// weapon touch sound
+// weapon touch sound - stored in .noise by default
 	if (self.noise != "")
 		sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	else
@@ -1958,7 +1985,7 @@ void() player_bfg1   = [$lightfatt1, player_bfg1]
 	else
 		self.weaponframe = 1;
 
-	self.effects = self.effects | EF_MUZZLEFLASH; // TDO: special flash
+	self.effects = self.effects | EF_MUZZLEFLASH; // IMP: special flash
 
 	EWEAP = self.eweapon;
 
@@ -2001,7 +2028,7 @@ void() X_Fire3BFG =
 };
 
 
-// fire any eweapon
+// fire any eweapon (= extended weapon code)
 
 void() e_weap_Attack =
 {
@@ -2011,6 +2038,7 @@ void() e_weap_Attack =
 	EWEAP = e = self.eweapon;
 	if (e._attack == painkeep_cube_use) c = TRUE;
 
+// handle haste effects - if rune_haste() returns TRUE there is no haste & we set time for attack here
 
 	if (rune_haste(e.attack_finished / 2))
 		self.attack_finished = time + e.attack_finished;

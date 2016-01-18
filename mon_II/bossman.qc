@@ -99,7 +99,7 @@ void() boss_blahblah =
 	{
 		if (e.netname != "Bossman")
 		if (e.takedamage)
-		if (e.flags & FL_CLIENT || e.flags & FL_MONSTER) // TDO: qualify morphs & monsters?
+		if (e.flags & FL_CLIENT || e.flags & FL_MONSTER) // IMP: qualify morphs & monsters?
 		{
 			f = vlen(self.enemy.origin - self.origin);
 			if (!self.enemy) self.enemy = e;
@@ -218,7 +218,7 @@ void() bossman_die =
 
 //============================================================================
 
-// TDO: chance of going into mad for multiple enemies
+// IMP: perhaps a chance of going into mad for multiple enemies?
 
 void()	bossman_dance1 =[	$dance1,	bossman_dance2	] {ai_face();};
 void()	bossman_dance2 =[	$dance2,	bossman_dance3	]

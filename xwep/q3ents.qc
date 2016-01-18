@@ -623,7 +623,8 @@ void () q3_weapon_bfg =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.noise3 = "q3_snd/bfg_fire.wav";
 	self.noise2 = "q3_snd/bfg_hum.wav";
-	self.target = "q3_snd/plasmx1a.wav"; // TDO: get right snd - CHECK: this
+//	self.target = "q3_snd/plasmx1a.wav"; // q3 in game sound seems to be rocket smack
+	self.target = "q3_snd/rocklx1a.wav";
 	self.chaosweptime = 0.93;
 	self.duration = SND_OVER;
 
@@ -984,7 +985,7 @@ void () weapon_grapplinghook =
 	self.items = IT_AXE;
 	self.pk_currentitem = PK_IT_GRAPGUN; // grap replacement
 /*
-	self.dmg = 5;  // TDO: check if ltn hook does dmg from gun
+	self.dmg = 5;  // CHECK: if ltn hook does dmg from gun
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
 */
@@ -1040,7 +1041,7 @@ void () q3_weapon_lightning =
 	self.items = IT_LIGHTNING;
 	self.lip = AMMO_LIGHTNING; // really cells
 	self.volume = Q3_MAX_CELLS;
-	self.attack_finished = 0.1; // TDO: separate from q1 lg fire ??
+	self.attack_finished = 0.1; // IDEA: separate from q1 lg fire ??
 	self.dmg = 8;
 	self.dmg_save = 1;
 	self.dmg_take = 1; // shot cnt
@@ -1108,7 +1109,7 @@ void () q3_weapon_railgun =
 	self.vwepmdl = "progs/vw_q3_rail.mdl";
 	self.noise = "q3_snd/w_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
-	self.noise3 = "q3_snd/railgf1a.wav"; // TDO: impact site snd
+	self.noise3 = "q3_snd/railgf1a.wav"; // IDEA: impact site snd
 	self.noise2 = "q3_snd/rg_hum.wav"; // gun hum
 	self.chaosweptime = 1.16;
 	self.endtime = 1.55;
@@ -1383,6 +1384,11 @@ void() q3_ammo_slugs =
 
 // Cataboligne - 9.7.11 - fix for conflict between q3 & other ex-up health & armor conflicts
 
+// rotting health | armor down
+
+// owner - player | bot ent
+// enemy - item ent
+
 void() q3_ha_rot_thk =
 {
 	local float f, tv1, tv2;
@@ -1400,7 +1406,7 @@ void() q3_ha_rot_thk =
 	{
 		self.owner.health = self.owner.health - 1;
 		if (self.enemy)
-			self.enemy.duration = self.enemy.duration - 1; // for drop inv - TDO: have to find this ent & set
+			self.enemy.duration = self.enemy.duration - 1; // for drop inv
 		f = TRUE;
 	}
 
@@ -1861,7 +1867,7 @@ void() q3_pwr_touch =
 	self.model = string_null;
 
 	e = spawn();
-	if (e)
+	if (e) // code contingent for fail
 	{
 		e.classname = "rune_1_expiry";
 		e.netname = self.netname;
@@ -1974,7 +1980,7 @@ void() q3_item_enviro =
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	setmodel(self, "progs/q3_art.mdl");
-	self.noise = "q3_snd/airout.wav"; // CHK: this doesnt make sense
+	self.noise = "q3_snd/airout.wav"; // CHECK: this doesnt make sense
 	self.noise3 = "q3_snd/airout.wav";
 	self.noise4 = "q3_snd/poweruprespawn.wav";
 	self.frame = q3_env_fsk;
@@ -2258,7 +2264,7 @@ void() info_player_intermission =
 
 // push for q3
 
-// TDO: q3 sounds
+// IMP: q3 sounds
 
 void () q3_trigger_push_think =
 {
@@ -2598,7 +2604,7 @@ When the random key is set, its value is used to calculate a maximum angle devia
 
 Both the setting "angles" key or "targeting a target_position" methods can be used to aim the shooter. However, the target_position method is simpler.*/
 
-// TDO: q3 sounds | models, implement target
+// IMP: q3 sounds | models, implement target
 
 void() shooter_grenade =
 {
@@ -2617,11 +2623,11 @@ void() shooter_grenade =
 
 void() shooter_plasma =
 {
-	precache_model ("progs/lavaball.mdl"); // TDO
+	precache_model ("progs/d_plasma_sht.mdl"); // IMP: q3 plasma model
 	precache_sound ("q3_snd/hyprbf1a.wav");
 	precache_sound ("q3_snd/plasmx1a.wav");
 	q3trap_shooter();
-	self.mdl = "progs/lavaball.mdl";
+	self.mdl = "progs/d_plasma_sht.mdl";
 	self.noise2 = "q3_snd/plasmx1a.wav";
 	self.noise3 = "q3_snd/hyprbf1a.wav";
 	self.delay = 800;

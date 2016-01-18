@@ -1685,7 +1685,7 @@ void() DropBackpack =
 	AddToSplash(newmis); // *pk - splash tossed items
 
 	bot_BackpackSetup(newmis); // *bot
-	newmis.mask_x = CB_HUMAN + CB_GREMLIN; // TDO: rest of morph bp touch
+	newmis.mask_x = CB_HUMAN + CB_GREMLIN; // IMP: rest of morph bp touch
 };
 
 

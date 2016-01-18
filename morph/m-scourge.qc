@@ -389,7 +389,7 @@ void() player_scourge_impulse =
 
 	split_morph_impulse();
 
-// TDO: alt fire
+// IMP: alt fire (for what?)
 
 	if (self.weapon == IT_ROCKET_LAUNCHER) // touched a rocket - set normal mode
 	{
@@ -486,7 +486,7 @@ string(entity targ, entity attacker) player_scourge_killmsg =
 	if (attacker.weapon == IT_AXE)
 		return " was stung by ";
 /*
-	else if  (attacker.weapon & IT_GRENADE_LAUNCHER) // FIX: no worky
+	else if  (attacker.weapon & IT_GRENADE_LAUNCHER) // FIX: no worky - NOTE: these should currently be handled by obit code
 		{
 		if (random() < 0.8)
 			return " was bombed by ";

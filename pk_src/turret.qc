@@ -302,7 +302,7 @@ void() turret_searchForEnemy =
 	self.frame = $gunsearch;
 
 	// rotate and check for siting of the enemy
-	self.angles = self.angles + '0 10 0';
+	self.angles = self.angles + '0 10 0'; // can be conditional for a 'track' only turret with no 360 search
 	self.v_angle = self.angles;
 
 	// try to find a enemy to target....

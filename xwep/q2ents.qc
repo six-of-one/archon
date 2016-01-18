@@ -1939,7 +1939,11 @@ void() key_commander_head =
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
-// ctf lithium tech runes
+// ctf lithium tech runes - map item spawn code
+//		display for test map - dont operate as runes even if rune server is on, no rune bits get set here
+
+// ---: tech implement - needs to be controlled by rune server if active - override these settings - REMOVE comment
+//		dont need this - these are not active runes - REMOVE comment
 
 /*QUAKED q2_ctf_haste (0 .5 .8) (-16 -16 -16) (16 16 16)
 */
@@ -1965,7 +1969,6 @@ void() q2_ctf_haste =
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Time Accelerator";
-// TDO: tech implement - needs to be controlled by rune server if active - override these settings
 	self.touch = x_item_touch;
 //	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;

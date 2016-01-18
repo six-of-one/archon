@@ -326,7 +326,7 @@ void() HIP_FireMjolnir =
 		if (trace_fraction > 0.3 && trace_fraction< 1.0)
 			{
 			HIP_FireMjolnirLightning();
-			self.attack_finished = time + 1.5; // TDO: inventory contol implement
+			self.attack_finished = time + 1.5; // IMP: inventory contol implement
 			return;
 			}
 		}

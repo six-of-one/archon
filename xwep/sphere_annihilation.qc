@@ -64,7 +64,7 @@ void() sphere_gravity_pulse20 = [ $grvbomb16, sphere_gravity_pulse1 ]
 	gravity_pull();
 	if ((self.attack_finished - time) > 8)
 	if ((time & 7) == 4)
-		sound (self, CHAN_BODY, "misc/ambient/machine6.wav", 1, ATTN_NORM); // TDO: better sound
+		sound (self, CHAN_BODY, "misc/ambient/machine6.wav", 1, ATTN_NORM); // IMP: better sound
 };
 
 void() sphere_become_gravbomb =
@@ -123,6 +123,22 @@ void() sphere_annihilation_move =
 		else self.avelocity_z = crandom() * v1;
 	}
 
+
+
+if (1) //WARNING)
+	if (self.classname != "chaos_teleport_icon")
+{
+		bprint("*** dev: sphere_annihilation_move classn = ");
+		bprint(self.classname);
+		bprint(" - netn = ");
+		bprint(self.netname);
+//		bprint(item_ident(self));
+		bprint("\n");
+}
+
+
+
+
 	if (self.classname == "chaos_teleport_icon")
 	{
 		if (self.model != self.mdl) {self.model = self.mdl; // CHECK: fix attempt for sum cube made sphere issue - maybe remove later
@@ -135,7 +151,8 @@ bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
 		{
 		if (self.trigger_field.aflag) self.trigger_field.aflag = 0;
 		else */
-			self.trigger_field.aflag = CHAOS_UNSTABLE_TELE; // base chance of selecting new dest
+			if (self.trigger_field.aflag != -666)
+				self.trigger_field.aflag = CHAOS_UNSTABLE_TELE; // base chance of selecting new dest
 //		}
 /*
 		if (random() < 0.2) // simple bobber code - doesnt work
@@ -283,7 +300,7 @@ if (WARNING)
 
 // returns TRUE if ent can be annihilated
 
-// TDO: comparison into archon code
+// xTDO: comparison into cmod code ? - not sure of purpose, comp idea (archon code) was unclear
 
 float(entity g) annihilation_check =
 {
@@ -332,6 +349,20 @@ void(entity g) set_annihilate =
 		return;
 	}
 
+
+
+if (1) //WARNING)
+{
+		bprint("*** dev: set_annihilate on - ");
+		bprint(item_ident(g));
+		bprint("- from self = ");
+		bprint(item_ident(self));
+		bprint("\n");
+}
+
+
+
+
 	g.think = annihilate;
 	g.nextthink = time + 0.02;
 	g.touch = SUB_Null; // touch is restored by SUB_Regen
@@ -354,6 +385,26 @@ void(entity g) set_annihilate =
 void() sphere_annihilation_touch =
 {
 
+
+
+
+if (1) //WARNING)
+{
+		bprint("*** dev: sphere_annihilation_touch classn = ");
+		bprint(self.classname);
+		bprint(" - netn = ");
+		bprint(self.netname);
+		bprint(" --- other classn = ");
+		bprint(other.classname);
+		bprint(" - netn = ");
+		bprint(other.netname);
+//		bprint(item_ident(self));
+		bprint("\n");
+}
+
+
+
+
 	if (annihilation_check(other))
 		set_annihilate(other);
 };
@@ -371,6 +422,23 @@ void() sphere_annihilation_spawn =
 	sphere_a.skin = 2;
 	sphere_a.map = "sphere_annihilation"; // double check search
 // spawn sound?
+
+
+
+
+if (1) //WARNING)
+{
+		bprint("*** dev: sphere_annihilation_spawn classn = ");
+		bprint(self.classname);
+		bprint(" - netn = ");
+		bprint(self.netname);
+//		bprint(item_ident(self));
+		bprint("\n");
+}
+
+
+
+
 };
 
 // whirl things around
@@ -438,7 +506,7 @@ void() sphere_annihilation_phys_move =
 			head = head.chain;
 		}
 
-// TDO: sound effect (maybe from black hole 06 ?)
+// IMP: sound effect (maybe from black hole 06 ?)
 		if (random() < 0.06) // sphere pulls particles out of air - IDEA: something else in water - whirl around sphere of water tex
 		{
 			f = FALSE;

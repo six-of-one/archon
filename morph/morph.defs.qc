@@ -36,7 +36,7 @@ float S_MONSTER; // bit mask of monsters to respawn when dead (map monsters only
 float C_MONSTER; // bit mask of monsters to spawn randomly
 float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent - if 0 save for a live control update loop that can recreate the monster
 float DM_MONSTER;	// true if any option allows monsters in dm
-float HUB_MONSTER;	// true if monsters will appear on hub maps
+float HUB_MONSTER;	// true if monsters will appear on hub maps - "sv_monster_hub"
 
 // timings
 float S_MONSTER_WAIT; // min wait till we respawn a dead mosnter
@@ -309,14 +309,14 @@ float MENF_HEALMOD				= 1.2;	// 80  = 0.8 ?
 float MCHAOS_HEALMOD				= 3.0;
 float MGREMLIN_HEALMOD			= 1.2;
 float MCYBER_HEALMOD				= 8.0;	// 4000 = 40.0 !!
-float MARACHN_HEALMOD			= 4.0; // 500 = 5.0
+float MARACHN_HEALMOD			= 4.0; 	// 500 = 5.0
 float MIMP_HEALMOD				= 1.25;
 float MGUNNEY_HEALMOD			= 3;
 float MTANK_HEALMOD				= 7.5;
 float MSUPTANK_HEALMOD			= 10.0;
 float MWRAITH_HEALMOD			= 10.0;
 
-float MAX_HEALTH					= 999; // max health for any thing
+float MAX_HEALTH					= 999; // max health for any thing - this limit is solely for std stats bar view
 float MAX100						= TRUE; // use (add heal * healmod if .health < max * %) rule --- sv_
 float MH_LOW						= 0.5; // low range morph healmod point (full boost below this * max)
 float MH_HIGH						= 0.8; // high range morph healmod point (no boost above this * max, scaled below)

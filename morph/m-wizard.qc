@@ -138,7 +138,7 @@ void() Wiz_fireBomb =
 
 
 
-// TDO: put in imp
+// IMP: put in imp code when done
 void() imp_firePlasma =
 {
 	fire_missile(PLASMA_VEL + 200, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH , RM_SKY | PF_LAVA, self.origin + v_forward* 16.0 + v_right * 16  + ' 0 0 18', ' 0 0 0', "missile", "progs/d_plasma_sht.mdl", "imp/fire.wav", Plasma_MissileTouch, ROCKET_FUSE,  plasmaexplode1, Plasma_MissileTouch);
@@ -238,7 +238,7 @@ void() Wiz_MissileTouch =
 
 	if (random() < 0.05) wdmg = random() * 50;
 //	if (other) if (other.solid == SOLID_SLIDEBOX) other.dmg = wdmg + 50 + random() * 20;
-//	Explode(wdmg + 50 + random() * 20, self.dmg + random() * 20 + wdmg, other, TE_EXPLOSION, 0, BecomeExplosion); // TDO: plasma explosive def dmg
+//	Explode(wdmg + 50 + random() * 20, self.dmg + random() * 20 + wdmg, other, TE_EXPLOSION, 0, BecomeExplosion); // IMP: plasma explosive def dmg
 
 		// stand in for above fn
 					T_RadiusDamage (self,self.owner,self.dmg + random() * 20 + wdmg,world);

@@ -11,7 +11,7 @@
  */
 
 
-// TDO: remove - placeholder
+// TDO: remove - placeholder - might want the actual meltthink code from cmod
 
 void() meltthink =
 {
@@ -216,7 +216,7 @@ void(vector org, vector end, float fr) beam4 =
 	WriteCoord (MSG_BROADCAST, end_x);
 	WriteCoord (MSG_BROADCAST, end_y);
 	WriteCoord (MSG_BROADCAST, end_z);
-//	if (chaos) WriteCoord (MSG_BROADCAST, fr); // TDO: color dp bolts
+//	if (chaos) WriteCoord (MSG_BROADCAST, fr); // IMP: color dp bolts?
 };
 
 void(vector org, vector end, float fr) multi_beam =
@@ -495,7 +495,7 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 
 		if (cb != SUB_Null) cb();
 
-/* TDO: later
+/* IMP: maybe later - (seems to be for making a lightning bolt burst)
 		if (flg & FL_NEWSELF) // because of engine lightning bolt code...
 			{ // just some stuff we might want
 			cf_x = E_ORG | E_OWNER | E_VELOCITY | E_SIZE | E_MOVETYPE | E_SOLID | E_FLAGS | E_morphy | E_ITEMS | E_FRAME | E_AANGLES;
@@ -514,7 +514,7 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 vector(vector src, float lbper, vector lbvec, float lcnt) lava_shot =
 {
 	return(v0);
-	// TDO: finish
+	// IMP: finish - see same cmod code
 };
 
 void () fire_fly_touch =
@@ -935,6 +935,7 @@ float(entity gr) chaos_teleport_grab =
 	return(TRUE);
 };
 */
+
 void() chaos_trigger_teleport =
 {
 	InitTrigger ();
@@ -973,6 +974,28 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 	newmis.aiment = loop_sound(newmis, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, torg, 0, LOOPFOREVER);
 };
 
+// map load a chaos teleport
+
+void() func_chaos_teleport =
+{
+	chaos_teleport(self.origin, self.target, world);
+
+// custom model
+	if (self.model != "")
+	{
+		setmodel(newmis, self.model);
+		newmis.skin  = self.skin;
+		self.model = "";
+	}
+
+// never moves
+	if (self.spawnflags & 1) newmis.movetype = MOVETYPE_NONE;
+
+	if (self.target != "")
+	if ( find (world, targetname, self.target))
+	if (self.aflag == -666) newmis.trigger_field.aflag = -666; // do not retarget
+	remove(self);
+};
 
 
 // fn(item_throwGib) - for stuff that needs to toss gibs

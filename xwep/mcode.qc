@@ -1798,7 +1798,7 @@ float(float bt, string md) wepbit_mcode =
 
 void () painkeep_weapon_touch;
 
-// NOTE: make these both eweapons, only way it will ever mork with map mode
+// NOTE: make these both eweapons, only way it will ever work with map mode
 
 /*QUAKED weapon_pulsenail (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -1845,6 +1845,10 @@ void() fire_axe =
 };
 
 /*QUAKED weapon_axe (0 .5 .8) (-16 -16 0) (16 16 32)
+
+ no quake map will ever have this or the shotgun
+ used entirely for dead threw and dynamic / random spawns
+
 */
 
 void () weapon_axe =
@@ -2824,7 +2828,7 @@ string(float xi) x_key_print =
 // mc - map code
 // vo - location, will randomize if = v0
 
-// note: this make respawnable items
+// note: this makes respawnable items
 
 void(float mc, vector vo, string wd) fn_make =
 {

@@ -320,7 +320,7 @@ float() gremlin_flight_check =
 	scnt = 0;
 //	force_unload_list();
 	self.movetarget = world; // get fresh inventory list
-/* get inventory list to see if grem has to many things to fly - TDO:
+/* get inventory list to see if grem has to many things to fly - IMP:
 	inv_list();
 	if (self.movetarget) if (self.movetarget.flags & FL_INVLIST) 
 	{
@@ -508,7 +508,7 @@ void() touch_theft =
 
 if (WARNING) bprint("theft attemp\n");
 
-	/* TDO: major recode - prob via. drop item code
+	/* IMP: major recode - prob via. drop item code
 	if (random() < STEAL_BASE)
 		{
 		si = self.impulse & 255;
@@ -566,7 +566,7 @@ if (WARNING) bprint("theft ammo success\n");
 
 // fn(gremlin_spawning) - player respawn / init - not on map change
 
-// TDO: monster_grem come thru here as well
+// IDEA: monster_grem come thru here as well
 
 void() gremlin_spawning =
 {

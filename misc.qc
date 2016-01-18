@@ -228,7 +228,7 @@ void () fire_fly =
 
 void () fire_touch =
 {
-	if (other.mask_x != CB_CTHON) // Cataboligne - 9.22.11 - only here till we get chaos_ff done TDO: remove
+	if (other.mask_x != CB_CTHON) // Cataboligne - 9.22.11 - only here till we get chaos_ff done IMP: remove
 	T_Damage (other,self,self,20);
 	remove (self);
 };

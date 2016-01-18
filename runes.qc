@@ -249,7 +249,7 @@ void(float b) rune_map_print =
 // 1 - set sv_c_rune_set to a valid rune map code
 // 2 - set sv_c_rune_set to a valid rune power bit code
 
-// TDO: update for all runes
+// IMP: update for all runes --- not sure what this means now
 
 void() mk_rune_set =
 {
@@ -341,6 +341,18 @@ void(entity e) dead_runes =
 		e.rune_flag = 0;
 		return;
 	}
+
+
+if (1)
+{
+	bprint("***     warning: dead_rune() - ");
+	if (!e.rune_flag) 
+		bprint("                 no runes");
+	else
+		bit_print(RUNE_MASK_ALL, e.rune_flag);
+
+	bprint("\n");
+}
 
 	f = 1;
 	while (f < RUNE_MASK_ALL)
@@ -760,6 +772,36 @@ void () rune_touch =
 
 	other.rune_flag = other.rune_flag | (self.spawnflags & RUNE_MASK_ALL);
 
+
+
+
+
+if (1)
+//if (self.netname == "")
+if (self.spawnflags == RUNE_FLG_HS)
+if (self.model != "progs/q3_art.mdl")
+if (stack_search(other, "item_haste"))
+{
+	stack_delete(other, "item_haste");
+	stack_compress(other);
+	bprint("***     warning: rune touch - q3 haste item detected / removed from stack!");
+	bprint("\n");
+}
+
+if (self.spawnflags == RUNE_FLG_RG)
+if (self.model != "progs/q3_art.mdl")
+if (stack_search(other, "item_regen"))
+{
+	stack_delete(other, "item_regen");
+	stack_compress(other);
+	bprint("***     warning: rune touch - q3 regen item detected / removed from stack!");
+	bprint("\n");
+}
+
+
+
+
+
 	if (RUNES == 1)
 	{
 		e = spawn();
@@ -1060,7 +1102,7 @@ void() rune_relocate =
 	local entity e, f;
 	local vector v1;
 
-	if (self.think == fade_relocate) return; // dont relocate when relocating
+	if (self.think == fade_relocate) return; // heh heh - dont relocate while relocating
 
 	self.cnt = self.cnt + 1;
 	self.delay = self.delay + 1;
@@ -1089,12 +1131,20 @@ void() rune_relocate =
 
 		if (e)
 		{
-			self.ip_orgOrigin = e.origin + ' 0 0 4';
+			self.ip_orgOrigin = e.origin + ' 0 0 4'; // something found - move rune here
 			bprint("\n\b*** RUNE relocating: ");
 			bprint(self.netname);
 			bprint(" near: ");
 			bprint(item_ident(e));
+
+							if (1)
+							{
+								bprint("          *** warning: relocate - model = ");
+								bprint(self.model);
+//								bprint("\n");
+							}
 			bprint("\n\n");
+
 		}
 	}
 };
@@ -1155,7 +1205,10 @@ Runes can combine to give holders more powers, or detrimental effects. You can a
 at this rule level.
 Damage = 2 x damage.  Will not combine with quad - quad has no effect.
 
-runes will not use q2 lith models if - ULOK2 is false, or rule == -2
+runes will not use lith models if - ULOK2 is false, or rule == -2
+
+(if rule 1 multi is false you can only hold 1 rune and 1 tech.)
+
 */
 // run runes
 
@@ -1342,7 +1395,7 @@ void() run_runes =
 			}
 			bprint("\n***   \bRunes\b of power will spawn on this map - keep an eye out\n");
 			rune_new_map = TRUE;
-			rune_map = 0; // clear this TDO: clear any rune flags players might have
+			rune_map = 0; // clear this - IMP: clear any rune flags players might have
 		}
 		else
 			bprint("\n***   \bRune\b server - turned off and all spawned runes removed\n");
@@ -1550,7 +1603,7 @@ cap = 3.5
 	}
 };
 
-// TDO: other suck head issues
+// IMP: other suck head issues
 // more things that prevent suck head leech -
 // - archons are immune
 
@@ -1635,6 +1688,8 @@ void() rune_dmg_sound =
 	}
 };
 
+// fn(rune_haste) - implement haste rune effect on [ weapon ] attacks
+
 // op haste - ret true if att_fin needs set
 // returns false if haste rune in effect
 
@@ -1651,7 +1706,7 @@ float(float atf) rune_haste =
 
 	self.attack_finished = time + (atf / f); 
 	HasteSound();
-	return(FALSE); // TDO: double haste in other code - where o/p from this is just a flag = return value of f - means all conditional on this needs reversed
+	return(FALSE); // IMP: double haste in other code - where o/p from this is just a flag = return value of f - means all conditional on this needs reversed
 };
 
 void() rune_precache =
@@ -1733,7 +1788,7 @@ void () item_sigil =
 		rul = -2; // models not avail
 
 	self.noise = "misc/runekey.wav";
-	self.noise4 = "misc/null.wav"; // TDO: see if pooted out runes make noise
+	self.noise4 = "misc/null.wav"; // CHECK: q2 code - see if pooted out runes make noise
 	precache_sound ("misc/runekey.wav");
 
 	self.duration = 0;
@@ -1851,22 +1906,22 @@ void () item_sigil =
 	if (!NO_TECH) // do techs
 	{
 		self.noise = "q2_snd/pkup.wav";
-		if (self.spawnflags & T_DSH) // bit 64
+		if (self.spawnflags & T_DSH) // bit 131072
 		{
 			self.netname = "Disruptor Shield";
 			setmodel (self,"progs/q2_ctf_resist.mdl");
 		}
-		if (self.spawnflags & T_AMP) // bit 64
+		if (self.spawnflags & T_AMP) // bit 262144
 		{
 			self.netname = "Power Amplifier";
 			setmodel (self,"progs/q2_ctf_stren.mdl");
 		}
-		if (self.spawnflags & T_TEIM) // bit 64
+		if (self.spawnflags & T_TEIM) // bit 524288
 		{
 			self.netname = "Time Accelerator";
 			setmodel (self,"progs/q2_ctf_haste.mdl");
 		}
-		if (self.spawnflags & T_ADOC) // bit 64
+		if (self.spawnflags & T_ADOC) // bit 1048576
 		{
 			self.netname = "Auto Doc";
 			setmodel (self,"progs/q2_ctf_regen.mdl");

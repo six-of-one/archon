@@ -1010,7 +1010,7 @@ void(float im, entity p, vector vb) drop_inventory =
 	e.event = "dynamic_item";
 	f = 0;
 
-// TDO: check self.target2 for d / q2 /q3 items
+// ---: check self.target2 for d / q2 /q3 items - pretty sure stack_search does this - REMOVE comment
 
 // note: for rules 1, time left is in expiry ent
 
@@ -1386,9 +1386,33 @@ void(entity p, float pg) drop_setup =
 						if (stack_search(p, "item_haste"))
 							ic = "Haste ";
 
+
+
+
+if (1)
+if (ic == "Haste ")
+{
+	bprint("***     warning: q3 haste item detected!");
+	bprint("\n");
+}
+
+
+
 						if (d & RUNE_FLG_RG)
 						if (stack_search(p, "item_regen"))
 							ic = "Regeneration ";
+
+
+
+
+if (1)
+if (ic == "Regeneration ")
+{
+	bprint("***     warning: q3 regen item detected!");
+	bprint("\n");
+}
+
+
 
 						if (ic != "") drop_string(ic, d, world);
 					}
@@ -1407,12 +1431,35 @@ void(entity p, float pg) drop_setup =
 					ic = rune_name(d);
 					if (d & RUNE_FLG_HS)
 //					if (p.target2 == "progs/q3_art.mdl")
-					if (stack_search(p, "item_haste")) // TDO: when getting run, delete this from stack
+					if (stack_search(p, "item_haste")) // TDO: when getting run, delete this from stack ?? not sure what this is about, maybe "run" should be "rune"
 						ic = "Haste ";
+
+
+
+if (1)
+if (ic == "Haste ")
+{
+	bprint("***     warning: q3 haste item detected!");
+	bprint("\n");
+}
+
+
 
 					if (d & RUNE_FLG_RG)
 					if (stack_search(p, "item_regen"))
 						ic = "Regeneration ";
+
+
+
+
+if (1)
+if (ic == "Regeneration ")
+{
+	bprint("***     warning: q3 regen item detected!");
+	bprint("\n");
+}
+
+
 
 					drop_string(ic, d, world);
 				}
@@ -1875,8 +1922,18 @@ void(entity e) dead_drop =
 	if (DEAD_THROW_ARTIFACT)
 		dead_artifact(e);
 
-	if (e.rune_flag) // because you can have runs in q100 for some reason
+	if (e.rune_flag) // because you can have runes in q100 for some reason
 		dead_runes(e);
+
+
+
+if (1)
+bprint("***     warning: haste check - ");
+rune_map_print(4);
+//	bprint("\n");
+
+
+
 };
 
 

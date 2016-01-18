@@ -184,14 +184,18 @@ entity(entity e) vw_chain =
 	return (c);
 };
 
-// fn(viswep_ofs) - set viswep offsets for some morphs - gremlin repos deal
+/*
+
+fn(viswep_ofs) - set viswep offsets for some morphs - gremlin repos deal
+
 // e - viswep entity
 // l - load entity
 // flg - op condition
-/*
+
 float SET_ARMED =		1; // ready weps
 float SET_STORED =		2; // stored weps
 */
+
 vector(entity e, entity l /*, float flg */) viswep_ofs =
 {
 	local vector v;
@@ -211,7 +215,7 @@ vector(entity e, entity l /*, float flg */) viswep_ofs =
 			v = ' 6 -4 4';
 		else
 			{
-			if (e.weapon == IT_ROCKET_LAUNCHER) // NOTE: not a total assumpt here - all weps need verified for this now TDO:
+			if (e.weapon == IT_ROCKET_LAUNCHER) // NOTE: not a total assumpt here - all weps need verified for this now IMP: perhaps use a bit mask?
 				v = ' 5.4 0 4';  // IDEA - per frame adjustment for bite attack?
 			else
 				v = ' 5.4 0 0';
@@ -246,7 +250,7 @@ entity(entity e, float fl) vload =
 	tr.vwepent.classname = "viswep";
 	setsize (tr.vwepent, v0, v0);
 	tr.vwepent.finaldest = viswep_ofs(tr.vwepent, e); // gremlin adjust init
-//	tr.vwepent.touch = touch_theft; // sticky little gremlin claws abound // TDO:
+//	tr.vwepent.touch = touch_theft; // sticky little gremlin claws abound // IMP: gremlin theft, some way or other
 
 	tr.vwepent.weapon = fl;
 	tr.vwepent.pk_currentitem = 0;
@@ -756,7 +760,7 @@ void() viswep_post =
 		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
 		else if (vhead.vv_draw != (void()) 0) // new vw paradigm - code set models
 		{
-			if (0) // for now TDO: fix rotate issues
+			if (0) // off for now IMP: fix rotate issues
 			if (DARKPLACES)
 			if (!vhead.tag_entity)
 			{
@@ -1076,7 +1080,7 @@ void(entity e, string md, entity p) DeadThrew =
 	newmis.touch = BackpackTouch;
 
 	item_eject(newmis, ' 210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
-	newmis.think = SUB_Remove; // TDO: fade or melt
+	newmis.think = SUB_Remove; // IMP: dont just blink, fade or melt out of level
 	if (DEAD_THROW_TIME)
 	{
 		newmis.nextthink = time + DEAD_THROW_TIME;
@@ -1165,7 +1169,7 @@ void(entity pack, vector v1) DeadThrowWeps =
 
 			if (pd)
 			{
-//			if (vhead.vv_draw != (void()) 0) // TDO: dead throw framing or animation for these
+//			if (vhead.vv_draw != (void()) 0) // IMP: dead throw framing or animation for these
 //			else
 				if (e.vv_draw == (void()) 0) // not the alternate vw animation - so it should have deadthrow frames
 				{

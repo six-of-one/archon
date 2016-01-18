@@ -11,8 +11,8 @@
  */
 
 
-// TDO: finish translate codes
-// TDO: restore wad == "q1" item with doom item deactivate / pk_100 mode on (if ever allowed in map)
+// TDO: finish translate codes - what is left?
+// IMP: restore wad == "q1" item with doom item deactivate / pk_100 mode on (if ever allowed in map)
 
 void() tr_set_touch =
 {

@@ -66,6 +66,18 @@ void () multi_trigger =
 	if (self.target1 == "!score_rel2")
 		return;
 
+	if (deathmatch)
+	if (self.cnt > 0)
+	{
+		if (ply_count < self.cnt)
+		if (self.target1 == "player_count")
+			return;
+
+		if (ply_count >= self.cnt)
+		if (self.target1 == "!player_count")
+			return;
+	}
+
 	if (self.classname == "trigger_secret")
 	{
 	if (self.enemy.classname != "pk*bot")
@@ -569,6 +581,9 @@ If the trigger_teleport has a targetname, it will only teleport entities when it
 void () trigger_teleport =
 {
 	local vector o;
+
+// Cataboligne - 4.21.11 - triggerss not in mod maps
+	if (notmod(self)) return;
 
 	InitTrigger ();
 	self.touch = teleport_touch;

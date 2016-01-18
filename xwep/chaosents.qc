@@ -334,7 +334,7 @@ void() health_touch =
 
 	vmax = amount = 0;
 
-	if (other.state == IMP_MWRAITH) return; //(TRUE); // wraith never get health -- TDO: check state field for wraiths
+	if (other.state == IMP_MWRAITH) return; //(TRUE); // wraith never get health -- CHECK: check state field for wraiths (when we have them)
 
 	if (other.rune_flag & RUNE_VAMPIRE)
 	{
@@ -580,7 +580,7 @@ void() x_pwr_touch =
 
 	if (self.items == IT_QUAD)
 	{
-		if (self.mdl == "progs/d_berzerk.mdl") // special - doom berserk - TDO: even more special - 4x only for fists, red haze
+		if (self.mdl == "progs/d_berzerk.mdl") // special - doom berserk - IMP: even more special - 4x only for fists (set flag for combat code), red haze
 			health_touch();
 
 		other.super_time = 1;

@@ -539,7 +539,7 @@ void() player_ZombieFireGrenade =
 // .count - used for percentage on up & down, set to 0
 // .rad_time - chance of instant death after time + this
 // .lefty - chance of instant death
-// IDEAS: color?
+// IDEA: color?
 
 float MIN_CLOUD_DIST			= 300; // minimum distance between player / zombie clouds
 float CLOUD2_STATE			= 100; // if 2nd cloud is to start - cloud 1 state must be < than this

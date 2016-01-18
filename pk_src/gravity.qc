@@ -31,7 +31,7 @@ float (entity targ) grav_visible =
 	spot2 = targ.origin + v2;
 	traceline (spot1, spot2, TRUE, self);	// see through other monsters
 
-// TDO: pull some liquid with it - full chaos mod env expansion
+// IMP: pull some liquid | lava balls with it - full chaos mod env expansion
 //	if (trace_inopen && trace_inwater)
 //		return FALSE;			// sight line crossed contents
 

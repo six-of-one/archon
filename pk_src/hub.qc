@@ -59,6 +59,17 @@ void() hub_teleport_touch =
 	if (self.target1 == "score_rel2")
 		return;
 
+	if (self.count > 0)
+	{
+		if (ply_count < self.count)
+		if (self.target1 == "player_count")
+			return;
+
+		if (ply_count >= self.count)
+		if (self.target1 == "!player_count")
+			return;
+	}
+
 	// change of vote?
 	if (other.map != "")
 	{
@@ -365,6 +376,18 @@ entity(float num) getMap =
 		if (!m_score_rel2)
 		if (e.target1 == "score_rel2")
 			f = FALSE;
+
+		if (deathmatch)
+		if (e.count > 0)
+		{
+			if (ply_count < e.count)
+			if (e.target1 == "player_count")
+				f = FALSE;
+
+			if (ply_count >= e.count)
+			if (e.target1 == "!player_count")
+				f = FALSE;
+		}
 
 		if (f)
 		if (e.map != "@random")

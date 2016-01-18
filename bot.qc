@@ -517,7 +517,7 @@ this is really useless code, so we shall deprecate
  */
 
 // inactive while installed with frikbot code, which was adapted to work the same & noted *bot
-// TDO: class_select test
+// IMP: class_select test instead of | plus classname
 /*
 void(entity client, string s)	bot_stuffcmd = #21;
 void(entity client, string s)	bot_sprint = #24;
@@ -597,7 +597,7 @@ void(entity e) bot_BackpackSetup =
 
 // remove item hooks & put here - code diverts here from PlaceItem
 
-// TDO: easy ver, all x stuff
+// IMP: easy ver, all x stuff
 
 void(entity e) bot_item_linx =
 {

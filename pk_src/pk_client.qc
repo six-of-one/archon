@@ -525,6 +525,9 @@ void() PutClientInServer =
 		cvar_set("scratch3","0");
 	}
 
+	self.classname = "player";
+	player_count(); // count for map over loading ops
+
 	if (Q_100 || Q_99)
 	{
 		if (Q_99)
@@ -539,7 +542,6 @@ void() PutClientInServer =
 	spot = PK_SelectSpawnPoint (); // *pk - get a spawn point, pk style 
 	ClearSpawnPoint(spot); // *pk
 
-	self.classname = "player";
 	self.health = 100;
 	self.max_health = 100;
 	self.health_modifier = 1.0;
@@ -2214,7 +2216,10 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					bprint ("'s pain\n");
 					return;
 				}
-// TDO: all fire & forget
+
+
+// IMP: all fire & forget - are there any left?
+
 
 //MED 11/18/96
             if (inflictor.classname == "proximity_grenade")
@@ -2295,7 +2300,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				}
 
 
-            if (inflictor.classname == "bfg_ball") // TDO: q2 message for direct hit
+            if (inflictor.classname == "bfg_ball") // IMP: q2 message for direct hit
 				{
 					bprint (targ.netname);
 					if (random()<0.5)

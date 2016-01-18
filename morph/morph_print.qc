@@ -123,16 +123,44 @@ float(entity ck, float cl) morph_classpr =
 	return(FALSE);
 };
 
+// initial note is on a think so centertime can be changed
+// this is necessary - from the time touching the morph cube to entering the first morph_print, centertime is not changed
+
+void() morph_print_notify =
+{
+	if (self.enemy)
+	if (!self.enemy.deadflag)
+	if (self.enemy.solid)
+	if (self.enemy.classname == "player")
+	{
+		centerprint(self.enemy, "\b           Welcome to Archon.           \n"
+						 "\b----------------------------------------\n"
+						 "\bYou can now evolve - please select an   \n"
+						 "\bevolution with these controls:          \n"
+						 "\b----------------------------------------\n"
+						 "\bUse cycle weapon+ to go forward -       \n"
+						 "\bUse cycle weapon- to go backward.       \n"
+						 "\bPress fire to finish your selection     \n"
+						 "\band Evolve!                             \n"
+						 "\bselect any weapon with 1 - 9 to exit.   \n"
+						 "\b----------------------------------------\n");
+	}
+	remove(self);
+};
+
 // pl - players entity
 // .cnt - cleared for classpr
 
 void(entity p1) morph_print =
 {
-stuffcmd(p1,"scr_centertime 240\n");
+	local entity e;
+
+stuffcmd(p1,"scr_centertime 240\n"); // incase admin_centertime is not
 stuffcmd(self, "\ncon_notify 4\n"); // for this output
 if (p1.cnt < 0)
 	{
 	//						 1234567890123456789012345678901234567890
+/*
 	centerprint(p1, "\b           Welcome to Archon.           \n"
 						 "\b----------------------------------------\n"
 						 "\bYou can now evolve - please select an   \n"
@@ -144,7 +172,14 @@ if (p1.cnt < 0)
 						 "\band Evolve!                             \n"
 						 "\bselect any weapon with 1 - 9 to exit.   \n"
 						 "\b----------------------------------------\n");
+*/
+		e = spawn();
+		e.think = morph_print_notify;
+		e.nextthink = time + 0.5;
+		e.enemy = p1;
+
 		p1.cnt = 0; // clear for classpr
+		return;
 	}
 else if (p1.state == IMP_MCHAOS)
 	centerprint(p1, "\bA sentient formless mass of energy and \n"

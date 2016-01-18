@@ -151,7 +151,7 @@ void() s_shal_attack8     =[      $lgattack8,       s_shal_attack9    ] {ai_face
 void() s_shal_attack9     =[      $lgattack9,       s_shal_attack10   ]
 {
 	ShalMissile();
-	ShalMissile(); // TDO: some decision here - need logic
+	ShalMissile(); // IMP: some decision here - need logic when super vore will do this
 };
 void() s_shal_attack10    =[      $lgattack10,      s_shal_attack11   ] {ai_face();};
 void() s_shal_attack11    =[      $lgattack11,      s_shal_run1   ] {};
@@ -173,14 +173,14 @@ void() s_shal_death7      =[      $lgdeath7,        s_shal_death7    ] {};
 // 2nd attack - lightning, summon sphere, portal, other magics
 void() s_shal_attackb1     =[      $lgattackb1,       s_shal_attackb2    ] 
 {
-	sound (self, CHAN_VOICE, "shalrath/attack.wav", 1, ATTN_NORM); // TDO: new sounds
+	sound (self, CHAN_VOICE, "shalrath/attack.wav", 1, ATTN_NORM); // IMP: new sounds for super
 	ai_face();
 };
 void() s_shal_attackb2     =[      $lgattackb2,       s_shal_attackb3    ] {ai_face();};
 void() s_shal_attackb3     =[      $lgattackb3,       s_shal_attackb4    ] {ai_face();};
 void() s_shal_attackb4     =[      $lgattackb4,       s_shal_attackb5    ]
 {
-	ShalMissile(); // TDO: attack 2
+	ShalMissile(); // IMP: attack 2 - new att
 };
 void() s_shal_attackb5    =[      $lgattackb3,      s_shal_attackb6   ] {ai_face();};
 void() s_shal_attackb6    =[      $lgattackb2,      s_shal_run1   ] {};

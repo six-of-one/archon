@@ -10,6 +10,8 @@
  *
  */
 
+// Cataboligne - 10.28.11 - added src unlock code
+// Cataboligne - 11.7.11 - added ply unlock code
 
 float DOOR_START_OPEN	 = 1;
 float DOOR_DONT_LINK	 = 4;
@@ -121,7 +123,6 @@ ACTIVATION FUNCTIONS
 =============================================================================
 */
 
-// Cataboligne - 10.28.11 - added score unlock code
 
 void () door_fire =
 {
@@ -135,6 +136,18 @@ void () door_fire =
 	if (!m_score_rel2)
 	if (self.target1 == "score_rel2")
 		return;
+
+	if (deathmatch)
+	if (self.cnt > 0)
+	{
+		if (ply_count < self.cnt)
+		if (self.target1 == "player_count")
+			return;
+
+		if (ply_count >= self.cnt)
+		if (self.target1 == "!player_count")
+			return;
+	}
 
 	if (self.owner != self)
 		objerror ("door_fire: self.owner != self");

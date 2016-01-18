@@ -231,7 +231,7 @@ void () item_megahealth_rot =
 
 	if (other.health > other.max_health * other.health_modifier) // Cataboligne - 9.18.11 - morphic
 	{
-		self.duration = self.duration - 1; // for drop inv - TDO: have to find this ent & set
+		self.duration = self.duration - 1; // for drop inv
 		other.health = other.health - 1;
 		self.nextthink = time + 1;
 		return ;

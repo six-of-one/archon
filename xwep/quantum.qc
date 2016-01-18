@@ -57,7 +57,7 @@ void() portal_multi_frag =
 	PortalTouch();
 };
 
-// TDO: monsters & items - need different reject quals
+// IMP: monsters & items - may need different reject quals
 
 void () PortalTouch =
 {

@@ -697,7 +697,7 @@ void() PK_PlayerDie =
 		return;
 	}
 
-// TDO: conduit for all morphs
+// IMP: conduit for all morphs - skin & frames in all applicable models
 
 	if (self.bolt_conduitTimeout > time) // it's the conduit time for this player...
 	{

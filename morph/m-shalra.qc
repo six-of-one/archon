@@ -193,12 +193,20 @@ void() player_shalrath_attack =
 	 {
 		if(self.weapon == IT_AXE)
 		{
+			if (self.class_select == "class_bot") // TEST: block bots from using sphere, see if bad wolf bug goes away
+			{
+				if (rune_haste(0.4))
+					self.attack_finished = time + 0.75;
+				player_shalrath_lightning1(); // lightning
+				return;
+			}
+
 			if (sphere_a != world)
 			{
 				if (sphere_a.owner == self && self.impulse == ALT_FIRE_IMP) // case of idle sphere - this regains control
 					sphere_attack();
 				else
-					sprint(self,"Sphere of annihilation already summoned!\n"); // IDEA take control of idle sphere
+					sprint(self,"Sphere of annihilation already summoned!\n"); // IDEA: take control of idle sphere
 				return;
 			}
 			sprint(self,"You summoned a Sphere of Annihilation!\n");

@@ -252,7 +252,7 @@ void() lavablob_die_explode8	=	[ $exp,		SUB_Nop ]
 	setmodel(self, "");
 
 //	NO_BLAST = TRUE;
-//	if (random() < 0.02) volcano_spawn(self.origin, 1.1); TDO: restore
+//	if (random() < 0.02) volcano_spawn(self.origin, 1.1); TDO: restore at some future release date (beta | final?)
 
 	sound (self, CHAN_VOICE, "blob/death1.wav", 1, ATTN_NORM);
 	self.origin = self.origin - 8*normalize(self.velocity);

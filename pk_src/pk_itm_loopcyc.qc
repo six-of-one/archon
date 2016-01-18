@@ -142,7 +142,7 @@ void() loopcyc_think =
 			else // cycle according to rules
 			{
 
-// TDO: mass replace here for all loop x.theowner, else below
+// IMP: mass replace here for all loop x.theowner, else below
 
 				self.delay = f = loop_next(self, e.mcode);
 				e.pk_touch = (void()) 0;
@@ -241,7 +241,7 @@ void(entity e) init_loopcyc =
 	if (!cvar(e.target)) cvar_set(e.target, "-60"); // default timer
 
 
-// TDO: mass replace here for all listed items - wait must be -666, check all levels
+// IMP: mass replace here for all listed items - wait must be -666, check all levels
 // have to set cl for each listed mc & ignore f1 not finding a sr
 	sf = 1;
 
@@ -423,4 +423,4 @@ void() start_loopcyc =
 	}
 };
 
- // TDO: should warn if !pk_art
+ // IMP: should warn if !pk_art and pk art codes are used, likewise any x codes and not having that x mode available

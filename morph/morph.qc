@@ -21,6 +21,8 @@ float MORPH_STROG;
 float MORPH_ARENA;
 float MORPH_ANCIENT;
 
+// note - morph limited to monster for now
+
 void() morph_setup =
 {
 	MORPH_ARCHON = CB_CHAOS + CB_ORDER;
@@ -33,15 +35,19 @@ void() morph_setup =
 
 	MORPH_ALL = MORPH_ARCHON + MORPH_MONSTER + MORPH_HELLION + MORPH_STROG + MORPH_ANCIENT + CB_HUMAN;
 
-// these morph fly nativley
+// these morph fly natively
 	MORPH_FLY = CB_CHAOS + CB_ORDER + CB_SCRAG + CB_WRAITH + CB_DRAGON + CB_GREMLIN;
-// these morphs can always hook
+// these morphs can always hook - so limited jumpers can get unstuck - this is a limited range hook
 	MORPH_HOOK = CB_CHAOS + CB_CTHON + CB_ZOMBY + CB_SCOURGE; // + CB_GREMLIN;
+// morph with builting armor (can heal this)
 	MORPH_SARMOR = CB_SCOURGE + CB_GREMLIN + CB_IMP;
 
+// these are not for morph
+// monster bits - original + mod expansion ( scourge, gremlin, super vore, vomitus )
 	MONSTER_MASK = CB_M_ARMY + CB_M_FISH + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
 						CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE + CB_M_GREMLIN + CB_M_VOMIT;
 
+// bonus monster bits
 	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA + CB_M_BOSSMAN + CB_M_CLING;
 
 // note - no fish, shubs or cthon
@@ -335,6 +341,7 @@ void() morphic_impulse =
 		c.lefty = morph_selinc(c.lefty);
 		sv = sv - 1;
 	}
+
 	if (!f)
 	{
 		if (WARNING) bprint("*** Warning - morphic cube with no selection options! - removed\n");
@@ -474,8 +481,10 @@ void() morph_cube =
 
 
 // TEST: until rest of morphs ready
-// TDO: level access - perhaps by server xp, diff masks
-self.mask_x = MORPH_MONSTER;
+// IMP: level access - perhaps by server xp, diff masks
+// IDEA: if ULOK* true, use xnre on maps i.e. MORPH_HELLION on doom levels
+
+	self.mask_x = MORPH_MONSTER;
 
 
 	setmodel(self, "progs/morph_cube.bsp");
@@ -633,7 +642,7 @@ float(entity atk, entity trg) morph_ffchk =
 	local entity mon, oth;
 
 	l = FALSE;
-	if (MORPH_FF || Q_100) return(l); // TDO: sv_
+	if (MORPH_FF || Q_100) return(l); // IMP: sv_
 	if ((trg.flags & FL_CLIENT) && (atk.flags & FL_CLIENT)) return(trg.morphy == atk.morphy);
 	if ((trg.flags & FL_MONSTER) | (atk.flags & FL_CLIENT)) 
 	{
@@ -1222,7 +1231,7 @@ void(float cmd, float pls) polymorph_check =
 		self.modelindex_morph = self.modelindex;
 		self.mdl = self.model;
 
-		self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent); // TDO: default could load eweap for morph - it needs consolted if morphs ever get ews
+		self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent); // IDEA: default could load eweap for morph - it needs consolted if morphs ever get ews
 	
 		if (cmd == IMP_MCHAOS || cmd == IMP_MWIZARD || cmd == IMP_MWRAITH)
 		{
@@ -1282,13 +1291,13 @@ float GIB_TWITCH				= 0.5; 		// chance of throwing a gib that twitches
 //GibMorph ("progs/h_ogre.mdl", 0, FL_HEADGIB | FL_NONHUMGIB, 0, -80, 18, 0, "")  // ogre
 
 
-// TDO: unfake this
+// IMP: gibs per morph as above
 
 float (string hd, float hf, float flg, float rd, float hl, float sz, float gf, string g1) GibMorph =
 {
 	if (self.health <= hl)
 	{
-		GibPlayer(); // TDO:	
+		GibPlayer();
 		return(1);
 	}
 	return(0);
@@ -1513,6 +1522,13 @@ void() random_monster =
 	if (C_MONSTER_CNT > 0)
 	if (monster_rnd_cnt >= C_MONSTER_CNT) return; // hit limit
 
+// single play / coop fast spawn when all map monsters are removed
+
+	if (!deathmatch)
+	if (M_MONSTER < 0)
+	if (monster_rnd_cnt < (C_MONSTER_CNT * 0.55) || (C_MONSTER_CNT < 20))
+		self.nextthink = time + 5 * random();
+
 //	f = 100;
 	self.cnt = rnd_bit_mask(C_MONSTER);
 	self.count = rnd_bit_mask(C_MONSTER_II);
@@ -1691,7 +1707,7 @@ float(entity e) IS_LAVA =
 	return(f);
 };
 
-// NOTE: TDO: put back in volcano when added to mod
+// IMP: put back in volcano when added to mod
 
 // fn(fireball_missile) - fire off a fireball (or anything) as a missile, treated as lavaball
 // fn(lavaball_shot) - generic call for think, fire_burst
@@ -1866,7 +1882,7 @@ void() chaos_bomb =
 	vspk = SUB_Null;
 	if (self.weapon == IMP_MOGRE) { wfire = W_FireClusterGren; r1 = 5; }
 	else if (r1 > 7) wfire = fire_laser1;
-//	else if (r1 > 6) wfire = fire_cbolt; // TDO: put back in for chaos morph
+//	else if (r1 > 6) wfire = fire_cbolt; // IMP: put back in for chaos morph
 	else if (r1 > 5) { wfire = W_FireClusterGren; vspk = RND_Damage; }
 	else if (r1 > 5) { wfire = W_FireClusterRock; vspk = RND_Damage; }
 	else if (r1 > 4) wfire = W_FireLightning;
