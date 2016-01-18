@@ -15,7 +15,7 @@ void() connectmessage =
 // = http://www.moddb.com/downloads/generations-w-d-q-v10-alpha
 // = http://www.moddb.com/mods/chaos-archon/
 	
-	Line3 = "\\/ersion \b1\b.\b0a\b\n\n";
+	Line3 = vmotd;
 	Line5 = "\nsee:           \nhttp://www.moddb.com/mods/";
 //	Line5 = "\nsee:           \nhttp://www.moddb.com/downloads/";
 	Line7 = "\n              for details";

@@ -343,7 +343,12 @@ TELEPORT TRIGGERS
 */
 
 float PLAYER_ONLY	 = 1;
-float SILENT	 = 2;
+float T_SILENT	 = 2;
+float T_RANDOM = 4;
+float T_STEALTH = 8;
+float NONDIR = 16; // Note: zerstorer used this for something - ref: dd
+float T_NODEATH = 32;
+float ALT_TARGET = 64;
 
 void () play_teleport =
 {
@@ -467,8 +472,9 @@ void (vector org, entity death_owner) spawn_tdeath =
 
 void () teleport_touch =
 {
-	local entity t;
+	local entity t,e;
 	local vector org;
+	local string targ;
 
 	if (self.targetname)
 	{
@@ -492,9 +498,12 @@ void () teleport_touch =
 	SUB_UseTargets ();
 
 // put a tfog where the player was
-	if (PK || (world.wad == "q2.wad")) spawn_tfog2(other.origin, ""); // *pk - new teleport sounds
-	else
-	spawn_tfog (other.origin);
+	if (!(self.spawnflags & T_STEALTH))
+	{
+		if (PK || (world.wad == "q2.wad")) spawn_tfog2(other.origin, ""); // *pk - new teleport sounds
+		else
+		spawn_tfog (other.origin);
+	}
 
 	if (self.classname == "chaos_teleport") // chaos teleport sets movetarget - Cataboligne 1.23.8
 	{
@@ -504,9 +513,26 @@ void () teleport_touch =
 	}
 	else
 	{
-		t = find (world,targetname,self.target);
+		targ = self.target;
+
+		if (self.spawnflags & ALT_TARGET) // Cataboligne - 11.2.12 - alternate target teleport, for the Castle
+		{
+			e = find (world,targetname,self.path);
+			if (e)
+			{
+				if (self.group == "origin")
+				if (e.origin == v0) targ = self.target1;
+			}
+		}
+
+		t = find (world,targetname,targ);
 		if (!t)
-			objerror ("couldn't find target");
+		{
+			if (Q_100 && Q_100_OBJERR)
+				objerror ("couldn't find target");
+			if (WARNING) bprint("\n*** warning:\nTeleporter target not found!\n");
+			return;
+		}
 	}
 
 	if (PK) ClearSpawnPoint(t);
@@ -514,8 +540,11 @@ void () teleport_touch =
 	makevectors (t.mangle);
 	org = t.origin + 32 * v_forward;
 
-	spawn_tfog (org);
-	spawn_tdeath (t.origin,other);
+	if (!(self.spawnflags & T_STEALTH))
+		spawn_tfog (org);
+
+	if (!(self.spawnflags & T_NODEATH))
+		spawn_tdeath (t.origin,other);
 
 	if (other.enemy.classname == "pk*bot")
 	{
@@ -530,7 +559,8 @@ void () teleport_touch =
 	}
 
 	setorigin (other,t.origin);
-	other.angles = t.mangle;
+
+	if (! self.spawnflags & NONDIR) other.angles = t.mangle; // Cataboligne - 10.31.12 - non directional landing - keep current facing, great with stealth
 	if (other.movetarget.movetarget)
 	{
 		addTarget (other.movetarget.movetarget,self);
@@ -542,12 +572,13 @@ void () teleport_touch =
 	}
 	if ((other.classname == "player") || (other.classname == "pk*bot") || (other.classname == OBSERVER))
 	{
-		other.fixangle = 1;		// turn this way immediately
+		if (! self.spawnflags & NONDIR)
+			other.fixangle = 1;		// turn this way immediately
 		other.teleport_time = time + 0.7;
-		other.bt_immune_time = time + BT_BUFFER; // *pk - beartrap
+		other.bt_immune_time = time + BT_BUFFER; // *pk - beartrap - Note: ssnn issue here
 		if (other.flags & FL_ONGROUND)
 			other.flags = other.flags - FL_ONGROUND;
-		other.velocity = v_forward * 300;
+		other.velocity = v_forward * 300; // Note: ssnn issue here - causes "jump"
 	}
 	other.flags = other.flags - other.flags & FL_ONGROUND;
 };
@@ -573,16 +604,30 @@ void () teleport_use =
 	self.think = SUB_Null;
 };
 
-/*QUAKED trigger_teleport (.5 .5 .5) ? PLAYER_ONLY SILENT
+/*QUAKED trigger_teleport (.5 .5 .5) ? PLAYER_ONLY T_SILENT T_RANDOM T_STEALTH NONDIR T_NODEATH
 Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set the "target" field, and create an object with a "targetname" field that matches.
 
 If the trigger_teleport has a targetname, it will only teleport entities when it has been fired.
+
+Flags:
+"player_only"		 		only players will teleport
+"silent"				 		silences teleporting - still has flash & tele sound
+"random" (Zerstorer)		sent to a random desination (info_teleport_random).  Must set
+"count"						flag to number of  info_teleport_random in map.
+"stealth" (Zerstorer)  	eliminates the particle flash and noise when an entity is teleported (still has hum)
+"nondir" (chaos)			dont change direction, works well with stealth
+"nodeath"					dont spawn a tele death - no telefrag (this could have issues!)
+
+to make a teleport give the appearance of contiguous map space in 2 different areas use:
+silent, stealth, nondir, nodeath
+going both ways
 */
+
 void () trigger_teleport =
 {
 	local vector o;
 
-// Cataboligne - 4.21.11 - triggerss not in mod maps
+// Cataboligne - 4.21.11 - triggers not appearing in mod maps
 	if (notmod(self)) return;
 
 	InitTrigger ();
@@ -600,7 +645,7 @@ void () trigger_teleport =
 	}
 	self.use = teleport_use;
 
-	if (!(self.spawnflags & SILENT))
+	if (!(self.spawnflags & T_SILENT))
 	{
 		precache_sound ("ambience/hum1.wav");
 		o = (self.mins + self.maxs)*0.5;

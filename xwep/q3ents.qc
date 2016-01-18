@@ -1759,6 +1759,7 @@ void() q3_art_shell =
 
 	if (!self.enemy || self.owner.health <= 0 || f )
 	{
+		stack_delete(self.owner, self.teamname); // remove classname from stack - Cataboligne - 10.31.12 
 		if (self.enemy)
 		{
 			self.enemy.vwepent = world;
@@ -1773,22 +1774,24 @@ void() q3_art_shell =
 
 void() regen_shell_exp =
 {
-	local float h;
+	local float h, f;
 
-	if (!self.owner.rune_flag & RUNE_FLG_RG || !self.enemy || self.owner.health <= 0)
+	f = (self.owner.rune_flag & (RUNE_FLG_RG | RUNE_FLG_HS));
+	if (!f || !self.enemy || self.owner.health <= 0)
 	{
 		if (self.enemy)
 		{
 			self.enemy.vwepent = world;
 			remove(self.enemy);
 		}
+		stack_delete(self.owner, self.teamname); // remove classname from stack - Cataboligne - 10.31.12 
 		vw_chain(self.owner); // removed artifact shell
 		self.owner.volume = 0;
 		remove(self);
 		return;
 	}
 	self.nextthink = time + 1;
-	
+
 	if (self.owner.volume > 100)
 		h = self.owner.volume;
 	else
@@ -1846,6 +1849,7 @@ void() q3_pwr_touch =
 	if (self.spawnflags & (RUNE_FLG_RG | RUNE_FLG_HS))
 	{
 		e = spawn();
+		e.teamname = self.classname; // for stack fix
 		e.think = regen_shell_exp;
 		e.nextthink = time + 0.5;
 		e.owner = other;
@@ -1874,6 +1878,7 @@ void() q3_pwr_touch =
 	{
 		e.classname = "rune_1_expiry";
 		e.netname = self.netname;
+		e.teamname = self.classname; // for stack fix
 		e.rune_flag = self.spawnflags; // & RUNE_MASK_ALL; // NOTE: not really needed as long as bit for inv item is set right
 		e.think = rune_1_expire;
 		e.aflag = 0;

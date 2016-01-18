@@ -253,6 +253,7 @@ void() lavacthon_death6 = [$death6, lavacthon_death7]
 if (self.owner.watertype != CONTENT_LAVA)
 	{
 	self.skin = 1;
+	self.colormap = 0;
 	sound (self,CHAN_WEAPON,"chaos/freeze.wav",1,ATTN_NORM);
 	self.nextthink = -1;
 	}

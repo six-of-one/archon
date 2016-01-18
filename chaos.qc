@@ -1043,18 +1043,50 @@ power points must consist of -
 4. an "archon_power_act" entity (map loaded) that gets used when trigger (3) is fired
 
 */
+// spawn flag values
+float NOITEM = 1;
+float NOHEAL = 1;
+float NOSPRAY = 2;
+float P_RELOAD = 4;
 
-float arc_pwr_item;
+
+float arc_pwr_item; // unique id for each power point
 
 // change points spray color
 // make items for points
+// called by .th_die()
 
-void() archon_powerclr =
+// IDEA: other "color" effect besides particle spray - glowing globe ?
+
+void() archon_power_fn =
 {
 	local float f;
 	local entity e;
+	local vector v1;
 
-	if (self.attack_finished < time)
+		if (self.target) // follow this target
+		{
+			e = find (world,targetname,self.target);
+			if (e)
+			{
+				v1 = self.origin;
+				if (self.target1 == "_z") v1_z = e.origin_z + self.height; // height adjust from target (could be a mover)
+				else if (self.target1 == "mins_z") v1_z = e.mins_z + self.height;
+				else if (self.target1 == "_both_z") v1_z = e.origin_z + e.mins_z + self.height;
+				else if (self.target1 == "_dest") v1 = e.origin + self.dest;
+				else v1 = e.origin;
+				if (self.origin != v1) setorigin(self, v1);
+			}
+		}
+
+		if (self.spawnflags & P_RELOAD) // reload model
+		if (self.super_time < time)
+		{
+			setmodel(self, self.mdl);
+			self.super_time = time + self.wait;
+		}
+
+	if (self.attack_finished < time) // spray color
 	{
 		self.attack_finished = time + 10 + random() * 5;
 		f = rint(random() * 4.3);
@@ -1070,14 +1102,18 @@ void() archon_powerclr =
 	}
 
 	f  = (self.search_time < time);
-	if (f) self.search_time = time + 5 + random() * 5;
+	if (f)
+	{
+		self.search_time = time + 5 + random() * 5;
+		if (random() < 0.1) self.search_time = self.search_time + 10 + random() * 20; // some times longer
+	}
 
-	e = findradius(self.origin, 38);
+	e = findradius(self.origin, 64);
 	while (e && f)
 	{
 		if (e.flags & FL_CLIENT) f = FALSE;
 		if (e.flags & FL_ITEM)
-		if (e.button14 == self.owner.button14) f = FALSE;
+		if (e.button14 == self.button14) f = FALSE;
 		e = e.chain;
 	}
 
@@ -1085,7 +1121,7 @@ void() archon_powerclr =
 	{
 		e = self;
 		self = spawn(); // temp ent
-		self.origin = e.owner.origin;
+		self.origin = e.origin;
 		self.delay = self.count = 0;
 		self.wait = MC_SUPER_SHOTGUN + rint(random() * 6.4); // weps & poss quad
 		if (random() < 0.4) self.wait = -3;
@@ -1095,7 +1131,7 @@ void() archon_powerclr =
 		self.spawnflags = 2 | 8; // respawn on item - + spawnflag for old dynamic remove
 		func_make();
 		newmis.velocity = v0; // stop eject
-		newmis.button14 = e.owner.button14;
+		newmis.button14 = e.button14;
 
 // make ammo for weps - can only be gotten one time
 		if (newmis.items & IT_SUPER_SHOTGUN)
@@ -1140,21 +1176,32 @@ void() archon_powerclr =
 	}
 };
 
-// place holder for archon power point color spray & create think
+// spawn for archon power point color spray & create think
 // power point id is used to detect point created items
+
+
+/*QUAKED archon_power (.8 .1 .8) (-8 -8 -8) (8 8 8) NOITEM NOSPRAY P_RELOAD
+*/
 
 void() archon_power =
 {
-	local entity e;
+	if (self.alpha <= 0) self.alpha = 0.7;
+	if (self.scale <= 0) self.scale = 0.6;
+	if (self.wait <= 0) self.wait = 10;
+	self.cnt = 74;
 
-	e = chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "archon_powerclr", "progs/arc_pp.bsp", SUB_Null, 1, q2_teleport_particles, archon_powerclr, self, world);
-	e.alpha = 0.7;
-	e.scale = 0.6;
-	e.cnt = 74;
+	if (self.mdl == "") self.mdl = "progs/arc_pp.bsp";
+	setmodel(self, self.mdl);
+
+	self.nextthink = time + 3;
+	self.think = q2_teleport_particles;
+	self.th_die = archon_power_fn;
+
+	if (self.spawnflags & NOITEM) self.search_time = MAXFL;
+	else
 // dont always make items instantly
 	if (random() < 0.4)
-		e.search_time = time + 3 + random() * 5;
-
+		self.search_time = time + 3 + random() * 5;
 
 // unique id for each point
 	if (!arc_pwr_item) arc_pwr_item = 4000 + rint(10 * random());
@@ -1190,17 +1237,24 @@ void(entity e) archon_point_heal =
 // IMP: other effects - proof against magic spell attack too - this touch will have to be detected live
 
 // when touch fired by trigger - heal ent that touched
+// trigger timing controls freq. of touch
 
 void() archon_power_touch =
 {
-	if (!other.healtype) archon_point_heal(other);
+	if (! self.spawnflags & NOHEAL)
+	{
+		if (!other.healtype) archon_point_heal(other);
 
-	if (activator.health < (activator.max_health * activator.health_modifier * other.health_modifier)) // health < points mod
-		T_Heal(activator,other.healtype + rint(0.33 + random()), 0);
+		if (activator.health < (activator.max_health * activator.health_modifier * other.health_modifier)) // health < points mod
+			T_Heal(activator,other.healtype + rint(0.33 + random()), 0);
+	}
 };
 
 // power point activator - must be targeted by multi trigger
 // calls *_touch when trigger is fired
+
+/*QUAKED archon_power_act (.8 .1 .8) (-8 -8 -8) (8 8 8) NOHEAL
+*/
 
 void() archon_power_act =
 {
@@ -1539,7 +1593,11 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 	bq.modelindex = e.modelindex;
 	bq.frame = e.frame;
 	bq.rune_flag = e.rune_flag;  // corpse have runes - when gibable, they will be protected by resist
+
+// needs testing - this was failing on cthon & lavabomb skin 1
 	bq.colormap = e.colormap; // player colors till disconnect - changes when changed live
+//	bq.colormap = 0; // Cataboligne - 10.29.12 - fix lava morph dead skin issues - done in death fn() now
+
 //	bq.clientcolors = e.clientcolors; // does nothing - colors happen thru the colormap, of which there are client slots count
 	bq.flags = e.flags - (e.flags & (FL_CLIENT | FL_MONSTER) ); // mask off these flags
 	bq.movetype = e.movetype;

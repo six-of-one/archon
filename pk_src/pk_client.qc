@@ -65,7 +65,7 @@ void() SetChangeParms =
 		q100_SetChangeParms();
 		return;
 	}
-// Cataboligne 9.11.3 purify - chase cam
+// Cataboligne 9.11.3 purify - chase cam - parm14
 	cam_parms(0);
 
 	if (self.class_select == "class_player")
@@ -257,7 +257,7 @@ void() DecodeLevelParms =
 // NOTE: *** morphy MUST be set prior to this call!
 	if (parm6 == -6) set_defaults(self); // only done on respawn or spawn where we are clearing parms because of dead
 
-// Cataboligne 9.11.3 purify - chase cam
+// Cataboligne 9.11.3 purify - chase cam - parm14
 	cam_parms(1);
 };
 
@@ -489,14 +489,14 @@ void() pk_plcfg =
 			if (MAP_MODE == "Q3")
 				q3_bob_height();
 		}
-// web site segment
-		stuffcmd(self, "alias version \"echo quake-c: chaos archon alpha 1.0\"\n");
-		stuffcmd(self, "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
-		stuffcmd(self, "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
-		stuffcmd(self, "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
-		stuffcmd(self, "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
+// version & web sites segment
+		stuffcmd(self, vers);
+		stuffcmd(self, vweb);
+		stuffcmd(self, vdev);
+		stuffcmd(self, vqcs);
+		stuffcmd(self, sites);
 
-		stuffcmd(self, "infobar 30 \"you are playing: Archon 1.0 alpha\"\n");
+		stuffcmd(self, "infobar 30 \"you are playing: Archon 1.0.2 alpha\"\n");
 
 		stuffcmd(self, "alias score \"echo score: ");
 		stuffcmd(self, ftos(score_rel1 + 1));
@@ -559,7 +559,8 @@ void() PutClientInServer =
 	ClearSpawnPoint(spot); // *pk
 
 	self.health = 100;
-	self.max_health = 100;
+	if (self.max_health < 100) // Cataboligne - 11.1.12 - adrenaline in level add
+		self.max_health = 100;
 	self.health_modifier = 1.0;
 	self.takedamage = DAMAGE_AIM;
 	self.solid = SOLID_SLIDEBOX;
@@ -2914,7 +2915,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 //				noenvcide(targ);
 				return;
 			}
-			else if (rnum == -5 || targ.deathtype == "lavadead") // Cataboligne - 10.19.12 - allow other things (like triggers) to set a lava deathtype
+			else if (rnum == -5 || targ.deathtype == "lavadead" || targ.deathtype == "lavadead2") // Cataboligne - 10.19.12 - allow other things (like triggers) to set a lava deathtype
 			{
 //				noenvcide(targ);
 				if (MAP_MODE == "Q3" || MAP_MODE == "Q2")

@@ -611,21 +611,24 @@ float ofs;
 // fn(morph_test) - test multiple morph nums, return true for any match-
 
 // m* - morph nums
+// bt - bit mask match
 
-float(entity e, float m1,float m2,float m3,float m4,float m5,float m6) morph_test =
+float(entity e, float m1,float m2,float m3,float m4,float m5,float m6, float bt) morph_test =
 {
 if (m1)
-if ((e.morphy == m1) || (e.mask_x & m1)) return TRUE;
+if (e.morphy == m1) return TRUE;
 if (m2)
-if ((e.morphy == m2) || (e.mask_x & m1)) return TRUE;
+if (e.morphy == m2) return TRUE;
 if (m3)
-if ((e.morphy == m3) || (e.mask_x & m1)) return TRUE;
+if (e.morphy == m3) return TRUE;
 if (m4)
-if ((e.morphy == m4) || (e.mask_x & m1)) return TRUE;
+if (e.morphy == m4) return TRUE;
 if (m5)
-if ((e.morphy == m5) || (e.mask_x & m1)) return TRUE;
+if (e.morphy == m5) return TRUE;
 if (m6)
-if ((e.morphy == m6) || (e.mask_x & m1)) return TRUE;
+if (e.morphy == m6) return TRUE;
+if (bt)
+if (e.mask_x & bt) return TRUE;
 };
 
 // fn(morph_ffchk) - see if morph matches morph / monster under fire conditions
@@ -713,34 +716,45 @@ IMP_MSCOURGE
 
 // not having - fish, oldone
 
+// if true, army & enforcer will be friendly to marines in DM
+float MARINE_FRND = 1;
+
 float(entity chk) morph_clichk =
 {
-if (self.classname == "monster_army") return morph_test(chk,IMP_MENF,IMP_MOGRE,IMP_MZOMBIE,0,0,0); // he's kinda dumb...and a dork
-else if (self.classname == "monster_ogre") return morph_test(chk,IMP_MOGRE,IMP_MHKNIGHT,IMP_MSHALR,IMP_MSCOURGE,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,0,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_shambler") return morph_test(chk,IMP_MSHAMBLR,CB_GREMLIN,0,0,0,0);
-else if (self.classname == "monster_demon1") return morph_test(chk,IMP_MDEMON,CB_GREMLIN,0,0,IMP_MSCOURGE,IMP_MSHAMBLR);
-else if (self.classname == "monster_wizard") return morph_test(chk,IMP_MWIZARD,IMP_MHKNIGHT,IMP_MSHALR,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
-else if (self.classname == "monster_zombie") return morph_test(chk,IMP_MZOMBIE,0,0,0,0,0); // zombies get no respect, they are just loathed
-else if (self.classname == "monster_dog") return morph_test(chk,IMP_MOGRE,IMP_MENF,0,0,IMP_MDEMON,IMP_MSHAMBLR);
-else if (self.classname == "monster_hell_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_tarbaby") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MWIZARD,CB_GREMLIN,IMP_MCTHON,IMP_MSHAMBLR);
-else if (self.classname == "monster_boss") return morph_test(chk,IMP_MCTHON,0,0,0,0,0); // cthon likes lava
-else if (self.classname == "monster_enforcer") return morph_test(chk,IMP_MENF,IMP_MHKNIGHT,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_supervore") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,CB_GREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
-else if (self.classname == "monster_shalrath") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,CB_GREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
-else if (self.classname == "monster_scourge") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,0,0,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_gremlin") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MOGRE,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_vomit") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MCTHON,IMP_MVOMIS,IMP_MSHAMBLR);
+float m_test;
+
+if (ENHANCED)
+if (deathmatch && MARINE_FRND)
+{
+	if (chk.morphy == CHAR_Q) m_test = CHAR_Q;
+	if (chk.morphy == CHAR_PK) m_test = CHAR_PK;
+}	
+if (self.classname == "monster_army") return morph_test(chk,IMP_MENF,IMP_MOGRE,IMP_MZOMBIE,m_test,0,0,   0); // he's kinda dumb...and a dork
+else if (self.classname == "monster_ogre") return morph_test(chk,IMP_MOGRE,IMP_MHKNIGHT,IMP_MSHALR,IMP_MSCOURGE,0,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,0,0,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_shambler") return morph_test(chk,IMP_MSHAMBLR,CB_GREMLIN,0,0,0,0,   0);
+else if (self.classname == "monster_demon1") return morph_test(chk,IMP_MDEMON,CB_GREMLIN,0,0,IMP_MSCOURGE,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_wizard") return morph_test(chk,IMP_MWIZARD,IMP_MHKNIGHT,IMP_MSHALR,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_zombie") return morph_test(chk,IMP_MZOMBIE,0,0,0,0,0,   0); // zombies get no respect, they are just loathed
+else if (self.classname == "monster_dog") return morph_test(chk,IMP_MOGRE,IMP_MENF,0,0,IMP_MDEMON,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_hell_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_tarbaby") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MWIZARD,CB_GREMLIN,IMP_MCTHON,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_boss") return morph_test(chk,IMP_MCTHON,0,0,0,0,0,   0); // cthon likes lava
+else if (self.classname == "monster_enforcer") return morph_test(chk,IMP_MENF,IMP_MHKNIGHT,IMP_MOGRE,IMP_MSCOURGE,m_test,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_supervore") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,CB_GREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_shalrath") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,CB_GREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_scourge") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,0,0,0,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_gremlin") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MOGRE,0,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_vomit") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MCTHON,IMP_MVOMIS,IMP_MSHAMBLR,   0);
 // doom monsters - only friendly with doom dimension biengs
-else if (self.classname == "monster_imp") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
-else if (self.classname == "monster_arachnotron") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
-else if (self.classname == "monster_cyberdemon") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
+else if (self.classname == "monster_imp") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0,   0);
+else if (self.classname == "monster_arachnotron") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0,   0);
+else if (self.classname == "monster_cyberdemon") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0,   0);
 // stroggos - only like the strog
-else if (self.classname == "monster_gunner") return morph_test(chk,IMP_MGUNNEY,IMP_MTANK,IMP_MSUPTANK,0,0,0);
-else if (self.classname == "monster_tank") return morph_test(chk,IMP_MGUNNEY,IMP_MTANK,IMP_MSUPTANK,0,0,0);
-else if (self.classname == "monster_boss1" /* && self.model == "progs/q2_supertank.mdl" */ ) return morph_test(chk,IMP_MGUNNEY,IMP_MTANK,IMP_MSUPTANK,0,0,0);
-return morph_test(chk,IMP_MSCOURGE,0,0,0,0,IMP_MSHAMBLR); // no classname
+else if (self.classname == "monster_gunner") return morph_test(chk,IMP_MGUNNEY,IMP_MTANK,IMP_MSUPTANK,0,0,0,   0);
+else if (self.classname == "monster_tank") return morph_test(chk,IMP_MGUNNEY,IMP_MTANK,IMP_MSUPTANK,0,0,0,   0);
+else if (self.classname == "monster_boss1" /* && self.model == "progs/q2_supertank.mdl" */ ) return morph_test(chk,IMP_MGUNNEY,IMP_MTANK,IMP_MSUPTANK,0,0,0,   0);
+return morph_test(chk,IMP_MSCOURGE,0,0,0,0,IMP_MSHAMBLR,   0); // no classname
 };
 
 
@@ -1098,6 +1112,16 @@ float(string mm) set_char_num =
 	return(cn);
 };
 
+// so tossed packs arent immediately re-collected by the thrower
+
+void() morph_pack_rethink =
+{
+	self.touch = BackpackTouch;
+
+	self.nextthink = time + BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
+	self.think = SUB_Remove;
+};
+
 // fn(polymorph_check) - do a change by code or impulse, handles other morph impulse commands
 // self - entity to morph, note code requirements below for some values
 // cmd - instruction for morphing
@@ -1169,7 +1193,15 @@ void(float cmd, float pls) polymorph_check =
 			if (self.ammo_rockets < 2) self.ammo_rockets = 2;
 
 			if (self.mask_x & (CB_HUMAN | CB_ENF | CB_OGRE | CB_GREMLIN))
+			{
 				DropBackpack();
+				if (newmis)
+				{
+					newmis.touch = SUB_Null;
+					newmis.think = morph_pack_rethink;
+					newmis.nextthink = time + 6;
+				}
+			}
 			morph_armor_check(cb_morph(cmd));
 	//		morph_powerup_check(cmd);
 			morph_clearparms(self, FALSE);
@@ -1387,7 +1419,10 @@ void() random_monster_wakey =
 		remove(self);
 		return;
 	}
-		
+
+	self.owner.think(); // attempt to *_start_go
+	if (!self.owner.takedamage) self.owner.takedamage = DAMAGE_AIM;
+
 	if (self.owner.class_select == "class_monster")
 	if (self.owner.enemy.classname == "player")
 	{

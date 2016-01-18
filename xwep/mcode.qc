@@ -945,7 +945,7 @@ float(float mcv, entity e) bit_mcode =
 	
 	if (mc == MC_REGGUN)													return(IT_SUPER_SHOTGUN);
 	if (mc == MC_DEEPSLEEP)												return(IT_AXE);
-	if (mc == MC_QUANTUM)													return(IT_LIGHTNING);
+	if (mc == MC_QUANTUM)												return(IT_LIGHTNING);
 	if (mc == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
 	if (mc == MC_C_AGAS)													return(0);
 	if (mc == MC_C_AGAS_LG)												return(0);
@@ -1570,7 +1570,7 @@ string (float mc) item_by_mcode =
 	
 	if (mc == MC_REGGUN)													return("c_weapon_reggun");
 	if (mc == MC_DEEPSLEEP)												return("c_weapon_deepsleep");
-	if (mc == MC_QUANTUM)													return("weapon_quantum");
+	if (mc == MC_QUANTUM)												return("weapon_quantum");
 	if (mc == MC_C_FLAMER)												return("weapon_flamer");
 	if (mc == MC_C_AGAS)													return("ammo_gas");
 	if (mc == MC_C_AGAS_LG)												return("ammo_gas_lg");
@@ -2269,6 +2269,7 @@ void() painkeep_cube_use =
 			self.wad = monster_id(d, MON_FUNC_REG);
 			self.origin_z = self.origin_z + 8;
 			item_call(self.wad);
+			self.button13 = 0; // dont let dyn_rem wack the *_start_go from setting takedamage, etc.
 		}
 		else
 		{

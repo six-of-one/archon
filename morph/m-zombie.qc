@@ -642,14 +642,15 @@ void() cloudkill =
 		{
 			local entity e;
 			head = findradius(self.origin, self.distance * mult);
-			f = TRUE;
+			f = 400;
 			if (clc > 15)
-			while (head && f)
+			while (head && f > 0)
 			{
 				if (head.classname == "clouds")
 				if (vlen(head.origin - cparticle_lorg) < 10)
 					f = FALSE;
 				head = head.chain;
+				f = f - 1; // safety - Cat - 10.29.12
 			}
 			if (f && clc < 100)
 			{
@@ -671,11 +672,13 @@ void() cloudkill =
 	}
 
 // cloud damage here
-
+// note: why does it damage crates?  toxic?
+	
+	f = 400;
 	head = findradius(self.origin, self.distance * mult);
 	if (self.wait > 1) self.wait = self.wait - 1;
 	else
-	while (head)
+	while (head && f > 0)
 	{
 		self.wait = 5; // dmg once per sec.
 		if (head != self)
@@ -726,6 +729,7 @@ else
 			}
 		}
 		head = head.chain;
+		f = f - 1; // safety - Cat - 11.1.12
 	}
 
 };

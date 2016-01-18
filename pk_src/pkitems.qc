@@ -665,6 +665,7 @@ if (!self.mask_x) 			bprint("------------------- ** WARNING - item with no mask 
 		if (e) e.classname = e.wad;
 		return;
 	}
+
 	if (self.pk_touch == (void()) 0)
 	{
 		if (WARNING)
@@ -709,6 +710,7 @@ if (self.classname == "") bprint("*** - blank classname in touch fn \n");
 			player_scourge_impulse();
 			self = stm2;
 		}
+
 		if (self.solid == SOLID_NOT)
 		if (self.think == SUB_regen)
 		if (deathmatch == 1 || deathmatch == 3)
@@ -745,6 +747,7 @@ bprint(")\n");
 			if (e.think == player_run) e.think = e.th_run;
 			if (e.think == player_stand1) e.think = e.th_stand;
 		}
+
 		if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
 // special codes - for things that are touchable but dont disappear
 		if (self.aflag <= NO_REMOVE_TCH)
@@ -1601,7 +1604,6 @@ void() DropBackpack =
 	if (!self.flags & FL_MONSTER) // monsters always get to throw down
 	if (DEAD_XPACK == 3) return; // code for no packs at all
 
-	newmis = world;
 	if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells + self.ammo_bullet + self.ammo_slug + self.ammo_gaspr + self.ammo_hgrenade + self.pk_explode_ammo))
 		return;	// nothing in it - IDEA: randomize some stuff?
 

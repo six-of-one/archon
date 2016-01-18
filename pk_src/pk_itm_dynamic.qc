@@ -498,7 +498,7 @@ void(string cls) item_call =
 	if (self.event == "dyn_monster" || self.class_select == "class_monster")
 	{
 		if (self.stack1 != "no_monster_wakey")
-		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2, random_monster_wakey, SUB_Null, self, world);
+		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2 + random(), random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 
 		total_monsters = t_monsters  + 1;
@@ -880,19 +880,26 @@ void() dyn_rem =
 			}
 		}
 		else
-		if (WARNING)
 		{
-			bprint(" *** WARNING: dynamic remove hash fail: ");
-			bprint(item_ident(self.enemy));
-			bprint(" - supposed 2B: ");
-			bprint(self.target1);
-			bprint(" - ");
-			bprint(self.netname);
-			bprint(" - hash: ");
-			bprint(ftos(self.enemy.button13));
-			bprint(" - dr hash: ");
-			bprint(ftos(self.button13));
-			bprint("\n");
+			if ((MONSTER_TRANSPARENT) && (self.enemy.class_select == "class_monster"))
+			{
+				self.enemy.alpha = 0.6 + (random() * 0.42);
+			}
+			else
+			if (WARNING)
+			{
+				bprint(" *** WARNING: dynamic remove hash fail: ");
+				bprint(item_ident(self.enemy));
+				bprint(" - supposed 2B: ");
+				bprint(self.target1);
+				bprint(" - ");
+				bprint(self.netname);
+				bprint(" - hash: ");
+				bprint(ftos(self.enemy.button13));
+				bprint(" - dr hash: ");
+				bprint(ftos(self.button13));
+				bprint("\n");
+			}
 		}
 	}
 	remove(self);

@@ -691,7 +691,10 @@ void () BotDead =
 	self.deadflag = DEAD_DEAD;
 
 	if (inHubMap)
-	if (bot_vote(0.7)) return;
+	if (bot_vote(0.7))
+	{
+		return;
+	}
 
 	self.nextthink = ((time + 0.3) + ((random () * (NUMBOTS + 3)) * 0.1));
 	if (teamplay)

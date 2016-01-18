@@ -178,14 +178,18 @@ bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
 		{
 			if (self.aiment)
 			{
-				self.aiment.search_time = 0;
+//				self.aiment.search_time = 0;
 //				remove(self.aiment); // aiment is audio source - loop_play does null & remove
+				sound (self.aiment, self.aiment.cnt,"misc/null.wav",1,ATTN_NORM);
+//				self.enemy.aiment.search_time = 0;
+				remove(self.aiment); // Cat - 10.31.12 - now removing these
 				self.aiment = world;
 				sphere_audio = sphere_audio - 1;
 				if (sphere_audio < 0) sphere_audio = 0;
 			}
 		}
-		else if (!self.aiment && random() > 0.85)
+		else
+		if (!self.aiment && random() > 0.85)
 		if (sphere_audio < SPHERE_AUDIO_LIMIT)
 		{
 			self.aiment = loop_sound(self, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, self.origin, 0, LOOPFOREVER);

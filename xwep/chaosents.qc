@@ -129,9 +129,18 @@ void() c_weapon_reggun =
 	setmodel (self, "progs/m_reggun.mdl");
 	self.weaponmodel = "progs/v_reggun.mdl";
 	self.vwepmdl = "progs/vw_reggun.mdl";
-	self.noise = "doom/dswpnup.wav";
 	self.noise3 = "reggun/fire4.wav";
-	self.noise4 = "doom/dsitembk.wav";
+	if (ULOKD)
+	{
+		self.noise = "doom/dswpnup.wav";
+		self.noise4 = "doom/dsitembk.wav";
+	}
+	else
+	{
+		self.noise = "weapons/pkup.wav";
+		self.noise4 = "items/itembk2.wav";
+	}
+
 	self.duration = SND_OVER;
 
 	self._killmsg = creg_killmsg;
@@ -581,7 +590,10 @@ void() x_pwr_touch =
 	if (self.items == IT_QUAD)
 	{
 		if (self.mdl == "progs/d_berzerk.mdl") // special - doom berserk - IMP: even more special - 4x only for fists (set flag for combat code), red haze
+		{
 			health_touch();
+			other.healtype = HEALT_CURE; // fire, plague & continous health rot stop
+		}
 
 		other.super_time = 1;
 		if (other.super_damage_finished < time)
@@ -666,6 +678,7 @@ void() x_pwr_touch =
 		if (self.items == IT_QUAD)
 			e.enemy.skin = Q3_SH_QUAD;
 		e.items = self.items;
+		e.teamname = self.classname; // for stack fix
 		e.wad = "art_shell";
 	}
 

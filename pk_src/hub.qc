@@ -20,8 +20,7 @@ entity theHub; // variable holding the hub
 entity (string aMap) findMap;
 void() hub_control_use;
 void(entity e) WaitForVotes;
-
-
+void(entity bt) bot_votereveal;
 
 
 // Start of the hub code.
@@ -92,6 +91,7 @@ void() hub_teleport_touch =
 	}
 	// record the user's vote here
 	other.map = self.map;
+	if (other.class_select == "class_bot") bot_votereveal(other);
 	// increment the vote count
 	self.cnt = self.cnt + 1;
 
@@ -170,7 +170,7 @@ void() hub_teleport =
 	// no votes
 	self.cnt = 0;
 
-	if (!(self.spawnflags & SILENT))
+	if (!(self.spawnflags & (T_SILENT | T_STEALTH)))
 	{
 		precache_sound ("ambience/hum1.wav");
 		o = (self.mins + self.maxs)*0.5;
@@ -1254,6 +1254,8 @@ void() WaitForVotesThink =
 // NOTE: bots only come here if they touched a vote portal
 	if (self.class_select == "class_bot") // bots dont get status update
 	{
+		self.model = ""; // went thru a vote portal - clear body
+
 		self.nextthink = time + 0.333;
 		if (random() < 0.85) // dont let them exit vote often
 		{
@@ -1432,20 +1434,44 @@ void(entity e) WaitForVotes =
 // cn - random 0 - 1 for bot to vote - .12 of this for copy cat
 // returns true if bot voted - so ai can stop other stuff
 
-void() bot_votereveal =
+void(entity bt) bot_votereveal =
 {
 	bprint("\b");
-	bprint(self.netname);
+	bprint(bt.netname);
 	bprint(": I just voted for ");
-	bprint(self.map);
+	bprint(bt.map);
 	bprint("\n");
 
 // fixed bots leaving "live" body behind
 // here for common area - means we cant get rid of this fn if we dont want to reveal bot votes
 // bots still seem to leave posed bodys somehow?
-	if (!self.deadflag)
-		self.model = "";
+	if (!bt.deadflag)
+		bt.model = "";
 };
+
+// Cataboligne - 10.30.12 - should not have a live body hanging around after voting - set frames for pk*bots that voted
+
+void(entity bt) pk_voteframe =
+{
+//		if (bt.model != "") bt.model = ""; 
+	if (bt.model != "" && bt.deadflag)
+	if (bt.frame != $axdeth9)
+	if (bt.frame != $deathb9)
+	if (bt.frame != $deathc15)
+	if (bt.frame != $deathd9)
+	if (bt.frame != $deathe9)
+	if (bt.frame != $deatha11)
+	{
+		local float r;
+		r = random();
+		if (r < 0.2) bt.frame = $deatha11; 
+		if (r < 0.4) bt.frame = $deathb9; 
+		if (r < 0.6) bt.frame = $deathc15; 
+		if (r < 0.8) bt.frame = $deathd9; 
+		if (r < 0.9) bt.frame = $deathe9; 
+		else bt.frame = $axdeth9; 
+	}
+}
 
 // Cataboligne - 5.12.10 - sneak in bot votes (yep, this is labor union heavy handedness - since they dont seem to be real keen on going to the polls...)
 
@@ -1483,9 +1509,11 @@ float(float cn) bot_vote =
 			{
 				e.cnt = e.cnt + 1;
 				self.map = mpv;
-				bot_votereveal();
+				bot_votereveal(self);
 //				WaitForVotes(self);
-				self.nextthink = -1;
+				self.stack1 = "botvoted"; // Cataboligne - 10.30.12 - let death frames finish out - frikbot
+				if (self.classname == "pk*bot") pk_voteframe(self);
+//				self.nextthink = -1;
 				return(TRUE);
 			}
 		}
@@ -1501,9 +1529,11 @@ float(float cn) bot_vote =
 			{
 				e.cnt = e.cnt + 1;
 				self.map = e.map;
-				bot_votereveal();
+				bot_votereveal(self);
 //				WaitForVotes(self);
-				self.nextthink = -1;
+				self.stack1 = "botvoted"; // Cataboligne - 10.30.12 - let death frames finish out - frikbot
+				if (self.classname == "pk*bot") pk_voteframe(self);
+//				self.nextthink = -1;
 				return(TRUE);
 			}
 		}

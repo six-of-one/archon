@@ -16,11 +16,12 @@ void() PK_init =
 	DARKPLACES = cvar("pr_checkextension"); // check for dp engine
 
 // info strings set by server - these only work on the server
-	localcmd("alias version \"echo quake-c: chaos archon alpha 1.0\"\n");
-	localcmd("alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
-	localcmd("alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
-	localcmd("alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
-	localcmd("alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
+	localcmd(vers);		//		quake-c: chaos archon (alpha) 1.0.1
+	localcmd(vweb);		//		http://www.moddb.com/mods/chaos-archon/
+	localcmd(vdev);		//		http://www.moddb.com/members/invadercat/
+	localcmd(vqcs);		//		http://www.moddb.com/groups/qc/
+	localcmd(sites);		//		{ 3 sites listed above }
+	localcmd("echo;echo ***;echo *** enter 'codes' at console for list of common commands ***;echo ***;echo\n");
 
 	pk_precache();
 	q1_precache();

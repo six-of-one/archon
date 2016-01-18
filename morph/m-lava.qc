@@ -218,6 +218,7 @@ if (random() < 0.7)
 	{
 	self.think = SUB_Nop;
 	self.skin = 1;
+	self.colormap = 0;
 	sound (self,CHAN_WEAPON,"chaos/freeze.wav",1,ATTN_NORM);
 	} 
 };
@@ -225,6 +226,7 @@ void() lavablob_die10 = [ $walk23, SUB_Nop ]
 {
 //	self.think = SUB_Nop;
 	self.skin = 1;
+	self.colormap = 0;
 	sound (self,CHAN_WEAPON,"chaos/freeze.wav",1,ATTN_NORM);
 };
 

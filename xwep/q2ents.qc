@@ -1614,6 +1614,13 @@ void() q2_item_quad =
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
+void() adrenaline_touch =
+{
+	other.max_health = other.max_health + 1;
+	health_touch();
+	other.healtype = HEALT_CURE; // fire, plague & continous health rot stop
+};
+
 void() item_adrenaline =
 {
 	q100_item_health();
@@ -1627,6 +1634,7 @@ void() item_adrenaline =
 
 	self.netname = "Adrenaline";
 
+	self.touch = adrenaline_touch;
 	self.healamount = Q2_DEF_HMEGATUBE;
 	self.healtype = HEAL_NORM;
 	self.volume = Q_NORM_MAX; // max add
@@ -2166,10 +2174,24 @@ void() X_FireBlaster =
 	newmis.effects = EF_DIMLIGHT;
 };
 
+// if an ent is targeted, reload origin
+
 void() q2_teleport_particles =
 {
 	local vector v1;
-	local float f;
+	local float f, z;
+
+	self.nextthink = time + 0.2;
+
+	if (self.th_die != SUB_Null) // really power point sub call
+   if (self.th_die != (void()) 0)
+		self.th_die();
+
+	if (self.classname == "archon_power")
+	{
+		if (self.spawnflags & NOSPRAY) return; // no particles - still have to think for other fns
+		z = 15; // needs a boost up
+	}
 
 	if (!self.cnt)
 		self.cnt = 192;
@@ -2179,30 +2201,24 @@ void() q2_teleport_particles =
 	{
 		v1_x = crandom() * 18;
 		v1_y = crandom() * 18;
-		v1_z = crandom() * 6;
+		v1_z = z + crandom() * 6;
 		self.velocity_z = 200 + crandom() * 50;
 		particle (self.origin + v1, self.velocity, self.cnt, 4);
 
 		v1_x = crandom() * 18;
 		v1_y = crandom() * 18;
-		v1_z = 16 + crandom() * 6;
+		v1_z = z + 16 + crandom() * 6;
 		self.velocity_z = 200 + crandom() * 50;
 		particle (self.origin + v1, self.velocity, self.cnt, 4);
 
 		v1_x = crandom() * 18;
 		v1_y = crandom() * 18;
-		v1_z = 32 + crandom() * 6;
+		v1_z = z + 32 + crandom() * 6;
 		self.velocity_z = 200 + crandom() * 50;
 		particle (self.origin + v1, self.velocity, self.cnt, 4);
 
 		f = f - 1;
 	}
-
-	if (self.th_die != SUB_Null)
-   if (self.th_die != (void()) 0)
-		self.th_die();
-
-	self.nextthink = time + 0.2;
 };
 
 // allow map compile particle fountain / sound  because regular q2 one requires q2.wad for map

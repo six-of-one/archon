@@ -505,6 +505,10 @@ local float		rs;
 void() PlayerDead =
 {
 	self.nextthink = -1;
+
+// a frikbot voted on a hub - dont let him respawn
+	if (self.stack1 == "botvoted") return;
+
 // allow respawn after a certain time
 	self.deadflag = DEAD_DEAD;
 };

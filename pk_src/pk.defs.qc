@@ -18,6 +18,17 @@ float XTR_SAVED1				= 1195724115; // saved1 test val
 float() SUB_False				= { return 0; }; // Return a false value
 float() SUB_True				= { return 1; }; // Return a true value
 
+// version strings
+
+string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.2\"\n";
+string vweb						= "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n";
+string vdev						= "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n";
+string vqcs						= "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n";
+string sites					= "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n";
+string vmotd					= "\\/ersion \b1\b.\b0\b.\b2a\b\n\n";
+
+
+
 // **************************************
 // ADMIN section
 
@@ -545,6 +556,7 @@ float NO_FLOAT					= -671234; // dont float anything with this offset, or?
 
 float MONSTER_DROWN			= FALSE; // if true monsters will take drown damage - NOTE: they dont know how to swim or get out of water yet
 float MONSTER_ZOMBIE_DROWN = FALSE; // even if monsters can drown, zombie never will, and they make mucho noise while taking the damage - ruins SP ambience
+float MONSTER_TRANSPARENT	= TRUE; // take off from dyn_rem bug where some cube monsters ended up transparent
 
 .float dmgtime;
 
@@ -782,6 +794,7 @@ float HEAL_NORM				= 2;
 float HEAL_MEGA				= 3;
 float HEAL_BOT					= 4; // doom health bottle - ignore normal max, no rot
 float HEAL_SOUL				= 5; // doom health: soul, mega spheres - 200 max, no rot
+float HEALT_CURE				= 3; // healtype needed set to cure plague, etc
 
 float Q_MEGA_MAX				= 250; // max you can ever have in q100
 float Q_NORM_MAX				= 100; // standard max health

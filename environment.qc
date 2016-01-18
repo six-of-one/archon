@@ -910,7 +910,12 @@ void() chaos_tele_expire =
 		{
 			self.enemy.think = remove_fade;
 			self.enemy.nextthink = time + 0.1;
-			if (self.enemy.aiment) self.enemy.aiment.search_time = 0;
+			if (self.enemy.aiment) 
+			{
+				sound (self.enemy.aiment, self.enemy.aiment.cnt,"misc/null.wav",1,ATTN_NORM);
+//				self.enemy.aiment.search_time = 0;
+				remove(self.enemy.aiment); // Cat - 10.31.12 - now removing these
+			}
 			self.enemy.aiment = world;
 			remove(self.enemy.trigger_field);
 		}
