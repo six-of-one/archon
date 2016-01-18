@@ -940,7 +940,7 @@ string() player_zombie_killmsg2 =
 #endifdef
 };
 
-void(float silent) player_zombie_become = 
+void() player_zombie_become = 
 {
 	self._stand=player_zombie_stand;
 	self._run=player_zombie_run;
@@ -984,14 +984,5 @@ void(float silent) player_zombie_become =
 //	stuffcmd (self, "sv_maxspeed 150\n");  // they stink, lose body parts and are slowwww...
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // zombie
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-		morph_impulse();
-	}
 };
 

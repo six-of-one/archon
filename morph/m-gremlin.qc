@@ -768,7 +768,7 @@ if (WARNING & 4) bprint("gremlin spawn fail\n");
 	}
 };
 
-void(float silent) player_gremlin_become = 
+void() player_gremlin_become = 
 {
 //	float sv_melee;
 
@@ -827,13 +827,5 @@ void(float silent) player_gremlin_become =
 		player_scourge_armor(self, 80, GIVEARMOR); 
 	}
 
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // gremlin
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-//		morph_impulse();
-	}
 	if (self.map == "spawn") self.frame = $spawn1;
 };

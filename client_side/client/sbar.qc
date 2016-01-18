@@ -370,6 +370,8 @@ string(float mb) rune_power =
 	return(s2);
 };
 
+
+
 //-----------------------------------------------------------------------------
 // Sbar_DrawInventory
 //-----------------------------------------------------------------------------
@@ -387,10 +389,26 @@ float ALPHA_FULL, ALPHA_MEDIUM, ALPHA_LOW, ALPHA_90, p_alph;
 var float autocvar_hud_flash_numeral = 16;
 // note setting > 1 will cause icons of critical stats to flash on hud - health, current wep ammo, armor, etc
 var float autocvar_hud_flash_icon = 6;
-// dont flash wep/ammo when ammo = 1 - most infinite ammo items set 1 ammo in qc
-var float autocvar_hud_flash_noammow = 1;
 
+// test mapcode mc and return TRUE if an infinite ammo weapon
 
+float(float mc) inf_ammo_wep =
+{
+	if (mc == MC_AXE) return(TRUE);
+	if (mc == MC_GRAP) return(TRUE);
+	if (mc == MC_AIRGUN) return(TRUE);
+	if (mc == MC_HOOK) return(TRUE);
+	if (mc == MC_HIP_MJOLNIR) return(TRUE);
+	if (mc == MC_DEEPSLEEP) return(TRUE);
+	if (mc == MC_D_SAW) return(TRUE);
+	if (mc == MC_D_PISTOL && (cammo == 0)) return(TRUE);
+	if (mc == MC_W_KNIFE) return(TRUE);
+	if (mc == MC_Q2_BLASTER) return(TRUE);
+	if (mc == MC_Q2_GRAPPLE) return(TRUE);
+	if (mc == MC_Q3_GAUNTLET) return(TRUE);
+	if (mc == MC_Q3_GRAPPLE) return(TRUE);
+	return(FALSE);
+};
 
 //  for the 4 small sized ammo counts on the right side
 void(vector vcol, vector valor, float ammo, float transparencia) DrawAmmo =
@@ -471,7 +489,8 @@ void(vector valor, string pic1, string pic2, float itemnum, float scale, float s
 		awepflash = 1;
 		awicof = awicofset = 1;
 		if (cammo >= 1)
-		if (cammo != autocvar_hud_flash_noammow)
+		if (! inf_ammo_wep(mcode))
+//		if (mcode != MC_HIP_MJOLNIR) // we dont flash the hammer - it has no ammo attack - now handled in inf_ammo_wep
 		{
 			if (cammo < autocvar_hud_flash_numeral) awepflash = flashawep;
 			if (cammo < autocvar_hud_flash_icon) awicofset = flashawep;
@@ -497,8 +516,8 @@ void(vector valor, string pic1, string pic2, float itemnum, float scale, float s
 			if ((rune_flag & RUNE_FLG_HS) || (rune_flag & TECH_TEIM))
 				Sbar_DrawPic(v + '2 5 0', pic, ibar_alpha * 0.45, scale);
 
-// idea: find some way to ID infinite ammo weps
 // live ammo count for drawn weapon
+			if ((mcode == MC_HIP_MJOLNIR) && (cammo > 14) || ! inf_ammo_wep(mcode))
 			if (cammo > 0) DrawAmmo('0.3 0.3 1', v + y + '-24 4 0', ceil(cammo), ALPHA_FULL * awepflash);
 			awicof = awicofset;
 		}
@@ -576,9 +595,9 @@ void() Sbar_DrawInventory =
 	ALPHA_90 = ibar_alpha * 0.9;
 	ALPHA_LOW = ibar_alpha * 0.4;
 
-	float casting, converting, k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
-	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag;
-	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v, clr;
+	float casting, converting, f, k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
+	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag, conrate;
+	vector pwr_step, wep_step, pk_wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v, clr;
 
 	float healflash, hicof, armorflash, armicof, flashclv;
 
@@ -812,11 +831,19 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				pwr_step_x = pwr_step_x + 7;
 			}
 		}
-		DrawAmmo('0 0 0', arc_level + '20 5 0' - woff, fabs(archon), ALPHA_FULL * flashclv);
+		DrawAmmo('1 1 0.2', arc_level + '20 5 0' - woff, fabs(archon), ALPHA_FULL * flashclv);
 
 // converting XP to archon points indicator
 
 		if (xp > xplast) xplast = xp;
+
+		if (time > 240) conrate = 64;
+		else if (time > 180) conrate = 32;
+		else if (time > 120) conrate = 16;
+		else if (time > 60) conrate = 8;
+		else if (time > 30) conrate = 4;
+		else if (time > 10) conrate = 2;
+		else conrate = 1;
 
 		if ((xp < xplast) || (xpltime > time))
 		if (xp > 0)
@@ -825,6 +852,11 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			v = '36 14 0';
 			if (xp != xplast) xpltime = time + 4;
 			xplast = xp;
+// display conversion rate above XP pts
+			Sbar_DrawString(arc_level + '28 24 0', "cr", ALPHA_FULL, '7 7 0','1 0.5 1');
+			DrawAmmo('0 0 0', arc_level + '38 24 0' - woff, fabs(conrate), ALPHA_FULL * flashhl);
+
+// display XP as they decrement during conversion
 			Sbar_DrawString(arc_level + '20 14 0', "(", ALPHA_FULL, '7 7 0','1 0.5 1');
 			Sbar_DrawString(arc_level + '28 15 0', ftos(floor(xp)), ALPHA_FULL, '7 7 0','1 0.5 1');
 			k = floor(xp);
@@ -922,11 +954,33 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	var float autocvar_hud_message_buffer = 3; // buffer messages per cvar
 	var float autocvar_hud_message_timer = 10;
 	var float autocvar_hud_message_offset = 250;
+	var float autocvar_hud_rels = 0;
 	vector hudoff;
 	float huds, hudtime;
 
 	if (ibar_flag > 2)
 	{
+// show HUD time if we replace the engine bar which has its own time - turn off for showtime
+		if (autocvar_hud_rels)
+		if (!cvar("showtime"))
+		{
+			if (autocvar_hud_rels == 1)
+			{
+				DrawAmmo('1 1 1', '264 26 0', floor(time), ALPHA_FULL);
+				Sbar_DrawString('291 26 0' + woff, "rels", ALPHA_FULL, '7 7 0','1 0.9 1');
+			}
+			else
+			{
+				k = floor(time/60);
+				f = floor(time - (k * 60));
+				DrawAmmo('1 1 1', '276 26 0', k, ALPHA_FULL);
+				Sbar_DrawString('298 25 0' + woff, ":", ALPHA_FULL, '7 7 0','1 0.9 1');
+				if (f < 10)
+				Sbar_DrawString('305 26 0' + woff, "0", ALPHA_FULL, '7 7 0','1 0.9 1');
+				DrawAmmo('1 1 1', '299 26 0', f, ALPHA_FULL);
+			}
+		}
+
 		if (autocvar_hud_message != "")
 		{
 			huds = autocvar_hud_message_buffer; // # lines in buffer
@@ -1987,7 +2041,158 @@ sb_align = SB_BOTTOM_RIGHT;
 		wep_step = wep_step + '0 20 0';
 	}
 
-//	if (mcode == MC_HIP_MJOLNIR) // exclude non mjolnir items that use IT_MJOLNIR bit == 128
+	pk_wep_step = '262 30 0';
+	inv_alm = 1;
+	if (items & IT_INVISIBILITY) inv_alm = 0.2;
+
+	if (pk_phone > 0)
+	{
+		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_PHONE))
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(pk_wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_phn", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_phone, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_phn", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_phone, ALPHA_MEDIUM);			
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_mask > 0)
+	{
+		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_ACTOR))
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(pk_wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_mask", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_mask, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_mask", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_mask, ALPHA_MEDIUM);			
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_tomb > 0)
+	{
+		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_TOMB))
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(pk_wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_tomb", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_tomb, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_tomb", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_tomb, ALPHA_MEDIUM);			
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_ego > 0)
+	{
+		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_EGO))
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(pk_wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_ego", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_ego, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_ego", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_ego, ALPHA_MEDIUM);			
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_copb > 0)
+	{
+		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_CANPAB))
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(pk_wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_copb", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_copb, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_copb", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_copb, ALPHA_MEDIUM);			
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_bt > 0)
+	{
+		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_BEARTRAP))
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(pk_wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_btrap", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_bt, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_btrap", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_bt, ALPHA_MEDIUM);			
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_tur > 0)
+	{
+		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_TURRET))
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(pk_wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_turr", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_tur, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/inv_turr", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', pk_tur, ALPHA_MEDIUM);			
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_gwell)
+	{
+		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_GRAVITYWELL))
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
+			else Sbar_DrawPic(pk_wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
+			if (pk_gwell > 0)
+				DrawInventoryAmmo(pk_wep_step, "gfx/inv_gwell", ALPHA_FULL, 0.125);
+			else
+				DrawInventoryAmmo(pk_wep_step, "gfx/inv_sgwell", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_FULL);
+		}
+		else
+		{
+			if (pk_gwell > 0)
+				DrawInventoryAmmo(pk_wep_step, "gfx/inv_gwell", ALPHA_FULL * inv_alm, 0.125);
+			else
+				DrawInventoryAmmo(pk_wep_step, "gfx/inv_sgwell", ALPHA_FULL, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_MEDIUM);			
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+// for mjolnir ammo display (if hammer has enough ammo to fire ltn) clear pk items col
+	if (currentweap == IT_MJOLNIR)
+	if ((cammo > 14) || (mcode != MC_HIP_MJOLNIR))
+	if (wep_step_y < pk_wep_step_y) wep_step_y = pk_wep_step_y;
+
+//	if  // exclude non mjolnir items that use IT_MJOLNIR bit == 128
 	DrawInventoryWeapon(wep_step, "gfx/inv_mjolnir",  wep_mj,  IT_MJOLNIR, 0.125, 0);
 	if (cl_items & IT_MJOLNIR) wep_step = wep_step + '0 20 0';
 
@@ -1997,8 +2202,20 @@ sb_align = SB_BOTTOM_RIGHT;
 		DrawInventoryWeapon(wep_step, "gfx/inv_harp", wep_harp,  PK_IT_GRAPGUN, 0.125, STAT_PKWEP);
 	if (pk_inv & PK_IT_GRAPGUN) wep_step = wep_step + '0 20 0';
 
+// for shotgun ammo display - clear pk items col
+	if (wep_step_y < pk_wep_step_y) wep_step_y = pk_wep_step_y;
+
 	DrawInventoryWeapon(wep_step, "gfx/inv_shotgun",  wep_sg,  IT_SHOTGUN, 1, 0);
-	wep_axlv = wep_step + '-30 0 0';
+	wep_axlv = wep_step + '-30 0 0'; // sycn with shotgun
+
+//	if (wep_axlv_y < pk_wep_step_y) wep_axlv_y = pk_wep_step_y; // unless pk deposes it - note: shotgun is now *always* above pk col...
+
+	if ((pk_wep == PK_IT_AXE) && (currentweap == IT_AXE))
+	if (has_deepsleep)
+		DrawInventoryWeapon(wep_axlv, "gfx/inv_deep_sleep",  "gfx/inv2_deep_sleep",  IT_AXE, 0.125, 0);		
+	else
+		DrawInventoryWeapon(wep_axlv, "gfx/inv_axe",  wep_axe,  IT_AXE, 0.125, 0);
+
 
 	DrawInventoryWeapon(wep_step + '0 20 0', "gfx/inv_aircan", wep_airgun,  PK_IT_AIRGUN, 0.125, STAT_PKWEP);
 	if (pk_inv & PK_IT_AIRGUN) wep_step = wep_step + '0 20 0';
@@ -2033,159 +2250,6 @@ sb_align = SB_BOTTOM_RIGHT;
 	if (pk_inv & PK_IT_CLIGHT) wep_step = wep_step + '0 20 0';
 
 
-	wep_step = '262 30 0';
-	inv_alm = 1;
-	if (items & IT_INVISIBILITY) inv_alm = 0.2;
-
-	if (pk_phone > 0)
-	{
-		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_PHONE))
-		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
-			DrawInventoryAmmo(wep_step, "gfx/inv_phn", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_phone, ALPHA_FULL);
-		}
-		else
-		{
-			DrawInventoryAmmo(wep_step, "gfx/inv_phn", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_phone, ALPHA_MEDIUM);			
-		}
-		wep_step = wep_step + '0 20 0';
-	}
-
-	if (pk_mask > 0)
-	{
-		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_ACTOR))
-		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
-			DrawInventoryAmmo(wep_step, "gfx/inv_mask", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_mask, ALPHA_FULL);
-		}
-		else
-		{
-			DrawInventoryAmmo(wep_step, "gfx/inv_mask", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_mask, ALPHA_MEDIUM);			
-		}
-		wep_step = wep_step + '0 20 0';
-	}
-
-	if (pk_tomb > 0)
-	{
-		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_TOMB))
-		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
-			DrawInventoryAmmo(wep_step, "gfx/inv_tomb", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_tomb, ALPHA_FULL);
-		}
-		else
-		{
-			DrawInventoryAmmo(wep_step, "gfx/inv_tomb", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_tomb, ALPHA_MEDIUM);			
-		}
-		wep_step = wep_step + '0 20 0';
-	}
-
-	if (pk_ego > 0)
-	{
-		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_EGO))
-		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
-			DrawInventoryAmmo(wep_step, "gfx/inv_ego", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_ego, ALPHA_FULL);
-		}
-		else
-		{
-			DrawInventoryAmmo(wep_step, "gfx/inv_ego", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_ego, ALPHA_MEDIUM);			
-		}
-		wep_step = wep_step + '0 20 0';
-	}
-
-	if (pk_copb > 0)
-	{
-		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_CANPAB))
-		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
-			DrawInventoryAmmo(wep_step, "gfx/inv_copb", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_copb, ALPHA_FULL);
-		}
-		else
-		{
-			DrawInventoryAmmo(wep_step, "gfx/inv_copb", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_copb, ALPHA_MEDIUM);			
-		}
-		wep_step = wep_step + '0 20 0';
-	}
-
-	if (pk_bt > 0)
-	{
-		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_BEARTRAP))
-		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
-			DrawInventoryAmmo(wep_step, "gfx/inv_btrap", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_bt, ALPHA_FULL);
-		}
-		else
-		{
-			DrawInventoryAmmo(wep_step, "gfx/inv_btrap", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_bt, ALPHA_MEDIUM);			
-		}
-		wep_step = wep_step + '0 20 0';
-	}
-
-	if (pk_tur > 0)
-	{
-		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_TURRET))
-		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
-			DrawInventoryAmmo(wep_step, "gfx/inv_turr", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_tur, ALPHA_FULL);
-		}
-		else
-		{
-			DrawInventoryAmmo(wep_step, "gfx/inv_turr", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_tur, ALPHA_MEDIUM);			
-		}
-		wep_step = wep_step + '0 20 0';
-	}
-
-	if (pk_gwell)
-	{
-		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_GRAVITYWELL))
-		{
-			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
-			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
-			if (pk_gwell > 0)
-				DrawInventoryAmmo(wep_step, "gfx/inv_gwell", ALPHA_FULL, 0.125);
-			else
-				DrawInventoryAmmo(wep_step, "gfx/inv_sgwell", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_FULL);
-		}
-		else
-		{
-			if (pk_gwell > 0)
-				DrawInventoryAmmo(wep_step, "gfx/inv_gwell", ALPHA_FULL * inv_alm, 0.125);
-			else
-				DrawInventoryAmmo(wep_step, "gfx/inv_sgwell", ALPHA_FULL, 0.125);
-			DrawAmmo('0 0 0', wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_MEDIUM);			
-		}
-		wep_step = wep_step + '0 20 0';
-	}
-
-	if (wep_axlv_y < wep_step_y) wep_axlv_y = wep_step_y;
-
-	if ((pk_wep == PK_IT_AXE) && (currentweap == IT_AXE))
-	if (has_deepsleep)
-		DrawInventoryWeapon(wep_axlv, "gfx/inv_deep_sleep",  "gfx/inv2_deep_sleep",  IT_AXE, 0.125, 0);		
-	else
-		DrawInventoryWeapon(wep_axlv, "gfx/inv_axe",  wep_axe,  IT_AXE, 0.125, 0);
 
 	if (explodeshot > 0)
 	{

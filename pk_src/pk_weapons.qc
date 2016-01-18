@@ -314,6 +314,9 @@ void() PK_SetCurrentAmmo =
 		if (!self.mask_x & CB_SCOURGE)
 		if (wchanged)
 		{
+			if (self.eweapon.grap_state == 666000) // fists
+				sprint(self, "fight club option");
+			else
 			sprint(self, self.eweapon.netname);
 			sprint(self, "\n");
 		}
@@ -647,7 +650,10 @@ void() PK_SetCurrentAmmo =
 
 		self.weaponmodel = self.eweapon.weaponmodel;
 		if (self.eweapon.grap_state == 666000) // fists
+		{
 			self.weaponmodel = null_string;
+			self.currentammo = 0;
+		}
 	}
 
 //	if (!self.mask_x & CB_HUMAN) self.weaponmodel = null_string; // morphs can use carryables - this will make them no wep mdls
@@ -901,7 +907,10 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		f.weaponframe = 0;
 
 		if (f.eweapon.grap_state == 666000) // fists
+		{
 			f.weaponmodel = null_string;
+			f.currentammo = 0;
+		}
 	}
 
 //	if (!self.mask_x & CB_HUMAN) self.weaponmodel = null_string; // morphs can use carryables - this will make them no wep mdls

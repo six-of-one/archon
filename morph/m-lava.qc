@@ -623,9 +623,6 @@ string() player_lavablob_killmsg2 =
 
 void(float silent) player_lavablob_become = 
 {
-//	local float tc;
-//	local entity s2;
-
 	self._stand=player_lavablob_stand;
 	self._run=player_lavablob_run;
 	self._pain=lavablob_mytosis;
@@ -662,7 +659,7 @@ void(float silent) player_lavablob_become =
 	self.health = self.health * MLAVAB_HEALMOD / self.health_modifier;
 	self.health_modifier = MLAVAB_HEALMOD;
 
-if (silent != -666) // NO_TFOG - not coming from cthon form
+	if (silent != -666) // NO_TFOG - not coming from cthon form
 	{
 		makevectors(self.v_angle);
 		spawn_tfog(self.origin + 20 * v_forward);
@@ -670,14 +667,6 @@ if (silent != -666) // NO_TFOG - not coming from cthon form
 	else
 		player_run(); // fix the back in blob, but firing cthon issue
 
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // Lava Bomb
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-//		morph_impulse();
-	}
 };
 
 

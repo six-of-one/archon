@@ -289,6 +289,8 @@ float CB_IMP						= 2097152;
 float CB_ARACHN					= 4194304; // mode bits = 4 modes
 float CB_CYBER						= 8388608;
 
+// these had no def impulse() call - chaos, order, human, hkn, ogre, shalrath, shambler, scrag, cthon, gremlin, scourge
+//float CB_NOMIMP					= 981023;	// no morph_impulse() call on !silent become - 11101111100000011111
 
 // code numbers - store in .morphy
 // cant use 1, 2, 4, 8, 16, 32, 64, 128 ... etc
@@ -366,20 +368,20 @@ float HEADSKN_Q2					= 4;
 float HEADSKN_Q3					= 3; // 5;
 
 // evolution
-void(float silent) player_chaos_become;
-void(float silent) player_order_become;
-void(float silent) player_scourge_become;
-void(float silent) player_shalrath_become;
-void(float silent) player_enforcer_become;
-void(float silent) player_demon_become;
-void(float silent) player_zombie_become;
-void(float silent) player_hknight_become;
-void(float silent) player_wizard_become;
-void(float silent) player_ogre_become;
-void(float silent) player_shambler_become;
+void() player_chaos_become;
+void() player_order_become;
+void() player_scourge_become;
+void() player_shalrath_become;
+void() player_enforcer_become;
+void() player_demon_become;
+void() player_zombie_become;
+void() player_hknight_become;
+void() player_wizard_become;
+void() player_ogre_become;
+void() player_shambler_become;
 void(float silent) player_lavablob_become;
 void() player_lavacthon_become;
-void(float silent) player_gremlin_become;
+void() player_gremlin_become;
 
 //morph health modifiers            original code
 float MHUMAN_HEALMOD				= 1.0;	// 100 = 1.0

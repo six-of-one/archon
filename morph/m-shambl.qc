@@ -309,7 +309,8 @@ string() player_shambler_killmsg2 =
 		+---------------------------------------+
 */
 
-void(float silent) player_shambler_become = {
+void() player_shambler_become =
+{
 	self._stand=player_shambler_stand;
 	self._run=player_shambler_run;
 	self._pain=player_shambler_pain1;
@@ -346,13 +347,4 @@ void(float silent) player_shambler_become = {
 	self.health_modifier = MSHAMBLR_HEALMOD;
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // shambler
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-//		morph_impulse();
-	}
 };

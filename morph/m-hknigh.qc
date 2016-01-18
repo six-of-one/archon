@@ -361,7 +361,7 @@ string(entity targ, entity attacker) player_hknight_killmsg2 =
 		+---------------------------------------+
 */
 
-void(float silent) player_hknight_become =
+void() player_hknight_become =
 {
 	self._stand=player_hknight_stand;
 	self._run=player_hknight_run;
@@ -400,19 +400,11 @@ void(float silent) player_hknight_become =
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
 
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // hell knight
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-		player_hknight_impulse();
-		if (self.armortype == 0) //knight has some base armor
-			{
-			player_scourge_armor(self, 50, GIVEARMOR);
-			}
-		else
-			self.armortype = ARM_SCRG;
-	}
+	player_hknight_impulse();
+	if (self.armortype == 0) //knight has some base armor
+		{
+		player_scourge_armor(self, 50, GIVEARMOR);
+		}
+	else
+		self.armortype = ARM_SCRG;
 };

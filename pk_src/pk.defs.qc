@@ -225,6 +225,10 @@ string CRATE_OPENED			= "chaos/crate1o.wav";
 
 // pk cubes
 
+var float autocvar_it_cubes_info = 1;
+var float autocvar_it_cubes_pk = 0;
+var float autocvar_it_cubes_morph = 0;
+
 float PK_CUBE;
 float PK_CUBE_DIST			= 192; // must be this close to cube to open, heh heh
 float PK_CUBE_TIME; // freq of respawn

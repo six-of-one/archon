@@ -997,3 +997,91 @@ float(float am) bound_ammo_pack =
 	return(0);
 };
 
+// target practice dummy
+
+// ideas - think fn to always face player, model &| skin with appr. appearance
+
+void() silhouette_respawn =
+{
+	setmodel(self, self.mdl);
+	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+	self.health = self.max_health;
+	self.takedamage = DAMAGE_AIM;
+	self.solid = self.lefty;
+};
+
+// idea - death frames - fall over
+
+void() silhouette_death =
+{
+	self.takedamage = DAMAGE_NO;
+	self.solid = SOLID_NOT;
+	self.model = null_string;
+	self.think = silhouette_respawn;
+	self.nextthink = time + self.wait;
+	self.deadflag = MAXFL; // dont let random mortician remove this guy
+};
+
+/*QUAKED monster_silhouette (1 0 0) (-16 -16 -24) (16 16 40) LARGE
+Target practice dummy
+
+Takes damage, gets killed - default model is monster_army
+
+"large" - use larger bounding box size
+"health" - damage before death
+"wait" - respawn time
+*/
+
+// note - on making monsters - engine takes one of .th_* and assigns it to think when things (like damage) happen to monster
+
+void() monster_silhouette =
+{
+	if (!self.model) self.model = "progs/soldier.mdl";
+	precache_model (self.model);
+	setmodel(self, self.model);
+	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+
+	if (self.count) self.frame = self.count; // hack - for rf6 converted func_models
+
+	if (self.spawnflags & 1)
+		setsize(self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+
+	if (!self.solid) self.solid = SOLID_SLIDEBOX;
+	self.lefty = self.solid;
+	if (! self.movetype) self.movetype = MOVETYPE_STEP;
+	if (!self.wait) self.wait = 30;
+
+	if (self.health <= 0) self.health = 100;
+	self.mdl = self.model;
+
+	self.think = SUB_Null;
+	self.th_stand = SUB_Null;
+	self.th_walk = SUB_Null;
+	self.th_run = SUB_Null;
+	self.th_missile = SUB_Null;
+	self.th_pain = SUB_Null;
+	self.th_die = silhouette_death;
+// all set in _start
+//	self.takedamage = DAMAGE_AIM;
+//	self.max_health = self.health;
+//	self.flags = self.flags | FL_MONSTER; // for wep targeting, some weps
+	
+	walkmonster_start();
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

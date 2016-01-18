@@ -1160,7 +1160,7 @@ void() chaos_item =
 			else if (r1 == 8) ci_md = "progs/end2.mdl";
 			else if (r1 == 9) ci_md = "progs/end3.mdl";
 			else if (r1 == 10) ci_md = "progs/end4.mdl";
-			else if (r1 == 11) {ci_md = "maps/b_batt1.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
+			else if (r1 == 11) {ci_md = "maps/b_batt1.bsp"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
 			else if (r1 == 12) ci_md = "progs/zom_gib.mdl";
 			else if (r1 == 13) ci_md = "progs/s_bubble.spr";
 			else if (r1 == 14) ci_md = "progs/nodule110110110.bsp"; // this is cruel - a fake god particle
@@ -3207,7 +3207,7 @@ string() player_chaos_killmsg2 =
 		+---------------------------------------+
 */
 
-void(float silent) player_chaos_become = 
+void() player_chaos_become = 
 {
 	local float tc;
 
@@ -3271,15 +3271,6 @@ void(float silent) player_chaos_become =
 	spawn_tfog(self.origin + 20 * v_forward);
 
 	if (!MAX_CHAOS_LVL) chaos_constant(0);
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become ");
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-//		morph_impulse();
-	}
 
 	self.skin = 1;
 };

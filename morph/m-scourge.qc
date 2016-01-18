@@ -527,7 +527,7 @@ string(entity targ, entity attacker) player_scourge_killmsg2 =
 		+---------------------------------------+
 */
 
-void(float silent) player_scourge_become = 
+void() player_scourge_become = 
 {
 //	float tr,tc; // swap out cells, rockets
 
@@ -569,18 +569,9 @@ void(float silent) player_scourge_become =
 	spawn_tfog(self.origin + 20 * v_forward);
 
 	if (self.armortype == 0) //scourge has some base armor on create
-		{
+	{
 		player_scourge_armor(self, 50, GIVEARMOR); 
-		}
+	}
 //	else - should not have armor here!
 //		self.armortype = ARM_SCRG; // norm armor convert to scourge armor FIX
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // scourge
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-//		morph_impulse();
-	}
 };

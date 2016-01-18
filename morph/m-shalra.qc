@@ -354,7 +354,7 @@ string() player_shalrath_killmsg2 =
 #endifdef
 };
 
-void(float silent) player_shalrath_become =
+void() player_shalrath_become =
 {
 	self._stand=player_shalrath_stand;
 	self._run=player_shalrath_run;
@@ -395,13 +395,4 @@ void(float silent) player_shalrath_become =
 	self.health_modifier = MSHALR_HEALMOD;
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // vore
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-//		morph_impulse();
-	}
 };

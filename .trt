@@ -1,22 +1,28 @@
-cd ./frikbot
-echo
-echo $PWD
-echo
-ls -ltr --color|tail -n 10
-cd ..
-cd ./pk_src
-echo
-echo $PWD
-echo
-ls -ltr --color|tail -n 10
-cd ..
-cd ./xwep
-echo
-echo $PWD
-echo
-ls -ltr --color|tail -n 10
-cd ..
+# cd ./frikbot
+# echo
+# echo $PWD
+# echo
+# ls -ltr --color|tail -n 10
+# cd ..
+# cd ./pk_bot
+# echo
+# echo $PWD
+# echo
+# ls -ltr --color|tail -n 10
+# cd ..
 cd ./hipnotic
+echo
+echo $PWD
+echo
+ls -ltr --color|tail -n 10
+cd ..
+cd ./mon_II
+echo
+echo $PWD
+echo
+ls -ltr --color|tail -n 10
+cd ..
+cd ./monster
 echo
 echo $PWD
 echo
@@ -28,7 +34,19 @@ echo $PWD
 echo
 ls -ltr --color|tail -n 10
 cd ..
-cd ./mon_II
+cd ./xwep
+echo
+echo $PWD
+echo
+ls -ltr --color|tail -n 10
+cd ..
+cd ./pk_src
+echo
+echo $PWD
+echo
+ls -ltr --color|tail -n 10
+cd ..
+cd ./archon
 echo
 echo $PWD
 echo

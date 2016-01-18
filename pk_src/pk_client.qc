@@ -30,7 +30,7 @@ void() SetNewParms_PK =
 	parm1 = 0; // IT_SHOTGUN | IT_AXE;
 
 // if this is called other than a first connect, we never take away archon pts
-	if (self.archon < 0) self.archon = 0;
+	if (self.archon < 0) self.archon = 0; // note - clears any negative - because we have to
 	if (self.archon > 65535) self.archon = 65535; // cap - largest amount var will hold
 
 //	parm2 = 100;
@@ -459,10 +459,11 @@ void() pk_plcfg =
 			stuffcmd(self, mapname);
 			stuffcmd(self, ".cfg\n");
 		}
-// q3 map cfg
+		stuffcmd(self, "nofog\n"); // NOFOGALIAS); // run this alias - lets players individually turn on or off fog for all levels
+		
+//y q3 map cfg
 		if (DARKPLACES)
 		{
-			stuffcmd(self, Q3_BOBHOFF);
 //			if (!pk_map) // not a pk map (some hubX maps have no .wad!)
 //			if (world.wad == null_string) // q3 map? - then set bob
 			if (MAP_MODE == "Q3")

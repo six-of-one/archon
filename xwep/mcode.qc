@@ -1653,6 +1653,7 @@ float(float mcv) valid_wep_mcode =
 	if (mcv == MC_Q2_ROCKETL)											return(IT_ROCKET_LAUNCHER);
 	if (mcv == MC_Q2_HYPBLASTER)										return(IT_LIGHTNING);
 	if (mcv == MC_Q2_RAILGUN)											return(IT_GRENADE_LAUNCHER);
+	if (mcv == MC_Q2_AGRENADES)										return(IT_GRENADE_LAUNCHER); // hand grenades
 	if (mcv == MC_Q2_BFG)												return(IT_EXTRA_WEAPON);
 	if (mcv == MC_Q2_GRAPPLE)											return(IT_AXE); // needs to be grap gun -> special
 
@@ -2294,6 +2295,9 @@ void() painkeep_cube_use =
 			self.charmer = damage_attacker;
 			self.charmed = 1;
 		}
+// IMP: put warnings in
+#ifdef warning
+#endifdef
 									self.map = "I came from a cube / crate"; // TEST - remove
 //
 									}
@@ -2315,6 +2319,9 @@ void() painkeep_cube_use =
 			self.wad = monster_id(d, MON_FUNC_REG);
 			self.origin_z = self.origin_z + 8;
 			item_call(self.wad);
+// IMP: put warnings in
+#ifdef warning
+#endifdef
 									self.map = "I came from a cube / crate"; // TEST - remove
 //			self.button13 = 0; // dont let dyn_rem wack the *_start_go from setting takedamage, etc.
 		}
@@ -2426,16 +2433,16 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 		{
 			if (other.eweapon.duration > time) return;
 			other.eweapon.duration = time + 3;
-			sprint(other, "You already control a Painkeep Cube - you must use it or change weapons.\n");
+//			sprint(other, "You already control a Painkeep Cube - you must use it or change weapons.\n");
 			return;
 		}
 		if (other.eweapon.wad == "morph_cube")
 		{
 			if (other.eweapon.duration > time) return; // debouncer
 			other.eweapon.duration = time + 3;
-			sprint(other, "You already merged with an ");
-			sprint(other, other.eweapon.netname);
-			sprint(other, " - you must use it or change weapons.\n");
+//			sprint(other, "You already merged with an ");
+//			sprint(other, other.eweapon.netname);
+//			sprint(other, " - you must use it or change weapons.\n");
 			return;
 		}
 	}
@@ -2445,7 +2452,8 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 	if (other.archon < ARCHON_MORPH_MIN) //not enough power yet
 	{
 		if (self.theowner != other) // debounce
-			sprint(other, "You need more Archon power for Evolution.\n");
+			stuffcmd(other, "hud_message \"You need more Archon power for Evolution\"\n");
+//			sprint(other, "You need more Archon power for Evolution.\n"); // IMP: hud_message
 		self.theowner = other;
 		return;
 	}
@@ -2461,24 +2469,32 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 		if (random() < BOT_NOUSE_MCUBE) return;
 	}
 
-	if ((self.wad == "morph_cube") && (self.mcode != -666))
-	{
-		sprint(other, "you merged with this ");
-		sprint(other, self.netname);
-	}
-	else
+//	if ((self.wad == "morph_cube") && (self.mcode != -666))
+//	{
+//		sprint(other, "you merged with this ");
+//		sprint(other, self.netname);
+//	}
+//	else
 //	if (self.wad == "pk_cube")
-		sprint(other, "You control this Painkeep Cube");
-	sprint(other, "! ");
-	if (self.wad == "pk_cube")
-		sprint(other, "hit fire to open - you must be in range");
-	else
+//		sprint(other, "You control this Painkeep Cube");
+//	sprint(other, "! ");
+//	if (self.wad == "pk_cube")
+//		sprint(other, "hit fire to open - you must be in range");
+//	else
+	if (self.wad == "morph_cube")
 	{
 		other.cnt = -1;
 		other.state = other.morphy; // set morph_lock
 		if (other.class_select == "class_player") // not a bot
 		{
-			stuffcmd(other, "exec hook_release.cfg\n"); // make sure they have wheel select here
+ // you wont see this sequence because of morph menu display
+
+//			if (self.mcode != -666) // poly spell - no cube instruction
+//			if (autocvar_it_cubes_info)
+//			if ((autocvar_it_cubes_info < 0) || (! autocvar_it_cubes_morph))
+//			stuffcmd(other, "exec cfg/menu/instr_morph_cube.cfg\n");
+
+			stuffcmd(other, "exec cfg/hook_release.cfg\n"); // make sure they have wheel select here
 
 			other.impulse = 10; // display first item
 			self.lefty = 8388608; // start bit will be 1
@@ -2490,13 +2506,18 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 			}
 		}
 	}
+	else
+		if (other.class_select == "class_player") // not a bot
+		if (autocvar_it_cubes_info)
+		if ((autocvar_it_cubes_info < 0) || (! autocvar_it_cubes_pk))
+			stuffcmd(other, "exec cfg/menu/instr_pk_cube.cfg\n");
 
 	if (other.class_select == "class_player")
 	if (cvar("r_ambient") > 0)
 		other.light_lev = cvar("r_ambient"); // because of cube re-arm
 
-	if (self.mcode != -666)
-	sprint(other, "\nIf you select another weapon the item will be free...\n");
+//	if (self.mcode != -666)
+//	sprint(other, "\nIf you select another weapon the item will be free...\n");
 	self.owner = other;
 	other.prevweapon = other.weapon; // save for pack on morphic
 	other.theowner = other.eweapon;
@@ -2549,11 +2570,10 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 to use as map item - they will respawn
 wad = "pk_cube"
 
-nothing - pick a random item from pk_cube list
-
 "items" - mapcode of item to create
 "stdev" - add random this to items mapcode for a custom series
 
+nothing - pick a random item from pk_cube list
 */
 void() pk_cube =
 {
@@ -2585,6 +2605,7 @@ void() func_pk_cube =
 
 void() crate_touch =
 {
+// idea - open a crate in 2 harpoon hits
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
 	{
 		if (self.touch != painkeep_touch)

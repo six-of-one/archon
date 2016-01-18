@@ -33,8 +33,10 @@ void() hammer_precache =
 =================
 HIP_HammerDamage
 =================
+
+Cat: 10.28.13 - added target ent from think code, e0
 */
-void(vector p1, vector p2, entity from, float damage) HIP_HammerDamage =
+void(vector p1, vector p2, entity from, entity e0, float damage) HIP_HammerDamage =
 {
 	local entity		e1, e2;
 	local vector		f;
@@ -48,16 +50,32 @@ void(vector p1, vector p2, entity from, float damage) HIP_HammerDamage =
 
 	e1 = e2 = world;
 
+#ifdef enhanced
+// damage target ent first
+	T_Damage (e0, from, from, damage);
+	particle (e0.origin, '0 0 100', 225, damage*4); // note - not exactly correct
+#ifdef warning
+if (WARNING & 1024)
+{
+	bprint("\n *** --- Hammer e0 dmg - ");
+	bprint(ftos(damage));
+	bprint(" - to - ");
+	bprint(item_ident(e0));
+	bprint("\n");
+}
+#endifdef
+#endifdef
+
 	traceline (p1, p2, FALSE, self);
 //JIM
-	if (trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
+	if (trace_ent != e0 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent, from, from, damage);
 //		T_LightningDamage(TRUE, trace_ent, from, from, damage); // chaos mod code
 		if (self.classname == "player")
 		{
-			if (other.classname == "player")
+			if (trace_ent.classname == "player")
 				trace_ent.velocity_z = trace_ent.velocity_z + 400;
 		}
 	}
@@ -65,7 +83,7 @@ void(vector p1, vector p2, entity from, float damage) HIP_HammerDamage =
 
 	traceline (p1 + f, p2 + f, FALSE, self);
 //JIM
-	if (trace_ent != e1 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
+	if (trace_ent != e0 && trace_ent != e1 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent, from, from, damage);
@@ -75,7 +93,7 @@ void(vector p1, vector p2, entity from, float damage) HIP_HammerDamage =
 
 	traceline (p1 - f, p2 - f, FALSE, self);
 //JIM
-	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
+	if (trace_ent != e0 && trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent, from, from, damage);
@@ -125,49 +143,68 @@ void() HIP_LightningThink =
 	local float cur_dist;
 	local float head_dist;
 	local float dot;
+#ifndef enhanced
 	local float oldstate;
+#endifdef
 //	local float dam;
 
 
 	if (time > self.delay)
-		{
-		if (self.enemy != world)
+	{
+		if (self.enemy)
 			self.enemy.struck_by_mjolnir = 0;
 		remove(self);
 		return;
-		}
+	}
+#ifdef enhanced
+// allowing multi strikes but considerable less damage per strike
+	if (self.state < 3)
+#else
 	oldstate = self.state;
-	if (self.state==0)
-		{
+
+	if (self.state == 0)
+#endifdef
+	{
 		// look in our immediate vicinity
 		self.enemy = world;
 		self.goalentity = world;
 		cur_dist = self.distance;
 		head = findradius(self.owner.origin, self.distance);
 		while(head)
+		{
+			if(! (head.flags & FL_NOTARGET) && ((head.flags & FL_MONSTER) || (head.flags & FL_CLIENT) || head.wad == "pk_crate")) // CHECK: pk*bot no cli flg deal?
 			{
-			if(! (head.flags & FL_NOTARGET) && ((head.flags & FL_MONSTER) || (head.flags & FL_CLIENT))) // CHECK: pk*bot no cli flg deal?
-				{
 				if ((visible(head)) && (head!=self.owner.owner) && (head.health>0))
-					{
+				{
 					head_dist = vlen(head.origin - self.lastvictim.origin);
-					if ((head_dist<cur_dist) && (head.struck_by_mjolnir==0))
-						{
+					if ((head_dist<cur_dist) && (head.struck_by_mjolnir < time))
+					{
 						self.goalentity = head;
 						cur_dist = head_dist;
-						}
 					}
 				}
+			}
 			head = head.chain;
-			}
+		}
 		if (self.goalentity != world)
-			{
-			self.state = 1;
+		{
+			self.state = self.state + 1;
 			self.enemy = self.goalentity;
-			self.enemy.struck_by_mjolnir = 1;
-			}
+			self.enemy.struck_by_mjolnir = time + 0.27 + random();
+#ifdef warning
+if ((WARNING & 1056) == 1056)
+{
+	bprint(" *** --- Hammer LTN hit - ");
+	bprint(item_ident(self.goalentity));
+	bprint("\n");
+}
+#endifdef
+		}
 		else
-			{
+		{
+#ifdef warning
+if ((WARNING & 1056) == 1056) bprint(" *** --- Hammer LTN missed\n");
+#endifdef
 			makevectors(self.v_angle);
 			self.ip_orgOrigin = self.owner.origin;
 			self.pos1 = self.ip_orgOrigin + v_forward*200;
@@ -192,20 +229,30 @@ void() HIP_LightningThink =
 //			self.origin = self.owner.origin;
 //			self.think();
 			return;
-			}
 		}
+	}
 	self.ip_orgOrigin = self.lastvictim.origin;
 	self.dest = self.enemy.absmin + 0.25*(self.enemy.absmax-self.enemy.absmin);
 	self.dest = self.dest + (random()*0.5*(self.enemy.absmax-self.enemy.absmin));
 	traceline (self.ip_orgOrigin, self.dest, TRUE, self.owner.owner);
 
 	if (trace_fraction != 1.0 || self.enemy.health<=0)
-		{
+	{
+#ifdef warning
+if (WARNING & 1024) bprint(" *** --- Hammer LTN target removed\n");
+#endifdef
 		self.enemy.struck_by_mjolnir = 0;
 		self.state = 0;
 		self.nextthink = time + 0.1;
 		return;
-		}
+	}
+
+#ifdef enhanced
+// 2 player hit, 2 - 4 monster hits per 4 part beam shooter
+	if (self.enemy)
+	if (self.enemy.flags & FL_CLIENT) self.state = self.state + 1;
+#endifdef
+
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
 	WriteEntity (MSG_BROADCAST, self);
@@ -219,15 +266,20 @@ void() HIP_LightningThink =
 	dot = self.dest2 * self.owner.movedir;
 	head = self;
 	self = self.owner.owner;
+#ifdef enhanced
+// 1 2 3 or 4 - state
+	self.dodmg = 30 / head.state;	
+#else
 	if (oldstate==0)
 		self.dodmg = 80;
 	else
 		self.dodmg = 30;
+#endifdef
 	if (dot>0.3)
-		HIP_HammerDamage (self.ip_orgOrigin, trace_endpos, self, self.dodmg);
+		HIP_HammerDamage (self.ip_orgOrigin, trace_endpos, self, head.enemy, self.dodmg);
 //		LightningDamage(FALSE, self.ip_orgOrigin, trace_endpos, self, self.dodmg);
 	else
-		HIP_HammerDamage (self.ip_orgOrigin, trace_endpos, self, self.dodmg*0.5);
+		HIP_HammerDamage (self.ip_orgOrigin, trace_endpos, self, head.enemy, self.dodmg*0.5);
 //		LightningDamage(FALSE, self.ip_orgOrigin, trace_endpos, self, self.dodmg*0.5);
 	self = head;
 
@@ -239,7 +291,7 @@ void(entity prev, entity own, float dst) HIP_SpawnMjolnirLightning =
 	local entity slight;
 	// spawn actual lightning
 	slight = spawn();
-	slight.delay = time + 0.8;
+	slight.delay = time + 0.8; // every beam takes 0.2 - thus 4 beams per slight ent
 	slight.state = 0;
 	slight.lastvictim = prev;
 	slight.distance = dst;
@@ -261,7 +313,7 @@ void() HIP_SpawnMjolnirBase =
 	slight.origin = trace_endpos;
 	slight.flags = 0;
 	slight.owner = self;
-	slight.struck_by_mjolnir = 1;
+	slight.struck_by_mjolnir = MAXFL;
 	slight.think = SUB_Remove;
 	slight.nextthink = time + 1;
 	if (self.eweapon)
@@ -318,18 +370,23 @@ void() HIP_FireMjolnir =
 	self.attack_finished = time + self.eweapon.attack_finished;
 	self.dest = self.origin + '0 0 16';
 	makevectors(self.v_angle);
-	traceline (self.dest, self.dest + v_forward*32, FALSE, self); // strike range?
-	if (trace_fraction == 1.0 && (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, null_string)))
-		{
+#ifdef enhanced
+	traceline (self.dest, self.dest + v_forward*64, FALSE, self);
+#else
+	traceline (self.dest, self.dest + v_forward*32, FALSE, self); // strike range for hammer head
+#endifdef
+
+	if (trace_fraction == 1.0 && (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, null_string))) // head missed local target & we have 15 cells to fire ltn
+	{
 		self.dest = self.dest + v_forward*32;
 		traceline (self.dest , self.dest - v_up*50, FALSE, self);
 		if (trace_fraction > 0.3 && trace_fraction< 1.0)
-			{
+		{
 			HIP_FireMjolnirLightning();
 			self.attack_finished = time + 1.5; // IMP: inventory contol implement
 			return;
-			}
 		}
+	}
 	org = trace_endpos - v_forward*4;
 
    if (trace_ent.takedamage)

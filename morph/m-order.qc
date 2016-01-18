@@ -498,7 +498,7 @@ string() player_order_killmsg2 =
 		+---------------------------------------+
 */
 
-void(float silent) player_order_become = 
+void() player_order_become = 
 {
 	local float tc;
 
@@ -555,15 +555,6 @@ void(float silent) player_order_become =
 
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become ");
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-//		morph_impulse();
-	}
 };
 
 

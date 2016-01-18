@@ -77,17 +77,11 @@ float Q3_HEALM_A				= 100;
 float Q3_BARREL_BLAST		= 120;
 
 
-vector Q3_LIFT					= ' 0 0 20'; // q3 models sit too "low" - lift them by this on spawn
+vector Q3_LIFT					= ' 0 0 10'; // q3 models sit too "low" - lift them by this on spawn
 
 //string Q3_BOBHOFF				= "cl_itembobheight 0\n"; // q3 item bob height off setting
-string Q3_BOBH					= "cl_itembobheight 8\n"; // q3 item bob height default - compile as 0 to disable (server cfg parm?)
-string Q3_BOBHALIAS			= "q3bobheight\n"; // q3 item bob height alias to run
-
-float q3_bob_on; // server cfg this to 1 for total disable
-// for q3 maps
-// = 0, q3 bob is off
-// = 1, q3 bob is activated
-// = -1 q3 bob is waiting activation by player stuff - items cant stuff
+//string Q3_BOBH					= "cl_itembobheight 8\n"; // q3 item bob height default - compile as 0 to disable (server cfg parm?)
+//string Q3_BOBHALIAS			= "q3bobheight\n"; // q3 item bob height alias to run
 
 /*
 {name} entered the game
@@ -216,25 +210,18 @@ void() q3_precache =
 
 void() q3_bob_height =
 {
-//	if (q3_bob_on > 0) return; // NOTE: these dont work
-//	if (q3_bob_on == 0) q3_bob_on = -1;
-
 	if (!self.flags & FL_CLIENT) return;
 	if (self.class_select == "class_bot") return; // already tested, but just in case
 
-	if (TR_Q3 > 0)
+	if ((MAP_MODE != "Q3") || ((TR_Q3 > 0) && (TR_Q3 != FL_TR_Q3))) // dont bob if not q3 map or translating all q3 items
 	{
-		if (TR_Q3 != FL_TR_Q3) // dont bob if translating all q3 items
-		{
-			stuffcmd(self, Q3_BOBHOFF);
-			q3_bob_on = 0;
-			return;
-		}
+		stuffcmd(self, "cl_itembobheight 0\n"); //Q3_BOBHOFF);
+		stuffcmd(self, "q3bobheight\n"); // Q3_BOBHALIAS); // run this alias - lets players individually turn on or off bobheight
+		return;
 	}
 
-	q3_bob_on = 1; // NOTE: this code is called for every client - so this var is useless
-	stuffcmd(self, Q3_BOBH); // bob q3 items, heh heh
-	stuffcmd(self, Q3_BOBHALIAS); // alias override
+	stuffcmd(self, "cl_itembobheight 8\n"); //Q3_BOBH); // bob q3 items, heh heh
+	stuffcmd(self, "q3bobheight\n"); // Q3_BOBHALIAS); // run this alias - lets players individually turn on or off bobheight
 };
 
 /*

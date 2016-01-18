@@ -479,7 +479,7 @@ string(entity targ, entity attacker) player_demon_killmsg2 =
 #endifdef
 };
 
-void(float silent) player_demon_become = 
+void() player_demon_become = 
 {
 	self._stand=player_demon_stand;
 	self._run=player_demon_run;	
@@ -520,13 +520,4 @@ void(float silent) player_demon_become =
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
 
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // fiend
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-		morph_impulse();
-	}
 };

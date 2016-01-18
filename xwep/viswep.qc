@@ -1046,7 +1046,7 @@ void(entity e, string md, entity p) DeadThrew =
 		setorigin(newmis, e.origin);
 
 	setmodel (newmis, md);
-	setsize (newmis, '-12 -12 0', '12 12 56');
+	setsize (newmis, '-12 -12 -6', '12 12 12');
 
 // Cataboligne - 11.11.12 - fix morphs beng able to pickup weps they shouldnt
 //	- also may have fixed some un-ided bot issues

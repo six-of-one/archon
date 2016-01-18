@@ -397,7 +397,8 @@ void() player_lavacthon_become =
 	self.view_ofs = ' 0 0 120';
 	setsize (self, '-64 -64 -24', ' 64 64 128');
 
-	sprint(self,"You are emergent...CTHON!!\n");
+	stuffcmd(self, "hud_message \"You are emergent...CTHON!\"\n");
+//	sprint(self,"You are emergent...CTHON!!\n");
 
 	self.builtin = IT_SHOTGUN;
 	self.items = self.items | self.builtin;

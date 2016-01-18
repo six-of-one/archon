@@ -259,7 +259,7 @@ void() CheckWaterLevels =
 					}
 					else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT)
 					{
-						if (e.class_select != "class_mosnter") // polyed mosnter - cant kill
+						if (e.class_select != "class_mosnter") // polyed to a mosnter - cant kill
 						{
 							if (e.ip_orgOrigin != v0) setorigin (e, e.ip_orgOrigin + '0 0 40');
 							else

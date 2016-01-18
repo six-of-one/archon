@@ -367,7 +367,7 @@ string() player_enf_killmsg2 =
 		+---------------------------------------+
 */
 
-void(float silent) player_enforcer_become = 
+void() player_enforcer_become = 
 {
 	self._stand = player_enf_stand;
 	self._run = player_enf_run;
@@ -403,17 +403,6 @@ void(float silent) player_enforcer_become =
 	self.health_modifier = MENF_HEALMOD;
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
-
-
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become "); // an enforcer
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-		morph_impulse();
-	}
 };
 
 

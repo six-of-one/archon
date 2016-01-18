@@ -28,8 +28,22 @@ float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 //#define warning
 
 #ifdef warning
+float WARNING;								// display warnings - dev work mainly - now uses the following bit flags for specific warning sets
 #endifdef
+												// & 1 - server ops
+												// & 2 - items
+												// & 4 - monsters / morphs
+												// & 8 - bot warnings
+												// & 16 - hipnotic warnings
+												// & 32 - weapons
+												// & 64 - runes
+												// & 128 - environment
+												// & 255 - 1 - 128 inclusive + non masked
+												// & 256 - non masked elements - excludes 1 - 128 ++
+// specials
+												// & 1024 - hammer
 
+//
 // control over test code
 
 #define testset
@@ -222,18 +236,6 @@ float P_RELOAD = 4;
 
 .float admin;
 
-#ifdef warning
-float WARNING;								// display warnings - dev work mainly - now uses the following bit flags for specific warning sets
-#endifdef
-												// & 1 - server ops
-												// & 2 - items
-												// & 4 - monsters / morphs
-												// & 8 - bot warnings
-												// & 16 - hipnotic warnings
-												// & 32 - weapons
-												// & 64 - runes
-												// & 128 - environment
-												// & 256 - non bit mask elements
 // admin protos
 void() PK_SetAdmin;
 void() PK_AdminImpulse;
@@ -1340,7 +1342,7 @@ float Q2_SILENCE; // value of silence as percentage of original volume
 // q3
 
 string Q3_DET					= "q3_snd/respawn1.wav"; // against	self.noise4 - NOTE: artifacts are different
-string Q3_BOBHOFF				= "cl_itembobheight 0\n"; // q3 item bob height off setting
+
 float Q3_POWER_WAIT; // norm = 120
 float Q3_POWER_TIME; // norm = 30
 float Q3_RAILBEAM				= 357811;

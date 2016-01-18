@@ -113,6 +113,7 @@ float STAT_ARCHON 				= 66; // track archon power for power bar display
 // fooey.  these will be tricky to maintain since the list is built on the fly
 //					this will need to be UPDATED everytime we add, re-arrange or change items
 
+float MC_AXE 						= 100;
 float MC_SHOTGUN 					= 101;
 float MC_SUPER_SHOTGUN 			= 102;
 
@@ -124,9 +125,17 @@ float MC_HOOK 						= 148;
 float MC_HIP_MJOLNIR 			= 149;
 float MC_HIP_LASERCAN 			= 150;
 float MC_HIP_PROXGUN 			= 151;
+float MC_D_SAW						= 155;
+float MC_D_PISTOL					= 156;
+float MC_W_KNIFE					= 191;
+float MC_Q2_BLASTER				= 210;
+float MC_Q2_GRAPPLE				= 220;
 float MC_Q2_RAILGUN 				= 218;
+float MC_Q3_GAUNTLET				= 255;
+float MC_Q3_GRAPPLE				= 256;
 float MC_C_FLAMER 				= 293;
 float MC_DEEPSLEEP 				= 291;
+float MC_QUANTUM	  				= 292;
 
 // pk inv - collectables
 float PK_IT_AXE					= 1;

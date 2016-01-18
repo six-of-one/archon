@@ -472,7 +472,8 @@ void() morphic_impulse =
 			if (sv < 1) // ran out
 			{
 				if (c.theowner != self) // debounce
-					sprint(self, "You need more Archon power for Evolution.\n");
+					stuffcmd(other, "hud_message \"You need more Archon power for Evolution\"\n");
+//					sprint(self, "You need more Archon power for Evolution.\n");
 				c.theowner = self;
 				c.owner = world;
 				c.touch = painkeep_touch;
@@ -576,6 +577,7 @@ void() morph_cube_use =
 	}
 	else if (trace_ent) // an Archon force polymorping another player / bot
 	{
+// note: order descriptor here??
 		centerprint3(self, "You have been polymorphed by chaos into: ", polymorph_id(self.morphy),null_string); // TEST:
 		cube_rearm(); // does a few things, incase they are in cubes, spells or menus
 		self = trace_ent;
@@ -1350,7 +1352,7 @@ void() morph_pack_rethink =
 // check morph allow bits prior to switch
 
 
-void(float silent) player_human_become = 
+void() player_human_become = 
 {
 	if (self.class_select == "class_player")
 	{
@@ -1359,9 +1361,6 @@ void(float silent) player_human_become =
 
 		stuffcmd(self, "exec cfg/morph/m-human.cfg\n");
 	}
-
-	setmodel (self,"progs/eyes.mdl");
-	modelindex_eyes = self.modelindex;
 
 	if (self.morphy == CHAR_W) setmodel(self, "progs/plyr_bw.mdl");
 	if (self.morphy == CHAR_D) setmodel(self, "progs/plyr_dm.mdl");
@@ -1401,15 +1400,6 @@ void(float silent) player_human_become =
 	self._killmsg2 = SUB_Null;
 	self.th_missile = SUB_Null;
 	self.th_melee = SUB_Null;
-
-	if (!silent) // silent for starting new level as this beasty
-	{
-		bprint(self.netname);
-		bprint(" has become ");
-		bprint(polymorph_id(self.morphy));
-		bprint(".\n");
-//		morph_impulse();
-	}
 };
 
 void(float cmd, float pls) polymorph_check =
@@ -1502,31 +1492,44 @@ void(float cmd, float pls) polymorph_check =
 
 		if (self.deadflag) return;
 
-		if (cmd == IMP_MCHAOS) player_chaos_become(pls);
-		else if (cmd == IMP_MORDER) player_order_become(pls);
-		else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
-		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
-		else if (cmd == IMP_MWIZARD) player_wizard_become(pls);
-		else if (cmd == IMP_MHKNIGHT) player_hknight_become(pls);
-		else if (cmd == IMP_MSHAMBLR) player_shambler_become(pls);
-		else if (cmd == IMP_MDEMON) player_demon_become(pls);
-		else if (cmd == IMP_MOGRE) player_ogre_become(pls);
+		if (cmd == IMP_MCHAOS) player_chaos_become();
+		else if (cmd == IMP_MORDER) player_order_become();
+		else if (cmd == IMP_MZOMBIE) player_zombie_become();
+		else if (cmd == IMP_MSHALR) player_shalrath_become();
+		else if (cmd == IMP_MWIZARD) player_wizard_become();
+		else if (cmd == IMP_MHKNIGHT) player_hknight_become();
+		else if (cmd == IMP_MSHAMBLR) player_shambler_become();
+		else if (cmd == IMP_MDEMON) player_demon_become();
+		else if (cmd == IMP_MOGRE) player_ogre_become();
 		else if (cmd == IMP_MCTHON) player_lavablob_become(pls);
 //		else if (cmd == IMP_MCTHONTALL) player_lavacthon_become();
-		else if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
-		else if (cmd == IMP_MENF) player_enforcer_become(pls);
-		else if (cmd == IMP_MGREMLIN_F) player_gremlin_become(pls);
-		else if (cmd == IMP_MGREMLIN_L) player_gremlin_become(pls);
+		else if (cmd == IMP_MSCOURGE) player_scourge_become();
+		else if (cmd == IMP_MENF) player_enforcer_become();
+		else if (cmd == IMP_MGREMLIN_F) player_gremlin_become();
+		else if (cmd == IMP_MGREMLIN_L) player_gremlin_become();
 	/*
-		else if (cmd == IMP_MIMP) player_imp_become(pls);
-		else if (cmd == IMP_MCYBER) player_cyber_become(pls);
-		else if (cmd == IMP_MARACHN) player_arachn_become(pls);
-		else if (cmd == IMP_MGUNNEY) player_gunney_become(pls);
-		else if (cmd == IMP_MTANK) player_tank_become(pls);
-		else if (cmd == IMP_MSUPTANK) player_supertank_become(pls);
-		else if (cmd == IMP_MWRAITH) player_wraith_become(pls);
+		else if (cmd == IMP_MIMP) player_imp_become();
+		else if (cmd == IMP_MCYBER) player_cyber_become();
+		else if (cmd == IMP_MARACHN) player_arachn_become();
+		else if (cmd == IMP_MGUNNEY) player_gunney_become();
+		else if (cmd == IMP_MTANK) player_tank_become();
+		else if (cmd == IMP_MSUPTANK) player_supertank_become();
+		else if (cmd == IMP_MWRAITH) player_wraith_become();
+		else if (cmd == IMP_MSHAPESHIFT) player_shapeshifter_become();
 	*/
-		else player_human_become(pls);
+		else player_human_become();
+
+// tell everyone about the change - idea, hud_message ?
+		if (!pls) // silent for starting new level / respawning as this beasty
+		{
+			bprint(self.netname);
+			bprint(" has become ");
+			bprint(polymorph_id(self.morphy));
+			bprint(".\n");
+//			if (self.morphy != IMP_MHKNIGHT) 
+			if (!self.mask_x & 981023) // chaos, order, human, hkn, ogre, shalrath, shambler, scrag, cthon, gremlin, scourge - no impulse def
+				morph_impulse();
+		}
 
 		self.modelindex_morph = self.modelindex;
 		self.mdl = self.model;
@@ -1831,8 +1834,12 @@ void() random_monster =
 		if (e.health <= 0)
 		if (e.think != SUB_Remove)
 		{
-			e.think = SUB_Remove;
-			e.nextthink = f + time;
+			if (!e.deadflag) e.deadflag = time + 10; // give monster time to finish death frames
+			if (e.deadflag < time)
+			{
+				e.think = SUB_Remove;
+				e.nextthink = f + time;
+			}
 		}
 
 		now = FALSE;
@@ -2079,10 +2086,14 @@ void() monster_respawn =
 				if (e.health <= 0)
 				if (e.think != monster_respawn_fire)
 				{
-					BodyQueAsset(e, world, TRUE); // make a dead body
-					e.model = null_string; // hide this guy
-					e.think = monster_respawn_fire;
-					e.nextthink = time + 10 + 20 * random();
+					if (!e.deadflag) e.deadflag = time + 10; // give monster time to finish death frames
+					if (e.deadflag < time)
+					{
+						BodyQueAsset(e, world, TRUE); // make a dead body
+						e.model = null_string; // hide this guy
+						e.think = monster_respawn_fire;
+						e.nextthink = time + 10 + 20 * random();
+					}
 				}
 				e = find(e, classname, mn);
 			}
