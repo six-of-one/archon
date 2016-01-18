@@ -1,15 +1,15 @@
-                                               /*
+/*
 		+---------------------------------------+
 		|  sphere of annihilation               | SEC-HEAD
 		+---------------------------------------+
 */
 
 // sphere special flags
-float FL_ANNIHILATED		= 8192; // something has already been annihilated once - like monsters
+float FL_ANNIHILATED			= 8192; // something has already been annihilated once - like monsters
 // sphere move states
 float ST_FREEZE				= 0;
 float ST_FOLLOW				= 1;
-float ST_ANGLE				= 3;
+float ST_ANGLE					= 3;
 float ST_VOLUME				= 5;
 float SP_MAXDIST				= 150; // cant control from further away than this
 

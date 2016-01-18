@@ -1263,6 +1263,148 @@ void() archon_power_act =
 	self.use = archon_power_touch;
 };
 
+/*QUAKED func_map_feature (.8 .1 .8) (-8 -8 -8) (8 8 8)  SPAWN SLIDE FADE RUBBLE
+--------  CAT  -------
+Chaos Mod MK II
+
+"spawn" - fire process on map spawn - DEPRECATED
+"slide" - slide in "angle" direction as it goes (fades or dissappears)
+"fade" - area will fade as it dissappears
+"rubble" - generate rubble according to "count"
+
+-------- KEYS --------
+"target" - entity to work on
+"targetname" - trigger - timer or damage is activator
+"delay" - time it takes to fade or slide before its gone, 10 second default
+"frame" - time during slide to set non-solid (if solid)
+"height" - total distance to slide
+"aflag" - amount to fade every second, calculated from "delay" if 0
+"wait" - time until feature returns, -1 never return
+"count" - amount of rubble to generate - generic model, or use models in "target1", "target2"
+"target1", "target2" - rubble models
+"noise" - noise at start
+"noise1" - break noise at end of delay
+"noise2" - restore noise at end of wait
+
+-------- NOTES --------
+a controler for removeable map areas
+*/
+
+// func_map_feature - archon removeable map features (damage or timer)
+
+// target - target such as a func_wall or func_model
+
+float MF_SPAWN = 1;
+float MF_SLIDE = 2;
+float MF_FADE = 4;
+float MF_RUBBLE = 8;
+
+void () multi_wait;
+
+void() think_map_feature =
+{
+	local float op, oh;
+
+	op = self.aflag / 4;
+	oh = self.height / self.delay / 4;
+
+	if (self.deadflag) // done - restore it
+	{
+		setorigin(self.enemy, self.oldorigin);
+		self.enemy.alpha = 1.0; // IDEA: fade restore?
+		self.enemy.solid = self.lefty;
+		if (self.noise2) sound (self.enemy, CHAN_BODY,self.noise2,1,ATTN_NORM);
+		self.enemy = world;
+		self.deadflag = FALSE;
+		multi_wait();
+		return;
+	}
+
+	if (self.search_time < time)
+	{
+		if (self.noise1) sound (self.enemy, CHAN_BODY,self.noise1,1,ATTN_NORM);
+		self.enemy.alpha = 0.001; // because 0 alpha is 1 alpha - engine "dur"
+
+		if (self.wait > 0)
+		{
+			self.nextthink = time + self.wait;
+			self.deadflag = TRUE;
+		}
+		else
+		{
+			remove(self.enemy); // chaos vector - save this for potential restore
+			self.nextthink = time + 0.2;
+			self.think = SUB_Remove;
+		}
+	}
+	else
+	{
+		if (self.spawnflags & MF_SLIDE) self.enemy.origin_z = self.enemy.origin_z - oh;
+		if (self.spawnflags & MF_FADE)
+		{
+			self.enemy.alpha = self.enemy.alpha - op;
+			if (self.enemy.alpha <=0) self.enemy.alpha = 0.001; // because 0 alpha is 1 alpha - engine "dur"
+		}
+		if (self.lefty) // go non solid
+		if (self.rad_time)
+		if (self.rad_time < time) self.enemy.solid = 0;
+
+		self.nextthink = time + 0.25;
+	}
+};
+
+void() use_map_feature =
+{
+	local entity e;
+
+	if (self.nextthink > time)
+	{
+		return;		// already been triggered
+	}
+
+// don't trigger again until reset
+	self.takedamage = DAMAGE_NO;
+
+	activator = self.enemy;
+
+	if (activator.classname == "pk*bot")
+		bot_triggered (activator);
+	SUB_UseTargets ();
+
+	e = find (world,targetname,self.target);
+	if (e)
+	{
+		self.enemy = e;
+		self.deadflag = FALSE;
+		self.oldorigin = e.origin;
+		self.lefty = e.solid;
+		if (e.alpha <= 0) e.alpha = 1.01;
+
+		if (self.delay <= 0) self.delay = 10;
+		if (self.aflag <= 0) self.aflag = 1 / self.delay; // so if delay is 20 we fade or slide 0.05 every second;
+		self.search_time = time + self.delay;
+		self.rad_time = 0;
+		if (self.frame) self.rad_time = time + self.frame;
+
+		if (self.noise) sound (self.enemy, CHAN_BODY,self.noise,1,ATTN_NORM);
+
+		self.think = think_map_feature;
+		self.nextthink = time + 1;
+	}
+};
+
+// made this into a trigger - regular func_ map loaded item did not fire when activated, go figure
+
+void() func_map_feature =
+{
+	if (notmod(self)) return;
+
+	self.use = use_map_feature;
+
+	self.th_weight = triggerweight; // *bot
+	self.istrigger = 1;
+	InitTrigger ();
+}
 
 // func_arcarn - archon arena blocks
 

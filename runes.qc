@@ -1004,19 +1004,24 @@ void() rune_maker =
 			self.count = 2 + random() * 3.8; // controls no-touch reposition code in check movement deal
 			self.delay = self.cnt = 0;
 
-			if (self.spawnflags & TECH_MASK_ALL)
-				bprint("\n\b*** TECH spawned: ");
-			else
-				bprint("\n\b*** RUNE spawned: ");
-			bprint(self.netname);
-			if (e)
-			{
-				bprint(" near: ");
-				bprint(e.classname);
+		  if (DYN_SHOW || !RUNE_SHOW)
+		  {
+				bprint("\n"); // RUNE_MSG_ISO
+				if (self.spawnflags & TECH_MASK_ALL)
+					bprint("\b*** TECH spawned: ");
+				else
+					bprint("\b*** RUNE spawned: ");
+				bprint(self.netname);
+				if (e)
+				{
+					bprint(" near: ");
+					bprint(e.classname);
+				}
+				else
+				bprint(" on the map");
+				bprint("\n");
+				bprint("\n"); // RUNE_MSG_ISO
 			}
-			else
-			bprint(" on the map");
-			bprint("\n\n");
 
 			rune_count = rune_count + 1;
 		}
@@ -1093,12 +1098,16 @@ void() rune_relocate =
 		if (e)
 		{
 			self.ip_orgOrigin = e.origin + ' 0 0 4'; // something found - move rune here
-			bprint("\n\b*** RUNE relocating: ");
-			bprint(self.netname);
-			bprint(" near: ");
-			bprint(item_ident(e));
-			bprint("\n\n");
-
+		  if (DYN_SHOW || !RUNE_SHOW)
+		  {
+				bprint(RUNE_MSG_ISO);
+				bprint("\b*** RUNE relocating: ");
+				bprint(self.netname);
+				bprint(" near: ");
+				bprint(item_ident(e));
+				bprint("\n");
+				bprint(RUNE_MSG_ISO);
+			}
 		}
 	}
 };

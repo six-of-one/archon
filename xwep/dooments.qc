@@ -2239,7 +2239,7 @@ void() w_treas_touch =
 	{
 		sprint(other, " -  ");
 		sprint(other, ftos(self.xp));
-		sprint(other, " points. You have" );
+		sprint(other, " points. You have " );
 		sprint(other, ftos(other.xp));
 		sprint(other, " total.");
 		

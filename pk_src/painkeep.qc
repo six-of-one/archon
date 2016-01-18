@@ -1153,6 +1153,7 @@ void() pk_liveupd =
 	}
 
 // dynamic items
+	DYN_SHOW = cvar("pk_dyn_show");
 	DYN_OVR = cvar("pk_dyn_ovr");
 	DYN_FORCE = FALSE;
 	if (!DYN_OVR) DYN_FORCE = cvar("pk_dyn_force");
@@ -1454,6 +1455,7 @@ void() pk_srvcmd_set =
 	VW = TRUE;
 
 // dynamic item defaults
+	DYN_SHOW = FALSE;
 	DYN_OVR = FALSE;
 	DYN_ART = TRUE;
 	DYN_FORCE = FALSE;
@@ -1811,6 +1813,7 @@ current max is 312, move lines out of comment as needed
 		registercvar("sv_pl_nopkcide", "0"); // dont count pk ffw suicides as -1 frag
 
 // dynamic item controls
+		registercvar("pk_dyn_show", "0"); // tell players about dynamic items in console
 		registercvar("pk_dyn_ovr", "0"); // if set over-ride bit in control flag - gets set by menu command
 		registercvar("pk_dyn_art", "1"); // add artifacts to dyn items
 		registercvar("pk_dyn_force", "0"); // force dynamic items on any map - must set PK true, has no effect if dyn already on

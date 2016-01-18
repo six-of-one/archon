@@ -288,7 +288,7 @@ void(entity e) set_defaults =
 		{
 			if (INIT_0_W > 0 && MAP_MODE == "W") set_xweap(e, INIT_0_W);
 			if (INIT_1_D > 0 && MAP_MODE == "D") set_xweap(e, INIT_1_D);
-			if (INIT_2_Q > 0 && MAP_MODE == "Q")set_xweap(e, INIT_2_Q);
+			if (INIT_2_Q > 0 && MAP_MODE == "Q") set_xweap(e, INIT_2_Q);
 			if (INIT_3_PK > 0 && MAP_MODE == "PK") set_xweap(e, INIT_3_PK);
 			if (INIT_4_Q2 > 0 && MAP_MODE == "Q2") set_xweap(e, INIT_4_Q2);
 			if (INIT_5_Q3 > 0 && MAP_MODE == "Q3") set_xweap(e, INIT_5_Q3);

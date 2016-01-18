@@ -663,6 +663,7 @@ float () BotPreFrame =
 	DynamicWaypoint();
 	return FALSE;
 };
+
 float () BotPostFrame =
 {
 	if (self.b_clientno == -1)

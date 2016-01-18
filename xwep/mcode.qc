@@ -2063,13 +2063,29 @@ void() painkeep_cube_use =
 					else if (f == 4) d = MC_HOOK;
 					else if (f == 5)
 					{
-						d = MC_HIP_MJOLNIR;
-						if (ULOK2)
+//						d = MC_HIP_MJOLNIR;
+						d = MC_C_FLAMER;
+						if (random() < 0.6)
 						{
-							d = MC_Q2_ARM_PSHIELD;
-							c.ammo_cells = -1;
+							if (ULOK2)
+							{
+								d = MC_Q2_ARM_PSHIELD;
+								c.ammo_cells = -1;
+							}
+							if (ULOK3) d = MC_Q3_HASTE; 
 						}
-						if (ULOK3) d = MC_Q3_HASTE; 
+						
+						if (d == MC_C_FLAMER) // making a flamer - random ammo
+						{
+							self = spawn();
+							self.wait = MC_C_AGAS_LG;
+							func_make();
+							newmis.punchangle = MED_BOUNCE_NOW;
+							func_make();
+							newmis.punchangle = MED_BOUNCE_NOW;
+							remove(self);
+							self = sv;
+						}
 					}
 					else
 					{
@@ -2872,16 +2888,19 @@ void(float mc, vector vo, string wd) fn_make =
 
 		if (self.map == "rune") self.map = ""; // rune server deal
 
-		bprint("\b*** fn_make item spawned: ");
-		bprint(self.wad);
-		if (e)
-		{
-		bprint(" near: ");
-		bprint(e.classname);
+	  if (DYN_SHOW)
+	  {
+			bprint("\b*** fn_make item spawned: ");
+			bprint(self.wad);
+			if (e)
+			{
+			bprint(" near: ");
+			bprint(e.classname);
+			}
+			else
+			bprint(" on the map");
+			bprint("\n");
 		}
-		else
-		bprint(" on the map");
-		bprint("\n");
 
 		self = sv;
 

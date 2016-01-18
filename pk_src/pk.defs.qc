@@ -292,6 +292,8 @@ float RUNE_TECH_DMG_COMB	= 1; // allow damage runes to combind with each other
 float RUNE_TECH_RS_COMB		= 1; // allow resist runes to combind with each other
 float RUNE_NOWAY				= 1; // if true relocate runes past noway bounds for waypoints (quicker than normal relo
 										  // note: this also enables relocation repair (e.g. nextthink fail fix)
+float RUNE_SHOW				= 0; // if true, rune console info print obeys DYN_SHOW rules
+string RUNE_MSG_ISO			= ""; // set to "\n" to put blank lines around relocating msg
 
 void() flyer_move; // fly rune for now
 
@@ -317,6 +319,7 @@ float MC_AEXPLSH;
 void() func_make;
 
 // item override admin
+float DYN_SHOW;
 float DYN_OVR;
 float DYN_ART;
 float DYN_FORCE;

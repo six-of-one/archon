@@ -586,7 +586,7 @@ void() melee_hit =
 		dm = EWEAP.dmg;
 		if (!dm) dm = 20;
 		else if (dm == DOOM_ML_DMG) dm = 10 * ceil(random() * 2);
-		if (trace_ent.solid == SOLID_SLIDEBOX) // bloodcheck
+		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK
 			SpawnBlood (org, '0 0 0', dm);
 		T_Damage (trace_ent,self,self,dm);
 	}

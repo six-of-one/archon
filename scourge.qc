@@ -395,7 +395,7 @@ void() scourge_die =
 // scourge_melee
 //
 void() scourge_melee =
-   {
+{
 	local float chance;
 
 //   chance = random();
@@ -406,7 +406,7 @@ void() scourge_melee =
 //   else
 //      return;
    SUB_AttackFinished (2*random());
-   };
+};
 
 //
 // ScourgeTriggerThink

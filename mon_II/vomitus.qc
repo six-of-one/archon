@@ -596,7 +596,7 @@ if (ign != A_MONSTER)
 
 	
 	precache_sound ("vomitus/attack1.wav");
-      precache_sound ("vomitus/attack2.wav");
+	precache_sound ("vomitus/attack2.wav");
 	precache_sound ("vomitus/die.wav");
 	precache_sound ("vomitus/paina.wav");
 	precache_sound ("vomitus/painb.wav");

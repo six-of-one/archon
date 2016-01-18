@@ -47,7 +47,7 @@ void () multi_trigger =
 {
 	if (self.nextthink > time)
 	{
-		return;		// allready been triggered
+		return;		// already been triggered
 	}
 
 	if (!m_score_rel1)
@@ -116,6 +116,7 @@ void () multi_trigger =
 void () multi_killed =
 {
 	self.enemy = damage_attacker;
+	self.solid = SOLID_NOT; // stop blocking when dead - Cataboligne - 11.6.12 - CHECK: find out if this borks any existing maps
 	multi_trigger ();
 };
 

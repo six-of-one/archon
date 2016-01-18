@@ -239,18 +239,22 @@ void (float damage, vector dir) TraceAttack =
 
 	if (trace_ent.takedamage)
 	{
-		if (trace_ent.netname != "Crate") // ick: hack - handle in spawnblood, recode to pass ent, include doors & triggers
-		SpawnBlood (org, vel*0.2, damage);
 		AddMultiDamage (trace_ent,damage);
+//		if (trace_ent.netname != "Crate") // ick: hack - handle in spawnblood, recode to pass ent, include doors & triggers
+		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK
+		{
+			SpawnBlood (org, vel*0.2, damage);
+			return;
+		}
 	}
-	else
-	{
+//	else
+//	{
 		WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST,TE_GUNSHOT);
 		WriteCoord (MSG_BROADCAST,org_x);
 		WriteCoord (MSG_BROADCAST,org_y);
 		WriteCoord (MSG_BROADCAST,org_z);
-	}
+//	}
 };
 
 /*
