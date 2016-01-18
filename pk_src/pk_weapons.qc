@@ -1136,7 +1136,7 @@ void() pk_special_impulse =
 
 		self.pk_currentitem = PK_IT_AIRGUN;
 	}
-	else if (self.impulse == 31 || self.impulse == 21 || self.impulse == 22)
+	else if (self.impulse == 31)
 	{
 		if (!(self.pk_items & PK_IT_GRAPGUN))
 			return;
@@ -1913,7 +1913,7 @@ void() PK_ImpulseCommands =
 		return;
 	}
 
-	if ((self.impulse >= 1 && self.impulse <= 14) && self._impulse != SUB_Null) 
+	if ((self.impulse >= 1 && self.impulse <= 16) && self._impulse != SUB_Null) 
 	{
 		if (self.impulse == 14)
 		if (self.height == IMP_MCHAOS)
@@ -1942,7 +1942,7 @@ void() PK_ImpulseCommands =
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
 
-	else if (self.impulse >= 30 && self.impulse <= 38 || self.impulse == 21 || self.impulse == 22) // pk user impulses
+	else if (self.impulse >= 30 && self.impulse <= 38) // pk user impulses
 		pk_special_impulse();
 	else if (self.impulse > 160 && self.impulse < 166) // Cataboligne 8.12.9 purify - pk artifacts
 	{

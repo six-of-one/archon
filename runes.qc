@@ -1278,10 +1278,45 @@ void() run_runes =
 	e = find(world, classname, "player"); // add archon pts for runes
 	while (e)
 	{
-		if (e.rune_flag)
+		if (! e.mask_x & MORPH_ARCHON)
 		{
-			f = bit_cnt(e.rune_flag, FALSE);
-			e.archon = e.archon + (ARCHON_RUNE * f);
+			if (e.rune_flag)
+			{
+				f = bit_cnt(e.rune_flag, FALSE);
+				e.archon = e.archon + (ARCHON_RUNE * f);
+			}
+			if (e.items & 7929856)
+			{
+				f = bit_cnt((e.items & 7929856), FALSE);
+				e.archon = e.archon + (3 * f); // ARCHON_ARTIFACT = 3
+			}
+		}
+		else
+		{
+			if (e.archon > 1500) // ARCHON_RUNE_MIN - rune powers do not operate below this
+			{
+				if (e.AIRG_Timeout == 2000) // restore runes
+				{
+					if (e.archon > e.AIRG_Timeout)
+					{
+						e.rune_flag = e.AIRG_FireCount & 71;
+						e.AIRG_FireCount = e.AIRG_Timeout = 0;
+					}
+				}
+				if (e.rune_flag & 2) e.archon = e.archon - 3; // 3 pts - damage
+				else if (e.rune_flag & 1) e.archon = e.archon - 5; // 5 pts - resist
+				else if (e.rune_flag & 4) e.archon = e.archon - 10; // 10 pts - haste
+				else if (e.rune_flag & 64) e.archon = e.archon - 12; // 12 pts - vampire
+			}
+			else
+			{
+				if (e.rune_flag)
+				{
+					e.AIRG_FireCount = e.rune_flag;
+					e.AIRG_Timeout = 2000; // get runes back;
+				}
+				e.rune_flag = 0;
+			}
 		}
 		e = find(e, classname, "player");
 	}
@@ -1292,6 +1327,11 @@ void() run_runes =
 		{
 			f = bit_cnt(e.rune_flag, FALSE);
 			e.archon = e.archon + (ARCHON_RUNE * f);
+		}
+		if (e.items & 7929856)
+		{
+			f = bit_cnt((e.items & 7929856), FALSE);
+			e.archon = e.archon + (3 * f); // ARCHON_ARTIFACT = 3
 		}
 		e = find(e, class_select, "class_bot");
 	}

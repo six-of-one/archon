@@ -251,6 +251,7 @@ void(entity e, string md) chaos_flycheck =
 
 	mt = MOVETYPE_WALK;
 
+	if (md == "progs/nodule11.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/teleport.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/chaos_b2.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/chaos_b3.1col.mdl") mt = MOVETYPE_FLY;
@@ -331,22 +332,23 @@ void(entity e) chaos_mdlsize =
 
 // fn(chaos_mdlsel) - select various map forms
 
-string() chaos_mdlsel =
+string(float mb) chaos_mdlsel =
 {
 	local string s1;
 
 	s1 = "spike ball";
-	if (ci_md == "progs/teleport.mdl")				{ ci_md = "maps/b_rock0.bsp";					s1 = "rocket box"; }
-	else if (ci_md == "maps/b_rock0.bsp")			{ ci_md = "maps/b_exbox2.bsp";				s1 = "explode box"; }
-	else if (ci_md == "maps/b_exbox2.bsp")		{ ci_md = "progs/g_gas.mdl";						s1 = "gas cylinders"; }
-//	else if (ci_md == "progs/g_gas.mdl")				{ ci_md = "progs/drycel6.mdl";				s1 = "batterys"; }
-	else if (ci_md == "progs/g_gas.mdl")				{ ci_md = "maps/b_batt1.mdl";				s1 = "batterys"; }
-	else if (ci_md == "maps/b_batt1.mdl")		{ ci_md = "progs/quaddama.mdl";				s1 = "quad"; }
-	else if (ci_md == "progs/quaddama.mdl")		{ ci_md = "progs/g_rock2.mdl";				s1 = "rocket launcher"; }
-	else if (ci_md == "progs/g_rock2.mdl")		{ ci_md = "maps/b_bh100.bsp";					s1 = "health box"; }
-	else if (ci_md == "maps/b_bh100.bsp")			{ ci_md = "progs/chaos_b2.mdl";				s1 = "natural state"; }
-	else if (ci_md == "progs/chaos_b2.mdl")		{ ci_md = "progs/teleport.mdl"; }
-	else ci_md = "progs/teleport.mdl"; // IDEA - custom forms that chaos beam has hit
+	if (mb == 1)				{ ci_md = "progs/teleport.mdl"; }
+	else if (mb == 2)			{ ci_md = "maps/b_rock0.bsp";					s1 = "rocket box"; }
+	else if (mb == 4)			{ ci_md = "maps/b_exbox2.bsp";				s1 = "explode box"; }
+	else if (mb == 8)			{ ci_md = "progs/g_gas.mdl";					s1 = "gas cylinders"; }
+//	else if (mb == 16)		{ ci_md = "progs/drycel6.mdl";				s1 = "batterys"; }
+	else if (mb == 16)		{ ci_md = "maps/b_batt1.bsp";					s1 = "batterys"; }
+	else if (mb == 32)		{ ci_md = "progs/quaddama.mdl";				s1 = "quad"; }
+	else if (mb == 64)		{ ci_md = "progs/g_rock2.mdl";				s1 = "rocket launcher"; }
+	else if (mb == 128)		{ ci_md = "maps/b_bh100.bsp";					s1 = "health box"; }
+	else if (mb == 256)		{ ci_md = "progs/chaos_b2.mdl";				s1 = "chaos"; }
+	else if (mb == 512)		{ ci_md = "progs/nodule11.mdl";				s1 = "nodule"; }
+	else ci_md = "progs/teleport.mdl";
 
 	return(s1);
 };
@@ -367,21 +369,22 @@ float(string md) chaos_mdlchk =
 
 void() chaos_mdlchg =
 {
-	if (self.owner.morphy == IMP_MCHAOS) //(IS_CHAOS_PURE(self.owner))
+	if (self.owner.morphy == IMP_MCHAOS)
 	if (chaos_mdlchk(self.owner.model))
-		{
-		if (random() < 0.5) 	chaos_base_mdl(self.owner, null_string);
+	{
+		if (random() < 0.2) 	chaos_base_mdl(self.owner, null_string);
 		else
 			{
-//			while (pointcontents(self.origin + ' 0 0 -26') == CONTENT_SOLID) setorigin(self, self.origin + ' 0 0 1');
-			chaos_mdlsel();
-			setmodel(self.owner,ci_md);
-			chaos_flycheck(self.owner, self.owner.model);
-			self.owner.modelindex_morph=self.owner.modelindex;
-			if (ci_md != "progs/chaos_b2.mdl")
-				chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
+				self.alpha = 1;
+				self.skin = 0;
+				chaos_mdlsel(rnd_bit_mask(1023));
+				setmodel(self.owner,ci_md);
+				chaos_flycheck(self.owner, self.owner.model);
+				self.owner.modelindex_morph=self.owner.modelindex;
+				if (ci_md != "progs/chaos_b2.mdl")
+					chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
 			}
-		}
+	}
 	remove(self);
 }
 
@@ -1768,6 +1771,7 @@ void() poly_monster =
 	self.flags = FL_ONGROUND; // strips of item flags, etc
 	self.touch = SUB_Null;
 	self.spawnflags = 0;
+	if (self.map == "rune") self.map = ""; // rune server has to make a new rune now!
 	item_call(trace_ent.stack3);
 
 	self.class_select = trace_ent.stack4;
@@ -1813,6 +1817,44 @@ void() poly_init =
 	self.weapon = IT_SUPER_SHOTGUN; // for HUD
 	self.archon = self.archon - self.pk_explode_ammo;
 	morphic_impulse();
+};
+
+// chaos special - order can not do
+
+void() transmogrify =
+{
+	chaos_mdlsel(self.pk_beartrapammo);
+	if (ci_md != self.model)
+	{
+		self.alpha = 1;
+		self.skin = 0;
+		setmodel(self,ci_md);
+		chaos_flycheck(self, self.model);
+		self.modelindex_morph = self.modelindex;
+		if (ci_md != "progs/chaos_b2.mdl")
+			chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self, world);	
+		self.archon = self.archon - self.pk_explode_ammo;
+	}
+};
+
+// powers
+
+void() rune_powers =
+{
+	if (self.pk_beartrapammo == 4194304)
+	{
+		if (self.rune_flag) self.archon = self.archon - self.pk_explode_ammo;
+		self.rune_flag = 0;
+		self.pk_beartrapammo = 1;
+		self.pk_explode_ammo = 0;
+		self.bolt_targetTimeout = 0;	
+	}
+	else
+	if (!self.rune_flag)
+	{
+		self.rune_flag = self.rune_flag | self.pk_beartrapammo;
+		self.archon = self.archon - self.pk_explode_ammo;
+	}
 };
 
 // setup spells
@@ -1880,8 +1922,13 @@ void() spell_target =
 	if (self.weapon == IT_SUPER_SHOTGUN)
 	{
 		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; }
-		if (self.ammo_nails == 5) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; }
-		if (self.ammo_nails == 7) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; } // repeat last monster poly
+		if (self.ammo_nails == 5) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; if (self.bolt_target == self) self.bolt_target = world; }
+		if (self.ammo_nails == 7) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; if (self.bolt_target == self) self.bolt_target = world; } // repeat last monster poly
+		if (self.ammo_nails == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); } // repeat last monster poly
+	}
+	if (self.weapon == IT_NAILGUN)
+	{
+		if (self.ammo_rockets == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 0; self.th_melee = rune_powers; }
 	}
 
 	if (self.pkplus_actorammo == 0) // changed - remove existing reitcles
@@ -1936,6 +1983,8 @@ void() player_chaos_attack =
 
 		if (self.pkplus_actorammo & 4) // spell needs 2nd target
 		if (!self.enemy) return;
+
+//		if ((self.ammo_nails > 3) && self.bolt_target == self) return; // cant target self w/ this spell
 
 		self.th_melee(); // cast spell
 		return;
@@ -2295,18 +2344,34 @@ void() archon_target =
 		|  Input code                           | SEC-HEAD
 		+---------------------------------------+
 */
+void(float msk) aux_bits =
+{
+	local float f;
+	self.pk_beartrapammo = self.pk_beartrapammo * 2;
+	self.pk_beartrapammo = morph_selinc(self.pk_beartrapammo);
 
+	gsf = 64; // only 24 bits to test in one float, but he must complete 1 loop
+
+	while (gsf > 0)
+	{
+		f = 0;
+		while (!f && gsf > 0)
+		{
+			f = msk & self.pk_beartrapammo;
+			if (!f) self.pk_beartrapammo = self.pk_beartrapammo * 2;
+			self.pk_beartrapammo = morph_selinc(self.pk_beartrapammo);
+			gsf = gsf - 1;
+		}
+
+		if (!f)
+			gsf = 0;
+		else
+			self.pk_beartrapammo = f;
+	}
+};
 
 void() player_chaos_impulse =
 {
-	if (self.ammo_nails == 5) // when in poly other, ALT_FIRE gives spell command, so 50 is alt target
-	if (self.impulse == 50)
-	{
-		self.impulse = ALT_FIRE_IMP;
-		player_chaos_attack();
-		self.impulse = 0;
-		return;
-	}
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
@@ -2329,11 +2394,27 @@ void() player_chaos_impulse =
 	{
 		if (self.weapon == IT_SHOTGUN) self.impulse = 2;
 		if (self.weapon == IT_SUPER_SHOTGUN) self.impulse = 3;
+		if (self.weapon == IT_NAILGUN) self.impulse = 4;
+	}
+	else if (self.impulse == 16) // aux spell loops
+	{
+		if (self.weapon == IT_SUPER_SHOTGUN)
+		{
+			if (self.ammo_nails == 5) aux_bits(421887);
+			else if (self.ammo_nails == 7) aux_bits(421887);
+			else if (self.ammo_nails == 11) aux_bits(1023);
+		}
+		if (self.weapon == IT_NAILGUN)
+		{
+			if (self.rune_flag) self.AIRG_Flags = 4194375;
+			else self.AIRG_Flags = 71;
+			if (self.ammo_rockets == 3) aux_bits(self.AIRG_Flags);
+		}
 	}
 
 	if (self.weapon == IT_AXE)
 	{
-		sprint(self, "Chaos firing random bolts\n");
+//		sprint(self, "Chaos firing random bolts\n");
 		clear_spell(); // timeout any spell in selection
 	}
 
@@ -2360,17 +2441,34 @@ void() player_chaos_impulse =
 				if (self.pk_beartrapammo & 421887) // skip if no valid bit
 					self.ammo_nails = 7;
 				else
-					self.ammo_nails = 3;
+					self.ammo_nails = 11;
 			}
-//			else if (self.ammo_nails == 7) self.ammo_nails = 11;
+			else if (self.ammo_nails == 7) self.ammo_nails = 11;
 //			else if (self.ammo_nails == 11) self.ammo_nails = 13;
 //			else if (self.ammo_nails == 13) self.ammo_nails = 17;
 //			else if (self.ammo_nails == 17) self.ammo_nails = 19;
 //			else if (self.ammo_nails == 19) self.ammo_nails = 23;
 //			else if (self.ammo_nails == 23) self.ammo_nails = 29;
-			else if (self.ammo_nails == 7) self.ammo_nails = 3;
+			else if (self.ammo_nails == 11) self.ammo_nails = 3;
 		}
 		self.weapon = IT_SUPER_SHOTGUN;
+	}
+	if (self.impulse == 4) // spell list 3
+	{
+		if (self.weapon == IT_NAILGUN) // loop thru spell set
+		{
+			if (!self.ammo_rockets) self.ammo_rockets = 3;
+//			else if (self.ammo_rockets == 3) self.ammo_rockets = 5;
+//			else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
+//			else if (self.ammo_rockets == 7) self.ammo_rockets = 11;
+//			else if (self.ammo_rockets == 11) self.ammo_rockets = 13;
+//			else if (self.ammo_rockets == 13) self.ammo_rockets = 17;
+//			else if (self.ammo_rockets == 17) self.ammo_rockets = 19;
+//			else if (self.ammo_rockets == 19) self.ammo_rockets = 23;
+//			else if (self.ammo_rockets == 23) self.ammo_rockets = 29;
+			else if (self.ammo_rockets == 11) self.ammo_rockets = 3;
+		}
+		self.weapon = IT_NAILGUN;
 	}
 	else if (self.impulse == IMP_MSIGHT)
 		morph_sound(2, self.msight, 3);							// let player morphs "talk"
@@ -2444,7 +2542,7 @@ void(float silent) player_chaos_become =
 
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
-	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
 	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;

@@ -262,6 +262,41 @@ string(float mb) monster_id =
 	return(s2);
 };
 
+string(float mb) transmogrify =
+{
+	local string s2;
+
+	s2 = "spike ball";
+
+	if (mb == 1) 			s2 = "spike ball";
+	if (mb == 2) 			s2 = "rocket box";
+	if (mb == 4) 			s2 = "explode box";
+	if (mb == 8) 			s2 = "gas cylinders";
+	if (mb == 16) 			s2 = "batterys";
+	if (mb == 32) 			s2 = "quad";
+	if (mb == 64) 			s2 = "rocket launcher";
+	if (mb == 128) 			s2 = "health box";
+	if (mb == 256) 			s2 = "Chaos";
+	if (mb == 512) 			s2 = "nodule";
+
+	return(s2);
+};
+
+string(float mb) rune_power =
+{
+	local string s2;
+
+	s2 = "unknown";
+
+	if (mb == 1) 			s2 = "Resistance";
+	if (mb == 2) 			s2 = "Damage";
+	if (mb == 4) 			s2 = "Haste";
+	if (mb == 64) 			s2 = "Vampire";
+//	if (mb == 4194304		s2 = "Expulse (remove rune)";
+	
+	return(s2);
+};
+
 //-----------------------------------------------------------------------------
 // Sbar_DrawInventory
 //-----------------------------------------------------------------------------
@@ -412,8 +447,13 @@ float(float pow) bar_scale =
 	
 	return(scl);
 }
+
 // has_* - once a mapcode item is detected, this allows holstered view
 float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left, explflg;
+float inv, quad, ring, suit;
+
+// hud special messaging system for cfg scripts
+float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
 
 void() Sbar_DrawInventory =
 {
@@ -540,6 +580,12 @@ void() Sbar_DrawInventory =
 	if (! pk_inv & PK_IT_GRAPGUN) has_hook = FALSE;
 	if (mcode == MC_HOOK) has_hook = TRUE;
 
+// timers for these
+
+	if (!cl_items & IT_INVISIBILITY) ring = 0;
+	if (!cl_items & IT_SUIT) suit = 0;
+	if (!cl_items & IT_QUAD) quad = 0;
+	if (!cl_items & IT_INVULNERABILITY) inv = 0;
 
 if (ibar_flag)
 {
@@ -634,7 +680,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 
 /// runes area left
-	pwr_step = '-400 50 0';
+	pwr_step = '-400 53 0';
 
 /*
 // test to find lowest val in left draw coords
@@ -649,11 +695,11 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	cnt_left = cnt_left + woff_y;
 
 	if ((archon > 0) && (arc_level_y < cnt_left + 2))
-		pwr_step = '-370 50 0';
+		pwr_step = '-370 53 0';
 	if ((plevel > 0) && (p_level_y < cnt_left + 6))
-		pwr_step = '-370 50 0';
+		pwr_step = '-370 53 0';
 	if ((volspec > 0) && (chaos_level_y < cnt_left + 2))
-		pwr_step = '-370 50 0';
+		pwr_step = '-370 53 0';
 
 	cnt_left = 0; // recount every time
 
@@ -670,6 +716,77 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		DrawInventory(pwr_step + '10 -15 0' + woff, "gfx/sb_key1", IT_KEY1, 0, ALPHA_FULL, 1.4);
 		DrawInventory(pwr_step + '0 -15 0' + woff, "gfx/sb_key2",IT_KEY2 , 0, ALPHA_FULL, 1.4);
 		if (cl_items & (IT_KEY1 | IT_KEY2)) pwr_step_y = pwr_step_y + 4;
+	}
+
+/// hud message for cfg scripts - instead of console print which gets lost fast on busy servers
+	
+	var string autocvar_hud_message, autocvar_hud_message2, autocvar_hud_message3, autocvar_hud_message0;
+	var float autocvar_hud_message_buffer = 3; // buffer messages per cvar
+	var float autocvar_hud_message_timer = 10;
+	var float autocvar_hud_message_offset = 250;
+	vector hudoff;
+	float huds, hudtime;
+
+	if (ibar_flag > 2)
+	{
+		if (autocvar_hud_message != "")
+		{
+			huds = autocvar_hud_message_buffer; // # lines in buffer
+
+ 			if (autocvar_hud_message != autocvar_hud_message0) // message changed
+			{
+				if (huds > 3) huds = 3;
+				if (huds == 3)
+				{
+					hudmsg_timer3 = hudmsg_timer2 - 2;
+					cvar_set("hud_message3", autocvar_hud_message2);
+					huds = huds - 1;
+				}
+				if (huds == 2)
+				{
+					hudmsg_timer2 = hudmsg_timer - 2;
+					cvar_set("hud_message2", autocvar_hud_message0);
+				}
+				cvar_set("hud_message0", autocvar_hud_message);
+			}
+
+			hudoff_x = autocvar_hud_message_offset;
+			if (!hudmsg_timer)
+			if (autocvar_hud_message_timer > 0) hudmsg_timer = time + autocvar_hud_message_timer;
+			else hudmsg_timer = time + 10; // default of 10 for nothing
+
+			Sbar_DrawString(pwr_step + wep_step + woff + hudoff, autocvar_hud_message, ALPHA_FULL , '7 7 0','1 0.5 0.5');
+			hudoff_y = hudoff_y + 9;
+		}
+
+		if (hudmsg_timer)
+		if (hudmsg_timer < time)
+		{
+			hudmsg_timer = 0;
+			cvar_set("hud_message", "");
+		}
+		if (hudmsg_timer2)
+		if (hudmsg_timer2 < time)
+		{
+			hudmsg_timer2 = 0;
+			cvar_set("hud_message2", "");
+		}
+		else
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff + hudoff, autocvar_hud_message2, ALPHA_FULL , '7 7 0','1 0.5 0.5');
+			hudoff_y = hudoff_y + 9;
+		}
+		if (hudmsg_timer3)
+		if (hudmsg_timer3 < time)
+		{
+			hudmsg_timer3 = 0;
+			cvar_set("hud_message3", "");
+		}
+		else
+		{
+			Sbar_DrawString(pwr_step + wep_step + woff + hudoff, autocvar_hud_message3, ALPHA_FULL , '7 7 0','1 0.5 0.5');
+			hudoff_y = hudoff_y + 9;
+		}
 	}
 
 /// morph ident and weapon / spell description and special status items
@@ -939,10 +1056,26 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 	}
 
+	float flasher, sterix_fl;
+	var float autocvar_hud_flash_numeral = 1;
+
+	flasher = 1;
+	sterix_fl = 1;
+	if (autocvar_hud_flash_numeral)
+	{
+		flasher = ((1 + (time * 10) & 3)/2);
+		sterix_fl = ((1 + (time * 10) & 3)/3);
+	}
+	
+
 	if (ibar_flag > 2)
 	{
+		
 		if (cl_items & IT_INVISIBILITY)
 		{
+			if (!ring) ring = time + 30;
+			else if ((ring - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(ring - time), ALPHA_MEDIUM * flasher);
+			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_invis",    ALPHA_LOW, 1.5);
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 27;
@@ -950,6 +1083,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 		if (cl_items & IT_SUIT)
 		{
+			if (!suit) suit= time + 30;
+			else if ((suit - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(suit - time), ALPHA_MEDIUM * flasher);
+			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_suit",    ALPHA_MEDIUM, 1.5);
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 27;
@@ -957,6 +1093,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 		if (cl_items & IT_QUAD)
 		{
+			if (!quad) quad = time + 30;
+			else if ((quad - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(quad - time), ALPHA_MEDIUM * flasher);
+			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_quad",    ALPHA_FULL, 1.5);
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 27;
@@ -964,6 +1103,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 		if (cl_items & IT_INVULNERABILITY)
 		{
+			if (!inv) inv = time + 30;
+			else if ((inv - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(inv - time), ALPHA_MEDIUM * flasher);
+			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_invuln",    ALPHA_FULL, 1.5);
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 27;
@@ -1139,6 +1281,30 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						}
 						instr = "*FIRE - cast polymorph spell (repeat)";
 					}
+					if (nails == 11)
+					{
+						Sbar_DrawString('250 40 0' + woff, "Metamorphose self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Archon becomes: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '130 -5 0' + woff, transmogrify(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						instr = "*FIRE - cast transmogrify spell";
+					}
+				}
+				if (currentweap == IT_NAILGUN) // spell list 1 - poly
+				{
+					if (rockets == 3)
+					{
+						Sbar_DrawString('290 40 0' + woff, "Rune powers", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (pk_bt == 4194304)
+						{
+							if (rune_flag) Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Expulse (remove rune)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
+						else
+						{
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Activate power: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString(pwr_step + '130 -5 0' + woff, rune_power(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
+						instr = "*FIRE - cast rune power spell";
+					}
 				}
 				DrawInventoryAmmo('372 50 0', "gfx/reticle.spr_0", ALPHA_FULL, 0.05);
 			}
@@ -1155,19 +1321,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					else
 					{
-						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Select alternate target with reticle", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						if (nails == 5)
-						{
-							cnt_left = pwr_step_y;
-							pwr_step_y = pwr_step_y + 14;
-							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "CUBE_RELEASE (imp: 50) - use alternate target", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						}
-						else
-						{
+						if ((nails != 5) || explodeshot == 24)
+						{							
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Select alternate target with reticle", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							cnt_left = pwr_step_y;
 							pwr_step_y = pwr_step_y + 14;
 							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "ALT_FIRE - use alternate target", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						}
+
 						if (instr)
 						{
 							cnt_left = pwr_step_y;
