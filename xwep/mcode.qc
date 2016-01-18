@@ -181,10 +181,18 @@ float MC_W_MACHGUN;
 float MC_W_CHAINGUN;
 float MC_W_MORTAR;
 float MC_W_FLAMER;
+
 float MC_W_CLIP;
+float MC_W_GAS;
+float MC_W_MORTARS;
+float MC_W_PACK;
+
 float MC_W_FACESPHERE;
+float MC_W_HEALTH;
+
 float MC_W_KEY_G;
 float MC_W_KEY_B;
+
 float MC_W_BARREL;
 
 float MC_WOLF;
@@ -464,10 +472,17 @@ void() mcode_load =
 	MC_W_CHAINGUN = f = (f + 1);
 	MC_W_MORTAR = f = (f + 1);
 	MC_W_FLAMER = f = (f + 1);
+
 	MC_W_CLIP = f = (f + 1);
+	MC_W_GAS = f = (f + 1);
+	MC_W_PACK = f = (f + 1);
+
 	MC_W_FACESPHERE = f = (f + 1);
+	MC_W_HEALTH = f = (f + 1);
+
 	MC_W_KEY_G = f = (f + 1);
 	MC_W_KEY_B = f = (f + 1);
+
 	MC_W_BARREL = f = (f + 1);
 
 	MC_WOLF = (f + 1);
@@ -694,6 +709,7 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_W_MORTAR)												return(IT_ROCKET_LAUNCHER);
 	if (mc == MC_W_FLAMER)												return(IT_GRENADE_LAUNCHER);
 //	if (mc == MC_W_CLIP)													return(IT_BULLETS);
+//	if (mc == MC_W_GAS)													return(IT_GAS);
 
 	if (mc == MC_W_FACESPHERE)											return(IT_SUPERHEALTH);
 
@@ -817,7 +833,7 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "") return(0);
 
 	if (tsc == "dyn_item")												return(0);
-// q1
+/// q1
 	if (e) // qualify ent
 	{
 		if ((tsc == "item_shells") && (e.spawnflags & 1))			return(MC_ASHELLS_LG);
@@ -887,7 +903,7 @@ float(string sc, entity e) pk_mcode =
 
 	if (tsc == "fn_backpack")											return(MC_BACKPACK);
 
-// pk
+/// pk
 	if (tsc == "weapon_airfist")										return(MC_AIRGUN);
 	if (tsc == "weapon_chainlg")										return(MC_CHTHUNDR);
 	if (tsc == "weapon_grapgun")										return(MC_GRAP);
@@ -902,7 +918,7 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "item_pkplus_actor")									return(MC_MASK);
 	if (tsc == "item_pkplus_phone")									return(MC_PHONE);
 
-// doom
+/// doom
 	if (tsc == "d_weapon_shotgun")									return(MC_D_SHOTGUN);
 	if (tsc == "d_weapon_supershotgun")								return(MC_D_BOOMSTICK);
 	if (tsc == "d_weapon_chaingun")									return(MC_D_CHAINGUN);
@@ -949,15 +965,21 @@ float(string sc, entity e) pk_mcode =
 
 	if (tsc == "d_barrel")												return(MC_D_BARREL);
 
-// wolf
+/// wolf
 	if (tsc == "w_weapon_knife")										return(MC_W_KNIFE);
 	if (tsc == "w_weapon_pistol")										return(MC_W_PISTOL);
 	if (tsc == "w_weapon_machinegun")								return(MC_W_MACHGUN);
 	if (tsc == "w_weapon_chaingun")									return(MC_W_CHAINGUN);
 	if (tsc == "w_weapon_mortar")										return(MC_W_MORTAR);
 	if (tsc == "w_weapon_flamer")										return(MC_W_FLAMER);
+
 	if (tsc == "w_ammo_clip")											return(MC_W_CLIP);
+	if (tsc == "w_ammo_gas")											return(MC_W_GAS);
+	if (tsc == "w_item_pack")											return(MC_W_PACK);
+
+	if (tsc == "w_heal_medkit")										return(MC_W_HEALTH);
 	if (tsc == "w_art_facesphere")									return(MC_W_FACESPHERE);
+
 	if (tsc == "w_key_g")												return(MC_W_KEY_G);
 	if (tsc == "w_key_b")												return(MC_W_KEY_B);
 	if (tsc == "w_barrel")												return(MC_W_BARREL);
@@ -1149,7 +1171,7 @@ string (float mc) item_by_mcode =
 	if (mc == MC_MASK)													return("item_pkplus_actor");
 	if (mc == MC_PHONE)													return("item_pkplus_phone");
 
-// doom
+/// doom
 	if (mc == MC_D_SHOTGUN)												return("d_weapon_shotgun");
 	if (mc == MC_D_BOOMSTICK)											return("d_weapon_supershotgun");
 	if (mc == MC_D_CHAINGUN)											return("d_weapon_chaingun");
@@ -1196,7 +1218,7 @@ string (float mc) item_by_mcode =
 
 	if (mc == MC_D_BARREL)												return("d_barrel");
 
-// wolf
+/// wolf
 	if (mc == MC_W_KNIFE)												return("w_weapon_knife");
 	if (mc == MC_W_PISTOL)												return("w_weapon_pistol");
 	if (mc == MC_W_MACHGUN)												return("w_weapon_machinegun");
@@ -1205,7 +1227,12 @@ string (float mc) item_by_mcode =
 	if (mc == MC_W_FLAMER)												return("w_weapon_flamer");
 
 	if (mc == MC_W_CLIP)													return("w_ammo_clip");
+	if (mc == MC_W_GAS)													return("w_ammo_gas");
+	if (mc == MC_W_PACK)													return("w_item_pack");
+
 	if (mc == MC_W_FACESPHERE)											return("w_art_facesphere");
+	if (mc == MC_W_HEALTH)												return("w_heal_medkit");
+
 	if (mc == MC_W_KEY_G)												return("w_key_g");
 	if (mc == MC_W_KEY_B)												return("w_key_b");
 	if (mc == MC_W_BARREL)												return("w_barrel");
@@ -1694,11 +1721,22 @@ void() barrel_explode =
 
 	self.mdl = self.model;
 	self.solid = SOLID_NOT;
+	self.model = string_null;
+
+	boombox = spawn();
+	boombox.origin = self.origin;
+	
+	bdmg = self.currentammo;
+	bsnd = self.noise;
+	self.takedamage = DAMAGE_NO;
+
+	e = world;
+	if (self.classname == "chaos_item") e = self.owner;
 
 //	if (self.classname == "chaos_item" && random() > CI_EXPLBOX_RES)
 //		self.think = SUB_Remove;
 //	else
-	if (deathmatch == 2 || deathmatch == 4)
+	if (!deathmatch || deathmatch == 2 || deathmatch == 4)
 		SUB_Remove();
 	else if (self.th_stand != SUB_Null)
 		self.th_stand();
@@ -1711,17 +1749,7 @@ void() barrel_explode =
 	else
 		SUB_Remove();
 
-	boombox = spawn();
-	boombox.origin = self.origin;
-	
-	self.model = string_null;
-	bdmg = self.currentammo;
-	bsnd = self.noise;
-	self.takedamage = DAMAGE_NO;
-
 	self = boombox;
-	e = world;
-	if (self.classname == "chaos_item") e = self.owner;
 
 	self.takedamage = DAMAGE_NO;
 	self.classname = "explo_box";

@@ -68,7 +68,6 @@ void() doom_precache =
 	precache_model ("progs/barrel2.mdl");
 	precache_model ("progs/heal_bottle.mdl");
 	precache_model ("progs/heal_medkit.mdl");
-	precache_model ("progs/heal_stimpak.mdl");
 	precache_model ("progs/spiritarmor.mdl");
 	precache_model ("progs/d_spheres.mdl");
 	precache_model ("progs/d_berzerk.mdl");
@@ -76,6 +75,7 @@ void() doom_precache =
 	precache_model ("progs/d_skullkey.mdl");
 	precache_model ("progs/d_cardkey.mdl");
 	precache_model ("progs/d_armor.mdl");
+	precache_model ("progs/d_map.mdl");
 // ammo
 	precache_model ("progs/d_4shell.mdl");
 	precache_model ("progs/d_ammobox.mdl");
@@ -136,7 +136,7 @@ void() doom_precache =
 	precache_model ("progs/vw_w_mortar.mdl");
 	precache_model ("progs/vw_w_flamer.mdl");
 
-//	precache_model ("progs/v_w_knife.mdl");
+	precache_model ("progs/v_w_knife.mdl");
 	precache_model ("progs/v_w_pistol.mdl");
 	precache_model ("progs/v_w_mgun.mdl");
 	precache_model ("progs/v_w_chg.mdl");
@@ -235,7 +235,9 @@ void() d_item_healthmedkit =
 void() d_item_healthstimpak =
 {
 	q100_item_health();
-	setmodel(self, "progs/heal_stimpak.mdl");
+	setmodel(self, "progs/heal_medkit.mdl");
+	self.frame = 4;
+	self.skin = 4;
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Health Stimpak";
@@ -745,6 +747,20 @@ void() d_item_pack =
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
+void() d_item_automap =
+{
+	q100_weapon_shotgun(); // FIX: placeholder only
+	self.netname = "Auto Map";
+
+	self.touch = self.pk_touch = SUB_Null;
+
+	setmodel(self, "progs/d_map.mdl");
+	self.noise = "doom/dsitemup.wav";
+	self.noise4 = "doom/dsitembk.wav";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "doom_item";
+};
+
 void() d_art_berserker =
 {
 	q100_item_health();
@@ -1155,7 +1171,7 @@ void() w_weapon_knife =
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/w_knife.mdl");
-	self.weaponmodel = ""; //progs/v_w_knife.mdl";
+	self.weaponmodel = "progs/v_w_knife.mdl";
 	self.vwepmdl = "progs/vw_w_knife.mdl";
 	self.noise = "wolf/pickup_gn.wav";
 	self.noise3 = "wolf/w_knife.wav";
@@ -1180,6 +1196,30 @@ void() w_ammo_clip =
 	self.noise = "wolf/pickup_am.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Clip";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
+void() w_ammo_gas =
+{
+	item_spikes();
+	self.touch = pk_ammo_touch;
+	self.netname = "Gas can";
+
+	self.lip = AMMO_GAS;
+	self.currentammo = 14;
+	if (self.spawnflags & 1)
+	{
+		self.currentammo = 28;
+//		self.frame = 1;
+//		self.skin = 1;
+	}
+
+	setmodel(self, "progs/heal_medkit.mdl"); // why not?
+	self.frame = 4;
+	self.skin = 4;
+//	self.map = " lbs gas cylinder pressure";
+//	self.volume = MAX_GAS;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 };

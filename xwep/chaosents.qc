@@ -281,6 +281,12 @@ void() x_pwr_touch =
 		health_touch();
 		armor_touch();
 	}
+
+	if (self.netname == "Re-breather")
+	{
+		
+	}
+	
 };
 
 // x ammo pack touch & bounds
