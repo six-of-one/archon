@@ -630,6 +630,8 @@ void () GrenadeExplode =
 	BecomeExplosion ();
 };
 
+void () PortalTouch;
+
 void () GrenadeTouch =
 {
 	if (other == self.owner)
@@ -639,6 +641,17 @@ void () GrenadeTouch =
 		GrenadeExplode ();
 		return ;
 	}
+
+	if (other.classname == "portal_entrance" || other.classname == "portal_exit")
+	{
+		self.enemy = other;
+		other = self;
+		self = other.enemy;
+		other.enemy = world;
+		PortalTouch();
+		return;
+	}
+
 	if (self.noise != "")
 		sound (self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);	// bounce sound
 	else

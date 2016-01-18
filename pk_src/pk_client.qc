@@ -614,6 +614,13 @@ void() PutClientInServer =
 //	self.morphy = IMP_MGREMLIN_F; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
 
+
+
+// TEST:demo
+if (DEMO) self._summon = demo_msg;
+
+
+
 	if (self.ammo_shells < 0) // stop the morph ammo factory - morphs do not start with 25 shells
 	{
 		if (self.mask_x & CB_HUMAN) self.ammo_shells = 0 - self.ammo_shells;

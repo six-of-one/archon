@@ -55,6 +55,14 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.th_melee = SUB_Null;
 	if (self.th_melee != (void ()) 0) e.th_melee = self.th_melee; // multi modes
 
+
+
+// TEST: demo
+if (DEMO)
+if (self.classname == "weapon_portal") e.mcode = MC_PORTAL;
+
+
+
 // alt fire modes
 	if (self._alt_fire != (void ()) 0) e._alt_fire = self._alt_fire; // multi modes
 	else self._alt_fire = e._alt_fire = SUB_Null;

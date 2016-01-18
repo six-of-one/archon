@@ -2058,6 +2058,19 @@ void() PK_ImpulseCommands =
 // DEV - TESTING
 	vw_config(); // call config check viswep
 
+	
+// TEST: demo making
+if (DEMO)
+if (self.impulse == IMP_MSIGHT)
+{
+	if (self._summon != SUB_Null) self._summon();
+	self.impulse = 0;
+	return;
+}
+
+
+
+
 	if (self.impulse == IMP_MFLY)
 	{
 		flyer_mode(self);

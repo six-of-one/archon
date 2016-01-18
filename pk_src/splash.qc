@@ -76,6 +76,15 @@ void(entity e) MakeSplash =
 		}
 		else
 		{
+
+
+
+// TEST: demo
+if (DEMO)
+if (e.classname == "player") e.movetype = 0;
+
+
+
 			setmodel(newent, "progs/s_splash.spr");
 			newent.think = e.splash_func;
 		}

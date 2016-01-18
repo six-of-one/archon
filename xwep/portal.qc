@@ -62,9 +62,15 @@ void() portal_multi_frag =
 void () PortalTouch =
 {
 	local entity e;
-	local float v;
+	local float v, m, p;
+
+//	m = IS_MISSILE(other); // test for missiles
+
+//if (m) bprint("missile in portal touch\n");
+
 
 	if (!PORTAL_ALLOW) // NOTE: there do need to be qualifications on ANY mode
+	if (!m)
 	if (((other.classname != "player") && (other.classname != "pk*bot") || !(other.flags & FL_CLIENT)))
 	{
 		return;
@@ -76,10 +82,15 @@ void () PortalTouch =
 	if (self.ltime > time) // debounce delay
 		return;
 
+//	if (self.portal_entrance.target == PORTAL_TELEFRAG) // no telefragging with missiles
+//	if (m) return;
+
+	makevectors (other.angles);
 
 	if ((other.classname == "player") || (other.classname == "pk*bot") || (other.flags & FL_CLIENT))
 	{
-		makevectors (other.angles);
+		p = TRUE;
+
 		e = spawn(); // in case the portal dumps player outside level - this saves em;
 		e.owner = other;
 		e.origin = other.origin - v_forward * 64;
@@ -91,6 +102,7 @@ void () PortalTouch =
 
 	v = vlen(other.velocity); // IDEA: cap this?
 	if (v < 48) v = 48;
+
 	if (self.classname == "portal_entrance")
 	{
 		if (self.target == "md3") // out thru tele - follow those rules
@@ -106,23 +118,27 @@ void () PortalTouch =
 			makevectors (e.mangle);
 			org = e.origin + 32 * v_forward;
 
-			spawn_tfog (org);		
-			spawn_tdeath (e.origin,other);
+			spawn_tfog (org);
+			if (p || (other.flags & FL_MONSTER))
+				spawn_tdeath (e.origin,other);
 			setorigin (other,e.origin);
 
 			other.teleport_time = time + 0.7;
 			other.bt_immune_time = time + BT_BUFFER; // *pk - beartrap
 			if (other.flags & FL_ONGROUND)
 				other.flags = other.flags - FL_ONGROUND;
-			other.velocity = v_forward * 300;
+
+			if (!m) v = 300;
+			other.velocity = v_forward * v;
 			return;
 		}
 		if (self.portal_exit.mangle == ' 0 0 1')
 		{
 //			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back
-			other.velocity_z = 150 + random() * 150;
+			if (!m)
+				other.velocity_z = 150 + random() * 150;
 		}
-		else if (self.portal_exit.mangle != ' 0 0 -1') // out of ceiling
+		else if (self.portal_exit.mangle != ' 0 0 -1') // not out of ceiling
 		{
 			other.fixangle = 1;		// turn this way immediately
 			other.angles = vectoangles(self.portal_exit.mangle);
@@ -141,7 +157,8 @@ void () PortalTouch =
 			if (!self.portal_entrance.enemy) return;
 			setorigin(self.portal_entrance, self.portal_entrance.enemy.origin);
 			spawn_tfog (self.portal_entrance.origin);
-			spawn_tdeath (self.portal_entrance.origin, self.master);
+			if (p || (other.flags & FL_MONSTER))
+				spawn_tdeath (self.portal_entrance.origin, self.master);
 			newmis.classname = "portalteledeath";
 			makevectors(self.portal_entrance.enemy.v_angle);
 			self.portal_entrance.mangle = v_forward;
@@ -163,7 +180,8 @@ void () PortalTouch =
 		else if (self.portal_entrance.mangle == ' 0 0 1')
 		{
 //			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back
-			other.velocity_z = 150 + random() * 150;
+			if (!m)
+				other.velocity_z = 150 + random() * 150;
 		}
 		else if (self.portal_entrance.mangle != ' 0 0 -1')
 		{
@@ -271,6 +289,7 @@ entity (vector pos, entity entrance) OpenPortalExit =
 	portal.think = PortalThink;
 	setmodel (portal, "progs/portal.mdl");
 	setsize (portal, '0 0 0', '0 0 0');
+//	setsize (portal, '-2 -2 -2', ' 2 2 2');
 	setorigin (portal, pos);
 	return (portal);
 };
@@ -480,6 +499,7 @@ float (vector dir, float md2) PreparePortalEntrance =
 		portal.touch = PortalTouch;
 		setmodel (portal, "progs/portal.mdl");
 		setsize (portal, '0 0 0', '0 0 0');
+//		setsize (portal, '-2 -2 -2', ' 2 2 2');
 		setorigin (portal, org);
 	}
 	else
@@ -649,9 +669,9 @@ void() weap_portal_multi =
 	else if (self.eweapon.cnt == 4)
 		sprint(self, "portal to teleport");
 	else if (self.eweapon.cnt == 2)
-		sprint(self, "2 portal");
+		sprint(self, "entry / exit portal");
 	else
-		sprint(self, "1 portal = tunelling");
+		sprint(self, "quantum tunelling");
 	sprint(self, "\n");
 };
 

@@ -158,6 +158,7 @@ if (!pk_art_movshot_ck(e, "grav"))
 			if (vlen(e.origin - self.origin) > gDist)
 			{
 // idea: sgw - chance to teleport out of range in range
+//if (e != self.owner) //TEST:
 				if (random() < 0.366)
 				if (can_has_target(e, self, self.origin, 0, sgl)) // check LOS to grav
 				{
@@ -176,8 +177,15 @@ if (!pk_art_movshot_ck(e, "grav"))
 			else // in range - other tests
 			{
 // idea: sgw - grim flakes
+//if (1) // TEST:
 				if (random() < 0.45)
-					chaos_particle(e.origin + ' 0 0 8', 105, 0.8, 0);
+				{
+					v1 = v0;
+					v1_x = crandom() * 25;
+					v1_y = crandom() * 25;
+					v1_z = crandom() * 25;
+					chaos_particle(e.origin + v1, 0, 0.8, 0);
+				}
 				if (e.hook & HOOK_ON)
 				if (random() < 0.28) // heh heh - strong enough to release hooks
 					DropHook_ent(e);
@@ -211,6 +219,9 @@ if (!pk_art_movshot_ck(e, "grav"))
 
 			// modify the velocity
 			e.velocity = e.velocity + normalize(self.origin - e.origin) * gPower * gPercent;
+
+			if (e.map  == "rune" && e.classname == "item_sigil") // relocate runes sucked by wells
+				e.hook = TRUE;
 		}
 		e = e.chain;
 	}
@@ -237,6 +248,29 @@ void() gravity_pulse18 = [ $cubelf16, gravity_pulse19 ] { gravity_pull(); };
 void() gravity_pulse19 = [ $cubelf16, gravity_pulse20 ] { gravity_pull(); };
 void() gravity_pulse20 = [ $cubelf16, gravity_pulse1 ] { gravity_pull(); };
 
+// sgw animate
+void() gravity_pulsex1 = [ $cube201, gravity_pulsex2 ] { gravity_pull(); };
+void() gravity_pulsex2 = [ $cube202, gravity_pulsex3 ] { gravity_pull(); };
+void() gravity_pulsex3 = [ $cube203, gravity_pulsex4 ] { gravity_pull(); };
+void() gravity_pulsex4 = [ $cube204, gravity_pulsex5 ] { gravity_pull(); };
+void() gravity_pulsex5 = [ $cube205, gravity_pulsex6 ] { gravity_pull(); };
+void() gravity_pulsex6 = [ $cube206, gravity_pulsex7 ] { gravity_pull(); };
+void() gravity_pulsex7 = [ $cube207, gravity_pulsex8 ] { gravity_pull(); };
+void() gravity_pulsex8 = [ $cube208, gravity_pulsex9 ] { gravity_pull(); };
+void() gravity_pulsex9 = [ $cube209, gravity_pulsex10 ] { gravity_pull(); };
+void() gravity_pulsex10 = [ $cube210, gravity_pulsex11 ] { gravity_pull(); };
+void() gravity_pulsex11 = [ $cube211, gravity_pulsex12 ] { gravity_pull(); };
+void() gravity_pulsex12 = [ $cube212, gravity_pulsex13 ] { gravity_pull(); };
+void() gravity_pulsex13 = [ $cube213, gravity_pulsex14 ] { gravity_pull(); };
+void() gravity_pulsex14 = [ $cube214, gravity_pulsex15 ] { gravity_pull(); };
+void() gravity_pulsex15 = [ $cube215, gravity_pulsex16 ] { gravity_pull(); };
+void() gravity_pulsex16 = [ $cube216, gravity_pulsex17 ] { gravity_pull(); };
+void() gravity_pulsex17 = [ $cube216, gravity_pulsex18 ] { gravity_pull(); };
+void() gravity_pulsex18 = [ $cube216, gravity_pulsex19 ] { gravity_pull(); };
+void() gravity_pulsex19 = [ $cube216, gravity_pulsex20 ] { gravity_pull(); };
+void() gravity_pulsex20 = [ $cube216, gravity_pulsex1 ] { gravity_pull(); };
+
+
 void() gravity_explode =
 {
 	//if (time > self.attack_finished)
@@ -248,18 +282,32 @@ void() gravity_explode =
 
 		if (self.alpha < 1)
 		{
+			setsize(self, '-8 -8 -8', ' 8 8 8');
+			if (self.frame < $cube201)
+			{
+				self.frame = $cube201;
+				self.skin = 1;
+			}
 			self.alpha = self.alpha + 0.05;
 			self.frame = self.frame + 0.5;
-			if (self.alpha > 0.93)
-			sound (self, CHAN_BODY, "misc/grav/grav_new.wav", 1, ATTN_NORM);
 			return;
 		}
 
-		self.attack_finished = time + PK_GRV_TIME;	// duration of gravity well
+		if (self.frame > $cubelf20)
+		{
+			sound (self, CHAN_BODY, "misc/grav/grav_new.wav", 1, ATTN_NORM);
+			self.attack_finished = time + PK_GRV_TIME + random() + random() + random();	// duration of sgw
+			self.think = gravity_pulsex1;
+		}
+		else
+		{
+			self.attack_finished = time + PK_GRV_TIME;	// duration of gravity well
+			self.think = gravity_pulse1;
+		}
+
 		self.touch = gravity_touch;
 		self.effects = self.effects | EF_BRIGHTLIGHT;
 	  self.pk_currentitem = PK_IT_GRAVITYWELL;
-		self.think = gravity_pulse1;
 	//	return;
 	//}
 
@@ -328,3 +376,4 @@ void() drop_gravity_sups =
 	newmis.frame = 1;
 	newmis.alpha = 0.1;
 };
+

@@ -2079,7 +2079,7 @@ void() painkeep_cube_use =
 		}
 	}
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
-	if (1) d = MC_GRAVITY; // TEST:
+//	if (1) d = MC_GRAVITY; // TEST:
 
 	if (crate)
 	{
@@ -2230,7 +2230,7 @@ bprint(")\n");
 }
 
 		if (self.classname == "item_painkeep_gwell")
-//		if (random() < 0.333) // TEST:
+//		if (random() < 0.333) // TEST: restore
 		{
 			self.skin = 1; // super gravity well
 			self.frame = 1;
@@ -2549,6 +2549,12 @@ void() crate_touch =
 
 	self.duration = time + 2 + random();
 
+	if (self.deathtype != "") // custom touch message for map crates - .message is opened string
+	{
+		centerprint(other, self.deathtype);
+		return;
+	}
+
 	if (!self.cnt)
 		centerprint(other, "Hit (or shoot) the crate to bust it open\n");
 	else if (random() < 0.5)
@@ -2627,10 +2633,13 @@ REMOVE - remove items made after dynamic timeout
 
 nothing - pick a random item from pk_cube list
 
+"message" - string to center print after crate is opened
+"deathtype" - string to center print when crate is touched - over rides crate generic touch messages
+
 "items" - mapcode of item to create
 "stdev" - add random this to items mapcode for a custom series
 
-"map" - used as spawn func - i.e. monster_dog
+"map" - used as spawn func - i.e. monster_dog, weapon_lightning, etc.
 
 "wait" - use func_make codes = special value listed below
 
