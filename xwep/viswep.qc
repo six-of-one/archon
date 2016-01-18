@@ -704,6 +704,10 @@ void() viswep_post =
 			vhead.owner.eweapon = vhead.eweapon;
 
 			// for csqc hud - set players mcode to the mcode in the vwepent of the currently held weapon - this *should* always work
+			if (vhead.mcode != MC_PULSE_NAILGUN)
+			if (vhead.model == "progs/vw_pnailg.mdl")
+				vhead.mcode = MC_PULSE_NAILGUN; // hack, but HUD needs to see this
+	
 			vhead.owner.mcode = vhead.mcode;
 
 			if (self.class_select == "class_player")

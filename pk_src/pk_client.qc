@@ -1133,7 +1133,7 @@ void () WaterMove =
 		{
 			f = FALSE;
 
-// NOTE: this doesnt seem to work the same  way - excised liquit is allowing swimming /etc.			
+// NOTE: this doesnt seem to work the same  way - excised liquid is allowing swimming /etc.			
 			surface = getsurfacetexture(world, surfnum);
 			if (surface == "*teleport") f = TRUE; // teleport is not water, cant swim. cant drown
 			if (surface == "*teleport2") f = TRUE;
@@ -1419,8 +1419,10 @@ void () PlayerPreThink =
 	if ((framecount & 3) == 2)
 	if (self.classname == OBSERVER)
 		flyer_move(); // Cataboligne - 7.26.10 - flyer mouse-fly right code from chaos mod flight
-	else if (self.archon > 0) // 7.26.13 - experimental power bar
-		archon_power_bar(self);
+
+// removed for csqc HUD bar
+//	else if (self.archon > 0) // 7.26.13 - experimental power bar
+//		archon_power_bar(self);
 
 	if (self.deadflag >= DEAD_DEAD)
 	{

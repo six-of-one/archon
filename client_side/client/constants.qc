@@ -79,9 +79,25 @@ float STAT_HIP_IT_WETSUIT			= 57;
 // Archon extended HUD
 float STAT_MCODE = 33; // track mcode of current weap in csqc - heh heh
 float STAT_RUNEFLAG = 34; // track rune_flag
+float STAT_PKM = 49; // track painkeep PK mode
+
 float STAT_EXPSHELL = 35; // track splode shells
 float STAT_PKINV = 36; // track pk inv - 3 weps
 float STAT_PKWEP = 37; // track pk inv - cur wep
+
+float STAT_PKGWELL = 38; // pki ammos
+float STAT_PKTURR = 39; // pki ammos
+float STAT_PKBT = 40; // pki ammos
+float STAT_PKCOPB = 41; // pki ammos
+float STAT_PKTOMB = 42; // pki ammos
+float STAT_PKEGO = 43; // pki ammos
+float STAT_PKPH = 44; // pki ammos
+float STAT_PKMASK = 45; // pki ammos
+
+float STAT_AMBUL = 46; // enh ammos
+float STAT_AMSLUG = 47; // enh ammos
+float STAT_AMGAS = 48; // enh ammos
+
 float STAT_ARCHON = 66; // track archon power for power bar display
 
 // fooey.  these will be tricky to maintain since the list is built on the fly
@@ -90,17 +106,30 @@ float STAT_ARCHON = 66; // track archon power for power bar display
 float MC_SHOTGUN = 101;
 float MC_SUPER_SHOTGUN = 102;
 
+float MC_PULSE_NAILGUN = 135;
+float MC_GRAP = 137;
 float MC_CHTHUNDR = 136;
 float MC_AIRGUN = 138;
 float MC_HOOK = 148;
 float MC_HIP_MJOLNIR = 149;
 float MC_HIP_LASERCAN = 150;
 float MC_HIP_PROXGUN = 151;
+float MC_Q2_RAILGUN = 218;
+float MC_C_FLAMER = 293;
 
 // pk inv - collectables
+float PK_IT_AXE				= 1;
 float PK_IT_GRAPGUN			= 16;
 float PK_IT_AIRGUN			= 32;
 float PK_IT_CLIGHT			= 64;
+float PK_IT_GRAVITYWELL		= 2;
+float PK_IT_TURRET			= 4;
+float PK_IT_CANPAB			= 8;
+float PK_IT_BEARTRAP			= 128;
+float PKPLUS_IT_EGO			= 256;
+float PKPLUS_IT_TOMB			= 512;
+float PKPLUS_IT_ACTOR		= 1024;
+float PKPLUS_IT_PHONE		= 2048;
 
 // runes - another fooey - rune powers can randomize...but we think these flag values are constant and only the appearance changes
 

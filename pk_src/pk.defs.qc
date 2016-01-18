@@ -418,6 +418,8 @@ void() flyer_move; // fly rune for now
 // archon items
 
 float MC_SUPER_SHOTGUN; // - 101 to get item override menu #
+float MC_PULSE_NAILGUN; // for HUD
+
 float MC_ASHELLS_LG;
 float MC_ANAILS_LG;
 float MC_AROCKETS_LG;
@@ -1268,16 +1270,35 @@ float Q3_SH_ENV				= 3;
 // #232 void(float index, float type, .void field) SV_AddStat (EXT_CSQC)
 void(float index, float type, ...) addstat = #232;
 
+/*
+these were adding globals - reverted to numeric
+
 float AST_STRING = 1;
 float AST_FLOAT = 2;
 
 float STAT_MCODE = 33; // track mcode of current weap in csqc - heh heh
 float STAT_RUNEFLAG = 34; // track rune_flag
+
 float STAT_EXPSHELL = 35; // track splode shells
 float STAT_PKINV = 36; // track pk inv
-float STAT_PKWEP = 37; // track pk inv
+float STAT_PKWEP = 37; // track pk wep
+float STAT_PKGWELL = 38; // pki ammos
+float STAT_PKTURR = 39; // pki ammos
+float STAT_PKBT = 40; // pki ammos
+float STAT_PKCOPB = 41; // pki ammos
+float STAT_PKTOMB = 42; // pki ammos
+float STAT_PKEGO = 43; // pki ammos
+float STAT_PKPH = 44; // pki ammos
+float STAT_PKMASK = 45; // pki ammos
+
+float STAT_AMBUL = 46; // enh ammos
+float STAT_AMSLUG = 47; // enh ammos
+float STAT_AMGAS = 48; // enh ammos
+
+
 float STAT_ARCHON = 66; // track archon power for power bar display
 
+*/
 
 
 // so we can make new sv_ console vars

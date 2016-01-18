@@ -98,7 +98,7 @@ float MC_BACKPACK;
 /// painkeep
 // pk wep ids
 float MC_EXPSHOTGUN;
-float MC_PULSE_NAILGUN;
+//float MC_PULSE_NAILGUN;
 float MC_CHTHUNDR;
 float MC_GRAP;
 float MC_AIRGUN;
@@ -1938,16 +1938,6 @@ void() 	player_q3grap;
 void () weapon_hook =
 {
 	weapon_grapgun();
-
-	if (!ULOK2)
-//	if (!XMOD)
-	if (noxtr_item_control(self, TRUE, ""))
-	{
-		self.touch = painkeep_touch;
-		self.pk_touch = painkeep_weapon_touch;
-		self.classname = "weapon_grapgun";
-		return;
-	}
 
 	self.netname = "Grappling hook";
 

@@ -600,18 +600,34 @@ void() PK_SetCurrentAmmo =
 	{
 		if (self.eweapon.lip)
 		{
+			self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 			if (self.eweapon.lip == AMMO_BULLETS)
 				self.currentammo = self.ammo_bullet;
 			else if (self.eweapon.lip == AMMO_SHELLS)
+			{
 				self.currentammo = self.ammo_shells;
+				self.items = self.items | IT_SHELLS;
+			}
 			else if (self.eweapon.lip == AMMO_CELLS)
+			{
 				self.currentammo = self.ammo_cells;
+				self.items = self.items | IT_CELLS;
+			}
 			else if (self.eweapon.lip == AMMO_NAILS)
+			{
 				self.currentammo = self.ammo_nails;
+				self.items = self.items | IT_NAILS;
+			}
 			else if (self.eweapon.lip == AMMO_ROCKETS)
+			{
 				self.currentammo = self.ammo_rockets;
+				self.items = self.items | IT_ROCKETS;
+			}
 			else if (self.eweapon.lip == AMMO_GRENADES)
+			{
 				self.currentammo = self.ammo_rockets;
+				self.items = self.items | IT_ROCKETS;
+			}
 			else if (self.eweapon.lip == AMMO_SLUGS)
 				self.currentammo = self.ammo_slug;
 			else if (self.eweapon.lip == AMMO_GAS)
@@ -836,18 +852,34 @@ void(entity e) PK_SetCurrentAmmoOnly =
 	{
 		if (f.eweapon.lip)
 		{
+			f.items = f.items - (f.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 			if (f.eweapon.lip == AMMO_BULLETS)
 				f.currentammo = f.ammo_bullet;
 			else if (f.eweapon.lip == AMMO_SHELLS)
+			{
 				f.currentammo = f.ammo_shells;
+				f.items = f.items | IT_SHELLS;
+			}
 			else if (f.eweapon.lip == AMMO_CELLS)
+			{
 				f.currentammo = f.ammo_cells;
+				f.items = f.items | IT_CELLS;
+			}
 			else if (f.eweapon.lip == AMMO_NAILS)
+			{
 				f.currentammo = f.ammo_nails;
+				f.items = f.items | IT_NAILS;
+			}
 			else if (f.eweapon.lip == AMMO_ROCKETS)
+			{
 				f.currentammo = f.ammo_rockets;
+				f.items = f.items | IT_ROCKETS;
+			}
 			else if (f.eweapon.lip == AMMO_GRENADES)
+			{
 				f.currentammo = f.ammo_rockets;
+				f.items = f.items | IT_ROCKETS;
+			}
 			else if (f.eweapon.lip == AMMO_SLUGS)
 				f.currentammo = f.ammo_slug;
 			else if (f.eweapon.lip == AMMO_GAS)

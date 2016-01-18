@@ -1721,12 +1721,28 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 	{
 // csqc - HUD, etc
 
-		addstat(STAT_MCODE, AST_FLOAT, mcode);
-		addstat(STAT_RUNEFLAG, AST_FLOAT, rune_flag);
-		addstat(STAT_EXPSHELL, AST_FLOAT, pk_explode_ammo);
-		addstat(STAT_PKINV, AST_FLOAT, pk_items); // only detects 3 inv weps
-		addstat(STAT_PKWEP, AST_FLOAT, pk_currentitem); // current wep
-		addstat(STAT_ARCHON, AST_FLOAT, archon);
+// AST_FLOAT = 2 --- see pk.defs for other STAT_* number value idents
+		addstat(33, 2, mcode);
+		addstat(34, 2, rune_flag);
+// pk 
+		addstat(35, 2, pk_explode_ammo);
+		addstat(36, 2, pk_items); // only detects 3 inv weps
+		addstat(37, 2, pk_currentitem); // current wep
+		addstat(38, 2, pk_gravitywellammo); // pk ammos
+		addstat(39, 2, pk_turretammo); // pk ammos
+		addstat(40, 2, pk_beartrapammo); // pk ammos
+		addstat(41, 2, pk_canpabammo); // pk ammos
+		addstat(42, 2, pkplus_tombammo); // pk ammos
+		addstat(43, 2, pkplus_egoammo); // pk ammos
+		addstat(44, 2, pkplus_phoneammo); // pk ammos
+		addstat(45, 2, pkplus_actorammo); // pk ammos
+// enhanced
+		addstat(46, 2, ammo_bullet); // enh ammos
+		addstat(47, 2, ammo_slug); // enh ammos
+		addstat(48, 2, ammo_gaspr); // enh ammos
+
+		addstat(66, 2, archon);
+
 
 // server controls
 //		registercvar("no_auto", "0"); // allow everything to be turned off without re-launching defaults
