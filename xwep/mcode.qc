@@ -1967,6 +1967,7 @@ void() painkeep_cube_use =
 	self.pk_touch = painkeep_touch;
 	self.class_select = ""; // for q3 holds
 	self.mask_x = 0; // reset
+	self.style = 0; // so we arent making a melee wep out of a range wep
 //	item_translate(self, FL_TR_RANDOM);
 	if (random() > 0.15)
 //	if (0) // TEST:

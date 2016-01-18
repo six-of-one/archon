@@ -83,21 +83,21 @@ void(float side) player_demon_melee = {
         }
 };
 
-void()  player_demon_attack1 = [$attacka1, player_demon_attack2 ] {self.attack_finished=time+1; if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 8';};
-void()  player_demon_attack2 = [$attacka2, player_demon_attack3 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 16';};
-void()  player_demon_attack3 = [$attacka3, player_demon_attack4 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 25';};
-void()  player_demon_attack4 = [$attacka4, player_demon_attack5 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 23';};
-void()  player_demon_attack5 = [$attacka5, player_demon_attack6 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 21'; player_demon_melee(200);};
-void()  player_demon_attack6 = [$attacka6, player_demon_attack7 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 23';};
-void()  player_demon_attack7 = [$attacka7, player_demon_attack8 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 24';};
-void()  player_demon_attack8 = [$attacka8, player_demon_attack9 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 25';};
-void()  player_demon_attack9 = [$attacka9, player_demon_attack10 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 24';};
-void()  player_demon_attack10 = [$attacka10, player_demon_attack11 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 23';};
-void()  player_demon_attack11 = [$attacka11, player_demon_attack12 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 21'; player_demon_melee(-200);};
-void()  player_demon_attack12 = [$attacka12, player_demon_attack13 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 16';};
-void()  player_demon_attack13 = [$attacka13, player_demon_attack14 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 12';};
-void()  player_demon_attack14 = [$attacka14, player_demon_attack15 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 8';};
-void()  player_demon_attack15 = [$attacka15, player_stand1 ] {if (! self.dest2_x & CHSCAM_ON) self.view_ofs = '0 0 12';};
+void()  player_demon_attack1 = [$attacka1, player_demon_attack2 ] {if (rune_haste(0.5)) self.attack_finished=time+1; if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 8';};
+void()  player_demon_attack2 = [$attacka2, player_demon_attack3 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 16';};
+void()  player_demon_attack3 = [$attacka3, player_demon_attack4 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 25';};
+void()  player_demon_attack4 = [$attacka4, player_demon_attack5 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 23';};
+void()  player_demon_attack5 = [$attacka5, player_demon_attack6 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 21'; player_demon_melee(200);};
+void()  player_demon_attack6 = [$attacka6, player_demon_attack7 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 23';};
+void()  player_demon_attack7 = [$attacka7, player_demon_attack8 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 24';};
+void()  player_demon_attack8 = [$attacka8, player_demon_attack9 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 25';};
+void()  player_demon_attack9 = [$attacka9, player_demon_attack10 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 24';};
+void()  player_demon_attack10 = [$attacka10, player_demon_attack11 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 23';};
+void()  player_demon_attack11 = [$attacka11, player_demon_attack12 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 21'; player_demon_melee(-200);};
+void()  player_demon_attack12 = [$attacka12, player_demon_attack13 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 16';};
+void()  player_demon_attack13 = [$attacka13, player_demon_attack14 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 12';};
+void()  player_demon_attack14 = [$attacka14, player_demon_attack15 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 8';};
+void()  player_demon_attack15 = [$attacka15, player_stand1 ] {if (! self.cam_x & CHSCAM_ON) self.view_ofs = '0 0 12';};
 
 void()  player_demon_spike1 = [$attacka1, player_demon_spike2 ] {};
 void()  player_demon_spike2 = [$pain1, player_demon_spike3 ] {};
@@ -145,7 +145,7 @@ float demon_cntdn; // FIXY - ent var?
 
 void() demon_explode_plague =
 {
-//	if (random() < CK_PLAGUE_ZGIB) newmis.touch = PlagueTouch; // TDO: later
+	if (random() < CK_PLAGUE_ZGIB) newmis.touch = PlagueTouch;
 };
 
 // fn(demon_explode_gibs) - think this so blast move doesnt erase the gib shower
@@ -271,11 +271,13 @@ void() player_demon_attack =
 {
 	if (self.weapon == IT_AXE)
 	{
+		if (rune_haste(0.25))
 		self.attack_finished = time + 0.5;
 		player_demon_attack1();
 	}
 	else if (self.weapon == IT_SHOTGUN)
 	{
+		if (rune_haste(0.6))
 		self.attack_finished = time + 1.2;
 		player_demon_spike1();
 	}

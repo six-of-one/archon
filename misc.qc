@@ -204,6 +204,8 @@ void () fire_fly =
 {
 	local entity fireball;
 
+// TEST: remove once we have chaos_ff
+	newmis = 
 	fireball = spawn ();
 	fireball.solid = SOLID_TRIGGER;
 	fireball.movetype = MOVETYPE_TOSS;

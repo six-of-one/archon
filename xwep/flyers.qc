@@ -24,7 +24,7 @@ void(entity fent, float fl) flyer_check =
 		|| fent.morphy == IMP_MWRAITH
 		|| fent.morphy == IMP_MGREMLIN
 		|| fent.classname == "deadcam"
-//		|| (fent.model == "progs/gremlin-fly.mdl" && fent._stand == gremlin_hover)
+		|| (fent.model == "progs/gremlin-fly.mdl" && fent._stand == gremlin_hover)
 		)
 	{
 		fent.movetype = MOVETYPE_FLY;
@@ -40,7 +40,7 @@ void(entity fent) flyer_mode =
 {
 	if (fent.morphy == IMP_MGREMLIN)
 	{
-//		if (fent == self) gremlin_takeoff(); // gremlin must switch modes here
+		if (fent == self) gremlin_takeoff(); // gremlin must switch modes here
 		return;
 	}
 

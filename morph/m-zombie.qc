@@ -362,8 +362,8 @@ float ST_HEALPLAGUE			= 0.05; // % per for beating plague for normal health boxe
 float CK_PLAGUE_CATCH		= 0.8; // chance per touch to catch plague - IDEA - diff for some morphs?
 float CK_PLAGUE_RND			= 0.1; // chance to fight plague per round
 float CK_PLAGUE_TIME			= 2; // time before retouch on bodies / heads
-//float CK_PLAGUE_ZGIB			= 0.3; // chance zombie gibs / head are plagued
-//float CK_PLAGUE_GIB			= 0.03; // chance regular gibs / head are plagued
+float CK_PLAGUE_ZGIB			= 0.3; // chance zombie gibs / head are plagued
+float CK_PLAGUE_GIB			= 0.03; // chance regular gibs / head are plagued
 float TM_PLAGUE				= 1; // round defined for think - 1 sec
 
 void() ZombiePlague =
@@ -774,7 +774,7 @@ void() player_zombie_attack =
 
 	if (self.weapon != IT_AXE)
 	{
-		self.attack_finished=time+10;
+		self.attack_finished=time+10; // note: trick to put finish time into fire frames - ISSUE: dont work with rune haste!
 		if(random()>0.66) player_zombie_atta1();
 		else if(random()>0.5) player_zombie_attb1();
 		else player_zombie_attc1();

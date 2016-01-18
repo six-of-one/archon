@@ -283,15 +283,17 @@ void () armor_touch =
 	local float ck;
 	ck = TRUE;
 	snd = "items/armor1.wav";
-	if (self.noise4 == DOOM_DET || self.noise4 == Q2_DET || self.noise4 == Q3_DET)
+	if (self.noise4 == DOOM_DET || self.noise4 == Q2_DET || self.noise4 == Q3_DET || self.wad == "armor_toss")
 	{
 		if (self.volume != -1)
 		if (other.armorvalue >= self.volume) return; // already max
 
 		ck = FALSE;
-		snd = self.noise;
-		bit = self.items;
-		type = self.style;
+		if (self.noise) snd = self.noise; // Cataboligne - 9.23.11 - defaulted a few things if not set
+		bit = IT_ARMOR2;
+		if (self.items) bit = self.items;
+		type = 0.6;
+		if (self.style) type = self.style;
 		value = self.currentammo + other.armorvalue;
 		Q3_HAH_TMP = other.health;
 		Q3_HAA_TMP = other.armorvalue;

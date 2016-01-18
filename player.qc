@@ -121,14 +121,15 @@ void()	player_stand1 =[	$axstnd1,	player_stand1	]
 		if (self.walkframe >= 12)
 			self.walkframe = 0;
 		self.frame = $axstnd1 + self.walkframe;
+		self.walkframe = self.walkframe + 1;
 	}
 	else
 	{
 		if (self.walkframe >= 5)
 			self.walkframe = 0;
 		self.frame = $stand1 + self.walkframe;
+		self.walkframe = self.walkframe + 1;
 	}
-	self.walkframe = self.walkframe + 1;
 
 	if (self.velocity_x || self.velocity_y) // moved - allow frame to be set
 	{
@@ -159,14 +160,15 @@ void()	player_run =[	$rockrun1,	player_run	]
 		if (self.walkframe == 6)
 			self.walkframe = 0;
 		self.frame = $axrun1 + self.walkframe;
+		self.walkframe = self.walkframe + 1;
 	}
 	else
 	{
 		if (self.walkframe == 6)
 			self.walkframe = 0;
 		self.frame = self.frame + self.walkframe;
+		self.walkframe = self.walkframe + 1;
 	}
-	self.walkframe = self.walkframe + 1;
 
 	if (self.hook & HOOK_IN)
 	{
@@ -400,6 +402,10 @@ void() player_pain =
 
 	if (!Q_100)
 	{
+		if (self.rune_flag & RUNE_FLG_RG)
+		if (random() < 0.95)
+			return;
+
 		if (self._pain != SUB_Null) { self._pain(world, 0); return; }
 
 		if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)

@@ -1435,7 +1435,7 @@ void() PK_Attack =
 		{
 			sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
 			r = random();
-			if (r < 0.25)
+			if (r < 0.25 || (self.morphy == IMP_MGREMLIN) )
 				player_axe1 ();
 			else if (r<0.5)
 				player_axeb1 ();
@@ -2039,8 +2039,8 @@ void() PK_ImpulseCommands =
 			if (self._attack != SUB_Null)
 				self._attack();
 	}
-	
-	if ((self.impulse >= 1 && self.impulse <= 13) && self._impulse != SUB_Null) 
+
+	if ((self.impulse >= 1 && self.impulse <= 14) && self._impulse != SUB_Null) 
 	{
 //		if (!self.holdent.flags & FL_HELD) 
 			self._impulse(); // item_held()

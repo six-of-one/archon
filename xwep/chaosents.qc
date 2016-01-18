@@ -529,6 +529,12 @@ bprint("\n");
 	other.items = other.items | self.items;
 	self.model = string_null;
 
+// so we can say what we need to when done
+	if (self.group) // NOTE: could already have a .message
+	{
+		other.group = self.group;
+	}
+
 	t = self.dmgtime;
 	if (!t) t = POW_TIME;
 
@@ -1439,44 +1445,49 @@ void() loose_ammo =
 
 void(float wp) q1_inv_print =
 {
-	if (wp == IT_AXE) sprint(self, "War Axe\n");
-	else if (wp == IT_SHOTGUN)
+	local float f;
+
+	f = TRUE;
+	if (wp & self.builtin) f = FALSE; // dont call these for builtin bits
+
+	if (wp == IT_AXE && f) sprint(self, "War Axe\n");
+	else if (wp == IT_SHOTGUN && f)
 	{
 		sprint(self, "Pump shotgun");
 		eweap_am(self, AMMO_SHELLS, "   -> ");
 		sprint(self, "\n");
 	}
-	else if (wp == IT_SUPER_SHOTGUN)
+	else if (wp == IT_SUPER_SHOTGUN && f)
 	{
 		sprint(self, "Double barrel shotgun");
 		eweap_am(self, AMMO_SHELLS, "   -> ");
 		sprint(self, "\n");
 	}
-	else if (wp == IT_NAILGUN)
+	else if (wp == IT_NAILGUN && f)
 	{
 		sprint(self, "Fletchet (nail) gun");
 		eweap_am(self, AMMO_NAILS, "   -> ");
 		sprint(self, "\n");
 	}
-	else if (wp == IT_SUPER_NAILGUN)
+	else if (wp == IT_SUPER_NAILGUN && f)
 	{
 		sprint(self, "High rate Fletchet (nail) gun");
 		eweap_am(self, AMMO_NAILS, "   -> ");
 		sprint(self, "\n");
 	}
-	else if (wp == IT_GRENADE_LAUNCHER)
+	else if (wp == IT_GRENADE_LAUNCHER && f)
 	{
 		sprint(self, "Grenade launcher");
 		eweap_am(self, AMMO_ROCKETS, "   -> ");
 		sprint(self, "\n");
 	}
-	else if (wp == IT_ROCKET_LAUNCHER)
+	else if (wp == IT_ROCKET_LAUNCHER && f)
 	{
 		sprint(self, "Rocket launcher");
 		eweap_am(self, AMMO_ROCKETS, "   -> ");
 		sprint(self, "\n");
 	}
-	else if (wp == IT_LIGHTNING)
+	else if (wp == IT_LIGHTNING && f)
 	{
 		sprint(self, "Thunderbolt cannon");
 		eweap_am(self, AMMO_CELLS, "   -> ");

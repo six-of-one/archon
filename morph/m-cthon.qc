@@ -195,6 +195,7 @@ void() lavacthon_missile1  = [ $attack1, lavacthon_missile2 ]
 		return;
 	}
 
+	if (rune_haste(0.45))
 	self.attack_finished = time + 0.9;
 };
 void() lavacthon_missile2  = [ $attack2, lavacthon_missile3 ] {};
@@ -219,6 +220,7 @@ void() lavacthon_missile12 = [ $attack12, lavacthon_missile13 ]
 		return;
 	}
 
+	if (rune_haste(0.45))
 	self.attack_finished = time + 0.9;
 };
 void() lavacthon_missile13 = [ $attack13, lavacthon_missile14 ] {};

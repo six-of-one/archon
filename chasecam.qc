@@ -239,7 +239,8 @@ if (PR_VIEWPC) bprint ("set_viewport: remove cam\n");
 	setmodel( self, "" );
 	self.velocity = '0 0 0';
 
-	self.owner.view_ofs_z = 22;
+//	self.owner.view_ofs_z = 22;
+	self.owner.view_ofs_z =  morph_chasecam_fpv(self.owner); // Cataboligne 9.19.3 - morph chasecam return to FPV
 
 	Chase_cam_setweapon( self.owner );
 
@@ -749,7 +750,8 @@ local string s1;
 		if (vlen(self.owner.origin - self.origin) < 30)
 		{
 			self.skin = 1;
-			self.owner.view_ofs_z = 22;
+//			self.owner.view_ofs_z = 22;
+			self.owner.view_ofs_z =  morph_chasecam_fpv(self.owner); // Cataboligne 9.19.3 - morph chasecam return to FPV
 			set_viewport( self.owner, self.owner);
 
 
@@ -845,6 +847,12 @@ void() Chase_cam_level_start =
 
 //	if (IROBOT(self)) return; // no cam start for bots
 	if (!self.ishuman) return; // no bots
+
+	if (Q_100 || PK_100)
+	{
+		stuffcmd(self, "chase_active 0\n"); // Cataboligne - 9.24.11 - stuff must get turned back off
+		return;
+	}
 
 	e = spawn();
 	e.owner = self;

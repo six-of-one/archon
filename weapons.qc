@@ -1487,6 +1487,11 @@ W_WeaponFrame
 Called every frame so impulse events can be handled as well as possible
 ============
 */
+.float button3;
+.float button4;
+.float button5;
+.float button6;
+
 void () W_WeaponFrame =
 {
 	// Rob

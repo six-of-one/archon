@@ -374,7 +374,7 @@ void() player_hammer1;
 
 void()	player_mjolnir1 =
 {
-	if (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, "")) // || self.morphnum == IMP_MGREMLIN) // melee wep deal
+	if (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, "") && self.morphy != IMP_MGREMLIN) // melee wep deal
 		player_mjolnir1b(); // lightning strike
 	else
 		player_hammer1();

@@ -969,7 +969,14 @@ void () fire_fly;
 
 void(string md) chaos_fire_fly =
 {
+	local void() e;
+	float f;
+
+	e = self.think;
+	f = self.nextthink;
 	fire_fly();
+	self.think = e;
+	self.nextthink = f;
 };
 
 float(entity ent, float flg) content =

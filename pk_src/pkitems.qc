@@ -495,6 +495,11 @@ void() pk_ammo_touch =
 		{
 			if (other.pk_explode_ammo >= PK_EXPLODEAMMO_MAX)
 				return;
+			if (other.mask_x & CB_GREMLIN)
+			{
+				if (!other.items & IT_SUPER_SHOTGUN) // gremlin has to have a gun to get this
+					return;
+			}
 			other.pk_explode_ammo = other.pk_explode_ammo + self.aflag;
 		}	
 	}
@@ -596,7 +601,7 @@ void() painkeep_touch =
 	}
 
 // morphic
-	if (!other.mask_x & CB_HUMAN) // NOTE: CHECK: TDO: this means humans are not tested and CAN GET everything!
+	if (!other.mask_x & CB_HUMAN && (!other.mask_x & CB_GREMLIN || ( (other.builtin & self.items) && (self.pk_currentitem < 2) ) ) ) // NOTE: CHECK: TDO: this means humans are not tested and CAN GET everything!
 	if ((!(self.mask_x & other.mask_x) || (other.model == "progs/cthon.mdl")) && (self.wad != "morph_cube")) // make sure morph can collect this
 	{
 		if (e) e.classname = "pk*bot";

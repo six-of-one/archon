@@ -202,7 +202,7 @@ void() player_ogre_shoot3 = [ $shoot3, player_ogre_shoot4 ]
 			}
 //		else if (self.eweapon._hk_major != SUB_Null) self.eweapon._hk_major();
 		else fr = TRUE;
-		if (self.dest2_x & CHSCAM_ON) self.punchangle_x = 0;
+		if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
 		if (!fr) return;
 	}
 	W_FireGrenade();
@@ -211,6 +211,7 @@ void() player_ogre_shoot3 = [ $shoot3, player_ogre_shoot4 ]
 		newmis.think = newmis.th_die = newmis.th_stand = chaos_bomb;
 		newmis.aflag = MOVETYPE_BOUNCE;
 		newmis.weapon = IMP_MOGRE;
+		if (rune_haste(1.3))
 		self.attack_finished = time + 2.6;
 	}
 
@@ -227,6 +228,7 @@ void() player_ogre_attack =
 //			self.attack_finished = time + 1.2;
 //			player_ogre_smash1();
 //		} else {
+		if (rune_haste(0.5))
 		self.attack_finished = time + 1.0;
 		if (random() < 0.3) player_ogre_smash1();
 		else player_ogre_swing1();
@@ -234,6 +236,7 @@ void() player_ogre_attack =
 	}
 	else
 	{
+		if (rune_haste(0.25))
 		self.attack_finished = time + 0.5 + (crandom() * 0.2);
 		player_ogre_shoot1();
 	}

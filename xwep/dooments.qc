@@ -1108,6 +1108,7 @@ void() d_art_berserker =
 	}
 
 	self.netname = "Berserker";
+	self.group = "Berserk rage...nearly over...Hulk sad\n";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_QUAD;
@@ -1199,6 +1200,7 @@ void() d_art_invulnerable =
 	}
 
 	self.netname = "Invulnerability";
+	self.group = "Protection from Hells minions is almost gone\n";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVULNERABILITY;
@@ -1229,6 +1231,7 @@ void() d_art_invisible =
 	}
 
 	self.netname = "Invisibilty";
+	self.group = "Hell will no longer be blind to your presence\n";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVISIBILITY;
@@ -1259,6 +1262,7 @@ void() d_art_radsuit =
 	}
 
 	self.netname = "Radiation Suit";
+	self.group = "Radiation suit is near expiration date\n";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_SUIT;

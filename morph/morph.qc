@@ -364,7 +364,7 @@ void() morph_cube_use =
 	}
 
 	self.eweapon = world; // dont put cube ref in pack
-	if (self.mask_x & (CB_HUMAN | CB_ENF)) // only humans throw packs so far
+	if (self.mask_x & (CB_HUMAN | CB_ENF || CB_GREMLIN)) // only humans throw packs so far
 	{
 		self.eweapon = self.theowner; // set for throwing pack
 
@@ -391,8 +391,8 @@ void() morph_cube =
 		if (time > 240) self.mask_x = MORPH_ARCHON;
 		else r = r + 1;
 	}
-	if (r < 3) self.mask_x = MORPH_STROG;
-	else if (r == 3) self.mask_x = MORPH_HELLION;
+	if ((r < 3) && ULOK2) self.mask_x = MORPH_STROG;
+	else if ((r == 3) && ULOKD) self.mask_x = MORPH_HELLION;
 	else self.mask_x = MORPH_MONSTER;
 
 
@@ -458,7 +458,7 @@ void(string ws, float rtime ) morph_walksound =
 	float fgr;
 
 	fgr = self.flags & FL_ONGROUND;
-//	if (self.morphy == IMP_MGREMLIN && self._stand == gremlin_hover) fgr = TRUE;
+	if (self.morphy == IMP_MGREMLIN && self._stand == gremlin_hover) fgr = TRUE;
 
 	if (WALKSOUND && ((self.cnt < time) || !fgr))
 		{
@@ -474,6 +474,46 @@ void(string ws, float rtime ) morph_walksound =
 		}
 };
 
+
+// Cataboligne 9.19.3 - morph chasecam return to FPV correct perspective
+// replaces "self.owner.view_ofs_z = 22;" code in chasecam.qc
+// with "self.owner.view_ofs_z =  morph_chasecam_fpv();"
+// o is owner of chasecam, the player
+
+float(entity o) morph_chasecam_fpv =
+{
+float ofs;
+	ofs = 22;
+
+// safety just in case
+	if (o.classname != "player") return(o.view_ofs_z); // some calls are not for players
+
+	if (o.morphy == IMP_MZOMBIE) 				ofs = 20;
+	else if (o.morphy == IMP_MCHAOS) 		ofs = 4;
+	else if (o.morphy == IMP_MGREMLIN) 		ofs = 22;
+	else if (o.morphy == IMP_MSHALR) 		ofs = 34;
+	else if (o.morphy == IMP_MWIZARD) 		ofs = 28;
+	else if (o.morphy == IMP_MHKNIGHT) 		ofs = 34;
+	else if (o.morphy == IMP_MSHAMBLR) 		ofs = 54;
+	else if (o.morphy == IMP_MDEMON) 		ofs = 12;
+	else if (o.morphy == IMP_MOGRE) 			ofs = 34;
+	else if (o.morphy == IMP_MCTHON) 
+	{
+		if (o.model == "progs/cthon.mdl")
+														ofs =  120;
+		else
+														ofs = 4;
+	}
+	else if (o.morphy == IMP_MSCOURGE) 		ofs = 5;
+	else if (o.morphy == IMP_MENF) 			ofs = 24;
+	else if (o.morphy == IMP_MCYBER) 		ofs = 56;
+	else if (o.morphy == IMP_MIMP) 			ofs = 18;
+	else if (o.morphy == IMP_MTANK) 			ofs = 52;
+	else if (o.morphy == IMP_MSUPTANK) 		ofs = 54;
+	else if (o.morphy == IMP_MGUNNEY) 		ofs = 32;
+	else if (o.morphy == IMP_MWRAITH) 		ofs = 1;
+	return (ofs);
+};
 
 
 // fn(morph_test) - test multiple morph nums, return true for any match-
@@ -620,6 +660,7 @@ void(entity e, float all) morph_clearparms =
 		e.flags = FL_CLIENT | FL_ONGROUND | FL_JUMPRELEASED; // default, need to clear drop pull & such
 		e.invincible_time = e.super_damage_finished = e.radsuit_finished = e.invisible_finished = e.invincible_finished = 0;
 		e.effects = 0;
+		e.group = ""; // for specials
 	}
 
 	f = e.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY);
@@ -633,6 +674,11 @@ void(entity e, float all) morph_clearparms =
 // remove pk items & ammos
 	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
 	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;
+
+// these are not items - just select flags
+	e.pk_items = PK_IT_AXE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_CANPAB | PK_IT_BEARTRAP
+					| PKPLUS_IT_EGO | PKPLUS_IT_TOMB | PKPLUS_IT_ACTOR | PKPLUS_IT_PHONE;
+
 // remove x items & ammos
 	e.ammo_bullet = e.ammo_slug = e.ammo_gaspr = e.ammo_hgrenade = 0;
 	e.x_items = x_item_dm_giveaway;
@@ -748,6 +794,7 @@ void(float dx) morph_CycleWeaponCommand =
 	}
 
 };
+
 // fn(morph_impulse) - generic morph impulse testing
 
 void() morph_impulse =
@@ -840,6 +887,59 @@ void() morph_impulse =
 */
 };
 
+// half morph impulse, half rebular weapons - note: has to have builtin axe - this cant be skipped
+
+void() split_morph_impulse =
+{
+
+	if (self.impulse == 1)
+	{
+		self.eweapon = world; // fixes pk inventory not reporting correctly when selected like this
+		self.weaponmodel = "";
+		W_ChangeWeapon ();
+	}
+	else if (self.impulse >= 3 && self.impulse <= 8)
+		W_ChangeWeapon ();
+	else if (self.impulse == 9)
+		W_ChangeWeapon (); // mjolnir
+	else if (self.impulse == 10)
+		CycleWeaponCommand ();
+	else if (self.impulse == 12)
+		CycleWeaponReverseCommand ();
+	else
+	morph_impulse();
+};
+
+
+// fn(morph_armor_check) - drop armor when morphing
+
+void(float mpy) morph_armor_check =
+{
+	local entity e;
+
+	if ((self.mask_x & MORPH_SARMOR) || self.armortype == ARM_SCRG) // builtin type armor is not thrown
+	{
+		if (!(mpy & (MORPH_SARMOR | CB_HKNIGHT))) self.armorvalue = self.armortype = 0; // not going to an armor morph - its gone
+		return;
+	}
+
+	if (self.armorvalue * self.armortype)
+//	if (self.items & (IT_ARMOR1|IT_ARMOR1|IT_ARMOR3)) // dont really care what item it is if any
+	{
+//		proc_dropitem(code_bit(self.mode_y & (IV_ARM1|IV_ARM2|IV_ARM3),0,1),TRUE);
+		e = spawn();
+		e.classname = "dyn_item";  // TDO: make this a gen. armor toss fn - use with dead throw too - if d threw weps, do armor
+		setorigin(e, self.origin);
+		item_call_save(e, "item_armor2");
+		e.wad = "armor_toss"; // for get
+		e.currentammo = self.armorvalue;
+		e.volume = 150; // set max
+		if (e.currentammo > e.volume) e.volume = e.currentammo;
+
+		self.armorvalue = self.armortype = 0;
+	}
+};
+
 // fn(polymorph_check) - do a change by code or impulse, handles other morph impulse commands
 // self - entity to morph, note code requirements below for some values
 // cmd - instruction for morphing
@@ -892,7 +992,7 @@ void(float cmd, float pls) polymorph_check =
 
 			if (self.mask_x & (CB_HUMAN | CB_ENF | CB_OGRE | CB_GREMLIN))
 				DropBackpack();
-	//		morph_armor_check();
+			morph_armor_check(cb_morph(cmd));
 	//		morph_powerup_check(cmd);
 			morph_clearparms(self, FALSE);
 		}

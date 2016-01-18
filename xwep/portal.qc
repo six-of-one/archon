@@ -13,6 +13,8 @@ float PORTAL_ALLOW = 1; // 0 - only allow players / monsters, 1 - allow all movi
 float PORTAL_M3START = 1; // if true - allow mode 3 portal to include player start positions
 float PORTAL_M3RND = 1; // if true - mode 3 portal picks random destinations every time
 
+string PORTAL_TELEFRAG = "md4";
+
 // portals seem to dump players outside the level - this saves them
 
 void() PortalSaver =
@@ -121,9 +123,18 @@ void () PortalTouch =
 		other.origin = (self.portal_exit.origin + (self.portal_exit.mangle * 24));
 	}
 	else
-	if (self.classname == "portal_exit" && !PORTAL_ONEWAY)
+	if (self.classname == "portal_exit" && ( !PORTAL_ONEWAY || self.portal_entrance.target == PORTAL_TELEFRAG) )
 	{
-		if (self.portal_entrance.mangle == ' 0 0 1')
+		if (self.portal_entrance.target == PORTAL_TELEFRAG)
+		{
+			if (!self.portal_entrance.enemy) return;
+			setorigin(self.portal_entrance, self.portal_entrance.enemy.origin);
+			spawn_tfog (self.portal_entrance.origin);
+			spawn_tdeath (self.portal_entrance.origin, self.master);
+			makevectors(self.portal_entrance.enemy.v_angle);
+			self.portal_entrance.mangle = v_forward;
+		}
+		else if (self.portal_entrance.mangle == ' 0 0 1')
 		{
 //			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back
 			other.velocity_z = 150 + random() * 150;
@@ -271,7 +282,7 @@ void () PortalPathThink =
 	self.nextthink = (time + 0.1);
 };
 
-// Cataboligne - 9.12.11 - added mode3
+// Cataboligne - 9.12.11 - added mode3, 9.24.11 - adapted for mode 4
 
 float () PortalExit3 =
 {
@@ -322,6 +333,7 @@ float (vector dir) PortalExit2 =
 	portal.aflag = RED_PORTAL; // make it a red portal
 	portal.skin = 0 + portal.aflag;
 	self.portal_entrance.portal_exit = portal;
+	portal.target = self.portal_entrance.target;
 	self.portal_entrance.portal_opened = TRUE;
 	sound (self.portal_entrance, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
 	sound (portal, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
@@ -335,6 +347,7 @@ float (vector dir, float md2) PreparePortalEntrance =
 	local entity tline;
 	local entity portal;
 	local vector org, norm;
+	local string ts;
 
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_TELEPORT);
@@ -343,12 +356,19 @@ float (vector dir, float md2) PreparePortalEntrance =
 	WriteCoord (MSG_BROADCAST, trace_endpos_z);
 	if (trace_ent.takedamage)
 	{
-		return (FALSE);
+		if (self.eweapon.cnt != 8)
+			return (FALSE);
 	}
 	else
 	{
 		if ((trace_ent != world))
 		{
+			return (FALSE);
+		}
+		else
+		if (self.eweapon.cnt == 8)
+		{
+			centerprint(self, "PORTAL failure: xFF91Ba77 - device target not acquired\n");
 			return (FALSE);
 		}
 	}
@@ -394,15 +414,28 @@ float (vector dir, float md2) PreparePortalEntrance =
 	portal.effects = (portal.effects | EF_DIMLIGHT);
 	portal.portal_opened = FALSE;
 	portal.portal_failed = FALSE;
-	portal.touch = PortalTouch;
 	portal.attack_finished = (time + 10);
 	if (md2)
 		portal.attack_finished = (time + 20);
 	portal.nextthink = (time + 0.1);
 	portal.think = PortalThink;
-	setmodel (portal, "progs/portal.mdl");
-	setsize (portal, '0 0 0', '0 0 0');
-	setorigin (portal, org);
+
+	if (md2 != 8)
+	{
+		portal.touch = PortalTouch;
+		setmodel (portal, "progs/portal.mdl");
+		setsize (portal, '0 0 0', '0 0 0');
+		setorigin (portal, org);
+	}
+	else
+	{
+		portal.enemy = trace_ent;
+		portal.target = PORTAL_TELEFRAG;
+		ts = trace_ent.netname;
+		if (!ts) ts = trace_ent.classname;
+		centerprint3 (self, "PORTAL frag: xFF91Bd4E - device target: ",ts,"\n");
+	}
+
 	return (TRUE);
 };
 
@@ -444,7 +477,7 @@ void () W_FirePortal =
 	finish = (src + (v_forward * 600));
 	dir = (finish - src);
 	dir = normalize (dir);
-	traceline (src, (src + (dir * 2048)), TRUE, self);
+	traceline (src, (src + (dir * 2048)), FALSE, self);
 
 	if ((trace_fraction != 1))
 	{
@@ -458,6 +491,11 @@ void () W_FirePortal =
 		if (f == 4 && success)
 		{
 			success = PortalExit3();
+		}
+		if ((f == 8) && self.portal_busy) // open 2nd portal
+		{
+			success = PortalExit2 (dir);
+			self.portal_entrance = world;
 		}
 	}
 	if (success)
@@ -520,25 +558,39 @@ void () player_portalstart5 = [ $shotatt6, player_run ]
 };
 
 // portal has multiple modes
+float HIGH_PORTAL_MODE = 8; // highest portal mode - power of 2
+
+// modes
+// 1 - original fire once & tunnel to open space
+// 2 - fire twice creates blue & red portals
+// 3 - fire once - opens to available teleport on level
+// 4 - fire at live ent - telefrag on portal access
 
 void() weap_portal_multi =
 {
+	if (self.portal_busy)
+	{
+		sprint(self, "mode change fail: xFF2C9e18 - portal active\n");
+		return;
+	}
+
 	if (self.eweapon.cnt < 1) self.eweapon.cnt = 1;
 	self.eweapon.cnt = self.eweapon.cnt * 2;
-	if (self.eweapon.cnt > 4) self.eweapon.cnt = 1;
+	if (self.eweapon.cnt > HIGH_PORTAL_MODE) self.eweapon.cnt = 1;
 	sprint(self, self.eweapon.netname);
 	sprint(self, " mode set to");
 //	sprint(self, ftos(self.eweapon.cnt)); // dont show mode 1 as 0
 	sprint(self, " - ");
 
-	if (self.eweapon.cnt == 4)
+	if (self.eweapon.cnt == 8)
+		sprint(self, "portal telefrag");
+	else if (self.eweapon.cnt == 4)
 		sprint(self, "portal to teleport");
 	else if (self.eweapon.cnt == 2)
 		sprint(self, "2 portal");
 	else
 		sprint(self, "1 portal = tunelling");
 	sprint(self, "\n");
-	return;
 };
 
 void() weapon_portal =

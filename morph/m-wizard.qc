@@ -356,11 +356,12 @@ void() player_wizard_painleech4 = [ $pain1,   player_stand1            ] {};
 	
 void() player_wizard_attack1 = [ $attack1, player_wizard_attack3 ]
 	{
-	if (self.weapon == IT_SHOTGUN) self.attack_finished = time + 1.0;				// plain old spikes
+	if (self.weapon == IT_SHOTGUN) 	if (rune_haste(0.5)) self.attack_finished = time + 1.0;				// plain old spikes
 	else
 		{
+		if (rune_haste(0.2))
 		self.attack_finished = time + 0.4;
-		if (self.weapon == IT_ROCKET_LAUNCHER) self.attack_finished = time + 1.1;
+		if (self.weapon == IT_ROCKET_LAUNCHER) 	if (rune_haste(0.55)) self.attack_finished = time + 1.1;
 		player_Wiz_FastFire();  																// concentrated spikes || spike bomb
 		}
 	};
@@ -383,6 +384,7 @@ void() player_wizard_attack =
 {
 	if(self.weapon == IT_AXE)
 	{
+		if (rune_haste(0.25))
 		self.attack_finished = time + 0.5;
 		player_wizard_painleech();
 	}

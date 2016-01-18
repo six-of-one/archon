@@ -1269,6 +1269,7 @@ void() item_silencer =
 		item_artifact_invisibility();
 
 	self.netname = "Silencer";
+	self.group = "Stealth mission is nearly complete\n";
 
 	self.touch = x_pwr_touch;
 	self.wait = Q2_POWER_WAIT;
@@ -1295,6 +1296,7 @@ void() item_invulnerability =
 	}
 
 	self.netname = "Invulnerability";
+	self.group = "Invulnerability is almost bunred out\n";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVULNERABILITY;
@@ -1321,6 +1323,7 @@ void() q2_item_enviro =
 	}
 
 	self.netname = "Environmental Suit";
+	self.group = "Environmental Suit is near expiration date\n";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_SUIT;
@@ -1332,7 +1335,6 @@ void() q2_item_enviro =
 	self.noise = "q2_snd/pkup.wav";
 	self.noise3 = "q2_snd/airout.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-//	self.message = "Air supply in Enviro suit expiring\n";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
@@ -1350,6 +1352,7 @@ void() q2_item_quad =
 	}
 
 	self.netname = "Quad Damage";
+//	self.group = "\n"; // same message
 
 	self.touch = x_pwr_touch;
 	self.items = IT_QUAD;
@@ -1462,6 +1465,7 @@ void() item_breather =
 	}
 
 	self.netname = "Re-breather";
+	self.group = "Air supply in Re-breather expiring\n";
 
 	self.touch = x_pwr_touch;
 	self.delay = POW_TIME;
@@ -1472,7 +1476,6 @@ void() item_breather =
 	self.noise = "q2_snd/pkup.wav";
 	self.noise3 = "q2_snd/airout.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-//	self.message = "Air supply in Re-breather expiring\n";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody

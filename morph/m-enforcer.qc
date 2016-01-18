@@ -88,7 +88,7 @@ void(float stat) player_enforcer_fire =
 		if (self.eweapon.weapon == MC_THUNDER) W_FireLightning();
 		else if (self.eweapon.weapon == MC_HIP_LASERCAN) HIP_FireLaser(stat);
 		else fr = TRUE;
-		if (self.dest2_x & CHSCAM_ON) self.punchangle_x = 0;
+		if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
 		if (!fr) return;
 	}
 	fire_enflaser();

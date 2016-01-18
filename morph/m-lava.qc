@@ -74,7 +74,8 @@ void() Lavablob_JumpTouch;
 
  void() player_lavablob_stand = [ $walk1, player_stand1 ]
 {
-//	if (self.lip != 1 && self.lip != -1) self.lip = 1;
+
+	//	if (self.lip != 1 && self.lip != -1) self.lip = 1;
 	self.lefty = time + 5;
 	if (self.health > 18) self.count = self.health;
 
@@ -90,6 +91,7 @@ void() Lavablob_JumpTouch;
 	if (self.walkframe == 4) if (random() < 0.25) lavablob_slimeflare();
 	self.frame = $walk1 + self.walkframe;
 	self.walkframe = self.walkframe + self.lip;
+
 };
 
 
@@ -365,6 +367,7 @@ void() player_lavablob_attack =
 
 	if (self.weapon == IT_SHOTGUN) // fire a lava ball
 	{
+		if (rune_haste(0.275))
 		self.attack_finished=time+0.55;
 
 		// lava blobs fire lava balls
@@ -374,6 +377,7 @@ void() player_lavablob_attack =
 	}
 	else // fire spikes - IDEA: will lavablob ever have other attacks?
 	{
+		if (rune_haste(0.125))
 		self.attack_finished=time+0.25;
 
 		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, ' 0 0 0', "lavaspike", "progs/spike.mdl", "chaos/lava-shot.wav", spike_touch, 6, SUB_Remove, SUB_Nop);

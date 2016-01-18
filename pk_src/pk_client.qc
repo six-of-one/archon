@@ -48,7 +48,8 @@ void() SetNewParms_PK =
 	}
 
 // Cataboligne 2.18.11 - set defaults code
-	parm6 = -6;
+	if (!Q_100 && !PK_100)
+		parm6 = -6;
 
 	cam_parms(2);
 };
@@ -154,7 +155,8 @@ void() SetNewParms =
 	}
 
 // Cataboligne 2.18.11 - set defaults code
-	parm6 = -6;
+	if (!Q_100 && !PK_100)
+		parm6 = -6;
 
 // Cataboligne 9.11.3 purify - chase cam
 	cam_parms(2);
@@ -461,6 +463,7 @@ void() pk_plcfg =
 void() PutClientInServer =
 {
 	local entity spot;
+	local string sm;
 
 	set_initBotLevel(); // *bot
 
@@ -472,8 +475,8 @@ void() PutClientInServer =
 		if (Q_99)
 		{
 			AddToSplashBig(self);
-			Chase_cam_level_start(); // Cataboligne 8.9.9 purify - chase cam
 		}
+		Chase_cam_level_start(); // Cataboligne 8.9.9 purify - chase cam
 		q100_PutClientInServer(); // always encoding now
 		return;
 	}
@@ -533,6 +536,7 @@ void() PutClientInServer =
 	self.angles = spot.angles;
 	self.fixangle = TRUE;		// turn this way immediately
 
+	sm = self.mdl;
 	setmodel (self,"progs/eyes.mdl");
 	modelindex_eyes = self.modelindex;
 
@@ -551,8 +555,16 @@ void() PutClientInServer =
 		stuffcmd(self, "exec anode.cfg");
 	}
 
-//s	self.morphy = IMP_MOGRE; // TEST:
+	self.morphy = IMP_MGREMLIN; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
+
+	if (self.morphy == IMP_MGREMLIN) // keep flyer or not once spawned - still fail on map change
+	{
+		if (sm == "progs/gremlin.mdl" || sm == "progs/gremlin-fly.mdl")
+		setmodel(self,sm);
+		setsize (self, '-16 -16 -14',  ' 16 16 32');
+		self.modelindex_morph = self.modelindex;
+	}
 
 	W_SetCurrentAmmo (); // moved for m0rphic
 
@@ -746,6 +758,12 @@ void () CheckPowerups =
 		{
 			if (self.invisible_time == 1)
 			{
+				if (self.group)
+				{
+					sprint (self, self.group);
+					self.group = "";
+				}
+				else
 				sprint (self, "Ring of Shadows magic is fading\n");
 				stuffcmd (self, "bf\n");
 				sound (self, CHAN_AUTO, "items/inv2.wav", 1, ATTN_NORM);
@@ -785,6 +803,12 @@ void () CheckPowerups =
 		{
 			if (self.invincible_time == 1)
 			{
+				if (self.group)
+				{
+					sprint (self, self.group);
+					self.group = "";
+				}
+				else
 				if  (self.pkplus_actortype == PKPLUS_ACTORPENT) // pk art code here
 					sprint (self,"Get ready to leave the RED stage - Good Performance!\n");
 				else
@@ -827,6 +851,12 @@ void () CheckPowerups =
 		{
 			if (self.super_time == 1)
 			{
+				if (self.group)
+				{
+					sprint (self, self.group);
+					self.group = "";
+				}
+				else
 				if (self.pkplus_actortype == PKPLUS_ACTORQUAD) // pk art code here
 					sprint (self,"The BLUE Curtain is dropping - You really frightened them!\n");
 				else
@@ -868,6 +898,12 @@ void () CheckPowerups =
 		{
 			if (self.rad_time == 1)
 			{
+				if (self.group)
+				{
+					sprint (self, self.group);
+					self.group = "";
+				}
+				else
 				sprint (self, "Air supply in Biosuit expiring\n");
 				stuffcmd (self, "bf\n");
 				if (self.noise3 != "")
@@ -902,11 +938,23 @@ void () CheckPowerups =
 			{
 				if (!self.items & IT_SUIT)
 				{
+					if (self.group)
+					{
+						sprint (self, self.group);
+						self.group = "";
+					}
+					else
 					sprint (self, "Air supply in Re-breather expiring\n"); // IDEA: item stored messages
 					sound (self, CHAN_AUTO, "q2_snd/airout.wav", 1, ATTN_NORM);
 				}
 				else
 				{
+				if (self.group)
+				{
+					sprint (self, self.group);
+					self.group = "";
+				}
+				else
 				sprint (self, "Air supply in Enviro suit expiring\n");
 //				sound (self, CHAN_AUTO, self.noise3, 1, ATTN_NORM);
 				sound (self, CHAN_AUTO, "q3_snd/airout.wav", 1, ATTN_NORM); // IDEA: make item store .noise3 work
@@ -1089,10 +1137,9 @@ void () WaterMove =
 		}
 	}
 	
-/* TDO: enable with gremlin
 	else if (self.watertype == CONTENT_WATER)
 	{
-		if (self.morphnum == IMP_MGREMLIN || (self.classname == "monster_gremlin" && (GREM_AASPAWN | !deathmatch)))
+		if (self.morphy == IMP_MGREMLIN || (self.classname == "monster_gremlin" && (GREM_AASPAWN | !deathmatch)))
 		if (self.waterlevel > 0)
 			gremlin_spawn(1.0 + random());
 
@@ -1102,9 +1149,9 @@ player 50?
 npc 20?
 server total 100?
 
-*
-	}
 */
+	}
+
 
 	if (!(self.flags & FL_INWATER))
 	{

@@ -351,7 +351,7 @@ void() gremlin_takeoff =
 	flyer_check(self, (self._stand == gremlin_hover));
 };
 
-void() gremlin_spawning;
+
 
 void() player_gremlin_attack =
 {
@@ -371,19 +371,23 @@ void() player_gremlin_attack =
 
 	if (self.weapon == IT_AXE)
 	{
+		if (rune_haste(0.5))
 		self.attack_finished = time + 1.0;
 		player_gremlin_bite1();
 	}
 	else if (self.weapon == IT_SHOTGUN)
 	{
 		player_gremlin_claw1();
+		if (rune_haste(0.4))
 		self.attack_finished = time + 0.8;
 	}
 
+//	if (self.eweapon || (self.weapon != IT_AXE && self.weapon != IT_SHOTGUN) ) // not sure this will ever be the case
 	if (self.weapon != IT_AXE && self.weapon != IT_SHOTGUN)
 	{
 		self._attack = SUB_Null;
 		W_Attack();
+		self._attack=player_gremlin_attack;
 	}
 
 };
@@ -397,25 +401,26 @@ void() player_gremlin_attack =
 
 void() player_gremlin_impulse =
 {
+
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
-	morph_impulse();
+	split_morph_impulse();
 
-	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
-
-	if (self.weapon == IT_AXE)
-	{
-		sprint(self, "Gremlin using ( bite )\n");
-	}
 	if (self.weapon == IT_SHOTGUN)
 	{
 		sprint(self, "Gremlin using ( claws )\n");
+		self.eweapon = world;
+		self.weaponmodel = "";
+		self.pk_currentitem = PK_IT_AXE;
 	}
 
-	if (self.weapon != IT_AXE && self.weapon != IT_SHOTGUN)
-		self._attack=SUB_Null;
-	else
-		self._attack=player_gremlin_attack;
+	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
+	{
+		sprint(self, "Gremlin using ( bite )\n");
+		self.eweapon = world;
+		self.weaponmodel = "";
+	}
 };
 
 /*
@@ -712,10 +717,12 @@ void(float silent) player_gremlin_become =
 	self._killmsg = player_gremlin_killmsg;
 	self._killmsg2 = player_gremlin_killmsg2;
 
+
 	if (random() < 0.75) // small chance of starting as a flyer
 		setmodel(self,"progs/gremlin.mdl");
 	else
 		setmodel(self,"progs/gremlin-fly.mdl");
+	self.mdl = self.model;
 //	self.modelindex_morph=self.modelindex;
 //	self.mask_x = CB_GREMLIN;
 
@@ -727,7 +734,7 @@ void(float silent) player_gremlin_become =
 	self.noise2 = "gremlin/pain2.wav";
 	self.noise3 = "";
 	self.view_ofs = ' 0 0 22';
-	self.dest2_z = 0;
+	self.cam_z = 0;
 
 	setsize (self, '-16 -16 -14',  ' 16 16 32');
 	self.health = self.health * MGREMLIN_HEALMOD / self.health_modifier;

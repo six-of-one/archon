@@ -1623,10 +1623,16 @@ void() q3_pwr_touch =
 		e.netname = self.netname;
 		e.rune_flag = self.spawnflags; // & RUNE_MASK_ALL; // NOTE: not really needed as long as bit for inv item is set right
 		e.think = rune_1_expire;
+		e.aflag = 0;
+		if (self.group) // give a 3 sec warning
+		{
+			e.aflag = 3;
+			e.group = self.group;
+		}
 		if (self.dmgtime)
-			e.nextthink = time + self.dmgtime;
+			e.nextthink = time + self.dmgtime - e.aflag;
 		else
-		e.nextthink = time + POW_TIME;
+		e.nextthink = time + POW_TIME - e.aflag;
 		e.owner = other;
 		e.noise4 = self.noise4;
 	}
@@ -1652,6 +1658,7 @@ void() item_regen =
 	self.volume = Q3_MAX_HEAL; // max add
 //	item_sigil();
 	self.netname = "Regeneration";
+	self.group = "Pain is returning to your life\n";
 
 	self.touch = q3_pwr_touch;
 	self.dmgtime = Q3_POWER_TIME;
@@ -1683,6 +1690,7 @@ void() item_invis =
 	}
 
 	self.netname = "Invisibility";
+	self.group = "Invisibility power is fading\n";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVISIBILITY;
@@ -1713,6 +1721,7 @@ void() q3_item_enviro =
 	}
 
 	self.netname = "Battle Suit";
+	self.group = "Battle suit is about to shut down\n";
 
 	self.touch = x_pwr_touch;
 	self.items = IT_SUIT;
@@ -1723,7 +1732,6 @@ void() q3_item_enviro =
 	self.noise = "q3_snd/airout.wav"; // CHK: this doesnt make sense
 	self.noise3 = "q3_snd/airout.wav";
 	self.noise4 = "q3_snd/poweruprespawn.wav";
-//	self.message = "Battle Suit expiring\n"; //"Environmental protection expiring\n";
 	self.frame = q3_env_fsk;
 	self.skin = q3_env_fsk;
 	self.alpha = 0.9;
@@ -1748,6 +1756,7 @@ void() item_haste =
 	self.duration = 0;
 //	item_sigil();
 	self.netname = "Haste";
+	self.group = "Speedster powers deactivate\n";
 
 	self.touch = q3_pwr_touch;
 	self.dmgtime = Q3_POWER_TIME;
@@ -1777,6 +1786,7 @@ void() item_flight =
 
 	item_spikes();
 	self.netname = "Flight";
+	self.group = "\bSecure for landing!\n";
 
 	self.touch = q3_pwr_touch;
 	self.spawnflags = RUNE_FLG_FLY;

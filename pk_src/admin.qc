@@ -1036,6 +1036,8 @@ void() Admin_allmonsters =
 	mn = 1;
 	bprint("All monsters bit set: ");
 	bit_print(MONSTER_MASK, MONSTER_MASK);
+	bprint(" f: ");
+	bprint(ftos(MONSTER_MASK));
 	bprint("\n\nlist of all monsters:\n");
 	f = 1;
 	while (f < MONSTER_MASK)
@@ -1064,6 +1066,8 @@ void() Admin_monsterbits =
 		mn = 1;
 		bprint("Map monsters bit set: ");
 		bit_print(MONSTER_MASK, M_MONSTER);
+		bprint(" f: ");
+		bprint(ftos(M_MONSTER));
 		bprint("\n\nlist appearing in DM:\n");
 		f = 1;
 		while (f < MONSTER_MASK)
@@ -1082,6 +1086,8 @@ void() Admin_monsterbits =
 		mn = 1;
 		bprint("Respawn monsters bit set: ");
 		bit_print(MONSTER_MASK, S_MONSTER);
+		bprint(" f: ");
+		bprint(ftos(S_MONSTER));
 		bprint("\n\nlist that respawn:\n");
 		f = 1;
 		while (f < MONSTER_MASK)
@@ -1099,6 +1105,8 @@ void() Admin_monsterbits =
 		mn = 1;
 		bprint("Random monsters bit set: ");
 		bit_print(MONSTER_MASK, C_MONSTER);
+		bprint(" f: ");
+		bprint(ftos(C_MONSTER));
 		bprint("\n\nlist appearing in DM:\n");
 		f = 1;
 		while (f < MONSTER_MASK)
@@ -1112,6 +1120,8 @@ void() Admin_monsterbits =
 	bprint("\b--------------------------------\n");
 	bprint("Control bits set: ");
 	bit_print(MONSTER_MASK, pk_monster_set);
+	bprint(" f: ");
+	bprint(ftos(pk_monster_set));
 	bprint("\n\nlist contol set:\n");
 	f = 1;
 	while (f < MONSTER_MASK)

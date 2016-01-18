@@ -132,6 +132,7 @@ void() player_anode_attack1 = [ $attack1, player_anode_attack2 ]
 {
 //	sound (self, CHAN_VOICE, "anode/attack.wav", 1, ATTN_NORM);
 
+	if (rune_haste(0.25))
 	self.attack_finished=time+0.5;
 	self.lefty = self.impulse; // have to save so we see it later
 
@@ -226,6 +227,7 @@ void() player_anode_attack =
 	 {
 		if (self.weapon == SEL_SHAL_LTN)
 		{
+			if (rune_haste(0.3))
 			self.attack_finished = time + 0.6;
 			player_anode_lightning1(); // lightning
 		}

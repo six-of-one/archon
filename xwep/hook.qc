@@ -348,7 +348,7 @@ void () MaintainLinks =
 		// get info about chain
 
 	// Rob; put 8 units back for appearances in cam view
-	if ( (self.dest2_x & CHSCAM_ON) )
+	if ( (self.cam_x & CHSCAM_ON) )
 	{
 		makevectors( self.owner.v_angle );
 		chainvec = (((self.owner.origin + '0 0 16') - v_forward * 8) - p_self_origin);

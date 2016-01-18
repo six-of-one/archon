@@ -78,9 +78,22 @@ $frame deathe8 deathe9
 
 $frame dthrow1 dthrow2 dthrow3 dthrow4 dthrow5
 
+// ab - axe base -  needed axe frames
+// gb - gun base - needed range frames
+// amx - loop end axe frames
+// gmx - loop end gun frames
 
 void(float ab, float gb, float amx, float gmx) wk_frames =
 {
+	if (self.morphy == IMP_MGREMLIN)
+	{
+		if (self.map == "spawn")
+		{
+			gremlin_spawning();
+			return;
+		}
+	}
+
 	if (self.eweapon && FL_MELEE(self.eweapon, 0, 0)) //self.weapon, self.pk_currentitem )) // note: must be q2 gren hack - this ignores any weapon select a xwep has and relies on flag
 	{
 		if (self.walkframe >= amx)
@@ -88,7 +101,7 @@ void(float ab, float gb, float amx, float gmx) wk_frames =
 		self.frame = ab + self.walkframe;
 	}
 	else
-	if (self.weapon == IT_AXE && FL_MELEE(self.eweapon, self.weapon, self.pk_currentitem ))
+	if ((self.weapon == IT_AXE && FL_MELEE(self.eweapon, self.weapon, self.pk_currentitem )) || ((self.weapon & self.builtin) && (self.pk_currentitem == PK_IT_AXE) )) // NOTE: so far only the gremlin should get here its builtin and not a pki
 	{
 		if (self.walkframe >= amx)
 			self.walkframe = 0;
@@ -100,6 +113,7 @@ void(float ab, float gb, float amx, float gmx) wk_frames =
 			self.walkframe = 0;
 		self.frame = gb + self.walkframe;
 	}
+	self.walkframe = self.walkframe + 1;
 	
 };
 
@@ -107,6 +121,9 @@ void(float ab, float gb, float amx, float gmx) wk_frames =
 
 void() pk_stand_frames =
 {
+	if (intermission_running) // Cataboligne - 9.30.3 no effects during intermix - note: referes to morph idle sounds. etc
+		return;
+
 	if (self._stand != SUB_Null) { self._stand(); return; } // NOTE: gremlin stuff we need to check back on
 
 	wk_frames($axstnd1, $stand1, 12, 5);
@@ -132,14 +149,10 @@ void() pk_stand_frames =
 
 void() pk_run_frames =
 {
-	if (self._run != SUB_Null && !intermission_running) // Cataboligne - 9.30.3 no effects during intermix
-	{
-		self._run();
+	if (intermission_running) // Cataboligne - 9.30.3 no effects during intermix - note: referes to morph walk sounds. etc
 		return;
-	}
 
-	wk_frames($axrun1, $rockrun1, 6, 6);
-// haste run faster
+// haste run faster - moved up here for morphs
 	if (self.rune_flag & RUNE_FLG_HS)
 	{
 		local float f;
@@ -147,7 +160,27 @@ void() pk_run_frames =
 		if (vlen(self.velocity) < f)
 		if (self.button1)
 			self.velocity = self.velocity * (f / vlen(self.velocity));
+
+
+if (vlen(self.velocity) > cvar("sv_maxspeed") + 2)
+//if (time & 3 == 0)
+{
+bprint("haste speed: ");
+bprint(ftos(vlen(self.velocity)));
+bprint("\n");
+}
+
+
 	}
+
+	if (self._run != SUB_Null)
+	{
+		self._run();
+		return;
+	}
+
+	wk_frames($axrun1, $rockrun1, 6, 6);
+
 	return;
 
 /*

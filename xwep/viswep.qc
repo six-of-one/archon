@@ -179,6 +179,43 @@ entity(entity e) vw_chain =
 	return (c);
 };
 
+// fn(viswep_ofs) - set viswep offsets for some morphs - gremlin repos deal
+// e - viswep entity
+// l - load entity
+// flg - op condition
+/*
+float SET_ARMED =		1; // ready weps
+float SET_STORED =		2; // stored weps
+*/
+vector(entity e, entity l /*, float flg */) viswep_ofs =
+{
+	local vector v;
+
+	v = ' 0 0 0';
+
+	if (l.morphy == IMP_MGREMLIN)
+		{
+/*
+		if (flg == SET_ARMED)
+			{
+			v = ' 0 0 0';
+			}
+		else
+			{ */
+		if (FL_MELEE(e, e.weapon, e.pk_currentitem))
+			v = ' 6 -4 4';
+		else
+			{
+			if (e.weapon == IT_ROCKET_LAUNCHER) // NOTE: not a total assumpt here - all weps need verified for this now TDO:
+				v = ' 5.4 0 4';  // IDEA - per frame adjustment for bite attack?
+			else
+				v = ' 5.4 0 0';
+			}
+//			}
+		}
+	return(v);
+}
+
 // fn([pk]vload) - load up vwepent for an ent
 
 float(float bt, string md) wepbit_mcode;
@@ -203,6 +240,8 @@ entity(entity e, float fl) vload =
 	tr.vwepent.owner = e;
 	tr.vwepent.classname = "viswep";
 	setsize (tr.vwepent, v0, v0);
+	tr.vwepent.finaldest = viswep_ofs(tr.vwepent, e); // gremlin adjust init
+//	tr.vwepent.touch = touch_theft; // sticky little gremlin claws abound // TDO:
 
 	tr.vwepent.weapon = fl;
 	tr.vwepent.pk_currentitem = 0;
@@ -231,6 +270,14 @@ entity(entity e, float fl) vload =
 	setmodel(tr.vwepent, md);
 
 	if (fl > 0) tr.vwepent.mcode = wepbit_mcode(fl, "Q");
+
+
+
+bprint("viswep loaded: ");
+bprint(md);
+bprint("\n");
+
+
 
 /*  you'd think that because this is engine driver it would be smooth as glass - tried it on a -listen server - major fail
 	if (DARKPLACES) // TEST: - trying movement deal - movetype 12
@@ -324,6 +371,7 @@ void(entity e, float pkbt) vwep_firecary =
 
 	pkbits = mk_pkbits(e);
 
+	if (!self.mask_x & CB_GREMLIN)
 	if (!self.mask_x & CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
 
 	if (pkbits & pkbt) return; // e' still got one
@@ -387,6 +435,7 @@ void(entity e, float cd) viswep_ld =
 		return;
 	}
 
+	if (!self.mask_x & CB_GREMLIN)
 	if (!self.mask_x & CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
 	
 // have items & check for inventory
@@ -473,6 +522,7 @@ void(entity e, float cd) viswep_ld =
 	while ( f & qweps && f < 8388609 ) // NOTE: this will not load an axe
 	{
 		if ((e.items & f) && !(bts & f))
+		if (!(f & e.builtin )) // dont load builtin
 			vload(e, f);
 		f = f * 2;
 	}
@@ -481,6 +531,7 @@ void(entity e, float cd) viswep_ld =
 	while ( f & pkweps && f < 8388609 )
 	{
 		if ((pkbits & f) && !(pkts & f))
+		if (!(f == PK_IT_AXE && (e.builtin & IT_AXE)  )) // dont load axe for builtin wep 1
 			pkvload(e, f);
 		f = f * 2;
 	}
@@ -632,8 +683,8 @@ void() viswep_post =
 	while (vhead) // IDEA: do this in engine & test above for chaos = CHAOS_ENGINE
 	{
 		qld = grap_frame_adjust = gremlin_frame_adjust = vadd = 0;
-//		vofs = vhead.finaldest_x * normalize(vang) + vhead.finaldest_y * normalize(v_right);
-	//	vofs_z = vhead.finaldest_z;
+		vofs = vhead.finaldest_x * normalize(vang) + vhead.finaldest_y * normalize(v_right); // NOTE: for gremlin - stored only, cleared for unholstered wep
+		vofs_z = vhead.finaldest_z;
 		vwc = TRUE; // viswep control -  == VW for holstered weps
 		vmdl = vhead.mdl; // for return from invisible
 		drw = FALSE; // weapon is drawn
@@ -691,6 +742,7 @@ void() viswep_post =
 		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
 		else if (vhead.vv_draw != (void()) 0) // new vw paradigm - code set models
 		{
+			if (0) // for now TDO: fix rotate issues
 			if (DARKPLACES) // TEST: - trying movement deal
 			if (!vhead.tag_entity)
 			{
@@ -698,7 +750,7 @@ void() viswep_post =
 				setattachment(vhead, vhead.owner, "");
 			}
 
-			if (vhead.model == "" || (vhead.oldorigin + vofs) != vhead.owner.origin || vhead.mangle != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
+			if (vhead.model == "" || (((vhead.oldorigin + vofs) != vhead.owner.origin || vhead.mangle != vhead.owner.angles) && (!vhead.tag_entity) ) || vhead.weaponframe != vhead.owner.frame) // update track
 			{
 				if (vhead.model == "") setmodel(vhead, vmdl);
 
@@ -717,6 +769,7 @@ void() viswep_post =
 					else vhead.exteriormodeltoclient = world;
 
 
+					if (drw) vofs = v0;
 					local vector v1, v2, v3, v4;
 
 					v1 = vhead.owner.angles;
@@ -731,13 +784,13 @@ void() viswep_post =
 
 					if (vhead.tag_entity)
 					{
-						vhead.origin = v2 + v3 + v4; // relative origin
+						vhead.origin = v2 + v3 + v4 + vofs; // relative origin
 						vhead.angles = vv_a_000;
 //						vhead.origin = vhead.origin - vhead.owner.origin; // relative origin
 //						vhead.angles = vhead.angles - vhead.owner.angles;
 //						if (vv_x_000_x) vhead.v_angle_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
 //						if (vv_x_000_z) vhead.v_angle_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
-						if (cvar("saved1") == -888888)
+						if (cvar("saved1") == -888888) // TEST: seems better without this pitch adjust
 						{
 							if (vv_x_000_x) vhead.angles_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
 							if (vv_x_000_z) vhead.angles_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
@@ -745,7 +798,7 @@ void() viswep_post =
 					}
 					else
 					{
-						setorigin(vhead, vhead.owner.origin  + v2 + v3 + v4); // ... sync visible weapon model
+						setorigin(vhead, vhead.owner.origin  + v2 + v3 + v4 + vofs); // ... sync visible weapon model
 						vhead.angles = vhead.owner.angles + vv_a_000;
 						if (vv_x_000_x) vhead.angles_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
 						if (vv_x_000_z) vhead.angles_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
@@ -765,14 +818,14 @@ void() viswep_post =
 				vhead.origin = vhead.angles = v0;
 				setattachment(vhead, vhead.owner, "");
 			}
-			if (vhead.model == "" || (vhead.origin + vofs) != vhead.owner.origin || vhead.angles != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
+			if (vhead.model == "" || ((vhead.origin + vofs) != vhead.owner.origin || (vhead.angles != vhead.owner.angles) && (!vhead.tag_entity) ) || vhead.weaponframe != vhead.owner.frame) // update track
 			{
 				if (vhead.model == "") setmodel(vhead, vmdl);
 				vhead.weaponframe = vhead.owner.frame; // track player frame, vw .frame may not match
 
 				vframe = vhead.owner.frame;
-																			// adjust for gremlin flying frames & carried gun, pretty hackish isnt it?
-	//			if (vhead.owner.model == "progs/gremlin-fly.mdl" && vhead.owner._stand == gremlin_hover && vhead.owner.frame >= grem_fly_frame) gremlin_frame_adjust = grem_fly_frame;
+																			// adjust for gremlin flying frames & carried gun
+				if (vhead.owner.model == "progs/gremlin-fly.mdl" && vhead.owner._stand == gremlin_hover && vhead.owner.frame >= grem_fly_frame) gremlin_frame_adjust = grem_fly_frame;
 		
 				if( ! (vhead.owner.cam_x & CHSCAM_ON) ) vhead.exteriormodeltoclient = vhead.owner; // darkplaces - works for dp!
 				else vhead.exteriormodeltoclient = world;
@@ -793,27 +846,35 @@ void() viswep_post =
 				if (qld)
 					{
 																			// grap hook out - adjust run / stand frameset - this also syncs first rope seg out of gun with end of gun vw location
-					if (vhead.mdl == "progs/vw_harp.mdl" && vhead.owner.grap_cornerchainNext != world && (vhead.owner.frame - gremlin_frame_adjust)< 11) // $pain1
-					{
-						grap_frame_adjust = VW_HARP_FRADJ;
-						local entity e;
-						e = vhead.owner.grap_cornerchainNext.enemy; // harpoon itself -> last rope seg
-						if (e)
+						if (vhead.mdl == "progs/vw_harp.mdl" && vhead.owner.grap_cornerchainNext != world && (vhead.owner.frame - gremlin_frame_adjust)< 11) // $pain1
 						{
-							v3 = grap_vw_adj(vhead.owner) + vhead.owner.origin; // point of rope start - end of harp gun
-							v1 = normalize(e.origin - v3); // dir to move rope piece
-							setorigin(e, v3 + (v1 * ROPE_FWD));
+							grap_frame_adjust = VW_HARP_FRADJ;
+							local entity e;
+							e = vhead.owner.grap_cornerchainNext.enemy; // harpoon itself -> last rope seg
+							if (e)
+							{
+								v3 = grap_vw_adj(vhead.owner) + vhead.owner.origin; // point of rope start - end of harp gun
+								v1 = normalize(e.origin - v3); // dir to move rope piece
+								setorigin(e, v3 + (v1 * ROPE_FWD));
+							}
 						}
-					}
-					vofs = ' 0 0 0';
-					if (vhead.owner.viswframe > -1) vframe = vhead.owner.viswframe;
-					if (FL_MELEE(vhead, vhead.weapon, vhead.pk_currentitem)) {
-						if ( (vhead.owner.frame - gremlin_frame_adjust) >= melee_frames) vadd = viswaddf - melee_frames;
-						} else if (FL_RANGE(vhead, vhead.weapon, vhead.pk_currentitem) || (vhead.mdl == VW_DEFGUN)) {
-						if ( (vhead.owner.frame - gremlin_frame_adjust) < range_frames) vadd = viswaddf;
-					 }
+						vofs = v0; // none if held
+						if (vhead.owner.viswframe > -1) vframe = vhead.owner.viswframe;
+						if (FL_MELEE(vhead, vhead.weapon, vhead.pk_currentitem))
+						{
+							if ( (vhead.owner.frame - gremlin_frame_adjust) >= melee_frames) vadd = viswaddf - melee_frames;
+						}
+						else if (FL_RANGE(vhead, vhead.weapon, vhead.pk_currentitem) || (vhead.mdl == VW_DEFGUN))
+						{
+							if ( (vhead.owner.frame - gremlin_frame_adjust) < range_frames) vadd = viswaddf;
+						}
 
 					} // IDEA: viswframe weps on gremlins back for special frames
+
+
+
+
+
 				vhead.frame = vframe + vadd - gremlin_frame_adjust - grap_frame_adjust;
 				if (!vhead.tag_entity)
 				{

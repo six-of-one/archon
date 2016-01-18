@@ -236,16 +236,31 @@ void () rune_1_expire =
 {
 	if (self.owner.rune_flag & self.rune_flag)
 	{
+		if (self.group)
+		{
+			sprint (self.owner, self.group);
+			self.group = "";
+			if (self.aflag > 0)
+			{
+				self.aflag = 0;
+				self.nextthink = time + self.aflag;
+				return;
+			}
+		}
+
 		if (self.rune_flag & RUNE_FLG_FLY)	
 			self.owner.movetype = MOVETYPE_WALK;
 		self.owner.rune_flag = self.owner.rune_flag - (self.owner.rune_flag & self.rune_flag);
 		if (self.owner.target2 == "progs/q3_art.mdl") self.owner.target2 = "";
-		sprint(self.owner, "The power of the ");
-		sprint(self.owner, self.netname);
-		if (self.noise4 == "q3_snd/poweruprespawn.wav")
-			sprint(self.owner, " has expired.\n");
-		else
-		sprint(self.owner, " rune has expired.\n");
+		else // for now not printing final message on q3 arts - q1 arts dont final message
+		{
+			sprint(self.owner, "The power of the ");
+			sprint(self.owner, self.netname);
+			if (self.noise4 == "q3_snd/poweruprespawn.wav")
+				sprint(self.owner, " has expired.\n");
+			else
+			sprint(self.owner, " rune has expired.\n");
+		}
 	}
 	remove(self);
 };

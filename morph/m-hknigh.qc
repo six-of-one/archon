@@ -252,6 +252,7 @@ void() player_hknight_magicb13 = [ $magicb13, player_stand1 ] { };
 
 void() player_hknight_attack = 
 {
+	if (rune_haste(0.5))
 	self.attack_finished=time+1; // (eh, or so)
 	if(self.weapon == IT_AXE) {
 		// A sword attack

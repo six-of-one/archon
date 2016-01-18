@@ -1,4 +1,4 @@
-/*
+                                               /*
 		+---------------------------------------+
 		|  sphere of annihilation               | SEC-HEAD
 		+---------------------------------------+
@@ -70,6 +70,7 @@ void() sphere_gravity_pulse20 = [ $grvbomb16, sphere_gravity_pulse1 ]
 void() sphere_become_gravbomb =
 {
 	sphere_a = world;
+	self.owner = world; // kill owner now
 	if (self.count)
 		self.attack_finished = self.count;
 	else
@@ -295,14 +296,13 @@ void(entity g) set_annihilate =
 {
 	local float t;
 
-	if (g.classname == "gravity") // whoopsie
+	if (g.classname == "gravity") // whoopsie - note: maybe this should be even more violent, wacking items & such
 	{
 		t = g.attack_finished - time; // time left on grav well
 		if (t < 0) t = 2 + random() * 4;
 		remove(g);
 		sphere_a.think = sphere_become_gravbomb; // self might not be sphere
 		sphere_a.count = time + (t * 48) + random() * 100;
-		sphere_a = world; // free now
 		bprint("\nSome idiots just put a sphere of annihilation and a gravity well together!\nSmooth move on making a \bReality Bomb\b genius!\n");
 		return;
 	}

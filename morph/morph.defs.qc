@@ -114,6 +114,7 @@ void(float r1, string sn, float lts ) morph_sound;
 float(entity targ, float sdot, vector vang, vector vorg) infront;
 float(entity ck, float hl) morph_heal;
 void(string ws, float rtime ) morph_walksound;
+float(entity o) morph_chasecam_fpv;
 
 void(float dx) morph_CycleWeaponCommand;
 
@@ -143,10 +144,8 @@ void(float dx) morph_CycleWeaponCommand;
 
 // impulses
 
-float IMP_MFLY						= 70; // switch flight mode / ground mode
-float IMP_MFIREL					= 71; // fire melee attack
-float IMP_MFIREM					= 72; // fire range attack
-float IMP_MSIGHT					= 74; // shout out
+float IMP_MFLY						= 15; // switch flight mode / ground mode
+float IMP_MSIGHT					= 14; // shout out
 
 // morph bit flags
 
@@ -288,12 +287,17 @@ string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n"
 
 float ST_CLAW						= 1;
 float ST_BITE						= 2;
-float GREM_AASPAWN = FALSE; // if true always allow monster gremlin to spawn in water
+float GREM_AASPAWN				= FALSE; // if true always allow monster gremlin to spawn in water
 float GREM_MAX;                                 // = 64; // arbitrary - need per level cnt by mapname, moved to code
 float GREM_FLY_MAXWEP			= 3; // cant fly with more than 3 weps - dont really want flyers heavily armed IDEA - use .mass
 float FL_STEAL						= 524288; // flag for player stealing things
 
 void(float st) W_FireClawBite;
+void() gremlin_spawning;
+void() gremlin_hover;
+void() gremlin_takeoff;
+float grem_fly_frame; // for proper viswep position while in flight
+void(float cn) gremlin_spawn;
 
 // lava
 

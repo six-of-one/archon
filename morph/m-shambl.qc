@@ -153,6 +153,7 @@ void() player_CastLightning =
 
 void() player_shambler_magic1     =[      $magic1,       player_shambler_magic2    ] {
 	sound (self, CHAN_WEAPON, "shambler/sattck1.wav", 1, ATTN_NORM);
+	if (rune_haste(0.55))
 	self.attack_finished=time+1.1;
 };
 void() player_shambler_magic2     =[      $magic2,       player_shambler_magic3    ] {};
@@ -235,12 +236,15 @@ void() player_shambler_attack =
 {
 	if(self.weapon == IT_AXE) {
 		if(random()>0.9) {
+			if (rune_haste(0.55))
 			self.attack_finished = time + 1.1;
 			player_shambler_smash1();
 		} else if(random()>0.5) {
+			if (rune_haste(0.4))
 			self.attack_finished = time + 0.8;
 			player_shambler_swingl1();
 		} else {
+			if (rune_haste(0.4))
 			self.attack_finished = time + 0.8;
 			player_shambler_swingr1();
 		}
@@ -314,7 +318,7 @@ void(float silent) player_shambler_become = {
 //	else
 //		setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
 	self.view_ofs = '0 0 54'; // raised by 22
-	self.dest2_z = 0.34;
+	self.cam_z = 0.34;
 	self.health = self.health * MSHAMBLR_HEALMOD / self.health_modifier;
 	self.health_modifier = MSHAMBLR_HEALMOD;
 	makevectors(self.v_angle);
