@@ -37,6 +37,8 @@ void() weapon_bfg =
 		self.classname = "q3_weapon_bfg";
 		q3_weapon_bfg();
 	}
+
+	self.archon = ARCHON_WEP_EXT + 0.3;
 }
 
 void() weapon_railgun =
@@ -51,6 +53,8 @@ void() weapon_railgun =
 		self.classname = "q3_weapon_railgun";
 		q3_weapon_railgun(); 
 	}
+
+	self.archon = ARCHON_WEP_EXT + 0.3;
 };
 
 void() weapon_lightning =
@@ -64,6 +68,8 @@ void() weapon_lightning =
 	}
 
 	q100_weapon_lightning(); 
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 void () weapon_rocketlauncher =
@@ -82,6 +88,8 @@ void () weapon_rocketlauncher =
 	}
 
 	q100_weapon_rocketlauncher();
+
+	self.archon = ARCHON_WEP;
 };
 
 void () weapon_grenadelauncher =
@@ -100,6 +108,8 @@ void () weapon_grenadelauncher =
 	}
 
 	q100_weapon_grenadelauncher();
+
+	self.archon = ARCHON_WEP;
 };
 
 void() weapon_machinegun =
@@ -114,6 +124,8 @@ void() weapon_machinegun =
 		self.classname = "q3_weapon_machinegun";
 		q3_weapon_machinegun();
 	}
+
+	self.archon = ARCHON_WEP;
 }
 
 void () weapon_supershotgun =
@@ -126,6 +138,8 @@ void () weapon_supershotgun =
 	}
 
 	q100_weapon_supershotgun();
+
+	self.archon = ARCHON_WEP;
 };
 
 // NOTE: hl support requires mod here
@@ -146,6 +160,8 @@ void () weapon_shotgun =
 	}
 
 	q100_weapon_shotgun();
+
+	self.archon = ARCHON_WEP;
 };
 
 /// ambiguous ammos
@@ -162,6 +178,8 @@ void() ammo_slugs =
 		self.classname = "q3_ammo_slugs";
 		q3_ammo_slugs();
 	}
+
+	self.archon = ARCHON_AMMO_EXP;
 };
 
 void() spawnfunc_ammo_cells =
@@ -176,6 +194,8 @@ void() spawnfunc_ammo_cells =
 		self.classname = "q3_ammo_cells";
 		q3_ammo_cells();
 	}
+
+	self.archon = ARCHON_AMMO;
 };
 
 void() spawnfunc_ammo_rockets =
@@ -190,6 +210,8 @@ void() spawnfunc_ammo_rockets =
 		self.classname = "q3_ammo_rockets";
 		q3_ammo_rockets();
 	}
+
+	self.archon = ARCHON_AMMO_EXP;
 };
 
 void() ammo_grenades =
@@ -204,7 +226,9 @@ void() ammo_grenades =
 		self.classname = "q3_ammo_grenades";
 		q3_ammo_grenades();
 	}
-}
+
+	self.archon = ARCHON_AMMO_EXP;
+};
 
 void() ammo_bullets =
 {
@@ -218,6 +242,8 @@ void() ammo_bullets =
 		self.classname = "q3_ammo_bullets";
 		q3_ammo_bullets();
 	}
+
+	self.archon = ARCHON_AMMO;
 };
 
 void() spawnfunc_ammo_shells =
@@ -232,6 +258,8 @@ void() spawnfunc_ammo_shells =
 		self.classname = "q3_ammo_shells";
 		q3_ammo_shells();
 	}
+
+	self.archon = ARCHON_AMMO;
 };
 
 /// ambiguous armor
@@ -248,6 +276,8 @@ void () item_armor_combat =
 		self.classname = "q3_item_armor_combat";
 		q3_item_armor_combat(); 
 	}
+
+	self.archon = ARCHON_ITEM;
 };
 
 
@@ -263,6 +293,8 @@ void () item_armor_body =
 		self.classname = "q3_item_armor_body";
 		q3_item_armor_body(); 
 	}
+
+	self.archon = ARCHON_ITEM;
 };
 
 
@@ -278,6 +310,8 @@ void () item_armor_shard =
 		self.classname = "q3_item_armor_shard";
 		q3_item_armor_shard(); 
 	}
+
+	self.archon = ARCHON_ITEM - 0.03;
 };
 
 /// ambiguous health
@@ -308,6 +342,8 @@ void () item_health =
 
 	}
 	self.mask_x = MORPH_ALL; // everyone can get health
+
+	self.archon = ARCHON_ITEM;
 };
 
 void () item_health_small =
@@ -323,6 +359,8 @@ void () item_health_small =
 		self.classname = "q3_item_health_small";
 	}
 	self.mask_x = MORPH_ALL; // everyone can get health
+
+	self.archon = ARCHON_ITEM;
 };
 
 void () item_health_large =
@@ -338,6 +376,8 @@ void () item_health_large =
 		self.classname = "q3_item_health_large";
 	}
 	self.mask_x = MORPH_ALL; // everyone can get health
+
+	self.archon = ARCHON_ITEM;
 };
 
 void () item_health_mega =
@@ -353,6 +393,8 @@ void () item_health_mega =
 		self.classname = "q3_item_health_mega";
 	}
 	self.mask_x = MORPH_ALL; // everyone can get health
+
+	self.archon = ARCHON_ART;
 };
 
 /// ambiguous artifacts
@@ -371,6 +413,8 @@ void () item_quad =
 		q3_item_quad(); 
 	}
 	self.mask_x = MORPH_ALL; // everyone can get health
+
+	self.archon = ARCHON_ART + 0.1;
 };
 
 void () item_enviro =
@@ -386,6 +430,8 @@ void () item_enviro =
 		q3_item_enviro(); 
 	}
 	self.mask_x = MORPH_ALL; // everyone can get health
+
+	self.archon = ARCHON_ART;
 };
 
 /// ambiguous map features

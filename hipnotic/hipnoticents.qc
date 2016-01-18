@@ -235,6 +235,8 @@ void() weapon_mjolnir =
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 void() weapon_laser_gun =
@@ -272,6 +274,8 @@ void() weapon_laser_gun =
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 
@@ -309,6 +313,8 @@ void() weapon_proximity_gun =
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 /*
@@ -360,6 +366,8 @@ void() item_hornofconjuring =
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get arts
+
+	self.archon = ARCHON_ART;
 };
 
 
@@ -429,6 +437,8 @@ void() item_artifact_empathy_shields =
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get arts
+
+	self.archon = ARCHON_ART + 0.1;
 };
 
 /*QUAKED item_artifact_wetsuit (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -454,6 +464,8 @@ void() item_artifact_wetsuit =
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get arts
+
+	self.archon = ARCHON_ART;
 };
 
 /*

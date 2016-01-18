@@ -1369,6 +1369,16 @@ void() pk_srvcmd_set =
 	m_score_rel1 = (serverflags & FL_SCORE1);
 	m_score_rel2 = (serverflags & FL_SCORE2);
 
+	ARCHON_FRAG = 1; // pts per frag
+	ARCHON_ITEM = 0.05; // points per std item
+	ARCHON_ART = 0.3; // points per artifact
+	ARCHON_AMMO = 0.05; // points per std ammo
+	ARCHON_AMMO_EXP = 0.07; // points per explosive ammo
+	ARCHON_WEP = 0.1; // points per gen weapon
+	ARCHON_WEP_EXT = 0.2; // points per advanced weapon
+	ARCHON_MONSTER = 100;
+	ARCHON_POINT = 1;
+
 // pk control
 	PK_100 = FALSE; // if true run 100% true to pk v1.11 - i n theory, dev purposes only
 	PK_100_OBJERR = FALSE;

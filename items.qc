@@ -376,6 +376,8 @@ void () item_armor1 =
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_HKNIGHT;
 	self.volume = 100;
+
+	self.archon = ARCHON_ITEM;
 };
 
 /*QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -391,6 +393,8 @@ void () item_armor2 =
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_HKNIGHT;
 	self.volume = 150;
+
+	self.archon = ARCHON_ITEM;
 };
 
 /*QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -406,6 +410,8 @@ void () item_armorInv =
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_HKNIGHT;
 	self.volume = 200;
+
+	self.archon = ARCHON_ITEM + 0.1;
 };
 
 /*
@@ -622,6 +628,8 @@ void () q100_weapon_supershotgun =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 /*QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -638,6 +646,8 @@ void () weapon_nailgun =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN+ CB_GREMLIN + CB_OGRE;
+
+	self.archon = ARCHON_WEP;
 };
 
 /*QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -654,6 +664,8 @@ void () weapon_supernailgun =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN+ CB_GREMLIN + CB_OGRE;
+
+	self.archon = ARCHON_WEP + 0.05;
 };
 
 /*QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -670,6 +682,8 @@ void () q100_weapon_grenadelauncher =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 /*QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -686,6 +700,8 @@ void () q100_weapon_rocketlauncher =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 
@@ -703,6 +719,8 @@ void () q100_weapon_lightning =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 
@@ -830,6 +848,8 @@ void () item_shells =
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
+
+	self.archon = ARCHON_AMMO;
 };
 
 /*QUAKED item_spikes (0 .5 .8) (0 0 0) (32 32 32) big
@@ -857,6 +877,8 @@ void () item_spikes =
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_OGRE;
+
+	self.archon = ARCHON_AMMO;
 };
 
 /*QUAKED item_rockets (0 .5 .8) (0 0 0) (32 32 32) big
@@ -884,6 +906,8 @@ void () item_rockets =
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
+
+	self.archon = ARCHON_AMMO_EXP;
 };
 
 
@@ -912,6 +936,8 @@ void () item_cells =
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
+
+	self.archon = ARCHON_AMMO;
 };
 
 
@@ -966,6 +992,8 @@ void () item_weapon =
 		self.mask_x = CB_HUMAN + CB_GREMLIN + CB_OGRE;
 	}
 
+	self.archon = ARCHON_AMMO;
+
 	if (self.spawnflags & WEAPON_ROCKET)
 	{
 		if (self.spawnflags & WEAPON_BIG)
@@ -982,6 +1010,8 @@ void () item_weapon =
 		}
 		self.weapon = 3;
 		self.netname = "rockets";
+
+		self.archon = ARCHON_AMMO_EXP;
 	}
 
 	setsize (self, '0 0 0', '32 32 56');
@@ -1083,6 +1113,9 @@ void () item_key1 =
 	self.items = IT_KEY1;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can get keys
+
+	self.archon = ARCHON_ITEM;
+
 	StartItem ();
 };
 
@@ -1122,6 +1155,9 @@ void () item_key2 =
 	self.items = IT_KEY2;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can get keys
+
+	self.archon = ARCHON_ITEM + 0.5;
+
 	StartItem ();
 };
 
@@ -1295,6 +1331,9 @@ void () item_artifact_invulnerability =
 	self.items = IT_INVULNERABILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can get arts
+
+	self.archon = ARCHON_ART + 0.3;
+
 	StartItem ();
 };
 
@@ -1314,6 +1353,9 @@ void () item_artifact_envirosuit =
 	self.items = IT_SUIT;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
+
+	self.archon = ARCHON_ART;
+
 	StartItem ();
 };
 
@@ -1335,6 +1377,9 @@ void () item_artifact_invisibility =
 	self.items = IT_INVISIBILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can get arts
+
+	self.archon = ARCHON_ART;
+
 	StartItem ();
 };
 
@@ -1356,6 +1401,9 @@ void () item_artifact_super_damage =
 	self.items = IT_QUAD;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can get arts
+
+	self.archon = ARCHON_ART + 0.2;
+
 	StartItem ();
 };
 

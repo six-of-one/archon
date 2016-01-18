@@ -835,6 +835,13 @@ void() inventory =
 			sprint(self, "night vision goggles\n");
 		}
 		if (self.rune_flag & RUNE_MASK_ALL) sprint(self, "-\nRunes of power\n");
+
+		if (self.archon)
+		{
+			sprint(self, "-\n\bArchon power\b: ");
+			sprint(self, ftos(self.archon));
+			sprint(self, "\n");
+		}
 	}
 
 	am_type = 0;

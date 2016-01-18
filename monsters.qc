@@ -128,6 +128,9 @@ void() walkmonster_start =
 	total_monsters = total_monsters + 1;
 	if (!Q_100) AddToSplashBig(self); // *pk - Make this entity splash
 	if (self.class_select == "") self.class_select = "class_monster"; // Cataboligne - let mod know this is a monster
+
+	self.archon = self.health / ARCHON_MONSTER;
+	if (self.archon <= 0) self.archon = 1;
 };
 
 
@@ -183,6 +186,9 @@ void() flymonster_start =
 	total_monsters = total_monsters + 1;
 	if (!Q_100) AddToSplashBig(self); // *pk - Make this entity splash
 	if (self.class_select == "") self.class_select = "class_monster";
+
+	self.archon = self.health / (ARCHON_MONSTER - 20);
+	if (self.archon <= 0) self.archon = 1.2;
 };
 
 
@@ -236,6 +242,9 @@ void() swimmonster_start =
 	self.think = swimmonster_start_go;
 	total_monsters = total_monsters + 1;
 	if (self.class_select == "") self.class_select = "class_monster";
+
+	self.archon = self.health / ARCHON_MONSTER;
+	if (self.archon <= 0) self.archon = 1;
 };
 
 

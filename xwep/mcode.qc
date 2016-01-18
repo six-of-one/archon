@@ -1878,6 +1878,8 @@ void () weapon_axe =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN;
+
+	self.archon = ARCHON_WEP * 2;
 };
 
 /*QUAKED weapon_shotgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -1907,6 +1909,8 @@ void () q100_weapon_shotgun =
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF;
+
+	self.archon = ARCHON_WEP;
 };
 
 /*QUAKED weapon_hook (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -1967,6 +1971,7 @@ void () weapon_hook =
 
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 
+	self.archon = ARCHON_WEP;
 };
 
 // cubes - open 'er up and see what it is

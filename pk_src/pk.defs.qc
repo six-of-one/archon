@@ -1,10 +1,17 @@
-// constants
+// **************************************
+// server constants section
+
+// **************************************
 
 // base values
 vector v0						= ' 0 0 0'; // zero vector | dimension
 float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 
+// **************************************
 // engine section
+
+// **************************************
+
 float chaos;									// detect customized glquake engine - has cvars compiled
 float CHAOS_ENG				= 10100010110111; // chaos engine id
 float DARKPLACES;								// for detecting darkplaces
@@ -18,15 +25,43 @@ float XTR_SAVED1				= 1195724115; // saved1 test val
 float() SUB_False				= { return 0; }; // Return a false value
 float() SUB_True				= { return 1; }; // Return a true value
 
-// version strings
+// **************************************
+// server strings section
 
-string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.3\"\n";
-string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.3\"\n";
+// **************************************
+
+// version info - at 1.0.4 - KEEP up to date! - note: files = admin.cfg, archon.txt, readme.txt, alias_codes.txt, cvar.txt
+string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.4\"\n";
+string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.4\"\n";
+string vmotd					= "\\/ersion \b1\b.\b0\b.\b4a\b\n\n";
+string motd2					= "\n\n[\\/\b1\b.\b0\b.\b4a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
+string infobver				= "infobar 30 \"you are playing: Archon 1.0.4 alpha\"\n";
+
+// web sites
 string vweb						= "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n";
 string vdev						= "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n";
 string vqcs						= "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n";
 string sites					= "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n";
-string vmotd					= "\\/ersion \b1\b.\b0\b.\b3a\b\n\n";
+
+
+// **************************************
+// Developer section
+
+// **************************************
+
+// next 3 modes are really only for programming and development - *** SHOULD NOT EVER BE RUN ON A LIVE SERVER *** - mostly because they are untested and likely have severe flaws
+// just to say it twicet - *** THESE ARE NOT PLAY TESTED ***
+float Q_100;								// quake 1 compatability mode - if true run 100% true to quake 1, why? original purpose - facitiltate merge with other mods becuase vanilla quake code would remain unchanged
+float Q_99;									// quake 1 99% compatability mode - if true pk stuff is removed, but admin, item enhancements & env remain - provide an "enhanced" q1 SP experience - may not work well in use
+float PK_100;								// painkeep compatability mode - if true run 100% true to pk v1.11, no extras (has menus) - 
+//
+												// many object errors are tweaked to simply remove the offending component - if these 2 vars are set true, an objerror will be generated
+float PK_100_OBJERR;						// if true objerr that would have exited game (and have since been fixed) will cause an objerr
+float Q_100_OBJERR;						// if true objerr that would have exited game (and have since been fixed) will cause an objerr
+
+// q100 stuff
+void() q100_PlayerPreThink;
+void() q100_PlayerPostThink;
 
 
 // **************************************
@@ -35,6 +70,17 @@ string vmotd					= "\\/ersion \b1\b.\b0\b.\b3a\b\n\n";
 // **************************************
 
 .float archon; // accumulates power
+
+float ARCHON_FRAG;				 		// points per frag
+float ARCHON_ITEM; 						// points per std item
+float ARCHON_ART; 						// points per artifact
+float ARCHON_AMMO; 						// points per std ammo
+float ARCHON_AMMO_EXP; 					// points per explosive ammo
+float ARCHON_WEP;							// points per gen weapon
+float ARCHON_WEP_EXT;					// points per advanced weapon
+float ARCHON_MONSTER;					// points per monster = health / {}
+float ARCHON_POINT;						// points added per touch on power point if power_act does not spec it on map
+
 
 // **************************************
 // ADMIN section
@@ -53,14 +99,8 @@ float PK_DYNAMIC				= 8192;	// bit *	= TRUE --- when always in painkeep mode & n
 float PK_SPIKER				= 16384;	// bit *	= FALSE -- allow spike traps, set to true for original pk treatment of spike shooters - they are removed
 float PK_XSOUND				= 32768;	// bit * = TRUE --- use extra pk sound set
 // compatability modes for the purists out there
-float PK_100;								// painkeep compatability mode - if true run 100% true to pk v1.11, no extras (has menus)
-float XENV;									// 99% compatability mode - if true (main mod) works but extra env effects are disabled
-float Q_100;								// quake 1 compatability mode - if true run 100% true to quake 1, why? just for kicks...
-float Q_99;									// quake 1 99% compatability mode - if true pk stuff is removed, but admin, item enhancements & env remain
+float XENV;									// 99% compatability mode - if true (main mod) works but extra env & visual effects are disabled
 
-												// many object errors are tweaked to simply remove the offending component - if these 2 vars are set true, and objerror will be generated
-float PK_100_OBJERR;						// if true objerr that would have exited game (and have since been fixed) will cause an objerr
-float Q_100_OBJERR;						// if true objerr that would have exited game (and have since been fixed) will cause an objerr
 float MAP_OBSTR;							// object errors -> warnings that remove map items should set this. so map repair (tbd) can init an emergency exit
 float MAP_REPAIR;							// if true map repairs will execute
 void() q_startmap;						// fix start map issue for q single player
@@ -79,9 +119,6 @@ float NOEXIT_SAVETIME;					// save any timelimit if set
 float NOEXIT_SAVEFRAG;					// save any fraglimit if set
 float NOEXIT_CHECK;						// 1 if checked, -1 if timeout was set and needs cleared
 
-// q100 stuff
-void() q100_PlayerPreThink;
-void() q100_PlayerPostThink;
 float intermission_running;
 
 float PK_HUB2					= 131072; // bit if TRUE, using custom hub - only used for level transtion from hub vote
@@ -244,16 +281,13 @@ void() rune_precache;
 float RUNE_PULL; // if true tells print code rune is being pulled and not to print drop messages
 void(entity e, float pr) rune_pull;
 
-/*
-float HARP_PULL				= 0.15; // % chance harpoon poink gets a rune from a player - IDEA: seperate chance to drop a rune whilst being pulled ?
+float HARP_PULL				= 0.33;	// % chance harpoon poink gets a rune from a player - IDEA: seperate chance to drop a rune whilst being pulled ?
+float HORN_PULL				= 0.25;	// % chance air horn will blow a rune off a player
+float FALL_PULL				= 0.2;	// % chance a damaging fall will pull a rune loose
+float DBL_PULL					= 1;		// set to 2 or more to increase chances of above pulls
 
-TEST:
-*/
-float HARP_PULL				= 1; // % chance harpoon poink gets a rune from a player - IDEA: seperate chance to drop a rune whilst being pulled ?
-float HORN_PULL				= 0.08; // % chance air horn will blow a rune off a player
-float FALL_PULL				= 0.1;  // % chance a damaging fall will pull a rune loose
-float GRAV_PULL				= 0.5;  // % chance a gravity well will pull a rune loose - mostly depends on player being caught on something and in range of pull
-float SGRAV_PULL				= 0.8;  // % chance a super gravity well / reality bomb will pull a rune loose
+float GRAV_PULL				= 0.5;	// % chance a gravity well will pull a rune loose - mostly depends on player being caught on something and in range of pull
+float SGRAV_PULL				= 0.8;	// % chance a super gravity well / reality bomb will pull a rune loose
 
 
 string rune_resist_sound;

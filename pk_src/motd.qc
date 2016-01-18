@@ -12,7 +12,6 @@ void() connectmessage =
 	local string Line3,Line5,Line7;
 
 // web site promo & id
-// = http://www.moddb.com/downloads/generations-w-d-q-v10-alpha
 // = http://www.moddb.com/mods/chaos-archon/
 	
 	Line3 = vmotd;
@@ -156,7 +155,7 @@ void() updateStatusDisplay =
 	if (self.hubstartupmessage > time)
 	{
 // web site promo
-		Line3 = "\n\n[\\/\b1\b.\b0a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
+		Line3 = motd2;
 // heh heh - scroll wheel of pain!
 		if ((time & 3) == 0) Line5 = "|";
 		else if ((time & 3) == 1) Line5 = "\\";

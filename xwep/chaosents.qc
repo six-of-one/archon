@@ -149,6 +149,8 @@ void() c_weapon_reggun =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 string(entity targ, entity attacker) csh_killmsg =
@@ -200,6 +202,8 @@ void() c_weapon_shovel =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 string(entity targ, entity attacker) cds_killmsg =
@@ -251,6 +255,8 @@ void () c_weapon_deepsleep =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
+
+	self.archon = ARCHON_WEP_EXT;
 };
 
 

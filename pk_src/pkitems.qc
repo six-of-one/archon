@@ -313,7 +313,7 @@ void () weapon_airfist =
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 
-	self.archon = 0.1; // 10 pts
+	self.archon = ARCHON_WEP; // 10 pts
 };
 
 /*QUAKED weapon_rmine (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -349,7 +349,7 @@ void () weapon_chainlg =
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 
-	self.archon = 0.35; // 35 pts
+	self.archon = ARCHON_WEP + 0.25; // 35 pts
 };
 
 
@@ -374,7 +374,7 @@ void () weapon_grapgun =
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
 
-	self.archon = 0.25;
+	self.archon = ARCHON_WEP + 0.15;
 };
 
 // dynamic items go away when touched
@@ -905,7 +905,7 @@ void () item_painkeep_gwell =
 	self.mask_x = MORPH_ALL; // everyone can have pk specials
 	StartItem ();
 
-	self.archon = 0.40;
+	self.archon = ARCHON_WEP + 0.30;
 };
 
 /*QUAKED item_painkeep_turret (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -929,7 +929,7 @@ void () item_painkeep_turret =
 	self.mask_x = MORPH_ALL;
 	StartItem ();
 
-	self.archon = 0.15;
+	self.archon = ARCHON_WEP + 0.05;
 };
 
 /*QUAKED item_painkeep_lantern (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -960,7 +960,7 @@ void () item_painkeep_can =
 	self.mask_x = MORPH_ALL;
 	StartItem ();
 
-	self.archon = 0.1;
+	self.archon = ARCHON_WEP;
 };
 
 /*QUAKED item_painkeep_beartrap(0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -983,7 +983,7 @@ void () item_painkeep_beartrap =
 	self.mask_x = MORPH_ALL;
 	StartItem ();
 
-	self.archon = 0.15;
+	self.archon = ARCHON_WEP + 0.05;
 };
 
 
@@ -1029,7 +1029,7 @@ void () item_painkeep_expshells =
 	StartItem ();
 	self.mask_x = MORPH_ALL;
 
-	self.archon = 0.2;
+	self.archon = ARCHON_AMMO_EXP + 0.15;
 };
 
 // called from bound_ammo - bounds for pk ammo

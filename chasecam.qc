@@ -327,7 +327,7 @@ void () cam_deathmove =
 		else
 		stuffcmd(self.owner, " :observer (");
 		stuffcmd(self.owner, ftos(rint(time - self.ltime)));
-		stuffcmd(self.owner, " rels) Archon 1a - high score: ");
+		stuffcmd(self.owner, " rels) Archon - high score: ");
 		stuffcmd(self.owner, ftos(high_score));
 		stuffcmd(self.owner, " - map: ");
 //		if (world.message != "")

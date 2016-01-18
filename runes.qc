@@ -363,7 +363,7 @@ void(entity e, float pr) rune_pull =
 	if (!e.rune_flag & RUNE_MASK_ALL) return;
 
 // not in the cards
-	if (random() > pr) return;
+	if (random() > (pr * DBL_PULL)) return;
 
 // pull a rune - this tests rune rule set value (no drop for rules 1)
 	RUNE_PULL = TRUE;

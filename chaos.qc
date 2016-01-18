@@ -1248,7 +1248,7 @@ void(entity e) archon_point_heal =
 
 // IMP: other effects - proof against magic spell attack too - this touch will have to be detected live
 
-// when touch fired by trigger - heal ent that touched
+// when touch fired by trigger - heal ent that touched, add points
 // trigger timing controls freq. of touch
 
 void() archon_power_touch =
@@ -1260,6 +1260,11 @@ void() archon_power_touch =
 		if (activator.health < (activator.max_health * activator.health_modifier * other.health_modifier)) // health < points mod
 			T_Heal(activator,other.healtype + rint(0.33 + random()), 0);
 	}
+
+	if (self.archon)
+		activator.archon = activator.archon + self.archon;
+	else
+		activator.archon = activator.archon + ARCHON_POINT;
 };
 
 // power point activator - must be targeted by multi trigger

@@ -498,7 +498,7 @@ void() pk_plcfg =
 		stuffcmd(self, vqcs);
 		stuffcmd(self, sites);
 
-		stuffcmd(self, "infobar 30 \"you are playing: Archon 1.0.2 alpha\"\n");
+		stuffcmd(self, infobver);
 
 		stuffcmd(self, "alias score \"echo score: ");
 		stuffcmd(self, ftos(score_rel1 + 1));
@@ -1905,6 +1905,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			bprint ("\n");
 
 			attacker.owner.frags = attacker.owner.frags + frag_plus(attacker.owner);
+			attacker.owner.archon = attacker.owner.archon + ARCHON_FRAG;
 			return;
 		}
 
@@ -1939,6 +1940,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				return;
 			}
 			attacker.frags = (attacker.frags + frag_plus(attacker));
+			attacker.archon = (attacker.archon + ARCHON_FRAG);
 			if (rnum < 0.250)
 				bprint (" was impressed by the power of ");
 			else if (rnum < 0.5)
@@ -1971,6 +1973,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				return;
 			}
 			attacker.frags = (attacker.frags + frag_plus(attacker));
+			attacker.archon = (attacker.archon + ARCHON_FRAG);
 			if (rnum < 0.250)
 				bprint (" was dragged down by an old friend in ");
 			else if (rnum < 0.5)
@@ -2012,7 +2015,8 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			bprint (sa);
 			bprint(" sphere of annihilation\n");
 			attacker.frags = (attacker.frags + frag_plus(attacker)); // add it up
-			return;
+			attacker.archon = (attacker.archon + ARCHON_FRAG);
+		return;
 		}
 
 // NOTE: non score list bot
@@ -2188,6 +2192,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			else
 			{
 				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below - this includes monsters! 
+				attacker.archon = (attacker.archon + ARCHON_FRAG);
 
 				if (attacker.frags > high_score)
 				{
@@ -2776,6 +2781,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 
 		// increase frags & print message.
 			attacker.owner.frags = attacker.owner.frags + frag_plus(attacker.owner);
+			attacker.owner.archon = attacker.owner.archon + ARCHON_FRAG;
 
 			bprint(" was ventilated by ");
 			bprint(attacker.owner.netname);
@@ -2830,6 +2836,9 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				if (attacker.classname == "monster_shambler")
 					bprint (" was smashed by a Shambler\n");
 				else
+				if (attacker.classname == "monster_lavabomb")
+					bprint (" was melted by a Bomb\n");
+				else
 				if (attacker.classname == "monster_tarbaby")
 					bprint (" was slimed by a Spawn\n");
 				else
@@ -2849,6 +2858,9 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				else
             if (attacker.classname == "monster_scourge")
                bprint (" was stung by a Centroid\n");
+				else
+            if (attacker.classname == "trap_spike_mine")
+               bprint (" was blasted by a spike mine\n");
 				else // now have generic
 				{
 					deathstring = "";

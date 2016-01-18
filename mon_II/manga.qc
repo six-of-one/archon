@@ -349,7 +349,8 @@ string(entity targ, entity attacker) manga_killmsg =
 		return " got kicked out by ";
 	else
 	{
-		return(" examined Manga's boots in detail, you perv.\n");
+		bprint(" examined Manga's boots up close, you perv.\n");
+		return("return");
 	}
 };
 
