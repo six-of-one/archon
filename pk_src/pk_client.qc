@@ -465,6 +465,7 @@ void() pk_plcfg =
 	stuffcmd(self, "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
 	stuffcmd(self, "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
 
+	stuffcmd(self, "infobar 30 \"you are playing: Archon 3.1 alpha\"\n");
 };
 
 // called from PutClientInServer
@@ -720,6 +721,13 @@ void () CheckPowerups =
 		return;
 	}
 
+	if (time & 15 == 12)
+	{
+		stuffcmd(self, "con_notify 4\n");
+		stuffcmd(self, "con_notifytime 3\n");
+		stuffcmd(self, "con_notify_alias\n"); // for notify default
+	}
+
 	if (self.classname == OBSERVER) // Cataboligne 8.9.9 purify - chase cam (dead) & observer - clear all effects
 	{
 		morph_clearparms(self, TRUE);
@@ -755,6 +763,7 @@ void () CheckPowerups =
 		}
 
 
+		if (self.invisible_finished > 0) // drop item
 		if (self.invisible_finished < time + 3)
 		{
 			if (self.invisible_time == 1)
@@ -793,13 +802,15 @@ void () CheckPowerups =
 		else
 			self.modelindex = 0;
 	}
-	else
+// else // so tossing the ring can clear this
+	if (!self.invisible_finished)
 		self.modelindex = self.modelindex_morph;	// don't use eyes
 
 	// invincibility
 	if (self.invincible_finished)
 	{
 // sound and screen flash when items starts to run out
+		if (self.invincible_finished > 0) // drop item
 		if (self.invincible_finished < time + 3)
 		{
 			if (self.invincible_time == 1)
@@ -848,6 +859,7 @@ void () CheckPowerups =
 	{
 // sound and screen flash when items starts to run out
 
+		if (self.super_damage_finished > 0) // drop item
 		if (self.super_damage_finished < time + 3)
 		{
 			if (self.super_time == 1)
@@ -895,6 +907,7 @@ void () CheckPowerups =
 		self.air_finished = time + 12;		// don't drown
 
 // sound and screen flash when items starts to run out
+		if (self.radsuit_finished > 0) // drop item
 		if (self.radsuit_finished < time + 3)
 		{
 			if (self.rad_time == 1)
@@ -940,6 +953,7 @@ void () CheckPowerups =
 	{
 		self.air_finished = time + 12;		// don't drown
 
+		if (self.wetsuit_finished > 0) // drop item
 		if (self.wetsuit_finished < time + 3)
 		{
 			if (self.rad_time == 1)
@@ -999,6 +1013,7 @@ void () CheckPowerups =
 	if (self.empathy_finished)
 	{
 // sound and screen flash when items starts to run out
+		if (self.empathy_finished > 0) // drop item
 		if (self.empathy_finished < time + 3)
 		{
 			if (self.empathy_time == 1)
@@ -1464,10 +1479,14 @@ void () PlayerPostThink =
 
 	viswep_post(); // Cataboligne - 9.26.9 - viswep code link - always have to run this for 1 player + pk*bots deal
 
-	if ((PK_ADMIN && !ADMINLOCK) || (self.admin == USER_MENU && self.view_ofs != '0 0 0')) // *pk - run admin for both modes - any deactivation will 0 this || make sure user menu always works
+	if (self.admin == USER_MENU && self.view_ofs != '0 0 0') // user menu does not allow skip postthink codes
+		admin_postthink();
+	else
+	if (PK_ADMIN && !ADMINLOCK) // *pk - run admin for both modes - any deactivation will 0 this || make sure user menu always works
 	if (self.admin || (self.impulse == pk_adminimp))
 	if (pk_adminframe != framecount)
 	if (admin_postthink()) return;
+
 
 	if (chaos)
 		if (!(self.cam_x & CHSCAM_ON))  // Cataboligne - 5.14.10 - cam purify - custom engine dont display vw_ for 1pv

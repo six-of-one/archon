@@ -168,6 +168,41 @@ void() PK_init =
 		localcmd("unalias blvl bmap\n"); // unalias - not needed
 	}
 
+// drop inventory allows serverflags runes to be thrown out - must follow players to new levels if they were collected
+
+	if (!RUNES)
+	{
+		local float f, k, a;
+		local vector v;
+		SVRF = SVR1 + SVR2 + SVR4 + SVR8;
+	
+		f = 1;
+		k = SVR1;
+		if (serverflags & SVRF)
+		while (k < SVRF)
+		{
+			if ((k & serverflags) && !(f & serverflags))
+			{
+				e = find_tdest(FL_RSALL, "");
+				v = e.origin;
+				
+				e = spawn();
+				e.spawnflags = f;
+				item_call_save(e, "item_sigil");
+				e.classname = "item_sigil";
+				setorigin(e, v);
+				item_eject(e, ' 340 340 300');
+				a = 1;
+			}
+			else
+				serverflags = serverflags - (serverflags & k);
+
+			f = f * 2;
+			k = k * 2;
+		}
+		if (a) tbprint("\n***   \bRunes\b of power are following and have spawned on the map\n\n");
+	}
+
 // extra sounds by...are apparently not supplied, except gib_?.wav
 
 	pk_xsound = (pk_flags & PK_XSOUND);
@@ -643,6 +678,9 @@ void() pk_liveupd =
 		master_item_control_loop("doom_item", f);
 		master_item_control_loop("q2_item", f);
 		master_item_control_loop("q3_item", f);
+		master_item_control_loop("pkplus_item", f);
+		master_item_control_loop("hip_item", f);
+		master_item_control_loop("x_item", f);
 	}
 	
 	if (Q_100)
@@ -830,6 +868,11 @@ void() pk_liveupd =
 	PKPLUS_PHONEAMMO_MAX	= cvar("pk_max_phoneammo");
 
 	SV_AMMO_MAX = cvar("sv_c_ammo_max");
+
+	if (cvar("sv_c_drop"))
+		IMP_DROPI = IMP_DROPI_ACT; // drop inv control
+	else
+		IMP_DROPI =  0;
 
 // x ammos
 	PK_BULLETAMMO_MAX				= cvar("pk_bulletammo_max");
@@ -1129,6 +1172,7 @@ void() pk_srvcmd_set =
 // painkeep item ids that are ammo count stored
 	PKID = PKPLUS_IT_EGO + PKPLUS_IT_TOMB + PKPLUS_IT_ACTOR + PKPLUS_IT_PHONE + PK_IT_GRAVITYWELL + PK_IT_TURRET + PK_IT_CANPAB + PK_IT_BEARTRAP;
 
+
 /// this section assigns vars to default values - they will rule any engine not dp registercvar able or not customized as the glquake build we release
 //				- it would be trivial to take the custom cvar section from the glquake build and add to _any_ engine...
 
@@ -1331,6 +1375,11 @@ void() pk_srvcmd_set =
 	PKPLUS_ACTORAMMO_MAX	= 1;
 	PKPLUS_PHONEAMMO_MAX	= 1;
 
+// armor bits
+	IT_ARMOR_BITS = IT_ARMOR1 + IT_ARMOR2 + IT_ARMOR3;
+
+	IMP_DROPI = IMP_DROPI_ACT; // allow inv drop by default
+
 	SV_AMMO_MAX = FALSE;
 
 	PK_MAX_LIVENT = 256; // guessed - need research into where slowdown starts
@@ -1451,6 +1500,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_c_noexit_fraglimit", "50"); // a default fraglimit for any level that doesnt have a trigger_changelevel
 		registercvar("sv_c_fallen", "1"); // take action if player falls out of level 0 = none, 1 = return via phone type teleport, 2 = kill (no cide)
 		registercvar("sv_c_holding", "1"); // 0 - no hold, 1 - allow players to pick up moveable stuff (items harp, aircannon or grav well can move, or temp decor)
+		registercvar("sv_c_drop", "1"); // 0 - no drop, 1 - allow players to drop inventory - does not apply to rune rules 1
 
 // pk*bot server control - spawns bots on level changes
 		registercvar("sv_bot_pk", "0"); // bot count . skills non team - replaces parm12

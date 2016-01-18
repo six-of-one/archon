@@ -128,9 +128,10 @@ float(entity ck, float cl) morph_classpr =
 
 void(entity p1) morph_print =
 {
-if (!p1.state)
+stuffcmd(p1,"scr_centertime 240\n");
+stuffcmd(self, "\ncon_notify 4\n"); // for this output
+if (p1.cnt < 0)
 	{
-	stuffcmd(p1,"scr_centertime 240\n");
 	//						 1234567890123456789012345678901234567890
 	centerprint(p1, "\b           Welcome to Archon.           \n"
 						 "\b----------------------------------------\n"
@@ -180,11 +181,14 @@ else if (p1.state == IMP_MGREMLIN_F)
 						 "\bis low.  Good luck shorty. \n");
 	}
 else if (p1.state == IMP_MENF)
+	{
+	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, "\bAn elite former marine hard wired for  \n"
 						 "\bcombat.  Your laser rifle has a self   \n"
 						 "\bcharging battery, and you still know   \n"
 						 "\bhow to use human weapons and armor.    \n"
 						 "\bWreak havok, soldier.                  \n");
+	}
 else if (p1.state == IMP_MSCOURGE)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
@@ -201,26 +205,35 @@ else if (p1.state == IMP_MSCOURGE)
 						 "\byour health must be near max.           \n");
 	}
 else if (p1.state == IMP_MSHAMBLR)
+	{
+	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, "\bYou are the loved and feared shambler.  \n"
 						 "\bShoot lightning bolts and rip flesh like\n"
 						 "\bthere is no tommorow.  Smash every      \n"
 						 "\bliving thing you find...why?  You just  \n"
 						 "\bwant to hibernate and dream about giant \n"
 						 "\bhoney bee hives...                      \n");
+	}
 else if (p1.state == IMP_MHKNIGHT)
+	{
+	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, "\bBeing a former general among Shubs     \n"
 						 "\bminions has taught you some new tricks.\n"
 						 "\bYou know how to fire a concentrated    \n"
 						 "\bburst of magic spikes from your sword. \n"
 						 "\bAnd you can use armor.  Urrr, kill the \n"
 						 "\bhumans.                                \n");
+	}
 else if (p1.state == IMP_MSHALR)
+	{
+	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, "\bYou are an elite spell caster from      \n"
 						 "\banother dimension.  And you have no idea\n"
 						 "\bwhy they call you a \"Vore\".  You're     \n"
 						 "\bpissed about it too... Learn some spells\n"
 						 "\bquick as your main \"missle\" spell hurts \n"
 						 "\byou more at close range than they do.   \n");
+	}
 else if (p1.state == IMP_MDEMON)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
@@ -231,6 +244,8 @@ else if (p1.state == IMP_MDEMON)
 						 "\bgib you!                                \n");
 	}
 else if (p1.state == IMP_MOGRE)
+	{
+	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, "\bGrrr, get Grank and Grud.  All you know\n"
 						 "\bis chainsaws and grenades.  Can an ogre\n"
 						 "\blearn more?  And does he need to?      \n"
@@ -238,7 +253,10 @@ else if (p1.state == IMP_MOGRE)
 						 "\b \n"
 						 "\b \n"
 						 "\b \n");
+	}
 else if (p1.state == IMP_MZOMBIE)
+	{
+	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, "\bYou are dead.  And slow. And you stink!\n"
 						 "\bAs the living dead, however you do have\n"
 						 "\bone advantage: regeneration. Reanimated\n"
@@ -246,7 +264,10 @@ else if (p1.state == IMP_MZOMBIE)
 						 "\bblasted apart into stinking little     \n"
 						 "\bgibblets.  Go pelt all the living with \n"
 						 "\byour dead and diseased flesh.          \n");
+	}
 else if (p1.state == IMP_MWIZARD)
+	{
+	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, "\bYou fly and you stink.  And you have   \n"
 						 "\bspikes for arms.  Lets face it you dont\n"
 						 "\bhave many redeeming qualities even for \n"
@@ -255,7 +276,10 @@ else if (p1.state == IMP_MWIZARD)
 						 "\bwhen someone is \"Scragged\".  Find a way\n"
 						 "\bof improving your attack quickly, it is\n"
 						 "\bvery weak.                             \n");
+	}
 else if (p1.state == IMP_MCTHON)
+	{
+	if (morph_classpr(p1, SC_BEASTY)) return;
 	centerprint(p1, "\bYou are the sentient offspring\n"
 						 "\bof Cthon. You are very hot under the   \n"
 						 "\bcollar at your fathers betrayers. You  \n"
@@ -264,6 +288,7 @@ else if (p1.state == IMP_MCTHON)
 						 "\bcan grow into a small Cthon. Just dont \n"
 						 "\bleave the lava without returning to blob\n"
 						 "\bform.  You are a very hard kill as Cthon\n");
+	}
 else if (p1.state == IMP_MHUMAN) // basic grunt desc.
 	{
 	if (morph_classpr(p1, SC_MARINE)) return;
@@ -392,6 +417,7 @@ else if (p1.state == IMP_MSUPTANK)
 //						 "\n"
 //						 "\n");
 
-polymorph_id(p1,p1.state,"Your current selection = ");
+sprint(p1,"Your current selection = ");
+sprint(p1,polymorph_id(p1,p1.state,""));
 sprint(p1,".\n");
 };

@@ -1981,6 +1981,58 @@ void() w_heal_dogfood =
 	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
+void() w_heal_blood =
+{
+	q100_item_health();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = 4;
+		return;
+	}
+
+	setmodel(self, "progs/md2/blood.md2");
+	self.noise = "misc/null.wav";
+	self.noise4 = "misc/null.wav";
+	self.netname = "Bloody Pool";
+	self.healamount = 1;
+	self.healtype = HEAL_NORM;
+	self.volume = Q_NORM_MAX; // max add
+	self.wait = RSP_TIME;
+	self.aflag = NO_REMOVE_TCH;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = MORPH_ALL; // everyone can get healed
+};
+
+void() w_heal_bldbns =
+{
+	q100_item_health();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = 4;
+		return;
+	}
+
+	setmodel(self, "progs/md2/bigblood.md2");
+	self.noise = "misc/null.wav"; // idea: slurp noise ?
+	self.noise4 = "misc/null.wav";
+	self.netname = "Bloody Pool";
+	self.healamount = 1;
+	self.healtype = HEAL_NORM;
+	self.volume = Q_NORM_MAX; // max add
+	self.wait = RSP_TIME;
+	self.aflag = NO_REMOVE_TCH;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = MORPH_ALL; // everyone can get healed
+};
+
 void() w_key =
 {
 	if (self.spawnflags & 1)
@@ -3678,7 +3730,7 @@ void() wdecor_wellfull =
 
 /*
 		+---------------------------------------+
-		|  Aux code - Doom                     | SEC-HEAD
+		|  Aux code - Any                       | SEC-HEAD
 		+---------------------------------------+
 */
 
@@ -3688,7 +3740,6 @@ void() wdecor_wellfull =
 
 // self is door
 
-// TDO: q2 door sounds
 void() door_sounds_wd =
 {
 
@@ -3696,7 +3747,7 @@ void() door_sounds_wd =
 	if (self.noise1 == "" || self.noise1 == "misc/null.wav")
 	if (self.noise2 == "" || self.noise2 == "misc/null.wav")
 	{
-/*
+/*dr1_end
 		precache_sound ("doom/dsdorcls.wav");
 		precache_sound ("doom/dsdoropn.wav");
 		precache_sound ("doom/dsbdcls.wav");
@@ -3715,6 +3766,12 @@ void() door_sounds_wd =
 			self.sounds = DOOR_2S;
 			self.noise1 = "doom/dsdorcls.wav";
 			self.noise2 = "doom/dsdoropn.wav";
+		}
+		if (MAP_MODE == "Q2" || self.map == "Q2")
+		{
+			self.sounds = DOOR_2S;
+			self.noise1 = "q2_snd/dr1_end.wav";
+			self.noise2 = "q2_snd/dr1_strt.wav";
 		}
 	}
 

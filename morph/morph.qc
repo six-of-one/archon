@@ -154,50 +154,50 @@ float(float sel) cb_morph =
 // fn(polymorph_id) - tell player which morph state is selected
 // p1 - client entity
 // sel - valid class number
-// fp - print this leadin, followed by state description - leaves unterminated (no "\n")
-// exit - returns impulse to select this state
+
+// exit - returns descriptor of this state
 
 string(entity p1, float sel, string fp) polymorph_id =
 {
-	local string s1,s2;
+	local string s1;
 
-	if (sel == IMP_MCHAOS)				{s1 = "Chaos icarnate.";				s2 = STI_MCHAOS;}
-	if (sel == IMP_MORDER)				{s1 = "order icarnate.";				s2 = STI_MORDER;}
+	if (sel == IMP_MCHAOS)				s1 = "Chaos icarnate.";
+	if (sel == IMP_MORDER)				s1 = "order icarnate.";
 //Techs:
-//	else if (sel == IMP_MHUMAN)		{s1 = "a lowly Cook.";					s2 = STI_MHUMAN;}
-//	else if (sel == IMP_MDEMO)			{s1 = "a mad Bomber.";					s2 = STI_MDEMO;}
-//	else if (sel == IMP_MSPECIAL)		{s1 = "a trained Specialist.";		s2 = STI_MSPECIAL;}
-//	else if (sel == IMP_MTECH)			{s1 = "a crafty Technician.";			s2 = STI_MTECH;}
-//	else if (sel == IMP_MENG)			{s1 = "a brilliant Engineer.";		s2 = STI_MENG;}
+//	else if (sel == IMP_MHUMAN)		s1 = "a lowly Cook.";
+//	else if (sel == IMP_MDEMO)			s1 = "a mad Bomber.";
+//	else if (sel == IMP_MSPECIAL)		s1 = "a trained Specialist.";
+//	else if (sel == IMP_MTECH)			s1 = "a crafty Technician.";
+//	else if (sel == IMP_MENG)			s1 = "a brilliant Engineer.";
 //Medieval:
-//	else if (sel == IMP_MWRAITH)		{s1 = "a silent Wraith.";				s2 = STI_MWRAITH;}
-//	else if (sel == IMP_MTHAM)			{s1 = "a conjuring Thamaturge."; 	s2 = STI_MTHAM;}
-//	else if (sel == IMP_MDRAGON)		{s1 = "a savage Draconis.";			s2 = STI_MDRAGON;}
-//	else if (sel == IMP_MTHIEF)		{s1 = "a stealthy Thief.";				s2 = STI_MTHIEF;}
+//	else if (sel == IMP_MWRAITH)		s1 = "a silent Wraith.";
+//	else if (sel == IMP_MTHAM)			s1 = "a conjuring Thamaturge.";
+//	else if (sel == IMP_MDRAGON)		s1 = "a savage Draconis.";
+//	else if (sel == IMP_MTHIEF)		s1 = "a stealthy Thief.";
 //Beastie:
-	else if (sel == IMP_MZOMBIE)		{s1 = "a rotting zombie.";				s2 = STI_MZOMBIE;}
-	else if (sel == IMP_MSHALR)		{s1 = "a spellbinding Shalrath.";	s2 = STI_MSHALR;}
-	else if (sel == IMP_MWIZARD)		{s1 = "a stalking Scrag.";				s2 = STI_MSCRAG;}
-	else if (sel == IMP_MHKNIGHT)		{s1 = "a wicked Hell Knight.";		s2 = STI_MHKNIGHT;}
-	else if (sel == IMP_MSHAMBLR)		{s1 = "a massive Shambler.";			s2 = STI_MSHAMBLR;}
-	else if (sel == IMP_MDEMON)		{s1 = "a degenerate Fiend.";			s2 = STI_MDEMON;}
-	else if (sel == IMP_MOGRE)			{s1 = "a skulking Ogre.";				s2 = STI_MOGRE;}
-	else if (sel == IMP_MCTHON)		{s1 = "a Lava Bomb.";					s2 = STI_MCTHON;}
-	else if (sel == IMP_MSCOURGE)		{s1 = "a hissing Scourge.";			s2 = STI_MSCOURGE;}
-	else if (sel == IMP_MGREMLIN_F)	{s1 = "a nasty Gremlin.";				s2 = STI_MGREMLIN;}
-	else if (sel == IMP_MENF)			{s1 = "a chief Enforcer.";				s2 = STI_MENF;}
+	else if (sel == IMP_MZOMBIE)		s1 = "a rotting zombie.";
+	else if (sel == IMP_MSHALR)		s1 = "a spellbinding Shalrath.";
+	else if (sel == IMP_MWIZARD)		s1 = "a stalking Scrag.";
+	else if (sel == IMP_MHKNIGHT)		s1 = "a wicked Hell Knight.";
+	else if (sel == IMP_MSHAMBLR)		s1 = "a massive Shambler.";
+	else if (sel == IMP_MDEMON)		s1 = "a degenerate Fiend.";
+	else if (sel == IMP_MOGRE)			s1 = "a skulking Ogre.";
+	else if (sel == IMP_MCTHON)		s1 = "a Lava Bomb.";
+	else if (sel == IMP_MSCOURGE)		s1 = "a hissing Scourge.";
+	else if (sel == IMP_MGREMLIN_F)	s1 = "a nasty Gremlin.";
+	else if (sel == IMP_MENF)			s1 = "a chief Enforcer.";
 //Doomer
-	else if (sel == IMP_MIMP)			{s1 = "a Imp.";							s2 = STI_MIMP;}
-	else if (sel == IMP_MCYBER)		{s1 = "a Cyberdemon.";					s2 = STI_MCYBER;}
-	else if (sel == IMP_MARACHN)		{s1 = "a Arachnotron.";					s2 = STI_MARACHN;}
+	else if (sel == IMP_MIMP)			s1 = "a Imp.";
+	else if (sel == IMP_MCYBER)		s1 = "a Cyberdemon.";
+	else if (sel == IMP_MARACHN)		s1 = "a Arachnotron.";
 //Stroggos
-	else if (sel == IMP_MGUNNEY)		{s1 = "a Gunner.";						s2 = STI_MGUNNEY;}
-	else if (sel == IMP_MTANK)			{s1 = "a Tank.";							s2 = STI_MTANK;}
-	else if (sel == IMP_MSUPTANK)		{s1 = "a SUPER Tank.";					s2 = STI_MSUPTANK;}
+	else if (sel == IMP_MGUNNEY)		s1 = "a Gunner.";
+	else if (sel == IMP_MTANK)			s1 = "a Tank.";
+	else if (sel == IMP_MSUPTANK)		s1 = "a SUPER Tank.";
 
-	sprint(p1,fp);
-	sprint(p1,s1);
-	return s2;
+//	sprint(p1,fp);
+//	sprint(p1,s1);
+	return s1;
 };
 
 // id monsters from bit flag - for admin
@@ -742,6 +742,22 @@ void(entity e, float all) morph_clearparms =
 	e.weaponframe = 0;
 	e.weaponmodel = "";
 
+// just in case one is left hanging - IDEA: just call admin_clear from here
+	if (e.aiment)
+	{
+		if (e.aiment.classname == "dropinv")
+		{
+			stuffcmd(e, "con_notifytime "); // restore notify
+			stuffcmd(e, ftos(e.aiment.grap_state));
+			stuffcmd(e, "\ncon_notify ");
+			stuffcmd(e, ftos(e.aiment.grap_length));
+			stuffcmd(e, "\n");
+		}
+		remove(e.aiment);
+		e.aiment = world;
+	}
+	stuffcmd(e, "con_notify_alias\n"); // for some other default
+
 // Cataboligne - 9.15.11 - moved from chasecam
 	if (all) // morph change will retain these
 	{
@@ -1091,6 +1107,7 @@ void(float silent) player_human_become =
 	if (self.morphy == CHAR_W) setmodel(self, "progs/plyr_bw.mdl");
 	if (self.morphy == CHAR_D) setmodel(self, "progs/plyr_dm.mdl");
 	if (self.morphy == CHAR_Q) setmodel(self, "progs/player.mdl");
+	if (self.morphy == CHAR_Q3) setmodel(self, "progs/plyr_q3.mdl");
 	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
 };
 
@@ -1177,6 +1194,7 @@ void(float cmd, float pls) polymorph_check =
 		else player_human_become(pls);
 	*/
 		self.modelindex_morph = self.modelindex;
+		self.mdl = self.model;
 
 		self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent); // TDO: default could load eweap for morph - it needs consolted if morphs ever get ews
 	
@@ -1209,13 +1227,13 @@ string gibsz; // gib array of sizes for each gib frame
 // flg - flags 												 v- size weight
 float FL_INTORG				= 1;			// 1 - internal organ
 float FL_INTSLAB				= 2;			// 2 - slab of internal meat (orig)
-float FL_GIBCHUNK			= 4;			// 1 - chunk of gibblet
+float FL_GIBCHUNK				= 4;			// 1 - chunk of gibblet
 float FL_ARMLET				= 8;			// 2 - original amrlet gib
-float FL_TORSO				= 16;			// 3 - original torso gib
+float FL_TORSO					= 16;			// 3 - original torso gib
 float FL_ARMGIB				= 32;			// 4 - perquake arm gib
 float FL_LEGGIB				= 64;			// 4 - perquake leg gib
-float FL_HUMANGIB			= 127;		// use all (gib_m.mdl) gibs
-float FL_HUMANORG			= 26;			// original quake gibs (gib1 - gib3 mdl), size wt = 9
+float FL_HUMANGIB				= 127;		// use all (gib_m.mdl) gibs
+float FL_HUMANORG				= 26;			// original quake gibs (gib1 - gib3 mdl), size wt = 9
 float FL_ONLYHUMGIB			= 120;		// use only (human appearing) gibs
 float FL_NONHUMGIB			= 7;			// use no (human appearing) gibs
 float FL_CUSTOMGIB			= 128;		// 1 - use custom gib (string g1) mdl, frame gf
@@ -1223,11 +1241,11 @@ float FL_CUSTOMGIB2			= 256;		// 2 - use custom gib (string g1) mdl, frame gf+1
 float FL_CUSTOMGIB3			= 512;		// 3 - use custom gib (string g1) mdl, frame gf+2
 float FL_ALLCUST				= 896;		// all custom frames above
 float FL_ANYGIB				= 1023;		// need at least 1 gib flag to throw anything but a head
-float FL_HUMANSND			= 1024;		// use all human sounds
-float FL_NOHUMSND			= 2048;		// use only generic sounds
-float FL_NOSND				= 4096;		// no sounds
+float FL_HUMANSND				= 1024;		// use all human sounds
+float FL_NOHUMSND				= 2048;		// use only generic sounds
+float FL_NOSND					= 4096;		// no sounds
 float FL_HEADGIB				= 8192;		// 2 - head is set to orig. qc specific parms
-float FL_MORPHSND			= 16384;		// use a preset morph sound
+float FL_MORPHSND				= 16384;		// use a preset morph sound
 float FL_PLAGUE				= 32768;		// make a plague check for gib
 float GIB_TWITCH				= 0.5; 		// chance of throwing a gib that twitches
 
@@ -1472,15 +1490,18 @@ bprint("\n");
 	}
 };
 
-// TDO: upgrades
+// IDEA: upgrades
 
 // do the respawn
 void() monster_respawn_fire =
 {
+	local float t;
+	t = total_monsters; // preserve count - not adding a monster here
 	setorigin(self, self. origin + ' 0 0 8');
 	item_call(self.classname); // back to life
 	spawn_tfog (self.origin);
 	spawn_tdeath(self.origin, self);
+	total_monsters = t;
 };
 
 void() monster_respawn =
@@ -1536,7 +1557,7 @@ void() monster_respawn =
 
 };
 
-
+// returns true if lava enabled morph
 
 float(entity e) IS_LAVA =
 {

@@ -147,6 +147,19 @@ vector(entity e, float s, vector p) getsurfaceclippedpoint;
 
 
 // runes
+
+// for serverflags drop
+void(string g) tbprint; // just for this
+
+float SVR1						= 131072;
+float SVR2						= 262144;
+float SVR4						= 524288;
+float SVR8						= 1048576;
+float SVRF;
+
+float IMP_RUNEID				= 51;
+float IMP_RUNEDROP			= 52;
+
 .float rune_flag;
 float RUNE_3_ACM; // amount to accumulate under rule 3
 .float rune_3_dmg; // rule 3 - these are cumulative effects
@@ -156,6 +169,7 @@ float RUNE_3_ACM; // amount to accumulate under rule 3
 float rune_set;
 void() run_runes;
 void(entity e, entity p) rune_id;
+void(entity e) rune_drop;
 void() rune_regen;
 float(float atf) rune_haste;
 void () rune_touch;
@@ -243,6 +257,10 @@ float RSP_TIME; // respawn time
 float POW_TIME; // power time
 float CFM_TIME					= 60; // check for move time out
 float PIC_TO					= 5; // place_item_control time out
+
+float NO_REMOVE_NORET		= -665; // when set as aflag - dont remove, leave untouchable
+float NO_REMOVE_TCH			= -664; // when set as aflag - dont remove, touchable again on respawn
+
 float pic_tsk;
 void() place_item_control_loop;
 
@@ -301,11 +319,17 @@ float CON_CHAOS				= 2490368; // item chaos it all 3 control bits set
 float CON_RUN					= 3014656; //4063232; // any control bit CON_* entries above - used by autorun
 float CYC_TIME					= 60; // TEST: - 240; // seconds for cycle base - 4 mins +|- 2 mins
 
+float IT_ARMOR_BITS;
+
 void() item_loop;
 void() item_control_menu;
 float ammo_frame;
 float(float cn, entity e, string op) ammo_con;
 void () PlaceItem;
+void(entity de, entity ve) dropinview;
+void(float pg) drop_setup;
+void(float im) drop_inventory;
+
 // end item overrides
 
 
@@ -758,6 +782,7 @@ float SND_OVER					= 66602; // play eweapon sound over after fire call
 
 entity telesnd; // teleport sound effect (dest) global - so holdable can change sound played (hackish way to do things)
 
+float IMP_PARM					= 55;
 float(entity e, entity f, float dm) power_armor;
 void() power_armor_impulse;
 .float armorsave; // save armor value for power armor flipping value
@@ -1265,6 +1290,8 @@ void(entity client, string s, string s1, string s2) centerprint3 = #73;	// sprin
 void(entity client, string s, string s1, string s2, string s3, string s4) centerprint5 = #73;	// sprint, but in middle
 //void(entity client, string s, string s1, string s2, string s3, string s4, string s5) centerprint6 = #73;	// sprint, but in middle
 void(entity client, string s, string s1, string s2, string s3, string s4, string s5, string s6) centerprint7 = #73;	// sprint, but in middle
+void(entity client, string s, string s1, string s2, string s3, string s4, string s5, string s6, string s8) centerprint8 = #73;	// sprint, but in middle
+//void(entity client, string s, string s1, string s2, string s2b ,string s3, string s3b, string s4, string s4b, string s5, string s5b, string s6, string s7) centerprint8 = #73;	// sprint, but in middle
 
 // 2d trains
 

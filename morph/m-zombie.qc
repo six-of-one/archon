@@ -867,7 +867,8 @@ void(float silent) player_zombie_become =
 
 	setmodel(self,"progs/zombie.mdl");
 
-	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
+	self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
+	self.builtin = self.items & WEP_MASK;
 	self.weapon = IT_SHOTGUN;
 
 

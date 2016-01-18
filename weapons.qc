@@ -1451,11 +1451,22 @@ ImpulseCommands
 */
 void () ImpulseCommands =
 {
-	if (self.impulse == 51)
+// runes
+	if (self.impulse == IMP_RUNEID)
 		rune_id(self, self);
-	if (self.impulse == 52 || self.impulse == 53)
+	if (self.impulse == IMP_RUNEDROP)
+		rune_drop(self);
+
+// inventory
+	if (self.impulse == IMP_INV)
 		inventory();
-	if (self.impulse == 54)
+	if (self.impulse == IMP_DROPI) // CHECK: *_100
+	{
+		if (!self.admin)
+			self.admin = USER_MENU;
+		self.aflag = self.impulse;
+	}
+	if (self.impulse == IMP_PARM)
 		power_armor_impulse();
 	if (self.impulse > 98) botImpulseCommand (); // *bot
 // Cataboligne 9.11.3 purify - chase cam

@@ -142,17 +142,92 @@ void() mk_rune_set =
 	}
 };
 
-// print rune info on impulse from e to p
+// drop a single rune - in bit order 1 - 2 - 4 - 8
+
+void(entity e) rune_drop =
+{
+	local float f, k;
+
+	if (RUNES < 2) return;
+
+	if (!self.rune_flag) return;
+
+	f = 1;
+	while (f < RUNE_MASK_ALL)
+	{
+		if (f & self.rune_flag)
+		if (!k)
+		{
+			k = f;
+		}
+		f = f * 2;
+	}
+
+	if (k & RUNE_MASK_ALL) // drop a rune
+	{
+		if (!self.aiment)
+		{
+			self.aiment = spawn();
+			self.aiment.classname = "dropinv";
+			drop_setup(0);
+
+	// save notify stats
+			self.aiment.grap_state = cvar("con_notifytime");
+			self.aiment.grap_length = cvar("con_notify");
+		}
+		else
+		{
+			sprint(self, "Rune drop failure - clear menus and try again\n");
+			return;
+		}
+		if (self.aiment.dmg != k) // should be this rune bit - idea: more validation
+		{
+			sprint(self, "Rune drop failure - oh no\n");
+			return;
+		}
+		drop_inventory(1);
+		remove(self.aiment);
+		self.aiment = world;
+	}
+};
+
+// print rune info on impulse from e to p's console
 
 // only admin is supposed to print where e != p
-
-// TDO: q3/q2/doom non rune goodies - flight
 
 float IT_ARTIFACT = 7929856;
 
 void(entity e, entity p) rune_id =
 {
-	local float f;
+	local float f, k, g;
+
+	stuffcmd(p, "con_notify 22\n"); // for this o/p
+	stuffcmd(p, "con_notifytime 10\n");
+
+	if (serverflags & 15) // end of level runes acq by a player and stored for server
+	{
+		sprint(p, "\nThese \bRunes\b are gathered on the server:\n");
+
+		if (serverflags & 1) 
+		{
+			sprint(p, "Earth Magic Rune");
+			if (serverflags & 14) sprint(p, ", ");
+		}
+
+		if (serverflags & 2)
+		{
+			sprint(p, "Black Magic Rune");
+			if (serverflags & 12) sprint(p, ", ");
+		}
+
+		if (serverflags & 4)
+		{
+			sprint(p, "Hell Magic Rune");
+			if (serverflags & 8) sprint(p, ", ");
+		}
+		if (serverflags & 8) sprint(p, "Elder Magic Rune");
+		sprint(p, "\n");
+	}
 
 
 	if (WARNING)
@@ -167,16 +242,19 @@ void(entity e, entity p) rune_id =
 		sprint(p, e.netname);
 		sprint(p, " has");
 	}
+	
+	f = RUNE_FLG_FLY;
+	if (!(f & RUNE_MASK_ALL))
+	if (e.rune_flag & RUNE_FLG_FLY) g = 1; //didnt show flight as rune, show it below
 
 	f = e.items & IT_ARTIFACT;
 
-	if (!e.rune_flag)
+	if (!(e.rune_flag & RUNE_MASK_ALL) && (!g))
 	{
 		sprint(p, " no Runes ");
 		if (!f)
 		{
 			sprint(p, "and no Artifacts.\n\n");
-			return;
 		}
 	}
 	else	
@@ -189,10 +267,19 @@ void(entity e, entity p) rune_id =
 			if (f & e.rune_flag) rune_print(p, f, TRUE); 
 			f = f * 2;
 		}
+
+		if (g) sprint(p, "The power of flight\n");
+
 		sprint(p, "\n");
+
 	}
 
+	f = RUNE_AMMO;
+	if (!(f & RUNE_MASK_ALL))
+	if (e.rune_flag & RUNE_AMMO) k = 1; //didnt show pack as rune, show it below
+
 	f = e.items & IT_ARTIFACT;
+	if (f)
 	sprint(p, "and the following Artifacts:\n");
 	if  ((self.pkplus_actortype == PKPLUS_ACTORPENT) && (self.pkplus_actortype == PKPLUS_ACTORQUAD))
 	{
@@ -210,10 +297,21 @@ void(entity e, entity p) rune_id =
 		f = 0;
 		sprint(p, "Acting:\nQuad Damage and wishin in one hand!\n");
 	}
-	if (f == IT_ARTIFACT) sprint(p, "\nALL of them!!!\n\n \bQUAKE GOD\b - go kill everyone now, fast!\n\n");
+	if (f == IT_ARTIFACT)
+	{
+		if (e.wetsuit_finished && e.empathy_finished && e.silencer_finished && (e.rune_flag & RUNE_AMMO) && (e.rune_flag & RUNE_FLG_FLY))
+		{
+			if (e.rune_flag == RUNE_MASK_ALL)
+				sprint(p, "   EVERYTHING!    \bCriminy\b - how did you get all this stuff!?\n");
+			else
+				sprint(p, "   WHOA!    \bCriminy\b - where did you get all this stuff!?\n");
+		}
+
+		sprint(p, "\nALL artifacts!!!\n\n \bQUAKE GOD\b - go kill everyone now, fast!\n\n");
+	}
 	else if (f && (e.items & IT_QUAD) && (e.items & IT_INVULNERABILITY) )
 	{
-		sprint(p, "\bPENTA-QUAD\b !!\n(shoot quick they're all running away...\n");
+		sprint(p, "\bPENTA-QUAD\b !!\n(shoot quick they're all running away...)\n");
 		if (e.items & IT_SUPERHEALTH) sprint(p, "Mega Health\n");
 		if (e.items & IT_INVISIBILITY) sprint(p, "Limited Invisibility\n");
 		if (e.items & IT_SUIT) 
@@ -232,6 +330,11 @@ void(entity e, entity p) rune_id =
 		if (f && (e.items & IT_QUAD)) sprint(p, "\bQuad\b freakin Damage !\n");
 		sprint(p, "\n");
 	}
+
+// these items shade into inventory type stuff
+	if (!f)
+	if (e.wetsuit_finished || e.empathy_finished || e.silencer_finished || k)
+		sprint(p, "and the following items:\n");
 	if (e.wetsuit_finished)
 	{
 		if (e.items & IT_SUIT) 
@@ -243,7 +346,10 @@ void(entity e, entity p) rune_id =
 		sprint(p, "Empathy Shields\n");
 	if (e.silencer_finished)
 		sprint(p, "Silencer\n");
-	
+
+	if (k)
+		sprint(p, "Ammo Pack\n");
+
 };
 
 // rune 1 rules - runes expire in pow time
@@ -560,6 +666,32 @@ void(float r1, float p) remove_rune =
 	}
 };
 
+/*
+base rule set
+
+1.
+Original rune quake.
+4 end episode runes will randomly spawn to the tune of sv_c_rune_cnt.
+Runes operate just like quad damage - 30 secs of power, then the rune respawns at its location.
+You can only have 1 rune at a time so there are no combind effects or perils.
+
+earth magic	(end1.mdl)	Resistance = 1/2 damage all attacks
+black magic	(end2.mdl)	Damage = 2 x damage for 30 secs.  8 x damage if combined with quad.
+hell magic	(end3.mdl)	Haste - double fire rate most weps
+elder magic	(end4.mdl)	Regeneration - regen 5 health | armor ever 1/2 second
+
+2.
+Ctf (lithium) style runes.
+Standard 4 end of episode rules with new powers + up to 4 new runes as spec'ed by sv_c_rune_cnt.
+More like the lithium system from Quake 2.  Once you get a rune its yours till you die.  It gets tossed out then.
+Runes can also be freed from a player by: powerful blast damage, air cannon blast, pulled by harpoon, pulled
+loose by gravity well.  Lava (or falling into a sky brush) will destroy a rune causing it to respawn somewhere.
+Runes can combine to give holders more powers, or detrimental effects. You can also throw out runes
+at this rule level.
+Damage = 2 x damage.  Will not combine with quad - quad has no effect.
+
+runes will not use q2 lith models if - ULOK2 is false, or rule == -2
+*/
 // run runes
 
 void() run_runes =
@@ -593,7 +725,7 @@ void() run_runes =
 			R_ELDER = 0;
 			sf = 100;
 			f = RUNE_MASK_ALL;
-			while (f != 0 && sf > 0) // try to make a nice one of each deal
+			while (f != 0 && sf > 0) // try to make a nice "one of each" deal
 			{
 				k = rnd_bit_mask(f);
 				if (!R_EARTH) R_EARTH = k;
@@ -614,9 +746,9 @@ void() run_runes =
 
 	mk_rune_set(); // manual config
 
-	if (RUNES != cvar("sv_c_rune")) // changed, off or on - controls rune server
+	if (RUNES != fabs(cvar("sv_c_rune"))) // changed, off or on - controls rune server
 	{
-		RUNES = cvar("sv_c_rune");
+		RUNES = fabs(cvar("sv_c_rune")); // neg. value additional sequence
 
 		e = find(world,map,"rune"); // off or on, rid map of runes & makers
 		while (e)
@@ -824,7 +956,7 @@ void () item_sigil =
 			return;
 		}
 		rune = FALSE;
-		if (RUNES != cvar("sv_c_rune")) rune = cvar("sv_c_rune"); // map load issue - 1st map loaded has no RUNES val here for map load runes
+		if (RUNES != fabs(cvar("sv_c_rune"))) rune = cvar("sv_c_rune"); // map load issue - 1st map loaded has no RUNES val here for map load runes
 		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "", "", SUB_Null, PIC_TO, item_sigil_set, SUB_Null, self, world); // random rune spawnflags fix
 	}
 

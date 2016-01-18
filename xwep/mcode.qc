@@ -206,6 +206,8 @@ float MC_W_FACESPHERE;
 float MC_W_HEALTH;
 float MC_W_FOOD;
 float MC_W_DOGFOOD;
+float MC_W_BLOOD;
+float MC_W_BLDBNS;
 
 float MC_W_KEY_G;
 float MC_W_KEY_B;
@@ -532,6 +534,8 @@ void() mcode_load =
 	MC_W_HEALTH = f = (f + 1);
 	MC_W_FOOD = f = (f + 1);
 	MC_W_DOGFOOD = f = (f + 1);
+	MC_W_BLOOD = f = (f + 1);
+	MC_W_BLDBNS = f = (f + 1);
 
 	MC_W_KEY_G = f = (f + 1);
 	MC_W_KEY_B = f = (f + 1);
@@ -800,6 +804,8 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_W_HEALTH)												return(0);
 	if (mc == MC_W_FOOD)													return(0);
 	if (mc == MC_W_DOGFOOD)												return(0);
+	if (mc == MC_W_BLOOD)												return(0);
+	if (mc == MC_W_BLDBNS)												return(0);
 
 	if (mc == MC_W_FACESPHERE)											return(IT_SUPERHEALTH);
 
@@ -1096,6 +1102,8 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "w_heal_medkit")										return(MC_W_HEALTH);
 	if (tsc == "w_heal_food")											return(MC_W_FOOD);
 	if (tsc == "w_heal_dogfood")										return(MC_W_DOGFOOD);
+	if (tsc == "w_heal_blood")											return(MC_W_BLOOD);
+	if (tsc == "w_heal_bldbns")										return(MC_W_BLDBNS);
 	if (tsc == "w_art_facesphere")									return(MC_W_FACESPHERE);
 
 	if (tsc == "w_key_g")												return(MC_W_KEY_G);
@@ -1381,6 +1389,8 @@ string (float mc) item_by_mcode =
 	if (mc == MC_W_HEALTH)												return("w_heal_medkit");
 	if (mc == MC_W_FOOD)													return("w_heal_food");
 	if (mc == MC_W_DOGFOOD)												return("w_heal_dogfood");
+	if (mc == MC_W_BLOOD)												return("w_heal_blood");
+	if (mc == MC_W_BLDBNS)												return("w_heal_bldbns");
 
 	if (mc == MC_W_KEY_G)												return("w_key_g");
 	if (mc == MC_W_KEY_B)												return("w_key_b");
@@ -2267,6 +2277,7 @@ void() cube_touch =
 		sprint(other, "hit fire to open - you must be in range");
 	else
 	{
+		other.cnt = -1;
 		other.state = 0;
 		other.impulse = 10; // display first item
 		self.lefty = 8388608; // start bit will be 1

@@ -343,10 +343,9 @@ void(float silent) player_hknight_become =
 	stuffcmd(self, "exec m-hellknight.cfg\n");
 
 	setmodel(self,"progs/hknight.mdl");
-//	self.modelindex_morph=self.modelindex;
-//	self.mask_x = CB_HKNIGHT;
-//	W_SetCurrentAmmo(self);
-	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
+
+	self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
+	self.builtin = self.items & WEP_MASK;
 	self.weapon = IT_SUPER_SHOTGUN;
 
 	self.msight = "hknight/sight1.wav";

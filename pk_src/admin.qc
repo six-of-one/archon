@@ -121,6 +121,19 @@ void(entity e) admin_clear =
 		stuffcmd(self, ftos(e.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
 		stuffcmd(e, "\n");
 	}
+
+	if (e.aiment)
+	if (e.aiment.classname == "dropinv")
+	{
+		stuffcmd(e, "con_notifytime "); // restore notify
+		stuffcmd(e, ftos(e.aiment.grap_state));
+		stuffcmd(e, "\ncon_notify ");
+		stuffcmd(e, ftos(e.aiment.grap_length));
+		stuffcmd(e, "\n");
+
+		remove(e.aiment);
+		e.aiment = world;
+	}
 };
 
 // clear | set these for players
@@ -2215,6 +2228,13 @@ void() User_menu =
 	string head, ln1, ln2, ln3, ln4, ln5, foot;
 
 	ln1 = ln2 = ln3 = ln4 = ln5 = "";
+
+	if (self.aflag == IMP_DROPI) // drop inv menu
+	{
+		drop_menu();
+		return;
+	}
+	
 	if (self.ammo_cells > 1 && self.pk_items & PK_IT_CLIGHT)
 		head =
 					 "\b   Painkeep User Menu:   \n"
@@ -2339,7 +2359,7 @@ void() PK_AdminImpulse =
 
 	self.attack_finished = time + 0.1; // debounce - dont want this every frame
 
-	if (self.admin == USER_MENU) // process user menu (impulse 39) here
+	if (self.admin == USER_MENU) // process user menu (impulse 39) here + impulse 53, drop menu
 	{
 		if (Q_100 | Q_99) return; // Cataboligne - 8.16.9 - quake compatability mode
 
@@ -2355,6 +2375,40 @@ void() PK_AdminImpulse =
 			self.impulse = 0;
 			self.message = "USER_MENU";
 		}
+		if (self.aflag == IMP_DROPI) // drop inv section
+		{
+			if (self.impulse > 0 && self.impulse < 8)
+			{
+				self.goalentity.nextthink = time + USER_TIMEOUT; // keep menu up while buttons are being pressed
+				if (self.aiment)
+				if (self.aiment.classname == "dropinv")
+					self.aiment.weapon = self.impulse; // selected
+				self.impulse = 0;
+				self.aiment.grap_firetest = 0; // show it
+			}
+			if (self.aiment)
+			if (self.aiment.classname == "dropinv")
+			if (self.aiment.weapon)
+			if (self.impulse == 11 || self.button0) //confirmed
+			{
+				self.goalentity.nextthink = time + USER_TIMEOUT;
+				drop_inventory(self.aiment.weapon);
+				drop_setup(-1); // redo page
+				self.impulse = 0;
+				self.button0 = 0;
+			}
+			if (self.impulse == 8) // next page
+			{
+				self.goalentity.nextthink = time + USER_TIMEOUT;
+				drop_setup(1);
+				if (self.aiment.noise == "")
+				{
+					drop_setup(0);
+				}
+				self.impulse = 0;
+			}
+		}
+		else
 		if (self.impulse == 6)
 		{
 			if (self.pk_items & PK_IT_AIRGUN)
@@ -2414,8 +2468,13 @@ void() PK_AdminImpulse =
 		User_menu();
 //		centerprint3(self, self.message, "", "");
 		if (self.button0 || self.button1 || self.button2 || self.impulse)
+		{
 			admin_clear(self);
+		}
 
+		if (self.aflag == IMP_DROPI) // drop inv exit
+			self.impulse = 0;
+		else
 // NOTE: if the impulses change - this code must change
 		if (f == 11) // admin enter
 			self.impulse = 46;

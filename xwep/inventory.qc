@@ -1,0 +1,1529 @@
+/* ::-::
+ *
+ * Cataboligne
+ *
+ * file: inventory.qc
+ *
+ * date: 9/30/11
+ *
+ * qc - support chaos mod inventory contols
+ *
+ */
+
+/*
+		+---------------------------------------+
+		|  inventory defaults and loading       | SEC-HEAD
+		+---------------------------------------+
+*/
+
+// fn(set_q1w_defammo) if new q1 defs are set by bit and no ammo is added for that wep, set base amount
+
+void(float wb, entity e) set_q1w_defammo =
+{
+	if (wb & (IT_SHOTGUN | IT_SUPER_SHOTGUN)) if (e.ammo_shells < 1) e.ammo_shells = DEF_AMMO_BASE;	// 25
+	if (wb & IT_MJOLNIR) if (e.ammo_cells < 1) e.ammo_cells = DEF_AMMO_BASE * 3;
+	if (wb & IT_LIGHTNING) if (e.ammo_cells < 1) e.ammo_cells = DEF_AMMO_BASE * 2;	
+	if (wb & (IT_ROCKET_LAUNCHER | IT_GRENADE_LAUNCHER)) if (e.ammo_rockets < 1) e.ammo_rockets = DEF_AMMO_BASE / 2.5;	
+	if (wb & (IT_NAILGUN | IT_SUPER_NAILGUN)) if (e.ammo_nails < 1) e.ammo_nails = DEF_AMMO_BASE * 2;	
+};
+
+// fn(new_q1w_defammo) see if more q1 weps got set after set_xweap, if so check def ammo
+
+void(float wb, float ic, entity e) new_q1w_defammo =
+{
+	local float f;
+
+	if (!wb) return;
+	if (!e) return;
+	f = 1;
+	while (f != 256)
+	{
+		if ((wb & f) && !(ic & f))
+			set_q1w_defammo(f, e);
+		f = f * 2;
+	}
+};
+
+void(entity xw, entity e) set_xw_defammo =
+{
+	if (xw.lip == AMMO_BULLETS) if (e.ammo_bullet < 1) e.ammo_bullet = DEF_AMMO_BASE * 2;	
+	if (xw.lip == AMMO_SHELLS) if (e.ammo_shells < 1) e.ammo_shells = DEF_AMMO_BASE;	// 25
+	if (xw.lip == AMMO_CELLS) if (e.ammo_cells < 1) e.ammo_cells = DEF_AMMO_BASE * 2;	
+	if (xw.lip == AMMO_NAILS) if (e.ammo_nails < 1) e.ammo_nails = DEF_AMMO_BASE * 2;	
+	if (xw.lip == AMMO_ROCKETS) if (e.ammo_rockets < 1) e.ammo_rockets = DEF_AMMO_BASE / 2.5;	
+	if (xw.lip == AMMO_GRENADES) if (e.ammo_rockets < 1) e.ammo_rockets = DEF_AMMO_BASE / 2.5;	
+	if (xw.lip == AMMO_SLUGS) if (e.ammo_slug < 1) e.ammo_slug = DEF_AMMO_BASE / 2.5;	
+};
+
+// fn(set_defaults) - server control of player/bot load defaults
+// fn(set_xweap) - attemp to load an xweap or q1 wep by map code
+// fn(xw_bit_loop) - given a bit set loop thru getting map codes and calling set_xweap for a give map mode
+
+// e - ent to load (player or bot)
+// smc - set map code
+
+void(entity e, float smc) set_xweap =
+{
+	local float wbt;
+	local entity tr;
+	local string ssc;
+
+	if (!e) return;
+	wbt = valid_wep_mcode(smc); // make sure this is a valid weapon & get inv. bit
+
+
+// TESTING
+spawn_infot(2, "set bits = ", "",  "",  "",  " -- items: ", wbt, 0, 0, 0, v0, e.items);
+
+
+	if (!wbt || wbt & e.items) return; // no bit or already got one - IDEA: code an axe swap ??
+
+	if ((smc >= MC_AXE && smc <= MC_THUNDER) || smc == MC_HIP_MJOLNIR) // NOTE: q1 weapon map codes MUST be sequential for condition here
+	{
+		e.items = e.items | wbt;
+		set_q1w_defammo(wbt, e);
+		return;
+	}
+	ssc = item_by_mcode(smc);
+	if (ssc) tr = vload(e, wbt);
+	if (tr)
+	{
+		xwep_fakeload (tr, 0, 0, ssc, wbt);
+		e.items = e.items | tr.items;
+		set_xw_defammo(tr, e); // make sure we have ammo
+
+
+
+// TESTING
+spawn_infot(2, "x item bits = ", " -- x wep = ",  "",  "",  " -- items: ", tr.items, tr.weapon, 0, 0, v0, e.items);
+spawn_infot(1, "vwepent:  ", tr.netname,  "\nmapcode: ",  "",  "", 0, 0, smc, 0, v0, 0);
+zz=3;
+
+
+
+	}
+
+};
+
+// fn(xw_parm) - handle xweps for level chg
+
+// e - player / bot to handle
+
+// bit information is continuously maintained in player / bot .mcode & .scode
+// scode - bits to remove from items so xweap are not converted into regular weps
+// mcode - map code of unholstered xweap to reload after level change
+
+void (entity e) xw_parm =
+{
+	local entity tr;
+
+	tr = e.vwepent;
+	e.scode = 0;
+
+	if (X_CHGLVL)
+	if (e.eweapon)
+		e.mcode = e.eweapon.mcode;
+
+	while (tr)
+	{
+		if (tr != e.eweapon)
+		{			
+			if (tr.netname == "Grappling hook") e.scode = e.scode | 512; // special - grapples
+			else
+			if (tr.mcode) e.scode = e.scode | (tr.weapon & 254); // only clear std weps - must have axe & shotgun on new level
+		}
+		tr = tr.vwepent;
+	}
+};
+
+void(entity e, float bl) xw_bit_loop =
+{
+	local float f, b, mc;
+
+	if (!bl) return;
+	if (!e) return;
+	f = 1;
+	while (f != 8192)
+	{
+		b = bl & f;
+		mc = wepbit_mcode(b, MAP_MODE);
+//spawn_infot(-2, "xwbitloop bit call = ", "mask  = ",  " -- map code: ",  "",  "bits sent = ", b, f, mc, 0, v0, bl);
+		if (mc)
+			set_xweap(e, mc);
+		f = f * 2;
+		if (f == 256) f = IT_AXE;
+	}
+}
+
+// e - ent to set (player or bot)
+// defaults read from server var *
+
+
+// NOTE: q1 & pk mode wep add can be without ammo
+
+void(entity e) set_defaults =
+{
+	local float ic, i0;
+
+// here in case chase cam code doesnt get run - setnewparms may not hit these
+	e.eweapon = world;
+	e.pkprevweapon = e.pklastweapon = e.prevweapon = e.lastweapon = 0;
+
+	e.x_items = x_item_dm_giveaway; // for door keys in dm - only set by doors in dm
+
+	e.ammo_bullet = e.ammo_slug = e.ammo_gaspr = e.ammo_hgrenade = 0;
+	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
+	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;
+
+	if (Q_100 || PK_100) return;
+
+// NOTE: muddy area for morphs.  how to handle all this - maybe convert health by modifier?
+//					check to see if morph can use any of the give away eweaps?
+	if (!self.mask_x & CB_HUMAN) return;
+
+
+	if (DEF_HEALTH) e.health = fabs(DEF_HEALTH);
+	if (DEF_ARMOR)
+	{
+		e.armorvalue = fabs(DEF_ARMOR);
+		e.armortype = DEF_ATYPE;
+		if (e.armorvalue > 100)
+		{
+			e.armortype = DEF_ATYPE * 2;
+			e.items = e.items | IT_ARMOR2;
+		}
+		else
+			e.items = e.items | IT_ARMOR1;
+	}
+
+	if (DEF_WEAPON & DEF_REMWEP) // remove any default weps set by code
+	{
+		e.items = e.items - (e.items & WEP_MASK);
+		e.weapon = 0; 
+	}
+
+	if (DEF_WEAPON & DEF_REMAMMO) // remove any default ammo set by code
+	{
+		e.ammo_shells = 0;
+		e.ammo_nails = 0;
+		e.ammo_rockets = 0;
+		e.ammo_cells = 0;
+		e.ammo_nails = 0;
+		e.ammo_slug = 0;
+		e.ammo_gaspr = 0;
+	}
+
+	if (DEF_AMMO_BULLETS) e.ammo_bullet = fabs(DEF_AMMO_BULLETS);
+	if (DEF_AMMO_SHELLS) e.ammo_shells = fabs(DEF_AMMO_SHELLS);
+	if (DEF_AMMO_CELLS) e.ammo_cells = fabs(DEF_AMMO_CELLS);
+	if (DEF_AMMO_ROCKETS) e.ammo_rockets = fabs(DEF_AMMO_ROCKETS);
+	if (DEF_AMMO_NAILS) e.ammo_nails = fabs(DEF_AMMO_NAILS);
+	if (DEF_AMMO_SLUGS) e.ammo_slug = fabs(DEF_AMMO_SLUGS);
+	if (DEF_AMMO_GAS) e.ammo_gaspr = fabs(DEF_AMMO_GAS);
+
+	DEF_WEAPON = DEF_WEAPON & WEP_MASK; // mask off remove bits
+
+// x weapon inits
+
+	if (INIT_CON)
+	{
+		i0 = e.items & WEP_MASK; // if init changes def weps we need to allow for a default it_axe
+		if (INIT_CON & FL_INIT_ARB_MC)
+		{
+			if (INIT_0_W > 0) set_xweap(e, INIT_0_W);
+			if (INIT_1_D > 0) set_xweap(e, INIT_1_D);
+			if (INIT_2_Q > 0) set_xweap(e, INIT_2_Q);
+			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
+			if (INIT_4_Q2 > 0) set_xweap(e, INIT_4_Q2);
+			if (INIT_5_Q3 > 0) set_xweap(e, INIT_5_Q3);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP);
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+		else if (INIT_CON & FL_INIT_MGEN_BIT) // genre by map using bits
+		{
+			if (MAP_MODE == "W") xw_bit_loop(e, INIT_0_W);
+			if (MAP_MODE == "D") xw_bit_loop(e, INIT_1_D);
+			if (MAP_MODE == "Q") xw_bit_loop(e, INIT_2_Q);
+			if (MAP_MODE == "PK") xw_bit_loop(e, INIT_3_PK); // really same weps as q1, but allows setting other weps for pk maps
+			if (MAP_MODE == "Q2") xw_bit_loop(e, INIT_4_Q2);
+			if (MAP_MODE == "Q3") xw_bit_loop(e, INIT_5_Q3);
+	//		if (MAP_MODE == "HP") xw_bit_loop(INIT_6_HP);
+	//		if (MAP_MODE == "") xw_bit_loop(INIT_7);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); // 2 extra map code weps
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+		else if (INIT_CON & FL_INIT_MGEN_MC) // genre by map using code - 1 per + 2 for all
+		{
+			if (INIT_0_W > 0 && MAP_MODE == "W") set_xweap(e, INIT_0_W);
+			if (INIT_1_D > 0 && MAP_MODE == "D") set_xweap(e, INIT_1_D);
+			if (INIT_2_Q > 0 && MAP_MODE == "Q")set_xweap(e, INIT_2_Q);
+			if (INIT_3_PK > 0 && MAP_MODE == "PK") set_xweap(e, INIT_3_PK);
+			if (INIT_4_Q2 > 0 && MAP_MODE == "Q2") set_xweap(e, INIT_4_Q2);
+			if (INIT_5_Q3 > 0 && MAP_MODE == "Q3") set_xweap(e, INIT_5_Q3);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); //  && MAP_MODE == "HP") set_xweap(e, INIT_6_HP); // goes to all for now
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+		else if (INIT_CON & FL_INIT_CGEN_BIT) // genre by char using bits
+		{
+			if (e.morphy == CHAR_W) xw_bit_loop(e, INIT_0_W);
+			if (e.morphy == CHAR_D) xw_bit_loop(e, INIT_1_D);
+			if (e.morphy == CHAR_Q) xw_bit_loop(e, INIT_2_Q);
+//			if (e.morphy == CHAR_PK) xw_bit_loop(e, INIT_3_PK); // not going to have pk char mode - maybe some other morph class
+			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
+			if (e.morphy == CHAR_Q2) xw_bit_loop(e, INIT_4_Q2);
+			if (e.morphy == CHAR_Q3) xw_bit_loop(e, INIT_5_Q3);
+	//		if (e.morphy == "") xw_bit_loop(INIT_7);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); // 2 extra map code weps
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+		else if (INIT_CON & FL_INIT_CGEN_MC) // genre by char using code - 1 per + 2 for all
+		{
+			if (INIT_0_W > 0 && e.morphy == CHAR_W) set_xweap(e, INIT_0_W);
+			if (INIT_1_D > 0 && e.morphy == CHAR_D) set_xweap(e, INIT_1_D);
+			if (INIT_2_Q > 0 && e.morphy == CHAR_Q)set_xweap(e, INIT_2_Q);
+//			if (INIT_3_PK > 0 && e.morphy == CHAR_PK) set_xweap(e, INIT_3_PK);
+			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
+			if (INIT_4_Q2 > 0 && e.morphy == CHAR_Q2) set_xweap(e, INIT_4_Q2);
+			if (INIT_5_Q3 > 0 && e.morphy == CHAR_Q3) set_xweap(e, INIT_5_Q3);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); //  && e.morphy == "HP") set_xweap(e, INIT_6_HP); // goes to all for now
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+
+		ic = e.items & WEP_MASK; // weps set by init - have to see q1 weps added outside of set_xweap
+		if (ic != i0)
+		if (!DEF_WEAPON)
+		if (ic & IT_AXE) DEF_WEAPON = IT_AXE; // allow replacement x weps to default axe bit if present - otherwise we add a q1 shotgun
+	}
+
+	if (DEF_ITEMS) e.items = e.items | DEF_ITEMS; // NOTE: this is an add in, might need vw coding later
+
+	if (DEF_WEAPON) // NOTE: happens after weapons inits to be coded
+	{
+		if (! e.items & DEF_WEAPON) // see if item bit is set
+			e.items = e.items | DEF_WEAPON;
+		e.weapon = return_bit(DEF_WEAPON, 255, BIT_HIGH, 0); // pick 1 bit - highest
+		if (!e.weapon && (e.items & IT_AXE) && (DEF_WEAPON & IT_AXE)) e.weapon = IT_AXE; // can init & def weapon axe as only weapon
+	}
+	new_q1w_defammo(e.items & WEP_MASK, ic, e);
+
+	if (DEF_X_ITEMS) e.x_items = e.x_items | DEF_X_ITEMS; // NOTE: this might entail vw adds later
+
+	if (!(INIT_CON & FL_INIT_PKO) || (MAP_MODE == "PK")) // can restrict pk items to pk mode only with flag in init_con
+	if (DEF_PK_ITEMS & PK_ITEM_MASK) // pk items works differently
+	{
+		if (DEF_PK_ITEMS & PK_IT_BEARTRAP) e.pk_beartrapammo = 2;
+		if (DEF_PK_ITEMS & PK_IT_TURRET) e.pk_turretammo = 2;
+		if (DEF_PK_ITEMS & PK_IT_GRAVITYWELL) e.pk_gravitywellammo = 1;
+		if (DEF_PK_ITEMS & PK_IT_CANPAB) e.pk_canpabammo = 1;
+		if (DEF_PK_ITEMS & PKPLUS_IT_EGO) e.pkplus_egoammo = 1;
+		if (DEF_PK_ITEMS & PKPLUS_IT_TOMB) e.pkplus_tombammo =2;
+		if (DEF_PK_ITEMS & PKPLUS_IT_ACTOR) e.pkplus_actorammo = 1;
+		if (DEF_PK_ITEMS & PKPLUS_IT_PHONE) e.pkplus_phoneammo = 1;
+		e.pk_items = e.pk_items | (DEF_PK_ITEMS & (PK_IT_GRAPGUN | PK_IT_AIRGUN | PK_IT_CLIGHT));
+	}
+
+	if(! e.items & IT_AXE) e.items = e.items | IT_AXE; // MUST have an axe slot item for pk items & wep cycles!
+
+	if (! e.weapon) // didnt set a default 
+	{
+		if (e.pk_items & PK_IT_CLIGHT) // have clg - default it
+		{
+			e.weapon = IT_AXE;
+			e.pk_currentitem = PK_IT_CLIGHT;
+			set_q1w_defammo(IT_LIGHTNING, e); // check ammo
+			return;
+		}
+		e.weapon = return_bit(e.items, 255, BIT_HIGH, 0);
+		if (!e.weapon) // for now no one is without a range weapon def if DEF_WEAPON doesnt say otherwise
+		{
+			e.weapon = 1;
+			e.items = e.items | 1;
+			set_q1w_defammo(IT_SHOTGUN, e);
+			if (!(INIT_CON & 15)) // no genre controls, pick a shotgun at random - TEST: effects of ULOK* on this code set
+			{
+				if (random() < 0.3) set_xweap(e, MC_D_SHOTGUN);
+				else if (random() < 0.2) set_xweap(e, MC_Q2_SHOTGUN);
+				else if (random() < 0.45) set_xweap(e, MC_Q3_SHOTGUN);
+			}
+		}
+	}
+	e.eweapon = vchk(e.weapon, e.pk_currentitem, e.vwepent);
+
+};
+
+
+/*
+		+---------------------------------------+
+		|  inventory dispay                     | SEC-HEAD
+		+---------------------------------------+
+*/
+
+float IT_BULLETS = 4096;
+float IT_SLUGS = 8192;
+float IT_GAS = 16384;
+
+float am_type;
+string pk_pr;
+
+void(entity e, float am, string pr) eweap_am =
+{
+//	if (am_type == am) return;
+//	am_type = am;
+
+
+	if (am == AMMO_BULLETS && !(am_type & IT_BULLETS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(rint(e.ammo_bullet)));
+		sprint(e, " bullets");
+		am_type = am_type | IT_BULLETS;
+	}
+	else if (am == AMMO_SHELLS && !(am_type & IT_SHELLS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(rint(e.ammo_shells)));
+		sprint(e, " shells");
+		am_type = am_type | IT_SHELLS;
+	}
+	else if (am == AMMO_CELLS && !(am_type & IT_CELLS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(rint(e.ammo_cells)));
+		sprint(e, " cells");
+		am_type = am_type | IT_CELLS;
+	}
+	else if (am == AMMO_ROCKETS && !(am_type & IT_ROCKETS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(rint(e.ammo_rockets)));
+		sprint(e, " rockets");
+		am_type = am_type | IT_ROCKETS;
+	}
+	else if (am == AMMO_GRENADES && !(am_type & IT_ROCKETS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(rint(e.ammo_rockets)));
+		sprint(e, " grenades");
+//		am_type = am_type | IT_ROCKETS;
+	}
+	else if (am == AMMO_NAILS && !(am_type & IT_NAILS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(rint(e.ammo_nails)));
+		sprint(e, " nails");
+		am_type = am_type | IT_NAILS;
+	}
+	else if (am == AMMO_SLUGS && !(am_type & IT_SLUGS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(rint(e.ammo_slug)));
+		sprint(e, " slugs");
+		am_type = am_type | IT_SLUGS;
+	}
+	else if (am == AMMO_GAS && !(am_type & IT_GAS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(rint(e.ammo_gaspr)));
+		sprint(e, " lbs gas pressure");
+		am_type = am_type | IT_GAS;
+	}
+	else if (am == PK_IT_GRAPGUN && e.pk_items & am)
+	{
+	local entity f;
+	local string nt;
+
+		if (pr != "") sprint(e, pr);
+/*
+		nt = "Harpoon gun";
+		f = vchk(IT_AXE, am, e.vwepent);
+		if (f)
+		if (f.netname)
+		{
+			nt = f.netname;
+		}
+
+		sprint(e, nt);
+		sprint(e, "\n");
+*/
+		sprint(e, "Harpoon gun\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_AIRGUN && e.pk_items & am)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, "Air cannon\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_CLIGHT && e.pk_items & am)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, "Chain Thunderbolt cannon");
+		eweap_am(self, AMMO_CELLS, "   -> ");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_GRAVITYWELL && e.pk_gravitywellammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_gravitywellammo));
+		sprint(e, " gravity well");
+		if (e.pk_gravitywellammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_TURRET && e.pk_turretammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_turretammo));
+		sprint(e, " turret");
+		if (e.pk_turretammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_CANPAB && e.pk_canpabammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_canpabammo));
+		sprint(e, " pork and beans can");
+		if (e.pk_canpabammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_BEARTRAP && e.pk_beartrapammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_beartrapammo));
+		sprint(e, " bear trap");
+		if (e.pk_beartrapammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == 4096 && e.pk_explode_ammo > 0) // shells dont have a PK_IT # - jacking this one for the inventory fn
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_explode_ammo));
+		sprint(e, " explode shell");
+		if (e.pk_explode_ammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PKPLUS_IT_EGO && e.pkplus_egoammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pkplus_egoammo));
+		sprint(e, " ego");
+		if (e.pkplus_egoammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PKPLUS_IT_TOMB && e.pkplus_tombammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pkplus_tombammo));
+		sprint(e, " tomb");
+		if (e.pkplus_tombammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PKPLUS_IT_ACTOR && e.pkplus_actorammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pkplus_actorammo));
+		sprint(e, " actors mask");
+		if (e.pkplus_actorammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PKPLUS_IT_PHONE && e.pkplus_phoneammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pkplus_phoneammo));
+		sprint(e, " cellular phone tele-hack");
+		if (e.pkplus_phoneammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+/*	else if (am == )
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.));
+		sprint(e, " t");
+		if (e. > 1) sprint(e, "s");
+	}*/
+};
+
+// ammo with no wep
+
+void() loose_ammo =
+{
+	local string pr;
+
+	pr = "-\nammo:\n";
+
+	if (self.ammo_shells  && !(am_type & IT_SHELLS))
+	{
+		eweap_am(self, AMMO_SHELLS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_cells  && !(am_type & IT_CELLS))
+	{
+		eweap_am(self, AMMO_CELLS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_nails  && !(am_type & IT_NAILS))
+	{
+		eweap_am(self, AMMO_NAILS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_rockets  && !(am_type & IT_ROCKETS))
+	{
+		eweap_am(self, AMMO_ROCKETS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_bullet  && !(am_type & IT_BULLETS))
+	{
+		eweap_am(self, AMMO_BULLETS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_slug  && !(am_type & IT_SLUGS))
+	{
+		eweap_am(self, AMMO_SLUGS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_gaspr  && !(am_type & IT_GAS))
+	{
+		eweap_am(self, AMMO_GAS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+};
+
+void(float wp) q1_inv_print =
+{
+	local float f;
+
+	f = TRUE;
+	if (wp & self.builtin) f = FALSE; // dont call these for builtin bits
+
+	if (wp == IT_AXE && f) sprint(self, "War Axe\n");
+	else if (wp == IT_SHOTGUN && f)
+	{
+		sprint(self, "Pump shotgun");
+		eweap_am(self, AMMO_SHELLS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_SUPER_SHOTGUN && f)
+	{
+		sprint(self, "Double barrel shotgun");
+		eweap_am(self, AMMO_SHELLS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_NAILGUN && f)
+	{
+		sprint(self, "Fletchet (nail) gun");
+		eweap_am(self, AMMO_NAILS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_SUPER_NAILGUN && f)
+	{
+		sprint(self, "High rate Fletchet (nail) gun");
+		eweap_am(self, AMMO_NAILS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_GRENADE_LAUNCHER && f)
+	{
+		sprint(self, "Grenade launcher");
+		eweap_am(self, AMMO_ROCKETS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_ROCKET_LAUNCHER && f)
+	{
+		sprint(self, "Rocket launcher");
+		eweap_am(self, AMMO_ROCKETS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_LIGHTNING && f)
+	{
+		sprint(self, "Thunderbolt cannon");
+		eweap_am(self, AMMO_CELLS, "   -> ");
+		sprint(self, "\n");
+	}
+/*	else if (wp == IT_MJOLNIR)
+	{
+		sprint(self, "Thor's Hammer");
+		eweap_am(self, AMMO_CELLS, "   -> ");
+		sprint(self, "\n");
+	}*/
+
+	else if (wp == IT_ARMOR3) sprint(self, "Body armor (code red)\n");
+	else if (wp == IT_ARMOR2) sprint(self, "Combat armor (code yellow)\n");
+	else if (wp == IT_ARMOR1) sprint(self, "Jacket armor (code green)\n");
+	else if (wp == IT_KEY2) sprint(self, "a Gold key\n");
+	else if (wp == IT_KEY1) sprint(self, "a Silver key\n");
+	else if (wp == IT_SUPERHEALTH) sprint(self, "Mega health!\n");
+	else if (wp == IT_QUAD) sprint(self, "Quad damage\n");
+	else if (wp == IT_INVULNERABILITY) sprint(self, "Pentagram power\n");
+	else if (wp == IT_SUIT) sprint(self, "Hazmat protection suit\n");
+	else if (wp == IT_INVISIBILITY) sprint(self, "Ring of shadows\n");
+//	else if (wp == IT_) sprint(self, "\n");
+};
+
+
+
+/*
+		+---------------------------------------+
+		|  inventory control                    | SEC-HEAD
+		+---------------------------------------+
+*/
+
+// handle player inventory impulses
+
+// 52 = list inv + set drop item
+// 53 = drop mode
+
+// ops:
+
+// if 53 is called with no inventory select, it calls up drop menu
+
+// if list is called a second time before timeout, it sets drop item from players inventory
+// calling 53 with drop item set drops that item
+// guns drop with default ammo, or % of ammo load, whichever is smaller
+// ammo drop is  small box amount or % of ammo load, whichever is smaller
+
+float AMMO_PER = 0.2; // percent of ammo load to drop if inventory does not contain 2 x req. amount
+
+// item is tossed out along v_angle
+// thrown guns will not rotate
+
+void() inventory =
+{
+	local float f, k, IT_DET;
+	local entity e;
+
+// detect items for title header print
+	IT_DET = IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3 | IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD | IT_SUPERHEALTH;
+	am_type = 0;
+	if (self.impulse == IMP_INV)
+	{
+		stuffcmd(self, "con_notify 22\n"); // for this op
+		stuffcmd(self, "con_notifytime 10\n");
+
+		sprint(self, "\n* Inventory *\n");
+		sprint(self, "-\nWeapons:\n");
+		f = 1;
+		while (f <= IT_QUAD)
+		{
+			e = world;
+			if (f <= IT_MJOLNIR || f == IT_AXE)
+			{
+				k = 0;
+				if (f == IT_AXE) k = PK_IT_AXE;
+				e = vchk(f, k, self.vwepent);
+			}
+			if (e)
+			{
+				if (e.eweapon)
+				{
+					sprint(self, e.netname);
+					eweap_am(self, e.lip, "   -> ");
+					sprint(self, "\n");
+				}
+				else
+					if (self.items & f) q1_inv_print(f);
+			}
+			else
+				if (self.items & f) q1_inv_print(f);
+
+			if (f == IT_MJOLNIR) // skip bits 256 - 2048
+				f = IT_AXE;
+			else
+				f = f * 2;
+			if (f == IT_ARMOR1)
+			{
+				if (PK_INV)
+				{
+					pk_pr = "-\npainkeep Items:\n";
+					k = 2;
+					while (k < 8192)
+					{
+						e = world;
+						e = vchk(IT_AXE, k, self.vwepent);
+						if (e)
+						{
+							if (e.eweapon)
+							{
+								sprint(self, e.netname);
+								eweap_am(self, e.lip, "   -> ");
+								sprint(self, "\n");
+							}
+							else
+								eweap_am(self, k, pk_pr);
+						}
+						else
+							eweap_am(self, k, pk_pr);
+						k = k * 2;
+					}
+				}
+				loose_ammo();
+				if (self.rune_flag & RUNE_AMMO)
+				if (self.target1 != "ammorune")
+					sprint(self, "Ammo Pack\n");
+				if (self.items & IT_DET)
+					sprint(self, "-\nItems:\n");
+			}
+		}
+		if (self.x_items & X_INV) sprint(self, "-\nX Items:\n");
+		if (self.x_items & X_PWR_ARM_INV)
+		{
+			sprint(self, "Powered armor\n");
+		}
+		if (self.x_items & X_Q2_KEY_BIT) // IDEA: bit list or key list (dep on map genre)?
+		{
+			sprint(self, "extra key(s)\n");
+		}
+		if (self.x_items & X_D_MAP)
+		{
+			sprint(self, "an automap\n");
+		}
+		if (self.x_items & X_D_VIS)
+		{
+			sprint(self, "night vision goggles\n");
+		}
+		if (self.rune_flag & RUNE_MASK_ALL) sprint(self, "-\nRunes of power\n");
+	}
+
+	am_type = 0;
+}
+
+// for tossed items
+
+// fn(dropinview) - toss stuff out
+// de - ent doing tossing (player)
+// ve - ent being tossed
+
+void(entity de, entity ve) dropinview =
+{
+	local vector vec;
+	local float at;
+
+	ve.nextthink = time + 5; // no touch for a bit - assuming item_call make
+
+	if (ve.classname == "dyn_item")
+	{
+		at = TRUE; // allow long throw
+		ve.punchangle = '-1 -1 -1'; // dont re bounce
+	}
+//	if (ve.classname == "gravity_armed") at = TRUE; // ur? fails to land
+
+	if (ve.origin == v0)
+		setorigin(ve, de.origin);
+
+	makevectors(de.v_angle);
+	vec = normalize(v_forward);
+	if (de.angles_x > 2.0 && at) // throw up in air
+		{
+		ve.velocity = (400 + ((de.angles_x / 23.0) * 200) ) * vec;
+//		ve.movetype = MOVETYPE_FLY; // still fails!
+		}
+	else // toss on ground
+		{
+		ve.velocity = 250 * vec;
+		ve.velocity_z = 250 + ((de.angles_x / 26.0) * 200);
+		if (de.angles_x < -8.0) ve.velocity_z = ve.velocity_z - (60 + de.angles_x);
+		}
+}
+
+// dropping imventory - the complicated method
+
+void(float im) drop_inventory =
+{
+	local string sel, ic;
+	local float b, f;
+	local entity e, d;
+
+	if (!im) return;
+
+	if (!self.aiment) return;
+	if (self.aiment.classname != "dropinv") return;
+
+	if (im == 1)
+	{
+		sel = self.aiment.noise;
+		b = self.aiment.dmg;
+		d = self.aiment.eweapon; // eweap
+	}
+	if (im == 2)
+	{
+		sel = self.aiment.noise1;
+		b = self.aiment.lefty;
+		d = self.aiment.vwepent; // eweap
+	}
+	if (im == 3)
+	{
+		sel = self.aiment.noise2;
+		b = self.aiment.lip;
+		d = self.aiment.charmer; // eweap
+	}
+	if (self.aiment.cnt == 4)
+	{
+		sel = self.aiment.noise3;
+		b = self.aiment.wait;
+		d = self.aiment.enemy;
+	}
+	if (self.aiment.cnt == 5)
+	{
+		sel = self.aiment.noise4;
+		b = self.aiment.aflag;
+		d = self.aiment.oldenemy;
+	}
+	if (self.aiment.cnt == 5)
+	{
+		sel = self.aiment.target1;
+		b = self.aiment.delay;
+		d = self.aiment.goalentity;
+	}
+	if (self.aiment.cnt == 7)
+	{
+		sel = self.aiment.target2;
+		b = self.aiment.volume;
+		d = self.aiment.owner;
+	}
+
+	e = spawn(); // for tossed item
+	e.classname = "dyn_item";
+	f = 0;
+
+// TDO: check self.target2 for d / q2 /q3 items
+// TDO: dead drop rune for rules 2
+// FIX: tossed items dont have map codes, sscodes, wad for touch
+
+// note: for rules 1, time left is in expiry ent
+
+// dropping a rune
+
+	if (sel == "Haste" ||
+		 sel == "Regeneration" ||
+		 sel == "Earth magic" ||
+		 sel == "Black magic" ||
+		 sel == "Hell magic" ||
+		 sel == "Elder magic")
+	{
+		e.spawnflags = b;
+		ic = "item_sigil";
+
+		if (sel == "Haste")
+			ic = "item_haste";
+
+		if (sel == "Regeneration")
+			ic = "item_regen";
+
+		item_call_save(e, ic);
+
+		if (RUNES != 1)
+		if (ic == "item_sigil") e.classname = ic; // make a real item
+
+		if (RUNES)
+			self.rune_flag = self.rune_flag - (self.rune_flag & b); // remove rune
+		else if (ic == "item_sigil")
+		{
+			serverflags = serverflags - (serverflags & b); // remove server rune
+			serverflags = serverflags | (SVR1 * b); // so we know it was collected and pooted out
+		}
+		dropinview(self, e);
+		self.aiment.map = sel;
+		return;
+	}
+
+// dropping an artifact
+	if (sel == "Invulerability" && (self.items & b))
+	{
+		item_call_save(e, "item_artifact_invulnerability");
+		f = self.invincible_finished;
+		self.invincible_finished = -1;
+		if (f < 1) f = time + 10;
+	}
+
+	if (sel == "Quad Damage" && (self.items & b))
+	{
+		item_call_save(e, "item_artifact_super_damage");
+		f = self.super_damage_finished;
+		self.super_damage_finished = -1;
+		if (f < 1) f = time + 10;
+	}
+
+	if (sel == "Limited Invisibility" && (self.items & b))
+	{
+		item_call_save(e, "item_artifact_invisibility");
+		f = self.invisible_time;
+		self.invisible_finished = -1;
+		if (f < 1) f = time + 10;
+	}
+
+	if (sel == "Hazmat Suit" && (self.items & b))
+	{
+		item_call_save(e, "item_artifact_envirosuit");
+		f = self.radsuit_finished;
+		self.radsuit_finished = -1;
+		if (f < 1) f = time + 10;
+	}
+
+	if (sel == "Diving Suit" && (self.items & b))
+	{
+		item_call_save(e, "item_artifact_envirosuit");
+		f = self.wetsuit_finished;
+		self.wetsuit_finished = -1;
+		if (f < 1) f = time + 10;
+	}
+
+	if (sel == "Empathy Shields" && (self.empathy_finished))
+	{
+		item_call_save(e, "item_artifact_empathy_shields");
+		f = self.empathy_finished;
+		self.empathy_finished = -1;
+		if (f < 1) f = time + 10;
+	}
+
+// artifact common
+	if (f)
+	{
+		self.items = self.items - (self.items & b);
+		f = f - time;
+		if (f < 10) f = 10;
+		e.dmgtime = f;
+		dropinview(self, e);
+		self.aiment.map = sel;
+		return;
+	}
+
+	if (sel == "Ammo Pack" && (self.rune_flag & RUNE_AMMO))
+	{
+		item_call_save(e, "d_item_pack");
+		self.rune_flag = self.rune_flag - (self.rune_flag & b);
+		dropinview(self, e);
+		self.aiment.map = sel;
+		return;
+	}
+
+// q3 flight
+	if (sel == "Flying Rune" && (self.rune_flag & RUNE_FLG_FLY)) // note: flight time left is in expiry
+	{
+		item_call_save(e, "item_flight");
+		self.rune_flag = self.rune_flag - (self.rune_flag & b);
+		self.movetype = MOVETYPE_WALK;
+		dropinview(self, e);
+		self.aiment.map = sel;
+		return;
+	}
+
+	remove(e); // nothing tossed out
+};
+
+
+void(string sl, float b, entity e) drop_string =
+{
+	if (self.aiment.cnt == 1)
+	{
+		self.aiment.noise = sl;
+		self.aiment.dmg = b;
+		self.aiment.eweapon = e;
+	}
+	if (self.aiment.cnt == 2)
+	{
+		self.aiment.noise1 = sl;
+		self.aiment.lefty = b;
+		self.aiment.vwepent = e;
+	}
+	if (self.aiment.cnt == 3)
+	{
+		self.aiment.noise2 = sl;
+		self.aiment.lip = b;
+		self.aiment.charmer = e;
+	}
+	if (self.aiment.cnt == 4)
+	{
+		self.aiment.noise3 = sl;
+		self.aiment.wait = b;
+		self.aiment.enemy = e;
+	}
+	if (self.aiment.cnt == 5)
+	{
+		self.aiment.noise4 = sl;
+		self.aiment.aflag = b;
+		self.aiment.oldenemy = e;
+	}
+	if (self.aiment.cnt == 6)
+	{
+		self.aiment.target1 = sl;
+		self.aiment.delay = b;
+		self.aiment.goalentity = e;
+	}
+	if (self.aiment.cnt == 7)
+	{
+		self.aiment.target2 = sl;
+		self.aiment.volume = b;
+		self.aiment.owner = e;
+	}
+
+	self.aiment.cnt = self.aiment.cnt + 1;
+};
+
+// used
+
+// cnt
+// weapon - current item
+// count - bit flags of eweaps so we can find reg weps
+
+
+void(float pg) drop_setup =
+{
+	local float a, d, e, f, k, l, m, n;
+	local string sel, ic;
+
+	if (!self.aiment) return;
+	if (self.aiment.classname != "dropinv") return;
+
+	self.aiment.grap_firetest = 0; // redo menu
+	self.aiment.weapon = 0;
+	self.aiment.wad = "";
+
+	self.aiment.noise = "";
+	self.aiment.noise1 = "";
+	self.aiment.noise2 = "";
+	self.aiment.noise3 = "";
+	self.aiment.noise4 = "";
+	self.aiment.target1 = "";
+	self.aiment.target2 = "";
+
+	if (!pg) // set place holders
+	{
+		d = e = f = k = //l = m = n =
+
+		self.aiment.button7 =
+		self.aiment.button8 =
+		self.aiment.button9 =
+		self.aiment.button10 =
+//		self.aiment.button11 =
+//		self.aiment.button12 =
+//		self.aiment.button13 =
+
+		self.aiment.button0 = 
+		self.aiment.button1 = 
+		self.aiment.button2 = 
+		self.aiment.button3 =
+//		self.aiment.button4 =
+//		self.aiment.button5 =
+//		self.aiment.button6 =
+										1; //init
+	}
+	else if (pg < 0) // redo same page - but diff stuff
+	{
+		d = self.aiment.button7;
+		e = self.aiment.button8;
+		f = self.aiment.button9;
+		k = self.aiment.button10;
+//		l = self.aiment.button11;
+//		m = self.aiment.button12;
+//		n = self.aiment.button13;
+	}
+	else
+	{
+		self.aiment.button7  = d = self.aiment.button0; // save pos for next page
+		self.aiment.button8  = e = self.aiment.button1;
+		self.aiment.button9  = f = self.aiment.button2;
+		self.aiment.button10 = k = self.aiment.button3;
+//		self.aiment.button11 = l = self.aiment.button4;
+//		self.aiment.button12 = m = self.aiment.button5;
+//		self.aiment.button13 = n = self.aiment.button6;
+	}
+
+	self.aiment.cnt = 1;
+	sel = "";
+
+	while (self.aiment.cnt < 8)
+	{
+		if (d <= 8388608)
+		{
+			if (d < 16) // start at top - runes
+			{
+				if (!RUNES) // if rune server is off any player can drop serverflags runes
+				{
+					a = d & 15; // in case runes are ever > bit 8
+					if (serverflags & a)
+					{
+						drop_string(rune_name(a), d, world);
+						self.aiment.msight = " *: server runes can be released";
+					}
+				}
+				else
+				if (RUNES > 1) // rule 1 - cant drop rune
+				if (self.rune_flag & d)
+				{
+					ic = rune_name(d);
+					if (d & RUNE_FLG_HS)
+					if (self.target2 == "progs/q3_art.mdl")
+						ic = "Haste";
+
+					if (d & RUNE_FLG_RG)
+					if (self.target2 == "progs/q3_art.mdl")
+						ic = "Regeneration";
+
+					drop_string(ic, d, world);
+				}
+			}
+
+			if (d == 32)
+			{
+				a = RUNE_FLG_FLY;
+				if (!(a & RUNE_MASK_ALL))
+				if (self.rune_flag & RUNE_FLG_FLY)
+					drop_string("Flying Rune", RUNE_FLG_FLY, world);
+			}
+
+			if (d == 64)
+			if (self.items & IT_INVULNERABILITY) drop_string("Invulerability", IT_INVULNERABILITY, world);
+
+			if (d == 128)
+			if (self.items & IT_QUAD) drop_string("Quad Damage", IT_QUAD, world);
+
+			if (d == 256)
+			if (self.items & IT_INVISIBILITY) drop_string("Limited Invisibility", IT_INVISIBILITY, world);
+
+			if (d == 512)
+			if ((self.items & IT_SUIT) && !self.wetsuit_finished) drop_string("Hazmat Suit", IT_SUIT, world);
+
+			if (d == 1024)
+			if ((self.items & IT_SUIT) && self.wetsuit_finished) drop_string("Diving Suit", IT_SUIT, world);
+
+// note: when droping search .map for mega_health_rot & get value in duration for next add - goes in .healamount
+//			if (d == 2048)
+//			if (self.items & IT_SUPERHEALTH) drop_string("Mega Health", IT_SUPERHEALTH, world);
+
+			if (d == 4096)
+			if (self.empathy_finished) drop_string("Empathy Shields", 0, world);
+
+			if (d == 8192)
+			{
+				a = RUNE_AMMO;
+				if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
+				if (self.rune_flag & RUNE_AMMO)
+					drop_string("Ammo Pack", RUNE_AMMO, world);
+			}
+
+
+
+
+
+// note: protect builtin armors
+//			if (d == 65536)
+//			if (self.items & IT_ARMOR_BITS) drop_string("Armor", IT_ARMOR_BITS, world);
+
+			d = d * 2;
+		}
+		else if (e <= 8388608)
+		{
+//			if (e == 1)
+				
+			e = e * 2;
+		}
+		else if (f < 8388608)
+		{
+//			if (f == 1)
+				
+			f = f * 2;
+		}
+		if (f == 8388608) 
+			self.aiment.cnt = 8;
+	}
+
+	self.aiment.button0 = d; // continue
+	self.aiment.button1 = e;
+	self.aiment.button2 = f;
+	self.aiment.button3 = k;
+//	self.aiment.button4 = l;
+//	self.aiment.button5 = m;
+//	self.aiment.button6 = n;
+
+};
+
+float DROPMENU_TIME = 60;
+float DROPMENU_SIZE = 15;
+
+void() drop_menu =
+{
+	string head, foot, nf;
+	local float f;
+//	string ln1, ln2, ln3, ln4, ln5;
+
+//	ln1 = ln2 = ln3 = ln4 = ln5 = "";
+
+	if (!self.aiment)
+	{
+		self.aiment = spawn();
+		self.aiment.classname = "dropinv";
+		drop_setup(0);
+
+// save notify stats
+		self.aiment.grap_state = cvar("con_notifytime");
+		self.aiment.grap_length = cvar("con_notify");
+// setup menu display
+
+		stuffcmd(self, "con_notifytime "); // restore notify
+		stuffcmd(self, ftos(DROPMENU_TIME));
+		stuffcmd(self, "\ncon_notify ");
+		stuffcmd(self, ftos(DROPMENU_SIZE));
+		stuffcmd(self, "\n");
+
+	}
+	if (self.aiment.classname != "dropinv")
+	{
+		centerprint(self,"Drop inventory failure, exiting menu\n");
+		self.button1 = 1;
+		return;
+	}
+
+	if (self.aiment.grap_firetest) return; // displayed
+	self.aiment.grap_firetest = TRUE;
+
+
+	if (self.aiment.weapon)
+	{
+		if (self.aiment.weapon == 1)
+		{
+			if (!self.aiment.noise) self.aiment.weapon = 0;
+			else self.aiment.wad = self.aiment.noise;
+		}
+
+		if (self.aiment.weapon == 2)
+		{
+			if (!self.aiment.noise1) self.aiment.weapon = 0;
+			else self.aiment.wad = self.aiment.noise1;
+		}
+
+		if (self.aiment.weapon == 3)
+		{
+			if (!self.aiment.noise2) self.aiment.weapon = 0;
+			else self.aiment.wad = self.aiment.noise2;
+		}
+
+		if (self.aiment.weapon == 4)
+		{
+			if (!self.aiment.noise3) self.aiment.weapon = 0;
+			else self.aiment.wad = self.aiment.noise3;
+		}
+
+		if (self.aiment.weapon == 5)
+		{
+			if (!self.aiment.noise4) self.aiment.weapon = 0;
+			else self.aiment.wad = self.aiment.noise4;
+		}
+
+		if (self.aiment.weapon == 6)
+		{
+			if (!self.aiment.target1) self.aiment.weapon = 0;
+			else self.aiment.wad = self.aiment.target1;
+		}
+
+		if (self.aiment.weapon == 7)
+		{
+			if (!self.aiment.target2) self.aiment.weapon = 0;
+			else self.aiment.wad = self.aiment.target2;
+		}
+//		if (self.aiment.weapon == 4) self.wad = self.aiment.noise3;
+//		if (self.aiment.weapon == 5) self.wad = self.aiment.noise4;		
+	}
+
+	head =
+					 "\n\n\n\n\n\n\n\n"
+					 "\b   Drop Inventory Menu:   \n"
+					 "\b+------------------------+\n";
+
+	foot = 
+						"  all other buttons exit  \n"
+					 "\b+------------------------+\n";
+
+	nf = 
+					   "   Nothing found!         \n"
+					   "           .              \n"
+					   "           .              \n"
+					   "           .              \n";
+
+	sprint(self, head);
+
+	if (self.aiment.noise != "")
+	{
+		sprint(self,"  1: ");
+		sprint(self,self.aiment.noise);
+		sprint(self,"\n");
+		f = TRUE;
+	}
+	if (self.aiment.noise1 != "")
+	{
+		sprint(self,"  2: ");
+		sprint(self,self.aiment.noise1);
+		sprint(self,"\n");
+		f = TRUE;
+	}
+	if (self.aiment.noise2 != "")
+	{
+		sprint(self,"  3: ");
+		sprint(self,self.aiment.noise2);
+		sprint(self,"\n");
+		f = TRUE;
+	}
+	if (self.aiment.noise3 != "")
+	{
+		sprint(self,"  4: ");
+		sprint(self,self.aiment.noise3);
+		sprint(self,"\n");
+		f = TRUE;
+	}
+	if (self.aiment.noise4 != "")
+	{
+		sprint(self,"  5: ");
+		sprint(self,self.aiment.noise4);
+		sprint(self,"\n");
+		f = TRUE;
+	}
+	if (self.aiment.target1 != "")
+	{
+		sprint(self,"  6: ");
+		sprint(self,self.aiment.target1);
+		sprint(self,"\n");
+		f = TRUE;
+	}
+	if (self.aiment.target2 != "")
+	{
+		sprint(self,"  7: ");
+		sprint(self,self.aiment.target2);
+		sprint(self,"\n");
+		f = TRUE;
+	}
+
+	if (!f)
+		sprint(self, nf);
+	else
+		sprint(self, "  8: next inventory page  \n");
+
+	if (self.aiment.msight)
+	{
+		sprint(self, self.aiment.msight);
+		sprint(self,"\n");
+	}
+
+	sprint(self, foot);
+
+	if (self.aiment.wad != "")
+	{
+		sprint(self,"\b <ENTER> or <FIRE> confirm drop of:\n");
+		sprint(self,self.aiment.wad);
+		sprint(self,"\n");
+		
+	}
+	else
+	{
+		if (self.aiment.map)
+		{
+			sprint(self," You dropped: ");
+			sprint(self, self.aiment.map);
+			sprint(self,"\n");
+		}
+		if (f)
+			sprint(self,"\b Enter code: \n");
+	}
+
+/*	
+	if (self.aiment.noise == "")
+	{
+	head =
+					 "\b   Drop Inventory Menu:   \n"
+					 "\b+------------------------+\n"
+					   "   Nothing found!         \n"
+					   "           .              \n"
+					   "           .              \n"
+					   "           .              \n"
+						"    any button exits      \n"
+					 "\b+------------------------+\n";
+	}
+	else
+	{
+	head =
+					 "\b   Drop Inventory Menu:   \n"
+					 "\b+------------------------+\n"
+						"1: ";
+	}
+
+	if (self.aiment.weapon == 1)
+	{
+	foot = 
+						"\n"
+						"  4: next inventory page  \n"
+						"    any button exits      \n"
+					 "\b+------------------------+\n"
+					 "\b <ENTER> confirm drop #1  ";
+	}
+	else
+	if (self.aiment.weapon == 2)
+	{
+	foot = 
+						"\n"
+						"  4: next inventory page  \n"
+						"    any button exits      \n"
+					 "\b+------------------------+\n"
+					 "\b <ENTER> confirm drop #2  ";
+	}
+	else
+	if (self.aiment.weapon == 3)
+	{
+	foot = 
+						"\n"
+						"  4: next inventory page  \n"
+						"    any button exits      \n"
+					 "\b+------------------------+\n"
+					 "\b <ENTER> confirm drop #3  ";
+	}
+	else if (self.aiment.noise != "")
+	{
+	foot = 
+						"\n"
+						"  4: next inventory page  \n"
+						"    any button exits      \n"
+					 "\b+------------------------+\n"
+					 "\b Enter code: ";
+	}
+
+	if (self.aiment.noise1 != "") ln2 = "\n2: ";
+	if (self.aiment.noise2 != "") ln3 = "\n3: ";
+//	if (self.aiment.noise3 != "") ln4 = "\n4: ";
+//	if (self.aiment.noise4 != "") ln5 = "\n5: ";
+
+
+//	centerprint8(self, head, self.aiment.noise, ln2, self.aiment.noise1, ln3, self.aiment.noise2, ln4, self.aiment.noise3, ln5, self.aiment.noise4, foot, self.wad);
+	centerprint7(self, head, self.aiment.noise, ln2, self.aiment.noise1, ln3, self.aiment.noise2, foot);
+*/
+};
+
+// redisplay menu if something printed to console that was detected - like cube notes
+
+void() drop_inv_check =
+{
+	local entity e;
+
+	e = find(world, classname, "player");
+	while (e)
+	{
+		if (e.ishuman)
+		if (e.aiment)
+		if (e.aiment.classname == "dropinv")
+			e.aiment.grap_firetest = 0;
+
+		e = find(e, classname, "player");
+	}
+};
+
+

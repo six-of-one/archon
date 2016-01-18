@@ -731,7 +731,8 @@ void(float silent) player_gremlin_become =
 //	self.modelindex_morph=self.modelindex;
 //	self.mask_x = CB_GREMLIN;
 
-	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN;
+	self.items = self.items | IT_AXE | IT_SHOTGUN;
+	self.builtin = self.items & WEP_MASK;
 	self.weapon = IT_SHOTGUN;
 
 

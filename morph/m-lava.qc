@@ -365,7 +365,7 @@ void() player_lavablob_attack =
 		return;
 	}
 
-	if (self.weapon == IT_SHOTGUN) // fire a lava ball
+	if (self.weapon == IT_AXE) // fire a lava ball
 	{
 		if (rune_haste(0.275))
 		self.attack_finished=time+0.55;
@@ -400,12 +400,15 @@ void() player_lavablob_impulse =
 
 	morph_impulse();
 
+/*
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Lava Bomb using ( Jump attack )\n");
 	}
-	if (self.weapon == IT_SHOTGUN)
+*/
+	if (self.weapon == IT_AXE)
+	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		sprint(self, "Lava Bomb using ( Lava balls )\n");
 		self.items = self.items | IT_CELLS;
@@ -459,8 +462,9 @@ void(float silent) player_lavablob_become =
 	setmodel(self,"progs/lavabomb.mdl");
 	self.modelindex_morph = self.modelindex;
 
-	self.builtin = self.items = self.items | IT_SHOTGUN | IT_NAILGUN;
-	self.weapon = IT_SHOTGUN;
+	self.items = self.items | IT_AXE | IT_NAILGUN;
+	self.builtin = self.items & WEP_MASK;
+	self.weapon = IT_AXE;
 
 	self.skin = 0;
 

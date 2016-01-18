@@ -322,7 +322,8 @@ void(float silent) player_enforcer_become =
 
 	setmodel(self,"progs/enforcer.mdl");
 
-	self.builtin = self.items = self.items | IT_AXE;
+	self.items = self.items | IT_AXE;
+	self.builtin = self.items & WEP_MASK;
 	self.weapon = IT_AXE;
 
 	self.msight = "enforcer/sight1.wav";

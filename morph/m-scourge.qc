@@ -170,37 +170,52 @@ void() player_scourge_die =
 		+---------------------------------------+
 */
 
+
+// quad & dmg runes increase nail fire (6 slots for runes, 8 slots for quad)
+
 void(float ox) player_scourge_FireSpikes =
 {
 	local vector   src;
-	local float am;
+	local float am, f;
+	local string s1, s2;
 
 	if (rune_haste(0.1))
 		self.attack_finished = time + 0.2;
 
+// dont make extra sounds for extra fire
+	if (fabs(ox) == 40) s1 = "enforcer/enfire.wav";
+	if (fabs(ox) != 45 && fabs(ox) != 47) s2 = "weapons/rocket1i.wav";
+
+	f = 0;
+	if (ox == -45 || ox == 45) f = 4; // quad & rune affects
+	if (ox == -47 || ox == 47) f = -4;
+
 	if (ox > 0) ox = ox - 16; // move shooting position in 16 qu, and I dont know why this needs done
 	else ox = ox + 16;
 	src = self.origin - '0 0 11' + v_right * ox + v_forward * 18;
-
-//	if (wep_ref(WMOD_RDW,self.weapon & 255,0,self,0) == MC_ROTOR)
+	src_z = src_z + f;	
+	
 	if (self.weapon == IT_LIGHTNING && (self.ammo_cells > 0))
-//	if (self.weapon == 0) // fire some laser bolts, maybe add more later
 		{
 		self.currentammo = self.ammo_cells;
 		am = 0;
-		if (fabs(ox) == 24)
-			if (self.currentammo > 0)
-				am = FL_USEAMMO;
+//		if (fabs(ox) == 24)
+//			if (self.currentammo > 0)
+//				am = FL_USEAMMO;
 
-		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, am, RM_SKY | PF_LAVA, src, ' 0 0 0', "laser", "progs/laser_m.mdl", "enforcer/enfire.wav", Laser_Blast, 6, SUB_Remove, Laser_Blast);
-		if (!self.eweapon) self.ammo_cells = self.ammo_cells - 1;
+		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, am, RM_SKY | PF_LAVA, src, ' 0 0 0', "laser", "progs/laser_m.mdl", s1, Laser_Blast, 6, SUB_Remove, Laser_Blast);
+
+		if (s1 == "enforcer/enfire.wav")
+//		if (self.eweapon)
+		if (self.currentammo > 0)
+			self.currentammo = self.ammo_cells = self.ammo_cells - 1;
 		newmis.skin = 8; // white / blue shift
 		newmis.frame = 5; // small slope trap
 //		newmis.effects = EF_DIMLIGHT;
 		}
 	else
 		{
-		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, src, ' 0 0 0', "spike", "progs/spike.mdl", "weapons/rocket1i.wav", spike_touch, 6, SUB_Remove, spike_touch);
+		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, src, ' 0 0 0', "spike", "progs/spike.mdl", s2, spike_touch, 6, SUB_Remove, spike_touch);
 		newmis.frame = 5;
 		newmis.skin = 2;
 //		newmis.touch = superspike_touch;				//for when we upgrade nail shooters!
@@ -209,73 +224,109 @@ void(float ox) player_scourge_FireSpikes =
 };
 
 void()   player_scourge_atk1 =[ $shoot1,   player_scourge_atk2 ]
-   {
+{
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(40);
+
+	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
+		player_scourge_FireSpikes(-45);
 //   player_scourge_FireSpikes(-40);
-   };
+};
 void()   player_scourge_atk2 =[ $shoot2,   player_scourge_atk3 ]
-   {
+{
    self.effects = self.effects | EF_MUZZLEFLASH;
 //   player_scourge_FireSpikes(56);
    player_scourge_FireSpikes(-52);  // moving outside shots in 4 units
-   };
+
+	if (self.super_damage_finished)// quad or damage rune - extra nails
+		player_scourge_FireSpikes(47);
+};
 void()   player_scourge_atk3 =[ $shoot1,   player_scourge_atk4 ]
-   {
+{
    self.effects = self.effects | EF_MUZZLEFLASH;
 //   player_scourge_FireSpikes(40);
    player_scourge_FireSpikes(-40);
-   };
+
+	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
+		player_scourge_FireSpikes(45);
+
+	};
 void()   player_scourge_atk4 =[ $shoot2,   player_scourge_atk5 ]
-   {
+{
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(52);
 //   player_scourge_FireSpikes(-56);
-   };
+
+	if (self.super_damage_finished)// quad or damage rune - extra nails
+		player_scourge_FireSpikes(-47);
+};
 void()   player_scourge_atk5 =[ $shoot1,   player_scourge_atk6 ]
-   {
+{
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(40);
+
+	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
+		player_scourge_FireSpikes(-45);
 //   player_scourge_FireSpikes(-40);
-   };
+};
 void()   player_scourge_atk6 =[ $shoot2,   player_scourge_atk7 ]
-   {
+{
    self.effects = self.effects | EF_MUZZLEFLASH;
 //   player_scourge_FireSpikes(56);
    player_scourge_FireSpikes(-52);
-   };
+
+	if (self.super_damage_finished)// quad or damage rune - extra nails
+		player_scourge_FireSpikes(-47);
+};
 void()   player_scourge_atk7 =[ $shoot1,   player_scourge_atk8 ]
-   {
+{
    self.effects = self.effects | EF_MUZZLEFLASH;
 //   player_scourge_FireSpikes(40);
    player_scourge_FireSpikes(-40);
-   };
+
+	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
+		player_scourge_FireSpikes(45);
+
+};
 void()   player_scourge_atk8 =[ $shoot2,   player_stand1 ]
-   {
+{
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(52);
 //   player_scourge_FireSpikes(-56);
 //   SUB_AttackFinished (4*random());
+	if (self.super_damage_finished)// quad or damage rune - extra nails
+		player_scourge_FireSpikes(-47);
 
 	if (self.currentammo < 1 )  // firing lasers, out of ammo - // FIX
-		{
+	{
 //		bprint("switch from lasers\n");
 //		W_SetWeapon(SEL_SCRGNAIL); // best wep cant select internals!
 		self.weapon = SEL_SCRGNAIL;
 		self.currentammo = 1;
-		}
+	}
 
-	};
+};
 
 void() m_Attack_With_Tail =
 {
 	if (self.weapon == IT_GRENADE_LAUNCHER && (self.ammo_rockets > 0))  // we got modded to fire prox mines if we have rockets
+	{
+/*		if (self.eweapon)
+		if (self.eweapon.pk_touch != cube_touch)
 		{
+			self.eweapon.weaponmodel = "";
+			self.eweapon._attack = player_scourge_attack;
+			self.eweapon._fr_attack = SUB_Null;
+			self.eweapon.duration = 0; 
+			self.eweapon.noise3 = "weapons/prox/proxbomb.wav";
+		}
+*/
 		self.currentammo = self.ammo_rockets;
 		W_Fire_Proxmine();
-		if (!self.eweapon) self.ammo_rockets = self.ammo_rockets - 1;
+//		if (!self.eweapon) 
+			self.ammo_rockets = self.ammo_rockets - 1;
 		self.punchangle_x = 0;
-		}
+	}
 	else
 		W_FireAxe();
 //	melee_damage(self.origin + '0 0 4', self.origin + '0 0 4' + v_forward*48, (random() + random() + random()) * 40, 20, crandom() * 50, 0, "", "weapons/bounce.wav", "shambler/smack.wav");
@@ -304,17 +355,28 @@ void() player_scourge_attack =
 	if (random() < 0.07) morph_sound(2, self.msight, 3);
 
 	if ( self.weapon == SEL_SCRGTAIL || (self.weapon == IT_GRENADE_LAUNCHER))
-		{
+	{
 		if (rune_haste(0.5))
 		self.attack_finished = time + 1.0;
 		player_scourge_melee1();
-		}
+	}
 	else
+	{
+ /*		if (self.eweapon)
+		if (self.eweapon.pk_touch != cube_touch)
 		{
+			self.eweapon.weaponmodel = "";
+			self.eweapon.noise3 = "";
+			self.eweapon.lip = 0; // ammo used in fire fn above
+			self.eweapon._attack = player_scourge_attack;
+			self.eweapon._fr_attack = SUB_Null;
+			self.eweapon.duration = 0; // dont dbl sound
+		}
+*/
 		player_scourge_atk1();
 		if (rune_haste(0.4))
 		self.attack_finished = time + 0.8;
-		}
+	}
 };
 
 /*
@@ -330,23 +392,13 @@ void() player_scourge_impulse =
 
 	split_morph_impulse();
 
-// TDO: eweapon checks - can fire lasers & prox bombs
 // TDO: alt fire
-// TDO: quad & dmg runes increase nail fire (6 slots for runes, 8 slots for quad)
 
 	if (self.weapon == IT_LIGHTNING)
 	{
 		self.items = self.items | IT_CELLS;
 		sprint(self, "Scourge firing ( lazers )\n"); 
 		self.weaponmodel = 	"";
- 		if (self.eweapon)
-		if (self.eweapon.pk_touch != cube_touch)
-		{
-			self.eweapon.weaponmodel = "";
-			self.eweapon._attack = player_scourge_attack;
-			self.eweapon._fr_attack = SUB_Null;
-			self.eweapon.duration = 0; // dont dbl sound
-		}
 		self.forcewchange = 0;
 	}
 	if (self.weapon == IT_GRENADE_LAUNCHER)
@@ -354,14 +406,6 @@ void() player_scourge_impulse =
 		self.items = self.items | IT_ROCKETS;
 		sprint(self, "Scourge firing ( bombs )\n"); 
 		self.weaponmodel = "";
-		if (self.eweapon)
-		if (self.eweapon.pk_touch != cube_touch)
-		{
-			self.eweapon.weaponmodel = "";
-			self.eweapon._attack = player_scourge_attack;
-			self.eweapon._fr_attack = SUB_Null;
-			self.eweapon.duration = 0; // dont dbl sound
-		}
 		self.forcewchange = 0;
 	}
 	if (self.weapon == SEL_SCRGNAIL)
@@ -380,6 +424,18 @@ void() player_scourge_impulse =
 			sprint(self, "Scourge firing ( stinger )\n"); 
 		}
 	}
+	
+/*	if (self.vwepent)
+		viswep_ld(self, -1);
+
+	if (self.eweapon)
+	if (self.eweapon.pk_touch != cube_touch)
+	{
+		self.eweapon.weaponmodel = "";
+		self.eweapon._attack = player_scourge_attack;
+		self.eweapon._fr_attack = SUB_Null;
+		self.eweapon.duration = 0; 
+	} */
 };
 
 /*
@@ -486,8 +542,8 @@ void(float silent) player_scourge_become =
 
 	setmodel(self,"progs/scor.mdl");
 
-//	self.mask_x = CB_SCOURGE;
-	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN;
+	self.items = self.items | IT_AXE | IT_SHOTGUN;
+	self.builtin = self.items & WEP_MASK | IT_LIGHTNING | IT_GRENADE_LAUNCHER;
 	SEL_SCRGNAIL = IT_SHOTGUN;
 	SEL_SCRGTAIL = IT_AXE;
 	self.weapon = SEL_SCRGNAIL;

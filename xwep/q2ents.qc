@@ -591,7 +591,7 @@ void () weapon_hyperblaster =
 	self.chaosweptime = 1.62;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
-	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;// + CB_SCOURGE;
 };
 
 void() q2_weapon_rocketlauncher =
@@ -684,7 +684,7 @@ void () q2_weapon_grenadelauncher =
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
-	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
 };
 
 
@@ -1490,6 +1490,7 @@ void() item_breather =
 	self.delay = POW_TIME;
 	self.wait = Q2_POWER_WAIT;
 	self.dmgtime = Q2_POWER_TIME;
+	self.items = 0; //clear flag from init
 
 	setmodel(self, "progs/q2_breather.mdl");
 	self.noise = "q2_snd/pkup.wav";

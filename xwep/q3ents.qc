@@ -694,7 +694,7 @@ void () q3_weapon_grenadelauncher =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
 };
 
 
@@ -852,7 +852,7 @@ void () q3_weapon_lightning =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF + CB_SCOURGE;
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;// + CB_SCOURGE;
 };
 
 void () q3_weapon_railgun =
@@ -1588,6 +1588,10 @@ void() q3_pwr_touch =
 	if (other.rune_flag & self.spawnflags) // already using this rune power - just go back
 		return;
 
+	if (self.spawnflags & RUNE_FLG_FLY)
+	if (other.mdl == "progs/gremlin-fly.mdl") // in case he's also invisible
+		return;
+
 	sprint (other,"You got the ");
 	sprint (other,self.netname);
 	sprint (other,"\n");
@@ -1821,7 +1825,7 @@ void() item_flight =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL - MORPH_FLY; // flyers dont get goody - TDO: gremlin qual
+	self.mask_x = CB_GREMLIN | (MORPH_ALL - MORPH_FLY); // flyers dont get goody
 };
 
 // holdables

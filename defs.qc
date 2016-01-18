@@ -704,3 +704,8 @@ float(entity targ, entity inflictor) CanDamage;
 // server flags command off, compile on for dev
 
 float SERVERFLAGS		= 0;
+
+// Cataboligne - 9.30.11 - extended button support from darkplaces
+
+.float button3, button4, button5, button6, button7, button8, button9, button10, button11, button12, button13, button14, button15, button16;
+

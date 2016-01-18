@@ -65,6 +65,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	else self._killmsg2 = e._killmsg2 = SUB_Null;
 
 	e.netname = self.netname;
+	e.mask_x = self.mask_x; // for bp touch & such
 //		e.mdl = self.mdl; - invisible
 	setmodel (e, self.vwepmdl);
 	e.mdl = e.model;

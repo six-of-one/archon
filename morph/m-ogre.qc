@@ -310,7 +310,8 @@ void(float silent) player_ogre_become =
 
 	setmodel(self,"progs/ogre.mdl");
 
-	self.builtin = self.items = self.items | IT_AXE | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
+	self.items = self.items | IT_AXE | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
+	self.builtin = self.items & WEP_MASK;
 	self.weapon = IT_GRENADE_LAUNCHER;
 	
 	self.msight = "ogre/ogwake.wav";

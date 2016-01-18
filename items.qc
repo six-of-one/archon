@@ -226,6 +226,7 @@ void () item_megahealth_rot =
 
 	if (other.health > other.max_health * other.health_modifier) // Cataboligne - 9.18.11 - morphic
 	{
+		self.duration = self.duration - 1; // for drop inv
 		other.health = other.health - 1;
 		self.nextthink = time + 1;
 		return ;
@@ -288,6 +289,7 @@ void () armor_touch =
 		if (self.volume != -1)
 		if (other.armorvalue >= self.volume) return; // already max
 
+		other.target2 = self.model; // for dropinv
 		ck = FALSE;
 		if (self.noise) snd = self.noise; // Cataboligne - 9.23.11 - defaulted a few things if not set
 		bit = IT_ARMOR2;
@@ -650,7 +652,7 @@ void () q100_weapon_grenadelauncher =
 	self.touch = weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
-	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
 };
 
 /*QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -681,7 +683,7 @@ void () q100_weapon_lightning =
 	self.touch = weapon_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
-	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN + CB_SCOURGE;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
 };
 
 
@@ -1258,7 +1260,7 @@ Player is invulnerable for 30 seconds
 */
 void () item_artifact_invulnerability =
 {
-	self.touch = powerup_touch;
+	self.touch = x_pwr_touch; //powerup_touch;
 
 	precache_model ("progs/invulner.mdl");
 	precache_sound ("items/protect.wav");
@@ -1278,7 +1280,7 @@ Player takes no damage from water or slime for 30 seconds
 */
 void () item_artifact_envirosuit =
 {
-	self.touch = powerup_touch;
+	self.touch = x_pwr_touch; //powerup_touch;
 
 	precache_model ("progs/suit.mdl");
 	precache_sound ("items/suit.wav");
@@ -1298,7 +1300,7 @@ Player is invisible for 30 seconds
 */
 void () item_artifact_invisibility =
 {
-	self.touch = powerup_touch;
+	self.touch = x_pwr_touch; //powerup_touch;
 
 	precache_model ("progs/invisibl.mdl");
 	precache_sound ("items/inv1.wav");
@@ -1319,7 +1321,7 @@ The next attack from the player will do 4x damage
 */
 void () item_artifact_super_damage =
 {
-	self.touch = powerup_touch;
+	self.touch = x_pwr_touch; //powerup_touch;
 
 	precache_model ("progs/quaddama.mdl");
 	precache_sound ("items/damage.wav");

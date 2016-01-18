@@ -524,6 +524,8 @@ void(entity e, string cl) item_call_save =
 	item_call(cl);
 	self = sv;
 }
+
+
 // this section implements admin override of map items, remove (& replace), cycle & inf ammo
 
 void() item_down =
@@ -934,6 +936,8 @@ void() dyn_spawn =
 	else if (self.wad == "morph_cube") bprint("\n\n");
 	else if (self.wad == "pk_crate") bprint("\n\n");
 	bprint("\n");
+
+	drop_inv_check(); // check for anyone in drop inventory menu
 
 	item_call(self.wad);
 

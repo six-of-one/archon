@@ -621,6 +621,16 @@ if (!self.mask_x) 			bprint("\n\n\n\n\n*** - WARNING - item with no mask x\n\n\n
 	if (f) // make sure morph can collect this
 	{
 		if (e) e.classname = "pk*bot";
+
+		if (!other.mask_x & CB_HUMAN)
+		if (!other.mask_x & CB_GREMLIN)
+		if (self.items & other.builtin) // touch activated special morph builtin
+		if (!self.items & other.items)
+		{
+			other.items = other.items | self.items;
+			sprint(other, "* Special morph powers activated - check your status bar\n");
+		}
+
 		return;
 	}
 
@@ -662,8 +672,8 @@ if (!self.mask_x) 			bprint("\n\n\n\n\n*** - WARNING - item with no mask x\n\n\n
 
 		if (f) self.classname = "dyn_item"; // restore
 
-		if (other.mask_x & CB_SCOURGE) // scourge has to select x_wep so they look right
-		if (self.weapon & (IT_GRENADE_LAUNCHER | IT_LIGHTNING))
+		if (other.mask_x & CB_SCOURGE) // scourge has to select x_wep so they look / sound right
+		if (self.items & (IT_GRENADE_LAUNCHER | IT_LIGHTNING))
 		{
 			e = self;
 			self = other;
@@ -707,6 +717,13 @@ bprint(")\n");
 			if (e.think == player_stand1) e.think = e.th_stand;
 		}
 		if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
+// special codes - for things that are touchable but dont disappear
+		if (self.aflag <= NO_REMOVE_TCH)
+		{
+			self.model = self.mdl;
+			self.solid = SOLID_NOT; // cant touch till respawn
+		}
+		if (self.aflag == NO_REMOVE_NORET) self.nextthink = MAXFL;
 		return;
 	}
 

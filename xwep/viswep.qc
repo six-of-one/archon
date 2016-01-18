@@ -1026,10 +1026,10 @@ void(entity e, string md, entity p) DeadThrew =
 			else if (newmis.items == IT_SUPER_SHOTGUN) newmis.ammo_shells = newmis.currentammo;
 			else if (newmis.items == IT_SHOTGUN) newmis.ammo_shells = newmis.currentammo;
 		}
-		else
+		else // pki
 		{
 //			if (newmis.items == IT_AXE)
-			newmis.pk_currentitem = newmis.pk_items = e.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
+			newmis.pk_currentitem = newmis.pk_items = e.pk_currentitem; // Cataboligne - 9.6.11 - fixes a bug in the pk1.1 source!
 
 			if (newmis.pk_items == PK_IT_CLIGHT)
 			{

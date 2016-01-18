@@ -345,10 +345,9 @@ void(float silent) player_demon_become =
 	stuffcmd(self, "exec m-fiend.cfg\n");
 
 	setmodel(self,"progs/demon.mdl");
-//	self.modelindex_morph=self.modelindex;
-//	self.mask_x = CB_DEMON;
 
-	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN | IT_GRENADE_LAUNCHER;
+	self.items = self.items | IT_AXE | IT_SHOTGUN | IT_GRENADE_LAUNCHER;
+	self.builtin = self.items & WEP_MASK;
 	self.weapon = IT_SHOTGUN;
 
 	self.msight = "demon/sight2.wav";

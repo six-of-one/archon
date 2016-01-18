@@ -421,7 +421,7 @@ string(entity e, float TR) map_trans =
 	}
 	else if (e.scode == MC_W_MORTARS || e.scode == MC_D_AROCKET || e.scode == MC_AROCKETS || e.scode == MC_Q2_AROCKETS || e.scode == MC_Q3_AROCKETS)
 	{
-		if (TR == FL_TR_WOLF) return("w_ammo_rock"); // TDO: mortar ammo model
+		if (TR == FL_TR_WOLF) return("w_ammo_rock");
 		if (TR == FL_TR_DOOM)
 		{
 			if (e.scode == MC_D_AROCKET) return("d_ammo_1rocket");
@@ -601,7 +601,11 @@ string(entity e, float TR) map_trans =
 	}
 	else if (e.scode == MC_W_DOGFOOD || e.scode == MC_D_HBOTTLE || e.scode == MC_Q2_STIMPAK || e.scode == MC_Q3_HSMALL)
 	{
-		if (TR == FL_TR_WOLF) return("w_heal_dogfood"); // TDO: blood (gibs)
+		if (TR == FL_TR_WOLF) 
+		{
+			if (random() < 0.5) return("w_heal_blood");
+			return("w_heal_bldbns");
+		}
 		if (TR == FL_TR_DOOM) return("d_item_healthbottle");
 		if (TR == FL_TR_QUAKE)
 		{
@@ -2142,6 +2146,18 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
+	else // scode not recognized
+	{
+		if (Q_100 || PK_100)
+		{
+			return("RMV");
+		}
+		if (TR >= FL_TR_REMOVE) return("RMV");
+		if (TR_NOT == FL_NOTRN_RMV) return("RMV");
+//		else if (TR_NOT == FL_NOTRN_BG) return("");
+//		else if (TR_NOT == FL_NOTRN_RNDIN) return(mcg);
+		if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
+	}
 
 	return("");
 };
@@ -2369,6 +2385,9 @@ void() check_translate =
 			bprint(tran_str(TR_ALL));
 			bprint("\n\n");
 			}
+			master_item_control_loop("hip_item", tr_all_fire); // catch for remove codes
+			master_item_control_loop("pkplus_item", tr_all_fire);
+			master_item_control_loop("x_item", tr_all_fire);
 		}
 
 		if (TR_WOLF != cvar("pk_tr_wolf" ) || tr_all_fire)

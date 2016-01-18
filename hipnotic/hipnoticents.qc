@@ -253,8 +253,6 @@ void() weapon_laser_gun =
 };
 
 
-// TDO: place holders - codes need finished
-
 void() weapon_proximity_gun =
 {
    self.netname = "Proximity Gun";
