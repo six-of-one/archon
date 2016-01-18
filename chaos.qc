@@ -643,7 +643,7 @@ void() chaos_maphack_fire =
 
 	self.dest1_x = self.dest1_x + self.lefty;
 	chaos_maphack_probe(self.dest1);
-/*
+///* test - turn off this section, makes add process linear
 //	self.dest1 = self.owner.origin + '512 512 0';
 	self.dest1_y = self.dest1_y + self.lefty;
 	chaos_maphack_probe(self.dest1);
@@ -674,7 +674,7 @@ void() chaos_maphack_fire =
 //	self.dest1 = self.owner.origin + '512 -512 0';
 	self.dest1_x = self.dest1_x + self.lefty;
 	chaos_maphack_probe(self.dest1);
-*/
+//*/
 // turn off one shot self replicator
 	if (biome.group == "start2")
 	{
