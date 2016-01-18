@@ -5,7 +5,7 @@ BLARG
 
 ==============================================================================
 */
-$cd /raid/quake/id1/models/blarg
+
 $origin 0 0 24
 $base base
 $skin skin

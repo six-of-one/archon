@@ -46,13 +46,17 @@ float HUB_MONSTER;	// true if monsters will appear on hub maps - "sv_monster_hub
 
 float ENH_Q1_MAP_MONSTERS 		= 1; // if true some q1 map monsters get weapon upgrades - grunt, enforcer
 
-float MAP_LAVABABY				= 0.5; // chance map babys will be lava monsters
-float RND_LAVABABY				= 0.3; // chance random babys will be lava monsters
+//float MAP_LAVABABY				= 0.25; // chance map babys will be lava monsters
+//float RND_LAVABABY				= 0.3; // chance random babys will be lava monsters
 
 
-// spike mine launcher  controls - mines are launched while idle
+// spike mine launcher  controls - mines are launched while idle - replaced with SummonMonster
 
-void(string ms) SShalSpikeMine;
+//void(string ms) SShalSpikeMine;
+
+// Monsters can summon minions!
+
+void(string ms) SummonMonster;
 
 //float SV_SETMINE = 0.15; // chance to summon a spike mine
 float SV_CKTIME = 15; // how frequently we check - 15 rels

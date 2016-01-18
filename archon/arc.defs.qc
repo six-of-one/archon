@@ -25,7 +25,7 @@ float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 // note - defines MUST be commented out - you cannot define null or 0 to clear them
 // control whether warning code is compiled in
 
-//#define warning
+#define warning
 
 #ifdef warning
 float WARNING;								// display warnings - dev work mainly - now uses the following bit flags for specific warning sets
@@ -69,7 +69,7 @@ float WARNING;								// display warnings - dev work mainly - now uses the follo
 
 //entity ser0; // spawn entity reference
 
-float gsf;										// loop safety global - this MUST be watched CAREFULLY
+float gsf;										// loop safety global - this MUST be watched CAREFULLY - could cause premature loop exits
 float enhance;									// monster enhance
 float chance;									// monster enhance
 

@@ -177,7 +177,14 @@ void() player_shalrath_attack3 = [ $attack4, player_shalrath_attack4 ] {};
 void() player_shalrath_attack4 = [ $attack8, player_shalrath_attack5 ] {};
 void() player_shalrath_attack5 = [ $attack10, player_stand1 ] { player_ShalMissile(); };
 
-void() player_shalrath_lightning1 = [ $attack1, player_shalrath_lightning2 ] {};
+void() player_shalrath_lightning1 = [ $attack1, player_shalrath_lightning2 ]
+{
+	if (self.flags & FL_MONSTER) // super vore comes here
+	{
+		ai_face();
+		ai_frame(self.walkframe);
+	}
+};
 void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 {
 	local	vector org;
@@ -186,16 +193,34 @@ void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 
 	if (random() < 0.2) wdmg = 5 + 15 * random();
 
-	v1 = org = self.origin + ' 0 0 14' + v_forward * 11 + v_right * 22;				// right half y split
-	traceline (org, self.origin + v_forward* B_SPLIT, TRUE, self);
-	if (self.weapon == IT_LIGHTNING) multi_beam(org, trace_endpos,  0);
+	if (self.flags & FL_MONSTER) // super vore comes here
+	{
+		makevectors(self.angles);
+		v1 = self.origin + ' 0 0 20' + v_forward * 16 + v_right * 32;				// right half y split
+		traceline (v1, self.origin + v_forward* B_SPLIT, TRUE, self);
+		if (self.weapon == IT_LIGHTNING) multi_beam(v1, trace_endpos,  0);
 
-	norm = org = self.origin + ' 0 0 14' + v_forward * 11 + v_right * -19;			// left half y split
-	traceline (org, self.origin + v_forward* B_SPLIT, TRUE, self);
-	if (self.weapon == IT_LIGHTNING) multi_beam(org, trace_endpos,  0);
+		norm = self.origin + ' 0 0 20' + v_forward * 16 + v_right * -29;			// left half y split
+		traceline (norm, self.origin + v_forward* B_SPLIT, TRUE, self);
+		if (self.weapon == IT_LIGHTNING) multi_beam(norm, trace_endpos,  0);
 
-	org = self.origin + ' 0 0 14' + v_forward *  B_SPLIT * 0.6;									// main strike beam
+		org = self.origin + ' 0 0 20' + v_forward *  B_SPLIT * 0.8;									// main strike beam
+	}
+	else
+	{
+		v1 = self.origin + ' 0 0 14' + v_forward * 11 + v_right * 22;				// right half y split
+		traceline (v1, self.origin + v_forward* B_SPLIT, TRUE, self);
+		if (self.weapon == IT_LIGHTNING) multi_beam(v1, trace_endpos,  0);
+
+		norm = self.origin + ' 0 0 14' + v_forward * 11 + v_right * -19;			// left half y split
+		traceline (norm, self.origin + v_forward* B_SPLIT, TRUE, self);
+		if (self.weapon == IT_LIGHTNING) multi_beam(norm, trace_endpos,  0);
+
+		org = self.origin + ' 0 0 14' + v_forward *  B_SPLIT * 0.6;									// main strike beam
+	}
+
 	traceline (org, self.origin + v_forward*600, TRUE, self);
+
 	if (self.weapon == IT_LIGHTNING)
 	{
 		multi_beam(org, trace_endpos,  0);
@@ -203,6 +228,7 @@ void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 		LightningDamage_x(FALSE, org, trace_endpos + v_forward*4, self, 20 + wdmg);
 		sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
 	}
+
 	if (self.weapon == IT_SUPER_NAILGUN)
 	{
 		shal_spike(v1);
@@ -216,8 +242,38 @@ void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 		if (random() < 0.13) shal_spike(norm);
 		if (random() < 0.13) shal_spike(v1);			
 	}
+
+	if (self.flags & FL_MONSTER) // super vore comes here
+	{
+		if (self.weapon == 2) // summon and carry a sphere till wep 2 comes here again
+		{
+			self.weapon = IT_SUPER_NAILGUN; // revert to this - wep 2 is a 1 shot
+			if (sphere_a.owner == self)
+			{
+				self.archon = self.archon - 100;
+				sphere_a.think = sphere_annihilation_death;
+			}
+			else
+			if (self.archon > 100)
+			if (!sphere_a)
+			{
+				self.archon = self.archon - 100;
+				sphere_annihilation_spawn(); // oh crap
+			}
+		}
+		ai_face();
+		ai_frame(self.walkframe);
+	}
 };
-void() player_shalrath_lightning3 = [ $attack11, player_stand1 ] {};
+void() player_shalrath_lightning3 = [ $attack11, player_stand1 ]
+{
+	if (self.flags & FL_MONSTER) // super vore exit
+	{
+		ai_face();
+		ai_frame(self.walkframe);
+		shal_run1();
+	}
+};
 
 
 void() player_shalrath_attack =

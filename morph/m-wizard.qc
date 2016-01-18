@@ -353,7 +353,9 @@ void() player_wizard_painleech3 = [ $pain2,   player_wizard_painleech4 ]
 		{
 			// doh - no life here
 			ext = !IS_ZOMBIE(head); // exclusion test
-			if (ext) ext = !IS_SPAWN(head); // spawns too - includes player morph
+
+//			if (ext) ext = !IS_SPAWN(head); // spawns too - includes player morph
+			if ((head.model == "progs/tarbaby.mdl") || (head.model == "progs/lavabomb.mdl") || (head.model == "progs/cthon.mdl")) ext = 0;
 
 			if (ext) // we found a live one
 			if (head.takedamage)

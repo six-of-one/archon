@@ -371,6 +371,7 @@ void() HIP_FireMjolnir =
 	self.dest = self.origin + '0 0 16';
 	makevectors(self.v_angle);
 #ifdef enhanced
+// note this make the lightning launch more finicky - you have to have the impact point further from solid surfaces / takedamages
 	traceline (self.dest, self.dest + v_forward*64, FALSE, self);
 #else
 	traceline (self.dest, self.dest + v_forward*32, FALSE, self); // strike range for hammer head

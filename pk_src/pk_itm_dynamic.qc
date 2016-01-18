@@ -475,7 +475,11 @@ void(string cls) item_call =
 	else if (cls == "monster_knight") monster_knight(A_MONSTER);
 	else if (cls == "monster_ogre") monster_ogre(A_MONSTER);
 	else if (cls == "monster_oldone") monster_oldone(A_MONSTER);
+#ifdef testset
+	else if (cls == "monster_shalrath") monster_supervore(A_MONSTER); // supervore for a reg vore in test
+#else
 	else if (cls == "monster_shalrath") monster_shalrath(A_MONSTER);
+#endifdef
 	else if (cls == "monster_supervore") monster_supervore(A_MONSTER);
 	else if (cls == "monster_shambler") monster_shambler(A_MONSTER);
 //	else if (cls == "monster_tarbaby") monster_tarbaby(A_MONSTER);
@@ -496,7 +500,7 @@ void(string cls) item_call =
 	else if (cls == "monster_bossman") monster_bossman(A_MONSTER);
 	else if (cls == "monster_clinger") monster_clinger(A_MONSTER);
 	else if (cls == "monster_young") monster_young(A_MONSTER);
-	else if (cls == "monster_lavabomb") monster_lavabomb(A_MONSTER);
+	else if (cls == "monster_lavabomb") { self.spawnflags = self.spawnflags | 16; monster_tarbaby(A_MONSTER); } // TB_LAVA
 	else if (cls == "monster_heximp") monster_heximp(A_MONSTER);
 
 	else // fail - not valid

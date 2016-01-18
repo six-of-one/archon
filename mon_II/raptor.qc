@@ -55,6 +55,10 @@ $frame attackb9 attackb10 attackb11 attackb12 attackb13 attackb14 attackb15
 //============================================================================
 
 
+/*
+
+deprecated - see *_die code
+
 void(string gibname, float dm) ThrowNewHead =
 {
 	local entity newhead;
@@ -73,7 +77,7 @@ void(string gibname, float dm) ThrowNewHead =
 	newhead.avelocity = crandom() * '0 600 0';
 };
 
-
+*/
 
 
 
@@ -497,9 +501,14 @@ void() raptor_die =
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 		ThrowHead ("progs/h_raptor.mdl", self.health);
-		ThrowNewHead ("progs/bodygib.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib3.mdl", self.health);
+//		ThrowNewHead ("progs/bodygib.mdl", self.health);
+// replaces ThrowNewHead -
+		self.goalentity = spawn();
+		self.goalentity.health = self.health;
+		self = self.goalentity;
+		ThrowHead ("progs/bodygib.mdl", self.health);
 		return;
 	}
 
@@ -515,9 +524,13 @@ void() raptor_limp =
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 		ThrowHead ("progs/h_raptor.mdl", self.health);
-		ThrowNewHead ("progs/bodygib.mdl", self.health);
+//		ThrowNewHead ("progs/bodygib.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib3.mdl", self.health);
+		self.goalentity = spawn();
+		self.goalentity.health = self.health;
+		self = self.goalentity;
+		ThrowHead ("progs/bodygib.mdl", self.health);
 		return;
 	}
 

@@ -498,7 +498,7 @@ void() sphere_whirl =
 	self.nextthink = time + 0.1;
 };
 
-// fn(sphere_annihilation_phys_move) - move the sphere and its flotsam in physics code - following controller player
+// fn(sphere_annihilation_phys_move) - move the sphere and its flotsam in physics code - following controller player / monster
 
 // IDEA: when a player controls it, use attach method if in dp, instead of jump follow
 

@@ -545,7 +545,12 @@ local float	rsnd;
 	else if (self.classname == "monster_zombie")
 		sound (self, CHAN_VOICE, "zombie/z_idle.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_dog")
+	{
 		sound (self, CHAN_VOICE, "dog/dsight.wav", 1, ATTN_NORM);
+		if (self.spawnflags & 6) // 2 or 3 heads
+		if (random() < 0.4)
+			sound (self, CHAN_WEAPON, "dog/dsight.wav", 1, ATTN_NORM); // idea - slight delay somehow?
+	}
 	else if (self.classname == "monster_hell_knight")
 		sound (self, CHAN_VOICE, "hknight/sight1.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_tarbaby")
