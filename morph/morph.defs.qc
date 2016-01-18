@@ -137,6 +137,7 @@ void(float r1, string sn, float lts ) morph_sound;
 
 float(entity targ, float sdot, vector vang, vector vorg) infront;
 float(entity ck, float hl) morph_heal;
+//float(entity e) human_model;
 void(string ws, float rtime ) morph_walksound;
 float(entity o) morph_chasecam_fpv;
 

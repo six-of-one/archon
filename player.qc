@@ -682,8 +682,11 @@ void() PlayerDie =
 
 void() set_suicide_frame =
 { // used by kill command and diconnect command
-	if (self.model != "progs/player.mdl")
+	if ( (Q_100 || PK_100) && self.model != "progs/player.mdl") // because of morph we cant test this
 		return;	// allready gibbed
+	else if (self.map == "set_suicide_frame")
+		return;
+	self.map = "set_suicide_frame";
 	self.frame = $deatha11;
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_TOSS;

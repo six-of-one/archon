@@ -86,7 +86,7 @@ void(entity e, float f, float r) rune_print =
 		}
 		else if (f == RUNE_FLG_HS) sprint(e, "Haste - double fire rate for most weps.\n");
 		else if (f == RUNE_FLG_RG) sprint(e, "Regeneration - add 5 health | armor every 1/2 second\n");
-		else if (f == RUNE_VAMPIRE) sprint(e, "Vampire - add 50% damage dealt to health\n");
+		else if (f == RUNE_VAMPIRE) sprint(e, "Vampire - add 25% damage dealt to health\n");
 		else if (f == TECH_DSH) sprint(e, "Disruptor Shield - 1/2 damage\n");
 		else if (f == TECH_AMP) sprint(e, "Power Amplifier - 2 x damage\n");
 		else if (f == TECH_TEIM) sprint(e, "Time Accelerator - 2 x fire, move faster\n");
@@ -113,7 +113,7 @@ void(entity e, float f, float r) rune_print =
 	}
 	else if (f == RUNE_FLG_HS) bprint("Haste - double fire rate most weps.\n");
 	else if (f == RUNE_FLG_RG) bprint("Regenerate 5 health | armor per .5 sec\n");
-	else if (f == RUNE_VAMPIRE) bprint("Vampire - add 50% damage dealt to health\n");
+	else if (f == RUNE_VAMPIRE) bprint("Vampire - add 25% damage dealt to health\n");
 	else if (f == TECH_DSH) bprint("Disruptor Shield - 1/2 damage\n");
 	else if (f == TECH_AMP) bprint("Power Amplifier - 2 x damage\n");
 	else if (f == TECH_TEIM) bprint("Time Accelerator - 2 x fire, move faster\n");
@@ -172,7 +172,13 @@ string(float b) rune2_name =
 
 string(float b) rune_name =
 {
+	if (b == T_DSH) return("Disruptor Shield");
+	if (b == T_AMP) return("Power Amplifier");
+	if (b == T_TEIM) return("Time Accelerator");
+	if (b == T_ADOC) return("Auto Doc");
+
 	if (cvar("sv_c_rune") > 1) return(rune2_name(b));
+
 	if (b == R_EARTH) return("Earth magic");
 	if (b == R_BLACK) return("Black magic");
 	if (b == R_HELL) return("Hell magic");
@@ -582,6 +588,13 @@ void () rune_touch =
 	if (! (self.spawnflags & RUNE_MASK)) // rune not allowed - prob map rune
 		return;
 
+	if (other.rune_flag & RUNE_VAMPIRE)
+	if (self.spawnflags & RUNE_FLG_RG || self.spawnflags & TECH_ADOC)
+	{
+		sprint(other,"Suck heads cant get Regeneration\n");
+		return;
+	}
+
 	centerprint3 (other,"You got the ",self.netname," Rune!");
 	sprint(other,"You have the power of ");
 	rune_print(other, self.spawnflags, FALSE);
@@ -637,6 +650,9 @@ void () rune_touch =
 
 float rune_map; // runes on level
 
+float Test;
+
+
 void() rune_maker =
 {
 	local entity e;
@@ -657,7 +673,7 @@ void() rune_maker =
 			sf = 111;
 			while (sf > 0)
 			{
-				f = rnd_bit_mask(RUNE_MASK);
+				Test = f = rnd_bit_mask(RUNE_MASK);
 				if (!(f & rune_map)) sf = 0;
 				else f = 0;
 				sf = sf - 1;
@@ -713,12 +729,14 @@ void() rune_maker =
 */
 			self.wad = item_by_mcode(self.mcode);
 
-			e = dyn_rndloc();
+//			e = dyn_rndloc();
+			e = find_tdest(FL_RSALL, "");
+
 			if (!e) e = findradius(world.origin, 256000);
 			if (!e) 
 			{
 				if (WARNING) bprint("*** warning: rune_make could not find a random (or any) location - giving up\n");
-//				remove(self);
+				remove(self);
 				return; // crap - no location
 			}
 			v1 = e.origin + ' 0 0 8';
@@ -741,7 +759,10 @@ void() rune_maker =
 			self.count = 2 + random() * 3.8; // controls no-touch reposition code in check movement deal
 			self.delay = self.cnt = 0;
 
-			bprint("\n\b*** RUNE spawned: ");
+			if (self.spawnflags & TECH_MASK_ALL)
+				bprint("\n\b*** TECH spawned: ");
+			else
+				bprint("\n\b*** RUNE spawned: ");
 			bprint(self.netname);
 			if (e)
 			{
@@ -886,6 +907,9 @@ void() run_runes =
 		return;
 	}
 
+	if (r == -2) RUNE_VAMPIRE_PER = 0.25; // old
+	else RUNE_VAMPIRE_PER = 0.5; // lith
+	
 	NO_TECH = FALSE;
 	f = TECH_MASK_ALL;
 	f = f & RUNE_MASK;
@@ -1010,18 +1034,24 @@ void() run_runes =
 		}
 		else
 			bprint("\n***   Rune server - turned off and all spawned runes removed\n");
+
+		if (!cvar("sv_c_rune_cnt")) // defaults - must check any time rule is changed
+		{
+			RUNE_CNT  = 4;
+			if (r == -2) RUNE_CNT = 5;
+			if (RUNES > 1) RUNE_CNT = 9;
+		}
 	}
 
+
+ 	if (cvar("sv_c_rune_cnt")) // defaults
  	if (RUNE_CNT != cvar("sv_c_rune_cnt"))
 	{
 		RUNE_CNT = cvar("sv_c_rune_cnt");
 		rune_count = cnt_ent(world, "map", "rune");
 		if (RUNE_CNT < 1)
 		{
-			RUNE_CNT  = 4;
-			if (r == -2) RUNE_CNT = 5;
-			if (RUNES > 1) RUNE_CNT = 9;
-			
+			bprint("\n***   Rune server - manually configured < 1 rune - no runes will exist!\n");
 		}
 		if (rune_count > 0)
 		{
@@ -1049,6 +1079,8 @@ void() run_runes =
 		else bprint("Rune server is deactivated\n"); // NOTE: runes can still appear on map from func_dyn, rndize
 		bprint("total rune count : ");
 		bprint(ftos(RUNE_CNT));
+		if (!cvar("sv_c_rune_cnt"))
+			bprint(" -- using defualt count");
 		bprint("\n");
 		bprint("runes on map : ");
 		bprint(ftos(rune_count));
@@ -1098,7 +1130,7 @@ void() RegenerationSound =
 
 void() rune_regen =
 {
-	local float f, h;
+	local float f, h, r;
 	local entity e;
 
 	if (self.deadflag)
@@ -1110,24 +1142,74 @@ void() rune_regen =
 	if (self.rg_time > time)
 		return;
 
+	r = cvar("sv_c_rune");
+
 	f = 5;
 	h = 100;
+	if (self.rune_flag & T_ADOC) // has tech
+	{
+		h = 150;
+		if (self.rune_flag & RUNE_FLG_RG) // has both!
+			f = 10;
+	}
+
+	if (RUNES > 1)
+	if (self.rune_flag & RUNE_FLG_RG) // has to have rune, excludes tech
+		h = 200;
+/*
+note how fcktard complicated the lith regen rune is:
+
+max = 200
+cap = 3.5
+"" = 0.25 // rune_regen->value
+
+	if(player->rune & RUNE_REGEN && player->health < rune_regenmax->value) {
+		float health = player->health + player->client->regen_remainder;
+		float newhealth = rune_regenmax->value / health;
+		if(newhealth > rune_regencap->value)
+			newhealth = rune_regencap->value;
+		newhealth *= rune_regen->value * 0.625;
+		health += newhealth;
+		player->health = (int)health;
+		player->client->regen_remainder = health - (float)player->health;
+*/
+
+// note: q3 regen item is not combind with runes
+
 	if (self.target2 == "progs/q3_art.mdl") // q3 regen takes health to 200
 	{
-		if (self.volume > 100)
+		f = 5; // incase of tech overlap
+		if (self.volume > 100) // set for player during item touch q3_pwr_touch
 			h = self.volume;
 		else
 			h = 200; // dont have access to q3 ent here cant use = self.volume; - fixed during touch
 	}
 
-	if (self.health < h)
+	if (self.health < (h * self.health_modifier) )
 	{
 		self.health = self.health + f; // NOTE: violates T_Heal rule (implied from t_dmg rule) of only fn to add health - relates to morphs & needs morph tweak here
-		if (self.health > h)
-			self.health = h;
+		if (self.health > (h * self.health_modifier))
+			self.health = (h * self.health_modifier);
 		RegenerationSound();
 	}
+
+	pk_setDamageSkin(self);
+	self.rg_time = time + 0.5;
+
 	armorsave_rev(self);
+
+	if (r > 1)
+	{
+		if (self.rune_flag & T_ADOC)
+		{
+			h = 150;
+			f = 5;
+			if (self.armorvalue < h)
+				self.armorvalue = self.armorvalue + f;
+		}
+		return;
+	}
+
 	if (self.target2 != "progs/q3_art.mdl") // apparently q3 doesnt regen armor
 	if (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3))
 	if (self.armorvalue < 200) // q2 allows values over 200
@@ -1141,11 +1223,39 @@ void() rune_regen =
 			self.armorvalue = 100;
 		else
 			RegenerationSound();
-//		if (self.armorvalue>250) self.armorvalue=200;
 	}
+};
 
-	pk_setDamageSkin(self);
-	self.rg_time = time + 0.5;
+// TDO: other suck head issues
+// more things that prevent suck head leech -
+// - archons are immune
+
+
+void() rune_vamp =
+{
+	local float f;
+
+	if (self.health_modifier < 2)
+	if (self.health <= (self.max_health * self.health_modifier * 2)) return; // same as 200 from lith
+
+	if (self.health_modifier >= 2)
+	if (self.health <= (self.max_health * self.health_modifier * 1.25)) return; // already have > 200
+
+	if (self.regeneration_sound > time) return;
+
+	self.regeneration_sound = time + 1;
+
+// suck head has too much health
+	self.health = self.health - 1;
+	if (random() < 0.2)
+	if (self.health > (1.5 * self.max_health * self.health_modifier))
+		self.health = self.health - 0.5;
+	if (self.health > (2 * self.max_health * self.health_modifier))
+		self.health = self.health - 1;
+	if (self.health > (4 * self.max_health * self.health_modifier))
+		self.health = self.health - 1;
+	if (self.health > (8 * self.max_health * self.health_modifier))
+		self.health = self.health - 2;
 };
 
 void() HasteSound =
@@ -1165,11 +1275,16 @@ void() HasteSound =
 
 float(float atf) rune_haste =
 {
-	if (!self.rune_flag & RUNE_FLG_HS) return(TRUE);
+	local float f;
 
-	self.attack_finished = time + atf;
+	f = 0;
+	if (self.rune_flag & RUNE_FLG_HS) f = 1;
+	if (self.rune_flag & T_TEIM) f = f + 1;
+	if (!f) return(TRUE);
+
+	self.attack_finished = time + (atf / f); 
 	HasteSound();
-	return(FALSE);
+	return(FALSE); // TDO: double haste in other code - where o/p from this is just a flag = return value of f - means all conditional on this needs reversed
 };
 
 /*QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
@@ -1197,7 +1312,7 @@ void () item_sigil =
 	local float f, rune, rul;
 
 	if (!RUNES)
-	if (time < PIC_TO)
+	if (time < PIC_TO) // note: for successful op with this code time out must be > 2
 	{
 		if (time < 2) // delay till we can read cvar - HUH?  dont freaking get why this is necc!  if this isnt done for an initial server start map load rune has sigil_touch set and things fail
 		{
@@ -1251,7 +1366,7 @@ void () item_sigil =
 		self.spawnflags = f;
 	}
 
-	if (rul < 2)
+	if (rul < 2 || time < PIC_TO)
 	{
 		if (self.spawnflags & R_EARTH)
 		{

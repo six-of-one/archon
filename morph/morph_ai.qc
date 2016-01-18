@@ -1206,7 +1206,7 @@ void(float dist) ai_run =
 
 // check for monsters that while not stuck in solid may not be able to move
 // no idea if any map features will trip this that should not
-// TDO: restore some version of this latez
+// TDO: restore some version of this laterz
 // note: out of level handled by falling check code
 /*
 		if (framecount & 3 == 3 && random() < 0.5) { self.oldorigin = self.origin; self.wait = time + 5; } // give monster chance to move

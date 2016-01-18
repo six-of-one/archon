@@ -5,14 +5,35 @@
  *
  */
 
+// Cataboligne - 10.2.11 - tweak: set no damage for pent, & check var on actor - if true, same treatment
+
+// note: what about armor? - could check vw armor, nad that could have dmskin
+
 void(entity targ)	pk_setDamageSkin =
 {
-	if (targ.classname == "player" || targ.classname == "pk*bot")
+	if (targ.model == "progs/plyr_skins.mdl") return; // skin support added back in
+
+	if (targ.classname == "player" || targ.classname == "pk*bot") // ignores observers, etc.
 	if (targ.solid != SOLID_NOT ) // Cataboligne - 5.11.10 - doent set skin for dead cam player
 //	if (targ.model != "progs/player_sh.mdl") // Cataboligne - 9.11.11 - q3 shell deal - diff skins
 	if (targ.mask_x & CB_HUMAN) // Cataboligne - 9.27.11 - only humans have dmgskin for now
 	if (targ.skin < 5) // Cataboligne - 9.27.11 - tweak for suits
 	{
+		if  (targ.pkplus_actortype == PKPLUS_ACTORPENT) // acting as pent
+		{
+			if (PKPLUS_ACTOR_IGN_DMSKN) // fake it real good
+			{
+				targ.skin = 0;
+				return;
+			}
+		}
+		else
+		if (targ.invincible_finished)
+		{
+			targ.skin = 0;
+			return;
+		}
+
 		if (targ.health > 75)
 	  {
 	  	targ.skin = 0;

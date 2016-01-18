@@ -602,6 +602,7 @@ void () q100_weapon_supershotgun =
 {
 	precache_model ("progs/g_shot.mdl");
 	setmodel (self,"progs/g_shot.mdl");
+	self.items = // morph builtin upgrade deal - Cataboligne - 10.2.11
 	self.weapon = IT_SUPER_SHOTGUN;
 	self.netname = "Double-barrelled Shotgun";
 	self.touch = weapon_touch;
@@ -617,6 +618,7 @@ void () weapon_nailgun =
 {
 	precache_model ("progs/g_nail.mdl");
 	setmodel (self, "progs/g_nail.mdl");
+	self.items = // morph builtin upgrade deal - Cataboligne - 10.2.11
 	self.weapon = IT_NAILGUN;
 	self.netname = "nailgun";
 	self.touch = weapon_touch;
@@ -632,6 +634,7 @@ void () weapon_supernailgun =
 {
 	precache_model ("progs/g_nail2.mdl");
 	setmodel (self,"progs/g_nail2.mdl");
+	self.items = // morph builtin upgrade deal - Cataboligne - 10.2.11
 	self.weapon = IT_SUPER_NAILGUN;
 	self.netname = "Super Nailgun";
 	self.touch = weapon_touch;
@@ -647,6 +650,7 @@ void () q100_weapon_grenadelauncher =
 {
 	precache_model ("progs/g_rock.mdl");
 	setmodel (self,"progs/g_rock.mdl");
+	self.items = IT_GRENADE_LAUNCHER; // morph builtin upgrade deal - Cataboligne - 10.2.11
 	self.weapon = 3;
 	self.netname = "Grenade Launcher";
 	self.touch = weapon_touch;
@@ -662,6 +666,7 @@ void () q100_weapon_rocketlauncher =
 {
 	precache_model ("progs/g_rock2.mdl");
 	setmodel (self,"progs/g_rock2.mdl");
+	self.items = IT_ROCKET_LAUNCHER; // morph builtin upgrade deal - Cataboligne - 10.2.11
 	self.weapon = 3;
 	self.netname = "Rocket Launcher";
 	self.touch = weapon_touch;
@@ -678,6 +683,7 @@ void () q100_weapon_lightning =
 {
 	precache_model ("progs/g_light.mdl");
 	setmodel (self,"progs/g_light.mdl");
+	self.items = IT_LIGHTNING; // morph builtin upgrade deal - Cataboligne - 10.2.11
 	self.weapon = 3;
 	self.netname = "Thunderbolt";
 	self.touch = weapon_touch;

@@ -5,6 +5,9 @@ OLD ONE
 
 ==============================================================================
 */
+
+// Cataboligne - 10.2.11 - moded for viswep models the mod now uses.  attempt to grab real player model because of mroe changes
+
 $cd id1/models/old_one
 $origin 0 0 24
 $base base
@@ -105,11 +108,14 @@ void() old_thrash19       =[      $shake19, old_thrash20      ] {lightstyle(0, "
 void() old_thrash20       =[      $shake20, old_thrash20      ] {finale_4();};
 
 //============================================================================
+entity shub_killer;
 
 void() finale_1 =
 {
 	local entity	pos, pl;
 	local entity	timer;
+
+	shub_killer = damage_attacker; // Cataboligne - 10.2.11 - so we can set the correct player model for shubs killer
 
 	intermission_exittime = time + 10000000;	// never allow exit
 	intermission_running = 1;
@@ -129,6 +135,7 @@ void() finale_1 =
 	pl = find (world, classname, "player");
 	while (pl != world)
 	{
+		pl.mdl = pl.model; // Cataboligne - 10.2.11 - proper model save for shub killer
 		pl.view_ofs = '0 0 0';
 		pl.angles = other.v_angle = pos.mangle;
 		pl.fixangle = TRUE;		// turn this way immediately
@@ -222,11 +229,25 @@ void() finale_4 =
 
 // put a player model down
 	n = spawn();
+// Cataboligne - 10.2.11 - update for new player models
 	setmodel (n, "progs/player.mdl");
+	if (shub_killer)
+	{
+		setmodel (n, shub_killer.mdl);
+	}
 	oldo = oldo - '32 264 0';
 	setorigin (n, oldo);
 	n.angles = '0 290 0';
-	n.frame = 1;
+//	n.frame = 1;
+// more updates
+	n.frame = $axstnd1;
+// now - make an axe
+	n = spawn();
+	setmodel (n, "progs/vw_axe.mdl");
+	setorigin (n, oldo);
+	n.angles = '0 290 0';
+	n.frame = $axstnd1;
+	
 
 	remove (self);
 

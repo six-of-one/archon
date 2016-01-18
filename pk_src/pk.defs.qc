@@ -171,6 +171,7 @@ void() run_runes;
 void(entity e, entity p) rune_id;
 void(entity e) rune_drop;
 void() rune_regen;
+void() rune_vamp;
 float(float atf) rune_haste;
 void () rune_touch;
 void(entity e) dead_runes;
@@ -222,6 +223,13 @@ float TECH_MASK_ALL			= 1966080;
 float RULE1_MASK				= 15;
 float RULE2_MASK				= 1966159; // original 4 + vampire + techs
 float RALL_MASK				= 1966207; // everything
+
+float RUNE_VAMPIRE_PER; // percent of damage added to suck heads health - rule 2
+
+// if both are true the damage mult for quad + rune + tech = 16 !!!
+float RUNE_QUAD_COMB			= 1; // allow damage runes to combind with quad
+float RUNE_TECH_DMG_COMB	= 1; // allow damage runes to combind with each other
+float RUNE_TECH_RS_COMB		= 1; // allow resist runes to combind with each other
 
 void() flyer_move; // fly rune for now
 
@@ -1475,7 +1483,7 @@ float PK_CRATE;
 // pk cubes
 
 float PK_CUBE;
-float PK_CUBE_DIST			= 132; // must be this close to cube to open, heh heh
+float PK_CUBE_DIST			= 192; // must be this close to cube to open, heh heh
 float PK_CUBE_TIME; // freq of respawn
 void(string cb) cube_handle;
 

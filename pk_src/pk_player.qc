@@ -153,11 +153,17 @@ void() pk_run_frames =
 		return;
 
 // haste run faster - moved up here for morphs
-	if (self.rune_flag & RUNE_FLG_HS)
+	local float f, ms, v, k;
+	k = 0;
+
+	if (self.rune_flag & RUNE_FLG_HS) k = 1;
+	if (self.rune_flag & T_TEIM) k = k + 1;
+
+	if (k)
 	{
-		local float f, ms, v;
+		if (k > 1) k = 1.2;
 		ms = cvar("sv_maxspeed");
-		f =  ms * 1.8; // at 320 max, this is 576
+		f =  ms * 1.6 * k; // at 320 max, this is 576, for both runes 691
 		if (self.movetype == MOVETYPE_FLY) f = ms * 1.4;
 		v = vlen(self.velocity); 
 		if (!self.movement_x && !self.movement_y)
@@ -172,7 +178,7 @@ void() pk_run_frames =
 				self.velocity = self.velocity * (f / v);
 			else
 			{
-				f = ms * 1.25;
+				f = ms * 1.25 * k;
 				if (self.movetype == MOVETYPE_FLY) f = ms * 0.9; // flight speed side & back normally .8 * ms
 				if ( (fabs(self.movement_y) > 20) ||  (self.movement_x < 20) )
 					self.velocity = self.velocity * (f / v);
@@ -603,6 +609,7 @@ void() PK_GibPlayer =
 {
 // DAMAGE_SKINS_START
 	self.skin = 0;
+	self.map = "set_suicide_frame"; // for suicide frame
 
 // GIBS_START
 	if (random() > 0.5)

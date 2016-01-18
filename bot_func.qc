@@ -92,7 +92,7 @@ entity () find_monster =
 
 void (entity me) set_bot_suicide_frame =
 {
-	if (me.model != "progs/player.mdl")
+	if (me.model != "progs/player.mdl") // CHECK:
 	{
 		return ;
 	}

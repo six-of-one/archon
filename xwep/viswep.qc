@@ -272,11 +272,12 @@ entity(entity e, float fl) vload =
 	if (fl > 0) tr.vwepent.mcode = wepbit_mcode(fl, "Q");
 
 
-
+if (cvar("saved1") == -888)
+{
 bprint("viswep loaded: ");
 bprint(md);
 bprint("\n");
-
+}
 
 
 /*  you'd think that because this is engine driver it would be smooth as glass - tried it on a -listen server - major fail

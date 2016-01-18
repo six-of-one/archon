@@ -36,6 +36,7 @@ void() m_precache_anode =
 };
 
 void() player_anode_stand = [ $walk1, player_stand1 ] { };
+
 void() player_anode_run =
 {
 //	if(self.walkframe >= 12)
@@ -45,15 +46,7 @@ void() player_anode_run =
 	self.walkframe = self.walkframe + 1;
 };
 
-void() player_anode_pain1 = [ $pain1, player_anode_pain2 ]
-{
-	self.pain_finished = time + 2.4;
-	morph_sound (0.8, self.noise2, 1);
-};
-void() player_anode_pain2 = [ $pain1, player_anode_pain3 ] {};
-void() player_anode_pain3 = [ $pain1, player_anode_pain4 ] {};
-void() player_anode_pain4 = [ $pain1, player_anode_pain5 ] {};
-void() player_anode_pain5 = [ $pain1, player_stand1 ] {};
+void() player_anode_pain1 = [ $pain1, player_stand1 ] {};
 
 /*
 ================
@@ -132,8 +125,8 @@ void() player_anode_attack1 = [ $attack1, player_anode_attack2 ]
 {
 //	sound (self, CHAN_VOICE, "anode/attack.wav", 1, ATTN_NORM);
 
-	if (rune_haste(0.25))
-	self.attack_finished=time+0.5;
+	if (rune_haste(0.15))
+	self.attack_finished=time+0.3;
 	self.lefty = self.impulse; // have to save so we see it later
 
 /*
@@ -211,13 +204,9 @@ void() player_anode_lightning2 = [ $attack2, player_anode_lightning3 ]
 	LightningDamage_x(FALSE, org, trace_endpos + v_forward*4, self, 20 + wdmg);
 	sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
 };
+
 void() player_anode_lightning3 = [ $attack11, player_stand1 ] {};
 
-
-float SEL_SHAL_ANH;
-float SEL_SHAL_BOMB;
-float SEL_SHAL_LTN;
-float SEL_SHAL_SPIKE;
 
 void() player_anode_attack =
 {
@@ -244,14 +233,8 @@ void() player_anode_attack =
 
 void() player_anode_impulse =
 {
-/*
-	if (sphere_a.owner == self && sphere_a.state != ST_FREEZE)
-	{
-	sphere_control();
-	return;
-	}
-*/
-	if (self.impulse == 9 || self.impulse == 11)
+
+	if (self.impulse == 9 || self.impulse == 11) // side shots
 	{
 		player_anode_attack1();
 		return; // handled by attack
@@ -261,29 +244,10 @@ void() player_anode_impulse =
 
 	morph_impulse();
 
-/*
-	if (self.weapon == SEL_SHAL_ANH)
-	{
-		self.items = self.items | IT_CELLS | IT_AXE;
-		sprint(self, "anode using ( Press fire to summon / dismiss Sphere of annihilation )\n"); 
-	}
-*/
-	if (self.weapon == SEL_SHAL_BOMB)
-	{
-		self.items = self.items | IT_ROCKETS | IT_ROCKET_LAUNCHER;
-		sprint(self, "Scourge firing ( Spiked bomb )\n"); 
-	}
-
-	if (self.weapon == SEL_SHAL_LTN)
+	if (self.weapon == IT_AXE)
 		{
-		sprint(self, "anode using ( Lightning )\n");
-		self.items = self.items | IT_CELLS | IT_LIGHTNING;
-		}
-
-		if (self.weapon == SEL_SHAL_SPIKE)
-		{
-		sprint(self, "anode using ( Spikes )\n");
-		self.items = self.items | IT_SUPER_NAILGUN | IT_NAILS;
+		sprint(self, "anode using ( Power Bolt )\n");
+		self.items = self.items | IT_CELLS;
 		}
 };
 
@@ -318,7 +282,6 @@ local entity e;
 	setorigin(e, self.origin);
 	e.angles = self.angles; // relative angles
 
-	
 //	e.movetype = MOVETYPE_FOLLOW; // make the e.follow
 	e.solid = SOLID_NOT; // MOVETYPE_FOLLOW is always non-solid
 	e.aiment = self; // make the e.follow bmodel
@@ -327,24 +290,17 @@ local entity e;
 	e.v_angle = e.angles - self.angles; // relative angles
 	self.movetarget = e;
 
-	self.items = self.items | IT_AXE | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
+	self.items = self.items | IT_AXE;
 	self.builtin = self.items & WEP_MASK;
-	SEL_SHAL_BOMB = IT_ROCKET_LAUNCHER;
-	SEL_SHAL_LTN = IT_LIGHTNING;
-	SEL_SHAL_SPIKE = IT_AXE;
-//	SEL_SHAL_ANH = IT_AXE;
-	self.weapon = SEL_SHAL_BOMB;
+	self.weapon = IT_AXE;
 
 //	self.msight = "anode/sight.wav";
 //	self.noise2 = "anode/pain.wav";
 	self.noise3 = "";
 	self.view_ofs = '0 0 34'; // raised 8
 	self.cam_z = 0.1;
-	//setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
-//	if(!deathmatch)
-		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
-//	else
-//	 	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+
+	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 
 	self.health = self.health * MSHALR_HEALMOD / self.health_modifier;
 	self.health_modifier = MSHALR_HEALMOD;
@@ -355,6 +311,5 @@ local entity e;
 		{
 		bprint(self.netname);
 		bprint(" has become Anode X.\n");
-//		morph_impulse(); // for one wep morphs we only need this once
 		}
 };

@@ -38,24 +38,28 @@ void () phone_activate;
 void (entity ownerEntity) ego_remove;
 
 
+
 // const - subs.qc
 
-float PKPLUS_TOMB_TIMETOFOLLOW	 = 20;
-float TOMB_BUFFER				= 3;
-float PKPLUS_TOMB_DMG		= 3;
+float PRINT_HIGH						= 2;
+float PKPLUS_TOMB_TIMETOFOLLOW	= 20;
+float TOMB_BUFFER						= 3;
+float PKPLUS_TOMB_DMG				= 3;
 float PKPLUS_TOMB_TIME;
 float PKPLUS_EGOAMMO_MAX;
 float PKPLUS_TOMBAMMO_MAX;
 float PKPLUS_ACTORAMMO_MAX;
 float PKPLUS_PHONEAMMO_MAX;
-float PKPLUS_IT_EGO			= 256;
-float PKPLUS_IT_TOMB			= 512;
-float PKPLUS_IT_ACTOR		= 1024;
-float PKPLUS_IT_PHONE		= 2048;
-float PKPLUS_ACTORPENT		= 1;
-float PKPLUS_ACTORQUAD		= 2;
-float PKPLUS_ACTORINVIS		= 3;
-float PRINT_HIGH				= 2;
+float PKPLUS_IT_EGO					= 256;
+float PKPLUS_IT_TOMB					= 512;
+float PKPLUS_IT_ACTOR				= 1024;
+float PKPLUS_IT_PHONE				= 2048;
+float PKPLUS_ACTORPENT				= 1;
+float PKPLUS_ACTORQUAD				= 2;
+float PKPLUS_ACTORINVIS				= 3;
+// mask con
+
+float PKPLUS_ACTOR_IGN_DMSKN		= 1; // if true damange skin code treats actor just like real pent
 
 float PK_TOMB_SET;
 

@@ -325,9 +325,7 @@ float (entity e, float healamount6, float ignore) T_Heal =
 
 // NOTE: q2 deal will bork display bar if anyone can collect enough (and its pretty easy with a tank...)
 
-	if (!Q_100)
-	if (e.model == "progs/player.mdl") // TDO: morph dmg skins
-		pk_setDamageSkin(e); // *pk damage skins code
+	if (!Q_100)pk_setDamageSkin(e); // *pk damage skins code
 
 	return 1;
 };
@@ -356,7 +354,7 @@ float(float ehm, float hv) morph_healmax =
 //float() health_touch =
 void() health_touch =
 {
-	local	float amount, smax;
+	local	float amount, smax, vmax;
 	local	string	s1;
 
 	if (Q_100 || PK_100)
@@ -365,9 +363,18 @@ void() health_touch =
 		return;
 	}
 
-	amount = 0;
+	vmax = amount = 0;
 
 	if (other.state == IMP_MWRAITH) return; //(TRUE); // wraith never get health -- TDO: check state field for wraiths
+
+	if (other.rune_flag & RUNE_VAMPIRE)
+	{
+		if (other.health >= (other.max_health * other.health_modifier)) // vampires dont get health above max
+			return;
+		if (self.healtype > HEAL_NORM) // not for suck heads, even on a bad day
+			return;
+		vmax = 5;
+	}
 
 	Q3_HAH_TMP = other.health;
 	Q3_HAA_TMP = other.armorvalue;
@@ -400,10 +407,16 @@ void() health_touch =
 																								bprint(ftos(self.healamount + amount));
 																								newline(world);}
 
+		if (vmax)
+		{
+			if (!T_Heal(other, vmax, 0)) return; //(TRUE);
+		}
+		else
 		if (!T_Heal(other, self.healamount + amount, 0))
 			return; //(TRUE);
 	}
 
+	if (!other.rune_flag & RUNE_VAMPIRE)
 	if (self.noise4 == Q3_DET)
 	{
 		q3_ha_rot(other, other.health);
@@ -439,6 +452,7 @@ void() health_touch =
 	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
+	if (!other.rune_flag & RUNE_VAMPIRE)
 	if (self.healtype == HEAL_MEGA)
 	{
 		if (!other.items & IT_SUPERHEALTH) // not already rotting - start it up

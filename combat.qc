@@ -141,14 +141,22 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	damage_attacker = attacker;
 
 // check for quad damage powerup on the attacker
-	if (!((RUNES > 1) && (attacker.rune_flag & RUNE_FLG_DM))) // rune overpowers quad on higher rule sets 
+	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & T_AMP) ) ) || RUNE_QUAD_COMB) // rune overpowers quad on higher rule sets 
 	if (attacker.super_damage_finished > time)
 	if (attacker.pkplus_actortype != PKPLUS_ACTORQUAD) // pk art code here
 		damage = damage * 4;
 
-	if (attacker.rune_flag & RUNE_FLG_DM)
+	if (attacker.rune_flag & RUNE_FLG_DM) // dmg rune - idea: could do more under rules > 2
+	{
 		damage = damage * 2;
 
+		if (attacker.rune_flag & T_AMP) // combind with dmg tech!
+		if (RUNE_TECH_DMG_COMB)
+			damage = damage * 2;
+	}
+	else
+	if (attacker.rune_flag & T_AMP) // dmg tech
+		damage = damage * 2;
 
 //MED
 //check for empathy shields
@@ -180,10 +188,15 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 
 	take = ceil(damage - save - pwr_save);
 
-	if (targ.rune_flag & RUNE_FLG_RS)
+	if ( (targ.rune_flag & RUNE_FLG_RS) || (targ.rune_flag & T_DSH) ) // idea: resist should do more under rules > 2, but not tech
 	{
-		take = take / 2;
-		save = save / 2;
+		take = floor(take / 2);
+		save = floor(save / 2);
+		if (RUNE_TECH_RS_COMB && (targ.rune_flag & RUNE_FLG_RS) && (targ.rune_flag & T_DSH))
+		{
+			take = floor(take / 2);
+			save = floor(save / 2);			
+		}
 		if (targ.invincible_sound < time)
 		{
 			sound (targ, CHAN_ITEM, "items/protect3.wav", 1, ATTN_NORM);
@@ -191,7 +204,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		}
 	}
 
-	targ.armorvalue = targ.armorvalue - save;
+	targ.armorvalue = ceil(targ.armorvalue - save);
 
 	if (targ.armorvalue < 1)
 	{
@@ -222,10 +235,10 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		return ;
 	if (targ.invincible_finished >= time)
 	{
-		if (self.invincible_sound < time)
+		if (targ.invincible_sound < time) // Cataboligne - 10.1.11 - the targ was self
 		{
 			sound (targ, CHAN_ITEM, "items/protect3.wav", 1, ATTN_NORM);
-			self.invincible_sound = time + 2;
+			targ.invincible_sound = time + 2;
 		}
 		if (targ.pkplus_actortype != PKPLUS_ACTORPENT) // pk art code here
 		return ;
@@ -235,10 +248,10 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 //MED
    if (targ.empathy_finished)
 	{
-      if (self.empathy_sound < time)
+      if (targ.empathy_sound < time) // Cataboligne - 10.1.11 - the targ was self
 		{
          sound (targ, CHAN_ITEM, "hipitems/empathy2.wav", 1, ATTN_NORM);
-         self.empathy_sound = time + 0.5;
+         targ.empathy_sound = time + 0.5;
 		}
 	}
 
@@ -246,11 +259,23 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	if ((teamplay == 1) && (targ.team > 0)&&(targ.team == attacker.team))
 		return ;
 
-// do the damage
-	targ.health = targ.health - take;
+// we have a suck head
+   if (attacker.rune_flag & RUNE_VAMPIRE) // a bit of vampire action
+   if (!targ.empathy_finished)
+   if (!targ.rune_flag & RUNE_VAMPIRE)
+   if (!targ.rune_flag & RUNE_FLG_RG) // regen immune to feeders
+   if (!targ.rune_flag & TECH_ADOC)
+   if (targ.flags & (FL_CLIENT | FL_MONSTER)) // only these for now
+	{
+		if (targ.health < take) attacker.health = attacker.health + RUNE_VAMPIRE_PER * targ.health; // only get RUNE_VAMPIRE_PER% of actual damage, excludes armor & other saves
+		else attacker.health = attacker.health + RUNE_VAMPIRE_PER * take;
+	}
 
-	if (targ.pkplus_actortype != PKPLUS_ACTORPENT) // pk art code here - fake it for pent acting
+// do the damage
+	targ.health = ceil(targ.health - take);
+
 	if (!Q_100) pk_setDamageSkin(targ); // *pk damage skin support
+
 	if (targ.health <= 0)
 	{
 		damage_inflictor = inflictor; // *pk used by the player gib functions to calculate the direction of the gib to go in.

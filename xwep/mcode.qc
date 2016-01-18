@@ -622,10 +622,10 @@ void() mcode_load =
 	MC_Q2 = (f + 1);
 	MC_Q2_RNDITM = f - MC_Q2_BLASTER; // # of total items
 
-	MC_Q2_TECH_RES = (f + 1);
-	MC_Q2_TECH_DOC = (f + 1);
-	MC_Q2_TECH_AMP = (f + 1);
-	MC_Q2_TECH_TM = (f + 1);
+	MC_Q2_TECH_RES = f = (f + 1);
+	MC_Q2_TECH_DOC = f = (f + 1);
+	MC_Q2_TECH_AMP = f = (f + 1);
+	MC_Q2_TECH_TM = f = (f + 1);
 
 /// q3
 
@@ -2044,7 +2044,7 @@ void() painkeep_cube_use =
 		}
 	}
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
-//	if (1) d = MC_Q2_BFG; // TEST:
+//	if (1) d = MC_PORTAL; // TEST:
 
 	if (crate)
 	{
@@ -2081,7 +2081,10 @@ void() painkeep_cube_use =
 
 		if (crate.message)
 		if (damage_attacker.ishuman)
+		{
 			sprint(damage_attacker, crate.message);
+			sprint(damage_attacker, "\n");
+		}
 
 // find any crate targets and process
 		if (crate.target)
@@ -2096,7 +2099,7 @@ void() painkeep_cube_use =
 		}
 		c = spawn(); // crates make a new thing
 		setorigin(c, crate.origin + ' 0 0 8');
-//		c.event = "dynamic_item"; // dont respawn
+		c.event = "dynamic_item"; // dont respawn
 		c.ammo_cells = crate.ammo_cells; // was set above
 
 		c.wad = item_by_mcode(d); // default
@@ -2122,7 +2125,7 @@ void() painkeep_cube_use =
 	else
 	if (c.wad == "pk_cube")
 	{
-		if (c.event != "dynamic_item")
+		if (c.event != "dynamic_item") // a map created cube - should respawn
 		{
 			c.model = "";
 			c.solid = SOLID_NOT;
@@ -2133,6 +2136,7 @@ void() painkeep_cube_use =
 			v = c.origin + ' 0 0 4';
 			c = spawn();
 			c.origin = v;
+			c.event = "dynamic_item"; // dont respawn
 		}
 		c.wad = item_by_mcode(d);
 	}
@@ -2155,6 +2159,8 @@ bprint(" *** cube / crate made =  (");
 bprint(self.wad);
 bprint(" - #: ");
 bprint(ftos(d));
+bprint(" - r: ");
+bprint(self.event);
 bprint(")\n");
 
 
@@ -2166,12 +2172,14 @@ bprint(")\n");
 			self.classname = "";
 			self.scode = -1; // item call tests this for making barrels
 			item_call(self.wad);
-			self.th_stand = SUB_Remove; // go away after boom
+			newmis.th_stand = SUB_Remove; // go away after boom
+			newmis.event = "dynamic_item"; // dont respawn - in case above misses
+			pk_ditems = pk_ditems + 1; // do here because call already made
 			remove(c);
 			self = sv;
 			return;
 		}
-		if (d) self.event = "dynamic_item";
+		if (d) self.event = "dynamic_item"; // just to double check
 
 
 
@@ -2538,7 +2546,11 @@ void() func_crate =
 	if (self.spawnflags & 2)
 		self.th_stand = crate_init;
 	else
+	{
 		self.th_stand = SUB_Null; // used for doing things besides regen
+		self.event = "dynamic_item"; // just in case?
+//		pk_ditems = pk_ditems + 1; // just became dyn item - but, this ent doesnt sub_regen, so nevermind
+	}
 
 
 	self.wad = "pk_crate";
@@ -2930,7 +2942,10 @@ void() func_make =
 	fn_make(d, self.origin, self.wad);
 	if (!self.spawnflags & 2)
 	if (newmis.class_select != "class_monster")
+	{
 		newmis.event = "dynamic_item";
+		pk_ditems = pk_ditems + 1; // do here because call already made
+	}
 
 	if (newmis) // make sure we made it
 	if (self.charmer) // IDEA: if targeted this func could easily spawn charmed monsters just by detecting targeting player
@@ -2967,6 +2982,11 @@ void(entity e, string md, float dm, float hl, float mt) misc_explodbox_set;
 
 void() barrel_regen =
 {
+	if (self.event == "dynamic_item")
+	{
+		remove(self);
+		return;
+	}
 	SUB_regen();
 	if (self.model == "progs/barrel.mdl")
 		d_barrel();

@@ -1291,6 +1291,22 @@ void() morph_die =
 };
 
 
+// to test all cases of human models
+/*
+float(entity e) human_model =
+{
+	if (e.model == "progs/player.mdl") return(TRUE); // still only human
+	if (e.model == "progs/plyr_bw.mdl") return(TRUE);
+	if (e.model == "progs/plyr_dm.mdl") return(TRUE);
+	if (e.model == "progs/plyr_q3.mdl") return(TRUE);
+//	if (e.model == "progs/plyr_q2.mdl") return(TRUE);
+//	if (e.model == "progs/plyr_pk.mdl") return(TRUE);
+//	if (e.model == "progs/plyr_skins.mdl") return(TRUE);
+
+	return(FALSE);
+};
+*/
+
 // fn(morph_heal) - check the max - 100 rule - high health level morphs get a boost when health is {scale} < MAX
 // operation - if morph with > 1.0 health modifier is more than {scaled} < max, health unit value is * health modifier
 

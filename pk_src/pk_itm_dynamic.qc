@@ -124,7 +124,7 @@ void(string cls) item_call =
 //			self.touch = SUB_Null;
 			self.solid = SOLID_NOT;
 			self.takedamage = DAMAGE_NO;
-			self.enemy = f;
+			newmis = self.enemy = f; // so dyn can be set on barrels
 
 			f.wad = "item_call_fake";
 			f.ip_orgOrigin = self.ip_orgOrigin;
@@ -362,10 +362,10 @@ void(string cls) item_call =
 	else if (cls == "key_power_cube") key_power_cube();
 	else if (cls == "key_pyramid") key_pyramid();
 
-	else if (cls == "q2_ctf_haste") q2_ctf_haste();
-	else if (cls == "q2_ctf_regen") q2_ctf_regen();
-	else if (cls == "q2_ctf_resist") q2_ctf_resist();
-	else if (cls == "q2_ctf_stren") q2_ctf_stren();
+	else if (cls == "q2_ctf_haste" && !RUNES) q2_ctf_haste(); // note: dont really know what these are
+	else if (cls == "q2_ctf_regen" && !RUNES) q2_ctf_regen();
+	else if (cls == "q2_ctf_resist" && !RUNES) q2_ctf_resist();
+	else if (cls == "q2_ctf_stren" && !RUNES) q2_ctf_stren();
 
 	else if (cls == "q2_ammo_shells") q2_ammo_shells();
 	else if (cls == "q2_ammo_bullets") q2_ammo_bullets();
@@ -508,6 +508,8 @@ void(string cls) item_call =
 		}
 		if (self.wait <= -888) self.wait = 0;
 	}
+	else
+		pk_ditems = pk_ditems + 1;
 	self.solid = SOLID_NOT;
 	NO_PI = 0;
 //	bot_item_linx(self); // *bot - item tie in - needs checked for use here -- ??? does anything need done here?

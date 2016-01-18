@@ -47,7 +47,7 @@ void () SUB_regen =
 	{
 		if (WARNING)
 			bprint("*** - WARNING - Removed a dyn item in SUB_regen!\n");
-		pk_ditems = pk_ditems - 1;
+		pk_ditems = pk_ditems - 1; // havent verified this in some time, likely its totally borked re: map crates that dont respawn use this
 		remove(self);
 		return;
 	}

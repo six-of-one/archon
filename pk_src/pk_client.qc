@@ -561,11 +561,14 @@ void() PutClientInServer =
 
 	if (self.health_modifier <= 0) self.health_modifier = MHUMAN_HEALMOD;
 
-	if  (cvar("anode")) 
+	if  (cvar("anode"))
+//	if (1) // TEST:
 	{
 		self.morphy = IMP_MANODEX;
-		stuffcmd(self, "exec anode.cfg");
+		stuffcmd(self, "exec anode.cfg\n");
 	}
+	else
+		stuffcmd(self, "exec archon.cfg\n");
 
 //	self.morphy = IMP_MGREMLIN_F; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
@@ -1504,7 +1507,8 @@ void () PlayerPostThink =
 			}
 
 // runes - these qaulify the below 2 tests in the call!
-	if (self.rune_flag & RUNE_FLG_RG) rune_regen();
+	if (self.rune_flag & RUNE_FLG_RG || self.rune_flag & T_ADOC) rune_regen();
+	if (self.rune_flag & RUNE_VAMPIRE) rune_vamp();
 
 	if (Q_100 || Q_99) // CHECK: q99-ness effect hereish
 	{

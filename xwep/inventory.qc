@@ -953,8 +953,17 @@ void(float im, entity p) drop_inventory =
 
 // dropping a rune
 
-	if (sel == "Haste" ||
+	if (sel == "Haste " ||
+		 sel == "Regeneration " ||
+		 sel == "Resistance" ||
+		 sel == "Strength" ||
+		 sel == "Haste" ||
 		 sel == "Regeneration" ||
+		 sel == "Vampire" ||
+		 sel == "Disruptor Shield" ||
+		 sel == "Power Amplifier" ||
+		 sel == "Time Accelerator" ||
+		 sel == "Auto Doc" ||
 		 sel == "Earth magic" ||
 		 sel == "Black magic" ||
 		 sel == "Hell magic" ||
@@ -963,16 +972,17 @@ void(float im, entity p) drop_inventory =
 		e.spawnflags = b;
 		ic = "item_sigil";
 
-		if (sel == "Haste")
+		if (sel == "Haste ")
 			ic = "item_haste";
 
-		if (sel == "Regeneration")
+		if (sel == "Regeneration ")
 			ic = "item_regen";
 
 		item_call_save(e, ic);
 
-		if (RUNES != 1)
-		if (ic == "item_sigil") e.classname = ic; // make a real item
+		if (RUNES != 1) // CHECK: does run toss need to turn of dyn_item
+			e.event = ""; // not dyn_item - for relocation control code
+//		if (ic == "item_sigil") e.classname = ic; // make a real item
 
 		if (RUNES)
 			p.rune_flag = p.rune_flag - (p.rune_flag & b); // remove rune
@@ -1214,11 +1224,11 @@ void(float pg) drop_setup =
 					ic = rune_name(d);
 					if (d & RUNE_FLG_HS)
 					if (self.target2 == "progs/q3_art.mdl")
-						ic = "Haste";
+						ic = "Haste ";
 
 					if (d & RUNE_FLG_RG)
 					if (self.target2 == "progs/q3_art.mdl")
-						ic = "Regeneration";
+						ic = "Regeneration ";
 
 					drop_string(ic, d, world);
 				}
@@ -1233,28 +1243,48 @@ void(float pg) drop_setup =
 			}
 
 			if (d == 64)
-			if (self.items & IT_INVULNERABILITY) drop_string("Invulerability", IT_INVULNERABILITY, world);
+			if (self.rune_flag & R_VAMPIRE)
+				drop_string(rune_name(R_VAMPIRE), R_VAMPIRE, world);
 
 			if (d == 128)
-			if (self.items & IT_QUAD) drop_string("Quad Damage", IT_QUAD, world);
+			if (self.rune_flag & T_DSH)
+				drop_string(rune_name(T_DSH), T_DSH, world);
 
 			if (d == 256)
-			if (self.items & IT_INVISIBILITY) drop_string("Limited Invisibility", IT_INVISIBILITY, world);
+			if (self.rune_flag & T_AMP)
+				drop_string(rune_name(T_AMP), T_AMP, world);
 
 			if (d == 512)
-			if ((self.items & IT_SUIT) && !self.wetsuit_finished) drop_string("Hazmat Suit", IT_SUIT, world);
+			if (self.rune_flag & T_TEIM)
+				drop_string(rune_name(T_TEIM), T_TEIM, world);
 
 			if (d == 1024)
+			if (self.rune_flag & T_ADOC)
+				drop_string(rune_name(T_ADOC), T_ADOC, world);
+
+			if (d == 2048)
+			if (self.items & IT_INVULNERABILITY) drop_string("Invulerability", IT_INVULNERABILITY, world);
+
+			if (d == 4096)
+			if (self.items & IT_QUAD) drop_string("Quad Damage", IT_QUAD, world);
+
+			if (d == 8192)
+			if (self.items & IT_INVISIBILITY) drop_string("Limited Invisibility", IT_INVISIBILITY, world);
+
+			if (d == 16384)
+			if ((self.items & IT_SUIT) && !self.wetsuit_finished) drop_string("Hazmat Suit", IT_SUIT, world);
+
+			if (d == 32768)
 			if ((self.items & IT_SUIT) && self.wetsuit_finished) drop_string("Diving Suit", IT_SUIT, world);
 
 // note: when droping search .map for mega_health_rot & get value in duration for next add - goes in .healamount
 //			if (d == 2048)
 //			if (self.items & IT_SUPERHEALTH) drop_string("Mega Health", IT_SUPERHEALTH, world);
 
-			if (d == 4096)
+			if (d == 65536)
 			if (self.empathy_finished) drop_string("Empathy Shields", 0, world);
 
-			if (d == 8192)
+			if (d == 131072)
 			{
 				a = RUNE_AMMO;
 				if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
