@@ -378,7 +378,7 @@ float SHALRATH_SHT_VEL			= 400;
 float FIREBALL_WEP_VEL			= 300;
 
 string DEF_MORPH_DEATH1			= " was killed by ";
-string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n"
+string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n";
 
 // gremlin
 

@@ -442,6 +442,13 @@ void () W_FireRocket =
 // set missile speed
 
 	makevectors (self.v_angle);
+	if (self.classname == "class_monster") // enhanced - monster firing a rocket
+	{
+		mpuff = self.enemy;
+		bfwd = mpuff.origin - mpuff.velocity*0.2;
+		missile.velocity = normalize (bfwd - self.origin);
+	}
+	else
 	if (self.classname == "pk*bot")
 	{
 		missile.velocity = botaim ();

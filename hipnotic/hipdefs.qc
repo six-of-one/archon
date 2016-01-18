@@ -66,8 +66,8 @@ float AS_DODGING     = 5;
 .float spawnmulti;
 
 // hipnotic gremlin code
-.float stoleweapon
-.float gorging
+.float stoleweapon;
+.float gorging;
 
 // wall stains
 

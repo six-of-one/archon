@@ -1658,6 +1658,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 // sscode - so map codes can be entity stored and find(...) string searchable
 //			- nifty frikqcc compiler trick here - dont think this works with regular QC compilers
 
+
 	sid_code = 
 						"100":"101":"102":"103":"104":"105":"106":"107":"108":"109":"110":"111":"112":"113":"114":"115":"116":"117":"118":"119":
 						"120":"121":"122":"123":"124":"125":"126":"127":"128":"129":"130":"131":"132":"133":"134":"135":"136":"137":"138":"139":

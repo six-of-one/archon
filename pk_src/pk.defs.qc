@@ -64,6 +64,42 @@ void() q100_PlayerPreThink;
 void() q100_PlayerPostThink;
 
 
+/*
+frame macro expansion
+
+void() framename = [$framenum, nextthink] { ...code...};
+
+void() framename =
+{
+	self.frame= $framenum;  // the model frame to displayed
+	self.nextthink = time + 0.1;   // next frame happens in 1/10 of second
+	self.think = nextthink; // the function to call at the next frame
+	...code...
+};
+
+-- removes - 5 search replace sets
+ =[ 
+= \r{\r\tself.frame = 
+
+, 
+;\r\tself.nextthink = time + 0.1;\r\tself.think = 
+
+ ] {
+;\r\t
+
+ ;
+;
+
+;};
+;\r};
+
+-- spaces
+  
+ 
+
+qr heximp_hover|cut -b 18-38|sed -e 's/$/;/
+
+*/
 // **************************************
 // Archon section
 
@@ -540,12 +576,12 @@ float FL_MSL					= 8;				// set missile velocity
 float FL_GRN					= 16;				// set grenade type velocitys
 float FL_USEAMMO				= 32;				// for generic fire fns
 float FL_CTHONF				= 64;				// cthon fire balls
-float FL_SNDMIS				= 128				// sound on missile wep channel
-float FL_RUNEHST				= 256				// missile gets runehaste check
+float FL_SNDMIS				= 128;			// sound on missile wep channel
+float FL_RUNEHST				= 256;			// missile gets runehaste check
 float FL_AIM1K					= 131072;		// aim fn, val 1000
 float FL_AIM10K				= 262144;		// aim fn, val 10000
 float FL_AIM100K				= 524288;		// aim fn, val 100000
-float FL_MORPHSHOT			= 2097152;			// builtin weapon damage
+float FL_MORPHSHOT			= 2097152;		// builtin weapon damage
 /*
 be aware...also used as missile code flags
 
@@ -610,7 +646,7 @@ float MC_Q3_HOLDTELE;
 
 float ENHANCED					= 1; // adds features that werent originally there in the sub mods (like runes)
 
-.float xp // experience points
+.float xp; // experience points
 
 void() remove_fade;
 
@@ -796,7 +832,7 @@ float CTI_SLIME				= 525396;// Slime flag indicated
 
 .float content_flag;
 
-.string quakeset // string search link all quakeable ents
+.string quakeset; // string search link all quakeable ents
 string EARTHQUAKE				= "earthquake"; // select things we want to shake up
 
 float QUAKE_RUBBLE			= 0.17; // chance of rubble when skaking loose debris

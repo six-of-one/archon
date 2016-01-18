@@ -1,15 +1,15 @@
-/* ::-::
- *
- * Cataboligne
- *
- * file: progs.src
- *
- * date: 3.25.8
- *
- * qcc - compile Chaos Mod MK II
- *			"Archon"
- *
- */
+// ::-::
+//
+// Cataboligne
+//
+// file: progs.src
+//
+// date: 3.25.8
+//
+// qcc - compile Chaos Mod MK II
+//			"Archon"
+//
+//
 
 ./progs.dat
 

@@ -210,20 +210,6 @@ string(float mb, float mode) monster_id =
 
 	s2 = "";
 
-
-
-bprint("***   monster_id: ");
-bprint("--- Assign bit: ");
-bprint(ftos(mb));
-bprint(" - make mode: ");
-bprint(ftos(mode));
-bprint("\n");
-
-
-
-
-
-
 	if (mode == MON_NAME_REG)
 	{
 		if (mb == CB_M_ARMY) 			s2 = "Army Grunt";
@@ -283,10 +269,6 @@ bprint("\n");
 	else
 	if (mode == MON_FUNC_II)
 	{
-
-bprint("*** monster_id - in MON_FUNC_II - s2 = ");
-
-
 		if (mb == CB_M_BLARG) 			s2 = "monster_blarg";
 		if (mb == CB_M_RAPTOR) 			s2 = "monster_raptor";
 		if (mb == CB_M_SPIDER) 			s2 = "monster_spider";
@@ -294,10 +276,6 @@ bprint("*** monster_id - in MON_FUNC_II - s2 = ");
 		if (mb == CB_M_BOSSMAN) 		s2 = "monster_bossman";
 		if (mb == CB_M_CLING) 			s2 = "monster_clinger";
 		if (mb == CB_M_HEXIMP) 			s2 = "monster_heximp";
-
-bprint(s2);
-bprint("\n");
-
 	}
 	return s2;	
 };
@@ -777,6 +755,8 @@ else if (self.classname == "monster_shalrath") return  morph_test(chk,IMP_MOGRE,
 else if (self.classname == "monster_scourge") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,0,0,0,IMP_MSHAMBLR,   0);
 else if (self.classname == "monster_gremlin") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MOGRE,0,IMP_MSHAMBLR,   0);
 else if (self.classname == "monster_vomit") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MCTHON,IMP_MVOMIS,IMP_MSHAMBLR,   0);
+// monsters II - not many of these, they arent real friendly
+else if (self.classname == "monster_heximp") return morph_test(chk,CB_GREMLIN,IMP_MVOMIS,IMP_MDEMON,IMP_MSCOURGE,0,0,   0);
 // doom monsters - only friendly with doom dimension biengs
 else if (self.classname == "monster_imp") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0,   0);
 else if (self.classname == "monster_arachnotron") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0,   0);
