@@ -763,9 +763,14 @@ void() pk_liveupd =
 		cvar_set("saved1", "0"); // cant clear outside test, used for too much dev prints
 		f = 0;
 	}
-		
-	noway_below = cvar("sv_bot_noway_below"); // no bot waypoints below this
-	noway_above = cvar("sv_bot_noway_above"); // bot bot waypoints above this
+
+// maphack changes these as levels go up & down - so we cant live update in that case
+// have to check time because of world flag on biomes
+	if (!biome || (time < 9))
+	{
+		noway_below = cvar("sv_bot_noway_below"); // no bot waypoints below this
+		noway_above = cvar("sv_bot_noway_above"); // bot bot waypoints above this
+	}
 
 	if (1) // WORLD_NOWAY)
 	{

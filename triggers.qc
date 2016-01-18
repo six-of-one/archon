@@ -643,6 +643,15 @@ void () teleport_touch =
 			other.flags = other.flags - FL_ONGROUND;
 		if (!(self.spawnflags & 128))
 			other.velocity = v_forward * 300; // Note: ssnn issue here - causes "jump"
+
+// map hack active - restore hacks imm. on tele because they might be hidden
+		if (maphack_hide)
+		{
+			e = self;
+			self = maphack_hide;
+			self.think();
+			self = e;
+		}
 	}
 	other.flags = other.flags - other.flags & FL_ONGROUND;
 };

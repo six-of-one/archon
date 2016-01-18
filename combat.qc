@@ -449,7 +449,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	{
 		if (attacker != world && inflictor != world)
 		{
-// xreaper code - looks good
+// xrp code - looks good
 			if ((attacker != self) && !coop)
 			{
 				if (self.enemy)

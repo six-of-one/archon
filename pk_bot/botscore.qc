@@ -6,10 +6,26 @@
  *
  * date: Fri Apr  4 04:40:02 UTC 2008
  *
- * final qc
+ * final qc - NOT USED !!!
  *
  */
 
+
+/// note: this code is not currently compiled
+
+// these were removed from defs:
+
+float NORMALSCORE				= 1;
+float MYSCORE					= 2;
+
+//.float healtype;
+//.float playerkills;
+//.float playerdeaths;
+//.float botkills;
+//.float botdeaths;
+//.float suicides;
+
+// this is the old scoring system from before bots were on the scoreboard hack
 
 void () initscore =
 {
@@ -30,7 +46,7 @@ void (entity killer, entity killed) countkill =
 		{
 			adj = 0.4;
 		}
-		if ((killed.playerdeaths + killed.botdeaths) > KINDA_WANT)
+		if ((killed.playerdeaths + killed.botdeaths) > 20)
 		{
 			adj = 0.150;
 		}
@@ -97,7 +113,7 @@ void (float sc) FPrintScore =
 	{
 		if (sc >= 0)
 		{
-			if (sc < MUST_HAVE)
+			if (sc < 100)
 			{
 				sprint (self," ");
 			}

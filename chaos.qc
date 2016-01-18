@@ -757,7 +757,7 @@ void() chaos_maphack_trigger =
 			self.dest1_z = -128; // because our chosen "basement" is 128 below the 0 line
 			self.dest2_z = biome.lip - 128;
 
-			if (self.flags == 6) // dont allow this to replicate itself
+			if (self.flags == 6) // recursive think - dont allow aflag -6 (these two thinks) to replicate
 			{
 				self.dest = v0;
 				self.dest_z = biome.lip;
@@ -798,45 +798,114 @@ void() copy_static =
 entity maphack_hide;
 float autocvar_sv_c_hackdist = 10000;
 
+.float svthink; // save think time, or indicate not thinking - 0 means ent is not hidden, -1 not thinking
+.entity hh_chn;
+
 void() hide_hacks =
 {
+	local entity hh;
+	hh = self;
+	self.hh_chn = world;
+
 	self.nextthink = time + 5;
 
-// get list of players - note - potential to bomb .chain list
+// get list of players
 	cnt_ent(self, "classname", "player"); // note: dead players
 	self.goalentity = self.chain;
 
 // get list of hacks
 	cnt_ent(self, "classname", "func_maphack");
 	self.dropent = self.enemy = self.chain;
-//	if (!self.dropent) remove(self);
 
 /*
-// loop players
+// loop players - hacks have to be hidden for ALL players
+//						will have to manage the hh_chn list, removing any hack that is visible to any player
+
 	while (self.goalentity)
 	{
 		self.dropent = self.enemy; // restart for every player
 		if (self.goalentity.ishuman)	
 */
+		if (self.goalentity)
 		while (self.dropent)
 		{
-// notes - on multi server, have to check EVERY player origin, not bots tho
+// notes - on multi server, have to check EVERY player origin, even bots - bots could have a much smaller vis radius though
+			if (self.dropent.movement == v0) // dont check source placeholders or feature sets
+			if (!self.dropent.spawnflags & 64) // spawnflags say no
 			if (vlen(self.dropent.origin - self.goalentity.origin) > autocvar_sv_c_hackdist)
 			{
-				self.dropent.model = null_string;
+				if (self.dropent.svthink != -6) // only hide once
+				{
+																						bprint(" *** warning:   hack hiding at : ");
+																						bprint(vtos(self.dropent.origin));
+																						bprint("\n");
+					self.dropent.svthink = -6;
+					self.dropent.modelindex_morph = self.dropent.modelindex;
+					self.dropent.modelindex = 0;
+					self.dropent.nextthink = -1;
+// special - hide hacks chain, because findradius uses .chain
+					hh.hh_chn = self.dropent;
+					hh = self.dropent;
+				}
 			}
-			else
+			else if (self.dropent.svthink == -6)
 			{
-// note: reset biome if mdl lost?
-				setmodel(self.dropent, self.dropent.mdl);
+																						bprint(" *** warning:   hack revealing at : ");
+																						bprint(vtos(self.dropent.origin));
+																						bprint("\n");
+				self.dropent.svthink = 6; // indicate restore happens for next bit
+				if (self.dropent.delay) self.dropent.nextthink = time + self.dropent.delay; // note: delay code currently not viable
+				self.dropent.modelindex = self.dropent.modelindex_morph;
+// reveal hacks chain
+				hh.hh_chn = self.dropent;
+				hh = self.dropent;
 			}
 			
 			self.dropent = self.dropent.chain;
 		}
+		hh.hh_chn = world;
 //		self.goalentity = self.goalentity.chain;
 //	}
-
-// hide models too
+		hh = self.hh_chn;
+		while (hh)
+		{
+/// note: this system is "fuzzy" - things may be hidden in visible hacks & restored for hidden hacks, and some may even get lost!
+			// one improvement would be to use the actual hack bounding box as a double check to things found in the radius
+			self.aiment =  findradius(hh.origin, hh.lefty * 1.46); // radius should cover the whole hack
+			while (self.aiment && hh)
+			{
+				if (self.aiment.classname != "func_maphack") // dont do op on hacks
+				if (!self.aiment.flags & FL_CLIENT) // dont hide / reveal players or bots
+				if (hh.svthink == -6)
+				{
+	// hide model and stop thinking
+					self.aiment.modelindex_morph = self.aiment.modelindex; // may want to exclude viswep - the only non player / nonbot ent to use this
+					self.aiment.modelindex = 0;
+	// note: some code modifies nextthink for vars ents
+					self.aiment.svthink = self.aiment.nextthink - time;
+					self.aiment.nextthink = -1;
+																						bprint(" *** warning:   hack hiding ent: ");
+																						bprint(item_ident(self.aiment));
+																						bprint("\n");
+				}
+				else if (hh.svthink == 6)
+				{
+					self.aiment.modelindex = self.aiment.modelindex_morph;
+/// note: may want to check for 0 void in think !
+					if (self.aiment.svthink > 0)
+						self.aiment.nextthink = self.aiment.svthink + time;
+																						bprint(" *** warning:   hack revealing ent: ");
+																						bprint(item_ident(self.aiment));
+																						bprint("\n");
+					self.aiment.svthink = 0;
+				}
+				self.aiment = self.aiment.chain;
+			}
+			if (hh.svthink == 6) hh.svthink = 0;
+			hh = hh.hh_chn;
+		}
+// hide models too - deprecated - everything is hid now
+/*
 	cnt_ent(self, "classname", "func_model");
 	self.dropent = self.enemy = self.chain;
 	while (self.dropent)
@@ -854,6 +923,7 @@ void() hide_hacks =
 		
 		self.dropent = self.dropent.chain;
 	}
+*/
 };
 
 // delete a hack and all its sub ents
@@ -868,12 +938,13 @@ void() delete_hack =
 		remove(self.trigger_field);
 		self.trigger_field = world;
 	}
-	else
+	else if (self != self.goalentity)
 	{
 // found a hack - destroy it and all sub ents
 		self.aiment =  findradius(self.origin, self.lefty * 1.5); // radius should cover the whole hack
 		while (self.aiment && self.goalentity)
 		{
+			if (self.aiment.button12 > 10000)
 			if (self.aiment.button12 == self.goalentity.button12) // same hash
 			{
 				self.aiment.think = SUB_Remove;
@@ -932,6 +1003,15 @@ void(entity es) maphack_copy =
 			es.deathtype = "misc/null.wav";
 		}
 
+// time limit of repeatable features
+		if (es.classname == "func_maphack")
+		if (es.spawnflags & 32) // lockout check on this copied hack piece
+		if (es.tomb_time > 0)
+		{
+			if (es.tomb_death_time > time) return; // locked out
+			es.tomb_death_time = time + es.tomb_time; // set lock
+		}
+
 		ec = spawn();
 		copyentity(es, ec);
 
@@ -951,12 +1031,14 @@ void(entity es) maphack_copy =
 			if (ec.mangle_y && (ec.touch != secret_touch)) // make sure this copy item matches - mostly for plats / doors that dont rotate triggers
 			{
 				if (ec.mangle_y > 0) // negative values are a passthrough - copy / no rotates
-				if (ec.mangle_y == 360) ec.mangle_y = 0;
-				if (ec.mangle_y != mh.angles_y) // fail
 				{
-																				bprint(" *** warning:   failed hack_copy on mangle_y test\n"); // TEST - remove
-					remove(ec);
-					return;
+					if (ec.mangle_y == 360) ec.mangle_y = 0;
+					if (ec.mangle_y != mh.angles_y) // fail
+					{
+																					bprint(" *** warning:   failed hack_copy on mangle_y test\n"); // TEST - remove
+						remove(ec);
+						return;
+					}
 				}
 // note - these do not get rotated - they MUST be in the correct position to start with
 			}
@@ -1037,6 +1119,8 @@ void(entity es) maphack_copy =
 		setorigin(ec, mh.origin + ec.finaldest + mh.movement + ec.movement);
 		ec.movement = v0; // so it can locate random spawns to copied ents
 
+// pk repos deal
+		if (ec.ip_orgOrigin) ec.ip_orgOrigin = ec.origin; // reset on copy
 #ifdef warning
 																			if (WARNING & 65536)
 																			{
@@ -1066,6 +1150,9 @@ void(entity es) maphack_copy =
 			sv = self;
 			self = ec;
 			delete_hack();
+// NO! - only if think is reactivated (delay would do this) - reveal was erroneously re-thinking hacks
+//			self.spawnflags = self.spawnflags - (self.spawnflags & 4); 
+			// have to remove flag for future hide / reveal not to delete things
 			self = sv;
 		}
 
@@ -1117,6 +1204,8 @@ void(entity es) maphack_copy =
 /// note - the only place triggers and buttons are given a system hash, so they MUST target1 (or target2) the thing they link with
 //			  (except random teleports, which assign system hash on the fly
 
+/// a map design could easily have an endless loop with sub-targets that self refers
+//
 		if (ec.target1 || ec.target2)
 			{
 				if (ec.class_select == "trigger_secret")
@@ -1188,7 +1277,6 @@ void(entity es) maphack_copy =
 						else
 						if (self.dropent.event) // a rnd chance item that didnt copy can have an alternate item set that appears
 						{
-// note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
 							cnt_ent(self, "deathtype", self.dropent.event);
 							self.aiment = self.chain;
 							while (self.aiment)
@@ -1548,18 +1636,6 @@ void() func_maphack =
 		if (self.state == 15 && self.stack15) self.mdl = self.stack15;
 		if (self.state == 16 && self.stack16) self.mdl = self.stack16;		
 	}
-	else // TEST: remove this
-	if (world.model == "maps/x4_1.bsp")
-	{
-		self.mdl = "maps/x4_6.bsp";
-		if (self.state < 2) self.mdl = "maps/x4_1.bsp";
-		if (self.state == 2) self.mdl = "maps/x4_2.bsp";
-		if (self.state == 3) self.mdl = "maps/x4_3.bsp";
-		if (self.state == 4) self.mdl = "maps/x4_4.bsp";
-		if (self.state == 5) self.mdl = "maps/x4_5.bsp";
-		if (self.state > 5) self.mdl = "maps/x4_6.bsp";
-		self.lefty = 512;
-	}
 
 
 	if (0) // <-test reset - self.rotate_type > 0)
@@ -1625,6 +1701,10 @@ void() func_maphack =
 //		self.model = self.mdl;
 
 		self.solid = SOLID_BSP; // act like map brushes
+// reset upper / lower bounds for rnd items, etc.
+// note outdoors issue with some chunks (a flat top denies anything being on top of it)
+		if (self.absmin_z < noway_below) noway_below = self.absmin_z;
+		if (self.absmax_z > noway_above) noway_above = self.absmax_z;
 	}
 
 // copy all target1 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
@@ -1691,7 +1771,6 @@ void() func_maphack =
 			else
 			if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
 			{
-// note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
 				cnt_ent(self, "deathtype", self.dropent.event);
 				self.aiment = self.chain;
 				while (self.aiment)
@@ -1704,7 +1783,7 @@ void() func_maphack =
 		}
 	}
 
-// try weaponmodel search on mdl - this is per map chunk copy
+// try weaponmodel search on maphack mdl (map name) - this is per map chunk copy
 	if (self.mdl && self.mdl != null_string)
 	{
 		cnt_ent(self, "weaponmodel", self.mdl);
@@ -1718,7 +1797,6 @@ void() func_maphack =
 			else
 			if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
 			{
-// note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
 				cnt_ent(self, "deathtype", self.dropent.event);
 				self.aiment = self.chain;
 				while (self.aiment)

@@ -33,14 +33,12 @@ float DEDICATED				= 4194304;	//  (serverflags) 10000000000000000000000
 
 // orig
 
-float NORMALSCORE				= 1;
-float MYSCORE					= 2;
 float DONT_WANT				= 0;
 float KINDA_WANT				= 20;
 float WANT						= 35;
 float MUST_HAVE				= 100;
 float SEARCH_RADIUS			= 600;
-float LOOPTIME					= 20;
+//float LOOPTIME					= 20;
 float MAXPATHERS				= 16;
 float REGULARTARGET	 		= 0;
 float CARRIED					= 1;
@@ -50,11 +48,13 @@ float TELEPORT					= 4;
 float LOCAL_TIME				= 7;
 float CANTURN					= 1;
 float NOTURN					= 2;
+
+// left flags
 float STRAFE_DIR				= 16;
 float FAR_SEEK					= 32;
-float WATERUPDOWN				= 64;
+//float WATERUPDOWN				= 64;
 float NODROP					= 128;
-float RUNAWAY					= 256;
+//float RUNAWAY					= 256;
 float GETGOODY					= 512;
 float ONTRAIN					= 1024;
 float MULTIENEMY				= 2048;
@@ -69,12 +69,7 @@ float MULTIENEMY				= 2048;
 .float(entity node, float len, entity item) th_cache;
 .void() th_update;
 .float istrigger;
-//.float healtype;
-.float playerkills;
-.float playerdeaths;
-.float botkills;
-.float botdeaths;
-.float suicides;
+
 .vector lastseenpos;
 .float enemyrun;
 .float goody_time;
@@ -134,8 +129,8 @@ float HELPING;
 float NAMEBOTS;
 
 
-// Cataboligne - xreaper add in code implement
-float XRP = 1; // if true xreap code will be used - mostly extra messages from bots
+// Cataboligne - xrp add in code implement
+float XRP = 1; // if true xrps code will be used - mostly extra messages from bots
 
 
 float c_skill; // holder - carry skill for bot spawning

@@ -56,7 +56,7 @@ void () BotWaterMove =
 				sound (self,CHAN_VOICE,"player/gasp1.wav",TRUE,ATTN_NORM);
 			}
 		}
-		self.air_finished = (time + KINDA_WANT);
+		self.air_finished = (time + 20);
 		self.dmg = 2;
 	}
 	else

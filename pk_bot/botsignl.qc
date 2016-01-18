@@ -22,7 +22,7 @@ entity () botmovetarget =
 	targ.movetarget = world;
 	targ.touch = t_botmovetarget;
 	setsize (targ,'-4 -4 0','4 4 8');
- //  targ.entOwner = self; // xreap - not using yet
+ //  targ.entOwner = self; // xrp - not using yet
 	return(targ);
 };
 

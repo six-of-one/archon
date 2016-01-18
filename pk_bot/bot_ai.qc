@@ -219,7 +219,7 @@ float () RunAway =
 			return (0);
 		}
 	}
-// xreaper add
+// xrp add
 	if (XRP)
 	if (self.health < 15)
 	{
@@ -245,7 +245,7 @@ float () RunAway =
 	{
 		if (self.enemy.items & IT_QUAD)
 		{
-// xreaper add
+// xrp add
 	if (XRP)
 			if (runawayspeakchance <= 0.1)
 			{
@@ -330,7 +330,7 @@ void () BotHuntTarget =
 
 float () BotFoundTarget =
 {
-// xreaper add
+// xrp add
 	local float huntspeakchance;
 	huntspeakchance = random ();
 	if (!XRP)
@@ -677,7 +677,7 @@ float () BotFindTarget =
 	}
 	if (self.skil < 1)
 	{
-		len = (random () * MUST_HAVE);
+		len = (random () * 100);
 		if (len > 25)
 		{
 			return (0);

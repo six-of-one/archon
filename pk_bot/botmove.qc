@@ -316,7 +316,7 @@ float () JumpUpToPush =
 	len = vlen ((goalxy - botxy));
 	if (len < 25)
 	{
-		jumpv = (xydir * KINDA_WANT);
+		jumpv = (xydir * 20);
 		jumpv_z = 270;
 		Botjump (jumpv);
 		return (1);
@@ -552,7 +552,7 @@ float (float vz, float dist, float imagine) Bot_tryjump =
 			dir = normalize (newbottom - bottom);
 			len = vlen (newbottom - bottom);
 			newbottom = (bottom + ((dir * len) * frac));
-			newbottom_z = (newbottom_z + KINDA_WANT);
+			newbottom_z = (newbottom_z + 20);
 			if (!checkLanding ((newbottom - (16* v_forward))))
 			{
 				return (0);
@@ -600,7 +600,7 @@ float () waterupdown =
 	local float dis;
 //	local float rnd;
 //	local float zbottom;
-	dis = KINDA_WANT;
+	dis = 20;
 	wlevel = CheckWaterLevel ();
 	if (wlevel < 2)
 	{
@@ -608,9 +608,9 @@ float () waterupdown =
 	}
 	if (self.absmin_z > self.goalentity.origin_z)
 	{
-		if (dis > KINDA_WANT)
+		if (dis > 20)
 		{
-			dis = KINDA_WANT;
+			dis = 20;
 		}
 		if (waterdownz (dis))
 		{
@@ -630,9 +630,9 @@ float () waterupdown =
 		if (self.absmin_z < self.goalentity.origin_z)
 		{
 			dis = (self.goalentity.origin_z - self.absmin_z);
-			if (dis > KINDA_WANT)
+			if (dis > 20)
 			{
-				dis = KINDA_WANT;
+				dis = 20;
 			}
 			if (waterupz (dis))
 			{

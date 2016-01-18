@@ -84,6 +84,12 @@ ClientDisconnected(); // FrikBot
 --------------------------------------
 */
 
+/// deprecated - dont play much on these maps anyway
+///							- saved 807 numglobaldefs (of 32768)
+///							- and 2392 numpr_globals (of 65536)
+///							- and 2086 numstatements (of 524288)
+
+/*
 void() bot_map_load =
 {
 	// place your qc loaded waypoints here
@@ -101,6 +107,7 @@ void() bot_map_load =
 	else if (mapname == "dm6")
 		map_dm6();
 };
+*/
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -806,7 +813,7 @@ void() BotInit =
 		localcmd(mapname);
 		localcmd(".way\n");
 		waypoint_mode = WM_DYNAMIC;
-		bot_map_load();
+//		bot_map_load();
 	}
 	else
 		waypoint_mode = WM_LOADED;

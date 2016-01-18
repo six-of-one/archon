@@ -238,7 +238,7 @@ void () respawnBot =
 				{
 					m = ": I'm tired of getting fragged.  I'm off\n";
 				}
-				else if (self.frags > 100) //totalscore (self) > MUST_HAVE)
+				else if (self.frags > 100) //totalscore (self) > 100)
 				{
 					m = ": I'm going to find some real competition\n";
 				}
@@ -357,7 +357,7 @@ void () PutBotInServer =
 //	self.pausetime = 0;
 //	self.view_ofs = '0 0 22';
 //	makevectors (self.angles);
-//	spawn_tfog (self.origin + (v_forward * KINDA_WANT));
+//	spawn_tfog (self.origin + (v_forward * 20));
 //	spawn_tdeath (self.origin,self);
 	self.yaw_speed = (45 + (25 * self.skil));
 	self.lefty = STRAFE_DIR;
@@ -417,7 +417,7 @@ void () PutBotInServer =
 void () SpawnNewBot =
 {
 	local string tmp;
-// xreaper code - looks good, not qualifying
+// xrp code - looks good, not qualifying
 	if (intermission_running)
 	{
 		return ;

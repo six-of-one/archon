@@ -1132,7 +1132,19 @@ entity() dyn_rndloc =
 					}
 			e.chain = e.chain.chain;
 			}
+		else if (e.chain.svthink)  {
+					if (WARNING & 8192)
+					{
+						bprint("*** warning: dyn_rndloc - skipped (svthink - map_hack hidden ent) - ");
+						bprint(item_ident(e.chain));
+						bprint(" v: ");
+						bprint(vtos(e.chain.origin));
+						bprint("\n");
+					}
+			e.chain = e.chain.chain;
+			}
 #else
+		else if (e.chain.svthink) e.chain = e.chain.chain; // ignore map_hack hidden ents
 		else if (e.chain.movement_z) e.chain = e.chain.chain; // ignore map_hack source ents
 		else if (noway_below && (e.chain.origin_z < noway_below)) e.chain = e.chain.chain;
 		else if (noway_above && (e.chain.origin_z > noway_above)) e.chain = e.chain.chain;

@@ -425,7 +425,7 @@ void (entity node, entity targ, float len, entity item) cacheRouteTarget =
 	{
 		rng = 250;
 	}
-	rng = ((rng + len) + KINDA_WANT);
+	rng = ((rng + len) + 20);
 	RECURSEDEPTH = (RECURSEDEPTH + 2);
 	if (RECURSEDEPTH < 24)
 	{

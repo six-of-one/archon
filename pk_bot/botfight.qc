@@ -547,7 +547,7 @@ float () CheckReboundAttack =
 		return (0);
 };
 
-// xreap code- where is it callded?
+// xrp code- where is it callded?
 void () ChangePitch =
 {
 	local float ideal;
