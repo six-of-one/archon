@@ -137,8 +137,8 @@ void() x_weapon_touch =
 	self = e;
 
 	cls = self.classname;
-	if (cls == "dyn_item")
-		cls = self.wad;
+//	if (cls == "dyn_item")
+//		cls = self.wad;
 //	if (self.mcode)
 //		cls = item_by_mcode(self.mcode);
 
@@ -255,7 +255,7 @@ void() x_weapon_touch =
 			{
 			bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
 			bprint(self.classname);
-			if (self.classname == "dyn_item")
+			if (self.event == "dynamic_item")
 			{
 				bprint(" - ");
 				bprint(self.wad);

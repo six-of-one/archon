@@ -1059,7 +1059,7 @@ void(float mpy) morph_armor_check =
 	{
 //		proc_dropitem(code_bit(self.mode_y & (IV_ARM1|IV_ARM2|IV_ARM3),0,1),TRUE);
 		e = spawn();
-		e.classname = "dyn_item";  // TDO: make this a gen. armor toss fn - use with dead throw too - if d threw weps, do armor
+		e.event = "dynamic_item";  // TDO: make this a gen. armor toss fn - use with dead throw too - if d threw weps, do armor
 		setorigin(e, self.origin);
 		item_call_save(e, "item_armor2");
 		e.wad = "armor_toss"; // for get
@@ -1447,9 +1447,9 @@ void() random_monster =
 	while (f)
 	{
 		self = spawn();
-		self.wad = monster_id(f, M); // get spawn func
+		self.classname = self.wad = monster_id(f, M); // get spawn func
 
-		self.classname = "dyn_monster";
+		self.event = "dyn_monster";
 		item_call(self.wad);
 
 

@@ -74,6 +74,11 @@ float MC_SIGIL2;
 float MC_SIGIL4;
 float MC_SIGIL8;
 
+float MC_SIGIL16; // ammo rune
+float MC_SIGIL32; // fly rune
+
+float MC_SIGIL64; // vampire rune
+
 float MC_Q1;
 float MC_RNDITM; // # of q1 items - have to change as items changes
 float MC_NR_RNDITM; // no runes
@@ -282,6 +287,11 @@ float MC_Q2;
 
 float MC_Q2_RNDITM; // # of total items
 
+float MC_Q2_TECH_RES; // tech
+float MC_Q2_TECH_DOC;
+float MC_Q2_TECH_AMP;
+float MC_Q2_TECH_TM;
+
 /// q3
 
 float MC_Q3_GAUNTLET;
@@ -406,6 +416,10 @@ void() mcode_load =
 	MC_Q1 = (f + 1);
 
 	MC_RNDITM = f - MC_AXE;		//	#	of	q1	items	-	have	to	change	as	items	changes
+
+	MC_SIGIL16 = f = (f + 1);
+	MC_SIGIL32 = f = (f + 1);
+	MC_SIGIL64 = f = (f + 1);
 
 //	key ids special
 	MC_KEY1_0 = f = (f + 1);
@@ -608,6 +622,11 @@ void() mcode_load =
 	MC_Q2 = (f + 1);
 	MC_Q2_RNDITM = f - MC_Q2_BLASTER; // # of total items
 
+	MC_Q2_TECH_RES = (f + 1);
+	MC_Q2_TECH_DOC = (f + 1);
+	MC_Q2_TECH_AMP = (f + 1);
+	MC_Q2_TECH_TM = (f + 1);
+
 /// q3
 
 	MC_Q3_GAUNTLET = f = (f + 1);
@@ -705,6 +724,10 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_SIGIL2)													return(R_BLACK);
 	if (mc == MC_SIGIL4)													return(R_HELL);
 	if (mc == MC_SIGIL8)													return(R_ELDER);
+	
+	if (mc == MC_SIGIL16)												return(R_AMMO);
+	if (mc == MC_SIGIL32)												return(R_FLY);
+	if (mc == MC_SIGIL64)												return(R_VAMPIRE);
 
 	if (mc == MC_ASHELLS)												return(IT_SHELLS);
 	if (mc == MC_ANAILS)													return(IT_NAILS);
@@ -936,9 +959,17 @@ float(string sc, entity e) pk_mcode =
 
 	tsc = sc;
 	if (sc == "" && e) tsc = e.classname;
-	if (tsc == "") return(0);
 
-	if (tsc == "dyn_item")												return(0);
+	if (tsc == "")
+	{
+		if (WARNING)
+			bprint("\b *** pk_mcode - entry with no classname\n");
+		return(0); 
+	}
+
+	if (e)
+	if (e.event == "dynamic_item")									return(0);
+
 /// q1
 	if (e) // qualify ent
 	{
@@ -953,6 +984,11 @@ float(string sc, entity e) pk_mcode =
 		if ((tsc == "item_sigil") && (e.spawnflags & R_BLACK))	return(MC_SIGIL2);
 		if ((tsc == "item_sigil") && (e.spawnflags & R_HELL))		return(MC_SIGIL4);
 		if ((tsc == "item_sigil") && (e.spawnflags & R_ELDER))	return(MC_SIGIL8);
+
+		if ((tsc == "item_sigil") && (e.spawnflags & R_AMMO))		return(MC_SIGIL16);
+		if ((tsc == "item_sigil") && (e.spawnflags & R_FLY))		return(MC_SIGIL32);
+		if ((tsc == "item_sigil") && (e.spawnflags & R_VAMPIRE))		return(MC_SIGIL64);
+
 		if (tsc == "item_keyX")
 		{
 			if (!e.cnt)															return(MC_KEY1_0);
@@ -1027,7 +1063,7 @@ float(string sc, entity e) pk_mcode =
 
 /// ctf
 
-	if (tsc == "weapon_hook")										return(MC_HOOK);
+	if (tsc == "weapon_hook")											return(MC_HOOK);
 
 /// hipnotic
 	
@@ -1123,7 +1159,7 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "weapon_hyperblaster")								return(MC_Q2_HYPBLASTER);
 	if (tsc == "q2_weapon_railgun")									return(MC_Q2_RAILGUN);
 	if (tsc == "q2_weapon_bfg")										return(MC_Q2_BFG);
-	if (tsc == "q2_weapon_grapple")								return(MC_Q2_GRAPPLE);
+	if (tsc == "q2_weapon_grapple")									return(MC_Q2_GRAPPLE);
 
 	if (tsc == "q2_item_quad")											return(MC_Q2_QUAD);
 	if (tsc == "item_invulnerability")								return(MC_Q2_INVUL);
@@ -1165,6 +1201,11 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "item_breather")										return(MC_Q2_BREATHER);
 
 	if (tsc == "q2_misc_explobox")									return(MC_Q2_BARREL);
+
+	if (tsc == "q2_ctf_resist")										return(MC_Q2_TECH_RES);
+	if (tsc == "q2_ctf_regen")											return(MC_Q2_TECH_DOC);
+	if (tsc == "q2_ctf_stren")											return(MC_Q2_TECH_AMP);
+	if (tsc == "q2_ctf_haste")											return(MC_Q2_TECH_TM);
 
 /// q3
 
@@ -1222,7 +1263,8 @@ float(string sc, entity e) pk_mcode =
 // q3 - translates classname for now
 //	else if (tsc == "")								return(MC_);
 
-	if (tsc != "dyn_item") // && mc == 0)
+	if (WARNING)
+//	if (tsc != "dyn_item") // && mc == 0) // again - test will always be true now, deprecated
 	{
 		bprint("\b *** item with no map code translation:\n");
 		bprint(" -------------->  ");
@@ -1267,6 +1309,10 @@ string (float mc) item_by_mcode =
 	if (mc == MC_SIGIL2)													return("item_sigil2");
 	if (mc == MC_SIGIL4)													return("item_sigil4");
 	if (mc == MC_SIGIL8)													return("item_sigil8");
+
+//	if (mc == MC_SIGIL16)												return("item_sigil16");
+//	if (mc == MC_SIGIL32)												return("item_sigil32");
+	if (mc == MC_SIGIL64)												return("item_sigil64");
 
 	if (mc == MC_ASHELLS)												return("item_shells");
 	if (mc == MC_ANAILS)													return("item_spikes");
@@ -1450,7 +1496,12 @@ string (float mc) item_by_mcode =
 	if (mc == MC_Q2_BANDOLIER)											return("item_bandolier"); 
 	if (mc == MC_Q2_BREATHER)											return("item_breather"); 
 
-	if (mc == MC_Q2_BARREL)												return("q2_misc_explobox"); 
+	if (mc == MC_Q2_BARREL)												return("q2_misc_explobox");
+
+	if (mc == MC_Q2_TECH_RES)											return("q2_ctf_resist"); 
+	if (mc == MC_Q2_TECH_DOC)											return("q2_ctf_regen"); 
+	if (mc == MC_Q2_TECH_AMP)											return("q2_ctf_stren"); 
+	if (mc == MC_Q2_TECH_TM)											return("q2_ctf_haste"); 
 
 /// q3
 
@@ -2045,7 +2096,7 @@ void() painkeep_cube_use =
 		}
 		c = spawn(); // crates make a new thing
 		setorigin(c, crate.origin + ' 0 0 8');
-//		c.classname = "dyn_item"; // dont respawn
+//		c.event = "dynamic_item"; // dont respawn
 		c.ammo_cells = crate.ammo_cells; // was set above
 
 		c.wad = item_by_mcode(d); // default
@@ -2071,7 +2122,7 @@ void() painkeep_cube_use =
 	else
 	if (c.wad == "pk_cube")
 	{
-		if (c.classname != "dyn_item")
+		if (c.event != "dynamic_item")
 		{
 			c.model = "";
 			c.solid = SOLID_NOT;
@@ -2120,7 +2171,7 @@ bprint(")\n");
 			self = sv;
 			return;
 		}
-		if (d) self.classname = "dyn_item";
+		if (d) self.event = "dynamic_item";
 
 
 
@@ -2535,7 +2586,7 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/w_s_key.mdl");
 		self.netname = "silver key";
 		self.items = IT_KEY1;
-		if (self.classname == "dyn_item")
+		if (self.event == "dynamic_item")
 			self.wad = "item_key1_0";
 		else
 		self.classname = "item_key1_0";
@@ -2545,7 +2596,7 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/m_s_key.mdl");
 		self.netname = "silver runekey";
 		self.items = IT_KEY1;
-		if (self.classname == "dyn_item")
+		if (self.event == "dynamic_item")
 			self.wad = "item_key1_1";
 		else
 		self.classname = "item_key1_1";
@@ -2555,7 +2606,7 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/b_s_key.mdl");
 		self.netname = "silver keycard";
 		self.items = IT_KEY1;
-		if (self.classname == "dyn_item")
+		if (self.event == "dynamic_item")
 			self.wad = "item_key1_2";
 		else
 		self.classname = "item_key1_2";
@@ -2565,7 +2616,7 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/w_g_key.mdl");
 		self.netname = "gold key";
 		self.items = IT_KEY2;
-		if (self.classname == "dyn_item")
+		if (self.event == "dynamic_item")
 			self.wad = "item_key2_0";
 		else
 		self.classname = "item_key2_0";
@@ -2575,7 +2626,7 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/m_g_key.mdl");
 		self.netname = "gold runekey";
 		self.items = IT_KEY2;
-		if (self.classname == "dyn_item")
+		if (self.event == "dynamic_item")
 			self.wad = "item_key2_1";
 		else
 		self.classname = "item_key2_1";
@@ -2585,7 +2636,7 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/b_g_key.mdl");
 		self.netname = "gold keycard";
 		self.items = IT_KEY2;
-		if (self.classname == "dyn_item")
+		if (self.event == "dynamic_item")
 			self.wad = "item_key2_2";
 		else
 		self.classname = "item_key2_2";
@@ -2595,7 +2646,7 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/w_s_key.mdl");
 		self.netname = "silver key";
 		self.items = IT_KEY1;
-		if (self.classname == "dyn_item")
+		if (self.event == "dynamic_item")
 			self.wad = "item_key1_0";
 		else
 		self.classname = "item_key1_0";
@@ -2872,14 +2923,14 @@ void() func_make =
 				f = MON_FUNC_II;
 			}
 		}
-		self.wad = monster_id(d, f); // get spawn func - note: will not be dyn_monster
+		self.classname = self.wad = monster_id(d, f); // get spawn func - note: will not be dyn_monster
 		d = 0;
 	}
 
 	fn_make(d, self.origin, self.wad);
 	if (!self.spawnflags & 2)
 	if (newmis.class_select != "class_monster")
-		newmis.classname = "dyn_item";
+		newmis.event = "dynamic_item";
 
 	if (newmis) // make sure we made it
 	if (self.charmer) // IDEA: if targeted this func could easily spawn charmed monsters just by detecting targeting player

@@ -70,6 +70,12 @@ void() chaos_precache =
 	precache_model ("progs/sphere_annihilation.mdl");
 	precache_sound ("alt_ambience/hum1.wav");
 
+// rune server
+		precache_model ("progs/end1.mdl");
+		precache_model ("progs/end2.mdl");
+		precache_model ("progs/end3.mdl");
+		precache_model ("progs/end4.mdl");
+
 //	flamer_precache();
 };
 
@@ -203,7 +209,7 @@ void(entity ve, float camct, float mcd, string spf, float islot) xwep_fakeload =
 	if (spt) // spawn this
 	{
 		self = spawn();
-		self.classname = "dyn_item"; // stop item_call from doing a bunch of stuff - if not removed this will spawn the item somewhere
+		self.event = "dynamic_item"; // stop item_call from doing a bunch of stuff - if not removed this will spawn the item somewhere
 		item_call(spt);
 		self.think = SUB_Remove;
 		self.nextthink = time + 0.1;

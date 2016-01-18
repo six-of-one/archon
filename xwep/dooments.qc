@@ -1782,8 +1782,6 @@ void() w_ammo_clip =
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
-// FIX: need ammo model
-
 void() w_ammo_rock =
 {
 	item_rockets();
@@ -2060,6 +2058,11 @@ void() w_key =
 	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
+void() w_treas_touch =
+{
+	other.xp = other.xp + self.xp;
+};
+
 void() w_item_cross =
 {
 	if (!ULOKW)
@@ -2069,12 +2072,12 @@ void() w_item_cross =
 		return;
 	}
 
-	item_key1(); // FIX: treasure pick up fn
-//	self.touch = w_treas_touch;
+	item_key1();
+	self.touch = w_treas_touch;
 
 	self.wait = -1; // RSP_TIME; // no respawn for these, ever
 
-	self.wolfscore = 100; // points for collecting
+	self.xp = 100; // points for collecting
 
 	self.noise = "wolf/pickup_gdy.wav";
 	setmodel (self, "progs/w_cross.bsp");

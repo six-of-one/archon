@@ -7,43 +7,119 @@
 // implement runes for pk
 
 
+
 void(entity e, float f, float r) rune_print =
 {
+	local float rul;
+
+	rul = cvar("sv_c_rune"); // see -2 for q1 only models & not techs in rule 2
+
 	if (f < 0)
 	{
-		if (fabs(f) == R_EARTH) bprint("Earth rune - ");
-		else if (fabs(f) == R_BLACK) bprint("Black rune - ");
-		else if (fabs(f) == R_HELL) bprint("Hell rune -  ");
-		else if (fabs(f) == R_ELDER) bprint("Elder rune - ");
+		if (rul > 1)
+		{
+			if (fabs(f) == R_EARTH) 			bprint("Blue -        ");
+			else if (fabs(f) == R_BLACK)		bprint("Red -         ");
+			else if (fabs(f) == R_HELL)		bprint("Yellow -      ");
+			else if (fabs(f) == R_ELDER)		bprint("Green -       ");
+			else if (fabs(f) == R_VAMPIRE) 	bprint("Purple -      ");
+			else if (fabs(f) == T_DSH)			bprint("Blue Gear -   ");
+			else if (fabs(f) == T_ADOC)		bprint("Red Cross -   ");
+			else if (fabs(f) == T_TEIM)		bprint("Wings -       ");
+			else if (fabs(f) == T_AMP)			bprint("Green Spike - ");
+//			else if (fabs(f) == R_AMMO) 		bprint("Ammo Pack - ");
+//			else if (fabs(f) == R_FLY) 		bprint("Flight - ");
+			else bprint("Unkown - ");
+			return;
+		}
+		if (fabs(f) == R_EARTH) 				bprint("Earth rune -   ");
+		else if (fabs(f) == R_BLACK) 			bprint("Black rune -   ");
+		else if (fabs(f) == R_HELL) 			bprint("Hell rune -    ");
+		else if (fabs(f) == R_ELDER) 			bprint("Elder rune -   ");
+		else if (fabs(f) == R_VAMPIRE) 		bprint("Vampire rune - ");
 		else bprint("Unkown rune - ");
 		return;
 	}
 
 	if (e)
 	{
-	if (r)
-	{
-	if (f == R_EARTH) sprint(e, "Earth rune - ");
-	else if (f == R_BLACK) sprint(e, "Black rune - ");
-	else if (f == R_HELL) sprint(e, "Hell rune - ");
-	else if (f == R_ELDER) sprint(e, "Elder rune - ");
-	else bprint("Unkown rune - ");
+		if (r)
+		{
+			if (rul > 1)
+			{
+				if (fabs(f) == R_EARTH) 		sprint(e, "Blue -        ");
+				else if (fabs(f) == R_BLACK) 	sprint(e, "Red -         ");
+				else if (fabs(f) == R_HELL) 	sprint(e, "Yellow -      ");
+				else if (fabs(f) == R_ELDER) 	sprint(e, "Green -       ");
+			else if (fabs(f) == R_VAMPIRE)	sprint(e, "Purple -      ");
+				else if (fabs(f) == T_DSH) 	sprint(e, "Blue Gear -   ");
+				else if (fabs(f) == T_ADOC) 	sprint(e, "Red Cross -   ");
+				else if (fabs(f) == T_TEIM) 	sprint(e, "Wings -       ");
+				else if (fabs(f) == T_AMP) 	sprint(e, "Green Spike - ");
+//			else if (fabs(f) == R_AMMO) 	sprint(e, "Ammo Pack - ");
+//			else if (fabs(f) == R_FLY) 	sprint(e, "Flight - ");
+				else sprint(e, "Unkown - ");
+			}
+			else
+			{
+			if (f == R_EARTH) 					sprint(e, "Earth rune -   ");
+			else if (f == R_BLACK) 				sprint(e, "Black rune -   ");
+			else if (f == R_HELL) 				sprint(e, "Hell rune -    ");
+			else if (f == R_ELDER) 				sprint(e, "Elder rune -   ");
+			else if (f == R_VAMPIRE) 			sprint(e, "Vampire rune - ");
+			else sprint(e, "Unkown rune - ");
+			}
+		}
+
+		if (f == RUNE_FLG_RS) sprint(e, "Resistance = 1/2 damage all attacks.\n");
+		else if (f == RUNE_FLG_DM)
+		{
+			if (rul > 1)
+			{
+				sprint(e, "Strength = 2 x damage.\n");
+			}
+			else
+			{
+				if (RUNES < 2) 	sprint(e, "Damage = 2 x damage for 30 secs.  8 x damage if combined with quad.\n");
+				else sprint(e, "Damage = 2 x damage.\n");
+			}
+		}
+		else if (f == RUNE_FLG_HS) sprint(e, "Haste - double fire rate for most weps.\n");
+		else if (f == RUNE_FLG_RG) sprint(e, "Regeneration - add 5 health | armor every 1/2 second\n");
+		else if (f == RUNE_VAMPIRE) sprint(e, "Vampire - add 50% damage dealt to health\n");
+		else if (f == TECH_DSH) sprint(e, "Disruptor Shield - 1/2 damage\n");
+		else if (f == TECH_AMP) sprint(e, "Power Amplifier - 2 x damage\n");
+		else if (f == TECH_TEIM) sprint(e, "Time Accelerator - 2 x fire, move faster\n");
+		else if (f == TECH_ADOC) sprint(e, "Auto Doc - add 5 health / sec\n");
+//		else if (f == RUNE_AMMO) sprint(e, "Ammo - hold more ammo\n");
+//		else if (f == RUNE_FLG_FLY) sprint(e, "Flight - fly over everyones head\n");
+		else sprint(e, "Rune not identified - unknown power!\n");
+
+		return;
 	}
 
-	if (f == RUNE_FLG_RS) sprint(e, "Resistance = 1/2 damage all attacks.\n");
-	else if (f == RUNE_FLG_DM && RUNES < 2) 	sprint(e, "Damage = 2 x damage for 30 secs.  8 x damage if combined with quad.\n");
-	else if (f == RUNE_FLG_DM) 	sprint(e, "Damage = 2 x damage.\n");
-	else if (f == RUNE_FLG_HS) sprint(e, "Haste - double fire rate for most weps.\n");
-	else if (f == RUNE_FLG_RG) sprint(e, "Regeneration - add 5 health | armor every 1/2 second\n");
-	else sprint(e, "Rune not identified - unknown power!\n");
-
-	return;
-	}
 	if (f == RUNE_FLG_RS) bprint("Resistance = 1/2 damage all attacks.\n");
-	else if (f == RUNE_FLG_DM && RUNES < 2) 	bprint("Damage = 2 x damage for 30 secs.\n"); //  8 x damage if combined with quad.\n");
-	else if (f == RUNE_FLG_DM) 	bprint("Damage = 2 x damage.\n");
+	else if (f == RUNE_FLG_DM)
+	{
+		if (rul > 1)
+		{
+			bprint("Strength = 2 x damage.\n");
+		}
+		else
+		{
+			if (RUNES < 2) 	bprint("Damage = 2 x damage for 30 secs.\n"); //  8 x damage if combined with quad.\n");
+			else bprint("Damage = 2 x damage.\n");
+		}
+	}
 	else if (f == RUNE_FLG_HS) bprint("Haste - double fire rate most weps.\n");
 	else if (f == RUNE_FLG_RG) bprint("Regenerate 5 health | armor per .5 sec\n");
+	else if (f == RUNE_VAMPIRE) bprint("Vampire - add 50% damage dealt to health\n");
+	else if (f == TECH_DSH) bprint("Disruptor Shield - 1/2 damage\n");
+	else if (f == TECH_AMP) bprint("Power Amplifier - 2 x damage\n");
+	else if (f == TECH_TEIM) bprint("Time Accelerator - 2 x fire, move faster\n");
+	else if (f == TECH_ADOC) bprint("Auto Doc - add 5 health / sec\n");
+//		else if (f == RUNE_AMMO) bprint("Ammo - hold more ammo\n");
+//		else if (f == RUNE_FLG_FLY) bprint("Flight - fly over everyones head\n");
 	else bprint("Rune not identified - unknown power!\n");
 };
 
@@ -58,20 +134,50 @@ float(float mc, float bc) rune_bit_code =
 	else if (mc == MC_SIGIL2) f = R_BLACK; //RUNE_FLG_DM;
 	else if (mc == MC_SIGIL4) f = R_HELL; //RUNE_FLG_HS;
 	else if (mc == MC_SIGIL8) f = R_ELDER; //RUNE_FLG_RG;
+
+	else if (mc == MC_SIGIL64) f = R_VAMPIRE; //RUNE_VAMPIRE;
+	
+	else if (mc == MC_Q2_TECH_RES) f = T_DSH;
+	else if (mc == MC_Q2_TECH_DOC) f = T_ADOC;
+	else if (mc == MC_Q2_TECH_AMP) f = T_AMP;
+	else if (mc == MC_Q2_TECH_TM) f = T_TEIM;
+
+	else if (bc == R_EARTH) f = MC_SIGIL1;
 	else if (bc == R_EARTH) f = MC_SIGIL1;
 	else if (bc == R_BLACK) f = MC_SIGIL2;
 	else if (bc == R_HELL) f = MC_SIGIL4;
 	else if (bc == R_ELDER) f = MC_SIGIL8;
 
+	else if (bc == R_VAMPIRE) f = MC_SIGIL64;
+
+	else if (bc == T_DSH) f = MC_Q2_TECH_RES;
+	else if (bc == T_ADOC) f = MC_Q2_TECH_DOC;
+	else if (bc == T_AMP) f = MC_Q2_TECH_AMP;
+	else if (bc == T_TEIM) f = MC_Q2_TECH_TM;
+	
 	return(f);
 };
 
+// for rule 2 - give right name to color pyramid
+
+string(float b) rune2_name =
+{
+	if (b == RUNE_FLG_RS) return("Resistance");
+	if (b == RUNE_FLG_DM) return("Strength");
+	if (b == RUNE_FLG_HS) return("Haste");
+	if (b == RUNE_FLG_RG) return("Regeneration");
+	if (b == RUNE_VAMPIRE) return("Vampire");
+	return("Unknown magic");
+}
+
 string(float b) rune_name =
 {
+	if (cvar("sv_c_rune") > 1) return(rune2_name(b));
 	if (b == R_EARTH) return("Earth magic");
 	if (b == R_BLACK) return("Black magic");
 	if (b == R_HELL) return("Hell magic");
 	if (b == R_ELDER) return("Elder magic");
+	if (b == R_VAMPIRE) return("Vampire magic");
 	return("Unknown magic");
 }
 
@@ -79,13 +185,16 @@ float nonserver_rune_found;
 
 void(float b) rune_map_print =
 {
-	local float f;
+	local float f, rbc;
 	local entity e;
 
 	f = 0 - b;
 	rune_print(world, f, FALSE);
 	bprint("(mc:");
-	bprint(ftos(rune_bit_code(0, b)));
+	rbc = rune_bit_code(0, b);
+	bprint(ftos(rbc));
+	if (rbc < 100) bprint(" ");
+	if (rbc < 10) bprint(" ");
 	bprint(" bit:");
 	bit_print(RUNE_MASK_ALL, b);
 	e = find(world, netname, rune_name(b));
@@ -287,7 +396,7 @@ void(entity e, entity p) rune_id =
 		sprint(p, " the following Runes of power:\n\n");
 
 		f = 1;
-		while (f & RUNE_MASK_ALL)
+		while (f < RUNE_MASK_ALL)
 		{
 			if (f & e.rune_flag) rune_print(p, f, TRUE); 
 			f = f * 2;
@@ -452,13 +561,20 @@ void () rune_touch =
 	if (self.map == "pic_item")
 	if (!deathmatch) rune_sigil_touch(); // map rune in sp must allow touch even if rules prevent getting rune
 
-	if (RUNES == 1)
-	if (!RUNE_AR1M) // allow rule 1 multiple runes
-	if (other.rune_flag)
-		return;
+	if (RUNES < 3)
+	if (!RUNE_AR1M) // allow rule 1 / 2 multiple runes if not, only 1 each of rune & tech
+	{
+		if (self.spawnflags & TECH_MASK_ALL)
+		if (other.rune_flag & TECH_MASK_ALL) // has a tech already
+			return;
 
-	if (RUNES == 1)
-	if (other.rune_flag & self.spawnflags) // already got one
+		if (self.spawnflags & RUNE_FULL)
+		if (other.rune_flag & RUNE_FULL)
+			return;
+	}
+
+	if (RUNES != 3)
+	if (other.rune_flag & self.spawnflags) // already got one & not in rule 3
 		return;
 
 	if (self.map == "pic_item") rune_sigil_touch(); // map rune (should have pic_item set), do a touch for qstart map serverflags floor op
@@ -538,8 +654,26 @@ void() rune_maker =
 		e = spawn();
 		if (e)
 		{
-			self = e;
+			sf = 111;
+			while (sf > 0)
+			{
+				f = rnd_bit_mask(RUNE_MASK);
+				if (!(f & rune_map)) sf = 0;
+				else f = 0;
+				sf = sf - 1;
+			}
 
+			if (!f)
+			{
+				if (WARNING) bprint("*** warning: rune_make could not find a rune that fit mask rules - giving up\n");
+//				remove(self);
+				return;
+			}
+				
+			e.mcode = rune_bit_code(0, f);
+
+			self = e;
+/*
 			self.mcode = MC_SIGIL1 + rint(random() * 3.3);
 
 			sf = 111;
@@ -576,7 +710,7 @@ void() rune_maker =
 				}
 				sf = sf - 1;
 			}
-
+*/
 			self.wad = item_by_mcode(self.mcode);
 
 			e = dyn_rndloc();
@@ -584,7 +718,7 @@ void() rune_maker =
 			if (!e) 
 			{
 				if (WARNING) bprint("*** warning: rune_make could not find a random (or any) location - giving up\n");
-				remove(self);
+//				remove(self);
 				return; // crap - no location
 			}
 			v1 = e.origin + ' 0 0 8';
@@ -699,6 +833,7 @@ Original rune quake.
 4 end episode runes will randomly spawn to the tune of sv_c_rune_cnt.
 Runes operate just like quad damage - 30 secs of power, then the rune respawns at its location.
 You can only have 1 rune at a time so there are no combind effects or perils.
+(unless rule 1 multi is true.)
 
 earth magic	(end1.mdl)	Resistance = 1/2 damage all attacks
 black magic	(end2.mdl)	Damage = 2 x damage for 30 secs.  8 x damage if combined with quad.
@@ -722,7 +857,21 @@ runes will not use q2 lith models if - ULOK2 is false, or rule == -2
 void() run_runes =
 {
 	local entity e;
-	local float f, k, sf;
+	local float f, k, sf, r;
+
+	r = cvar("sv_c_rune"); // because we need a sneek peak
+
+	if (r < 2) RUNE_MASK_ALL = RULE1_MASK; // set all mask for rules
+	else if (r > 1) RUNE_MASK_ALL = RULE2_MASK;
+
+	RUNE_MASK = cvar("sv_c_rune_mask") & RUNE_MASK_ALL;
+	if (RUNE_MASK < 1 || RUNE_MASK > RUNE_MASK_ALL)
+	{
+		RUNE_MASK = RUNE_MASK_ALL;
+
+		f = RULE1_MASK;
+		if (r == -2) RUNE_MASK = f | RUNE_VAMPIRE; // add in vampire for rules -2
+	}
 
 	RUNE_AR1M = cvar("sv_c_rune_allowrule1multi");
 	RUNE_R1SFX = 0;
@@ -730,8 +879,18 @@ void() run_runes =
 		RUNE_R1SFX = cvar("sv_c_rune_rule1sfx"); // if true and multi -  3 | 4 runes in 1 player have side effects
 
 	RUNE_3_ACM = cvar("sv_c_rune_3acm");
-	RUNE_MASK = cvar("sv_c_rune_mask") & RUNE_MASK_ALL;
-	if (RUNE_MASK < 1 || RUNE_MASK > RUNE_MASK_ALL) RUNE_MASK = RUNE_MASK_ALL;
+
+	if (RUNE_MASK < 1)
+	{
+		bprint("\n***   Runes of power misconfigured - nothing to do, exiting...\n");
+		return;
+	}
+
+	NO_TECH = FALSE;
+	f = TECH_MASK_ALL;
+	f = f & RUNE_MASK;
+	if (!f)	NO_TECH = TRUE; // rune mask disallowed techs
+	if (r < 2) NO_TECH = TRUE;
 
  	if (RUNE_RANDOM != cvar("sv_c_rune_random")) // changed random state
 	{
@@ -742,14 +901,55 @@ void() run_runes =
 		R_HELL = RUNE_FLG_HS;
 		R_ELDER = RUNE_FLG_RG;
 
+		R_VAMPIRE = RUNE_VAMPIRE; // lith + extra
+		R_AMMO = RUNE_AMMO; // here for items - not enabled yet
+		R_FLY = RUNE_FLG_FLY;
+
+		T_DSH = TECH_DSH; // lith techs
+		T_AMP = TECH_AMP;
+		T_TEIM = TECH_TEIM;
+		T_ADOC = TECH_ADOC;
+
 		if (RUNE_RANDOM)
 		{
-			R_EARTH = 0;
+			if (!NO_TECH)
+			{
+				T_DSH = 0; // random techs
+				T_AMP = 0;
+				T_TEIM = 0;
+				T_ADOC = 0;
+
+				sf = 100;
+	//			f = TECH_MASK_ALL; // already done
+	//			f = f & RUNE_MASK;
+				while (f != 0 && sf > 0) // try to make a nice "one of each" deal
+				{
+					k = rnd_bit_mask(f);
+					if (!T_DSH) T_DSH = k;
+					else if (!T_AMP) T_AMP = k;
+					else if (!T_TEIM) T_TEIM = k;
+					else if (!T_ADOC) T_ADOC = k;
+
+					f = f - (f & k);
+					sf = sf - 1;
+				}
+
+				if (!T_DSH) T_DSH = rnd_bit_mask(TECH_MASK_ALL); // any fail get assigned random powers
+				if (!T_AMP) T_AMP = rnd_bit_mask(TECH_MASK_ALL);
+				if (!T_TEIM) T_TEIM = rnd_bit_mask(TECH_MASK_ALL);
+				if (!T_ADOC) T_ADOC = rnd_bit_mask(TECH_MASK_ALL);
+			}
+
+			R_EARTH = 0; // random runes
 			R_BLACK = 0;
 			R_HELL = 0;
 			R_ELDER = 0;
+			R_VAMPIRE = 0;
+
 			sf = 100;
-			f = RUNE_MASK_ALL;
+			f = RULE1_MASK;//RUNE_MASK_ALL;
+			if (RUNES > 1) f = f | RUNE_VAMPIRE; // add in vampire for rules 2
+			f = f & RUNE_MASK;
 			while (f != 0 && sf > 0) // try to make a nice "one of each" deal
 			{
 				k = rnd_bit_mask(f);
@@ -757,14 +957,21 @@ void() run_runes =
 				else if (!R_BLACK) R_BLACK = k;
 				else if (!R_HELL) R_HELL = k;
 				else if (!R_ELDER) R_ELDER = k;
-
+				else
+				{
+					if (r > 1)
+					if (!R_VAMPIRE) R_VAMPIRE = k;
+				}
 				f = f - (f & k);
 				sf = sf - 1;
 			}
+
 			if (!R_EARTH) R_EARTH = rnd_bit_mask(RUNE_MASK); // any fail get assigned random powers
 			if (!R_BLACK) R_BLACK = rnd_bit_mask(RUNE_MASK);
 			if (!R_HELL) R_HELL = rnd_bit_mask(RUNE_MASK);
 			if (!R_ELDER) R_ELDER = rnd_bit_mask(RUNE_MASK);
+			if (!R_VAMPIRE) R_VAMPIRE = rnd_bit_mask(RUNE_MASK);
+
 			bprint("***   Runes randomly selected from pool of available rune powers\n");
 		}
 	}
@@ -809,7 +1016,13 @@ void() run_runes =
 	{
 		RUNE_CNT = cvar("sv_c_rune_cnt");
 		rune_count = cnt_ent(world, "map", "rune");
-		if (RUNE_CNT < 1) RUNE_CNT  = 4;
+		if (RUNE_CNT < 1)
+		{
+			RUNE_CNT  = 4;
+			if (r == -2) RUNE_CNT = 5;
+			if (RUNES > 1) RUNE_CNT = 9;
+			
+		}
 		if (rune_count > 0)
 		{
 			while (rune_count > RUNE_CNT)
@@ -828,6 +1041,9 @@ void() run_runes =
 
 	if (cvar("pk_runemap")) // display rune info on console (network - all players see this)
 	{
+		stuffcmd(self, "con_notify 22\n"); // for this op
+		stuffcmd(self, "con_notifytime 10\n");
+
 		bprint("\n\bRunes:\n\n");
 		if (RUNES) bprint("Runes will appear in random locations\n");
 		else bprint("Rune server is deactivated\n"); // NOTE: runes can still appear on map from func_dyn, rndize
@@ -849,6 +1065,15 @@ void() run_runes =
 		rune_map_print(R_BLACK);
 		rune_map_print(R_HELL);
 		rune_map_print(R_ELDER);
+		if (RUNES > 1) rune_map_print(R_VAMPIRE);
+		if (!NO_TECH)
+		{
+			rune_map_print(T_DSH);
+			rune_map_print(T_AMP);
+			rune_map_print(T_TEIM);
+			rune_map_print(T_ADOC);
+		}
+
 		bprint("\n");
 		if (nonserver_rune_found)
 			bprint("* non server Runes are loaded on this map.\n\n");
@@ -969,7 +1194,7 @@ void () item_sigil_set =
 
 void () item_sigil =
 {
-	local float f, rune;
+	local float f, rune, rul;
 
 	if (!RUNES)
 	if (time < PIC_TO)
@@ -1008,6 +1233,9 @@ void () item_sigil =
 		}
 	}
 
+	rul = cvar("sv_c_rune"); // see -2 for q1 only models in rule 2
+	if (!ULOK2) rul = -2; // models not avail
+
 	precache_sound ("misc/runekey.wav");
 	self.noise = "misc/runekey.wav";
 
@@ -1023,30 +1251,102 @@ void () item_sigil =
 		self.spawnflags = f;
 	}
 
-	if (self.spawnflags & R_EARTH)
+	if (rul < 2)
 	{
-		precache_model ("progs/end1.mdl");
-		setmodel (self,"progs/end1.mdl");
-		self.netname = "Earth magic"; // Cataboligne - 5.32.10 - for rune server
+		if (self.spawnflags & R_EARTH)
+		{
+//		precache_model ("progs/end1.mdl");
+			setmodel (self,"progs/end1.mdl");
+			self.netname = "Earth magic"; // Cataboligne - 5.32.10 - for rune server
+		
+		}
+		if (self.spawnflags & R_BLACK)
+		{
+//		precache_model2 ("progs/end2.mdl");
+			setmodel (self,"progs/end2.mdl");
+			self.netname = "Black magic"; // Cataboligne - 5.32.10 - for rune server
+		}
+		if (self.spawnflags & R_HELL)
+		{
+//		precache_model2 ("progs/end3.mdl");
+			setmodel (self,"progs/end3.mdl");
+			self.netname = "Hell magic"; // Cataboligne - 5.32.10 - for rune server
+		}
+		if (self.spawnflags & R_ELDER)
+		{
+//		precache_model2 ("progs/end4.mdl");
+			setmodel (self,"progs/end4.mdl");
+			self.netname = "Elder magic"; // Cataboligne - 5.32.10 - for rune server
+		}
+		if (self.spawnflags & R_VAMPIRE) // bit 64
+		{
+			setmodel (self,"progs/g_axe.mdl"); // hur?
+			self.netname = "Vampire magic";
+			self.effects = EF_DIMLIGHT;
+		}
 	}
-	if (self.spawnflags & R_BLACK)
+	else
 	{
-		precache_model2 ("progs/end2.mdl");
-		setmodel (self,"progs/end2.mdl");
-		self.netname = "Black magic"; // Cataboligne - 5.32.10 - for rune server
+		setmodel (self,"progs/q2_keypyramid.mdl");
+		self.noise = "q2_snd/pkup.wav";
+		if (self.spawnflags & R_EARTH)
+		{
+			self.netname = rune2_name(R_EARTH); //"Resistance";
+			self.frame = 1;
+			self.skin = 2;
+		}
+		if (self.spawnflags & R_BLACK)
+		{
+			self.netname = rune2_name(R_BLACK); // "Strength";
+			self.frame = 1;
+			self.skin = 1;
+		}
+		if (self.spawnflags & R_HELL)
+		{
+			self.netname = rune2_name(R_HELL); // "Haste";
+			self.frame = 1;
+			self.skin = 3;
+		}
+		if (self.spawnflags & R_ELDER)
+		{
+			self.netname = rune2_name(R_ELDER); // "Regeneration";
+			self.frame = 1;
+			self.skin = 4;
+		}
+		if (self.spawnflags & R_VAMPIRE) // bit 64
+		{
+			self.netname = rune2_name(R_VAMPIRE); // "Vampire";
+			self.frame = 1;
+			self.skin = 6;
+		}
 	}
-	if (self.spawnflags & R_HELL)
+
+
+	if (!NO_TECH) // do techs
 	{
-		precache_model2 ("progs/end3.mdl");
-		setmodel (self,"progs/end3.mdl");
-		self.netname = "Hell magic"; // Cataboligne - 5.32.10 - for rune server
+		self.noise = "q2_snd/pkup.wav";
+		if (self.spawnflags & T_DSH) // bit 64
+		{
+			self.netname = "Disruptor Shield";
+			setmodel (self,"progs/q2_ctf_resist.mdl");
+		}
+		if (self.spawnflags & T_AMP) // bit 64
+		{
+			self.netname = "Power Amplifier";
+			setmodel (self,"progs/q2_ctf_stren.mdl");
+		}
+		if (self.spawnflags & T_TEIM) // bit 64
+		{
+			self.netname = "Time Accelerator";
+			setmodel (self,"progs/q2_ctf_haste.mdl");
+		}
+		if (self.spawnflags & T_ADOC) // bit 64
+		{
+			self.netname = "Auto Doc";
+			setmodel (self,"progs/q2_ctf_regen.mdl");
+		}
 	}
-	if (self.spawnflags & R_ELDER)
-	{
-		precache_model2 ("progs/end4.mdl");
-		setmodel (self,"progs/end4.mdl");
-		self.netname = "Elder magic"; // Cataboligne - 5.32.10 - for rune server
-	}
+
 
 	if (time > PIC_TO)
 	if(self.map == "")

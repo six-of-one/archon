@@ -144,7 +144,11 @@ void() q2_precache =
 	precache_model ("progs/vw_q2_shot.mdl");
 	precache_model ("progs/q2_grap.mdl");
 	precache_model ("progs/vw_q2_grap.mdl");
-	precache_model ("progs/q2_ctf_tech.mdl");
+//	precache_model ("progs/q2_ctf_tech.mdl");
+	precache_model ("progs/q2_ctf_haste.mdl"); // lith tech
+	precache_model ("progs/q2_ctf_regen.mdl");
+	precache_model ("progs/q2_ctf_resist.mdl");
+	precache_model ("progs/q2_ctf_stren.mdl");
 
 
 // sounds

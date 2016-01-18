@@ -149,7 +149,7 @@ vector(entity e, float s, vector p) getsurfaceclippedpoint;
 // runes
 
 // for serverflags drop
-void(string g) tbprint; // just for this
+void(string g) tbprint; // just for this - code is a test temp
 
 float SVR1						= 131072;
 float SVR2						= 262144;
@@ -190,15 +190,38 @@ float R_EARTH; // allow power mix
 float R_HELL;
 float R_BLACK;
 float R_ELDER;
+float R_VAMPIRE;
+float R_AMMO;
+float R_FLY;
+
+float T_DSH;
+float T_AMP;
+float T_TEIM;
+float T_ADOC;
+float NO_TECH; // no techs allowed in rune mask
 
 float RUNE_FLG_RS				= 1;
 float RUNE_FLG_DM				= 2;
 float RUNE_FLG_HS				= 4;
 float RUNE_FLG_RG				= 8;
-float RUNE_MASK_ALL			= 15; // because manual config must have mask off for bad bits
+float RUNE_MASK_ALL; //		= 15; // because manual config must have mask off for bad bits
 
 float RUNE_AMMO				= 16; // no rune code yet - for packs
 float RUNE_FLG_FLY			= 32; // no rune code yet - for q3
+
+float RUNE_VAMPIRE			= 64; // lithium rune
+
+float RUNE_FULL				= 79; // for multi rule test
+
+float TECH_DSH					= 131072; // techs from lith - leaves 10 bits for new runes above
+float TECH_AMP					= 262144;
+float TECH_TEIM				= 524288;
+float TECH_ADOC				= 1048576;
+float TECH_MASK_ALL			= 1966080;
+
+float RULE1_MASK				= 15;
+float RULE2_MASK				= 1966159; // original 4 + vampire + techs
+float RALL_MASK				= 1966207; // everything
 
 void() flyer_move; // fly rune for now
 
@@ -439,6 +462,8 @@ float MC_Q3_HOLDTELE;
 // chaos section
 
 // **************************************
+
+.float xp // experience points
 
 // goes elsewhere section
 float NO_FLOAT					= -671234; // dont float anything with this offset, or?
@@ -906,7 +931,6 @@ void() hip_precache;
 
 // wolf
 
-.float wolfscore // scoring of wolf items
 void() wolf_precache;
 void() wchg2_weapon_touch;
 

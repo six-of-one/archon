@@ -2235,7 +2235,7 @@ void(entity e, float trv) master_item_control =
 	}
 	else
 	{
-		if (e.classname == "dyn_item") // NOTE: should never happen, pk100 has no dyn (unless func_dyn)
+		if (e.event == "dynamic_item") // NOTE: should never happen, pk100 has no dyn (unless func_dyn)
 		{
 			if (WARNING)
 			{

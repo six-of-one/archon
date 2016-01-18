@@ -815,7 +815,7 @@ void(entity de, entity ve) dropinview =
 
 	ve.nextthink = time + 5; // no touch for a bit - assuming item_call make
 
-	if (ve.classname == "dyn_item")
+	if (ve.event == "dynamic_item")
 	{
 		at = TRUE; // allow long throw
 		ve.punchangle = '-1 -1 -1'; // dont re bounce
@@ -872,7 +872,7 @@ entity(float mc, string cls, entity de, vector v1) drop_item =
 	}
 
 	e = spawn(); // for tossed item
-	e.classname = "dyn_item";
+	e.event = "dynamic_item";
 	item_call_save(e, scls);
 	dropinview(de, e);
 
@@ -944,12 +944,10 @@ void(float im, entity p) drop_inventory =
 	}
 
 	newmis = e = spawn(); // for tossed item
-	e.classname = "dyn_item";
+	e.event = "dynamic_item";
 	f = 0;
 
 // TDO: check self.target2 for d / q2 /q3 items
-// TDO: dead drop rune for rules 2
-// FIX: tossed items dont have map codes, sscodes, wad for touch
 
 // note: for rules 1, time left is in expiry ent
 

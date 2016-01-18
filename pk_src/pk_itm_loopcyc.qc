@@ -128,7 +128,7 @@ void() loopcyc_think =
 		{
 			item_call_save(e, item_by_mcode(e.scode));
 		}
-		else if (e.classname == "dyn_item" && e.mcode != self.cnt)
+		else if (e.event == "dynamic_item" && e.mcode != self.cnt)
 			dr = TRUE;
 		else
 		{
@@ -160,7 +160,7 @@ void() loopcyc_think =
 			}
 		}
 
-		if (dr) e = find( e, classname, "dyn_item");
+		if (dr) e = find( e, event, "dynamic_item");
 		else 
 		{
 			if (svm && self.wait != -666)
@@ -171,7 +171,7 @@ void() loopcyc_think =
 
 		if (!dr && !e && cvar("pk_cyc_dyn"))
 		{
-			e = find( world, classname, "dyn_item");	
+			e = find( world, event, "dynamic_item");	
 			dr = TRUE;
 		}
 	}

@@ -22,7 +22,7 @@
 // cls - new classname
 // op - save original classname in .wad so we can restore if mode is turned off
 
-// NO_PI - global, if non zero and not a dyn_item, pk_placeitem will not be called for this ent
+// NO_PI - global, if non zero and not a dyn-item, pk_placeitem will not be called for this ent
 
 string (float bt) item_by_bit =
 {
@@ -91,8 +91,8 @@ void(string cls) item_call =
 
 	f = world;
 	rd = random();
-	if (self.classname != "dyn_monster") // because explod box translantions & randomizes need faked
-	if (self.classname != "dyn_item") // because explod box translantions & randomizes need faked
+	if (self.event != "dyn_monster") // because explod box translantions & randomizes need faked
+	if (self.event != "dynamic_item") // because explod box translantions & randomizes need faked
 	{
 		rd = 1;
 
@@ -155,13 +155,13 @@ void(string cls) item_call =
 	else if (cls == "weapon_supernailgun") weapon_supernailgun();
 	else if (cls == "weapon_grenadelauncher") q100_weapon_grenadelauncher();
 	else if (cls == "weapon_rocketlauncher") q100_weapon_rocketlauncher();
-	else if (self.classname == "dyn_item" && cls == "weapon_lightning")
+	else if (self.event == "dynamic_item" && cls == "weapon_lightning")
 	{
 		if (PK) weapon_chainlg();
 		else q100_weapon_lightning();
 	}
 	else if (cls == "weapon_lightning") q100_weapon_lightning();
-	else if (cls == "item_shells") { if (rd < 0.5) self.spawnflags = WEAPON_BIG2; item_shells(); } // IDEA: split rd < off to dyn_item only
+	else if (cls == "item_shells") { if (rd < 0.5) self.spawnflags = WEAPON_BIG2; item_shells(); } // IDEA: split rd < off to dyn-item only
 	else if (cls == "item_spikes") { if (rd < 0.4) self.spawnflags = WEAPON_BIG2; item_spikes(); }
 	else if (cls == "item_rockets") { if (rd < 0.2) self.spawnflags = WEAPON_BIG2; item_rockets(); }
 	else if (cls == "item_cells") { if (rd < 0.8) self.spawnflags = WEAPON_BIG2; item_cells(); }
@@ -210,6 +210,7 @@ void(string cls) item_call =
 	else if (cls == "item_sigil2") { self.spawnflags = rune_bit_code(MC_SIGIL2, 0); item_sigil(); scls = "item_sigil"; }
 	else if (cls == "item_sigil4") { self.spawnflags = rune_bit_code(MC_SIGIL4, 0); item_sigil(); scls = "item_sigil"; }
 	else if (cls == "item_sigil8") { self.spawnflags = rune_bit_code(MC_SIGIL8, 0); item_sigil(); scls = "item_sigil"; }
+	else if (cls == "item_sigil64") { self.spawnflags = rune_bit_code(MC_SIGIL64, 0); item_sigil(); scls = "item_sigil"; }
 
 //	else if (cls == "item_") item_();
 
@@ -383,6 +384,17 @@ void(string cls) item_call =
 		q2_misc_explobox();
 		return;
 	}
+/*
+	else if (cls == "q2_ctf_resist") q2_ctf_resist();
+	else if (cls == "q2_ctf_regen") q2_ctf_regen();
+	else if (cls == "q2_ctf_stren") q2_ctf_stren();
+	else if (cls == "q2_ctf_haste") q2_ctf_haste();
+*/
+
+	else if (cls == "q2_ctf_resist") { self.spawnflags = rune_bit_code(MC_Q2_TECH_RES, 0); item_sigil(); scls = "item_sigil"; }
+	else if (cls == "q2_ctf_regen") { self.spawnflags = rune_bit_code(MC_Q2_TECH_DOC, 0); item_sigil(); scls = "item_sigil"; }
+	else if (cls == "q2_ctf_stren") { self.spawnflags = rune_bit_code(MC_Q2_TECH_AMP, 0); item_sigil(); scls = "item_sigil"; }
+	else if (cls == "q2_ctf_haste") { self.spawnflags = rune_bit_code(MC_Q2_TECH_TM, 0); item_sigil(); scls = "item_sigil"; }
 
 // q3
 	else if (cls == "weapon_gauntlet") weapon_gauntlet();
@@ -471,21 +483,10 @@ void(string cls) item_call =
 		return;
 	}
 	self.mdl = self.model;
-	if (self.classname == "dyn_monster")
-	{
-		self.class_select = self.classname; // find it later - can set class_select because *_start does
-		self.classname = scls; // for death messages, morph checks
-//		FoundTarget(); // make 'em run around - cant be done here
-		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2, random_monster_wakey, SUB_Null, self, world);
-		self.pausetime = 0;
+	self.classname = scls;
 
-		total_monsters = t_monsters  + 1;
-
-		return;
-	}
-	if (self.class_select == "class_monster")
+	if (self.event == "dyn_monster" || self.class_select == "class_monster")
 	{
-		if (!self.classname) self.classname = scls;
 		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2, random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 
@@ -496,9 +497,8 @@ void(string cls) item_call =
 
 	self.flags = FL_ITEM;
 	self.movetype = MOVETYPE_TOSS;
-	if (self.classname != "dyn_item") // dont do these for dyn items
+	if (self.event != "dynamic_item") // dont do these for dyn items
 	{
-		self.classname = scls;
 		if (!NO_PI) pk_placeitem();
 		if (!Q_100 && !PK_100) // if *100 translate dont do this stuff
 		{
@@ -1007,7 +1007,7 @@ void() dyn_item =
 			{
 				e.think = dyn_spawn;
 				e.nextthink = 3 + 12 * random(); // time spread
-				e.classname = "dyn_item";
+				e.event = "dynamic_item";
 				b = 7;
 				f = 6.4; // painkeep items bits (7 - 13) = 128 - 8192
 				if (PK_ART && (DYN_ART || DYN_ARTFR)) f = 10.4; // add in (14 - 17) 16384 - 131072
@@ -1027,7 +1027,7 @@ void() dyn_item =
 					{
 						e.think = dyn_spawn;
 						e.nextthink = 1 + 4 * random();
-						e.classname = "dyn_item";
+						e.event = "dynamic_item";
 						e.wad = "item_cells";
 					}
 					e = spawn();
@@ -1035,7 +1035,7 @@ void() dyn_item =
 					{
 						e.think = dyn_spawn;
 						e.nextthink = 1 + 4 * random();
-						e.classname = "dyn_item";
+						e.event = "dynamic_item";
 						e.wad = "item_cells";
 					}
 				}
@@ -1224,7 +1224,7 @@ void() func_dynitem =
 	{
 		e.think = dyn_spawn;
 		e.nextthink = 1 + self.delay * random(); // time spread -- IDEA: get rid of neg number
-		e.classname = "dyn_item";
+		e.event = "dynamic_item";
 
 		if (self.spawnflags & 1)
 			setorigin(e, v0);
@@ -1270,7 +1270,7 @@ void() func_dynitem =
 					{
 						e.think = dyn_spawn;
 						e.nextthink = 1 + 4 * random();
-						e.classname = "dyn_item";
+						e.event = "dynamic_item";
 						e.cnt = sb;
 						e.wad = ammo_by_bit(sb);
 						e.origin = v0; // these can be anywhere
@@ -1529,7 +1529,7 @@ void() pic_restore_item =
 
 void() place_item_control =
 {
-	if (self.classname == "dyn_item")
+	if (self.event == "dynamic_item")
 		return;
 
 	if(self.map == "") self.map = "pic_item";

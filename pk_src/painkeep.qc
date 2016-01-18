@@ -189,7 +189,6 @@ void() PK_init =
 				e = spawn();
 				e.spawnflags = f;
 				item_call_save(e, "item_sigil");
-				e.classname = "item_sigil";
 				setorigin(e, v);
 				item_eject(e, ' 340 340 300');
 				a = 1;
@@ -1208,6 +1207,7 @@ void() pk_srvcmd_set =
 	RUNES = 0;
 	RUNE_CNT = 4;
 	RUNE_MOVE = 10 + rint(random() * 5);
+	RUNE_MASK_ALL =
 	RUNE_MASK = 15;
 	RUNE_3_ACM = 0.2;
 	RUNE_AR1M = 0;
@@ -1218,6 +1218,15 @@ void() pk_srvcmd_set =
 	R_BLACK = RUNE_FLG_DM;
 	R_HELL = RUNE_FLG_HS;
 	R_ELDER = RUNE_FLG_RG;
+
+	R_VAMPIRE = RUNE_VAMPIRE; // lith + extra
+	R_AMMO = RUNE_AMMO; // here for items - not enabled yet
+	R_FLY = RUNE_FLG_FLY;
+
+	T_DSH = TECH_DSH; // lith techs
+	T_AMP = TECH_AMP;
+	T_TEIM = TECH_TEIM;
+	T_ADOC = TECH_ADOC;
 
 // hook codes - these should be set for non register cvar, unmoded engines
 	HOOK = 0;
@@ -1509,8 +1518,8 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 // rune server
 		registercvar("sv_c_rune", "0");
-		registercvar("sv_c_rune_cnt", "4");
-		registercvar("sv_c_rune_mask", "15");
+		registercvar("sv_c_rune_cnt", "0");
+		registercvar("sv_c_rune_mask", "0"); // can be used to mask off techs, etc. - mask normally comes from rule set mask
 		registercvar("sv_c_rune_3acm", "0.2");
 		registercvar("sv_c_rune_random", "0"); // runes will have random powers
 		registercvar("sv_c_rune_set", "0");

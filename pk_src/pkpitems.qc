@@ -138,7 +138,7 @@ void(entity e) pkplus_item_control =
 		return;
 	}
 
-	if (e.classname == "dyn_item")
+	if (e.event == "dynamic_item")
 		{
 			if (WARNING) bprint("*** Warning - dynamic items: pk_art is off and dynamic made a pkplus item - hiding\n");
 		}

@@ -853,7 +853,7 @@ void() viswep_post =
 					if (vhead.weapon != IT_AXE && dwep != IT_AXE) qld = TRUE;
 					else if (vhead.pk_currentitem != PK_IT_AXE && pkdwep != PK_IT_AXE) qld = TRUE;
 					else if (vhead.weapon == IT_AXE && dwep == IT_AXE || pkdwep == PK_IT_AXE) qld = TRUE;
-	// TDO: set eweapon by code
+// ???: set eweapon by code - have forgotten what this meant
 				}
 				else if (dwep > 0)
 				{

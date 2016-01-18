@@ -43,7 +43,7 @@ void () SUB_regen =
 		return;
 	}
 
-	if (self.classname == "dyn_item") // just in case catch - cubes prob. come here
+	if (self.event == "dynamic_item") // just in case catch - cubes prob. come here
 	{
 		if (WARNING)
 			bprint("*** - WARNING - Removed a dyn item in SUB_regen!\n");
@@ -76,7 +76,7 @@ void(string g) tbprint =
 	e = spawn();
 	e.netname = g;
 	e.think = thinkpr;
-	e.nextthink = time + 10;
+	e.nextthink = time + 10; // FIX: for actuall use in server runes
 };
 
 void () PlaceItem =
@@ -367,7 +367,7 @@ void () weapon_grapgun =
 
 void() pk_dyn_touch =
 {
-	if (self.classname != "dyn_item") return;
+	if (self.event != "dynamic_item") return;
 	if (self.netname != "cells") pk_ditems = pk_ditems - 1;
 	remove(self);
 };
@@ -652,7 +652,7 @@ if (!self.mask_x) 			bprint("\n\n\n\n\n*** - WARNING - item with no mask x\n\n\n
 		bprint(self.classname);
 		bprint(" and pk_touch is (void) 0 - reloading\n");
 		}
-		if (self.classname != "dyn_item") item_call(self.classname);
+		if (self.event != "dynamic_item") item_call(self.classname);
 		else if (self.wad != "") item_call(self.wad);
 		else if (self.scode) item_call(item_by_mcode(self.scode));
 		return;
@@ -663,14 +663,20 @@ if (!self.mask_x) 			bprint("\n\n\n\n\n*** - WARNING - item with no mask x\n\n\n
 		armorsave_rev(other); // get armor if power on
 		if (self.pk_touch == ammo_touch) self.pk_touch = pk_ammo_touch; // new fn for ammo collections
 
-		if (self.classname == "dyn_item")
-		{
-			f = TRUE;
-			self.classname = self.wad; // this should always be classname
-		}
+
+
+if (self.classname == "") bprint("*** - blank classname in touch fn \n");
+
+
+
+//		if (self.event == "dynamic_item")
+//		{
+//			f = TRUE;
+//			self.classname = self.wad; // this should always be classname
+//		}
 		self.pk_touch();
 
-		if (f) self.classname = "dyn_item"; // restore
+//		if (f) self.event = "dynamic_item"; // restore
 
 		if (other.mask_x & CB_SCOURGE) // scourge has to select x_wep so they look / sound right
 		if (self.items & (IT_GRENADE_LAUNCHER | IT_LIGHTNING))
@@ -1742,7 +1748,7 @@ void() pk_item_position_init =
 	self.nextthink = time + CFM_TIME;
 
 // dynamic items should not end up here
-	if (WARNING)  if (self.classname == "dyn_item")
+	if (WARNING)  if (self.event == "dynamic_item")
 		bprint("*** warning: dynamic item in pk_item_position_init() \n");
 
 };
@@ -1751,7 +1757,7 @@ void() pk_item_position_init =
 
 void() pk_placeitem =
 {
-	if (self.classname != "dyn_item")
+	if (self.event != "dynamic_item")
 	{
 		pk_item_position_init();
 	}

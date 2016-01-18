@@ -206,7 +206,7 @@ void() annihilate =
 
 	if (self.flags & FL_ITEM) 						// get rid of respawns right away - avoids repositioning issues with using setorigin
 //	if (self._stand == SUB_regen)			// regen respawn items - to do other wise would make shalraths really cruel
-	if (self.classname != "dyn_item")
+	if (self.event != "dynamic_item")
 	{
 		self.model = string_null;
 		self.solid = SOLID_NOT;
@@ -461,7 +461,7 @@ void() sphere_annihilation_phys_move =
 		while (head)
 		{
 			if (head.think == annihilate)
-			if (!(head.flags & FL_ITEM) && head.classname != "dyn_item") // && head._stand == SUB_regen)) // dont even initially move respawnables
+			if (!(head.flags & FL_ITEM) && head.event != "dynamic_item") // && head._stand == SUB_regen)) // dont even initially move respawnables
 			{
 				if (head.cnt > 0) setorigin(head, sphere_a.origin + head.dest1 * (head.cnt / 6)); // move'r into sphere
 				else setorigin(head, sphere_a.origin);
