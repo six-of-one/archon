@@ -712,14 +712,16 @@ void () CheckRules =
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar ("fraglimit");
 
-	if (timelimit && time >= timelimit)
+	if (timelimit > 0 && time >= timelimit)
 	{
+		NoExit_savetime(); // Cataboligne - 9.9.11 - protect against exitless levels in dm - restore setting
 		NextLevel ();
 		return ;
 	}
 
-	if (fraglimit && self.frags >= fraglimit)
+	if (fraglimit > 0 && self.frags >= fraglimit)
 	{
+		NoExit_savefrag(); // Cataboligne - 9.9.11 - protect against exitless levels in dm - restore setting
 		NextLevel ();
 		return ;
 	}

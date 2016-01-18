@@ -103,6 +103,7 @@ xwep/railgun.qc
 xwep/lasers.qc
 xwep/flamer.qc
 xwep/x_firecode.qc
+xwep/portal.qc
 
 // support for q2 converted maps
 xwep/q2ents.qc

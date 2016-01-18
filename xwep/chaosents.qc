@@ -49,6 +49,15 @@ void() chaos_precache =
 	precache_model  ("progs/m_shovel.mdl");
 	precache_model ("progs/vw_shovel.mdl");
 
+// poral 1
+	precache_model ("progs/portal.mdl");
+	precache_model ("progs/v_portal.mdl");
+	precache_sound ("sound/portal/portfire.wav");
+	precache_sound ("sound/portal/portfail.wav");
+	precache_sound ("sound/portal/chargeup.wav");
+	precache_sound ("sound/portal/shdoff.wav");
+
+
 //	flamer_precache();
 };
 
@@ -145,6 +154,35 @@ void () c_weapon_deepsleep =
 	self.vwepmdl = "progs/vw_deepsleep.mdl";
 	self.noise3 = "q2_snd/blastf1a.wav";
 	self.target = "q2_snd/lashit.wav";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "x_item";
+};
+
+void() weapon_portal =
+{
+	q100_weapon_supershotgun();
+	self.netname = "Portal apparatus";
+
+	self.touch = x_weapon_touch;
+	self._attack = SUB_Null;
+	self._fr_attack = player_portal1;
+
+	self.currentammo = 0;
+	self.aflag = IGN_INV;
+	self.items = IT_LIGHTNING;
+	self.lip = AMMO_CELLS;
+	self.attack_finished = 1;
+	self.dmg = 0;
+	self.dmg_save = 1;
+	self.dmg_take = 1; // shot cnt
+
+	setmodel (self, "progs/g_harp.mdl");
+	self.weaponmodel = "progs/v_portal.mdl";
+//	self.vwepmdl = "progs/vw_reggun.mdl";
+//	self.noise = "doom/dswpnup.wav";
+	self.noise3 = "portal/portfire.wav";
+//	self.noise4 = "doom/dsitembk.wav";
+//	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 };

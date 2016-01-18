@@ -38,6 +38,12 @@ void() q_startmap;						// fix start map issue for q single player
 .string class_select;					// allow selection by class
 //float GMODE;								// genre mode - cfg for ambig map items
 
+float NOEXIT_TIMEOUT;					// default time for levels without exits (trigger_changelevel)
+float NOEXIT_FRAGLIMIT;					// default fraglimit for levels without exits (trigger_changelevel)
+float NOEXIT_SAVETIME;					// save any timelimit if set
+float NOEXIT_SAVEFRAG;					// save any fraglimit if set
+float NOEXIT_CHECK;						// 1 if checked, -1 if timeout was set and needs cleared
+
 // q100 stuff
 void() q100_PlayerPreThink;
 void() q100_PlayerPostThink;

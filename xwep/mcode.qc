@@ -1870,20 +1870,11 @@ void(entity e, float trvs) item_translate;
 void() painkeep_cube_use =
 {
 	local vector v1;
-	local entity c;
+	local entity c, sv;
 	local float f, d;
 
+	sv = self;
 	c = self.eweapon;
-
-	if (c.wad != "pk_cube")
-	{
-		if (WARNING)	bprint("*** WARNING - in cube use and dont have a cube!\n");
-		self.eweapon = world;
-		self.weapon = W_BestWeapon();
-		self.pk_currentitem = W_BestPKWeapon();
-		W_SetCurrentAmmo();
-		return;
-	}
 
 	v1 = self.origin - c.origin;
 	if (vlen(v1) > PK_CUBE_DIST)
@@ -1891,6 +1882,19 @@ void() painkeep_cube_use =
 		sprint(self, "You are too far away to open your cube.\n");
 		return;
 	}
+
+	self.button0 = 0;
+	self.weapon = W_BestWeapon();
+	self.pk_currentitem = W_BestPKWeapon();
+	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
+	W_SetCurrentAmmo();
+
+	if (c.wad != "pk_cube")
+	{
+		if (WARNING)	bprint("*** WARNING - in cube use and dont have a cube!\n");
+		return;
+	}
+
 	sound (self, CHAN_WEAPON, c.noise, 1, ATTN_NORM);
 	c.think = SUB_Null;
 	c.owner = world;
@@ -1970,10 +1974,7 @@ void() painkeep_cube_use =
 		remove(self);
 	}
 // IDEA: tele-sphere, portal, explosive regular item, nail bomb, chaos effect
-	self.eweapon = world;
-	self.weapon = W_BestWeapon();
-	self.pk_currentitem = W_BestPKWeapon();
-	W_SetCurrentAmmo();
+	self = sv;
 };
 
 //:-( cube owner didnt open it

@@ -1681,7 +1681,7 @@ void() q2_ctf_haste =
 		return;
 	}
 
-	setmodel(self, "progs/q2_ctf_tech.mdl");
+	setmodel(self, "progs/q2_ctf_haste.mdl");
 	self.frame = 0 + CTF_TECH_SHELL;
 	self.skin = 0;
 
@@ -1711,7 +1711,7 @@ void() q2_ctf_regen =
 		return;
 	}
 
-	setmodel(self, "progs/q2_ctf_tech.mdl");
+	setmodel(self, "progs/q2_ctf_regen.mdl");
 	self.frame = 1 + CTF_TECH_SHELL;
 	self.skin = 1;
 
@@ -1739,7 +1739,7 @@ void() q2_ctf_resist =
 		return;
 	}
 
-	setmodel(self, "progs/q2_ctf_tech.mdl");
+	setmodel(self, "progs/q2_ctf_resist.mdl");
 	self.frame = 2 + CTF_TECH_SHELL;
 	self.skin = 2;
 
@@ -1767,7 +1767,7 @@ void() q2_ctf_stren =
 		return;
 	}
 
-	setmodel(self, "progs/q2_ctf_tech.mdl");
+	setmodel(self, "progs/q2_ctf_stren.mdl");
 	self.frame = 3 + CTF_TECH_SHELL;
 	self.skin = 3;
 

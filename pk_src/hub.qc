@@ -1217,7 +1217,9 @@ void() WaitForVotesThink =
 	// next think
 	self.nextthink = time + 0.1;
 
-	localcmd("cl_bob 0\n"); // stop bob so voted view isnt borked
+// note for self - this is wrong
+//	localcmd("cl_bob 0\n"); // stop bob so voted view isnt borked
+	stuffcmd(self, "cl_bob 0\n"); // stop bob so voted view isnt borked
 
 	if (self.messagetimeout < time)
 	{

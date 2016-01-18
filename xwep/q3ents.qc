@@ -192,7 +192,7 @@ void() q3_precache =
 
 void() q3_bob_height =
 {
-//	if (q3_bob_on > 0) return;
+//	if (q3_bob_on > 0) return; // NOTE: these dont work
 //	if (q3_bob_on == 0) q3_bob_on = -1;
 
 	if (!self.flags & FL_CLIENT) return;
@@ -208,7 +208,7 @@ void() q3_bob_height =
 		}
 	}
 
-	q3_bob_on = 1;
+	q3_bob_on = 1; // NOTE: this code is called for every client - so this var is useless
 	stuffcmd(self, Q3_BOBH); // bob q3 items, heh heh
 	stuffcmd(self, Q3_BOBHALIAS); // alias override
 };

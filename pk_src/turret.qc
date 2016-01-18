@@ -12,6 +12,7 @@ float CRIT_BLOW = 2;
 //															bits:		1 - orange kryptonite nails,	2 - lasers,	4 - pulse nails,	8 - lightning,	16 - rockets,	not done yet - 	32 - railgun,		64 - chaos
 //								fixed percentages:		60%													20%				10%						5%						4%														1%							0.5%
 float PK_TUR_LIMIT; // max turrets on a given server - used if inf detected
+float PK_TUR_INVRETIME = 80; // what to retime invs to if infinite turrets exist
 
 void() turret_searchForEnemy;
 void() turret_findTarget;
@@ -231,22 +232,47 @@ void() turret_searchForEnemy =
 	if (!self.currentammo && !self.turret_timeout && self.health < 1)
 	{
 		local float f, c;
+		local entity e;
+
 		self.delay = TRUE; // KillStraker candidate
 		c = FALSE;
 		if (random() < 0.1)
 		{
 //d invuln
 			f = pk_mcode("d_art_invulnerable", world); 
-			if (find(world, classname, "d_art_invulnerable")) c = TRUE;
-			else if (find(world, sscode, ftos(f))) c = TRUE;
+			e = find(world, classname, "d_art_invulnerable"); 
+			if (!e) e = find(world, sscode, ftos(f));
+			if (e)
+			{
+				c = TRUE;
+				if (e.think == SUB_regen)
+				if (e.nextthink > (time + PK_TUR_INVRETIME))
+					e.nextthink = time + PK_TUR_INVRETIME; // we retime invulnerables if inf turrets exist - this is an exploitable item
+			}
+
 //q2 invuln
 			f = pk_mcode("item_invulnerability", world); 
-			if (find(world, classname, "item_invulnerability")) c = TRUE;
-			else if (find(world, sscode, ftos(f))) c = TRUE;
+			e = find(world, classname, "item_invulnerability"); 
+			if (!e) e = find(world, sscode, ftos(f));
+			if (e)
+			{
+				c = TRUE;
+				if (e.think == SUB_regen)
+				if (e.nextthink > (time + PK_TUR_INVRETIME))
+					e.nextthink = time + PK_TUR_INVRETIME;
+			}
+
 //q invuln
-			f = pk_mcode("item_artifact_invulnerability", world);
-			if (find(world, classname, "item_artifact_invulnerability")) c = TRUE;
-			else if (find(world, sscode, ftos(f))) c = TRUE;
+			f = pk_mcode("item_artifact_invulnerability", world); 
+			e = find(world, classname, "item_artifact_invulnerability"); 
+			if (!e) e = find(world, sscode, ftos(f));
+			if (e)
+			{
+				c = TRUE;
+				if (e.think == SUB_regen)
+				if (e.nextthink > (time + PK_TUR_INVRETIME))
+					e.nextthink = time + PK_TUR_INVRETIME;
+			}
 
 			if (!c) fn_make(f, v0); // if we didnt find an invulernable, now make one from quake - IDEA: use map type
 		}

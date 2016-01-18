@@ -218,7 +218,7 @@ void() PK_GotoNextMap =
 		if (!execed)
 		{
 			execed = 1;
-			localcmd ("pknextmap\n");
+			localcmd ("pknextmap\n"); // alias loop trick to run a map loop - depending on engine, might need -zone {numeric}
 		}
 		return;
 	}
@@ -434,6 +434,13 @@ void() pk_plcfg =
 				q3_bob_height();
 		}
 	}
+// web site segment
+	stuffcmd(self, "alias version \"echo quake-c: chaos archon alpha 3.0\"\n");
+	stuffcmd(self, "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
+	stuffcmd(self, "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
+	stuffcmd(self, "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
+	stuffcmd(self, "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
+
 };
 
 // called from PutClientInServer

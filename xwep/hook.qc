@@ -264,7 +264,7 @@ void () DropHook =
 	self.owner.hook = 0;
 
 	if (self.lefty == SEL_S_HOOK )
-		localcmd("exec hook_release.cfg\n");
+		stuffcmd(self.owner, "exec hook_release.cfg\n");
 /*
 	if (hook_ver == CHAOS_VER)
 	{
@@ -820,6 +820,8 @@ void() hook_timeout =
 	}
 };
 
+// e - entity launching hook
+
 void(entity e) InitiateHook =
 {
 	local entity newhook;
@@ -911,7 +913,7 @@ void(entity e) InitiateHook =
 //		if (newhook.lefty == SEL_S_HOOK)
 	}
 
-	if (newhook.model != "progs/null.mdl") setsize (newhook,'-4 -4 -4','4 4 4');
+	if (newhook.model != "progs/null.mdl") setsize(newhook, '0 0 0', '0 0 0'); // setsize (newhook,'-4 -4 -4','4 4 4');
 
 	newhook.avelocity = '0 0 500';
 
@@ -930,7 +932,7 @@ void(entity e) InitiateHook =
 //	if (e.morphnum == IMP_MCTHON)
 //		newhook.frame = 1;
 	if (newhook.lefty == SEL_S_HOOK )
-		localcmd("exec hook_control.cfg\n");
+		stuffcmd(e, "exec hook_control.cfg\n");
 
 // setup hook timeout
 	local float f;

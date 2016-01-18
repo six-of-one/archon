@@ -34,8 +34,14 @@ float (entity targ) grav_visible =
 	if (trace_fraction == 1)
 		return TRUE;
 
-	if (f) return FALSE;
+// WATCH: keep an eye on this hack of a fix, until the "better" solution is available
+	if (!f)
+	if (pointcontents (targ.origin) == CONTENT_SOLID) // IDEA: qualify as x weps as well?
+	if (trace_fraction > 0.65)
+		return TRUE;
 
+	if (f) return FALSE;
+/*
 	spot1 = self.origin + ' 0 0 24';
 	traceline (spot1, spot2, TRUE, self);	
 	if (trace_fraction == 1) return TRUE;
@@ -43,7 +49,7 @@ float (entity targ) grav_visible =
 	spot1 = self.origin + ' 0 0 -16';
 	traceline (spot1, spot2, TRUE, self);
 	if (trace_fraction == 1) return TRUE;
-
+*/
 	return FALSE;
 };
 

@@ -15,7 +15,7 @@ void() PK_init =
 	chaos = cvar("chaos"); // glquake mod engine
 	DARKPLACES = cvar("pr_checkextension"); // check for dp engine
 
-// info strings set by server
+// info strings set by server - these only work on the server
 	localcmd("alias version \"echo quake-c: chaos archon alpha 3.0\"\n");
 	localcmd("alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
 	localcmd("alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
@@ -515,6 +515,27 @@ void(float b) b_launch =
 	}
 };
 
+// restore limits if noexit used
+
+void() NoExit_savefrag =
+{
+	if (NOEXIT_SAVEFRAG > -1)
+	{
+		localcmd("fraglimit ");
+		localcmd(ftos(NOEXIT_SAVEFRAG));
+		localcmd("\n");
+	}
+};
+
+void() NoExit_savetime =
+{
+	if (NOEXIT_SAVETIME > -1)
+	{
+		localcmd("timelimit ");
+		localcmd(ftos(NOEXIT_SAVETIME));
+		localcmd("\n");
+	}	
+};
 
 // fn(pk_liveupd) - these cvar update live during game
 
@@ -683,6 +704,41 @@ void() pk_liveupd =
 		XENV = TRUE;
 		PK_ART = FALSE;
 		return;
+	}
+	
+	if (!NOEXIT_CHECK)
+	{
+		NOEXIT_SAVETIME = NOEXIT_SAVEFRAG = -2;
+
+		if (find(world, classname, "trigger_changelevel"))
+			NOEXIT_CHECK = 1;
+		else
+		{
+			NOEXIT_CHECK = -1; // using default timeout if set
+			NOEXIT_SAVETIME = cvar("timelimit");
+			NOEXIT_SAVEFRAG = cvar("fraglimit");
+		}
+	}
+
+// update noext defaults if changed live and they are in use
+	if (NOEXIT_CHECK < 0)
+	{
+		if (NOEXIT_TIMEOUT != cvar("sv_c_noexit_timeout"))
+		{
+			bprint("\bServer set default time limit due to no exit\n");
+			NOEXIT_TIMEOUT = cvar("sv_c_noexit_timeout");
+			localcmd("timelimit ");
+			localcmd(ftos(NOEXIT_TIMEOUT));
+			localcmd("\n");
+		}
+		if (NOEXIT_FRAGLIMIT != cvar("sv_c_noexit_fraglimit"))
+		{
+			bprint("\bServer set default frag limit due to no exit\n");
+			NOEXIT_FRAGLIMIT = cvar("sv_c_noexit_fraglimit");
+			localcmd("fraglimit ");
+			localcmd(ftos(NOEXIT_FRAGLIMIT));
+			localcmd("\n");
+		}
 	}
 
 // hook codes
@@ -1041,6 +1097,10 @@ void() pk_srvcmd_set =
 	WARNING = FALSE;
 	BOTFREEZE = 0;
 
+// limits for exits with no detectable exits
+	NOEXIT_TIMEOUT = 0;
+	NOEXIT_FRAGLIMIT = 0;
+
 // q1 control
 	Q_99 = FALSE; // quake mode with all env effects / extra weps
 	Q_100 = FALSE; // if true run 100% true to quake v106 - in theory, really for dev purposes only
@@ -1295,6 +1355,9 @@ void() pk_srvcmd_set =
 																						  // if 2 override all limit settings and use server values - this stops rune & pack increases
 		registercvar("sv_c_nodecor", "0"); // decor control - 0: all on, 1: no blocking decor in dm, 2:no decor in dm, 3: no decor ever
 													  // decor also includes shell casins, chaos effects, debris
+		registercvar("sv_c_noexit_timeout", "0"); // a default timelimit for any level that doesnt have a trigger_changelevel
+																							// this is only a partial solution (as with end.bsp) the trigger may not be accessible
+		registercvar("sv_c_noexit_fraglimit", "50"); // a default fraglimit for any level that doesnt have a trigger_changelevel
 
 // pk*bot server control - spawns bots on level changes
 		registercvar("sv_bot_pk", "0"); // bot count . skills non team - replaces parm12
