@@ -661,6 +661,13 @@ void() spike_touch =
 	if (other == self.owner)
 		return;
 
+	if (other.touch == self.touch) // fix for mystery disappearing missiles when a shit ton of stuff is launched
+		return;
+
+// note - above fix replaces this
+//	if (other.classname == self.classname) // super scourges hose out a ton of spikes
+//		return;
+
 	if (sky_touch(null_string, v0, self))
 	{
 		SUB_Remove();
@@ -669,9 +676,6 @@ void() spike_touch =
 
 	if (other.solid == SOLID_TRIGGER)
 		return;	// trigger field, do nothing
-
-	if (other.classname == self.classname) // super scourges hose out a ton of spikes
-		return;
 		
 	if (other.classname == "monster_scourge") // scourge dont kill scourge
 	if (self.netname == "monster_scourge")

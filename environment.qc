@@ -499,8 +499,10 @@ vector(vector src, float lbper, vector lbvec, float lcnt) lava_shot =
 
 void () fire_fly_touch =
 {
-	if (other)
 	if (other == self.owner)
+		return;
+
+	if (other.touch == self.touch) // fireball wep fix for lava scrag
 		return;
 
 	if (sky_touch(null_string, v0, self))

@@ -403,6 +403,10 @@ void () T_MissileTouch =
 	if (other == self.owner)
 		return;		// don't explode on owner
 
+	if (self.wad == "BIG") // note - special, becuase 2 rockets SHOULD hose each other
+	if (other.touch == self.touch) // explosive wep fix for scrag
+		return;
+
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove (self);

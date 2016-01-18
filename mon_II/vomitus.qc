@@ -192,10 +192,13 @@ void(float offset) vom_shot3 =
 
 void()	vom_stand1	=[	$stand1,	vom_stand1	]
 {
-	if ((self.weaponframe < $stand1) || (self.weaponframe > $stand8)) self.weaponframe = $stand1;
-	else self.weaponframe = self.weaponframe + 1;
+	if ((self.duration < $stand1) || (self.duration > $stand8))
+	{
+		self.duration = $stand1;
+	}
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
 // idle sound - heh heh - this was so obvious in retrospect
 	if (random() < 0.5) copb_checkFart();
@@ -412,7 +415,7 @@ void()	vom_attackc13 =[	$attack13,	vom_run1     ] {ai_face();};
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 // 2 attacks, not used
-
+/*
 void()	vom_attackd1 =[	$attack1,	vom_attackd2 ] {ai_face(); sound (self, CHAN_VOICE, "vomitus/attack1.wav", 1, ATTN_NORM);};
 void()	vom_attackd2 =[	$attack2,	vom_attackd3 ] {ai_face();};
 void()	vom_attackd3 =[	$attack3,	vom_attackd4 ] {ai_face();};
@@ -442,7 +445,7 @@ void()	vom_attackf10 =[	$attack10,	vom_attackf11 ] {vom_shot(0);};
 void()	vom_attackf11 =[	$attack11,	vom_attackf12 ] {vom_shot2(1);};
 void()	vom_attackf12 =[	$attack12,	vom_attackf13 ] {vom_shot2(3);};
 void()	vom_attackf13 =[	$attack13,	vom_run1     ] {ai_face();};
-
+*/
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 
 
