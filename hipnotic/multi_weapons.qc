@@ -11,6 +11,9 @@ void() MultiGrenadeTouch;
 //================================
 void() MiniGrenadeExplode =
 {
+	if (self.dmg)
+		T_RadiusDamage (self, self.owner, self.dmg, world);
+	else
 	if ( self.owner.classname == "player")
 		T_RadiusDamage (self, self.owner, 90, world);
 	else
@@ -21,8 +24,8 @@ void() MiniGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-    WriteByte (MSG_BROADCAST, 230);
-    WriteByte (MSG_BROADCAST, 5);
+	WriteByte (MSG_BROADCAST, 230);
+	WriteByte (MSG_BROADCAST, 5);
 
 	BecomeExplosion ();
 };

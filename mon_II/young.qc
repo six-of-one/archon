@@ -127,7 +127,7 @@ float YOUNG_WALK;
 
 void()	young_walk1	=[	$run1,		young_walk1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $run7))
+	if ((self.weaponframe < $run1) || (self.weaponframe > $run7))
 	{
 		self.weaponframe = $run1;
 		young_noway();
@@ -142,7 +142,7 @@ void()	young_walk1	=[	$run1,		young_walk1	]
 
 void()	young_mdwalk1	=[	$mdrun1,		young_mdwalk1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $mdrun7))
+	if ((self.weaponframe < $mdrun1) || (self.weaponframe > $mdrun7))
 	{
 		self.weaponframe = $mdrun1;
 		young_noway();
@@ -157,7 +157,7 @@ void()	young_mdwalk1	=[	$mdrun1,		young_mdwalk1	]
 
 void()	young_lgwalk1	=[	$lgrun1,		young_lgwalk1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $lgrun7))
+	if ((self.weaponframe < $lgrun1) || (self.weaponframe > $lgrun7))
 	{
 		self.weaponframe = $lgrun1;
 		young_noway();
@@ -202,7 +202,7 @@ void()	young_lgwalk8	=[	$lgrun8,		young_lgwalk1	] {ai_walk(YOUNG_WALK + 6);young
 
 void()	young_run1	=[	$run1,		young_run1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $run7))
+	if ((self.weaponframe < $run1) || (self.weaponframe > $run7))
 	{
 		self.weaponframe = $run1;
 		young_noway();
@@ -217,7 +217,7 @@ void()	young_run1	=[	$run1,		young_run1	]
 
 void()	young_mdrun1	=[	$mdrun1,		young_mdrun1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $mdrun7))
+	if ((self.weaponframe < $mdrun1) || (self.weaponframe > $mdrun7))
 	{
 		self.weaponframe = $mdrun1;
 		young_noway();
@@ -232,7 +232,7 @@ void()	young_mdrun1	=[	$mdrun1,		young_mdrun1	]
 
 void()	young_lgrun1	=[	$lgrun1,		young_lgrun1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $lgrun7))
+	if ((self.weaponframe < $lgrun1) || (self.weaponframe > $lgrun7))
 	{
 		self.weaponframe = $lgrun1;
 		young_noway();

@@ -577,7 +577,7 @@ void() pk_ammo_touch =
 
 // The touch func for our new items
 
-entity ae; // TEST remove
+entity ae, a2, a3; // TEST remove
 
 void() painkeep_touch =
 {
@@ -728,8 +728,10 @@ if (self.classname == "")
 
 
 
-if (ae != self) // TEST
+if (ae != self && a2 != self && a3 != self) // TEST
 {
+	a3 = a2;
+	a2 = ae;
 	bprint("*** - archon pts = ");
 	bprint(ftos(self.archon));
 	bprint("\n");

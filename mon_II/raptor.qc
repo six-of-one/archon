@@ -112,7 +112,7 @@ void()  raptor1_stand1   =[      $stand1,        raptor1_stand2   ]
 
 void()  raptor1_stand2   =[      $stand2,        raptor1_stand2   ]
 {
-	if (!self.weaponframe) self.weaponframe = $stand2;
+	if ((self.weaponframe < $stand2) || (self.weaponframe > $stand15)) self.weaponframe = $stand2;
 	else self.weaponframe = self.weaponframe + 1;
 	
 	if (self.weaponframe > $stand15)

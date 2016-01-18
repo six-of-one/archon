@@ -54,7 +54,7 @@ float SPAWN_AMBUSH = 3;
 
 void() heximp_sit1 = [	$heximpwat1, heximp_sit1 ]
 {
-	if (!self.weaponframe || (self.weaponframe > $heximpwat23)) self.weaponframe = $heximpwat1;
+	if ((self.weaponframe < $heximpwat1) || (self.weaponframe > $heximpwat23)) self.weaponframe = $heximpwat1;
 	else self.weaponframe = self.weaponframe + 1;
 
 	self.frame = self.weaponframe;
@@ -92,7 +92,7 @@ void() heximp_sit24 =[	$heximpwat24, heximp_sit1 ] {ai_stand();};
 
 void() heximp_stand1 = [	$heximpfly1, heximp_stand1 ]
 {
-	if (!self.weaponframe || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
+	if ((self.weaponframe < $heximpfly1) || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
 	else self.weaponframe = self.weaponframe + 1;
 
 	self.frame = self.weaponframe;
@@ -125,7 +125,7 @@ void() heximp_stand20 =[	$heximpfly20, heximp_stand1 ] {ai_stand();};
 
 void() heximp_hover1 =[	$heximpfly1, heximp_hover1 ]
 {
-	if (!self.weaponframe || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
+	if ((self.weaponframe < $heximpfly1) || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
 	else self.weaponframe = self.weaponframe + 1;
 
 	self.frame = self.weaponframe;
@@ -158,7 +158,7 @@ void() heximp_hover20 =[	$heximpfly20, heximp_hover1 ] {ai_walk(14);};
 
 void() heximp_fly1 =[	$heximpfly1, heximp_fly1 ]
 {
-	if (!self.weaponframe || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
+	if ((self.weaponframe < $heximpfly1) || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
 	else self.weaponframe = self.weaponframe + 1;
 
 	self.frame = self.weaponframe;
@@ -357,7 +357,7 @@ void() heximp_up1 = [	$heximpup1, heximp_up2 ] {sound (self, CHAN_VOICE, "heximp
 
 void() heximp_up2 = [	$heximpup2, heximp_up2 ]
 {
-	if (!self.weaponframe) self.weaponframe = $heximpup2;
+	if ((self.weaponframe < $heximpup2) || (self.weaponframe > $heximpup23)) self.weaponframe = $heximpup2;
 	else self.weaponframe = self.weaponframe + 1;
 
 	if (self.weaponframe > $heximpup23)

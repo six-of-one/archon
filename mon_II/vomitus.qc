@@ -192,7 +192,7 @@ void(float offset) vom_shot3 =
 
 void()	vom_stand1	=[	$stand1,	vom_stand1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $stand8)) self.weaponframe = $stand1;
+	if ((self.weaponframe < $stand1) || (self.weaponframe > $stand8)) self.weaponframe = $stand1;
 	else self.weaponframe = self.weaponframe + 1;
 
 	self.frame = self.weaponframe;

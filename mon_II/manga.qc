@@ -160,7 +160,7 @@ local float 	ldmg;
 
 void() manga_stand1	=[	$st1,	manga_stand1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $st7)) self.weaponframe = $st1;
+	if ((self.weaponframe < $st1) || (self.weaponframe > $st7)) self.weaponframe = $st1;
 	else self.weaponframe = self.weaponframe + 1;
 
 	self.frame = self.weaponframe;
@@ -189,7 +189,7 @@ void() manga_stand8	=[	$st8,	manga_stand1	] {ai_stand();};
 
 void() manga_walk1	=[	$wa1,		manga_walk1	]
 {
-	if (!self.weaponframe || (self.weaponframe > $wa17)) self.weaponframe = $wa1;
+	if ((self.weaponframe < $wa1) || (self.weaponframe > $wa17)) self.weaponframe = $wa1;
 	else self.weaponframe = self.weaponframe + 1;
 
 	self.frame = self.weaponframe;
