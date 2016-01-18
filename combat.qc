@@ -189,12 +189,12 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 			{
 				take = (targ.archon - take) + take;
 			}
-			if (targ.armorvalue > 0) attacker.archon = attacker.archon + take; // add points to attackers
+			if (targ.armorvalue <= 0) attacker.archon = attacker.archon + take; // add points to attackers
 		}
 
 // magic shield goes here - prevent archon power loss but reduce shield power
 
-		if (targ.armorvalue)
+		if (targ.armorvalue > 0)
 		{
 			targ.armorvalue = targ.armorvalue - (damage * save);
 			if (targ.armorvalue < 0) targ.armorvalue = 0; // shield gone

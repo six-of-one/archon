@@ -438,6 +438,9 @@ void() chaos_morph_chgthk;
 void(entity e) chaos_mdlsize;
 void() archon_nodule_rnd;
 void(entity e) archon_pprint;
+void(entity e) power_drain;
+void(entity e) archon_bouncer;
+void() archon_ppp_thk;
 
 // gremlin
 

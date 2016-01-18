@@ -390,8 +390,10 @@ void() x_item_touch =
 
 	other.x_items = other.x_items | self.x_items;
 
+	if (self.netname == "Portable power point")
+		archon_ppp_thk();
 // nodule special
-	if (self.classname == "archon_nodule") // non Archon only get 10% of nodules
+	else if (self.classname == "archon_nodule") // non Archon only get 10% of nodules power
 	{
 		if (self == god_particle)
 			god_particle = world;

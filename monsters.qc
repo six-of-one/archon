@@ -250,26 +250,6 @@ void() swimmonster_start =
 	if (self.archon <= 0) self.archon = 1;
 };
 
-// self is monster
-
-void() monster_imprisoned =
-{
-	self.button4 = self.button4 - 3;
-
-// NOTE: archon sub-game idea
-	if (self.button4 < 0) // imprisoned eventually kills a monster
-	{
-		remove(self.bolt_target);
-		Killed(self, self.owner);
-		return;
-	}
-
-	self.stack6 = "imprisoned";
-	self.think = monster_imprisoned;
-	self.nextthink = time + 3;
-
-	self.owner.archon = self.owner.archon - 5;
-};
 
 
 

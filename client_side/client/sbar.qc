@@ -14,7 +14,7 @@ float SB_TOP    = 2;
 float SB_BOTTOM_RIGHT = 3;
 float sb_align;
 
-float cl_items;
+float cl_items, x_items;
 
 //-----------------------------------------------------------------------------
 // Custom hud config init / shutdown
@@ -539,6 +539,7 @@ void() Sbar_DrawInventory =
 	wsuit = GetStat_FLOAT_TRUNCATED(STAT_WSUIT);
 
 	cl_items = GetStat_FLOAT_TRUNCATED(STAT_ITEMS);
+	x_items = GetStat_FLOAT_TRUNCATED(STAT_X_ITEMS);
 
 	items = GetStat_BITS(STAT_ITEMS, 0, 23);
 	items2 = GetStat_BITS(STAT_ITEMS, 23, 9);
@@ -1267,6 +1268,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	if (rune_flag & RUNE_VAMPIRE)
 	{
 		DrawInventoryAmmo(pwr_step, "gfx/rune_vmp", ALPHA_FULL, 0.25);
+		cnt_left = pwr_step_y;
+		pwr_step_y = pwr_step_y + 30;
+	}
+
+// portable power point held
+	if (x_items & X_PP)
+	{
+		DrawInventoryAmmo(pwr_step, "gfx/a_ppp", ALPHA_FULL, 0.25);
 		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
 	}

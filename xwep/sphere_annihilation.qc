@@ -288,6 +288,20 @@ if (WARNING)
 				self.invincible_finished = time - 1; // not invincible enough
 				CheckPowerups();
 				T_Damage (self, world, world, self.health * 5 + 100); // this shit can kill anybody
+
+				if (self.mask_x & MORPH_ARCHON)
+				if (self.AIRG_Timeout != -6)
+				{
+					self.velocity = v0;
+					self.attack_finished = time + 3;
+					self.AIRG_Timeout = -6;
+					power_drain(self);
+					newmis.owner = world;
+					newmis._alt_fire = archon_bouncer;
+					newmis.wait = 0.1;
+					newmis.archon = 50 + random() * 50;
+					newmis.count = 5 * newmis.archon * ceil(0.4 + (3 * random()));
+				}
 				return;
 		}
 		if (self.classname == "Harpoon")

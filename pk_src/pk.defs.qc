@@ -391,6 +391,7 @@ float RUNE_AMMO				= 16; // no rune code yet - for packs
 float RUNE_FLG_FLY			= 32; // no rune code yet - for q3
 
 float RUNE_VAMPIRE			= 64; // lithium rune
+//float RUNE_PP					= 128; // power point rune
 
 float RUNE_FULL				= 79; // for multi rule test
 
@@ -1099,7 +1100,10 @@ float X_Q2_KEY_CHEAD			= 4096; // note: second head key
 float X_D_MAP					= 16384;
 float X_D_VIS					= 32768;
 
-float X_INV						= 57331; ///  1101111111110011
+float X_PP						= 65536; // portable power point
+
+float X_INV						= 122867; ///  11101111111110011
+// last val = 57331; ///  1101111111110011
 
 // end extra items
 

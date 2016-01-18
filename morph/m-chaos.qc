@@ -73,6 +73,7 @@ void() m_precache_chaos =
 	precache_model ("progs/nodule010.bsp");
 	precache_model ("progs/nodule011.bsp");
 	precache_model ("progs/nodule110110110.bsp");
+	precache_model ("progs/arc_pp.bsp");
 	precache_sound ("items/r_item2.wav");
 };
 
@@ -232,7 +233,7 @@ void(entity cent, float pl) chaos_morph_chg =
 
 // fn(chaos_morph_chgthk) - think to change morph - restores chaos from other forms
 
-/// self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", "", SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
+/// self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
 
 void() chaos_morph_chgthk =
 {
@@ -1509,18 +1510,8 @@ void() chaos_beam =
 			{
 				if (autocvar_hud_vampire_target == null_string) // IMP: more archon shields - ps
 				{
-					newmis = spawn();
-					newmis.owner = self;
-					newmis.enemy = archon_high;
-					newmis.think = archon_vampire_thk;
-					newmis.nextthink = time + 1;
-
-					newmis.lefty = 0.2 + random() * 0.4; // percent to drain this time
-					newmis.count = archon_high.archon * newmis.lefty;
-					newmis.archon = 1 + random() * 5; // points drained per sec
-
-					newmis.netname = archon_high.netname;
-					if (newmis.netname == "") newmis.netname = "Unknown target";
+					power_drain(archon_high);
+					newmis.spawnflags = 1;
 					stuffcmd(self, "hud_vampire_target \"");
 					stuffcmd(self, newmis.netname);
 					stuffcmd(self, "\"\n");
@@ -1941,18 +1932,20 @@ void() archon_heal =
 		if (self.bolt_target.health > 100) self.bolt_target.max_health = self.bolt_target.health;
 		else self.bolt_target.max_health = 100;
 	}
-	if (self.bolt_target.health >= self.bolt_target.max_health) return;
+	
+	self.AIRG_Timeout = self.bolt_target.max_health * self.bolt_target.health_modifier;
 
 	if (self.pk_beartrapammo & 1)
 	{
-		self.AIRG_Flags = floor((self.bolt_target.max_health - self.bolt_target.health) / 2);
+		if (self.bolt_target.health >= self.AIRG_Timeout) return;
+		self.AIRG_Flags = floor((self.AIRG_Timeout - self.bolt_target.health) / 2);
 		if (self.AIRG_Flags < 5) self.AIRG_Flags = 5;
 		if (self.bolt_target.flags & FL_CLIENT) T_Heal(self.bolt_target, self.AIRG_Flags, 0);
 		else self.bolt_target.health = self.bolt_target.health + self.AIRG_Flags;
 	}
 	else
 	{
-		self.AIRG_Flags = floor(self.bolt_target.max_health / 2);
+		self.AIRG_Flags = floor(self.bolt_target.health / 2);
 		if (self.AIRG_Flags > 200) self.AIRG_Flags = 200; // cap this
 		T_Damage(self.bolt_target, self, self, self.AIRG_Flags);
 //		self.bolt_target.health = self.bolt_target.health - self.AIRG_Flags;		
@@ -1962,7 +1955,11 @@ void() archon_heal =
 	self.attack_finished = time + 1; //debounce
 };
 
-void() player_imprisoned =
+// keep things imprisoned - reduce points for archon doing imprisoning
+
+void() bot_stand1;
+
+void() thing_imprisoned =
 {
 	if (self.enemy.disconnectPlayer)
 	{
@@ -1971,40 +1968,57 @@ void() player_imprisoned =
 	}
 
 	self.classname = "imprisoned";
-	self.stack6 = "imprisoned";
 	self.nextthink = time + 3;
 	self.button4 = self.button4 - 3;
-	if (self.button4 < 0) // player freed in one complete color exchange
+
+// NOTE: archon sub-game idea
+	if (self.button4 < 0) // player freed in one complete color exchange, monsters when they die of neglect
 	{
-		self.enemy.movetype = MOVETYPE_WALK;
+		if (self.enemy.flags & FL_CLIENT)
+		{
+			self.enemy.movetype = MOVETYPE_WALK;
+			self.enemy.think = player_stand1;
+			if (self.enemy.classname == "pk*bot") self.enemy.think = bot_stand1;
+		}
+		else if (self.enemy.flags & FL_MONSTER)
+		{
+			Killed(self.enemy, self.owner);
+		}
+
 		self.enemy.attack_finished = 0;
-		self.enemy.event = "";
+		self.enemy.event = null_string; // clear imprison notice so we can re-imprison
 		remove(self.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
 		remove(self);
-		self.archon = self.archon + self.pk_explode_ammo;		
+		self.owner.archon = self.owner.archon + 50; // self.pk_explode_ammo; - we dont have release spell set in this case
 	}
 	else
 	{
-		self.enemy.movetype = MOVETYPE_NONE;
+		if (self.enemy.flags & FL_CLIENT)
+		{
+			self.enemy.movetype = MOVETYPE_NONE;
+		}
 		self.enemy.attack_finished = MAXFL;
+		self.enemy.think = SUB_Null; // for bots & monsters
 		self.enemy.event = "imprisoned";
 
 		self.owner.archon = self.owner.archon - 5;
 	}
 }
 
+// select next in imprisoned list for a given archon
+
 void() next_imprisoned =
 {
 	gsf = 200;
 	if (!self.bolt_target)
-		self.bolt_target = find(world, stack6, "imprisoned");
+		self.bolt_target = find(world, classname, "imprisoned");
 	else
-		self.bolt_target = find(self.bolt_target, stack6, "imprisoned");
+		self.bolt_target = find(self.bolt_target, classname, "imprisoned");
 
 	while ((gsf > 0) && self.bolt_target)
 	{
-		if (self.bolt_target.owner = self) gsf = 0;
-		else self.bolt_target = find(self.bolt_target, stack6, "imprisoned");
+		if (self.bolt_target.owner == self) gsf = 0;
+		else self.bolt_target = find(self.bolt_target, classname, "imprisoned");
 		gsf = gsf - 1;
 	}
 
@@ -2017,6 +2031,8 @@ void() next_imprisoned =
 	}
 };
 
+// release spell - lets archon release their own prisoners (but not other archons!)
+
 void() archon_release =
 {
 	if (!self.bolt_target) return;
@@ -2025,28 +2041,35 @@ void() archon_release =
 
 	if (self.bolt_target.classname == "imprisoned")
 	{
-		self.bolt_target.enemy.movetype = MOVETYPE_WALK;
+		if (self.bolt_target.enemy.flags & FL_CLIENT)
+		{
+			self.bolt_target.enemy.movetype = MOVETYPE_WALK;
+			self.bolt_target.enemy.think = player_stand1;
+			if (self.bolt_target.enemy.classname == "pk*bot") self.bolt_target.enemy.think = bot_stand1;
+		}
+		else if (self.bolt_target.flags & FL_MONSTER)
+		{
+			self.bolt_target.enemy.think = self.bolt_target.enemy.th_run;
+			self.bolt_target.enemy.nextthink = time + 1;
+		}
 		self.bolt_target.enemy.attack_finished = 0;
-		self.bolt_target.enemy.event = "";
+		self.bolt_target.enemy.event = null_string;
 		remove(self.bolt_target.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
 		remove(self.bolt_target);
-		self.archon = self.archon + self.pk_explode_ammo;
-	}
-	else if (self.bolt_target.class_select == "class_monster")
-	if (self.bolt_target.stack6 == "imprisoned")
-	{
-		remove(self.bolt_target.bolt_target);
-		self.bolt_target.stack6 = "";
-		self.bolt_target.think = self.bolt_target.th_run;
-		self.bolt_target.nextthink = time + 1;
-		self.archon = self.archon + self.pk_explode_ammo;
+		self.archon = self.archon + self.pk_explode_ammo; // get back this many pts
 	}
 };
+
+// imprison spell - freezes a player, bot or monster
+//						- players are released after 40 secs - 1 complete floor color change on hub map from black to white or VV
+//						- monsters stay imprisoned until they die
+
+// makes a think ent to keep prison in effect and take points from archon for maintaining prison
 
 void() archon_imprison =
 {
 	if (self.bolt_target == self) return;
-	if (self.bolt_target.flags & FL_CLIENT)
+	if ((self.bolt_target.flags & FL_CLIENT) || (self.bolt_target.flags & FL_MONSTER))
 	{
 		if (self.bolt_target.event == "imprisoned")
 		{
@@ -2054,26 +2077,21 @@ void() archon_imprison =
 			return; // could not imprison
 		}
 		newmis = spawn();
-		newmis.think = player_imprisoned;
+		newmis.think = thing_imprisoned;
 		newmis.nextthink = time + 0.1;
 		newmis.owner = self;
 		newmis.enemy = self.bolt_target;
 		newmis.button4 = 40; // 40 secs, black to white on arc_hub floor changes
-		self.bolt_target.movetype = MOVETYPE_NONE;
-		self.bolt_target = world; // leave reticle on the imprisoned - maybe change
-	}
-	else if (self.bolt_target.flags & FL_MONSTER)
-	{
-		if (self.bolt_target.think == monster_imprisoned)
+		if (self.bolt_target.flags & FL_CLIENT)
 		{
-			self.bolt_targetTimeout = 0;	
-			return; // could not imprison
+			self.bolt_target.movetype = MOVETYPE_NONE;
 		}
-		self.bolt_target.owner = self;
-		self.bolt_target.think = monster_imprisoned;
-		self.bolt_target.nextthink = time + 0.1;
-		self.bolt_target.button4 = self.bolt_target.max_health;
-		if (self.bolt_target.button4 <= 0) self.bolt_target.button4 = 100;
+		else if (self.bolt_target.flags & FL_MONSTER)
+		{
+			newmis.button4 = self.bolt_target.max_health;
+			if (newmis.button4 <= 0) newmis.button4 = 100;
+			newmis.think = SUB_Null;
+		}
 		self.bolt_target = world; // leave reticle on the imprisoned - maybe change
 	}
 	else
@@ -2081,7 +2099,7 @@ void() archon_imprison =
 		self.bolt_targetTimeout = 0;	
 		return; // could not imprison
 	}
-	
+
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.attack_finished = time + 1; //debounce
 	self.pk_explode_ammo = 0;
@@ -2101,11 +2119,17 @@ void() archon_summon =
 	self.attack_finished = time + 1; //debounce
 };
 
+// banish something - expensive spell
+
+// makes things go "away" by remove fade - monsters & players are killed first, players _should_ have a respawn penalty
+
 // IDEA: sparks / parts wilst fading
 
 void() archon_banish =
 {
 	if (self.bolt_target.mask_x & MORPH_ARCHON) return;
+	if (! self.bolt_target.solid) return;
+
 //	if (self.bolt_target.flags & FL_GODMODE) return;
 
 	if (self.bolt_target.flags & FL_CLIENT)
@@ -2185,7 +2209,7 @@ void() archon_time_flow =
 void() clear_reticle =
 {
 	if (self.bolt_targetNext)
-	if ((self.bolt_targetNext.model == "gfx/reticle.spr") || (self.bolt_targetNext.model == "gfx/reticle2.spr"))
+	if (self.bolt_targetNext.classname == "gfx/reticle.spr")
 	{
 		remove(self.bolt_targetNext); // IMP: fade remove this later
 		self.bolt_targetNext = world;
@@ -2247,7 +2271,13 @@ void() player_chaos_attack =
 			return;
 		}
 		if (self.pkplus_actorammo & 2) // spell needs target
-		if (!self.bolt_target) return;
+		{
+			if (!self.bolt_target) return;
+
+			if (self.bolt_target != self)
+			if (self.bolt_target.bolt_target == self.bolt_target) // arc ppp protect on
+				return;
+		}
 
 		if (self.pkplus_actorammo & 4) // spell needs 2nd target
 		if (!self.enemy) return;
@@ -2390,7 +2420,7 @@ void(entity e) archon_target_clear =
 
 	if (e.bolt_target)
 	{
-		if ((e.bolt_target.model == "gfx/reticle.spr") || (e.bolt_target.model == "gfx/reticle2.spr"))
+		if (e.bolt_target.classname == "gfx/reticle.spr")
 		{
 			remove(e.bolt_target); // IMP: fade remove this later
 			e.bolt_target = world;
@@ -2495,7 +2525,7 @@ void() spell_target =
 		if (!self.ammo_cells) self.ammo_cells = 3;
 		if (self.ammo_cells == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 3; self.th_melee = archon_heal; }
 		if (self.ammo_cells == 5) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 43; self.th_melee = archon_imprison; }
-		if (self.ammo_cells == 7) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 0; self.th_melee = archon_release; if (!self.bolt_target) next_imprisoned(); }
+		if (self.ammo_cells == 7) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 0; self.th_melee = archon_release; self.bolt_target = world; next_imprisoned(); }
 		if (self.ammo_cells == 11) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_summon; }
 		if (self.ammo_cells == 13) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 3; self.th_melee = archon_banish; }
 		if (self.ammo_cells == 17) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 0; self.th_melee = archon_time_flow; }
@@ -2540,6 +2570,7 @@ void() archon_target =
 	if (!self.bolt_targetNext)
 	{
 		self.bolt_targetNext = spawn();
+		self.bolt_targetNext.classname = "gfx/reticle.spr";
 		if (self.morphy == IMP_MORDER)
 			self.bolt_targetNext.mdl = "gfx/reticle2.spr";
 		else
@@ -2554,7 +2585,7 @@ void() archon_target =
 	}
 
 	if (self.bolt_targetNext)
-	if ((self.bolt_targetNext.model == "gfx/reticle.spr") || (self.bolt_targetNext.model == "gfx/reticle2.spr"))
+	if (self.bolt_targetNext.classname == "gfx/reticle.spr")
 	{
 		setorigin(self.bolt_targetNext, trace_endpos -  (v_forward * 6));
 
@@ -2640,9 +2671,11 @@ void() archon_target =
 
 // setup new target reticle
 	trace_ent.bolt_target = spawn();
+	trace_ent.bolt_target.classname = "gfx/reticle.spr";
 	trace_ent.bolt_target.nextthink = time + 31;
 	trace_ent.bolt_target.think = clear_target;
 	trace_ent.bolt_target.owner = trace_ent;
+	trace_ent.bolt_target.goalentity = self; // for remote clears
 	trace_ent.bolt_target.movetype = MOVETYPE_FLY;
 
 // because bottom point of ammo boxes is mostly on ground - can submerge reticle
@@ -2781,7 +2814,7 @@ void() player_chaos_impulse =
 		{
 			if (self.ammo_cells == 3) aux_bits(3);
 //			if (self.ammo_cells == 5) aux_bits(3);
-			if (self.ammo_cells == 7) next_imprisoned();
+			if (self.ammo_cells == 7) { self.bolt_target = world; next_imprisoned(); }
 			if (self.ammo_cells == 11) aux_bits(421887); // monster set
 			if (self.ammo_cells == 17) aux_bits(7);
 		}

@@ -1335,7 +1335,7 @@ void() run_runes =
 		{
 			f = bit_cnt((e.items & 7929856), FALSE);
 			e.archon = e.archon + (3 * f); // ARCHON_ARTIFACT = 3
-		}
+		}		
 		e = find(e, class_select, "class_bot");
 	}
 

@@ -603,12 +603,12 @@ if (!self.mask_x)
 
 	if (!self.mask_x & other.mask_x) f = TRUE; // morph cant collect
 	if ((other.mask_x & CB_GREMLIN) &&  (other.builtin & self.items)) f = TRUE; // gremlin trying to replace builtin, even if he can collect
-	if (self.pk_currentitem & PK_IT_CARY)  f = FALSE; // all can get pki (but cthon)
-	if (other.mask_x & CB_HUMAN) f = FALSE; // humans are ignoring the test - TDO: remove this
+//	if (self.pk_currentitem & PK_IT_CARY)  f = FALSE; // all can get pki (but cthon)
+//	if (other.mask_x & CB_HUMAN) f = FALSE; // humans are ignoring the test - TDO: remove this
 	if (other.model == "progs/cthon.mdl") f = TRUE; // cthon get nada
 	if (self.wad == "morph_cube")
 	{
-		if (other.height == IMP_MCHAOS || other.height == IMP_MORDER) f = TRUE; // imp: add shapeshift & wraith
+		if (other.height == IMP_MCHAOS || other.height == IMP_MORDER || other.height == IMP_MSHAPESHIFT || other.height == IMP_MWRAITH) f = TRUE; // imp: add shapeshift & wraith
 		else if (MORPH_NOCUBE & other.mask_x) f = TRUE;
 		else f = FALSE; // all others can get cube
 	}

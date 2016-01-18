@@ -99,6 +99,7 @@ float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
 
 float STAT_WSUIT = 49; // enh powers
+float STAT_X_ITEMS = 50; // enh powers
 
 //float STAT_STK1 = 50; // string data
 //float STAT_STK2 = 51; // string data
@@ -152,6 +153,47 @@ float TECH_DSH					= 131072; // techs from lith - leaves 10 bits for new runes a
 float TECH_AMP					= 262144;
 float TECH_TEIM				= 524288;
 float TECH_ADOC				= 1048576;
+
+// x items
+
+float X_PWR_ARMOR				= 1;
+float X_PWR_SCREEN			= 2;
+float X_PWR_ARMOR_ON			= 4;
+float X_PWR_SCREEN_ON		= 8;
+
+float X_PWR_ARM_INV			= 3; // pwr armor bits
+float X_PWR_ARM_MASK			= 12; // pwr armor on bits
+
+float X_BASE_KEY				= 48; // first two keys (bits 16 & 32 call key_touch) for translated items
+
+float X_D_KEY_BIT				= 1008; // any doom key bit - 1111110000
+
+float X_D_KEY_CRED			= 16;
+float X_D_KEY_CBLUE			= 32;
+float X_D_KEY_CYEL			= 64;
+float X_D_KEY_SKRED			= 128;
+float X_D_KEY_SKBLUE			= 256;
+float X_D_KEY_SKYEL			= 512;
+
+float X_Q2_KEY_BIT			= 8176; // any q2 key bit - 1111111110000
+
+float X_Q2_KEY_RED			= 16; // q2 has lots of keys.  good for tech runes / etc
+float X_Q2_KEY_BLUE			= 32;
+float X_Q2_KEY_PYRAMID		= 64;
+float X_Q2_KEY_CUBE			= 128;
+float X_Q2_KEY_PASS			= 256;
+float X_Q2_KEY_AIRSTRK		= 512;
+float X_Q2_KEY_DATACD		= 1024;
+float X_Q2_KEY_CDSPIN		= 2048;
+float X_Q2_KEY_CHEAD			= 4096; // note: second head key
+// 8192
+
+float X_D_MAP					= 16384;
+float X_D_VIS					= 32768;
+
+float X_PP						= 65536; // portable power point
+
+float X_INV						= 122867; ///  11101111111110011
 
 // player flags, calculated in 
 float PFL_DEAD     = 4;

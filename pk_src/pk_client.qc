@@ -1555,6 +1555,7 @@ void () PlayerPostThink =
 	}
 
 	if (!self.mask_x & MORPH_ARCHON)
+	if (self.bolt_target.classname != "gfx/reticle.spr")
 	if (self.bolt_target || self.bolt_targetNext || ((self.bolt_changeModelTimeout < time) && (self.weaponmodel == "progs/v_cl_on.mdl")) )
 		bolt_checkTargets();
 

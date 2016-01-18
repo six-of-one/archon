@@ -1680,6 +1680,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		addstat(48, 2, ammo_gaspr); // enh ammos
 
 		addstat(49, 2, wetsuit_finished); // enh powers
+		addstat(50, 2, x_items); // enh powers
 
 //		addstat(50, 1, stack1); // target string
 //		addstat(51, 1, stack2); // target string

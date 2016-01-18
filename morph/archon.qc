@@ -47,6 +47,43 @@ void(entity e) de_archon =
 	self = newmis;
 };
 
+// archon_ppp_thk - portable power point think
+
+void() archon_ppp_thk =
+{
+	if (self.netname == "Portable power point")
+	{
+		newmis = spawn();
+		newmis.classname = "archon_power_act"; // protect from archon magic targeting system
+		newmis.think = archon_ppp_thk;
+		newmis.nextthink = time + 1;
+		newmis.owner = other;
+		return;
+	}
+
+	self.aflag = 0;
+	if (! self.owner.x_items & X_PP) self.aflag = 1;
+	if (self.owner.mask_x & MORPH_ARCHON) self.aflag = 1;
+	if (self.owner.solid == SOLID_NOT) self.aflag = 1;
+
+	if (self.aflag)
+	{
+		self.owner.x_items = self.owner.x_items - (self.owner.x_items & X_PP);
+		remove(self);
+		return;
+	}
+
+	if (! self.owner.bolt_conduitTimeout)
+	{
+		archon_target_clear(self.owner.bolt_target.goalentity);
+		self.owner.bolt_target = self; // not a clg target - protect it
+		self.owner.bolt_targetTimeout = time + 9;
+	}
+	self.owner.archon = self.owner.archon + 9;// ARCHON_PPP; // portable power point
+
+	self.nextthink = time + 3;
+};
+
 // archon nodule - map item - gives archon pts
 
 void() archon_nodule =
@@ -67,6 +104,8 @@ void() archon_nodule =
 };
 
 // random nodule maker
+
+// also randomly makes collectable portable power points
 
 void() archon_nodule_rnd =
 {
@@ -105,6 +144,14 @@ void() archon_nodule_rnd =
 			self.archon = 180 + crandom() * 80;
 //		}
 		if (random() < 0.3) self.modelflags = self.modelflags | 128; // purple light
+//		if ((time > 60) && random() < 0.06) // TEST
+		{
+			self.netname = "Portable power point";
+			self.mask_x = MORPH_ALL;
+			setmodel (self,"progs/arc_pp.bsp");
+			self.scale = 0.2;
+			self.x_items = X_PP;
+		}
 	}
 	else 
 	if (gsf < 3) // 0, 1, 2
@@ -142,34 +189,89 @@ void() archon_nodule_rnd =
 };
 
 
-// archon varmpire power
+// archon varmpire power & other power drains
 
-void() archon_vampire_thk =
+// spawnflags & 1 - no test for end of vampire, just take pts
+
+// .archon - pts to take every second
+// .owner - give pts to this ent
+// .enemy - take pts from this ent
+
+void() archon_drain_thk =
 {
 	self.aflag = 0;
-	if (self.enemy.bolt_target) self.aflag = 1;
 	if (self.count <= 0) self.aflag = 1;
 	if (self.enemy.archon <= 0) self.aflag = 1;
 	if (self.enemy.solid == SOLID_NOT) self.aflag = 1;
-	if (self.takedamage == DAMAGE_NO) self.aflag = 1;
-	if (!((self.enemy.rune_flag & RUNE_FLG_RS) && (self.enemy.mask_x & MORPH_ARCHON))) self.aflag = 1;
-	if (! self.owner.rune_flag & RUNE_VAMPIRE) self.aflag = 1;
+	if (self.enemy.takedamage == DAMAGE_NO) self.aflag = 1;
+
+	if (self.spawnflags & 1) // for vampire
+	{
+		if (self.enemy.bolt_target) self.aflag = 1;
+		if (!((self.enemy.rune_flag & RUNE_FLG_RS) && (self.enemy.mask_x & MORPH_ARCHON))) self.aflag = 1;
+		if (! self.owner.rune_flag & RUNE_VAMPIRE) self.aflag = 1;
+
+		if (self.aflag)
+		{
+			stuffcmd(self.owner, "hud_vampire_target \"");
+			stuffcmd(self.owner, "\"\n");
+			remove(self);
+			return;
+		}
+	}
 
 	if (self.aflag)
 	{
-		stuffcmd(self.owner, "hud_vampire_target \"");
-		stuffcmd(self.owner, "\"\n");
+		if (self._alt_fire) self._alt_fire(self.enemy); // special cases
 		remove(self);
 		return;
 	}
 
-	self.nextthink = time + 1;
+	self.nextthink = time + self.wait;
 
 	self.owner.archon = self.owner.archon + self.archon;
 	self.enemy.archon = self.enemy.archon - self.archon;
 	self.count = self.count - self.archon;
 };
 
+// power drain - take ents archon pts
+
+void(entity e) power_drain =
+{
+	newmis = spawn();
+	newmis.owner = self;
+	newmis.enemy = e;
+	newmis.think = archon_drain_thk;
+	newmis.nextthink = time + 1;
+
+	newmis.wait = 1;
+	newmis.lefty = 0.2 + random() * 0.4; // percent to drain this time
+	newmis.count = e.archon * newmis.lefty;
+	newmis.archon = 1 + random() * 5; // points drained per sec
+	newmis.netname = e.netname;
+	if (newmis.netname == null_string) newmis.netname = "Unknown target";
+};
+
+// teleport to random selected location via beacon code
+
+void() uni_teleport;
+
+void(entity e) archon_bouncer =
+{
+	trace_ent = self;
+	self = e;
+	self.bolt_target = newmis = spawn();
+	newmis.classname = "beacon";
+
+	newmis.angles_x = 270; // stuck straight into ground
+	newmis.goalentity = find_tdest(0, null_string);
+	newmis.origin = newmis.goalentity.origin;
+	if (newmis.goalentity.flags & FL_ITEM) newmis.origin_z = newmis.origin_z + 24;
+	newmis.think = SUB_Remove;
+	self.AIRG_Timeout = 0;
+	uni_teleport();
+	self = trace_ent;
+};
 // archon arena block think ops
 
 void() th_arcarn =
@@ -628,7 +730,7 @@ void() archon_power_touch =
 			activator.bolt_targetTimeout = time + 10;
 			return;
 		}
-		if (activator.bolt_target.model == "progs/reticle.mdl") // was targeted - clear it
+		if (activator.bolt_target.classname == "gfx/reticle.spr") // was targeted - clear it
 		{
 			archon_target_clear(activator);
 		}

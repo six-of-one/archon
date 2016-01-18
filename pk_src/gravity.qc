@@ -67,6 +67,22 @@ void() gravity_touch =
 
 		T_Damage(other, self, self.owner, 5000);
 	}
+	if (other.mask_x & MORPH_ARCHON)
+	if (other.AIRG_Timeout != -6)
+	{
+		other.AIRG_Timeout = -6;
+		if (other.height == IMP_MCHAOS)
+		if (random() < 0.06) return;
+
+		other.velocity = v0;
+		other.attack_finished = time + 3;
+		power_drain(other);
+		newmis.owner = world;
+		newmis._alt_fire = archon_bouncer;
+		newmis.wait = 0.1;
+		newmis.archon = 20 + random() * 10;
+		newmis.count = 10 * newmis.archon * ceil(0.4 + (2 * random()));
+	}
 
 	if (other.classname == "turret")
 	if (other.delay == TRUE)
@@ -199,6 +215,7 @@ void() gravity_pull =
 		if (e != self.goalentity) // archon grav, wont grab self
 		if (e.map != "nonmove") // 7.22.13 - func_models we should not suck
 		//if (e != self.owner)
+		if (e.AIRG_Timeout != -6)
 		if ((e.classname == OBSERVER && random() < 0.001666) || e.classname != OBSERVER)
 		if (e.movetype != MOVETYPE_NONE) // anything that can move
 		if (e.movetype != MOVETYPE_PUSH)
