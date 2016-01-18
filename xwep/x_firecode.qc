@@ -669,6 +669,13 @@ void() spike_touch =
 	if (other.solid == SOLID_TRIGGER)
 		return;	// trigger field, do nothing
 
+	if (other.classname == "monster_scourge") // scourge dont kill scourge
+	if (self.netname == "monster_scourge")
+	{
+		SUB_Remove();
+		return;
+	}
+
 	if (!self.dmg) self.dmg = 9;
 	
 	off = v0;
