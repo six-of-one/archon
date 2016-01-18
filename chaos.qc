@@ -109,6 +109,7 @@ float(entity hent, string match, string srch) cnt_ent =
 	else if (match == "netname") sr = find (world, netname, srch);
 	else if (match == "map") sr = find (world, map, srch);
 	else if (match == "targetname") sr = find (world, targetname, srch);
+	else if (match == "killtarget") sr = find (world, killtarget, srch);
 //	else if (match == "class_select") sr = find (world, class_select, srch);
 //	else if (match == "quakeset") sr = find (world, quakeset, srch);
 //	else if (match == "scode") sr = find (world, scode, srch);
@@ -137,6 +138,7 @@ float(entity hent, string match, string srch) cnt_ent =
 			else if (match == "netname") sr = find (sr, netname, srch);
 			else if (match == "map") sr = find (sr, map, srch);
 			else if (match == "targetname") sr = find (sr, targetname, srch);
+			else if (match == "killtarget") sr = find (sr, killtarget, srch);
 //			else if (match == "class_select") sr = find (sr, class_select, srch);
 //			else if (match == "quakeset") sr = find (sr, quakeset, srch);
 //			else if (match == "scode") sr = find (sr, scode, srch);
@@ -494,10 +496,14 @@ entity(vector horg) chaos_maphack_probe =
 	self.count = 6;
 	while (self.goalentity && self.count > 0)
 	{
-		if (self.goalentity.origin == self.dest)
+		self.oldorigin = self.goalentity.origin;
+		self.oldorigin_x = floor(self.oldorigin_x);
+		self.oldorigin_y = floor(self.oldorigin_y);
+		self.oldorigin_z = floor(self.oldorigin_z);
+		if (self.oldorigin == self.dest)
 		{
 #ifdef warning
-																			if (WARNING & 128)
+																			if (WARNING & 131072)
 																			{
 																				bprint(" *** warning:   map hack found by load trigger: ");
 																				bprint(vtos(self.goalentity.origin));
@@ -519,7 +525,7 @@ entity(vector horg) chaos_maphack_probe =
 	if (self.count) // nothing found there - make it
 //	if (!self.goalentity)
 	{
-		self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.dest , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.2, func_maphack, SUB_Null, self.owner, world);
+		self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.dest , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", null_string, SUB_Null, 0.2, func_maphack, SUB_Null, self.owner, world);
 //		self.trigger_field.origin_z = self.owner.origin_z;
 
 // this is where we can do biomes
@@ -551,8 +557,10 @@ entity(vector horg) chaos_maphack_probe =
 			self.trigger_field.stack16 = biome.stack16;
 			self.trigger_field.target1 = biome.target1;
 			self.trigger_field.target2 = biome.target2;
+			if (biome.group == "start2") biome.group = ""; // turn off
 			self.trigger_field.group = biome.group;
 			self.trigger_field.rad_time = biome.rad_time;
+			self.trigger_field.spawnflags = biome.spawnflags;
 		}
 		else
 		{
@@ -578,16 +586,17 @@ entity(vector horg) chaos_maphack_probe =
 			self.trigger_field.target2 = self.target2;
 			self.trigger_field.group = self.group;
 			self.trigger_field.rad_time = self.rad_time;
+			self.trigger_field.spawnflags = 16; // rose red
 		}
-		self.trigger_field.spawnflags = 17; // rose red
+
 
 #ifdef warning
-																			if (WARNING & 128)
-																			{
+//																			if (WARNING & 65536)
+//																			{
 																				bprint(" *** warning:  *map hack load trigger made chunk: ");
 																				bprint(vtos(self.trigger_field.origin));
 																				bprint("\n");
-																			}
+//																			}
 #endifdef
 	}
 	return(self.trigger_field);
@@ -597,25 +606,20 @@ entity(vector horg) chaos_maphack_probe =
 
 // make chunks
 
-void() chaos_maphack_touch =
+void() chaos_maphack_fire =
 {
-	if (other.classname != "pk*bot")
-	if (other.classname != "player")
-		return;
-
-	if (self.group == "start")
-	if (autobiome < 1)
-	{
-		autobiome = self.rad_time;
-		if (!autobiome) autobiome = 24; // default - build 24 chunks
-	}
 // find all hacks
 //	cnt_ent(self, "classname", "func_maphack");
 
 // test destination location - 8 ray star
 
 //	self.dest1 = self.owner.origin + '512 0 0';
-	self.dest1 = self.owner.origin;
+	self.dest2 = self.owner.origin;
+	self.dest2_x = floor(self.dest2_x);
+	self.dest2_y = floor(self.dest2_y);
+	self.dest2_z = floor(self.dest2_z);
+	self.dest1 = self.dest2;
+	
 	self.dest1_x = self.dest1_x + self.lefty;
 	chaos_maphack_probe(self.dest1);
 
@@ -624,7 +628,7 @@ void() chaos_maphack_touch =
 	chaos_maphack_probe(self.dest1);
 
 //	self.dest1 = self.owner.origin + '-512 0 0';
-	self.dest1 = self.owner.origin;
+	self.dest1 = self.dest2;
 	self.dest1_x = self.dest1_x - self.lefty;
 	chaos_maphack_probe(self.dest1);
 
@@ -633,7 +637,7 @@ void() chaos_maphack_touch =
 	chaos_maphack_probe(self.dest1);
 
 //	self.dest1 = self.owner.origin + '0 512 0';
-	self.dest1 = self.owner.origin;
+	self.dest1 = self.dest2;
 	self.dest1_y = self.dest1_y + self.lefty;
 	chaos_maphack_probe(self.dest1);
 
@@ -642,517 +646,35 @@ void() chaos_maphack_touch =
 	chaos_maphack_probe(self.dest1);
 
 //	self.dest1 = self.owner.origin + '0 -512 0';
-	self.dest1 = self.owner.origin;
+	self.dest1 = self.dest2;
 	self.dest1_y = self.dest1_y - self.lefty;
 	chaos_maphack_probe(self.dest1);
 
 //	self.dest1 = self.owner.origin + '512 -512 0';
 	self.dest1_x = self.dest1_x + self.lefty;
 	chaos_maphack_probe(self.dest1);
-
-
-/*
-#ifdef warning
-//																			if (WARNING & 128)
-//																			{
-																				bprint("\n"); // blank a line for 8 set
-//																			}
-#endifdef
-	if (self.cnt == 45) // corners get 2 more chunks
-	{
-// test destination location
-		self.mangle_x = self.rotate_x;
-		self.dest = self.origin + self.mangle;
-		self.dest_z = self.owner.origin_z;
-		self.goalentity = self.chain;
-		self.count = 500; // could be more eventually
-		while (self.goalentity && self.count > 0)
-		{
-			if (self.goalentity.origin == self.dest)
-			{
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack found by load corner x trigger: ");
-																					bprint(vtos(self.goalentity.origin));
-																					bprint(", desired: ");
-																					bprint(vtos(self.dest));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - performing tests\n");
-	//																			}
-	#endifdef
-					self.count = 0;
-			}
-			else
-			self.goalentity = self.goalentity.chain;
-			self.count = self.count - 1;
-		}
-
-		if (self.chain)
-		if (!self.goalentity) // nothing there - make it
-		{
-			self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.dest , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.3, func_maphack, SUB_Null, self, world);
-			self.trigger_field.origin_z = self.owner.origin_z;
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.rotate = self.mangle;
-			self.trigger_field.cnt = 0;
-			self.trigger_field.spawnflags = 17;
-
-#ifdef warning
-//																			if (WARNING & 128)
-//																			{
-																				bprint(" *** warning:   map hack load trigger made corner x chunk: ");
-																				bprint(vtos(self.trigger_field.origin));
-																				bprint(", owner at: ");
-																				bprint(vtos(self.owner.origin));
-																				bprint(" - making 2nd chunk\n");
-//																			}
-#endifdef
-		}
-
-		self.angles_y = self.rotate_y;
-		self.dest = self.origin + self.angles;
-		self.dest_z = self.owner.origin_z;
-		self.goalentity = self.chain;
-		self.count = 500; // could be more eventually
-		while (self.goalentity && self.count > 0)
-		{
-			if (self.goalentity.origin == self.dest)
-			{
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack found by load corner y trigger: ");
-																					bprint(vtos(self.goalentity.origin));
-																					bprint(", desired: ");
-																					bprint(vtos(self.dest));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - performing tests\n");
-	//																			}
-	#endifdef
-					self.count = 0;
-			}
-			else
-			self.goalentity = self.goalentity.chain;
-			self.count = self.count - 1;
-		}
-
-		if (self.chain)
-		if (!self.goalentity) // nothing there - make it
-		{
-			self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.dest , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.3, func_maphack, SUB_Null, self, world);
-			self.trigger_field.origin_z = self.owner.origin_z;
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.rotate = self.angles;
-			self.trigger_field.cnt = 90;
-			self.trigger_field.spawnflags = 17;
-
-#ifdef warning
-//																			if (WARNING & 128)
-//																			{
-																				bprint(" *** warning:   map hack load trigger made corner y chunk: ");
-																				bprint(vtos(self.trigger_field.origin));
-																				bprint(", owner at: ");
-																				bprint(vtos(self.owner.origin));
-																				bprint(" - done\n");
-//																			}
-#endifdef
-		}
-	}
-	else
-
-// test sides any time we build out and not in corner
-	{
-		if (self.rotate_x != 0)
-		{
-			self.pos1 = self.pos2 = self.owner.origin;
-			self.pos1_y = self.pos1_y + 512;
-			self.pos2_y = self.pos2_y - 512;
-			self.trigger_field.pos1 = self.pos1;
-			self.trigger_field.pos2 = self.pos2;
-		}
-		else if (self.rotate_y != 0)
-		{
-			self.pos1 = self.pos2 = self.owner.origin;
-			self.pos1_x = self.pos1_x + 512;
-			self.pos2_x = self.pos2_x - 512;
-			self.trigger_field.pos1 = self.pos1;
-			self.trigger_field.pos2 = self.pos2;
-		}
-
-		self.goalentity = self.chain;
-		self.count = 500; // could be more eventually
-		while (self.goalentity && self.count > 0)
-		{
-			if (self.goalentity.origin == self.pos1)
-			{
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack sidewise found pos1: ");
-																					bprint(vtos(self.goalentity.origin));
-																					bprint(", tested: ");
-																					bprint(vtos(self.pos1));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - moving on\n");
-	//																			}
-	#endifdef
-				self.count = 0;
-			}
-			else
-			self.goalentity = self.goalentity.chain;
-			self.count = self.count - 1;
-		}
-		if (self.chain)
-		if (!self.goalentity) // nothing there - make it
-		{
-			self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.pos1 , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.3, func_maphack, SUB_Null, self, world);
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.rotate = self.rotate;
-			self.trigger_field.cnt = self.cnt;
-			self.trigger_field.spawnflags = 17;
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack sidewise made chunk at pos1: ");
-																					bprint(vtos(self.pos1));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - testing pos2\n");
-	//																			}
-	#endifdef
-		}
-
-		self.goalentity = self.chain;
-		self.count = 500; // could be more eventually
-		while (self.goalentity && self.count > 0)
-		{
-			if (self.goalentity.origin == self.pos2)
-			{
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack sidewise found pos2: ");
-																					bprint(vtos(self.goalentity.origin));
-																					bprint(", tested: ");
-																					bprint(vtos(self.pos2));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - moving on\n");
-	//																			}
-	#endifdef
-				self.count = 0;
-			}
-			else
-			self.goalentity = self.goalentity.chain;
-			self.count = self.count - 1;
-		}
-		if (self.chain)
-		if (!self.goalentity) // nothing there - make it
-		{
-			self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.pos2 , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.3, func_maphack, SUB_Null, self, world);
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.rotate = self.rotate;
-			self.trigger_field.cnt = self.cnt;
-			self.trigger_field.spawnflags = 17;
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack sidewise made chunk at pos2: ");
-																					bprint(vtos(self.pos2));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - done\n");
-	//																			}
-	#endifdef
-		}
-
-	}
-*/ 
 };
 
 // auto load some biome, like lava
 
 float autobiome;
 
+// touch an auto load trigger to make next chunk(s)
+
 void() chaos_maphack_touch =
 {
 	if (other.classname != "pk*bot")
 	if (other.classname != "player")
 		return;
 
-	if (self.group == "start")
+	if (self.group == "start" || self.group == "start2")
 	if (autobiome < 1)
 	{
 		autobiome = self.rad_time;
 		if (!autobiome) autobiome = 24; // default - build 24 chunks
 	}
-// find all hacks
-//	cnt_ent(self, "classname", "func_maphack");
 
-// test destination location - 8 ray star
-
-//	self.dest1 = self.owner.origin + '512 0 0';
-	self.dest1 = self.owner.origin;
-	self.dest1_x = self.dest1_x + self.lefty;
-	chaos_maphack_probe(self.dest1);
-
-//	self.dest1 = self.owner.origin + '512 512 0';
-	self.dest1_y = self.dest1_y + self.lefty;
-	chaos_maphack_probe(self.dest1);
-
-//	self.dest1 = self.owner.origin + '-512 0 0';
-	self.dest1 = self.owner.origin;
-	self.dest1_x = self.dest1_x - self.lefty;
-	chaos_maphack_probe(self.dest1);
-
-//	self.dest1 = self.owner.origin + '-512 -512 0';
-	self.dest1_y = self.dest1_y - self.lefty;
-	chaos_maphack_probe(self.dest1);
-
-//	self.dest1 = self.owner.origin + '0 512 0';
-	self.dest1 = self.owner.origin;
-	self.dest1_y = self.dest1_y + self.lefty;
-	chaos_maphack_probe(self.dest1);
-
-//	self.dest1 = self.owner.origin + '-512 512 0';
-	self.dest1_x = self.dest1_x - self.lefty;
-	chaos_maphack_probe(self.dest1);
-
-//	self.dest1 = self.owner.origin + '0 -512 0';
-	self.dest1 = self.owner.origin;
-	self.dest1_y = self.dest1_y - self.lefty;
-	chaos_maphack_probe(self.dest1);
-
-//	self.dest1 = self.owner.origin + '512 -512 0';
-	self.dest1_x = self.dest1_x + self.lefty;
-	chaos_maphack_probe(self.dest1);
-
-
-#ifdef warning
-//																			if (WARNING & 128)
-//																			{
-																				bprint("\n"); // blank a line for 8 set
-//																			}
-#endifdef
-/*
-	if (self.cnt == 45) // corners get 2 more chunks
-	{
-// test destination location
-		self.mangle_x = self.rotate_x;
-		self.dest = self.origin + self.mangle;
-		self.dest_z = self.owner.origin_z;
-		self.goalentity = self.chain;
-		self.count = 500; // could be more eventually
-		while (self.goalentity && self.count > 0)
-		{
-			if (self.goalentity.origin == self.dest)
-			{
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack found by load corner x trigger: ");
-																					bprint(vtos(self.goalentity.origin));
-																					bprint(", desired: ");
-																					bprint(vtos(self.dest));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - performing tests\n");
-	//																			}
-	#endifdef
-					self.count = 0;
-			}
-			else
-			self.goalentity = self.goalentity.chain;
-			self.count = self.count - 1;
-		}
-
-		if (self.chain)
-		if (!self.goalentity) // nothing there - make it
-		{
-			self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.dest , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.3, func_maphack, SUB_Null, self, world);
-			self.trigger_field.origin_z = self.owner.origin_z;
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.rotate = self.mangle;
-			self.trigger_field.cnt = 0;
-			self.trigger_field.spawnflags = 17;
-
-#ifdef warning
-//																			if (WARNING & 128)
-//																			{
-																				bprint(" *** warning:   map hack load trigger made corner x chunk: ");
-																				bprint(vtos(self.trigger_field.origin));
-																				bprint(", owner at: ");
-																				bprint(vtos(self.owner.origin));
-																				bprint(" - making 2nd chunk\n");
-//																			}
-#endifdef
-		}
-
-		self.angles_y = self.rotate_y;
-		self.dest = self.origin + self.angles;
-		self.dest_z = self.owner.origin_z;
-		self.goalentity = self.chain;
-		self.count = 500; // could be more eventually
-		while (self.goalentity && self.count > 0)
-		{
-			if (self.goalentity.origin == self.dest)
-			{
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack found by load corner y trigger: ");
-																					bprint(vtos(self.goalentity.origin));
-																					bprint(", desired: ");
-																					bprint(vtos(self.dest));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - performing tests\n");
-	//																			}
-	#endifdef
-					self.count = 0;
-			}
-			else
-			self.goalentity = self.goalentity.chain;
-			self.count = self.count - 1;
-		}
-
-		if (self.chain)
-		if (!self.goalentity) // nothing there - make it
-		{
-			self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.dest , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.3, func_maphack, SUB_Null, self, world);
-			self.trigger_field.origin_z = self.owner.origin_z;
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.rotate = self.angles;
-			self.trigger_field.cnt = 90;
-			self.trigger_field.spawnflags = 17;
-
-#ifdef warning
-//																			if (WARNING & 128)
-//																			{
-																				bprint(" *** warning:   map hack load trigger made corner y chunk: ");
-																				bprint(vtos(self.trigger_field.origin));
-																				bprint(", owner at: ");
-																				bprint(vtos(self.owner.origin));
-																				bprint(" - done\n");
-//																			}
-#endifdef
-		}
-	}
-	else
-
-// test sides any time we build out and not in corner
-	{
-		if (self.rotate_x != 0)
-		{
-			self.pos1 = self.pos2 = self.owner.origin;
-			self.pos1_y = self.pos1_y + 512;
-			self.pos2_y = self.pos2_y - 512;
-			self.trigger_field.pos1 = self.pos1;
-			self.trigger_field.pos2 = self.pos2;
-		}
-		else if (self.rotate_y != 0)
-		{
-			self.pos1 = self.pos2 = self.owner.origin;
-			self.pos1_x = self.pos1_x + 512;
-			self.pos2_x = self.pos2_x - 512;
-			self.trigger_field.pos1 = self.pos1;
-			self.trigger_field.pos2 = self.pos2;
-		}
-
-		self.goalentity = self.chain;
-		self.count = 500; // could be more eventually
-		while (self.goalentity && self.count > 0)
-		{
-			if (self.goalentity.origin == self.pos1)
-			{
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack sidewise found pos1: ");
-																					bprint(vtos(self.goalentity.origin));
-																					bprint(", tested: ");
-																					bprint(vtos(self.pos1));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - moving on\n");
-	//																			}
-	#endifdef
-				self.count = 0;
-			}
-			else
-			self.goalentity = self.goalentity.chain;
-			self.count = self.count - 1;
-		}
-		if (self.chain)
-		if (!self.goalentity) // nothing there - make it
-		{
-			self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.pos1 , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.3, func_maphack, SUB_Null, self, world);
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.rotate = self.rotate;
-			self.trigger_field.cnt = self.cnt;
-			self.trigger_field.spawnflags = 17;
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack sidewise made chunk at pos1: ");
-																					bprint(vtos(self.pos1));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - testing pos2\n");
-	//																			}
-	#endifdef
-		}
-
-		self.goalentity = self.chain;
-		self.count = 500; // could be more eventually
-		while (self.goalentity && self.count > 0)
-		{
-			if (self.goalentity.origin == self.pos2)
-			{
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack sidewise found pos2: ");
-																					bprint(vtos(self.goalentity.origin));
-																					bprint(", tested: ");
-																					bprint(vtos(self.pos2));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - moving on\n");
-	//																			}
-	#endifdef
-				self.count = 0;
-			}
-			else
-			self.goalentity = self.goalentity.chain;
-			self.count = self.count - 1;
-		}
-		if (self.chain)
-		if (!self.goalentity) // nothing there - make it
-		{
-			self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.pos2 , '-16 -16 -16', '16 16 16', v0, v0, "func_maphack", "", SUB_Null, 0.3, func_maphack, SUB_Null, self, world);
-			self.trigger_field.rotate_type = self.rotate_type;
-			self.trigger_field.rotate = self.rotate;
-			self.trigger_field.cnt = self.cnt;
-			self.trigger_field.spawnflags = 17;
-	#ifdef warning
-	//																			if (WARNING & 128)
-	//																			{
-																					bprint(" *** warning:   map hack sidewise made chunk at pos2: ");
-																					bprint(vtos(self.pos2));
-																					bprint(", owner at: ");
-																					bprint(vtos(self.owner.origin));
-																					bprint(" - done\n");
-	//																			}
-	#endifdef
-		}
-
-	}
-*/ 
+	chaos_maphack_fire();
 
 	remove(self);
 };
@@ -1161,18 +683,18 @@ void() chaos_maphack_trigger =
 {
 	if (autobiome >= 0)
 	{
-		chaos_maphack_touch();
+		chaos_maphack_fire();
 		autobiome = autobiome - 1;
 
 #ifdef warning
-//																			if (WARNING & 128)
-//																			{
+																			if (WARNING & 65536)
+																			{
 																				bprint(" *** warning:   map hack autobiome: ");
 																				bprint(vtos(self.origin));
 																				bprint(", owner at: ");
 																				bprint(vtos(self.owner.origin));
 																				bprint(" - done\n");
-//																			}
+																			}
 #endifdef
 
 		remove(self);
@@ -1182,11 +704,11 @@ void() chaos_maphack_trigger =
 		InitTrigger ();
 		self.touch = chaos_maphack_touch;
 		self.model = null_string;
-		self.dest1_x = 0 - (self.lefty / 2);
-		self.dest1_y = 0 - (self.lefty / 2);
-		self.dest1_z = -16;
-		self.dest2_x = self.lefty / 2;
-		self.dest2_y = self.lefty / 2;
+		self.dest1_x = 0 - (self.lefty / 2) - 128; // 128 - need overlap, triggers sometimes miss
+		self.dest1_y = 0 - (self.lefty / 2) - 128;
+		self.dest1_z = -512;
+		self.dest2_x = self.lefty / 2 + 128;
+		self.dest2_y = self.lefty / 2 + 128;
 		self.dest2_z = 2048; // note - flyer issues
 		
 		setsize(self, self.dest1, self.dest2);
@@ -1199,8 +721,8 @@ void() maphack_poof =
 {
 	if (self.alpha < 1)
 	{
-		self.nextthink = time + 0.2;
-		self.alpha = self.alpha + 0.05;
+		self.nextthink = time + 0.1;
+		self.alpha = self.alpha + 0.08;
 	}
 };
 
@@ -1213,6 +735,214 @@ void() copy_static =
 	makestatic(self);
 };
 */
+
+// hide far away hacks, check every 10 secs
+
+entity maphack_hide;
+float autocvar_sv_c_hackdist = 10000;
+
+void() hide_hacks =
+{
+	self.nextthink = time + 5;
+
+// get list of players - note - potential to bomb .chain list
+	cnt_ent(self, "classname", "player"); // note: dead players
+	self.goalentity = self.chain;
+
+// get list of hacks
+	cnt_ent(self, "classname", "func_maphack");
+	self.dropent = self.enemy = self.chain;
+//	if (!self.dropent) remove(self);
+
+/*
+// loop players
+	while (self.goalentity)
+	{
+		self.dropent = self.enemy; // restart for every player
+		if (self.goalentity.ishuman)	
+*/
+		while (self.dropent)
+		{
+// notes - on multi server, have to check EVERY player origin, not bots tho
+			if (vlen(self.dropent.origin - self.goalentity.origin) > autocvar_sv_c_hackdist)
+			{
+				self.dropent.model = null_string;
+			}
+			else
+			{
+// note: reset biome if mdl lost?
+				setmodel(self.dropent, self.dropent.mdl);
+			}
+			
+			self.dropent = self.dropent.chain;
+		}
+//		self.goalentity = self.goalentity.chain;
+//	}
+
+// hide models too
+	cnt_ent(self, "classname", "func_model");
+	self.dropent = self.enemy = self.chain;
+	while (self.dropent)
+	{
+		if (vlen(self.dropent.origin - self.goalentity.origin) > autocvar_sv_c_hackdist)
+		{
+			self.dropent.model = null_string;
+		}
+		else
+		{
+// note: remove if mdl lost?
+			if (self.dropent.wad != "move") // a move / copy func_model - do not load it
+				setmodel(self.dropent, self.dropent.mdl);
+		}
+		
+		self.dropent = self.dropent.chain;
+	}
+};
+
+void() target_speaker;
+
+// copy a hack element, model, item, monster, etc
+
+// self - hack to copy to
+// self.dropent - source item
+// self.aiment - set to copied ent
+
+void() maphack_copy =
+{
+//	if (self.dropent.rad_time < fabs(self.dropent.lefty))
+
+// got a live one
+	if (self.dropent)
+	{
+// only make one
+		if (self.dropent.lefty < 0)
+		{
+			self.dropent.targetname = null_string;
+		}
+		self.aiment = spawn();
+		copyentity(self.dropent, self.aiment);
+		self.aiment.targetname = null_string; // dont make copies of this!
+
+// set new thing origin from - hack (or model) org, copied ent org about '0 0 0' + offset org stored in hack or model
+		setorigin(self.aiment, self.origin + self.dropent.origin + self.view_ofs);
+#ifdef warning
+																			if (WARNING & 65536)
+																			{
+																		bprint(" *** warning:   made a target2: ");
+																		bprint(item_ident(self.aiment));
+																		bprint(", mdl: ");
+																		if (self.aiment.model)
+																			bprint(self.aiment.model);
+																		else
+																			bprint(self.aiment.mdl);
+																		bprint(", at: ");
+																		bprint(vtos(self.aiment.origin));
+																		bprint(", from: ");
+																		bprint(vtos(self.origin));
+																		bprint(", add vec: ");
+																		bprint(vtos(self.dropent.origin));
+																		bprint(", prob: ");
+																		bprint(ftos(self.dropent.lefty));
+																		bprint("\n");
+																			}
+#endifdef
+		if (self.aiment.classname == "func_model") // || (self.aiment.classname == "misc_model"))
+		{
+			if (self.spawnflags & 1)
+			{
+				self.aiment.alpha = 0.05;
+				self.aiment.think = maphack_poof;
+				self.aiment.nextthink = time + 0.2;
+			}
+
+// so we get restored when slipping back into view range - original will not
+			self.aiment.wad = null_string;
+
+// arg - recursive code again
+// copy all target1 items to the model - relative origin of item to '0 0 0' added to chunk origin
+			if (self.aiment.target1 || self.aiment.target2)
+			{
+				self.aiment.aiment = self; // back link
+				self = self.aiment;
+				if (self.target1)
+				{
+					cnt_ent(self, "killtarget", self.target1);
+					self.dropent = self.chain;
+					while (self.dropent)
+					{
+						maphack_copy();
+						self.dropent = self.dropent.chain;
+					}
+				}
+
+			// randomly select target2 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
+				if (self.target2)
+				{
+					self.aflag = cnt_ent(self, "killtarget", self.target2);
+					self.dropent = self.chain;
+					while (self.dropent)
+					{
+						self.dropent.rad_time = random();
+						if (!self.dropent.lefty) self.dropent.lefty = 0.3;
+			/* remove
+																							bprint(" *** warning:   test target2: ");
+																							bprint(item_ident(self.dropent));
+																							bprint(", prob: ");
+																							bprint(ftos(self.dropent.lefty));
+																							bprint(", test against: ");
+																							bprint(ftos(fabs(self.dropent.lefty)));
+																							bprint(", dice roll: ");
+																							bprint(ftos(self.dropent.rad_time));
+																							bprint("\n");
+			*/
+						if (self.dropent.rad_time < fabs(self.dropent.lefty))
+						{
+							maphack_copy();
+						}
+					self.dropent = self.dropent.chain;
+					}
+				}
+				self = self.aiment;
+			}
+		}
+/*
+		if (self.aiment.class_select == "quake_item")
+		{
+			self.aiment.class_select = null_string; // clear so it gets set properly
+			item_call_save(self.aiment, self.aiment.classname);
+		}
+		else
+*/
+		if (self.aiment.class_select == "class_monster")
+		{
+//					item_call_save(self.aiment, self.aiment.classname);
+			if (self.aiment.wad != "no_monster_wakey")
+				chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, 1, random_monster_wakey, SUB_Null, self.aiment, world);
+			self.aiment.pausetime = 0;
+			self.aiment.wad = "drop";
+			self.aiment.angles_y = rint(19.3 * random()) * 18;
+		}
+		else
+		if (self.aiment.classname == "target_speaker")
+		{
+			self.aiment.think = target_speaker;
+			self.aiment.nextthink = time + 2 * random();
+		}
+		else
+		if (!self.aiment.model) setmodel(self.aiment, self.aiment.mdl);
+		if (self.aiment.volume)
+		if (!self.aiment.mcode) // dont scale items that use volume for ammo limit
+		{
+			self.aiment.scale = self.aiment.volume * random();
+			if (self.aiment.scale < 1) self.aiment.scale = 1;
+		}
+//		if (self.aiment.wad == "copystatic")
+//		{
+//			self.aiment.think = copy_static;
+//			self.aiment.nextthink = time + 0.1 + random();
+//		}
+	}
+};
 
 // fn(func_maphack) - quake hack function
 
@@ -1252,6 +982,13 @@ targets:
 
 void() func_maphack =
 {
+	if (!maphack_hide)
+	{
+		maphack_hide = spawn();
+		maphack_hide.think = hide_hacks;
+		maphack_hide.nextthink = time + 120;
+	}
+
 	if (self.map)
 	{
 		self.mdl = self.map;
@@ -1290,39 +1027,268 @@ void() func_maphack =
 	if (biome)
 	if (biome.button1)
 	{
+//TEST
+		self.msgcount = 
 		self.aflag = rint(random() * 1000);
 		self.aflag = self.aflag - biome.button1;
-		if (self.aflag <= 0) self.state = 1;
+		if (self.aflag <= 0)
+		{
+			self.state = 1;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button1 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button2;
-		if (self.aflag <= 0) self.state = 2;
+		if (self.aflag <= 0)
+		{
+			self.state = 2;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button2 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button3;
-		if (self.aflag <= 0) self.state = 3;
+		if (self.aflag <= 0)
+		{
+			self.state = 3;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button3 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button4;
-		if (self.aflag <= 0) self.state = 4;
+		if (self.aflag <= 0)
+		{
+			self.state = 4;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button4 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button5;
-		if (self.aflag <= 0) self.state = 5;
+		if (self.aflag <= 0)
+		{
+			self.state = 5;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button5 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button6;
-		if (self.aflag <= 0) self.state = 6;
+		if (self.aflag <= 0)
+		{
+			self.state = 6;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button6 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button7;
-		if (self.aflag <= 0) self.state = 7;
+		if (self.aflag <= 0)
+		{
+			self.state = 7;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button7 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button8;
-		if (self.aflag <= 0) self.state = 8;
+		if (self.aflag <= 0)
+		{
+			self.state = 8;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button8 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button9;
-		if (self.aflag <= 0) self.state = 9;
+		if (self.aflag <= 0)
+		{
+			self.state = 9;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button10;
-		if (self.aflag <= 0) self.state = 10;
+		if (self.aflag <= 0)
+		{
+			self.state = 10;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button11;
-		if (self.aflag <= 0) self.state = 11;
+		if (self.aflag <= 0)
+		{
+			self.state = 11;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button12;
-		if (self.aflag <= 0) self.state = 12;
+		if (self.aflag <= 0)
+		{
+			self.state = 12;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button13;
-		if (self.aflag <= 0) self.state = 13;
+		if (self.aflag <= 0)
+		{
+			self.state = 13;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button14;
-		if (self.aflag <= 0) self.state = 14;
+		if (self.aflag <= 0)
+		{
+			self.state = 14;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button15;
-		if (self.aflag <= 0) self.state = 15;
+		if (self.aflag <= 0)
+		{
+			self.state = 15;
+			self.aflag = MAXFL;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 		self.aflag = self.aflag - biome.button16;
-		if (self.aflag <= 0) self.state = 16;
+		if (self.aflag <= 0)
+		{
+			self.state = 16;
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
+																				bprint(" *** warning:   biome % pick: ");
+																				bprint(ftos(self.state));
+																				bprint(", prob: ");
+																				bprint(ftos(biome.button16 / 10));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.msgcount / 10));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 	}
 
 	if (self.count)
@@ -1369,16 +1335,44 @@ void() func_maphack =
 	if (self.rotate_type)
 	{
 		self.aflag = 1;
-		if (self.rotate_type > 1) // FIX: make 0.1 - 0.9 for rotating all pieces
+		if (self.rotate_type > 0.99)
 		{
-			if (self.state != floor(self.rotate_type)) self.aflag = 0;
+			if (self.state == floor(self.rotate_type)) self.aflag = 0;
 // trick to encode 2 rotates, could do more
-			self.msgcount = (self.rotate_type - floor(self.rotate_type)) * 10;
-			if (self.state == self.msgcount) self.aflag = 1;
+			self.msgcount = rint((self.rotate_type - floor(self.rotate_type)) * 10);
+			if (self.state == self.msgcount) self.aflag = 0;
+#ifdef warning
+																			if (WARNING & 65536)
+																			{
+																				bprint(" *** warning:   biome no rotate for state: ");
+																				bprint(ftos(self.state));
+																				bprint(", comp: ");
+																				bprint(ftos(self.rotate_type - floor(self.rotate_type)));
+																				bprint(", 1: ");
+																				bprint(ftos(floor(self.rotate_type)));
+																				bprint(", 2: ");
+																				bprint(ftos(self.msgcount));
+																				bprint("\n");
+																			}
+#endifdef
 		}
 
 		if (self.aflag)
+		{
 			self.angles_y = rint(3.3 * random()) * 90;
+#ifdef warning
+																			if (WARNING & 65536)
+																			{
+																				bprint(" *** warning:   biome rotated for state: ");
+																				bprint(ftos(self.state));
+																				bprint(", deg: ");
+																				bprint(ftos(self.angles_y));
+																				bprint(", at: ");
+																				bprint(vtos(self.origin));
+																				bprint("\n");
+																			}
+#endifdef
+		}
 	}
 
 	if (self.delay > 0) // idea: fade replace?
@@ -1387,71 +1381,60 @@ void() func_maphack =
 		self.think = func_maphack;
 	}
 
+// using classname for now
+//	if (!self.class_select) self.class_select = "class_biome"; 
+
 	setmodel (self,self.mdl);
 //	self.model = self.mdl;
 
 	self.solid = SOLID_BSP; // map piece
 
+// copy all target1 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
 	if (self.target1)
 	{
 		cnt_ent(self, "targetname", self.target1);
 		self.dropent = self.chain;
 		while (self.dropent)
 		{
-			self.aiment = spawn();
-			copyentity(self.dropent, self.aiment);
-			self.aiment.targetname = "";
-			setorigin(self.aiment, self.origin + self.dropent.origin);
-			if ((self.aiment.classname == "func_model") || (self.aiment.classname == "misc_model"))
-			if (self.spawnflags & 1)
-			{
-				self.aiment.alpha = 0.05;
-				self.aiment.think = maphack_poof;
-				self.aiment.nextthink = time + 0.2;
-			}
-			if (!self.aiment.model) setmodel(self.aiment, self.aiment.mdl);
-//			if (self.aiment.wad == "copystatic")
-//			{
-//				self.aiment.think = copy_static;
-//				self.aiment.nextthink = time + 0.1 + random();
-//			}
+			maphack_copy();
 			self.dropent = self.dropent.chain;
 		}
 	}
 
+// randomly select target2 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
 	if (self.target2)
 	{
 		self.aflag = cnt_ent(self, "targetname", self.target2);
 		self.dropent = self.chain;
 		while (self.dropent)
 		{
+			self.dropent.rad_time = random();
 			if (!self.dropent.lefty) self.dropent.lefty = 0.3;
-			if (random() < self.dropent.lefty)
+/* remove
+																				bprint(" *** warning:   test target2: ");
+																				bprint(item_ident(self.dropent));
+																				bprint(", prob: ");
+																				bprint(ftos(self.dropent.lefty));
+																				bprint(", test against: ");
+																				bprint(ftos(fabs(self.dropent.lefty)));
+																				bprint(", dice roll: ");
+																				bprint(ftos(self.dropent.rad_time));
+																				bprint("\n");
+*/
+			if (self.dropent.rad_time < fabs(self.dropent.lefty))
 			{
-				self.aiment = spawn();
-				copyentity(self.dropent, self.aiment);
-				self.aiment.targetname = "";
-				if ((self.aiment.classname == "func_model") || (self.aiment.classname == "misc_model"))
-				if (self.spawnflags & 1)
-				{
-					self.aiment.alpha = 0.05;
-					self.aiment.think = maphack_poof;
-					self.aiment.nextthink = time + 0.2;
-				}
-				setorigin(self.aiment, self.origin + self.dropent.origin);
-				if (!self.aiment.model) setmodel(self.aiment, self.aiment.mdl);
-//				if (self.aiment.wad == "copystatic") makestatic(self.aiment);
+				maphack_copy();
 			}
 		self.dropent = self.dropent.chain;
 		}
 	}
 
-// build trigger
+// build trigger - otherwise this gets boring fast
 	if (self.spawnflags & 16)
 	{
 
-// trigger
-		self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.origin + '0 0 64' , '-16 -16 -16', '16 16 16', v0, v0, "maphack_trigger", "", SUB_Null, 0.5, chaos_maphack_trigger, SUB_Null, self, world);
+// trigger for making more chunks
+		self.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  self.origin + '0 0 64' , '-16 -16 -16', '16 16 16', v0, v0, "maphack_trigger", null_string, SUB_Null, 0.5, chaos_maphack_trigger, SUB_Null, self, world);
 
 		self.trigger_field.rotate_type = self.rotate_type;
 		self.trigger_field.lefty = self.lefty;
@@ -1478,8 +1461,17 @@ void() func_maphack =
 		self.trigger_field.rad_time = self.rad_time;
 	}
 
+
+// fade scenery into existance - at the cost of rendering engine efficiency
 	if (self.spawnflags & 1)
 	{
+		if (biome)
+		{
+			if (floor(biome.style) == self.state) return;
+// trick to encode 2 no fade ins, could do more
+			self.msgcount = rint((biome.style - floor(biome.style)) * 10);
+			if (self.msgcount == self.state) return;
+		}
 		self.alpha = 0.05;
 		self.think = maphack_poof;
 		self.nextthink = time + 0.2;

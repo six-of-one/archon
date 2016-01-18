@@ -1266,7 +1266,7 @@ void() generator_fire =
 
 void() gen_killed =
 {
-	self.targetname = ""; // un target
+	self.targetname = null_string; // un target
 	self.think = remove_fade;
 	remove_fade();
 };

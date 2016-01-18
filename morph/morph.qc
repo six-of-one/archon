@@ -1734,6 +1734,15 @@ void() random_monster_wakey =
 
 	if (self.owner.think == SUB_Remove) return; // some failure is removing the monster
 
+// could be a biome monster - try a drop
+	if (self.owner.wad == "drop")
+	{
+		f = self;
+		self = self.owner;
+		droptofloor(0, 0);
+		self = f;
+	}
+
 //	self.owner.think(); // attempt to *_start_go
 	self.owner.nextthink = time; // attempt to think with *_start_go
 

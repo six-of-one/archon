@@ -2445,6 +2445,7 @@ func_model wrapper
 void() misc_model =
 {
 	func_model();
+	self.classname = "func_model"; // all called func_model for biomes
 };
 
 /*		q3 ---
@@ -2536,7 +2537,7 @@ The combination of the "wait" and "random" keys can be used to play non-looping 
 */
 void() target_speaker =
 {
-	precache_sound (self.noise);
+	if (time < 2) precache_sound (self.noise);
 
 	self.aflag = ATTN_NORM;
 	if (self.spawnflags & Q3_GLOBAL) self.aflag = ATTN_NONE;

@@ -48,6 +48,8 @@ float pkvl; // for indicator
 												// & 8192 - looped ops
 												// & 16384 - dead threw / viswep
 												// & 32768 - vw_load
+												// & 65536 - maphack
+												// & 131072 - maphack biome spec
 												// & 262144 - block some repeating warnings
 //
 // control over test code
