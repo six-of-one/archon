@@ -52,6 +52,7 @@ void() m_precache_lavablob =
 	precache_sound ("blob/death1.wav"); // exploding statue sound - pretty good
 	precache_sound ("blob/hit1.wav"); // dull flesh thud
 	precache_sound ("blob/sight1.wav"); // grrr
+	precache_sound ("blob/mytosis.wav"); // mytose
 	precache_sound ("chaos/lavabidle.wav"); // hisss
 	precache_sound ("chaos/lava-shot.wav"); // nail shot
 // cthon sounds
@@ -276,6 +277,52 @@ void() lavablob_die_explode8	=	[ $exp,		SUB_Nop ]
 	self = other;
 };
 
+// from rogue tarbaby mod
+
+void() lavablob_mytosis =
+{
+	local float r;
+
+// IDEA: chance of throwing off ejecta, lava sound
+
+	if (self.pain_finished > time)
+		return;
+
+	self.pain_finished = time + 2;
+
+	tbaby_mitosis();
+	if (!newmis) return; // didnt spawn, go back
+
+	self.th_pain = player_pain; // because mytosis fn nulls this
+
+	newmis.classname = "monster_lavabomb";
+	newmis.netname = "Bomb";
+	newmis.class_select = "class_monster";
+
+	r = random();
+
+	if (r < 0.2) // regular tarbaby
+	{
+		newmis.netname = "Spawn";
+		newmis.classname = "monster_tarbaby";
+		setmodel (newmis, "progs/tarbaby.mdl");
+		newmis.health = 80;
+		newmis.skin = 0;
+	}
+	else if (r < 0.5) // hell spawn
+	{
+		newmis.netname = "Spawn";
+		newmis.classname = "monster_tarbaby";
+		setmodel (newmis, "progs/tarbaby.mdl");
+		newmis.health = 100;
+		newmis.skin = 2;
+	}
+	setsize (newmis, '-16 -16 -24', '16 16 20');
+
+	chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 1.33 + random(), random_monster_wakey, SUB_Null, newmis, world);
+	newmis.pausetime = 0;
+};
+
 /*
 		+---------------------------------------+
 		|  attack code                          | SEC-HEAD
@@ -369,6 +416,16 @@ void() cthonme =
 }
 
 
+// blob needs sep missile touch because of vampire rune
+
+void () blob_lava_touch =
+{
+	if (other.mask_x != CB_CTHON) // Cataboligne - 9.22.11 - only here till we get chaos_ff done IMP: remove
+	T_Damage (other,self,self.owner,self.dmg);
+	remove (self);
+};
+
+
 void() player_lavablob_attack =
 {
 
@@ -388,6 +445,7 @@ void() player_lavablob_attack =
 		setsize(newmis, v0, v0);
 		newmis.frame = floor(1.1 + random());
 		newmis.morphy = self.morphy;
+		newmis.touch = blob_lava_touch;
 	}
 	else // fire spikes - IDEA: will lavablob ever have other attacks?
 	{
@@ -464,7 +522,7 @@ void(float silent) player_lavablob_become =
 
 	self._stand=player_lavablob_stand;
 	self._run=player_lavablob_run;
-	self._pain=SUB_Nop; // FIX - pain sound, maybe framed player_lavablob_pain;
+	self._pain=lavablob_mytosis;
 	self._die=lavablob_die;
 	self._jump=SUB_Null;
 	self._jump2=	lavablob_jump1;

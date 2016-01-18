@@ -363,6 +363,8 @@ void () StartFrame =
 	teamplay = cvar ("teamplay");
 	skill = cvar ("skill");
 	framecount = framecount + 1;
+// Cataboligne - 11.2.12 - this caused a bunch of condition test fails in new code because the increment stops at 16777216
+	if (framecount == 16777216) framecount  = 1;
 };
 
 /*

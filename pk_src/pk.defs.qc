@@ -1,7 +1,7 @@
 // constants
 
 // base values
-vector v0						= ' 0 0 0'; // zero vector |dimension
+vector v0						= ' 0 0 0'; // zero vector | dimension
 float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 
 // engine section
@@ -21,6 +21,7 @@ float() SUB_True				= { return 1; }; // Return a true value
 // version strings
 
 string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.2\"\n";
+string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.2\"\n";
 string vweb						= "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n";
 string vdev						= "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n";
 string vqcs						= "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n";

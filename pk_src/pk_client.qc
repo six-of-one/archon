@@ -491,6 +491,7 @@ void() pk_plcfg =
 		}
 // version & web sites segment
 		stuffcmd(self, vers);
+		stuffcmd(self, stats);
 		stuffcmd(self, vweb);
 		stuffcmd(self, vdev);
 		stuffcmd(self, vqcs);

@@ -184,12 +184,125 @@ void()	tbaby_die2	=[	$exp,		tbaby_run1	]
 };
 
 //=============================================================================
+// rogue - do some extra stuff
+
+void() tbaby_mitosis;
+
+void() tbaby_checknew =
+{
+	if (!walkmove(0,0))
+	{
+		remove(self);
+		return;
+	}
+	
+	self.enemy = self.enemy;
+	self.th_stand = tbaby_stand1;
+	self.th_walk = tbaby_walk1;
+	self.th_run = tbaby_run1;
+	self.th_missile = tbaby_jump1;
+	self.th_melee = tbaby_jump1;
+	self.th_die = tbaby_die1;       
+	self.origin_z = self.origin_z + 3;      // raise off floor a bit
+	droptofloor(0,0);
+
+	if (!walkmove(0,0))
+	{
+// ISSUE: what if the owner explodes after mitosing
+
+		self.owner.th_pain = tbaby_mitosis;
+		remove(self);
+		return;
+	}
+
+	self.takedamage = DAMAGE_AIM;
+	self.ideal_yaw = self.angles * '0 1 0';
+	if (!self.yaw_speed)
+		self.yaw_speed = 20;
+	self.view_ofs = '0 0 25';
+	self.use = monster_use;
+	self.flags = self.flags | FL_MONSTER;
+	self.pausetime = 99999999;
+	self.th_stand ();
+	self.nextthink = self.nextthink + random()*0.5;
+
+	if (self.model == "progs/lavabomb.mdl")
+		self.th_missile = lavaball_shot;
+
+	total_monsters = total_monsters + 1;
+  	
+	WriteByte (MSG_BROADCAST, SVC_UPDATESTAT);
+	WriteByte (MSG_BROADCAST, STAT_TOTALMONSTERS);
+	WriteLong (MSG_BROADCAST, total_monsters);
+};
+
+void() tbaby_mitosis =
+{
+	local entity    e;
+
+	newmis = world;
+	if ( random() < 0.35 )
+	{
+		newmis = e = spawn();
+		e.classname = self.classname;
+		e.netname = self.netname;
+		e.movetype = MOVETYPE_STEP;
+		setsize (e, '-16 -16 -24', '16 16 40');
+		e.health = 80;
+// chaos improvements - handle lava bomb
+		if (self.model == "progs/lavabomb.mdl")
+			e.health = 160;
+		else if (self.skin == 1)
+			e.health = 60;
+		else if (self.skin == 2)
+			e.health = 100;
+
+		e.owner = self;
+		self.th_pain = SUB_Null;
+		
+		setmodel (e, self.model);
+		e.solid = SOLID_SLIDEBOX;
+		e.skin = self.skin;
+		
+		setorigin (e, self.origin);              
+		e.think = tbaby_checknew;
+		e.nextthink = time + 0.5;
+
+		sound (e, CHAN_VOICE, "blob/mytosis.wav", 1, ATTN_NORM);
+	}
+};
+
+//=============================================================================
 
 
 /*QUAKED monster_tarbaby (1 0 0) (-16 -16 -24) (16 16 24) Ambush
 */
+/*QUAKED monster_tarbaby (1 0 0) (-16 -16 -24) (16 16 24) Ambush Blue Green Spots Lavabomb random
+Spawn (Tarbaby), 80 health points.
+
+--------  CAT  -------
+"Lavabomb" - the new uber spawn, Lava mode
+"random" - select a rogue type at random
+
+-------- ROGU --------
+The Spawn (and hellspawn)
+
+The spawn type is random by default on rogue maps
+If you want a specific type, select "Blue", "Green", or "Spots".
+"blue" - plain old tarbaby, 80 health
+"green" - new toxic skin - 60 health
+"spots" - rogue hellspawn - 100 health
+*/
+float TB_BLUE			= 2;
+float TB_GREEN			= 4;
+float TB_HELLS			= 8;
+float TB_LAVA			= 16;
+float TB_RANDOM		= 32;
+
 void(float ign) monster_tarbaby =
 {
+	local float r;
+	local float skillLevel;
 
 if (ign != A_MONSTER)
 {
@@ -212,6 +325,7 @@ if (ign != A_MONSTER)
 	precache_sound ("blob/hit1.wav");
 	precache_sound ("blob/land1.wav");
 	precache_sound ("blob/sight1.wav");
+	precache_sound ("blob/mytosis.wav"); // mytose a baby
 }
 	self.netname = "Spawn";
 
@@ -230,16 +344,122 @@ if (ign != A_MONSTER)
 	self.th_melee = tbaby_jump1;
 	self.th_die = tbaby_die1;
 
-	if (!Q_100)
-	if (ign != A_MONSTER)
-	if (random() < 0.5) // hot tarbaby from a map spawned baby
+	r = (self.spawnflags & TB_LAVA); // mapper | code selected a lava bomb
+
+	if (!r)
+	if (!Q_100 && ENHANCED)
+	if (!self.spawnflags && 46) r = -1; // if not a specific selection and enhanced, random chance of lavabomb
+
+	if (r)
 	{
-		setmodel(self,"progs/lavabomb.mdl");
-		setsize (self, '-16 -16 -24', '16 16 40');
-		self.health = 160;
-		self.th_missile = lavaball_shot;
-		self.netname = "Bomb";
+		if (ign != A_MONSTER || r > 0)
+		if ((random() < 0.5) || r > 0) // hot tarbaby converted from a map spawned baby
+		{
+			setmodel(self,"progs/lavabomb.mdl");
+			setsize (self, '-16 -16 -24', '16 16 40');
+			self.health = 160;
+			self.th_missile = lavaball_shot;
+			if (random() < 0.75) self.th_pain = tbaby_mitosis;
+			self.netname = "Bomb";
+			walkmonster_start ();
+			return;
+		}
 	}
+
+	r = (self.spawnflags & TB_RANDOM); // mapper | code selected random
+
+	if (self.spawnflags & TB_HELLS)
+	{
+		self.th_pain = tbaby_mitosis;
+		self.skin = 2;
+		self.health = 100;
+	}
+	else if (self.spawnflags & TB_GREEN)
+	{
+		self.th_pain = tbaby_mitosis;
+		self.skin = 1;
+		self.health = 60;
+	}
+	else if (self.spawnflags & TB_BLUE)
+	{
+		self.skin = 0;
+	}
+	else
+	if (rogue_map(world.model) || r)
+	{
+		skillLevel = cvar("skill");
+		r = skillLevel * 0.2;
+		r = r + random();
+
+		if (r > 0.8 && skillLevel > 1)
+		{
+			self.th_pain = tbaby_mitosis;
+			self.skin = 2;
+			self.health = 100;
+		}
+		else if (r > 0.5)
+		{
+			self.th_pain = tbaby_mitosis;
+			self.skin = 1;
+			self.health = 60;
+		}
+		else
+		{
+			self.skin = 0;
+		}		
+	}
+
+	walkmonster_start ();
+};
+
+// enhanced tarbaby - the chaos mod lavabomb
+
+void(float ign) monster_lavabomb =
+{
+	local float r;
+	local float skillLevel;
+
+if (ign != A_MONSTER)
+{
+	if (M_MONSTER < 0)
+	{
+		remove(self);
+		return;
+	}
+	
+	if (!M_MONSTER & CB_M_TARBABY)
+	if (deathmatch)
+	{
+		if (R_MONSTER)
+			remove(self);
+		return;
+	}
+	precache_model ("progs/lavabomb.mdl");
+
+	precache_sound ("blob/death1.wav");
+	precache_sound ("blob/hit1.wav");
+	precache_sound ("blob/land1.wav");
+	precache_sound ("blob/sight1.wav");
+	precache_sound ("blob/mytosis.wav"); // mytose a baby
+}
+	self.netname = "Bomb";
+
+	self.solid = SOLID_SLIDEBOX;
+	self.movetype = MOVETYPE_STEP;
+
+	setmodel (self, "progs/lavabomb.mdl");
+
+	setsize (self, '-16 -16 -24', '16 16 40');
+	self.health = 160;
+
+	self.th_stand = tbaby_stand1;
+	self.th_walk = tbaby_walk1;
+	self.th_run = tbaby_run1;
+	self.th_missile = lavaball_shot;
+	self.th_melee = tbaby_jump1;
+	self.th_die = tbaby_die1;
+	
+	if (random() < 0.75) self.th_pain = tbaby_mitosis;
 
 	walkmonster_start ();
 };

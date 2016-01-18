@@ -486,7 +486,8 @@ void(string cls) item_call =
 	else if (cls == "monster_bossman") monster_bossman(A_MONSTER);
 	else if (cls == "monster_clinger") monster_clinger(A_MONSTER);
 	else if (cls == "monster_young") monster_young(A_MONSTER);
-	
+	else if (cls == "monster_lavabomb") monster_lavabomb(A_MONSTER);
+
 	else // fail - not valid
 	{
 		if (f) remove(f); // IDEA: restore what was hidden?

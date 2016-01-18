@@ -3,7 +3,64 @@
 adaptive painkeep code main file
 (i.e. - adaptive - its easy to add to other mods)
 
-Cataboligne 3.29.8
+Cataboligne 
+
+pk 1.2 --- 3.29.8
+pk 2.0 --- 5.3.10
+pk 2.2 --- 2.5.11
+pk 3.0 --- 10.28.11
+
+
+==================================================
+
+What is Painkeep?
+
+"PainKeep is a DeathMatch-only "mission-pack" designed for use with registered
+Quake. PainKeep not only offers brand new weapons (with new pickup and view
+models), but also a new rich environment with tons of new sounds, new special
+effects, great new features, and lots of surprises. Every modification
+included is original. This is in no way a compilation of various "weekend
+mods" from the net."
+
+Goals:
+
+PainKeep goes back to Deathmatch's original emphasis. Make other players die.
+
+==================================================
+
+Release schedule:
+
+Painkeep v1.1: 02 July 1997 - Copyright (c)1996,1997 Team Evolve.
+
+Painkeep v1.11: 11 Aug 1997 - Evolve bug fix update
+
+PainKeep Artifacts 1.3 - 03 Dec 1999 - Copyright (c)1999, 2000 Thing & Ergodic
+- new maps and 4 new painkeep items
+
+Painkeep Convenience pack: 17 Aug 2001 - Multiple credits:
+- PKN Maps (+new hub [ #2 ]) - quovadis and clan [N]
+- PK Artefacts 1.3, ThinG maps (+new hub [ #3 ]) - ThinG and Ergodic
+- readme signed --==blakjack==-- (perhaps the packager ?)
+
+Painkeep v1.12c - 23 Feb 2008 - Eddie Cottongim (quake world update)
+
+Painkeep v1.2 - 27 Apr 2008 - Cataboligne (source code update for v1.11)
+- admin & user menus, re-organized source code for adding to other mods
+
+Painkeep v1.2.1 - 16 Oct 2008 - Cataboligne (source code update for v1.11)
+- bug fixes, extended map support for hubs 2 & 3
+
+Painkeep 2.0 (beta) - 18 May 2010 - Cataboligne (major update!)
+- bots, visible weps, chase cam, quake 3 map support, random pk items
+
+Painkeep 2.1 - 19 Apr 2011 - Cataboligne
+- gold version for 2.x, bug fixes - final release
+
+Painkeep 3.0 - 27 Oct 2012 - Cataboligne
+- bundled with Archon [!] Moddb.com - not a separate release (yet)
+- painkeep item stat control, modified pk items, other improvements
+
+==================================================
 
 */
 
@@ -16,7 +73,8 @@ void() PK_init =
 	DARKPLACES = cvar("pr_checkextension"); // check for dp engine
 
 // info strings set by server - these only work on the server
-	localcmd(vers);		//		quake-c: chaos archon (alpha) 1.0.1
+	localcmd(vers);		//		quake-c: chaos archon (alpha) 1.0.x
+	localcmd(stats);		//		code: chaos archon (alpha) 1.0.x
 	localcmd(vweb);		//		http://www.moddb.com/mods/chaos-archon/
 	localcmd(vdev);		//		http://www.moddb.com/members/invadercat/
 	localcmd(vqcs);		//		http://www.moddb.com/groups/qc/
@@ -2016,6 +2074,18 @@ current max is 312, move lines out of comment as needed
 		pk_srvcfg = cvar("sv_c_srvcfg");
 		ADMINLOCK = cvar("sv_c_adminlock"); // so server admin can lock out remote admins in case of abuse - local console commands will still work
 
+// for dedicated server
+		if (pk_mapcmd) // alias cmd
+		{
+			localcmd(mapname);
+			localcmd(ADMINMAPCMD);
+		}
+		if (pk_mapcfg) // cfg file cmd
+		{
+			localcmd("exec ");
+			localcmd(mapname);
+			localcmd(".cfg\n");
+		}
 // NOTE: chaos eng doesnt need to store defaults this way - they will save in config.cfg
 
 // done in another cfg

@@ -7,6 +7,7 @@
  * date: 3.25.8
  *
  * qcc - compile Chaos Mod MK II
+ *			"Archon"
  *
  */
  
@@ -15,7 +16,7 @@
 // master define - a good chunk of this MUST match the engine define and CAN NOT be changed!
 defs.qc
 
-// painkeep artifacts define
+// painkeep artefacts define
 pk_src/pk_art.defs.qc
 
 // painkeep define
@@ -58,7 +59,7 @@ chaos.qc
 environment.qc
 
 // demo messages - uncomment to use and update: pk_client,qc, pk_weapons.qc
-demo.qc
+// demo.qc
 
 pk_src/painkeep.qc
 pk_src/pk_client.qc
@@ -79,6 +80,7 @@ player.qc
 monsters.qc
 doors.qc
 buttons.qc
+// Note: triggers is getting heavily modified - no longer close to v106
 triggers.qc
 plats.qc
 misc.qc
@@ -195,7 +197,7 @@ pk_src/admin.qc
 
 // pk_src/frames.qc - not in original progs.src
 
-// painkeep artifacts
+// painkeep artefacts
 pk_src/pkpitems.qc
 pk_src/ego.qc
 pk_src/tomb.qc

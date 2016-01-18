@@ -519,6 +519,7 @@ vector(vector src, float lbper, vector lbvec, float lcnt) lava_shot =
 
 void () fire_fly_touch =
 {
+	if (other.mask_x != CB_CTHON) // Cataboligne - 9.22.11 - only here till we get chaos_ff done IMP: remove
 	T_Damage (other,self,self,self.dmg);
 	remove (self);
 };

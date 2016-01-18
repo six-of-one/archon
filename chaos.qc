@@ -1666,3 +1666,27 @@ void (entity e) CopyToBodyQue =
 
 	BodyQueAsset(e, bodyque_head, FALSE);
 };
+
+
+// detect a rogue map - for specials
+
+float(string mp) rogue_map =
+{
+	if (mp == "maps/r1m1.bsp") return(TRUE);
+	if (mp == "maps/r1m2.bsp") return(TRUE);
+	if (mp == "maps/r1m3.bsp") return(TRUE);
+	if (mp == "maps/r1m4.bsp") return(TRUE);
+	if (mp == "maps/r1m5.bsp") return(TRUE);
+	if (mp == "maps/r1m6.bsp") return(TRUE);
+	if (mp == "maps/r1m7.bsp") return(TRUE);
+	if (mp == "maps/r2m1.bsp") return(TRUE);
+	if (mp == "maps/r2m2.bsp") return(TRUE);
+	if (mp == "maps/r2m3.bsp") return(TRUE);
+	if (mp == "maps/r2m4.bsp") return(TRUE);
+	if (mp == "maps/r2m5.bsp") return(TRUE);
+	if (mp == "maps/r2m6.bsp") return(TRUE);
+	if (mp == "maps/r2m7.bsp") return(TRUE);
+	if (mp == "maps/r2m8.bsp") return(TRUE);
+
+	return(FALSE);
+};

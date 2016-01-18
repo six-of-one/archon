@@ -739,6 +739,7 @@ else if (self.classname == "monster_zombie") return morph_test(chk,IMP_MZOMBIE,0
 else if (self.classname == "monster_dog") return morph_test(chk,IMP_MOGRE,IMP_MENF,0,0,IMP_MDEMON,IMP_MSHAMBLR,   0);
 else if (self.classname == "monster_hell_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR,   0);
 else if (self.classname == "monster_tarbaby") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MWIZARD,CB_GREMLIN,IMP_MCTHON,IMP_MSHAMBLR,   0);
+else if (self.classname == "monster_lavabomb") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MWIZARD,CB_GREMLIN,IMP_MCTHON,IMP_MSHAMBLR,   0);
 else if (self.classname == "monster_boss") return morph_test(chk,IMP_MCTHON,0,0,0,0,0,   0); // cthon likes lava
 else if (self.classname == "monster_enforcer") return morph_test(chk,IMP_MENF,IMP_MHKNIGHT,IMP_MOGRE,IMP_MSCOURGE,m_test,IMP_MSHAMBLR,   0);
 else if (self.classname == "monster_supervore") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,CB_GREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR,   0);
@@ -1414,7 +1415,9 @@ void() random_monster_wakey =
 {
 	local entity f;
 
-	if (self.owner.health < 1) // got killed - likely a monsta_frag --- note: chaos vector
+	if (!self.owner ||
+		(self.owner.health < 1) || // got killed - likely a monsta_frag --- note: chaos vector
+		(self.owner.think == (void ()) 0))
 	{
 		remove(self);
 		return;

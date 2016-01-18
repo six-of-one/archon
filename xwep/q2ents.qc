@@ -2190,8 +2190,8 @@ void() q2_teleport_particles =
 	if (self.classname == "archon_power")
 	{
 		if (self.spawnflags & NOSPRAY) return; // no particles - still have to think for other fns
-		z = 15; // needs a boost up
-	}
+		z = 20; // particle fountain origin needs a boost up
+		}
 
 	if (!self.cnt)
 		self.cnt = 192;

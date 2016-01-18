@@ -413,14 +413,17 @@ void(entity e) dead_artifact =
 				drop_one(e, "Limited Invisibility", IT_INVISIBILITY, world, "", MED_BOUNCE_NOW, 0);
 			}
 
-			else if (f == IT_INVULNERABILITY) // note: could only happen if admin kick comes thru here
+// make sure the next two arent actors when tossing out artifact!
+			else if (f == IT_INVULNERABILITY) // note: could only happen with real invuln if admin kick comes thru here
 			{
-				drop_one(e, "Invulerability", IT_INVULNERABILITY, world, "", MED_BOUNCE_NOW, 0);
+				if (!e.pkplus_actortype)
+					drop_one(e, "Invulerability", IT_INVULNERABILITY, world, "", MED_BOUNCE_NOW, 0);
 			}
 
 			else if (f == IT_QUAD)
 			{
-				drop_one(e, "Quad Damage", IT_QUAD, world, "", MED_BOUNCE_NOW, 0);
+				if (!e.pkplus_actortype)
+					drop_one(e, "Quad Damage", IT_QUAD, world, "", MED_BOUNCE_NOW, 0);
 			}
 
 			else if ( (f == IT_SUIT) && !e.wetsuit_finished)
