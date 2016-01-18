@@ -134,7 +134,7 @@ void() lavacthon_rise13 = [ $rise13, lavacthon_rise14 ] {};
 void() lavacthon_rise14 = [ $rise14, lavacthon_rise15 ] {};
 void() lavacthon_rise15 = [ $rise15, lavacthon_rise16 ] {};
 void() lavacthon_rise16 = [ $rise16, lavacthon_rise17 ] {};
-void() lavacthon_rise17 = [ $rise17, player_stand1 ] {};
+void() lavacthon_rise17 = [ $rise17, player_stand1 ] { self.view_ofs_z = 90; };
 
 // return to blob form
 void() reblob =
@@ -379,8 +379,9 @@ void() player_lavacthon_become =
 	self._killmsg=player_cthon_killmsg;
 	self._killmsg2=player_cthon_killmsg2;
 
-	self.cam_z = 50 / 100;
-	self.cam_y = -30;
+// until engine bug is fixed, cthon has no cam
+//	self.cam_z = 50 / 100;
+//	self.cam_y = -30;
 
 	stuffcmd(self, "exec cfg/morph/m-cthon.cfg\n");
 
@@ -394,15 +395,16 @@ void() player_lavacthon_become =
 	self.msight = "boss1/sight1.wav";
 //	self.noise2 = "enforcer/pain1.wav";
 	self.noise3 = null_string;
-	self.view_ofs = '0 0 120';
+
+	self.view_ofs = '0 0 22';
 	setsize (self, '-64 -64 -24', ' 64 64 128');
 
 	stuffcmd(self, "hud_message \"You are emergent...CTHON!\"\n");
 //	sprint(self,"You are emergent...CTHON!!\n");
 
-	self.builtin = IT_SHOTGUN;
-	self.items = self.items | self.builtin;
-	self.weapon = IT_SHOTGUN;
+//	self.builtin = IT_SHOTGUN;
+//	self.items = self.items | self.builtin;
+	self.weapon = IT_AXE;
 	self.mcode = -503; // tell hud we are cthon emerged
 	self.volume = 0; // because of swap
 

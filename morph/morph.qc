@@ -2080,14 +2080,16 @@ void() remove_monster =
 	remove(self);	
 };
 
-// IDEA: upgrades
+// IDEA: upgrades at skill X
 
 // do the respawn
 void() monster_respawn_fire =
 {
 	local float t;
 	t = total_monsters; // preserve count - not adding a monster here
-	setorigin(self, self. origin + '0 0 8');
+	if (self.oldorigin) setorigin(self, self.oldorigin);
+	else setorigin(self, self.origin + '0 0 8');
+	self.oldorigin = v0;
 	item_call(self.classname); // back to life
 	spawn_tfog (self.origin);
 	spawn_tdeath(self.origin, self);

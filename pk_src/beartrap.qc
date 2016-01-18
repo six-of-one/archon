@@ -128,8 +128,12 @@ void() beartrapTouch =
 //	if ((!other.flags & FL_MONSTER) || !ENHANCED) // monsters in dm now
 #ifdef enhanced
 	if (!other.flags & FL_MONSTER) // monsters in dm now
+	  return;
+
+	if (other.charmer && other.charmer == self.owner) // dont target owners helpers
 #endifdef
 	  return;
+
 
 	// The owner of the beartrap is immune for a few rels
 	if ((other == self.owner) && (self.beartrap_time > time))

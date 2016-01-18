@@ -46,21 +46,20 @@ void() spikemine_Home =
       cur_dist = 2000;
       head = findradius(self.origin, 2000);
       while(head)
-         {
+      {
          if(!(head.flags & FL_NOTARGET) && (head.flags & FL_CLIENT))
-            {
-            if (visible(head) && (head.health > 0))
-               {
-               head_dist = vlen(head.origin-self.origin);
-               if (head_dist < cur_dist)
-                  {
-                  selected = head;
-                  cur_dist = head_dist;
-                  }
-               }
-            }
+			if (visible(head) && (head.health > 0))
+			if (self.charmer != head) // dont target our  master
+			{
+				head_dist = vlen(head.origin-self.origin);
+				if (head_dist < cur_dist)
+				{
+					selected = head;
+					cur_dist = head_dist;
+				}
+			}
          head = head.chain;
-         }
+      }
 //      if (selected != world && selected != self.enemy)
       if (selected != world)
          sound (self, CHAN_VOICE, "hipitems/spikmine.wav", 1, ATTN_NORM);

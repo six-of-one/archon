@@ -482,6 +482,7 @@ void() cthonme =
 		player_lavacthon_become();
 //		polymorph_check(IMP_MCTHONTALL, 0);
 	}
+// NOTE: could be removed - HUD now issues an indicator for this when in lava
 	else
 		sprint(self, "You must be in lava to emerge\n");
 }
@@ -653,6 +654,15 @@ void(float silent) player_lavablob_become =
 	self.cam_y = 36;
 
 	stuffcmd(self, "exec cfg/morph/m-lava.cfg\n");
+
+// cthon disables cam - as an engine bug work-around -  so we check interal value here and reable if set
+	if (self.cam_x & CHSCAM_ON)
+	{
+		Chase_cam_setweapon( self );
+		stuffcmd(self, "chase_active ");
+		stuffcmd(self, ftos(1));
+		stuffcmd(self, "\n");
+	}
 
 	setmodel(self,"progs/lavabomb.mdl");
 	self.modelindex_morph = self.modelindex;

@@ -307,6 +307,8 @@ void() Toggle_chase_cam =
 
 	if (self.admin) return; // pk mods
 	if (self.classname == OBSERVER) return;
+// do NOT allow cthon to activate came - an engine bug will mess up the view
+	if (self.model == "progs/cthon.mdl") return;
 
 	if (self.cam_x & CHSCAM_ON)
 		self.cam_x = self.cam_x - CHSCAM_ON;

@@ -493,6 +493,7 @@ void(string cls) item_call =
 	else if (cls == "monster_scourge") monster_scourge(A_MONSTER);
 	else if (cls == "monster_gremlin") monster_gremlin(A_MONSTER);
 	else if (cls == "monster_vomit") monster_vomit(A_MONSTER);
+	else if (cls == "monster_generator") monster_generator(A_MONSTER);
 
 // monster set II
 //	else if (cls == "monster_silhouette") monster_silhouette(); // only need this when they are used for real game
@@ -514,12 +515,15 @@ void(string cls) item_call =
 	self.mdl = self.model;
 	self.classname = scls;
 
-	if (self.event == "dyn_monster" || self.class_select == "class_monster")
+	if (self.event == "dyn_monster" || self.class_select == "class_monster" || self.class_select == "class_generator")
 	{
-		if (!self.msgcount) self.msgcount = 2 + random(); // wake up timer - for generators
-		if (self.stack1 != "no_monster_wakey")
-		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, self.msgcount, random_monster_wakey, SUB_Null, self, world);
-		self.pausetime = 0;
+		if (self.class_select != "class_generator")
+		{
+			if (!self.msgcount) self.msgcount = 2 + random(); // wake up timer - generators set their own
+			if (self.stack1 != "no_monster_wakey")
+			chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, self.msgcount, random_monster_wakey, SUB_Null, self, world);
+			self.pausetime = 0;
+		}
 
 		total_monsters = t_monsters  + 1; // the "real" bump
   	

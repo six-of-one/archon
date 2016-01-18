@@ -2336,28 +2336,26 @@ var float autocvar_hud_spell_vessel_limit = 1;
 					{
 						if (autocvar_hud_spell_list < 1)
 						Sbar_DrawString('244 40 0' + woff + sploff, "Create SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						if (target2) instr = "*FIRE - Make target a SOUL vessel";
+						instr = "*FIRE - Make a SOUL vessel";
 
-						if (pk_bt & 3)
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (morph == IMP_MCHAOS)
 						{
-							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-							cnt_left = pwr_step_y;
-							pwr_step_y = pwr_step_y + 18;
-
-							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-							if (morph == IMP_MCHAOS)
-							{
-								if (pk_bt == 1) Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Nodule", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-								else Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Gravestone", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-							}
-							else
-							{
-								if (pk_bt == 1) Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Sphere", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-								else Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Diamond", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-							}
-							cnt_left = pwr_step_y;
-							pwr_step_y = pwr_step_y + 18;
+							if (pk_bt == 1) Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Nodule", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							else if (pk_bt == 2)  Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Gravestone", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							else Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Copy target object", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						}
+						else
+						{
+							if (pk_bt == 1) Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Sphere", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							else Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Diamond", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
 					}
 //					else Sbar_DrawString('280 40 0', "Unknown Magic", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 				}

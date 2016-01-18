@@ -341,7 +341,9 @@ void() player_shambler_become =
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
 //		setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
-	self.view_ofs = '0 0 54'; // raised by 22
+//	self.view_ofs = '0 0 54'; // raised by 22
+	self.view_ofs = v0;
+	self.view_ofs_z = 54;
 
 	self.health = self.health * MSHAMBLR_HEALMOD / self.health_modifier;
 	self.health_modifier = MSHAMBLR_HEALMOD;

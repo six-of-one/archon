@@ -1053,6 +1053,7 @@ void() monster_silhouette =
 	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
 
 	if (self.count) self.frame = self.count; // hack - for rf6 converted func_models
+	if (self.cnt) self.skin = self.cnt;
 
 	if (self.spawnflags & 1)
 		setsize(self, VEC_HULL2_MIN, VEC_HULL2_MAX);
@@ -1185,19 +1186,34 @@ void() generator_fire =
 	while (self.jump_flag > 0)
 	{
 		self.dropent = self.chain;
-		self.dmg = rint(random() * self.cnt);
+//		if (self.spawnflags & 4) // try spots in sequence
+//			self.dmg = self.cnt;
+//		else
+		self.dmg = rint(random() * self.cnt); // try random spots
 		while (self.dmg > 1)
 		{
+//			if (self.spawnflags & 4) // test all spots in order, take 1st open
+//			{
+//				trace_ent = findradius(self.dropent.origin + '0 0 16', 20); // try to avoid a telefrag
+//				if (!trace_ent) self.dmg = self.jump_flag = -1;
+//			}
 			self.dmg = self.dmg - 1;
 			if (self.dropent.chain) self.dropent = self.dropent.chain;
 		}
-		trace_ent = findradius(self.dropent.origin + '0 0 16', 20); // try to avoid a telefrag
-		if (!trace_ent) self.jump_flag = -1;
+//		if (!self.spawnflags & 4) // test a randomly selected spot
+//		{
+			trace_ent = findradius(self.dropent.origin + '0 0 16', 20); // try to avoid a telefrag
+			if (!trace_ent) self.jump_flag = -1;
+//		}
 		self.jump_flag = self.jump_flag - 1;
 	}
 
 	if (trace_ent)
-	if (random() < 0.8) return;
+	{
+//		if (self.spawnflags & 4) return;
+// chance a filled spot will result in a spawn-frag, otherwise wait
+		if (random() < 0.94) return;
+	}
 
 	if (!self.dropent)
 		self.dest1 = self.origin + '0 64 0';
@@ -1244,14 +1260,26 @@ void() generator_fire =
 	self.dropent = spawn();
 
 	setorigin(self.dropent, self.dest1 + '0 0 4');
-	spawn_tdeath(self.dropent.origin, self.dropent);
+	spawn_tdeath(self.dropent.origin, self);
 
 	self.dropent.event = "dyn_monster";
 	self.dropent.msgcount = 0.2; // wake up faster
 	self.dropent.wad = self.weaponmodel;
+	self.dropent.owner = self;
+
+// monster speed changed by generator
+	if (self.wad == CFAST) self.dropent.netname = CFAST;
+	else if (self.wad == CSLOW) self.dropent.netname = CSLOW;
+	else if (self.wad != null_string) // any non null will cause random here
+	{
+		if (random() < 0.3) self.dropent.netname = CSLOW;
+		else if (random() < 0.3) self.dropent.netname = CFAST;
+	}
+	
 	item_call_save(self.dropent, self.weaponmodel);
 
 	if (self.max_health) self.dropent.health = self.max_health;
+	else self.dropent.health = 10;
 	self.dropent.health = self.dropent.health * self.scale;
 	self.dropent.scale = self.scale;
 
@@ -1264,9 +1292,27 @@ void() generator_fire =
 
 // IDEA: pop sound option, or explosion
 
+void() monster_respawn_fire;
+
 void() gen_killed =
 {
-	self.targetname = null_string; // un target
+	self.use = SUB_Null; // turn off generation
+	if (self.bubble_count != -1)
+	if (self.spawnflags & 1) // respawn
+	{
+		if (self.bubble_count) // limit
+		{
+			self.bubble_count = self.bubble_count - 1;
+			if (self.bubble_count < 1) self.bubble_count = -1;
+		}
+		self.model = null_string; // hide this guy
+		self.solid = SOLID_NOT;
+		self.oldorigin = self.origin;
+		self.health = self.dodmg; // restore any health
+		self.think = monster_respawn_fire;
+		self.nextthink = time + self.wait + 20 * random();
+		return;
+	}
 	self.think = remove_fade;
 	remove_fade();
 };
@@ -1292,23 +1338,27 @@ if (ign != A_MONSTER) // map monster has no ign
 
 	precache_model ("progs/gen2_l1.bsp");
 }
-// fix model fsck up - models do not want to recompile
-	self.origin_z = self.origin_z + 24;
 // defaults
-	if (!self.scale < 0.1) self.scale = 1;
+	if (self.scale < 0.1) self.scale = 1;
 	if (!self.health) self.health = 100;
 	if (!self.speed) self.speed = 2;
 	if (!self.count) self.count = 4;
 //	if (!self.delay) self.delay = 120;
 	if (!self.wait) self.wait = 20;
 	if (!self.mask) self.mask_x = 2053;
+
 	if (!self.model)
 	{
-		setmodel(self, "progs/gen2_l1.bsp");
-		if (!self.solid) self.solid = SOLID_BBOX;
+		if (self.mdl) setmodel(self, self.mdl);
+		else setmodel(self, "progs/gen2_l1.bsp");
+		if (!self.solid) self.solid = SOLID_BSP;
 	}
 	else
 		setmodel(self, self.model);
+
+// save for respawn
+	self.dodmg = self.health;
+	self.mdl = self.model;
 
 	self.health = self.health * self.scale;
 
@@ -1327,7 +1377,14 @@ if (ign != A_MONSTER) // map monster has no ign
 	if (!self.targetname) // not targeted - think
 		self.nextthink = time + self.speed;
 
+// respawn comes here
+	self.rad_time = self.super_time = 0;
+
+// fix model fsck up - models do not want to recompile - only on map load gens, and only once
+	if (self.class_select != "class_generator") self.origin_z = self.origin_z + 24;
+
 //		speed_monster(CSLOW, "monster_ogre", self.origin);
+	self.class_select = "class_generator";
 };
 
 // quoth dummys & stuff

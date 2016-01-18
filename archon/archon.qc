@@ -914,23 +914,29 @@ void() archon_power =
 
 // touching ent does not have a healtype - set one at random
 
-// ISSUE: seen mega health rot down to 80 for a human several times
-/// - could this be why ?? FIX
+// enhanced - change max health a bit, if not > 1.2 (most morphs)
+// NOTE: wont bump h_m more than once per map, and wont really affect morphs
 
 void(entity e) archon_point_heal =
 {
 // heal level
-	e.health_modifier = 0.6;
 	e.healtype = 2;
+#ifdef enhanced
+	e.health_modifier = e.health_modifier + 0.16;
+#endifdef
 	if (random() < 0.5)
 	{
-		e.health_modifier = 0.8;
+#ifdef enhanced
+		if (e.health_modifier < 1.2) e.health_modifier = 0.8;
+#endifdef
 		e.healtype = 3 + rint(0.33 + random());
 	}
 	else
 	if (random() < 0.15)
 	{
-		e.health_modifier = 1;
+#ifdef enhanced
+		if (e.health_modifier < 1.2) e.health_modifier = e.health_modifier + 0.16;
+#endifdef
 		e.healtype = 4 + rint(0.33 + random());
 	}
 	

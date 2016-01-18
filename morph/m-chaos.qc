@@ -1908,6 +1908,7 @@ void() set_beacon =
 {
 	fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, self.origin, v0, "beacon", "progs/chaos_b3.3rsm.mdl", null_string, beacon_touch, 180,  remove_beacon, remove_beacon);
 	newmis.frame = 11;
+	if (self.height == IMP_MORDER) newmis.skin = 3;
 	newmis.morphy = self.morphy;	
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.goalentity = newmis;
@@ -2033,11 +2034,13 @@ void() transmogrify =
 		{
 			setmodel(self,"progs/chaos_b2.mdl");
 			self.skin = 4;
+			self.view_ofs = '0 0 4';
 		}
 		else
 		{
 			setmodel(self,"progs/orderform.mdl");
 			self.skin = 0;
+			self.view_ofs = '0 0 22';
 		}
 		self.modelindex_morph = self.modelindex;
 		self.archon = self.archon - self.pk_explode_ammo;
@@ -2281,6 +2284,8 @@ void() thing_imprisoned =
 	self.classname = "imprisoned";
 	self.nextthink = time + 0.25;
 
+	self.origin = self.enemy.origin; // follows, but poorly if movement is fast
+
 // NOTE: archon sub-game idea -
 //					imprisoned pieces in arc I are freed when color reaches their favor, in arc II they are not freed, but dont die
 
@@ -2368,6 +2373,14 @@ void() next_imprisoned =
 		self.ammo_cells = 11;
 		if (self.arcvess.pk_explode_ammo < 4500) self.ammo_cells = 3;
 	}
+	else
+	{
+		self.stack1 = "imprisoned";
+		if (self.bolt_target.enemy.netname) self.stack1 = self.bolt_target.enemy.netname;
+		stuffcmd(self, "hud_target1 \"");
+		stuffcmd(self, self.stack1);
+		stuffcmd(self, "\"\n");		
+	}
 };
 
 // release spell - lets archon release their own prisoners (but not other archons!)
@@ -2379,7 +2392,7 @@ bprint(" --- in archon release - at entry\n");
 #endifdef
 	if (!self.bolt_target) return;
 	if (self.bolt_target == self) return;
-	if (!self.bolt_target.owner != self) return;
+	if (self.bolt_target.owner != self) return;
 #ifdef testset
 bprint(" --- in archon release - at verified\n");
 #endifdef
@@ -2395,7 +2408,7 @@ bprint(" --- in archon release - released\n");
 			self.bolt_target.enemy.think = player_stand1;
 			if (self.bolt_target.enemy.classname == "pk*bot") self.bolt_target.enemy.think = bot_stand1;
 		}
-		else if (self.bolt_target.flags & FL_MONSTER)
+		else if (self.bolt_target.enemy.flags & FL_MONSTER)
 		{
 			self.bolt_target.enemy.think = self.bolt_target.enemy.th_run;
 			self.bolt_target.enemy.nextthink = time + 1;
@@ -2403,7 +2416,10 @@ bprint(" --- in archon release - released\n");
 		self.bolt_target.enemy.attack_finished = 0;
 		self.bolt_target.enemy.event = null_string;
 		remove(self.bolt_target.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
+		self.bolt_target.enemy.bolt_target = world;
 		remove(self.bolt_target);
+		self.bolt_target = world;
+		next_imprisoned();
 		self.archon = self.archon + self.pk_explode_ammo; // get back this many pts
 	}
 };
@@ -2425,6 +2441,13 @@ void() archon_imprison =
 			return; // could not imprison
 		}
 		newmis = spawn();
+		newmis.origin = self.bolt_target.origin;
+// testing - imprison speher
+		setmodel(newmis, "progs/sphere_annihilation.mdl");
+		newmis.scale = 7;
+		newmis.skin = 3;
+		newmis.alpha = 0.5;
+
 		newmis.think = thing_imprisoned;
 		newmis.nextthink = time + 0.1;
 		newmis.owner = self;
@@ -2577,13 +2600,16 @@ void() make_vessel =
 		newmis.aflag = -6; // a "made" vessel 
 		self.bolt_target = newmis;
 	}
-	else if (self.pk_beartrapammo & 3)
+	else // if (self.pk_beartrapammo & 3)
 	{
 		newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, 0, v0, '-8 -8 -8', '8 8 8', v0, v0, null_string, "progs/nodule11.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world);
+		if (self.pk_beartrapammo == 4) setmodel(newmis, self.bolt_target.model);
 		if (self.pk_beartrapammo == 2) setmodel(newmis, "progs/tomb2.mdl");
 		else newmis.skin = 1;
 		setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
 		newmis.scale = 0.8;
+		if (self.pk_beartrapammo == 4)
+		if (self.bolt_target.flags & FL_MONSTER) newmis.scale = 0.5;
 		newmis.aflag = -6; // a "made" vessel 
 		self.bolt_target = newmis;
 	}
@@ -2961,7 +2987,7 @@ void() spell_target =
 			self.th_melee = make_vessel;
 			if (self.bolt_target == self) self.bolt_target = world;
 			self.pkplus_actorammo = 1;
-			if (self.pk_beartrapammo == 4) self.pkplus_actorammo = 19;
+			if (self.pk_beartrapammo == 4) self.pkplus_actorammo = 3;
 		}
 	}
 	if (self.weapon == IT_SUPER_SHOTGUN)

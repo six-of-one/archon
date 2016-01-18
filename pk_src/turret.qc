@@ -340,12 +340,13 @@ void() turret_findTarget =
 		if (head.takedamage)
 		if (head != self)
 		if (head.classname != "beartrap")
-		if (!((head.classname == "turret") && (head.owner == self.owner))) // target other players turrets - these things are viscious, has any one seen screamers?
+		if (!((head.classname == "turret") && (head.owner == self.owner))) // target other players turrets - these things are viscious, hasnt any one seen screamers?
 		if (head.classname != "turret_base")
 		if (pk_art_movshot_ck(head, "turret")) // Cataboligne 8.12.9 purify - pk artifacts
 	  //if (!(head.classname == "turret"))
 	  //if (!(head.classname == "turret_base"))
 		if ((self.turret_ownertimeout > 0 && self.turret_ownertimeout < time) || head != self.owner)
+		if (!head.charmer || head.charmer != self.owner) // dont target owners helpers
 	 	if (head.classname != "player" || !(head.items & IT_INVISIBILITY))
 	  {
 	    tempDist = vlen(head.origin - self.origin);

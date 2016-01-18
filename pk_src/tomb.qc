@@ -135,21 +135,20 @@ void () tombtouch =
 	else
 */
 	if (other.classname != "player" && other.classname != "pk*bot")
-//	if ((! other.flags & FL_MONSTER) || !ENHANCED)
 #ifdef enhanced
 	if (! other.flags & FL_MONSTER)
+	  return;
+
+	if (other.charmer && other.charmer == self.owner.owner) // dont target owners helpers
 #endifdef
-	{
 		return ;
-	}
+
 	if ( ((other == self.owner.owner) && (self.tomb_time > time)) )
-	{
 		return ;
-	}
+
 	if ( (other.tomb_immune_time > time) )
-	{
 		return ;
-	}
+
 	
 #ifdef enhanced
 //	if (ENHANCED)
