@@ -41,25 +41,25 @@ void () phone_activate;
 
 // const - subs.qc
 
-float PRINT_HIGH						= 2;
-float PKPLUS_TOMB_TIMETOFOLLOW	= 20;
-float TOMB_BUFFER						= 3;
-float PKPLUS_TOMB_DMG				= 3;
+#define PRINT_HIGH						2
+#define PKPLUS_TOMB_TIMETOFOLLOW	20
+#define TOMB_BUFFER						3
+#define PKPLUS_TOMB_DMG				3
 float PKPLUS_TOMB_TIME;
 float PKPLUS_EGOAMMO_MAX;
 float PKPLUS_TOMBAMMO_MAX;
 float PKPLUS_ACTORAMMO_MAX;
 float PKPLUS_PHONEAMMO_MAX;
-float PKPLUS_IT_EGO					= 256;
-float PKPLUS_IT_TOMB					= 512;
-float PKPLUS_IT_ACTOR				= 1024;
-float PKPLUS_IT_PHONE				= 2048;
-float PKPLUS_ACTORPENT				= 1;
-float PKPLUS_ACTORQUAD				= 2;
-float PKPLUS_ACTORINVIS				= 3;
+#define PKPLUS_IT_EGO					256
+#define PKPLUS_IT_TOMB					512
+#define PKPLUS_IT_ACTOR				1024
+#define PKPLUS_IT_PHONE				2048
+#define PKPLUS_ACTORPENT				1
+#define PKPLUS_ACTORQUAD				2
+#define PKPLUS_ACTORINVIS				3
 // mask con
 
-float PKPLUS_ACTOR_IGN_DMSKN		= 1; // if true damange skin code treats actor just like real pent
+#define PKPLUS_ACTOR_IGN_DMSKN		1 // if true damange skin code treats actor just like real pent
 
 float PK_TOMB_SET;
 
@@ -102,10 +102,10 @@ deprecated - already in pk_bot
 
 // for admin item management - follows ammo by bit stuff
 
-float WEP_EGO					= 16384;
-float WEP_TOMB					= 32768;
-float WEP_ACTOR				= 65536;
-float WEP_PHONE				= 131072;
+#define WEP_EGO					16384
+#define WEP_TOMB					32768
+#define WEP_ACTOR				65536
+#define WEP_PHONE				131072
 
 
 // qc needing mods for support via pk 2.x

@@ -23,49 +23,49 @@ controls bots
 
 // time limit on admin password entry
 float admin_time;
-float A_TIME = 10; // 10 rels for admin password - if this is not set, admin access attempt becomes free invulnerable state!
-float A_DELAY = 30; // time until you can do anything after failing the admin entry - no shooting, no admin!
+#define A_TIME 10 // 10 rels for admin password - if this is not set, admin access attempt becomes free invulnerable state!
+#define A_DELAY 30 // time until you can do anything after failing the admin entry - no shooting, no admin!
 
 // Level impulses
-float   A_PKHUB  = 21;
-float   A_PAINKEEP = 20;
-float   A_PK0   = 19;
-float   A_PK1   = 01;
-float   A_PK2   = 02;
-float   A_PK3   = 03;
-float   A_PK4   = 04;
-float   A_PK5   = 05;
-float   A_PK6   = 06;
-float   A_PK7   = 07;
-float   A_PK8   = 08;
-float   A_PK9   = 09;
-float   A_PK10  = 10;
-float   A_PK11  = 11;
-float   A_PK12  = 12;
-float   A_PK13  = 13;
-float   A_PK14  = 14;
-float   A_PK15  = 15;
-float   A_PK16  = 16;
-float   A_PK17  = 17;
-float   A_PK18  = 18;
+#define   A_PKHUB  21
+#define   A_PAINKEEP 20
+#define   A_PK0   19
+#define   A_PK1   01
+#define   A_PK2   02
+#define   A_PK3   03
+#define   A_PK4   04
+#define   A_PK5   05
+#define   A_PK6   06
+#define   A_PK7   07
+#define   A_PK8   08
+#define   A_PK9   09
+#define   A_PK10  10
+#define   A_PK11  11
+#define   A_PK12  12
+#define   A_PK13  13
+#define   A_PK14  14
+#define   A_PK15  15
+#define   A_PK16  16
+#define   A_PK17  17
+#define   A_PK18  18
 
 // link codes
-float   A_DMT   = 01;
-float   A_TEAMT = 02;
-float   A_COOPT = 03;
-float   A_NOEX  = 04;
-float   A_JUMP  = 05;
-float   A_RESET = 06;
-float   A_START = 07;
-float   A_FRAGL = 10;
-float   A_TIMEL = 11;
-float   A_GRAVU = 12;
-float   A_DMMAP = 22;
-float   A_PKCON = 24;
-float   A_ITEM  = 25;
-float   A_MONST = 26;
-float   A_SKICK = 30;
-float   A_PKMOD = 60;
+#define   A_DMT   01
+#define   A_TEAMT 02
+#define   A_COOPT 03
+#define   A_NOEX  04
+#define   A_JUMP  05
+#define   A_RESET 06
+#define   A_START 07
+#define   A_FRAGL 10
+#define   A_TIMEL 11
+#define   A_GRAVU 12
+#define   A_DMMAP 22
+#define   A_PKCON 24
+#define   A_ITEM  25
+#define   A_MONST 26
+#define   A_SKICK 30
+#define   A_PKMOD 60
 
 
 // for external modules
@@ -626,7 +626,7 @@ float() MapDM =
 StartKick
 ==========
 */
-float KICKCODE = -94562375;
+#define KICKCODE -94562375
 
 void() find_Kick =
 {

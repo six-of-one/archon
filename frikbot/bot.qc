@@ -119,7 +119,7 @@ for all variable in the bot...
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-float FRIKBOT = TRUE; // set to true for frikbot access
+#define FRIKBOT TRUE // set to true for frikbot access
 
 // ----- entity fields ---
 .float	wallhug, keys, oldkeys, ishuman;
@@ -139,67 +139,67 @@ float FRIKBOT = TRUE; // set to true for frikbot access
 .vector dyn_dest;
 
 // --------defines-----
-float SVC_UPDATENAME	= 13;
-float SVC_UPDATEFRAGS	= 14;
-float SVC_UPDATECOLORS	= 17;
+#define SVC_UPDATENAME	13
+#define SVC_UPDATEFRAGS	14
+#define SVC_UPDATECOLORS	17
 
 // used for the physics & movement AI
-float KEY_MOVEUP 		= 1;
-float KEY_MOVEDOWN 	= 2;
-float KEY_MOVELEFT 	= 4;
-float KEY_MOVERIGHT 	= 8;
-float KEY_MOVEFORWARD	= 16;
-float KEY_MOVEBACK	= 32;
-float KEY_LOOKUP		= 64;
-float KEY_LOOKDOWN	= 128;
-float KEY_LOOKLEFT	= 256;
-float KEY_LOOKRIGHT	= 512;
+#define KEY_MOVEUP 		1
+#define KEY_MOVEDOWN 	2
+#define KEY_MOVELEFT 	4
+#define KEY_MOVERIGHT 	8
+#define KEY_MOVEFORWARD	16
+#define KEY_MOVEBACK	32
+#define KEY_LOOKUP		64
+#define KEY_LOOKDOWN	128
+#define KEY_LOOKLEFT	256
+#define KEY_LOOKRIGHT	512
 
 // these are aiflags for waypoints
 // some overlap to the bot
-float AI_TELELINK_1	= 1; // link type
-float AI_TELELINK_2	= 2; // link type
-float AI_TELELINK_3	= 4; // link type
-float AI_TELELINK_4	= 8; // link type
-float AI_DOORFLAG		= 16; // read ahead
-float AI_PRECISION	= 32; // read ahead + point
-float AI_SURFACE		= 64; // point 
-float AI_BLIND		= 128; // read ahead + point
-float AI_JUMP		= 256; // point + ignore
-float AI_DIRECTIONAL	= 512; // read ahead + ignore
-float AI_PLAT_BOTTOM	= 1024; // read ahead 
-float AI_RIDE_TRAIN	= 2048; // read ahead 
-float AI_SUPER_JUMP	= 4096; // point + ignore + route test
-float AI_SNIPER		= 8192; // point type 
-float AI_AMBUSH		= 16384; // point type
-float AI_DOOR_NO_OPEN	= 32768; // read ahead
-float AI_DIFFICULT	= 65536; // route test
-float AI_TRACE_TEST	= 131072; // route test
+#define AI_TELELINK_1	1 // link type
+#define AI_TELELINK_2	2 // link type
+#define AI_TELELINK_3	4 // link type
+#define AI_TELELINK_4	8 // link type
+#define AI_DOORFLAG		16 // read ahead
+#define AI_PRECISION	32 // read ahead + point
+#define AI_SURFACE		64 // point 
+#define AI_BLIND		128 // read ahead + point
+#define AI_JUMP		256 // point + ignore
+#define AI_DIRECTIONAL	512 // read ahead + ignore
+#define AI_PLAT_BOTTOM	1024 // read ahead 
+#define AI_RIDE_TRAIN	2048 // read ahead 
+#define AI_SUPER_JUMP	4096 // point + ignore + route test
+#define AI_SNIPER		8192 // point type 
+#define AI_AMBUSH		16384 // point type
+#define AI_DOOR_NO_OPEN	32768 // read ahead
+#define AI_DIFFICULT	65536 // route test
+#define AI_TRACE_TEST	131072 // route test
 
 // these are flags for bots/players (dynamic/editor flags)
-float AI_OBSTRUCTED	= 1;
-float AI_HOLD_SELECT	= 2;
-float AI_ROUTE_FAILED	= 2;
-float AI_WAIT		= 4;
-float AI_DANGER		= 8;
+#define AI_OBSTRUCTED	1
+#define AI_HOLD_SELECT	2
+#define AI_ROUTE_FAILED	2
+#define AI_WAIT		4
+#define AI_DANGER		8
 
 
 // addition masks
-float AI_POINT_TYPES 	= 29152;
-float AI_READAHEAD_TYPES	= 36528;
-float AI_IGNORE_TYPES	= 4864;
+#define AI_POINT_TYPES 	29152
+#define AI_READAHEAD_TYPES	36528
+#define AI_IGNORE_TYPES	4864
 
-float WM_UNINIT		= 0;
-float WM_DYNAMIC		= 1;
-float WM_LOADING		= 2;
-float WM_LOADED		= 3;
-float WM_EDITOR		= 4;
-float WM_EDITOR_DYNAMIC	= 5;
-float WM_EDITOR_DYNLINK	= 6;
+#define WM_UNINIT		0
+#define WM_DYNAMIC		1
+#define WM_LOADING		2
+#define WM_LOADED		3
+#define WM_EDITOR		4
+#define WM_EDITOR_DYNAMIC	5
+#define WM_EDITOR_DYNLINK	6
 
 
-float OPT_SAVEBOTS	= 1;
-float OPT_NOCHAT	= 2;
+#define OPT_SAVEBOTS	1
+#define OPT_NOCHAT	2
 
 // -------globals-----
 float 	active_clients;

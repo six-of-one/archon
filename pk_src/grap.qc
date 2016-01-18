@@ -38,23 +38,6 @@ tip: read above for list of most-executed functions
 
 
 
-/*
-// moved to pk.defs.qc
-
-float GRAP_IDEAL = 0; // Going nothing
-float GRAP_OUT = 1; // It's outing out
-float GRAP_IN = 2; // It's comming back to the owner
-float GRAP_TOHARPOON = 3; // lengthen rope
-float GRAP_FIXED = 4; // The length is fixed.
-float GRAP_ROPESHORTEN = 5; // shorten rope
-float GRAP_ROPELENGTHEN = 6; // lengthen rope
-float GRAP_HARPOON = 7;
-float GRAP_CORNER = 8;
-float GRAP_ROPE = 9;
-*/
-// defs_END
-
-
 void() grap_touch;
 float() grap_maintainRope;
 void() grap_touchOwner;
@@ -75,8 +58,8 @@ float(entity owner, vector ownerOrigin, vector tryOrigin) grap_checkIfCanBeRemov
 
 
 
-float CHAN_GRAPROPE	=	5;
-float GRAPROPE_MAXLEENGTH = 1500;
+#define CHAN_GRAPROPE	5
+#define GRAPROPE_MAXLEENGTH 1500
 
 void() grap_fire =
 {

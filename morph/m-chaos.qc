@@ -43,7 +43,7 @@ Chaos intends to change all of that.
 $frame chaos1 chaos2 chaos3 chaos4 chaos5 chaos6 chaos7 chaos8 chaos9 chaos10 chaos11 chaos12 chaos13 chaos14  chaos15 chaos16 chaos17 chaos18 chaos19 chaos20
 $frame chaosfade1 chaosfade2 chaosfade3 chaosfade4 chaosfade5 chaosfade6 chaosfade7 chaosfade8 chaosfade9 chaosfade10 chaosfade11 chaosfade12 chaosfade13
 
-float CHAOS_FIREBOLT_FRAME_ADJ = 8;
+#define CHAOS_FIREBOLT_FRAME_ADJ 8
 
 /*
 		+---------------------------------------+
@@ -84,15 +84,15 @@ void() m_precache_chaos =
 	chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, null_string, null_string, SUB_Null, 180, c_turret, SUB_Null, self, world);
 };
 
-float FL_CSB						= 16; // star burst in progress
-float FL_MELO						= 32; // move effect lock out - uses .wait
-float FL_SPIKE						= 16384; // chaos morph only now
-float FL_CBALL						= 32768; // chromatic ball chaos
+#define FL_CSB						16 // star burst in progress
+#define FL_MELO						32 // move effect lock out - uses .wait
+#define FL_SPIKE						16384 // chaos morph only now
+#define FL_CBALL						32768 // chromatic ball chaos
 
 // chaos  power is archon power now
-float CHAOS_INC					= 10; // amount chaos increments by per frame
-float CHAOS_DEC					= -7; // amount used firing beam
-float CHAOS_ABSOLUTE				= 256000; // ultimate max chaos level - if this is reached, total chaos ensues
+#define CHAOS_INC					10 // amount chaos increments by per frame
+#define CHAOS_DEC					-7 // amount used firing beam
+#define CHAOS_ABSOLUTE				256000 // ultimate max chaos level - if this is reached, total chaos ensues
 float MAX_CHAOS_LVL;//			= 16000;// max chaos level - when exceeded chaos star burst happens.
 float MIN_CHAOS_DEC;//			= 3000; // min burst needs to dec
 float CHAOS_BEAM_GAIN;					// beam min added to this - beam locked out after every up
@@ -102,17 +102,17 @@ float CHAOS_MELO_MIN;//		= 60; // min lockout time
 float ci_last, ci_fr, ci_sk, ci_flg, ci_tur; // last item made & frame set, master flag, turret count
 string ci_md; // last item model
 
-float FL_SAME						= 2; // make same thing
-float FL_FFLY						= 8; // move field by velocity
-float FL_FJUMP						= 4; // move field by setorg
-float FL_FLIT						= 32768; // light field
-float FL_FPART						= 65536; // particle field
-float LT_CHAOS						= 7;  // chaos beam -- IMP: replace with some other effects system
-float USE_PULSE_SPIKES			= -250;
-float C_FBPER						= 0.7; // % for chaos explode to fire bolts
-float CFCBALL						= 207;
-float CI_EXPLBOX					= 0.1; // % chance chaos item capable will become explode box
-float CI_FLAMEREAL				= 0.2; // % chance chaos item tossed flame2.mdl burns
+#define FL_SAME						2 // make same thing
+#define FL_FFLY						8 // move field by velocity
+#define FL_FJUMP						4 // move field by setorg
+#define FL_FLIT						32768 // light field
+#define FL_FPART						65536 // particle field
+#define LT_CHAOS						7  // chaos beam -- IMP: replace with some other effects system
+#define USE_PULSE_SPIKES			-250
+#define C_FBPER						0.7 // % for chaos explode to fire bolts
+#define CFCBALL						207
+#define CI_EXPLBOX					0.1 // % chance chaos item capable will become explode box
+#define CI_FLAMEREAL				0.2 // % chance chaos item tossed flame2.mdl burns
 .float chaosattnoise; // IDEA: remove
 // end
 
@@ -1422,23 +1422,23 @@ void(vector org, float flg) chaos_burst =
 // .wait - lifetime
 // .flags as indicated:
 
-float MAX_FIELDS			= 7.8;
+#define MAX_FIELDS			7.8
 /*
 
 moved up for chaos item
 
-float FL_FJUMP				= 4; // move field by setorg
-float FL_FFLY					= 8; // move field by velocity
-float FL_FLIT						= 32768; // light field
-float FL_FPART					= 65536; // particle field
+#define FL_FJUMP				4 // move field by setorg
+#define FL_FFLY					8 // move field by velocity
+#define FL_FLIT						32768 // light field
+#define FL_FPART					65536 // particle field
 */
 
-float fwalk_dist					= 12; // field move velocity max | rnd jump origin additive
-float lf_per						= 0.06; // chance per rel of light field
-float pf_per						= 0.05; // chance per rel of particle field
-float pf_len						= 5.0; // avg field 5 rels
-float pf_dev						= 1.5; // +- 1.5
-float pf_exc						= 17.0; // exceptional fields are longer
+#define fwalk_dist					12 // field move velocity max | rnd jump origin additive
+#define lf_per						0.06 // chance per rel of light field
+#define pf_per						0.05 // chance per rel of particle field
+#define pf_len						5.0 // avg field 5 rels
+#define pf_dev						1.5 // +- 1.5
+#define pf_exc						17.0 // exceptional fields are longer
 float particle_fields;
 
 float(float ad) fieldadd = // field count controls
@@ -1578,13 +1578,13 @@ puddle (lava + acid)
 
 */
 string beam_hum;
-float CBURST						= 0.04; // chance of chaos burst per rel
-float CBQUAKE						= 0.05; // chance of chaos beam quake
-float CBTELEP						= 0.03; // chance of chaos beam teleport
-float CBEXCH						= 0.05; // chance of chaos beam exchange
-float CBDROPI						= 0.02; // chance of chaos beam drop item - done in chaos_item for now
-float CBXFORM						= 0.03; // chance of chaos beam transform
-float CBSUMMON						= 0.015; // chance of chaos beam summon monster
+#define CBURST						0.04 // chance of chaos burst per rel
+#define CBQUAKE						0.05 // chance of chaos beam quake
+#define CBTELEP						0.03 // chance of chaos beam teleport
+#define CBEXCH						0.05 // chance of chaos beam exchange
+#define CBDROPI						0.02 // chance of chaos beam drop item - done in chaos_item for now
+#define CBXFORM						0.03 // chance of chaos beam transform
+#define CBSUMMON						0.015 // chance of chaos beam summon monster
 
 #ifdef testset
 entity x3;

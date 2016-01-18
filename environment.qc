@@ -447,13 +447,13 @@ void(vector lorg1, vector lorg2) seq_bolt =
 
 // flg - flag controls
 /*
-float FL_RND			= 1; // pick a random color
-float FL_COL1		= 2; // use this color
-float FL_COL2		= 4;
-float FL_COL3		= 8;
-float FL_ALLCL			= 16; // fire particles of all colors
-float FL_PERC		= 32; // percentage determins how much of each to throw if more than 1 used, usage always rand() < per_x < _y < _z
-float FL_RNDUR	= 64; // randomize duration
+#define FL_RND			= 1; // pick a random color
+#define FL_COL1		= 2; // use this color
+#define FL_COL2		= 4;
+#define FL_COL3		= 8;
+#define FL_ALLCL			= 16; // fire particles of all colors
+#define FL_PERC		= 32; // percentage determins how much of each to throw if more than 1 used, usage always rand() < per_x < _y < _z
+#define FL_RNDUR	= 64; // randomize duration
 */
 
 void(vector org, float ofs, vector vp, vector vr, float dur, float amt, float rmt, float flg, vector clm, vector crm, vector per) particle_burst =

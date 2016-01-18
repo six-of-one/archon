@@ -5,55 +5,55 @@
 */
 // map item indiv reposition codes
 
-float ARM_SPIRIT				= 1; // doom spirit armor
+#define ARM_SPIRIT				1 // doom spirit armor
 
 // doom values
-float D_DEF_HBOTTLE			= 1;
-float D_DEF_HSTIMPAK			= 10;
-float D_DEF_HMEDKIT			= 25;
-float D_DEF_SOULSPH			= 100;
-float D_SOUL_MAX				= 200; // soul, mega max health
+#define D_DEF_HBOTTLE			1
+#define D_DEF_HSTIMPAK			10
+#define D_DEF_HMEDKIT			25
+#define D_DEF_SOULSPH			100
+#define D_SOUL_MAX				200 // soul, mega max health
 
-float D_ARM_TGRN				= 0.333;
-float D_ARM_GRN				= 100;
-float D_ARM_TBLU				= 0.5;
-float D_ARM_BLUE				= 200;
+#define D_ARM_TGRN				0.333
+#define D_ARM_GRN				100
+#define D_ARM_TBLU				0.5
+#define D_ARM_BLUE				200
 
-float D_DEF_SHELLS			= 4;		// small box
-float D_DEF_SHELLBOX			= 20;		// large box
-float D_DEF_SHOTG				= 8;		// weapon def
-float D_DEF_BULLETS_CLIP	= 10;
-float D_DEF_BULLETS_BOX		= 50;
-float D_DEF_CHAING			= 20;
-float D_DEF_CELLBOX			= 100;
-float D_DEF_CELLPAK			= 20;
-float D_DEF_PLASMAG			= 40;
-float D_DEF_BFG				= 40;
-float D_DEF_ROCKETS_LG		= 5;
-float D_DEF_ROCKETS_SM		= 1;
-float D_DEF_BLAST				= 2;
+#define D_DEF_SHELLS			4		// small box
+#define D_DEF_SHELLBOX			20		// large box
+#define D_DEF_SHOTG				8		// weapon def
+#define D_DEF_BULLETS_CLIP	10
+#define D_DEF_BULLETS_BOX		50
+#define D_DEF_CHAING			20
+#define D_DEF_CELLBOX			100
+#define D_DEF_CELLPAK			20
+#define D_DEF_PLASMAG			40
+#define D_DEF_BFG				40
+#define D_DEF_ROCKETS_LG		5
+#define D_DEF_ROCKETS_SM		1
+#define D_DEF_BLAST				2
 
-float D_MAX_BULLETS			= 200;	// max val without pack / rune
-float D_MAX_SHELLS			= 50;
-float D_MAX_ROCKETS			= 50;
-float D_MAX_CELLS				= 300;
+#define D_MAX_BULLETS			200	// max val without pack / rune
+#define D_MAX_SHELLS			50
+#define D_MAX_ROCKETS			50
+#define D_MAX_CELLS				300
 
-float D_BARREL_BLAST			= 128;
+#define D_BARREL_BLAST			128
 
 // should be RSP_TIME
 
-float DOOM_ML_DMG				= -1666665; // tell code to calculate doom melee damage - d2 * 10 per hit
-float DOOM_SHOT_DMG			= -1666666; // tell code to calculate doom bullet damage - d3 * 5 per shot
-float DOOM_ROCK_DMG			= -1666667; // tell code to calculate doom rocket damage - 
-float DOOM_BFG_DMG			= -1666669; // tell code to calculate doom bfg damage -  d8 * 100 + traces + ??
+#define DOOM_ML_DMG				-1666665 // tell code to calculate doom melee damage - d2 * 10 per hit
+#define DOOM_SHOT_DMG			-1666666 // tell code to calculate doom bullet damage - d3 * 5 per shot
+#define DOOM_ROCK_DMG			-1666667 // tell code to calculate doom rocket damage - 
+#define DOOM_BFG_DMG			-1666669 // tell code to calculate doom bfg damage -  d8 * 100 + traces + ??
 
-float W_DEF_BULLETS_CLIP	= 8;
+#define W_DEF_BULLETS_CLIP	8
 
-float W_MAX_BULLETS			= 199;	// max val without pack / rune
-float W_MAX_ROCKETS			= 99;
-float W_MAX_GAS				= 99;
+#define W_MAX_BULLETS			199	// max val without pack / rune
+#define W_MAX_ROCKETS			99
+#define W_MAX_GAS				99
 
-float SAWLEN					= 80; // lenght saw can attack
+#define SAWLEN					80 // lenght saw can attack
 
 void() doom_precache =
 {
@@ -2518,8 +2518,8 @@ void() player_sawu6 = [$shotatt6, player_stand1] { };
 
 // specials, decor
 
-float NOBLOCK = 1;
-float BLOCK = 1;
+#define NOBLOCK 1
+#define BLOCK 1
 
 void() ddecor_blue_firestick =
 {

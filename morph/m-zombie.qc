@@ -84,7 +84,7 @@ void() m_precache_zombie =
 
 /* Morph to zombie */
 
-float FL_CLOUDED = 16384; // zombie shot cloudkill
+#define FL_CLOUDED 16384 // zombie shot cloudkill
 
 // fn(zombie_regen) - handle morph zombie regeneration
 
@@ -379,15 +379,15 @@ void() ZombieGrenadeTouch2;
 
 // IDEA - limits to base type - i.e. q2 for q2 only, doom to doom only etc
 
-float ST_BEATPLAGUE			= 3; // 3 rnds fighting off plague and its gone...for now
-float ST_HEALPLAGUE			= 0.05; // % per for beating plague for normal health boxes
-float CK_PLAGUE_CATCH		= 0.8; // chance per touch to catch plague - IDEA - diff for some morphs?
-float CK_PLAGUE_RND			= 0.1; // chance to fight plague per round - cumulative
-float CK_PLAGUE_TIME			= 2; // time before retouch on bodies / heads
-float CK_PLAGUE_ZGIB			= 0.3; // chance zombie gibs / head are plagued
-float CK_PLAGUE_GIB			= 0.1; // chance regular gibs / head are plagued
-float TM_PLAGUE				= 1; // round defined for think - 1 rel
-float MAX_PLAGUE_TIME		= 300; // total plague time 5 mins
+#define ST_BEATPLAGUE			3 // 3 rnds fighting off plague and its gone...for now
+#define ST_HEALPLAGUE			0.05 // % per for beating plague for normal health boxes
+#define CK_PLAGUE_CATCH		0.8 // chance per touch to catch plague - IDEA - diff for some morphs?
+#define CK_PLAGUE_RND			0.1 // chance to fight plague per round - cumulative
+#define CK_PLAGUE_TIME			2 // time before retouch on bodies / heads
+#define CK_PLAGUE_ZGIB			0.3 // chance zombie gibs / head are plagued
+#define CK_PLAGUE_GIB			0.1 // chance regular gibs / head are plagued
+#define TM_PLAGUE				1 // round defined for think - 1 rel
+#define MAX_PLAGUE_TIME		300 // total plague time 5 mins
 
 void() PlagueTouch;
 
@@ -564,8 +564,8 @@ void() player_ZombieFireGrenade =
 // .lefty - chance of instant death
 // IDEA: color?
 
-float MIN_CLOUD_DIST			= 300; // minimum distance between player / zombie clouds
-float CLOUD2_STATE			= 100; // if 2nd cloud is to start - cloud 1 state must be < than this
+#define MIN_CLOUD_DIST			300 // minimum distance between player / zombie clouds
+#define CLOUD2_STATE			100 // if 2nd cloud is to start - cloud 1 state must be < than this
 float tot_cloud;  // limit 3 clouds, 1 zomby can only have 2
 
 // slows stuff down in clouds - more touched, more slowed

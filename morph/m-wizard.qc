@@ -332,8 +332,8 @@ void() player_wizard_painleech =  [ $attack1, player_wizard_painleech2 ] {};
 void() player_wizard_painleech2 = [ $pain1,   player_wizard_painleech3 ] {};
 void() player_wizard_painleech3 = [ $pain2,   player_wizard_painleech4 ]
 {
-	float FULL_EFFECT_DIST = 50; // effect increases at < this dist - decreases outside this range
-	float MAX_EFFECT_DIST = 300; // no effect at all beyond this dist
+	#define FULL_EFFECT_DIST  50 // effect increases at < this dist - decreases outside this range
+	#define MAX_EFFECT_DISTm  300 // no effect at all beyond this dist
 	float dist, ext;					// particle spray cnt, dist to vic, mlt to add
 	local entity head;
 	
@@ -345,7 +345,7 @@ void() player_wizard_painleech3 = [ $pain2,   player_wizard_painleech4 ]
 	}
 	// IDEA: some short range lbolts?
 
-	head = findradius(self.origin, MAX_EFFECT_DIST);
+	head = findradius(self.origin, MAX_EFFECT_DISTm);
 	while (head) // IDEA - clear these (arachno too) when attack stops
 	{
 		if (head != self)

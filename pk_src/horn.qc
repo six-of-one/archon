@@ -39,7 +39,7 @@ $frame ablast1 ablast2 ablast3 ablast4 ablast5 ablast6
 
 // for search - PK100 val
 
-float AIRGUN_SDOT = 0.8;
+#define AIRGUN_SDOT 0.8
 
 
 // The Main code for the AirFist that is called when the AirFist is fired.
@@ -52,17 +52,17 @@ void() launch_horn =
 	// Constants used in the control of how the AirFist is works
 
 	// Number of bubbles generated when the AirFist is fired under water.
-	local float numBubbles = 3; // number of bubbles generated in the water
+	#define numBubbles 3 // number of bubbles generated in the water
 
 	// Recoil strength of the AirFist on the player that shot the weapon.
 	local float recoil;
 	recoil = 300; // recoil strength of the gun
 
 	// Reshot time for the airgun attack in rels.
-	local float attackTime = 0.5;
+	#define attackTime 0.5
 
 	// Max number of times that the weapon can fired in a period of time.
-	local float maxFireRate = 5;
+	#define maxFireRate 5
 
 	// The maximum number of rels that maxFireRate can fire in.  If the
 	// player has reached the maxFireRate in under the shotTimeout then all
@@ -76,7 +76,7 @@ void() launch_horn =
 	// Any fire rate greater than 2.5 rels will incure a smaller or no
 	// wait time.  Any shots fired in that wait time are "failed" shots that
 	// will do nothing.
-	local float shotTimeout = 5.5; // number of rels for the maxFireRate
+	#define shotTimeout 5.5 // number of rels for the maxFireRate
 
 	// The AirFist fire codde:
 
@@ -233,7 +233,7 @@ void(float firstBlast) horn_airblast =
 	inRange  = 400;  // range of weapon
 
 	// Number of bubbles generated when the AirFist is fired under water.
-	local float numBubbles = 3; // number of bubbles generated in the water
+	#define numBubbles 3 // number of bubbles generated in the water
 
 	if (self.super_damage_finished > time)
 	if (self.pkplus_actortype != PKPLUS_ACTORQUAD) // Cataboligne 8.12.9 purify - pk artifacts

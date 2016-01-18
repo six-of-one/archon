@@ -11,13 +11,13 @@
 // 11.5.14 - hack fix for improperly lit item models after annihilation
 
 // sphere special flags
-float FL_ANNIHILATED			= 8192; // something has already been annihilated once - like monsters
+#define FL_ANNIHILATED			8192 // something has already been annihilated once - like monsters
 // sphere move states
-float ST_FREEZE				= -500;
-float ST_FOLLOW				= -501;
-float ST_ANGLE					= -502;
-float ST_VOLUME				= -503;
-float SP_MAXDIST				= 150; // cant control from further away than this
+#define ST_FREEZE				-500
+#define ST_FOLLOW				-501
+#define ST_ANGLE					-502
+#define ST_VOLUME				-503
+#define SP_MAXDIST				150 // cant control from further away than this
 
 
 void() gravity_pull;
@@ -36,9 +36,9 @@ $frame grvbomb1 grvbomb2 grvbomb3 grvbomb4 grvbomb5 grvbomb6 grvbomb7 grvbomb8 g
 $frame die1 die2 die3 die4 die5 die6 die7
 
 // dist to grab stuff when touching sphere - not all things call touch fn
-float SPHERE_HORIZON_CLI = 30; // client check 
-float SPHERE_HORIZON_ENT = 45; // general entity check
-float SPHERE_HORIZON = 100; // pull in missiles at this dist
+#define SPHERE_HORIZON_CLI 30 // client check 
+#define SPHERE_HORIZON_ENT 45 // general entity check
+#define SPHERE_HORIZON 100 // pull in missiles at this dist
 
 // sphere of annihilation code - for now summoned by shalrath
 	
@@ -127,7 +127,7 @@ void() sphere_annihilation_death7 = [ $die7, SUB_Null ]
 // for now this is animation code - free spheres do not move on thier own - but they need to
 
 float sphere_audio;
-float SPHERE_AUDIO_LIMIT = 3;
+#define SPHERE_AUDIO_LIMIT 3
 
 void() sphere_annihilation_move =
 {
@@ -637,15 +637,15 @@ void() sphere_whirl =
 	local float d;
 	local vector org;
 	local float gPercent;
-	local float gDist = 960;		// range of the weapon
-	local float gPower = 512;
+	#define gDist_w 960		// range of the weapon
+	#define gPower_w 512
 
 	org = (sphere_a.absmin + sphere_a.absmax) * 0.5;
 
 	d = vlen(self.origin - org);
-	gPercent = 1 - (d / gDist);
+	gPercent = 1 - (d / gDist_w);
 
-	self.velocity = self.velocity + normalize(sphere_a.origin - self.origin) * gPower * gPercent;
+	self.velocity = self.velocity + normalize(sphere_a.origin - self.origin) * gPower_w * gPercent;
 
 	if (self.attack_finished < time) set_annihilate(self); // whirl for a bit then go away
 

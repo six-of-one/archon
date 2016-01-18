@@ -143,6 +143,9 @@ void(float side) player_chainsaw =
 
 };
 
+/*
+REPLACED!
+
 void() player_ogre_swing1	=[	$swing1,		player_ogre_swing2	] {
 sound (self, CHAN_AUTO, "ogre/ogsawatk.wav", 1, ATTN_NORM);
 };
@@ -159,6 +162,33 @@ void() player_ogre_swing11	=[	$swing11,		player_ogre_swing12 ] {player_chainsaw(
 void() player_ogre_swing12	=[	$swing12,		player_ogre_swing13 ] {};
 void() player_ogre_swing13	=[	$swing13,		player_ogre_swing14 ] {};
 void() player_ogre_swing14	=[	$swing14,		player_stand1	] {};
+*/
+
+/*
+	if (self.frame == $swing1) 
+		sound (self, CHAN_AUTO, "ogre/ogsawatk.wav", 1, ATTN_NORM);
+
+	if (self.frame >= $swing5 && self.frame <= $swing11)
+		{
+			if (self.frame == $swing6) {player_chainsaw(200);self.angles_y = self.angles_y + random()* 25;}
+			else if (self.frame == $swing10) {player_chainsaw(-200);self.angles_y = self.angles_y + random()* 25;}
+			else {player_chainsaw(0);self.angles_y = self.angles_y + random()* 25;}
+		}
+*/
+
+framer($swing1, $swing14, player_ogre_swing1, player_stand1, 0.1,
+{
+	frame_arb($swing1,sound (self, CHAN_AUTO, "ogre/ogsawatk.wav", 1, ATTN_NORM));
+
+	frame_arb($swing6,{player_chainsaw(200);self.angles_y = self.angles_y + random()* 25;});
+	frame_arb($swing10,{player_chainsaw(-200);self.angles_y = self.angles_y + random()* 25;});
+
+	frameset_arb($swing5,$swing7,$swing8,$swing9,$swing11,-1,{player_chainsaw(0);self.angles_y = self.angles_y + random()* 25;});
+}
+);
+
+/*
+REPLACED!
 
 void() player_ogre_smash1	=[	$smash1,	       player_ogre_smash2 ] {
 sound (self, CHAN_AUTO, "ogre/ogsawatk.wav", 1, ATTN_NORM);
@@ -177,6 +207,17 @@ void() player_ogre_smash11	=[	$smash11,		player_ogre_smash12 ] { player_chainsaw
 void() player_ogre_smash12	=[	$smash12,		player_ogre_smash13 ] {};
 void() player_ogre_smash13	=[	$smash13,		player_ogre_smash14 ] {};
 void() player_ogre_smash14	=[	$smash14,		player_stand1 ] {};
+*/
+
+framer($smash1, $smash14, player_ogre_smash1, player_stand1, 0.1,
+{
+	frame_arb($smash1,sound (self, CHAN_AUTO, "ogre/ogsawatk.wav", 1, ATTN_NORM));
+
+	framerange_arb($smash6,$smash9,player_chainsaw(0););
+	frame_arb($smash10,player_chainsaw(1););
+	frame_arb($smash11,player_chainsaw(0););
+}
+);
 
 ////////////////////////////////////////////
 // 6 frames of shoot for player_ogre, going to player_stand1

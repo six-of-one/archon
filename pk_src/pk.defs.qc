@@ -12,15 +12,15 @@ void() pk_cphub;
 
 
 float PK;									// if set true painkeep code is enabled
-float PK_MAP					= 6144;	// bit * = FALSE -- map sets painkeep mode  - PK = TRUE if: any pk*.bsp loaded, start.bsp loaded and message == "hub", a map loads any painkeep map item, PK = FALSE otherwise
-float PK_ALWAYS				= 2048;	// bit *	= TRUE --- always in painkeep mode - PK = TRUE;
-float PK_NEVER					= 4096;	// bit *	= TRUE --- never in painkeep mode  - PK = FALSE;
-float PK_DYNAMIC				= 8192;	// bit *	= TRUE --- when always in painkeep mode & not on a PK map, dynamically load pk items if they are not present
+#define PK_MAP					6144	// bit * = FALSE -- map sets painkeep mode  - PK = TRUE if: any pk*.bsp loaded, start.bsp loaded and message == "hub", a map loads any painkeep map item, PK = FALSE otherwise
+#define PK_ALWAYS				2048	// bit *	= TRUE --- always in painkeep mode - PK = TRUE;
+#define PK_NEVER					4096	// bit *	= TRUE --- never in painkeep mode  - PK = FALSE;
+#define PK_DYNAMIC				8192	// bit *	= TRUE --- when always in painkeep mode & not on a PK map, dynamically load pk items if they are not present
 //												// items include  - bear trap, can o' beans, gravity well, harpoon, turret, airfist, exploding shot, XXX - chain thunderbolt, pulse nailgun
-float PK_SPIKER				= 16384;	// bit *	= FALSE -- allow spike traps, set to true for original pk treatment of spike shooters - they are removed
-float PK_XSOUND				= 32768;	// bit * = TRUE --- use extra pk sound set
+#define PK_SPIKER				16384	// bit *	= FALSE -- allow spike traps, set to true for original pk treatment of spike shooters - they are removed
+#define PK_XSOUND				32768	// bit * = TRUE --- use extra pk sound set
 
-//float PK-TP_STATUSON			= 256;
+//#define PK-TP_STATUSON			256
 
 // hub
 
@@ -31,7 +31,7 @@ float PK_XSOUND				= 32768;	// bit * = TRUE --- use extra pk sound set
 
 // For the level sequences, if the exec file has been run yet.
 float execed;
-float PK_TP_USERMAPON		= 512;
+#define PK_TP_USERMAPON		512
 
 
 // relocated from defs.qc
@@ -82,18 +82,18 @@ float PKID; // painkeep item ids that are ammo count stored: PKPLUS_IT_EGO + PKP
 
 
 // Items used in impulse 1
-float PK_IT_AXE				= 1;
-float PK_IT_GRAVITYWELL		= 2;
-float PK_IT_TURRET			= 4;
-float PK_IT_CANPAB			= 8;
-float PK_IT_GRAPGUN			= 16;
-float PK_IT_AIRGUN			= 32;
-float PK_IT_CLIGHT			= 64;
-float PK_IT_BEARTRAP			= 128;
-//float PK-IT_EXTRADISP		= 4096; //= 256; - pk artifacts support recode
+#define PK_IT_AXE				1
+#define PK_IT_GRAVITYWELL		2
+#define PK_IT_TURRET			4
+#define PK_IT_CANPAB			8
+#define PK_IT_GRAPGUN			16
+#define PK_IT_AIRGUN			32
+#define PK_IT_CLIGHT			64
+#define PK_IT_BEARTRAP			128
+//#define PK-IT_EXTRADISP		4096 //= 256; - pk artifacts support recode
 
-float PK_IT_RANGE				= 112; // range weps - grap, airgun, chainthunder
-float PK_IT_CARY				= 3982; // throwables - fire & forget - grav, turret, can, beartrap, ego, tomb, phone, actor
+#define PK_IT_RANGE				112 // range weps - grap, airgun, chainthunder
+#define PK_IT_CARY				3982 // throwables - fire & forget - grav, turret, can, beartrap, ego, tomb, phone, actor
 /*
 Impulse 1 will toggle between Axe, Bear Trap, CoPB, AS, and GW.
 
@@ -146,11 +146,11 @@ entity damage_inflictor;	// set by T_Damage
 // Constant used on the AIRG_Flags to specifiy that we have converted this
 // flying monsters movetype from MOVETYPE_STEP to MOVETYPE_FLY (see horn.qc for
 // more info).
-float AIRG_STEPCONVERTEDTOFLY	= 2;
+#define AIRG_STEPCONVERTEDTOFLY	2
 
 // Air Gun flag constants.
 // Setting an entity's AIRG_Flags excludes it from harm
-float AIRG_EXCLUDEENTITY		= 1;
+#define AIRG_EXCLUDEENTITY		1
 
 // At the moment the AIRG_Flags variable is used only for the exclusion routine
 // but this may change.
@@ -180,7 +180,7 @@ void(float firstBlast) horn_airblast;
 
 .float bolt_conduitTimeout;			// Entity conduit timeout if the entity handles it...
 
-//float	FL_GIBCONDUIT	= 8192;		// set if it's the first conduit entity
+//#define	FL_GIBCONDUIT	8192		// set if it's the first conduit entity
 
 .float bolt_changeModelTimeout;		// used to change the view weapon modal timeout.
 
@@ -199,18 +199,18 @@ void(float firstBlast) horn_airblast;
 .vector grep_offset;						// harpoon target offset for bringing back to owner
 .float grap_firetest;
 
-float GRAP_IDEAL				= 0; 		// Going nothing
-float GRAP_OUT					= 1; 		// It's outing out
-float GRAP_IN					= 2; 		// It's comming back to the owner
-float GRAP_TOHARPOON			= 3; 		// lengthen rope
-float GRAP_FIXED				= 4; 		// The length is fixed.
-float GRAP_ROPESHORTEN		= 5; 		// shorten rope
-float GRAP_ROPELENGTHEN		= 6;		// lengthen rope
-float GRAP_HARPOON			= 7;
-float GRAP_CORNER				= 8;
-float GRAP_ROPE				= 9;
+#define GRAP_IDEAL				0 		// Going nothing
+#define GRAP_OUT					1 		// It's outing out
+#define GRAP_IN					2 		// It's comming back to the owner
+#define GRAP_TOHARPOON			3 		// lengthen rope
+#define GRAP_FIXED				4 		// The length is fixed.
+#define GRAP_ROPESHORTEN		5 		// shorten rope
+#define GRAP_ROPELENGTHEN		6		// lengthen rope
+#define GRAP_HARPOON			7
+#define GRAP_CORNER				8
+#define GRAP_ROPE				9
 
-float VW_HARP_FRADJ        = 20; // frame adjust from run / stand for a fired harp
+#define VW_HARP_FRADJ        20 // frame adjust from run / stand for a fired harp
 
 
 // crates o stuff
@@ -230,7 +230,7 @@ var float autocvar_it_cubes_pk = 0;
 var float autocvar_it_cubes_morph = 0;
 
 float PK_CUBE;
-float PK_CUBE_DIST			= 192; // must be this close to cube to open, heh heh
+#define PK_CUBE_DIST			192 // must be this close to cube to open, heh heh
 float PK_CUBE_TIME; // freq of respawn
 float PK_CUBE_DV; // dev of respawn
 void(string cb) cube_handle;
@@ -263,7 +263,7 @@ float PK_BT_TIME;
 
 .float beartrap_time;
 .float bt_immune_time;
-float BT_BUFFER				= 2;	  	// The nuber of rels people are immune to beartraps after spawning
+#define BT_BUFFER				2	  	// The nuber of rels people are immune to beartraps after spawning
 
 // grav
 
@@ -280,7 +280,7 @@ float PK_EXPLODEAMMO_MAX;
 .vector ip_orgOrigin;
 
 // the timeout (in mins) where items move back to there original position...
-float ip_timeout				= 2;
+#define ip_timeout				2
 
 
 // For Drowning Ignoring armor
@@ -288,11 +288,11 @@ float ignorearmor;
 
 
 // hub ops
-//float PK_SF_HUB = 16;
+//#define PK_SF_HUB 16
 string CL_BOBSET           = "cl_bob 0.02\n"; // val for turning view bob back on when not exited hub
-float CL_BOBVAL				= 0.02; // standard bob amount
-float PK_SF_HUB				= 1024;	// moved to pk_flags
-float PK_TP_TIMEMASK			= 63;
+#define CL_BOBVAL				0.02 // standard bob amount
+#define PK_SF_HUB				1024	// moved to pk_flags
+#define PK_TP_TIMEMASK			63
 float inHubMap;
 float custom_hub_loaded;				// if TRUE custom hub is used
 
@@ -302,21 +302,21 @@ float() check_custom_hub;
 float(float cn) bot_vote;			// bot...vote
 
 // MOTD
-float MOTDTIME					= 120;		// The amount of "frames" for the motd message (minimum should be 20)
-float DONTALLOWBOTS			= 1;		// If we want to show anti bots messages at startup
+#define MOTDTIME					120		// The amount of "frames" for the motd message (minimum should be 20)
+#define DONTALLOWBOTS			1		// If we want to show anti bots messages at startup
 .float msgcount;
 void() updateStatusDisplay;
 
 .float laststattime;					// time of last status update
 
 // Quake Packet Message
-float	SVC_CENTERPRINT		= 26;
+#define	SVC_CENTERPRINT		26
 
 .float disconnectPlayer;
 
 // If the SFX are enabled or not
 //float sparkFlashOff;
-float PK_TP_SPARKSFLASH		= 64;
+#define PK_TP_SPARKSFLASH		64
 
 // Last weapon stuff
 .float lastweapon;

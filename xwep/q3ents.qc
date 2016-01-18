@@ -14,69 +14,69 @@
 
 // q3 values
 
-float Q3_DEFW					= 123;
-float Q3_DEFA					= 100;
+#define Q3_DEFW					123
+#define Q3_DEFA					100
 
 // ammo skins in mdl
-float q3_bfg_amsk				= 0;
-float q3_rail_amsk			= 1;
-float q3_plasma_amsk			= 2;
-float q3_lightn_amsk			= 3;
-float q3_rocket_amsk			= 4;
-float q3_grenade_amsk		= 5;
-float q3_shot_amsk			= 6;
-float q3_mach_amsk			= 7;
+#define q3_bfg_amsk				0
+#define q3_rail_amsk			1
+#define q3_plasma_amsk			2
+#define q3_lightn_amsk			3
+#define q3_rocket_amsk			4
+#define q3_grenade_amsk		5
+#define q3_shot_amsk			6
+#define q3_mach_amsk			7
 
 // artifact frames / skins in mdl
-float q3_quad_fsk				= 0;
-float q3_regn_fsk				= 1;
-float q3_env_fsk				= 2;
-float q3_hst_fsk				= 3;
-float q3_flt_fsk				= 4;
-float q3_inv_fsk				= 5;
+#define q3_quad_fsk				0
+#define q3_regn_fsk				1
+#define q3_env_fsk				2
+#define q3_hst_fsk				3
+#define q3_flt_fsk				4
+#define q3_inv_fsk				5
 
-float Q3_BFG_AMMO				= 150; // 15 - adj =10 cells per shot -- using cell ammo for now
-float Q3_SLUG_AMMO			= 10;
-float Q3_CELL_AMMO			= 30;
-float Q3_ELEX_AMMO			= 60;
-float Q3_ROCK_AMMO			= 5;
-float Q3_GREN_AMMO			= 5;
-float Q3_SHOT_AMMO			= 10;
-float Q3_BULLET_AMMO			= 50;
+#define Q3_BFG_AMMO				150 // 15 - adj =10 cells per shot -- using cell ammo for now
+#define Q3_SLUG_AMMO			10
+#define Q3_CELL_AMMO			30
+#define Q3_ELEX_AMMO			60
+#define Q3_ROCK_AMMO			5
+#define Q3_GREN_AMMO			5
+#define Q3_SHOT_AMMO			10
+#define Q3_BULLET_AMMO			50
 
-float Q3_MAX_BULLETS			= 200;	// max val without pack / rune
-float Q3_MAX_SHELLS			= 200;
-float Q3_MAX_ROCKETS			= 200;
-float Q3_MAX_CELLS			= 200;
-//float Q3_MAX_BFG				= 200;
-//float Q3_MAX_LIGHTNING		= 200;
-float Q3_MAX_SLUGS			= 200;
-float Q3_MAX_GRENADES		= 200;
+#define Q3_MAX_BULLETS			200	// max val without pack / rune
+#define Q3_MAX_SHELLS			200
+#define Q3_MAX_ROCKETS			200
+#define Q3_MAX_CELLS			200
+//#define Q3_MAX_BFG				200
+//#define Q3_MAX_LIGHTNING		200
+#define Q3_MAX_SLUGS			200
+#define Q3_MAX_GRENADES		200
 
-float Q3_ARM_RED				= 100;
-float Q3_ARM_YEL				= 50;
-float Q3_ARM_SHARD			= 5;
-float Q3_ARM_MAX				= 200;
+#define Q3_ARM_RED				100
+#define Q3_ARM_YEL				50
+#define Q3_ARM_SHARD			5
+#define Q3_ARM_MAX				200
 
-float Q3_WEP_WAIT				= 5;
-float Q3_AMMO_WAIT			= 40;
-float Q3_HEAL_WAIT			= 35;
-float Q3_ARM_WAIT				= 25;
+#define Q3_WEP_WAIT				5
+#define Q3_AMMO_WAIT			40
+#define Q3_HEAL_WAIT			35
+#define Q3_ARM_WAIT				25
 
-float Q3_HA_MAX				= 100;  // health and armor base max
+#define Q3_HA_MAX				100  // health and armor base max
 
-float Q3_HEALLG				= 0; // skin ? - not needed for now
-float Q3_HEALMD				= 1;
-float Q3_HEAL5					= 2;
-float Q3_HEALM					= 3;
-float Q3_MAX_HEAL				= 200;
+#define Q3_HEALLG				0 // skin ? - not needed for now
+#define Q3_HEALMD				1
+#define Q3_HEAL5					2
+#define Q3_HEALM					3
+#define Q3_MAX_HEAL				200
 
-float Q3_HEALLG_A				= 50;
-float Q3_HEALMD_A				= 25;
-float Q3_HEAL5_A				= 5;
-float Q3_HEALM_A				= 100;
+#define Q3_HEALLG_A				50
+#define Q3_HEALMD_A				25
+#define Q3_HEAL5_A				5
+#define Q3_HEALM_A				100
 
-float Q3_BARREL_BLAST		= 120;
+#define Q3_BARREL_BLAST		120
 
 
 vector Q3_LIFT					= '0 0 10'; // q3 models sit too "low" - lift them by this on spawn
@@ -233,7 +233,7 @@ q3 support via translation
 
 */
 
-float SUSPENDED = 1; // some q3 items "float" in the air - hope this works
+#define SUSPENDED 1 // some q3 items "float" in the air - hope this works
 
 // fn(q3_suspend) - make q3 items suspended as per q3 map spawnflag SUSPEND
 
@@ -1431,7 +1431,7 @@ void() q3_ha_rot_thk =
 	}
 };
 
-float Q3_ROT_TMAX = 300; // 5 mins - max time a rot can hang around
+#define Q3_ROT_TMAX 300 // 5 mins - max time a rot can hang around
 
 // in case rot gets lost, we put this back
 
@@ -2510,10 +2510,10 @@ void() misc_teleporter =
 // fn(q3_play_sound) - play a sound for target_speaker, repeating or by activator
 // fn(q3_sound_think) - periodic repeating sound for target speaker
 
-//float Q3_LOOPON				= 1;
-//float Q3_LOOPOFF				= 2;
-//float Q3_GLOBAL				= 4;
-//float Q3_ACTIVATOR			= 8;
+//#define Q3_LOOPON				1
+//#define Q3_LOOPOFF				2
+//#define Q3_GLOBAL				4
+//#define Q3_ACTIVATOR			8
 
 void() q3_play_sound =
 {

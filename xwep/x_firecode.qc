@@ -1130,8 +1130,8 @@ void() player_mgchg4   =[$lightfatt4, player_mgchg1  ]
 // it looks midly believable - very acceptable for q1 level appearances anyway
 // and now we bring you..."how not to be seen"
 
-float GUN_WAIT  = 666020;
-float GUN_BASE  = 666000;
+#define GUN_WAIT  666020
+#define GUN_BASE  666000
 
 void() player_pistol4 = [$axatt6, player_pistol5] { };
 void() player_pistol5 = [$axstnd11, player_pistol6] { };
@@ -1713,31 +1713,31 @@ void() player_chain0   = [$lightfatt1, player_chain0]
 // assign line - cut / paste & remove unwanted flags
 // = TFL_SELF | TFL_FENT | TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_CONT | TFL_RANGE | TFL_INVIS | TFL_INFR | TFL_PKLV | TFL_PLY | TFL_MON | TFL_TR_IGM | TFL_IFR_NOZ | TFL_INV;
 
-float TFL_SELF			= 1;				// allow target self ent = actual self (projectiles / effects that could potentially target player / owner dont want to target self		 - allow self to be targeted
-float TFL_FENT			= 2;				// allow target f ent in fn call, should be player / owner																																						 - allow ent f  to be targeted
-float TFL_HEAL			= 4;				// check target ents for health > 0, (fail FALSE)																																										 - dont allow no health ents to be targeted
-float TFL_TKDMG		= 8;				// check target for takedamage set allowed, (fail FALSE)																																					 - dont allow non takedamage to be targeted
-float TFL_TRACE		= 16;			// check target for trace fraction < 1 (no line of site), (fail TRUE)																																	 - dont allow if no direct LOS
-float TFL_CONT			= 32;			// check to see if target is across a content boundary (empty to liquid trace), (fail TRUE)																				 - dont allow LOS to cross contents
-float TFL_RANGE		= 64;			// check target for range > r, (fail TRUE)																																													 - dont allow out of range to be targeted
-float TFL_INVIS			= 128;			// check to see if target is visible (player / ent invisibility via IT_INVIS & .items), (fail TRUE)																		 - dont allow invisibles to be targeted
-float TFL_INFR			= 256;			// check to see if target meets in front test with cht_if value, (fail FALSE)																													 - dont allow ents out of view cone to be targeted
-float TFL_PKLV			= 512;			// check to see if target is a pk live ent - fail if true (individualized by pk_livent_brk var below as shown if set), (fail TRUE)		 - dont allow pk live ents to be targeted
-float TFL_PLY				= 1024;		// check to see if target is a player / bot, (fail TRUE)																																								 - dont allow players to be targeted				(invertable)
-float TFL_MON			= 2048;		// check to see if target is a monster, (fail TRUE)																																									 - dont allow monsters to be targeted			(invertable)
+#define TFL_SELF			1				// allow target self ent = actual self (projectiles / effects that could potentially target player / owner dont want to target self		 - allow self to be targeted
+#define TFL_FENT			2				// allow target f ent in fn call, should be player / owner																																						 - allow ent f  to be targeted
+#define TFL_HEAL			4				// check target ents for health > 0, (fail FALSE)																																										 - dont allow no health ents to be targeted
+#define TFL_TKDMG		8				// check target for takedamage set allowed, (fail FALSE)																																					 - dont allow non takedamage to be targeted
+#define TFL_TRACE		16			// check target for trace fraction < 1 (no line of site), (fail TRUE)																																	 - dont allow if no direct LOS
+#define TFL_CONT			32			// check to see if target is across a content boundary (empty to liquid trace), (fail TRUE)																				 - dont allow LOS to cross contents
+#define TFL_RANGE		64			// check target for range > r, (fail TRUE)																																													 - dont allow out of range to be targeted
+#define TFL_INVIS			128			// check to see if target is visible (player / ent invisibility via IT_INVIS & .items), (fail TRUE)																		 - dont allow invisibles to be targeted
+#define TFL_INFR			256			// check to see if target meets in front test with cht_if value, (fail FALSE)																													 - dont allow ents out of view cone to be targeted
+#define TFL_PKLV			512			// check to see if target is a pk live ent - fail if true (individualized by pk_livent_brk var below as shown if set), (fail TRUE)		 - dont allow pk live ents to be targeted
+#define TFL_PLY				1024		// check to see if target is a player / bot, (fail TRUE)																																								 - dont allow players to be targeted				(invertable)
+#define TFL_MON			2048		// check to see if target is a monster, (fail TRUE)																																									 - dont allow monsters to be targeted			(invertable)
 
-float TFL_TR_IGM		= 1048576; // trace ignores monsters in LOS test
-float TFL_IFR_NOZ	= 2097152; // in front ignores z components
-float TFL_INV				= 4194304; // invert certain tests - only players or monsters, etc.																																							 - invert certain flags to return the opposite result
+#define TFL_TR_IGM		1048576 // trace ignores monsters in LOS test
+#define TFL_IFR_NOZ	2097152 // in front ignores z components
+#define TFL_INV				4194304 // invert certain tests - only players or monsters, etc.																																							 - invert certain flags to return the opposite result
 
 float cht_if; // in front range 0 - 1 fraction, believed to be radius cone around vector of self.v_angle
 float pk_livent_brk; // painkeep live ent breakdown according to item flags as follows:
-//float PK_IT_GRAVITYWELL		= 2;
-//float PK_IT_TURRET			= 4;
-//float PK_IT_BEARTRAP			= 128;
-//float PKPLUS_IT_EGO			= 256;
-//float PKPLUS_IT_TOMB			= 512;
-float PKPLUS_IT_CORPSE			= 1024; // special - (tomb genned) corpse has health, can takedmg, can be targeted
+//#define PK_IT_GRAVITYWELL		2
+//#define PK_IT_TURRET			4
+//#define PK_IT_BEARTRAP			128
+//#define PKPLUS_IT_EGO			256
+//#define PKPLUS_IT_TOMB			512
+#define PKPLUS_IT_CORPSE			1024 // special - (tomb genned) corpse has health, can takedmg, can be targeted
 
 //  ========= ========= ========= ========= ========= ========= =========
 

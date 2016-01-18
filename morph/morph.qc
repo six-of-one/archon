@@ -942,7 +942,7 @@ IMP_MSCOURGE
 // not having - fish, oldone
 
 // if true, army & enforcer will be friendly to marines in DM
-float MARINE_FRND = 1;
+#define MARINE_FRND 1
 
 float(entity chk) morph_clichk =
 {
@@ -1643,29 +1643,29 @@ string gibsz; // gib array of sizes for each gib frame
 // gf - first gib frame in model
 // rd - chance to throw each gib, defaults to 50%
 // flg - flags 												 v- size weight
-float FL_INTORG				= 1;			// 1 - internal organ
-float FL_INTSLAB				= 2;			// 2 - slab of internal meat (orig)
-float FL_GIBCHUNK				= 4;			// 1 - chunk of gibblet
-float FL_ARMLET				= 8;			// 2 - original amrlet gib
-float FL_TORSO					= 16;			// 3 - original torso gib
-float FL_ARMGIB				= 32;			// 4 - perquake arm gib
-float FL_LEGGIB				= 64;			// 4 - perquake leg gib
-float FL_HUMANGIB				= 127;		// use all (gib_m.mdl) gibs
-float FL_HUMANORG				= 26;			// original quake gibs (gib1 - gib3 mdl), size wt = 9
-float FL_ONLYHUMGIB			= 120;		// use only (human appearing) gibs
-float FL_NONHUMGIB			= 7;			// use no (human appearing) gibs
-float FL_CUSTOMGIB			= 128;		// 1 - use custom gib (string g1) mdl, frame gf
-float FL_CUSTOMGIB2			= 256;		// 2 - use custom gib (string g1) mdl, frame gf+1
-float FL_CUSTOMGIB3			= 512;		// 3 - use custom gib (string g1) mdl, frame gf+2
-float FL_ALLCUST				= 896;		// all custom frames above
-float FL_ANYGIB				= 1023;		// need at least 1 gib flag to throw anything but a head
-float FL_HUMANSND				= 1024;		// use all human sounds
-float FL_NOHUMSND				= 2048;		// use only generic sounds
-float FL_NOSND					= 4096;		// no sounds
-float FL_HEADGIB				= 8192;		// 2 - head is set to orig. qc specific parms
-float FL_MORPHSND				= 16384;		// use a preset morph sound
-float FL_PLAGUE				= 32768;		// make a plague check for gib
-float GIB_TWITCH				= 0.5; 		// chance of throwing a gib that twitches
+#define FL_INTORG				1			// 1 - internal organ
+#define FL_INTSLAB				2			// 2 - slab of internal meat (orig)
+#define FL_GIBCHUNK				4			// 1 - chunk of gibblet
+#define FL_ARMLET				8			// 2 - original amrlet gib
+#define FL_TORSO					16			// 3 - original torso gib
+#define FL_ARMGIB				32			// 4 - perquake arm gib
+#define FL_LEGGIB				64			// 4 - perquake leg gib
+#define FL_HUMANGIB				127		// use all (gib_m.mdl) gibs
+#define FL_HUMANORG				26			// original quake gibs (gib1 - gib3 mdl), size wt = 9
+#define FL_ONLYHUMGIB			120		// use only (human appearing) gibs
+#define FL_NONHUMGIB			7			// use no (human appearing) gibs
+#define FL_CUSTOMGIB			128		// 1 - use custom gib (string g1) mdl, frame gf
+#define FL_CUSTOMGIB2			256		// 2 - use custom gib (string g1) mdl, frame gf+1
+#define FL_CUSTOMGIB3			512		// 3 - use custom gib (string g1) mdl, frame gf+2
+#define FL_ALLCUST				896		// all custom frames above
+#define FL_ANYGIB				1023		// need at least 1 gib flag to throw anything but a head
+#define FL_HUMANSND				1024		// use all human sounds
+#define FL_NOHUMSND				2048		// use only generic sounds
+#define FL_NOSND					4096		// no sounds
+#define FL_HEADGIB				8192		// 2 - head is set to orig. qc specific parms
+#define FL_MORPHSND				16384		// use a preset morph sound
+#define FL_PLAGUE				32768		// make a plague check for gib
+#define GIB_TWITCH				0.5 		// chance of throwing a gib that twitches
 
 // original GibPlayer
 // if ( GibMorph ("progs/h_player.mdl", 0, FL_HEADGIB | FL_HUMANORG, 1, -40, 9, 0, null_string) ) return;

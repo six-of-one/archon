@@ -11,43 +11,43 @@
  */
 
 // q2 values
-float Q2_DEF_HBOTTLE			= 2;
-float Q2_DEF_HFIRSTAID		= 10;
-float Q2_DEF_HMEDKIT			= 25;
-float Q2_DEF_HMEGATUBE		= 100;
+#define Q2_DEF_HBOTTLE			2
+#define Q2_DEF_HFIRSTAID		10
+#define Q2_DEF_HMEDKIT			25
+#define Q2_DEF_HMEGATUBE		100
 
-float Q2_ARM_TFLK				= 0.333;
-float Q2_ARM_TCMB				= 0.6;
-float Q2_ARM_TBDY				= 0.8;
-float Q2_ARM_SHRD				= 2;
-float Q2_ARM_FLAK				= 25;
-float Q2_ARM_CMBT				= 50;
-float Q2_ARM_BODY				= 100;
+#define Q2_ARM_TFLK				0.333
+#define Q2_ARM_TCMB				0.6
+#define Q2_ARM_TBDY				0.8
+#define Q2_ARM_SHRD				2
+#define Q2_ARM_FLAK				25
+#define Q2_ARM_CMBT				50
+#define Q2_ARM_BODY				100
 
-float Q2_DEF_SHELLS			= 10;		// small box
-//float Q2_DEF_SHELLBOX		= 20;		// large box
-float Q2_DEF_SHOTG			= 10;		// weapon def
-//float Q2_DEF_BULLETS_CLIP	= 10;
-float Q2_DEF_BULLETS_BOX	= 50;
-float Q2_DEF_CHAING			= 50;
-//float Q2_DEF_CELLBOX			= 100;
-float Q2_DEF_CELLPAK			= 50;
-float Q2_DEF_SLUGS			= 10;
-float Q2_DEF_HYBERB			= 100;
-float Q2_DEF_BFG				= 40;
-float Q2_DEF_ROCKETS_LG		= 5;
-float Q2_DEF_HGRN				= 5;
-//float Q2_DEF_ROCKETS_SM		= 5;
-float Q2_DEF_BLAST			= 5;
+#define Q2_DEF_SHELLS			10		// small box
+//#define Q2_DEF_SHELLBOX		20		// large box
+#define Q2_DEF_SHOTG			10		// weapon def
+//#define Q2_DEF_BULLETS_CLIP	10
+#define Q2_DEF_BULLETS_BOX	50
+#define Q2_DEF_CHAING			50
+//#define Q2_DEF_CELLBOX			100
+#define Q2_DEF_CELLPAK			50
+#define Q2_DEF_SLUGS			10
+#define Q2_DEF_HYBERB			100
+#define Q2_DEF_BFG				40
+#define Q2_DEF_ROCKETS_LG		5
+#define Q2_DEF_HGRN				5
+//#define Q2_DEF_ROCKETS_SM		5
+#define Q2_DEF_BLAST			5
 
-float Q2_MAX_BULLETS			= 200;	// max val without pack / rune
-float Q2_MAX_SHELLS			= 100;
-float Q2_MAX_ROCKETS			= 50;
-float Q2_MAX_CELLS			= 200;
-float Q2_MAX_SLUGS			= 50;
-float Q2_MAX_GRENADES		= 50;
+#define Q2_MAX_BULLETS			200	// max val without pack / rune
+#define Q2_MAX_SHELLS			100
+#define Q2_MAX_ROCKETS			50
+#define Q2_MAX_CELLS			200
+#define Q2_MAX_SLUGS			50
+#define Q2_MAX_GRENADES		50
 
-float Q2_BARREL_BLAST		= 150;
+#define Q2_BARREL_BLAST		150
 
 void() q2_precache =
 {
@@ -1951,7 +1951,7 @@ void() key_commander_head =
 */
 
 // NOTE: glow shell is gone for now...remove this code if it is not ever restored
-float CTF_TECH_SHELL = 0; // set to 5 for a glow shell around techs
+#define CTF_TECH_SHELL 0 // set to 5 for a glow shell around techs
 
 void() q2_ctf_haste =
 {

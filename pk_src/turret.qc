@@ -11,14 +11,14 @@ float PK_TUR_RELOAD; // chance turret will reload when low on ammo
 float PK_TUR_DEATHRAD;
 float PK_TUR_CRITICALMASS; // too many in rad blows them all up
 float PK_TUR_CRITICALMASS_DIST;
-float CRIT_BLOW = 2;
+#define CRIT_BLOW 2
 //float PK_TUR_VARIETY; // a variety of turrets - 
 //															bits:		1 - orange kryptonite nails,	2 - lasers,	4 - pulse nails,	8 - lightning,	16 - rockets,	not done yet - 	32 - railgun,		64 - chaos
 //								fixed percentages:		60%													20%				10%						5%						4%														1%							0.5%
 float PK_TUR_LIMIT; // max turrets on a given server - used if inf detected
-float PK_TUR_INVRETIME = 80; // what to retime invs to if infinite turrets exist
+#define PK_TUR_INVRETIME 80 // what to retime invs to if infinite turrets exist
 
-float SENTRY_SDOT = 0.8; // view radius
+#define SENTRY_SDOT 0.8 // view radius
 
 // last one made, for chaos item
 entity turret;

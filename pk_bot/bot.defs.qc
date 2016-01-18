@@ -4,9 +4,9 @@
 
 entity bot_lvlreload; // Cataboligne - make sure bots continue after level ends
 
-float MSG_UPDATENAME			= 13;
-float MSG_UPDATEFRAGS		= 14;
-float MSG_UPDATECOLORS		= 17;
+#define MSG_UPDATENAME			13
+#define MSG_UPDATEFRAGS		14
+#define MSG_UPDATECOLORS		17
 
 float observer_time;			// time limit for observer mode
 
@@ -14,50 +14,50 @@ float ax_dmg; // record melee damage in T_Damage so bots can avoid endless axe w
 void() Bot_Melee;
 
 // if .state ==, call cacheRoute when touching this item
-float CACHE_ROUTE_TOUCH		= -1559742;
+#define CACHE_ROUTE_TOUCH		-1559742
 // if .state ==, call  bot_toucheditem when touching this item
-float BOT_TOUCHED				= -2479551;
+#define BOT_TOUCHED				-2479551
 // do both
-float BOT_TOUCHED_CACHE_ROUTE_TOUCH	= -4039293;
+#define BOT_TOUCHED_CACHE_ROUTE_TOUCH	-4039293
 
-float BOT_SAVE_SKILL			= 12; // number of bots that can save skill between levels for 1 players parms
+#define BOT_SAVE_SKILL			12 // number of bots that can save skill between levels for 1 players parms
 
 // bot mask for flags
-float BOTS						= 240;		// (serverflags)                 11110000
-float TEAMBOTS					= 3840;		//  (serverflags)            111100000000
-//float UNRESTRICTED			= 4096; 		//  (serverflags)           1000000000000 - admin - allow anyone to issue bot impulse commands
-float TEAMFLAG					= 16384;		//  (serverflags)         100000000000000
-float INITLEVEL				= 32768;		//  (serverflags)        1000000000000000 - server - indicate bots need to be spawned after level load
-//float FL_OBSERVER				= 65536; 	//  (serverflags)       10000000000000000 - admin - flag for observer restrict
-float DEDICATED				= 4194304;	//  (serverflags) 10000000000000000000000
+#define BOTS						240		// (serverflags)                 11110000
+#define TEAMBOTS					3840		//  (serverflags)            111100000000
+//#define UNRESTRICTED			4096 		//  (serverflags)           1000000000000 - admin - allow anyone to issue bot impulse commands
+#define TEAMFLAG					16384		//  (serverflags)         100000000000000
+#define INITLEVEL				32768		//  (serverflags)        1000000000000000 - server - indicate bots need to be spawned after level load
+//#define FL_OBSERVER				65536 	//  (serverflags)       10000000000000000 - admin - flag for observer restrict
+#define DEDICATED				4194304	//  (serverflags) 10000000000000000000000
 
 // orig
 
-float DONT_WANT				= 0;
-float KINDA_WANT				= 20;
-float WANT						= 35;
-float MUST_HAVE				= 100;
-float SEARCH_RADIUS			= 600;
-//float LOOPTIME					= 20;
-float MAXPATHERS				= 16;
-float REGULARTARGET	 		= 0;
-float CARRIED					= 1;
-float DROPPED					= 2;
-float NEVERTARGET				= 3;
-float TELEPORT					= 4;
-float LOCAL_TIME				= 7;
-float CANTURN					= 1;
-float NOTURN					= 2;
+#define DONT_WANT				0
+#define KINDA_WANT				20
+#define WANT						35
+#define MUST_HAVE				100
+#define SEARCH_RADIUS			600
+//#define LOOPTIME					20
+#define MAXPATHERS				16
+#define REGULARTARGET	 		0
+#define CARRIED					1
+#define DROPPED					2
+#define NEVERTARGET				3
+#define TELEPORT					4
+#define LOCAL_TIME				7
+#define CANTURN					1
+#define NOTURN					2
 
 // left flags
-float STRAFE_DIR				= 16;
-float FAR_SEEK					= 32;
-//float WATERUPDOWN				= 64;
-float NODROP					= 128;
-//float RUNAWAY					= 256;
-float GETGOODY					= 512;
-float ONTRAIN					= 1024;
-float MULTIENEMY				= 2048;
+#define STRAFE_DIR				16
+#define FAR_SEEK					32
+//#define WATERUPDOWN				64
+#define NODROP					128
+//#define RUNAWAY					256
+#define GETGOODY					512
+#define ONTRAIN					1024
+#define MULTIENEMY				2048
 
 // do item touch bot checks - disabled because PK has its own master touch
 //.void() bot_item_touch; 
@@ -130,7 +130,7 @@ float NAMEBOTS;
 
 
 // Cataboligne - xrp add in code implement
-float XRP = 1; // if true xrps code will be used - mostly extra messages from bots
+#define XRP 1 // if true xrps code will be used - mostly extra messages from bots
 
 
 float c_skill; // holder - carry skill for bot spawning
@@ -151,13 +151,13 @@ float nearlight;
 
 // id bots
 void() bot_fixer; // fix broke bots
-float BOT_FIX_TIME = 14;
-float BOT_FIXED = 1; // if this is true and a bots frags dont change in the time out, kill & restart that bot
+#define BOT_FIX_TIME 14
+#define BOT_FIXED 1 // if this is true and a bots frags dont change in the time out, kill & restart that bot
 
 // waypoint limit
 float noway_above;
 float noway_below;
-float noway_radius = 108; // no new waypoint in this radius
+#define noway_radius 108 // no new waypoint in this radius
 
 // client links
 float () getrandombotskin;

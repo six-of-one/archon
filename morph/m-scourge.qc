@@ -355,7 +355,8 @@ void() m_Attack_With_Tail =
 		W_FireAxe();
 //	melee_damage(self.origin + '0 0 4', self.origin + '0 0 4' + v_forward*48, (random() + random() + random()) * 40, 20, crandom() * 50, 0, null_string, "weapons/bounce.wav", "shambler/smack.wav");
 };
-	
+
+/*
 void()   player_scourge_melee1 =[ $sting1,   player_scourge_melee2 ] { };
 void()   player_scourge_melee2 =[ $sting2,   player_scourge_melee3 ] { };
 void()   player_scourge_melee3 =[ $sting3,   player_scourge_melee4 ] { };
@@ -363,16 +364,23 @@ void()   player_scourge_melee4 =[ $sting4,   player_scourge_melee5 ] { };
 void()   player_scourge_melee5 =[ $sting5,   player_scourge_melee6 ]
    {
    sound (self, CHAN_WEAPON, "scrg/tailswng.wav", 1, ATTN_NORM);
-   };
+	};
+
 void()   player_scourge_melee6 =[ $sting6,   player_scourge_melee7 ] { };
 void()   player_scourge_melee7   =[ $sting7,   player_scourge_melee8   ]
    {
    m_Attack_With_Tail();
    };
+
 void()   player_scourge_melee8   =[ $sting8,   player_scourge_melee9   ] { };
 void()   player_scourge_melee9   =[ $sting9,   player_scourge_melee10   ] { };
 void()   player_scourge_melee10   =[ $sting10,   player_scourge_melee11   ] { };
 void()   player_scourge_melee11   =[ $sting11,  player_stand1 ] { };
+*/
+
+// replaces 1-11
+framer($sting1, $sting11, player_scourge_melee1, player_stand1, 0.1, {if (self.frame == $sting5) sound (self, CHAN_WEAPON, "scrg/tailswng.wav", 1, ATTN_NORM); if (self.frame == $sting7) m_Attack_With_Tail();});
+
 
 void() player_scourge_attack =
 {

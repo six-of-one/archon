@@ -102,11 +102,17 @@ void() player_shambler_run = [ $run1, player_run ]
 // 5 frames of pain for player_shambler, going to player_stand1
 ////////////////////////////////////////////
 
+/*
 void() player_shambler_pain1 = [ $pain1, player_shambler_pain2 ] { };
 void() player_shambler_pain2 = [ $pain2, player_shambler_pain3 ] { };
 void() player_shambler_pain3 = [ $pain3, player_shambler_pain4 ] { };
 void() player_shambler_pain4 = [ $pain4, player_shambler_pain5 ] { };
 void() player_shambler_pain5 = [ $pain5, player_stand1 ] { };
+
+*/
+
+framer($pain1, $pain5, player_shambler_pain1, player_stand1, 0.1, SUB_Null());
+
 
 void(entity attacker, float damage)	player_shambler_pain =
 {
@@ -194,6 +200,7 @@ void(float side) player_ShamClaw =
 //	melee_damage(self.origin + '0 0 16', self.origin + '0 0 16' + v_forward*128, (random() + random() + random()) * 20, 20, side, TE_GUNSHOT, "hknight/slash1.wav", "grapple/grapf_1.wav" , "shambler/smack.wav"); // whit - "player/axhit2.wav"
 };
 
+/*
 void() player_shambler_smash1     =[      $smash1,       player_shambler_smash2    ] {
 sound (self, CHAN_VOICE, "shambler/melee1.wav", 1, ATTN_NORM);
 };
@@ -208,7 +215,17 @@ void() player_shambler_smash9     =[      $smash9,       player_shambler_smash10
 void() player_shambler_smash10    =[      $smash10,      player_shambler_smash11   ] {player_ShamClaw(150);};
 void() player_shambler_smash11    =[      $smash11,      player_shambler_smash12   ] {player_ShamClaw(150);};
 void() player_shambler_smash12    =[      $smash12,      player_run	   ] {};
+*/
 
+framer($smash1, $smash12, player_shambler_smash1, player_run, 0.1,
+{
+	if (self.frame == $smash1) 
+		sound (self, CHAN_VOICE, "shambler/melee1.wav", 1, ATTN_NORM);
+	if (self.frame >= $smash9 && self.frame <= $smash11) player_ShamClaw(150);
+}
+);
+
+/*
 void() player_shambler_swingl1	=[      $swingl1,      player_shambler_swingl2   ] {
 sound (self, CHAN_VOICE, "shambler/melee2.wav", 1, ATTN_NORM);
 };
@@ -220,7 +237,17 @@ void() player_shambler_swingl6 =[      $swingl6,      player_shambler_swingl7   
 void() player_shambler_swingl7 =[      $swingl7,      player_shambler_swingl8   ] { player_ShamClaw(250);};
 void() player_shambler_swingl8 =[      $swingl8,      player_shambler_swingl9   ] {};
 void() player_shambler_swingl9 =[      $swingl9,      player_run  ] {};
+*/
 
+framer($swingl1, $swingl9, player_shambler_swingl1, player_run, 0.1,
+{
+	if (self.frame == $swingl1) 
+		sound (self, CHAN_VOICE, "shambler/melee2.wav", 1, ATTN_NORM);
+	if (self.frame == $swingl7) player_ShamClaw(250);
+}
+);
+
+/*
 void() player_shambler_swingr1	=[      $swingr1,      player_shambler_swingr2   ] {
 sound (self, CHAN_VOICE, "shambler/melee1.wav", 1, ATTN_NORM);
 };
@@ -232,6 +259,15 @@ void() player_shambler_swingr6 =[      $swingr6,      player_shambler_swingr7   
 void() player_shambler_swingr7 =[      $swingr7,      player_shambler_swingr8   ] { player_ShamClaw(-250);};
 void() player_shambler_swingr8 =[      $swingr8,      player_shambler_swingr9   ] {};
 void() player_shambler_swingr9 =[      $swingr9,      player_run  ] { };
+*/
+
+framer($swingr1, $swingr9, player_shambler_swingr1, player_run, 0.1,
+{
+	if (self.frame == $swingr1) 
+		sound (self, CHAN_VOICE, "shambler/melee1.wav", 1, ATTN_NORM);
+	if (self.frame == $swingr7) player_ShamClaw(250);
+}
+);
 
 void() player_shambler_attack =
 {

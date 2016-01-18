@@ -10,10 +10,10 @@
  *
  */
 
-float MIN_ANGLE_DELTA		= 10;
+#define MIN_ANGLE_DELTA		10
 
-float PROX_TIMER = 20; // proximity mine timer base, orig = 15 (+10 * rnd)
-float PROX_MAX = 50; // orig = 15
+#define PROX_TIMER 20 // proximity mine timer base, orig = 15 (+10 * rnd)
+#define PROX_MAX 50 // orig = 15
 
 float visible_distance;
 
@@ -27,10 +27,10 @@ void(float num_bubbles) DeathBubbles;
 .float wetsuit_finished; // used by hip wetsuit & q2 rebreather
 
 // horn of conjuring
-float CHARMED_RADIUS = 1500;
-float MAX_CHARMER_DISTANCE = 200;
-float MIN_CHARMER_DISTANCE = 150;
-float TOOCLOSE_CHARMER_DISTANCE = 120;
+#define CHARMED_RADIUS 1500
+#define MAX_CHARMER_DISTANCE 200
+#define MIN_CHARMER_DISTANCE 150
+#define TOOCLOSE_CHARMER_DISTANCE 120
 .float      charmed;
 .entity     charmer;
 .float      huntingcharmer;
@@ -38,8 +38,8 @@ float horn_active;
 entity horn_charmer;
 
 // spawn - used by native horn & hip map code
-float SVC_UPDATESTAT = 3;
-float STAT_TOTALMONSTERS = 12;
+#define SVC_UPDATESTAT 3
+#define STAT_TOTALMONSTERS 12
 
 // spawn variables
 .void()     spawnfunction;
@@ -61,7 +61,7 @@ float empathy_dmg; // damage taken is from empathy shield reflection
 
 // scourge code
 .void() th_turn; // NOTE - not really used
-float AS_DODGING     = 5;
+#define AS_DODGING     5
 .float spawnsilent;
 .float spawnmulti;
 

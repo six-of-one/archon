@@ -19,14 +19,14 @@
 .float portal_failed;
 .float portal_opened;
 
-float PORTAL_ONEWAY = 0; // set true for a one way portal
-float PORTAL_DEBOUNCE = 1; // debounce time in case we get a portal the player doesnt properly eject from
-float PORTAL_ALLOW = 1; // 0 - only allow players / monsters, 1 - allow all moving ents
-float PORTAL_M3START = 1; // if true - allow mode 3 portal to include player start positions
-float PORTAL_M3RND = 1; // if true - mode 3 portal picks random destinations every time
+#define PORTAL_ONEWAY 0 // set true for a one way portal
+#define PORTAL_DEBOUNCE 1 // debounce time in case we get a portal the player doesnt properly eject from
+#define PORTAL_ALLOW 1 // 0 - only allow players / monsters, 1 - allow all moving ents
+#define PORTAL_M3START 1 // if true - allow mode 3 portal to include player start positions
+#define PORTAL_M3RND 1 // if true - mode 3 portal picks random destinations every time
 
 string PORTAL_TELEFRAG = "md4";
-float PORTAL_FRAGMODE = 24; // - 2 bits, 8 + 16
+#define PORTAL_FRAGMODE 24 // - 2 bits, 8 + 16
 
 string PORTAL_FAIL; // alt fail msg
 
@@ -215,7 +215,7 @@ void () PortalTouch =
 	other.hook = 0; // VERIFY: other things like this that need to be done
 };
 
-float RED_PORTAL = 4; // add this for red portal skins - test
+#define RED_PORTAL 4 // add this for red portal skins - test
 
 void () PortalThink =
 {
@@ -651,7 +651,7 @@ void () player_portalstart5 = [ $shotatt6, player_run ]
 };
 
 // portal has multiple modes
-float HIGH_PORTAL_MODE = 16; // highest portal mode - power of 2
+#define HIGH_PORTAL_MODE 16 // highest portal mode - power of 2
 
 // modes
 // 1 - original fire once & tunnel to open space

@@ -221,8 +221,8 @@ float(float fb, float rb) bit_cnt =
 // op - operation
 // df - default return value
 
-float BIT_HIGH = 8388608; // start here and go down till we find first on bit
-float BIT_LOW = 1;
+#define BIT_HIGH 8388608 // start here and go down till we find first on bit
+#define BIT_LOW 1
 
 float (float bt, float msk, float op, float df) return_bit =
 {
@@ -1976,7 +1976,7 @@ void() func_mapday =
 // end - + time - time after which this sound ends .search_time
 
 string LOOPSOUND = "sound_loop";
-float LOOPFOREVER = 100000000000;
+#define LOOPFOREVER 100000000000
 
 void() loop_play = 
 {
@@ -2495,10 +2495,10 @@ a controler for removeable map areas
 
 // target - target such as a func_wall or func_model
 
-float MF_SPAWN = 1;
-float MF_SLIDE = 2;
-float MF_FADE = 4;
-float MF_RUBBLE = 8;
+#define MF_SPAWN 1
+#define MF_SLIDE 2
+#define MF_FADE 4
+#define MF_RUBBLE 8
 
 void () multi_wait;
 
@@ -3068,11 +3068,11 @@ float (entity e, float t) move_check =
 // rads - within this radius of hent
 // tent - test entity
 // flg - list flag set
-float FL_MISSILE                                = 4; // item is a flying missile
-float FL_DECOR                          = 8; // item is a non solid decor
-float FL_PLAYER                         = 16; // item selected must be a player class
-//float FL_MONSTER = 32
-float FL_LTALL                                  = 316;  // test all - will return match FL_*
+#define FL_MISSILE                                4 // item is a flying missile
+#define FL_DECOR                          8 // item is a non solid decor
+#define FL_PLAYER                         16 // item selected must be a player class
+//#define FL_MONSTER 32
+#define FL_LTALL                                  316  // test all - will return match FL_*
 
 //
 float(entity tent, float flg) list_test =
