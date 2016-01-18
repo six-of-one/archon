@@ -504,7 +504,7 @@ float DEF_REMAMMO				= 512; // bit set in def_weap - if normal ammo set - remove
 float PK_ITEM_MASK = 4094; // mask off non items bits
 float WEP_MASK = 4351; // mask off other items bits for def weap bits 1 + ... + 128 + 4096
 
-float DEF_AMMO_BULLETS; // initial ammo defaults if set
+float DEF_AMMO_BULLETS; // initial ammo defaults (on {re}-spawn) if set
 float DEF_AMMO_SHELLS;
 float DEF_AMMO_CELLS;
 float DEF_AMMO_ROCKETS;

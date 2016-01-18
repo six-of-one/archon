@@ -227,8 +227,14 @@ void() x_weapon_touch =
 		{
 			if (self.wad == "deadtwep")
 			{
+					e = vchk(self.weapon, self.pk_currentitem, other.vwepent);
 					weapon_touch();
-					if (!self.model) remove(self);
+					if (!self.model)
+					{
+						if (!e)
+							e = x_wep_store(e, self.weapon, 0);
+						remove(self);
+					}
 					return;
 			}
 			if (WARNING)

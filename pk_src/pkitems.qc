@@ -1392,11 +1392,67 @@ void(entity e, entity p) xwep_ammo =
 	}
 */
 };
-	
+
+// fn(swep_id) - identify standard weps (give netname for deadthrew)
+
+// itm - item code to read (usually from .weapon)
+// e - ent to check pk_currentitem
+
+// moved from dropbackpack so deadthrew can use
+
+string(float itm, entity e) swep_id =
+{
+	if (itm == IT_AXE)
+	{
+		if (e.pk_currentitem == PK_IT_AXE)
+			return("Axe");
+		else if (e.pk_currentitem == PK_IT_GRAVITYWELL)
+			return("Gravity Well");
+		else if (e.pk_currentitem == PK_IT_TURRET)
+			return("AutoSentry");
+		else if (e.pk_currentitem == PK_IT_GRAPGUN)
+			return("Harpoon Gun");
+		else if (e.pk_currentitem == PK_IT_BEARTRAP)
+			return("Bear Trap");
+		else if (e.pk_currentitem == PK_IT_AIRGUN)
+			return("AirFist");
+		else if (e.pk_currentitem == PK_IT_CLIGHT)
+			return("Chain Thunderbolt");
+// Cataboligne 8.12.9 purify - pk artifacts
+		else if (e.pk_currentitem == PKPLUS_IT_EGO)
+			return("EGO");
+		else if (e.pk_currentitem == PKPLUS_IT_TOMB)
+			return("Tomb");
+		else if (e.pk_currentitem == PKPLUS_IT_ACTOR)
+			return("Actor");
+		else if (e.pk_currentitem == PKPLUS_IT_PHONE)
+			return("Cell Phone");
+// end pk_art
+	}
+	else if (itm == IT_SHOTGUN)
+		return("Shotgun");
+	else if (itm == IT_SUPER_SHOTGUN)
+		return("Double-barrelled Shotgun");
+	else if (itm == IT_NAILGUN)
+		return("Pulse Rifle");
+	else if (itm == IT_SUPER_NAILGUN)
+		return("Super Nailgun");
+	else if (itm == IT_GRENADE_LAUNCHER)
+		return("Grenade Launcher");
+	else if (itm == IT_ROCKET_LAUNCHER)
+		return("Rocket Launcher");
+	else if (itm == IT_LIGHTNING)
+		return("Thunderbolt");
+	else
+		return("Pack of ammo");
+};
+
 // called as DropBackpack
 
 void() DropBackpack =
 {
+	local entity e;
+
 	if (Q_100)
 	{
 		q100_DropBackpack();
@@ -1422,7 +1478,7 @@ void() DropBackpack =
 		newmis.eweapon.wad = "packwep";
 		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
 		newmis.eweapon.model = "";
-		newmis.netname = newmis.eweapon.netname; // this doesnt matter
+		newmis.netname = newmis.eweapon.netname;
 		newmis.eweapon.items = self.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
 																						  // had to do this because laser cannon was getting wrong weapon value & not selectable
 		xwep_ammo(newmis.eweapon, self);
@@ -1436,50 +1492,16 @@ void() DropBackpack =
 		newmis.netname = "Pack of ammo";
 	}
 	else // standard weapon
-	if (newmis.items == IT_AXE)
 	{
-		if (self.pk_currentitem == PK_IT_AXE)
-			newmis.netname = "Axe";
-		else if (self.pk_currentitem == PK_IT_GRAVITYWELL)
-			newmis.netname = "Gravity Well";
-		else if (self.pk_currentitem == PK_IT_TURRET)
-			newmis.netname = "AutoSentry";
-		else if (self.pk_currentitem == PK_IT_GRAPGUN)
-			newmis.netname = "Harpoon Gun";
-		else if (self.pk_currentitem == PK_IT_BEARTRAP)
-			newmis.netname = "Bear Trap";
-		else if (self.pk_currentitem == PK_IT_AIRGUN)
-			newmis.netname = "AirFist";
-		else if (self.pk_currentitem == PK_IT_CLIGHT)
-			newmis.netname = "Chain Thunderbolt";
-// Cataboligne 8.12.9 purify - pk artifacts
-		else if (self.pk_currentitem == PKPLUS_IT_EGO)
-			newmis.netname = "EGO";
-		else if (self.pk_currentitem == PKPLUS_IT_TOMB)
-			newmis.netname = "Tomb";
-		else if (self.pk_currentitem == PKPLUS_IT_ACTOR)
-			newmis.netname = "Actor";
-		else if (self.pk_currentitem == PKPLUS_IT_PHONE)
-			newmis.netname = "Cell Phone";
-// end pk_art
-		newmis.pk_items = self.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
+		if (newmis.items == IT_AXE)
+			newmis.pk_items = self.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
+		newmis.netname = swep_id(newmis.items, self);
+/*		if (!self.eweapon)
+		{
+			e = vchk(self.weapon, self.pk_currentitem, other.vwepent);
+			if (e) e.wad = "packwep";
+		}*/
 	}
-	else if (newmis.items == IT_SHOTGUN)
-		newmis.netname = "Shotgun";
-	else if (newmis.items == IT_SUPER_SHOTGUN)
-		newmis.netname = "Double-barrelled Shotgun";
-	else if (newmis.items == IT_NAILGUN)
-		newmis.netname = "Pulse Rifle";
-	else if (newmis.items == IT_SUPER_NAILGUN)
-		newmis.netname = "Super Nailgun";
-	else if (newmis.items == IT_GRENADE_LAUNCHER)
-		newmis.netname = "Grenade Launcher";
-	else if (newmis.items == IT_ROCKET_LAUNCHER)
-		newmis.netname = "Rocket Launcher";
-	else if (newmis.items == IT_LIGHTNING)
-		newmis.netname = "Thunderbolt";
-	else
-		newmis.netname = "Pack of ammo";
 
 	newmis.ammo_shells = self.ammo_shells;
 	newmis.ammo_nails = self.ammo_nails;

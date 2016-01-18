@@ -1611,6 +1611,34 @@ float(float bt, string md) wepbit_mcode =
 		if (bt == PKPLUS_IT_PHONE)										return(MC_PHONE);				// 2048
 	}
 
+/// ammo types & defaults for std weps - dead threw deal
+
+	if (md == "QA")
+	{
+		if (bt == IT_AXE)													return(AMMO_NONE);			// 4096
+		if (bt == IT_SHOTGUN)											return(AMMO_SHELLS);			// 1
+		if (bt == IT_SUPER_SHOTGUN)									return(AMMO_SHELLS);			// 2
+		if (bt == IT_NAILGUN)											return(AMMO_NAILS);			// 4
+		if (bt == IT_SUPER_NAILGUN)									return(AMMO_NAILS);			// 8
+		if (bt == IT_GRENADE_LAUNCHER)								return(AMMO_ROCKETS);		// 16
+		if (bt == IT_ROCKET_LAUNCHER)									return(AMMO_ROCKETS);		// 32
+		if (bt == IT_LIGHTNING)											return(AMMO_CELLS);			// 64
+//		if (bt == IT_MJOLNIR)											return(AMMO_CELLS);			// 128
+	}
+
+	if (md == "QAC")
+	{
+		if (bt == IT_AXE)													return(0);						// 4096
+		if (bt == IT_SHOTGUN)											return(5);						// 1
+		if (bt == IT_SUPER_SHOTGUN)									return(5);						// 2
+		if (bt == IT_NAILGUN)											return(30);						// 4
+		if (bt == IT_SUPER_NAILGUN)									return(30);						// 8
+		if (bt == IT_GRENADE_LAUNCHER)								return(5);						// 16
+		if (bt == IT_ROCKET_LAUNCHER)									return(5);						// 32
+		if (bt == IT_LIGHTNING)											return(15);						// 64
+//		if (bt == IT_MJOLNIR)											return(AMMO_CELLS);			// 128
+	}
+
 /// doom
 
 	else if (md == "D")

@@ -1333,8 +1333,8 @@ void() pk_srvcmd_set =
 // things dealing with the dead
 
 		registercvar("sv_dead_xpack", "1"); // 0 = no xweap in pack (std op), 1 = include extra weapon held in pack, 2 = no weaps at all, just ammo, 3 = no packs (no applicable to monsters)
-		registercvar("sv_dead_throw", "0"); // 0 = no weps thrown, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 4 = throw weaps, all worky, 8 = randomize throwing (every wep is not thrown), 16 = throw weps when gibbed
-		registercvar("sv_dead_throw_pki", "0"); // 0 = no painkeep items thrown - all in pack, 1 = throw painkieep items, 2 = pain keep items gone
+		registercvar("sv_dead_throw", "4");// TEST: "0"); // 0 = no weps thrown, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 4 = throw weaps, all worky, 8 = randomize throwing (every wep is not thrown), 16 = throw weps when gibbed
+		registercvar("sv_dead_throw_pki", "1");// TEST: "0"); // 0 = no painkeep items thrown - all in pack, 1 = throw painkieep items, 2 = pain keep items gone
 		registercvar("sv_dead_gibpack", "1"); // 0 = dont throw a back pack when gibbed, 1 = throw back pack always, 2 = throw packs in singleplayer
 		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at ready weapon
 

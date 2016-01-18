@@ -855,11 +855,91 @@ vector(entity hent) grap_vw_adj =
 */
 };
 
+// fn(DeadThrew) - create drop ent
+
+void(entity e) DeadThrew =
+{
+	newmis = spawn();
+
+	newmis.items = e.weapon;
+	newmis.pk_items = 0;
+
+	if (e.eweapon)
+	{
+		newmis.eweapon = e.eweapon;
+		newmis.eweapon.wad = "packwep";
+		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
+		newmis.eweapon.model = "";
+		newmis.netname = newmis.eweapon.netname;
+		newmis.eweapon.items = e.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
+																						  // had to do this because laser cannon was getting wrong weapon value & not selectable
+		xwep_ammo(newmis.eweapon, e.;
+	}
+	else
+
+	if (DEAD_XPACK == 2)
+	{
+		newmis.items = 0;
+		newmis.pk_items = 0;
+		newmis.netname = "Pack of ammo";
+	}
+	else // standard weapon
+	{
+		if (newmis.items == IT_AXE)
+			newmis.pk_items = e.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
+		newmis.netname = swep_id(newmis.items, e.;
+	}
+
+	newmis.ammo_shells = e.ammo_shells;
+	newmis.ammo_nails = e.ammo_nails;
+	newmis.ammo_rockets = e.ammo_rockets;
+	newmis.ammo_cells = e.ammo_cells;
+
+// new ammo
+	newmis.ammo_bullet = e.ammo_bullet;
+	newmis.ammo_slug = e.ammo_slug;
+	newmis.ammo_gaspr = e.ammo_gaspr;
+	newmis.ammo_hgrenade = e.ammo_hgrenade;
+
+	if (DEAD_THROW_PKI != 2)
+	{
+		newmis.pk_gravitywellammo = e.pk_gravitywellammo;
+		newmis.pk_turretammo = e.pk_turretammo;
+		newmis.pk_canpabammo = e.pk_canpabammo;
+		newmis.pk_beartrapammo = e.pk_beartrapammo;
+		newmis.pk_explode_ammo = e.pk_explode_ammo;
+
+// Cataboligne 8.12.9 purify - pk artifacts
+		newmis.pkplus_egoammo = e.pkplus_egoammo;
+		newmis.pkplus_tombammo = e.pkplus_tombammo;
+		newmis.pkplus_actorammo = e.pkplus_actorammo;
+		newmis.pkplus_phoneammo = e.pkplus_phoneammo;
+// end pk_art
+	}
+
+	newmis.velocity_z = 300;
+	newmis.velocity_x = -100 + (random() * 200);
+	newmis.velocity_y = -100 + (random() * 200);
+
+	newmis.flags = FL_ITEM;
+	newmis.solid = SOLID_TRIGGER;
+	newmis.movetype = MOVETYPE_TOSS;
+	setmodel (newmis, "progs/backpack.mdl");
+	setsize (newmis, '-16 -16 0', '16 16 56');
+	newmis.touch = BackpackTouch;
+
+	newmis.nextthink = time + 120;	// remove after 2 minutes - TDO: cvar + stdev
+	newmis.think = SUB_Remove;
+	AddToSplash(newmis); // *pk - splash tossed items
+
+};
+
 // fn(DeadThrowWeps) - handel throwing weapons out on death
 
 void(entity e, entity p) xwep_ammo;
 void(entity e, string cl) item_call_save;
 void () painkeep_weapon_touch;
+string(float itm, entity e) swep_id;
 
 //	bit				rule
 // 0			no weps thrown
@@ -876,7 +956,7 @@ void () painkeep_weapon_touch;
 
 void(entity pack) DeadThrowWeps =
 {
-	local entity e;
+	local entity e, sv;
 	local float w, pkid, pkw, pkpid;
 
 	e = self.vwepent;
@@ -893,7 +973,9 @@ void(entity pack) DeadThrowWeps =
 	{
 		w = FALSE;
 		while (pkid & e.pk_currentitem) e = e.vwepent;
+
 		if (e.wad != "packwep") // pack deal
+		if (pack.eweapon || (e.weapon != pack.items))
 		{
 			e.wad = "deadtwep"; // mark it for save from remover code
 			e.movetype = MOVETYPE_TOSS;
@@ -922,6 +1004,11 @@ void(entity pack) DeadThrowWeps =
 			if (w)
 			{
 				e.classname = item_by_mcode(e.mcode);
+				if (!e.eweapon && !e.pk_currentitem)
+				{
+					e.lip = wepbit_mcode(e.weapon, "QA");
+					e.currentammo = wepbit_mcode(e.weapon, "QA");
+				}
 				xwep_ammo(e, pack); // adjust ammo in pack for retrievable wep
 				e.pk_touch = x_weapon_touch;
 				if (e.mcode != MC_Q3_HOLDMEDKIT && e.mcode != MC_Q3_HOLDTELE) // dont do for holdable
@@ -930,9 +1017,11 @@ void(entity pack) DeadThrowWeps =
 					if (pkpid & e.pk_currentitem) e.pk_touch = pkplus_touch;
 					else e.pk_touch = painkeep_touch;
 					e.pk_items = e.pk_currentitem;
+					e.netname = swep_id(e.items, e);
 				}
 				if (e.mcode != MC_HOOK && e.mcode != MC_Q2_GRAPPLE && e.mcode != MC_Q3_GRAPPLE) // dont do for hook
 				if (pkw & e.pk_currentitem) e.pk_touch = painkeep_weapon_touch;
+				if (!e.eweapon) e.netname = swep_id(e.weapon, e);
 				e.touch = painkeep_touch;
 				e.solid = SOLID_TRIGGER;
 //				bot_item_linx(e); // *bot - item tie in
