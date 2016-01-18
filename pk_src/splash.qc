@@ -200,12 +200,13 @@ void() CheckWaterLevels =
 // fall from grace - stuff out of level checks
 
 // suspect shot stuff is from bots fallen out & not returned yet
+// Cataboligne - 10.18.12 - tweaked velo test, -2011 didnt work for pulse spikes
 
 		if ((cc_frame & 15) == 10) // dont run these every frame, or even every 14th frame
 		{
-			if (pcc == CONTENT_SOLID || (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv))
+			if (pcc == CONTENT_SOLID || (floor(e.velocity_z) < -2000 || floor(e.velocity_z) == mv))
 			{
-				if (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv)
+				if (floor(e.velocity_z) < -2000 || floor(e.velocity_z) == mv)
 				{
 					if (e.flags & FL_ITEM)
 					{

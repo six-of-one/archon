@@ -343,7 +343,7 @@ void() player_enf_sight =
 string() player_enf_killmsg =
 {
 	if (!ENHANCED) return " was blasted by an Enforcer\n";
-	return rnd_string(' 60.0 50.0 40.0'," was blasted by Enforcer ","",""," got pulled over - permanently by "," was arrested by Enforcer ");
+	return(rnd_string(' 60.0 50.0 40.0'," was blasted by Enforcer ","",""," got pulled over - permanently by "," was arrested by Enforcer "));
 };
 string() player_enf_killmsg2 =
 {

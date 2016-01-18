@@ -217,7 +217,7 @@ void() d_item_healthbottle =
 	q100_item_health();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = D_DEF_HBOTTLE;
@@ -249,7 +249,7 @@ void() d_item_healthmedkit =
 	q100_item_health();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 		return;
 
@@ -273,7 +273,7 @@ void() d_item_healthstimpak =
 	q100_item_health();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = D_DEF_HSTIMPAK;
@@ -300,7 +300,7 @@ void() d_item_spiritarmor =
 	item_armor1();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -331,7 +331,7 @@ void() d_item_armorgreen =
 	item_armor1();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -361,7 +361,7 @@ void() d_item_armorblue =
 	item_armor2();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -392,7 +392,7 @@ void() d_ammo_ammobox =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = 50;
@@ -421,7 +421,7 @@ void() d_ammo_clip =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -449,7 +449,7 @@ void() d_ammo_1rocket =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = 1;
@@ -478,7 +478,7 @@ void() d_ammo_rockbox =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -506,7 +506,7 @@ void() d_ammo_4shell =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = 4;
@@ -535,7 +535,7 @@ void() d_ammo_shellbox =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = D_DEF_SHELLBOX;
@@ -564,7 +564,7 @@ void() d_ammo_cellbox =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = D_DEF_CELLBOX;
@@ -592,7 +592,7 @@ void() d_ammo_cellpack =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = D_DEF_CELLPAK;
@@ -618,7 +618,7 @@ void() d_ammo_cellpack =
 void() d_barrel =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "misc_explobox"))
 	{
 		return;
@@ -651,7 +651,7 @@ string(entity targ, entity attacker) q3plasma_killmsg2;
 string(entity targ, entity attacker) dssg_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was blown away by ";
 };
@@ -674,7 +674,7 @@ string(entity targ, entity attacker) q2mg_killmsg2;
 string(entity targ, entity attacker) dp_killmsg =
 {
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ","",""," was shot by "));
+		return(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ","",""," was shot by "));
 
 	return " was shot by ";
 };
@@ -688,7 +688,7 @@ string(entity targ, entity attacker) dp_killmsg2 =
 string(entity targ, entity attacker) dsaw_killmsg =
 {
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ","",""," was cut to pieces by "));
+		return(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ","",""," was cut to pieces by "));
 
 	return " was cut to pieces by ";
 };
@@ -719,7 +719,7 @@ void() d_weapon_bfg =
 	q100_weapon_lightning();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -777,7 +777,7 @@ void() d_weapon_rocketlauncher =
 	q100_weapon_rocketlauncher();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -827,7 +827,7 @@ void() d_weapon_chaingun =
 	weapon_supernailgun();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -893,7 +893,7 @@ void() d_weapon_pistol =
 	weapon_nailgun();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -945,7 +945,7 @@ void() d_weapon_saw =
 	weapon_nailgun();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -997,7 +997,7 @@ void() d_weapon_shotgun =
 	q100_weapon_shotgun();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1045,7 +1045,7 @@ void() d_weapon_supershotgun =
 	q100_weapon_supershotgun();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1093,7 +1093,7 @@ void() d_weapon_plasma =
 	q100_weapon_lightning();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1137,7 +1137,7 @@ void() d_weapon_plasma =
 void() d_item_pack =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -1168,7 +1168,7 @@ void() d_item_pack =
 void() d_item_automap =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -1191,7 +1191,7 @@ void() d_item_automap =
 void() d_item_nightvis =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -1218,7 +1218,7 @@ void() d_art_berserker =
 	q100_item_health();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_artifact_super_damage"))
 	{
 		return;
@@ -1249,7 +1249,7 @@ void() d_art_soulsphere =
 	q100_item_health();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_health_mega"))
 	{
 		return;
@@ -1280,7 +1280,7 @@ void() d_art_megasphere =
 	d_item_armorblue();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_health_mega"))
 	{
 		return;
@@ -1310,7 +1310,7 @@ void() d_art_invulnerable =
 	item_artifact_invulnerability();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1341,7 +1341,7 @@ void() d_art_invisible =
 	item_artifact_invisibility();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1372,7 +1372,7 @@ void() d_art_radsuit =
 	item_artifact_envirosuit();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1401,7 +1401,7 @@ void() d_key_redskull =
 	item_key2();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1426,7 +1426,7 @@ void() d_key_blueskull =
 	item_key1();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1451,7 +1451,7 @@ void() d_key_yellowskull =
 	item_key2();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1476,7 +1476,7 @@ void() d_key_redcard =
 	item_key2();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1501,7 +1501,7 @@ void() d_key_bluecard =
 	item_key1();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1526,7 +1526,7 @@ void() d_key_yellowcard =
 	item_key2();
 
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1560,7 +1560,7 @@ string(entity targ, entity attacker) wrock_killmsg =
 	if (targ == attacker) return " blew himself up.\n";
 		
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ","",""," ate "));
+		return(rnd_string(' 90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ","",""," ate "));
 
 	return " ate ";
 };
@@ -1577,7 +1577,7 @@ string(entity targ, entity attacker) wflame_killmsg =
 	if (targ == attacker) return " hurt himself playing with fire.\n";
 		
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ","",""," got burnt by "));
+		return(rnd_string(' 90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ","",""," got burnt by "));
 
 	return " got burnt by ";
 };
@@ -1592,7 +1592,7 @@ string(entity targ, entity attacker) wflame_killmsg2 =
 string(entity targ, entity attacker) wk_killmsg =
 {
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ","",""," was cut down by "));
+		return(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ","",""," was cut down by "));
 
 	return " was cut down by ";
 };
@@ -1626,7 +1626,7 @@ void() w_weapon_machinegun =
 	weapon_nailgun();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1695,7 +1695,7 @@ void() w_weapon_chaingun =
 	weapon_supernailgun();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1734,7 +1734,7 @@ void() w_weapon_mortar =
 	q100_weapon_rocketlauncher();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1781,7 +1781,7 @@ void() w_weapon_flamer =
 	q100_weapon_lightning();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1832,7 +1832,7 @@ void() w_weapon_pistol =
 	weapon_nailgun();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1881,7 +1881,7 @@ void() w_weapon_knife =
 	weapon_axe();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1930,7 +1930,7 @@ void() w_ammo_clip =
 	item_spikes();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1957,7 +1957,7 @@ void() w_ammo_rock =
 	item_rockets();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1984,7 +1984,7 @@ void() w_ammo_gas =
 	item_cells();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = 14;
@@ -2017,7 +2017,7 @@ void() w_ammo_gas =
 void() w_item_pack =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2049,7 +2049,7 @@ void() w_art_facesphere =
 	q100_item_health();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_health_mega"))
 	{
 		return;
@@ -2075,7 +2075,7 @@ void() w_heal_medkit =
 	q100_item_health();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = D_DEF_HMEDKIT;
@@ -2102,7 +2102,7 @@ void() w_heal_food =
 	q100_item_health();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -2127,7 +2127,7 @@ void() w_heal_dogfood =
 	q100_item_health();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = 4;
@@ -2154,7 +2154,7 @@ void() w_heal_blood =
 	q100_item_health();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = 4;
@@ -2180,7 +2180,7 @@ void() w_heal_bldbns =
 	q100_item_health();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = 4;
@@ -2209,7 +2209,7 @@ void() w_key =
 		item_key1();
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -2263,7 +2263,7 @@ void() w_treas_touch =
 void() w_item_cross =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2329,7 +2329,7 @@ void() w_barrel =
 	local entity e;
 
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "misc_explobox2"))
 	{
 		return;
@@ -2486,7 +2486,7 @@ float BLOCK = 1;
 void() ddecor_blue_firestick =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2510,7 +2510,7 @@ void() ddecor_blue_firestick =
 void() ddecor_green_firestick =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2534,7 +2534,7 @@ void() ddecor_green_firestick =
 void() ddecor_red_firestick =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2558,7 +2558,7 @@ void() ddecor_red_firestick =
 void() ddecor_blue_torch =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2582,7 +2582,7 @@ void() ddecor_blue_torch =
 void() ddecor_green_torch =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2606,7 +2606,7 @@ void() ddecor_green_torch =
 void() ddecor_red_torch =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2632,7 +2632,7 @@ void() ddecor_red_torch =
 void() ddecor_barrel_fire =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2656,7 +2656,7 @@ void() ddecor_barrel_fire =
 void() ddecor_green_pillar =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2679,7 +2679,7 @@ void() ddecor_green_pillar =
 void() ddecor_red_pillar =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2702,7 +2702,7 @@ void() ddecor_red_pillar =
 void() ddecor_green_sht_pillar =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2725,7 +2725,7 @@ void() ddecor_green_sht_pillar =
 void() ddecor_red_sht_pillar =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2748,7 +2748,7 @@ void() ddecor_red_sht_pillar =
 void() ddecor_green_hrt_pillar =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2771,7 +2771,7 @@ void() ddecor_green_hrt_pillar =
 void() ddecor_red_skull_pillar =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2794,7 +2794,7 @@ void() ddecor_red_skull_pillar =
 void() ddecor_stalagmite =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2817,7 +2817,7 @@ void() ddecor_stalagmite =
 void() ddecor_tree =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2840,7 +2840,7 @@ void() ddecor_tree =
 void() ddecor_burnttree =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2863,7 +2863,7 @@ void() ddecor_burnttree =
 void() ddecor_tech_lamp =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2886,7 +2886,7 @@ void() ddecor_tech_lamp =
 void() ddecor_tech_sht_lamp =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2909,7 +2909,7 @@ void() ddecor_tech_sht_lamp =
 void() ddecor_low_elex_lamp =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2932,7 +2932,7 @@ void() ddecor_low_elex_lamp =
 void() ddecor_techno_pillar =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2963,7 +2963,7 @@ void() ddecor_candle =
 void() ddecor_candelabra =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -2986,7 +2986,7 @@ void() ddecor_candelabra =
 void() ddecor_evil_eye =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3009,7 +3009,7 @@ void() ddecor_evil_eye =
 void() ddecor_skull_float =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3032,7 +3032,7 @@ void() ddecor_skull_float =
 void() ddecor_hang_twitch =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3055,7 +3055,7 @@ void() ddecor_hang_twitch =
 void() ddecor_hang_armout =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3078,7 +3078,7 @@ void() ddecor_hang_armout =
 void() ddecor_hang_leg_pair =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3101,7 +3101,7 @@ void() ddecor_hang_leg_pair =
 void() ddecor_hang_vic_1leg =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3124,7 +3124,7 @@ void() ddecor_hang_vic_1leg =
 void() ddecor_hang_leg =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3177,7 +3177,7 @@ void() ddecor_hang_leg_nb =
 void() ddecor_hang_vic_noguts =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3200,7 +3200,7 @@ void() ddecor_hang_vic_noguts =
 void() ddecor_hang_vic_nogutsbrains =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3223,7 +3223,7 @@ void() ddecor_hang_vic_nogutsbrains =
 void() ddecor_hang_vic_down =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3247,7 +3247,7 @@ void() ddecor_hang_vic_down =
 void() ddecor_hang_vic_opnskull =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3270,7 +3270,7 @@ void() ddecor_hang_vic_opnskull =
 void() ddecor_hang_vic_up =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3293,7 +3293,7 @@ void() ddecor_hang_vic_up =
 void() ddecor_hang_vic_nobrain =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3316,7 +3316,7 @@ void() ddecor_hang_vic_nobrain =
 void() ddecor_impaled =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3339,7 +3339,7 @@ void() ddecor_impaled =
 void() ddecor_impaled_twitch =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3362,7 +3362,7 @@ void() ddecor_impaled_twitch =
 void() ddecor_skull_pole =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3385,7 +3385,7 @@ void() ddecor_skull_pole =
 void() ddecor_skull_kebob =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3408,7 +3408,7 @@ void() ddecor_skull_kebob =
 void() ddecor_skull_pile =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3431,7 +3431,7 @@ void() ddecor_skull_pile =
 void() ddecor_pool_blood =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3457,7 +3457,7 @@ void() ddecor_pool_blood =
 void() ddecor_pool_blood_2 =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3483,7 +3483,7 @@ void() ddecor_pool_blood_2 =
 void() ddecor_pool_brains =
 {
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3510,7 +3510,7 @@ void() ddecor_bloody_mess =
 {
 // for now
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3544,7 +3544,7 @@ void() ddecor_dead_player =
 {
 // for now
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3578,7 +3578,7 @@ void() ddecor_pool_flesh_blood =
 {
 // for now
 	if (!ULOKD)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3613,7 +3613,7 @@ void() d_pool_flesh_blood =
 void() w_flag =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3633,7 +3633,7 @@ void() w_flag =
 void() wdecor_armorsuit =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3653,7 +3653,7 @@ void() wdecor_armorsuit =
 void() wdecor_woodbarrel =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3673,7 +3673,7 @@ void() wdecor_woodbarrel =
 void() wdecor_chand_grn =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3688,7 +3688,7 @@ void() wdecor_chand_grn =
 void() wdecor_floorlamp =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3707,7 +3707,7 @@ void() wdecor_floorlamp =
 void() wdecor_bed =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3725,7 +3725,7 @@ void() wdecor_bed =
 void() wdecor_column =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3748,7 +3748,7 @@ void() wdecor_column =
 void() wdecor_hangcage =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3766,7 +3766,7 @@ void() wdecor_hangcage =
 void() wdecor_hangcageskel =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3778,7 +3778,7 @@ void() wdecor_hangcageskel =
 void() wdecor_tablesmall =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3796,7 +3796,7 @@ void() wdecor_tablesmall =
 void() wdecor_stove =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3817,7 +3817,7 @@ void() wdecor_stove =
 void() wdecor_sink =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3836,7 +3836,7 @@ void() wdecor_sink =
 void() wdecor_spears =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3854,7 +3854,7 @@ void() wdecor_spears =
 void() wdecor_vase =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3872,7 +3872,7 @@ void() wdecor_vase =
 void() wdecor_basket =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3892,7 +3892,7 @@ void() wdecor_basket =
 void() wdecor_water =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3912,7 +3912,7 @@ void() wdecor_water =
 void() wdecor_well =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -3930,7 +3930,7 @@ void() wdecor_well =
 void() wdecor_wellfull =
 {
 	if (!ULOKW)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;

@@ -303,8 +303,7 @@ string(entity targ, entity attacker) blarg_killmsg =
 		return " bot viscerally mauled a ";
 	else
 	{
-		bprint(" found out Blargs dont make good pets.\n");
-		return "return";
+		return(" found out Blargs dont make good pets.\n");
 	}
 };
 

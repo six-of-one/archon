@@ -1919,7 +1919,7 @@ void () weapon_hook =
 	weapon_grapgun();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -2047,7 +2047,7 @@ void() painkeep_cube_use =
 		{
 			d = 0;
 			f = rint(random() * 10);
-			if (f < 4) d = MC_HIP_LASERCAN;
+			if (f < 4) d = MC_REGGUN; // MC_HIP_LASERCAN;
 			else if (f < 6 && ULOK2) d = MC_Q2_BFG;
 			if (d) c.ammo_cells = -1;
 			else
@@ -2075,7 +2075,7 @@ void() painkeep_cube_use =
 					{
 						d = MC_PENT;
 						f = MC_TOT - 2;
-						if (random() < 0.2 && GENERATIONS) d = MC_SUPER_SHOTGUN + rint(random() * f); // any item besides q1 axe or sg
+						if (random() < 0.2 && XMOD) d = MC_SUPER_SHOTGUN + rint(random() * f); // any item besides q1 axe or sg
 						if (random() < 0.2 && MORPHIC && c.event == "dynamic_item") c.wad = "morph_cube"; // can only do this with dynamic pk cubes
 					}
 				}
@@ -2234,7 +2234,8 @@ void() painkeep_cube_use =
 // pk cube fix - spawned something and fns are reversed
 		if (self.class_select != "class_monster")
 		{
-			if (self.ammo_cells < 0) self.ammo_cells = self.currentammo = self.currentammo + 30 + 50 * random();
+// was prob for bfg - and it was borking reggun ammo load
+//			if (self.ammo_cells < 0) self.ammo_cells = self.currentammo = self.currentammo + 30 + 50 * random();
 //			if (self.ammo_shells < 0) self.ammo_shells = self.currentammo = self.currentammo + 30 + 30 * random();
 			if (self.pk_touch == painkeep_touch)
 			if (self.touch != painkeep_touch)
@@ -3011,7 +3012,7 @@ void() func_make =
 	}
 
 	f = MC_T_RNDITM;
-	if ((self.wait == -5) && GENERATIONS)
+	if ((self.wait == -5) && XMOD)
 	{
 		if (Q_99) f = MC_NR_RNDITM;
 		d = MC_SUPER_SHOTGUN + rint(random() * f);
@@ -3185,7 +3186,7 @@ void() barrel_explode =
 //	else
 	if (!deathmatch || deathmatch == 2 || deathmatch == 4)
 		SUB_Remove();
-	else if (self.th_stand != SUB_Null)
+	else if (self.th_stand != SUB_Null && self.th_stand != (void()) 0)
 		self.th_stand();
 	else
 	if (EXPLBOX_RESP)

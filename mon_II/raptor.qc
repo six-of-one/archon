@@ -482,8 +482,7 @@ string(entity targ, entity attacker) raptor_killmsg =
 		return " tried to examine the claws of a ";
 	else
 	{
-		bprint(" could not wait for modern times to be an archaeologist.\n");
-		return "return";
+		return(" could not wait for modern times to be an archaeologist.\n");
 	}
 };
 

@@ -610,6 +610,8 @@ float ofs;
 
 // fn(morph_test) - test multiple morph nums, return true for any match-
 
+// m* - morph nums
+
 float(entity e, float m1,float m2,float m3,float m4,float m5,float m6) morph_test =
 {
 if (m1)

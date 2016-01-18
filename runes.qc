@@ -760,25 +760,6 @@ void () rune_touch =
 
 	other.rune_flag = other.rune_flag | (self.spawnflags & RUNE_MASK_ALL);
 
-
-
-
-
-if (1)
-//if (self.netname == "")
-if (self.spawnflags == RUNE_FLG_HS)
-if (self.model != "progs/q3_art.mdl")
-if (stack_search(other, "item_haste"))
-{
-	stack_delete(other, "item_haste");
-	stack_compress(other);
-	bprint("***     warning: rune touch - q3 haste item detected / removed from stack!");
-	bprint("\n");
-}
-
-
-
-
 	if (RUNES == 1)
 	{
 		e = spawn();

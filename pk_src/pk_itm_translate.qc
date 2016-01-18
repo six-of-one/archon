@@ -2210,7 +2210,7 @@ void(entity e, float trv) master_item_control =
 {
 	if (e.classname == "func_make") return; // override
 
-	if (GENERATIONS)
+	if (XMOD)
 	if (!PK_100 && !Q_100) // turned back on - come here from loop
 	{
 		if (cvar("pk_place_item") == 1) return;
@@ -2287,9 +2287,9 @@ float Q1WT; // global - once wad == "q1" is true for a map, its always true
 
 float(entity e, float q1ck, string itm) noxtr_item_control =
 {
-	if (!GENERATIONS)
-	{
-		if (q1ck) // test to see if its a dual item map - if so, hide this item
+//	if (!XMOD)
+//	{
+		if (q1ck) // test to see if its a dual item map - if so, hide this item on an *_100 condition
 		{
 			if (!Q1WT)
 			{
@@ -2301,6 +2301,7 @@ float(entity e, float q1ck, string itm) noxtr_item_control =
 				if (find(world,wad,"q1")) Q1WT = TRUE;
 			}
 
+			if (Q_100 || PK_100)
 			if (Q1WT)
 			{
 				hide_item (e);
@@ -2320,9 +2321,9 @@ float(entity e, float q1ck, string itm) noxtr_item_control =
 //			hide_item (e);
 
 		return(TRUE);
-	}
+//	}
 
-	return(FALSE);
+//	return(FALSE);
 };
 
 void() set_translate =

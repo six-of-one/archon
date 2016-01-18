@@ -803,6 +803,7 @@ float(entity e) notmod =
 		return(TRUE);
 	}
 
+// !dp is the mode for all darkplaces only stuff wall blocks - so the func_wall will exist everywhere but dp
 	if (DARKPLACES)
 	if (e.wad == "!dp" || e.netname == "!dp")
 	{
@@ -1146,7 +1147,9 @@ void() archon_power =
 {
 	local entity e;
 
-	e = chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "archon_powerclr", "", SUB_Null, 1, q2_teleport_particles, archon_powerclr, self, world);
+	e = chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "archon_powerclr", "progs/arc_pp.bsp", SUB_Null, 1, q2_teleport_particles, archon_powerclr, self, world);
+	e.alpha = 0.7;
+	e.scale = 0.6;
 	e.cnt = 74;
 // dont always make items instantly
 	if (random() < 0.4)

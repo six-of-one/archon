@@ -442,7 +442,7 @@ void() player_lavablob_impulse =
 
 string() player_lavablob_killmsg =
 {
-	return rnd_string(' 60.0 50.0 40.0'," got melted by Lava Bomb ","",""," was blasted by Lava Bomb "," was fired by ");
+	return(rnd_string(' 60.0 50.0 40.0'," got melted by Lava Bomb ","",""," was blasted by Lava Bomb "," was fired by "));
 };
 string() player_lavablob_killmsg2 =
 {

@@ -245,7 +245,7 @@ void() q2_ammo_bullets =
 	item_spikes();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q2_DEF_BULLETS_BOX;
@@ -273,7 +273,7 @@ void() q2_ammo_rockets =
 	item_rockets();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q2_DEF_ROCKETS_LG;
@@ -302,7 +302,7 @@ void() q2_ammo_shells =
 	item_shells();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q2_DEF_SHELLS;
@@ -330,7 +330,7 @@ void() q2_ammo_cells =
 	item_cells();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q2_DEF_CELLPAK;
@@ -358,7 +358,7 @@ void() q2_ammo_slugs =
 	item_cells();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q2_DEF_CELLPAK;
@@ -407,7 +407,7 @@ string(entity targ, entity attacker) q2bfg_killmsg =
 	if (targ == attacker) return " should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was disintegrated by ";
 };
@@ -422,7 +422,7 @@ string(entity targ, entity attacker) q2bfg_killmsg2 =
 string(entity targ, entity attacker) q2rail_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was railed by ";
 };
@@ -437,7 +437,7 @@ string(entity targ, entity attacker) q2rail_killmsg2 =
 string(entity targ, entity attacker) q2hbl_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was melted by ";
 };
@@ -453,7 +453,7 @@ string(entity targ, entity attacker) q2rock_killmsg =
 	if (targ == attacker) return " blew himself up.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " ate ";
 };
@@ -470,7 +470,7 @@ string(entity targ, entity attacker) q2gren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was popped by ";
 };
@@ -487,7 +487,7 @@ string(entity targ, entity attacker) q2hgren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " caught ";
 };
@@ -502,7 +502,7 @@ string(entity targ, entity attacker) q2hgren_killmsg2 =
 string(entity targ, entity attacker) q2ssg_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was blown away by ";
 };
@@ -516,7 +516,7 @@ string(entity targ, entity attacker) q2ssg_killmsg2 =
 string(entity targ, entity attacker) q2sg_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was gunned down by ";
 };
@@ -530,7 +530,7 @@ string(entity targ, entity attacker) q2sg_killmsg2 =
 string(entity targ, entity attacker) q2cg_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was cut in half by ";
 };
@@ -559,7 +559,7 @@ string(entity targ, entity attacker) q2mg_killmsg2 =
 string(entity targ, entity attacker) q2blst_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was blasted by ";
 };
@@ -593,7 +593,7 @@ void() q2_ammo_grenades =
 	item_rockets();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q2_DEF_BLAST;
@@ -648,7 +648,7 @@ void () q2_weapon_bfg =
 	q100_weapon_lightning();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -707,7 +707,7 @@ void () q2_weapon_railgun =
 	q100_weapon_lightning();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -756,7 +756,7 @@ void () weapon_hyperblaster =
 	q100_weapon_lightning();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -803,7 +803,7 @@ void() q2_weapon_rocketlauncher =
 	q100_weapon_rocketlauncher();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -853,7 +853,7 @@ void () q2_weapon_grenadelauncher =
 	q100_weapon_grenadelauncher();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -902,7 +902,7 @@ void () weapon_chaingun =
 	weapon_supernailgun();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -973,7 +973,7 @@ void() q2_weapon_machinegun =
 	weapon_nailgun();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1004,7 +1004,7 @@ void () q2_weapon_supershotgun =
 	q100_weapon_supershotgun();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1059,7 +1059,7 @@ void () q2_weapon_shotgun =
 	q100_weapon_shotgun();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1107,7 +1107,7 @@ void () q2_weapon_blaster =
 	q100_weapon_shotgun();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1155,7 +1155,7 @@ void () q2_weapon_grapple =
 	weapon_grapgun();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1214,7 +1214,7 @@ void() q2_item_health_small =
 	q100_item_health();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = Q2_DEF_HBOTTLE;
@@ -1239,7 +1239,7 @@ void() q2_item_health =
 	q100_item_health();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = Q2_DEF_HFIRSTAID;
@@ -1264,7 +1264,7 @@ void() q2_item_health_large =
 	q100_item_health();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = Q2_DEF_HMEDKIT;
@@ -1290,7 +1290,7 @@ void() q2_item_health_mega =
 	q100_item_health();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_health_mega"))
 	{
 		return;
@@ -1313,7 +1313,7 @@ void() q2_item_health_mega =
 void() q2_misc_explobox =
 {
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "misc_explobox"))
 	{
 		return;
@@ -1335,7 +1335,7 @@ void() q2_item_armor_body =
 	item_armorInv();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1363,7 +1363,7 @@ void() q2_item_armor_combat =
 	item_armor2();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1391,7 +1391,7 @@ void() item_armor_jacket =
 	item_armor1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1419,7 +1419,7 @@ void() q2_item_armor_shard =
 	item_armor1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -1444,7 +1444,7 @@ void() item_power_shield =
 	item_armor1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1475,7 +1475,7 @@ void() item_power_screen =
 	item_armor1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1506,7 +1506,7 @@ void() item_silencer =
 	item_spikes();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1535,7 +1535,7 @@ void() item_invulnerability =
 	item_artifact_invulnerability();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1562,7 +1562,7 @@ void() q2_item_enviro =
 	item_artifact_envirosuit();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1591,7 +1591,7 @@ void() q2_item_quad =
 	item_artifact_super_damage();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1619,7 +1619,7 @@ void() item_adrenaline =
 	q100_item_health();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_health_mega"))
 	{
 		return;
@@ -1645,7 +1645,7 @@ void() item_bandolier =
 	item_spikes();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_armor2"))
 	{
 		return;
@@ -1674,7 +1674,7 @@ void() item_pack =
 	item_spikes();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_artifact_envirosuit"))
 	{
 		return;
@@ -1706,7 +1706,7 @@ void() item_breather =
 	item_artifact_envirosuit();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.classname = "item_artifact_envirosuit";
@@ -1736,7 +1736,7 @@ void() key_pyramid =
 	item_key1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1759,7 +1759,7 @@ void() key_power_cube =
 	item_key2();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1782,7 +1782,7 @@ void() key_pass =
 	item_key1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1805,7 +1805,7 @@ void() key_data_cd =
 	item_key1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1828,7 +1828,7 @@ void() key_data_spinner =
 	item_key2();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1851,7 +1851,7 @@ void() key_airstrike_target =
 	item_key2();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1874,7 +1874,7 @@ void() key_blue_key =
 	item_key1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1898,7 +1898,7 @@ void() key_red_key =
 	item_key2();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1922,7 +1922,7 @@ void() key_commander_head =
 	item_key2();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1957,7 +1957,7 @@ void() q2_ctf_haste =
 	item_key1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1987,7 +1987,7 @@ void() q2_ctf_regen =
 	item_key1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -2016,7 +2016,7 @@ void() q2_ctf_resist =
 	item_key1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -2045,7 +2045,7 @@ void() q2_ctf_stren =
 	item_key1();
 
 	if (!ULOK2)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;

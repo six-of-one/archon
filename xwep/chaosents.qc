@@ -93,7 +93,7 @@ void() chaos_precache =
 string(entity targ, entity attacker) creg_killmsg =
 {
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ","",""," was blown away by "));
+		return(rnd_string(' 90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ","",""," was blown away by "));
 
 	return " was blown away by ";
 };
@@ -145,7 +145,7 @@ void() c_weapon_reggun =
 string(entity targ, entity attacker) csh_killmsg =
 {
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ","",""," was dug a grave by "));
+		return(rnd_string(' 90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ","",""," was dug a grave by "));
 
 	return " was dug a grave by ";
 };
@@ -196,7 +196,7 @@ void() c_weapon_shovel =
 string(entity targ, entity attacker) cds_killmsg =
 {
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ","",""," stopped running for "));
+		return(rnd_string(' 90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ","",""," stopped running for "));
 
 	return " stopped running for ";
 };

@@ -812,6 +812,7 @@ void () item_shells =
 {
 	self.touch = ammo_touch;
 
+	if (Q_100 || PK_100 || !self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
 	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_shell1.bsp");
@@ -838,6 +839,7 @@ void () item_spikes =
 {
 	self.touch = ammo_touch;
 
+	if (Q_100 || PK_100 || !self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
 	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_nail1.bsp");
@@ -864,6 +866,7 @@ void () item_rockets =
 {
 	self.touch = ammo_touch;
 
+	if (Q_100 || PK_100 || !self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
 	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_rock1.bsp");
@@ -891,6 +894,7 @@ void () item_cells =
 {
 	self.touch = ammo_touch;
 
+	if (Q_100 || PK_100 || !self.aflag) // Cataboligne - 10.22.12 - allow ammo box load map overrides
 	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_batt1.bsp");

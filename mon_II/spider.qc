@@ -313,8 +313,7 @@ string(entity targ, entity attacker) spider_killmsg =
 		return " felt the powerful bite of a ";
 	else
 	{
-		bprint(" tried to pet the pretty Spider, aww.\n");
-		return "return";
+		return(" tried to pet the pretty Spider, aww.\n");
 	}
 };
 

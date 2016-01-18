@@ -313,7 +313,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		else attacker.health = attacker.health + RUNE_VAMPIRE_PER * take;
 	}
 
-// do the damage
+// *** do the damage
 	targ.health = ceil(targ.health - take);
 
 	ax_dmg = take; // Cataboligne - 10.11.11 - bot endless axe war preventative deal

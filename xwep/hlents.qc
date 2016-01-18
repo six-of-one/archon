@@ -30,7 +30,7 @@ void() weapon_rpg =
 
 	if (TRUE)
 //	if (!ULOKHL)
-//	if (!GENERATIONS)
+//	if (!XMOD)
 //	if (noxtr_item_control(self, TRUE, "")) // use for converted maps? but uses sv_xtras tag
 	{
 		self.touch = painkeep_touch;
@@ -116,7 +116,7 @@ void() weapon_gauss =
 	else
 	if (TRUE)
 //	if (!ULOKHL)
-//	if (!GENERATIONS)
+//	if (!XMOD)
 //	if (noxtr_item_control(self, TRUE, "")) // use for converted maps? but uses sv_xtras tag
 	{
 		self.touch = painkeep_touch;
@@ -153,7 +153,7 @@ void() weapon_egon =
 	else
 	if (TRUE)
 //	if (!ULOKHL)
-//	if (!GENERATIONS)
+//	if (!XMOD)
 //	if (noxtr_item_control(self, TRUE, "")) // use for converted maps? but uses sv_xtras tag
 	{
 		self.touch = painkeep_touch;
@@ -171,7 +171,7 @@ void() weapon_handgrenade =
 
 	if (TRUE)
 //	if (!ULOKHL)
-//	if (!GENERATIONS)
+//	if (!XMOD)
 //	if (noxtr_item_control(self, TRUE, "")) // use for converted maps? but uses sv_xtras tag
 	{
 		self.touch = painkeep_touch;

@@ -1386,18 +1386,6 @@ void(entity p, float pg) drop_setup =
 						if (stack_search(p, "item_haste"))
 							ic = "Haste ";
 
-
-
-
-if (1)
-if (ic == "Haste ")
-{
-	bprint("***     warning: q3 haste item detected!");
-	bprint("\n");
-}
-
-
-
 						if (d & RUNE_FLG_RG)
 						if (stack_search(p, "item_regen"))
 							ic = "Regeneration ";
@@ -1421,17 +1409,6 @@ if (ic == "Haste ")
 //					if (p.target2 == "progs/q3_art.mdl")
 					if (stack_search(p, "item_haste")) // TDO: when getting run, delete this from stack ?? not sure what this is about, maybe "run" should be "rune"
 						ic = "Haste ";
-
-
-
-if (1)
-if (ic == "Haste ")
-{
-	bprint("***     warning: q3 haste item detected!");
-	bprint("\n");
-}
-
-
 
 					if (d & RUNE_FLG_RG)
 					if (stack_search(p, "item_regen"))
@@ -1902,12 +1879,12 @@ void(entity e) dead_drop =
 		dead_runes(e);
 
 
-
+/*
 if (1)
 bprint("***     warning: haste check - ");
 rune_map_print(4);
 //	bprint("\n");
-
+*/
 
 
 };

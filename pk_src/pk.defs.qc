@@ -8,8 +8,9 @@ float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 float chaos;									// detect customized glquake engine - has cvars compiled
 float CHAOS_ENG				= 10100010110111; // chaos engine id
 float DARKPLACES;								// for detecting darkplaces
-float GENERATIONS;							// exclude xtra elements
+float XMOD;										// master exclude on extra elements
 float ULOKW, ULOKD, ULOK2, ULOK3, ULOKHL;		// unlock codes
+float PK_SEVEN, PK_EIGHT;
 float LOK_STRICT				= 1; 			// lock deal
 float XTR_SAVED1				= 1195724115; // saved1 test val 
 // end engines
@@ -1066,7 +1067,7 @@ float IT1_WQ1					= 4; // worldtype 4
 float IT3_WQ1					= 5; // worldtype 5
 float IT4_WQ1					= 6; // worldtype 6
 
-void () weapon_chainlg; // for !GENERATIONS
+void () weapon_chainlg; // for !XMOD
 
 // q2
 

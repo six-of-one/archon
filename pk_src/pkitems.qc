@@ -95,7 +95,7 @@ void () PlaceItem =
 	self.sscode = sid_code[(int)(self.mcode - 100) * %4];
 	if (!self.scode) self.scode = self.mcode;
 
-	if (Q_100 || PK_100) // || !GENERATIONS)
+	if (Q_100 || PK_100) // || !XMOD)
 	{
 		f = 0;
 		if (TR_Q1QRY > 0)
@@ -1830,7 +1830,7 @@ void() pk_placeitem =
 // TESTING - see if we can q1 default class select
 	if (self.class_select == "") self.class_select = "quake_item";
 
-//	if (GENERATIONS)
+//	if (XMOD)
 	if (!PK_100 && !Q_100)
 	{
 		if (self.wad == "q1") master_item_control(self, 0); // TEST: comment for q1 item comparison

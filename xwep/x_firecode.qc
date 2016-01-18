@@ -1600,6 +1600,8 @@ float pk_livent_brk; // painkeep live ent breakdown according to item flags as f
 //float PKPLUS_IT_TOMB			= 512;
 float PKPLUS_IT_CORPSE			= 1024; // special - (tomb genned) corpse has health, can takedmg, can be targeted
 
+//  ========= ========= ========= ========= ========= ========= =========
+
 // targeting fn - IDEA: move?
 // 		- tests to see if an ent can be targeted by an attack / effect under various conditions - maybe chaos vector
 
@@ -1822,7 +1824,8 @@ void() bfg_trace_thk =
 		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM ;		// all hittable things
 		k = bfg_targ_seq(self.enemy.origin, Q2_BFG_TRACE, bfl, 0); // find things to dmg in beam radius
 		e = self.theowner;
-		while (e)
+		sf = 500;
+		while (e && sf > 0)
 		{
 			if (can_has_target(e, self.owner, self.owner.origin, 0, bfl)) // check LOS to owner
 			{
@@ -1838,10 +1841,10 @@ local float i, m;
 local entity g;
 
 				T_Damage (e,self,self.owner,f);
-				}
-				e = e.theowner;
 			}
-
+			e = e.theowner;
+			sf = sf - 1;
+		}
 
 	}
 	if (self.flags == Q2_BFG_LASER)
@@ -1857,7 +1860,8 @@ local entity g;
 		self.cnt = self.cnt + 1;
 		e = findradius(self.enemy.origin, Q2_BFG_LASER); // find things to laser dmg in fire radius
 		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM;
-		while (e)
+		sf = 600;
+		while (e && sf > 0)
 		{
 			if (can_has_target(e, self.owner, self.enemy.origin, 0, bfl)) 
 			{
@@ -1874,6 +1878,7 @@ local entity g;
 
 			}
 			e = e.chain;
+			sf = sf - 1;
 		}
 		self.nextthink = time + 0.1;
 		return;

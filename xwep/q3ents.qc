@@ -409,7 +409,7 @@ string(entity targ, entity attacker) q3bfg_killmsg =
 	if (targ == attacker) return " should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was blasted by ";
 };
@@ -426,7 +426,7 @@ string(entity targ, entity attacker) q3rail_killmsg =
 //	if (targ == attacker) return "should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was railed by ";
 };
@@ -443,7 +443,7 @@ string(entity targ, entity attacker) q3plasma_killmsg =
 	if (targ == attacker) return " melted himself.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was melted by ";
 };
@@ -460,7 +460,7 @@ string(entity targ, entity attacker) q3ltn_killmsg =
 	if (targ == attacker) return " blew himself up.\n"; // note: q3 lg doestn blow under water
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was electrocuted by ";
 };
@@ -477,7 +477,7 @@ string(entity targ, entity attacker) q3rock_killmsg =
 	if (targ == attacker) return " blew himself up.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " ate ";
 };
@@ -494,7 +494,7 @@ string(entity targ, entity attacker) q3gren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " ate ";
 };
@@ -511,7 +511,7 @@ string(entity targ, entity attacker) q3sg_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was gunned down by ";
 };
@@ -528,7 +528,7 @@ string(entity targ, entity attacker) q3mg_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was machinegunned by ";
 };
@@ -545,7 +545,7 @@ string(entity targ, entity attacker) q3g_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+//		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
 
 	return " was pummeled by ";
 };
@@ -583,7 +583,7 @@ void () q3_weapon_bfg =
 	q100_weapon_lightning();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -645,7 +645,7 @@ void() weapon_plasmagun =
 	q100_weapon_lightning();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -721,7 +721,7 @@ void() q3_weapon_machinegun =
 	weapon_supernailgun();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -756,7 +756,7 @@ void() q3_weapon_shotgun =
 	q100_weapon_supershotgun();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -805,7 +805,7 @@ void() q3_weapon_rocketlauncher =
 	q100_weapon_rocketlauncher();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -855,7 +855,7 @@ void () q3_weapon_grenadelauncher =
 	q100_weapon_grenadelauncher();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -906,7 +906,7 @@ void () weapon_gauntlet =
 	weapon_axe();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -963,7 +963,7 @@ void () weapon_grapplinghook =
 	weapon_grapgun();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1022,7 +1022,7 @@ void () q3_weapon_lightning =
 	q100_weapon_lightning();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1071,7 +1071,7 @@ void () q3_weapon_railgun =
 	q100_weapon_lightning();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1131,7 +1131,7 @@ void() q3_ammo_bullets =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q3_BULLET_AMMO;
@@ -1162,7 +1162,7 @@ void() q3_ammo_grenades =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q3_GREN_AMMO;
@@ -1193,7 +1193,7 @@ void() ammo_lightning =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q3_ELEX_AMMO;
@@ -1224,7 +1224,7 @@ void() ammo_bfg =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q3_ELEX_AMMO;
@@ -1262,7 +1262,7 @@ void() q3_ammo_shells =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q3_SHOT_AMMO;
@@ -1293,7 +1293,7 @@ void() q3_ammo_rockets =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q3_ROCK_AMMO;
@@ -1324,7 +1324,7 @@ void() q3_ammo_cells =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q3_ELEX_AMMO;
@@ -1357,7 +1357,7 @@ void() q3_ammo_slugs =
 	self.touch = pk_ammo_touch;
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.aflag = Q3_ELEX_AMMO;
@@ -1513,7 +1513,7 @@ void() q3_item_armor_combat =
 	item_armor2();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1544,7 +1544,7 @@ void() q3_item_armor_body =
 	item_armorInv();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.touch = painkeep_touch;
@@ -1575,7 +1575,7 @@ void() q3_item_armor_shard =
 	item_armor1();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
 		return;
@@ -1604,7 +1604,7 @@ void() q3_item_health_small =
 	q100_item_health();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = Q3_HEAL5_A;
@@ -1634,7 +1634,7 @@ void() q3_item_health =
 	q100_item_health();
 	
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 		return;
 
@@ -1661,7 +1661,7 @@ void() q3_item_health_large =
 	q100_item_health();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		self.healamount = Q3_HEALLG_A;
@@ -1692,7 +1692,7 @@ void() q3_item_health_mega =
 	q100_item_health();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_health_mega"))
 	{
 		return;
@@ -1723,7 +1723,7 @@ void() q3_item_quad =
 	item_artifact_super_damage();
 	
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1901,7 +1901,7 @@ void() item_regen =
 	if (self.class_select == "") self.class_select = "q3_item";
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_artifact_invulnerability")) // IDEA: random possibilities via str func
 	{
 		return;
@@ -1937,7 +1937,7 @@ void() item_invis =
 	item_artifact_invisibility();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -1968,7 +1968,7 @@ void() q3_item_enviro =
 	item_artifact_envirosuit();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -2000,7 +2000,7 @@ void() item_haste =
 	if (self.class_select == "") self.class_select = "q3_item";
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_artifact_invulnerability"))
 	{
 		return;
@@ -2032,7 +2032,7 @@ void() item_haste =
 void() item_flight =
 {
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, "item_artifact_super_damage"))
 	{
 		return;
@@ -2119,7 +2119,7 @@ void() holdable_medkit =
 	item_painkeep_can();
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;
@@ -2165,7 +2165,7 @@ void() holdable_teleporter =
 	}
 
 	if (!ULOK3)
-	if (!GENERATIONS)
+//	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
 		return;

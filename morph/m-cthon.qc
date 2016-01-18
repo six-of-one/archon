@@ -340,7 +340,7 @@ string() player_cthon_killmsg =
 {
 	if (!ENHANCED) return " died\n";
 
-	return rnd_string(' 60.0 50.0 40.0'," met Cthon in battle\n","",""," was blasted by living Lava\n"," was sacraficed to the Volcano God!\n");
+	return(rnd_string(' 60.0 50.0 40.0'," met Cthon in battle\n","",""," was blasted by living Lava\n"," was sacraficed to the Volcano God!\n"));
 };
 string() player_cthon_killmsg2 =
 {

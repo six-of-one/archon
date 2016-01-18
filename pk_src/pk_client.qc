@@ -528,6 +528,22 @@ void() PutClientInServer =
 	self.classname = "player";
 	player_count(); // count for map over loading ops
 
+// morphic - needs done prior to q100
+	self._stand = SUB_Null; // make sure these are safe & detectable
+	self._pain = SUB_Null;
+	self._run = SUB_Null;
+	self._impulse = SUB_Null;
+	self._hk_lesser = SUB_Null;
+	self._hk_major = SUB_Null;
+	self._attack = SUB_Null;
+	self._jump = SUB_Null;
+	self._jump2 = SUB_Null;
+	self._die = SUB_Null;
+	self._summon = SUB_Null;
+	self._alt_fire = SUB_Null;
+	self._killmsg = SUB_Null;
+	self._killmsg2 = SUB_Null;
+
 	if (Q_100 || Q_99)
 	{
 		if (Q_99)
@@ -560,22 +576,6 @@ void() PutClientInServer =
 	self.invincible_finished = 0;
 	self.effects = 0;
 	self.invincible_time = 0;
-
-// morphic
-	self._stand = SUB_Null; // make sure these are safe & detectable
-	self._pain = SUB_Null;
-	self._run = SUB_Null;
-	self._impulse = SUB_Null;
-	self._hk_lesser = SUB_Null;
-	self._hk_major = SUB_Null;
-	self._attack = SUB_Null;
-	self._jump = SUB_Null;
-	self._jump2 = SUB_Null;
-	self._die = SUB_Null;
-	self._summon = SUB_Null;
-	self._alt_fire = SUB_Null;
-	self._killmsg = SUB_Null;
-	self._killmsg2 = SUB_Null;
 
 	DecodeLevelParms (); // note: sets char
 
@@ -2914,7 +2914,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 //				noenvcide(targ);
 				return;
 			}
-			else if (rnum == -5)
+			else if (rnum == -5 || targ.deathtype == "lavadead") // Cataboligne - 10.19.12 - allow other things (like triggers) to set a lava deathtype
 			{
 //				noenvcide(targ);
 				if (MAP_MODE == "Q3" || MAP_MODE == "Q2")

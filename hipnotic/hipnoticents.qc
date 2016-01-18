@@ -173,11 +173,11 @@ string(entity targ, entity attacker) mjolnir_killmsg =
 {
 	if (targ == attacker)
 	if (ENHANCED)
-		bprint(rnd_string(' 90.0 60.0 60.0'," got creative with Mjolnir\n"," angered the Gods\n","",""," swung too hard\n"));
+		return(rnd_string(' 90.0 60.0 60.0'," got creative with Mjolnir\n"," angered the Gods\n","",""," swung too hard\n"));
 	else if (random() > 0.4 )
-		bprint (" becomes bored with life\n");
+		return (" becomes bored with life\n");
 	else
-		bprint (" checks if his weapon is loaded\n");
+		return (" checks if his weapon is loaded\n");
 
 	return " was slammed by ";
 };

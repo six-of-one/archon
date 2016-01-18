@@ -33,21 +33,31 @@ void() PK_init =
 
 	pk_srvcmd_set(); 	// set server controls for qc code
 
-	if (cvar("saved1") == XTR_SAVED1)
+	if (cvar("saved1") == XTR_SAVED1) // allow xmod to be set on other engines
 	{
 		cvar_set("saved1", "0"); // clear temp code
-		cvar_set("sv_xtras", "1");
-		GENERATIONS = 1;
+		if (DARKPLACES || chaos) cvar_set("sv_xtras", "1");
+		XMOD = 1;
 	}
 
-	if (Q_100 || PK_100) GENERATIONS = FALSE;
+	if (Q_100 || PK_100) XMOD = FALSE;
 
-	if (GENERATIONS) // possible to run qc w/o paks
+	if (!XMOD) // possible to run qc w/o paks
 	{
-		ULOKW = ULOKD = ULOK2 = ULOK3 = TRUE;
+		ULOKW = ULOKD = ULOK2 = ULOK3 = FALSE;
 	}
 
 	ULOKHL = FALSE; // place holder - HL stuff not supported yet - Cataboligne 10.12.12
+
+	if (!PK_SEVEN) // not found - turn off
+	{
+		ULOKW = ULOKD = FALSE;
+	}
+
+	if (!PK_EIGHT)
+	{
+		ULOK2 = ULOK3 = FALSE;
+	}
 
 	if (!DARKPLACES) // may not use all this - dp auto precaches
 	{
@@ -190,19 +200,6 @@ void() PK_init =
 		}
 	}
 	rune_new_map = FALSE;
-
-// fix major altarbeta clipping problem on some rocks
-// NOTE: this could be put in ent file as func_model
-	
-	if (world.model == "maps/altarbeta.bsp")
-	{
-		e = spawn();
-		setmodel(e, "progs/abclip.bsp");
-//		setorigin(e, v0);
-		e.origin = v0;
-		e.solid = SOLID_BSP;
-//		e.alpha = 0;
-	}
 
 // extra sounds by...are apparently not supplied, except gib_?.wav
 
@@ -1243,7 +1240,10 @@ void() pk_srvcmd_load =
 
 // these all req. map reload for full effectiveness
 
-	GENERATIONS = cvar("sv_xtras");
+	XMOD = cvar("sv_xtras");
+
+	localcmd("exec pk_7.cfg\n"); // module X - wont exec until after first map load - this should be ok, because first map of server should always be a hub
+	localcmd("exec pk_8.cfg\n");
 
 	PK_100 = cvar("sv_pk100");
 
@@ -1270,16 +1270,26 @@ void() pk_srvcmd_set =
 
 /// this section assigns vars to default values - they will rule any engine not dp registercvar able or not customized as the glquake build we release
 //				- it would be trivial to take the custom cvar section from the glquake build and add to _any_ engine...
+//				IDEA: make that segment of pr_edict.c an includeable file
 
-	GENERATIONS = 0; // this bad code - non dp enabled engines (or eng w/o glq mod) cant run x!  (see hack below...)
-	ULOKW = ULOKD = ULOK2 = ULOK3 = FALSE;
+	XMOD = 1; // default is on now, this is an SOP switcheroo
+	ULOKW = ULOKD = ULOK2 = ULOK3 = TRUE;
+
+/*
+
+ ye old depricated codes
 
 	if (world.worldtype == IT0_WQ1) ULOKW = TRUE;
-	if (world.worldtype == IT1_WQ1) ULOKD = TRUE;
-	if (world.worldtype == IT3_WQ1) ULOK2 = TRUE;
-	if (world.worldtype == IT4_WQ1) ULOK3 = TRUE;
+	else if (world.worldtype == IT1_WQ1) ULOKD = TRUE;
+	else if (world.worldtype == IT3_WQ1) ULOK2 = TRUE;
+	else if (world.worldtype == IT4_WQ1) ULOK3 = TRUE;
+	else if (world.wad == "") ULOK3 = TRUE; // Cataboligne - 10.22.12 - was not detecting q3 maps by worldtype
+*/
 
-	ULOKHL = FALSE; // place holder - HL stuff not supported yet - Cataboligne 10.12.12
+	ULOKHL = FALSE; // place holder - HL stuff not natively supported yet (if ever) - Cataboligne 10.12.12
+
+	PK_SEVEN = cvar("pk_seven");
+	PK_EIGHT = cvar("pk_eight");
 
 // score deal
 
@@ -1609,7 +1619,8 @@ current max is 312, move lines out of comment as needed
 
 	if (!DARKPLACES && !chaos) 
 	{
-		GENERATIONS = 1; // for now - "assume the sale" only way to handle non-enabled engines, once we go to chaos-mod this is an issue because the paks may not be installed
+		XMOD = 0; // for release - other engines have to use saved1 hack
+//		XMOD = 1; // for now - "assume the sale" only way to handle non-enabled engines, once we go to chaos-mod this is an issue because the paks may not be installed
 		return;
 	}
 
@@ -1621,7 +1632,9 @@ current max is 312, move lines out of comment as needed
 // server controls
 		registercvar("no_auto", "0"); // allow everything to be turned off without re-launching defaults
 
-		registercvar("sv_xtras", "0"); // set true when xtra
+		registercvar("sv_xtras", "1"); // set true when xtras are available
+		registercvar("pk_seven", "0"); // xops
+		registercvar("pk_eight", "0"); // xops
 		registercvar("sv_dmstart", "0");
 		registercvar("sv_c_mapcmd", "1");
 		registercvar("sv_c_mapcfg", "1");
