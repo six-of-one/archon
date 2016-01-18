@@ -1008,15 +1008,21 @@ void(entity e, string md, entity p) DeadThrew =
 	newmis.items = e.weapon;
 	newmis.pk_items = 0;
 
-	if (e.eweapon)
+	if (e.eweapon) // note: even though newmis is spawned for the thrown item, eweapon is kept around, because threw weps use backpack touch code
 	{
 		newmis.eweapon = e;
 		newmis.noise = e.noise;
 		newmis.eweapon.wad = "packwep";
 		newmis.eweapon.model = "";
+		newmis.eweapon.think = 
+		newmis.eweapon.touch = SUB_Null;
+		newmis.eweapon.nextthink = -1;
+		newmis.eweapon.stack1 = "threw"; // left in to id these
+		newmis.eweapon.exteriormodeltoclient = world;
 		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
 		newmis.netname = newmis.eweapon.netname;
 		newmis.eweapon.items = e.weapon;
+		setattachment(e, world, ""); // clear attachs
 		if (p) xwep_ammo(newmis.eweapon, p);
 	}
 	else // standard weapon
@@ -1073,7 +1079,12 @@ void(entity e, string md, entity p) DeadThrew =
 
 	item_eject(newmis, ' 210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
 	newmis.think = SUB_Remove; // TDO: fade or melt
-	if (DEAD_THROW_TIME) newmis.nextthink = time + DEAD_THROW_TIME;
+	if (DEAD_THROW_TIME)
+	{
+		newmis.nextthink = time + DEAD_THROW_TIME;
+		if (newmis.eweapon)
+			dyn_remove(newmis.eweapon, time + DEAD_THROW_TIME + 1); // set up an eventual remove if wep uncollected
+	}
 
 	AddToSplash(newmis); // *pk - splash tossed items
 
@@ -1181,7 +1192,7 @@ bprint("\n");
 
 				if (!w) // not live
 				{
-					DeadThrew(e, e.model, world);
+					DeadThrew(e, e.mdl, world);
 					newmis.touch = SUB_Null;
 
 
@@ -1196,7 +1207,7 @@ bprint("\n");
 
 				}
 				else												{
-					DeadThrew(e, e.model, pack);
+					DeadThrew(e, e.mdl, pack);
 
 
 

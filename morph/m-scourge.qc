@@ -386,6 +386,13 @@ void() player_scourge_impulse =
 
 // TDO: alt fire
 
+	if (self.weapon == IT_ROCKET_LAUNCHER) // touched a rocket - set normal mode
+	{
+		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER) | IT_GRENADE_LAUNCHER;
+		self.builtin = self.builtin - (self.builtin & IT_ROCKET_LAUNCHER);
+		self.weapon = IT_GRENADE_LAUNCHER;
+	}
+
 	if (self.weapon == IT_LIGHTNING)
 	{
 		self.items = self.items | IT_CELLS;
@@ -528,7 +535,7 @@ void(float silent) player_scourge_become =
 	setmodel(self,"progs/scor.mdl");
 
 	self.items = self.items | IT_AXE | IT_SHOTGUN;
-	self.builtin = IT_AXE | IT_SHOTGUN | IT_LIGHTNING | IT_GRENADE_LAUNCHER;
+	self.builtin = IT_AXE | IT_SHOTGUN | IT_LIGHTNING | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
 	self.weapon = IT_SHOTGUN;
 	
 	self.msight = "scrg/sight.wav";

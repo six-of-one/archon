@@ -488,7 +488,7 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 		{
 			if (WARNING)
 			{
-			bprint("\n------------------- ** fire_burst (chaos_env.qc, 1168) called with bad parms\n");
+			bprint("\n------------------- ** fire_burst (environment.qc, 491) called with bad parms\n");
 			}
 			return; // no fn, no model, nothing to do
 		}
@@ -589,7 +589,7 @@ void() item_fall_toggle =
 	if (self.state)
 	{
 		self.state = FALSE;
-		self.nextthink = MAXFL;
+		self.nextthink = -1;
 		if (self.enemy) remove(self.enemy);
 		self.enemy = world;
 	}

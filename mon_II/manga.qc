@@ -90,7 +90,11 @@ void() mangaFireGrenade =
 	missile.owner = self;
 	missile.movetype = MOVETYPE_BOUNCE;
 	missile.solid = SOLID_BBOX;
-		
+
+// fix obit message for these girls
+	missile.classname = "grenade";
+	newmis.weapon = IT_GRENADE_LAUNCHER; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
+
 // set missile speed	
 
 	makevectors (self.angles);
@@ -161,7 +165,7 @@ void() manga_stand3	=[	$st3,	manga_stand4	] {ai_stand();};
 void() manga_stand4	=[	$st4,	manga_stand5	] {ai_stand();};
 void() manga_stand5	=[	$st5,	manga_stand6	] {
 if (random() < 0.2)
-	sound (self, CHAN_VOICE, "kungfu.wav", 1, ATTN_IDLE);
+	sound (self, CHAN_VOICE, "mon_II/manga/kungfu.wav", 1, ATTN_IDLE);
 ai_stand();
 };
 void() manga_stand6	=[	$st6,	manga_stand7	] {ai_stand();};
@@ -173,14 +177,14 @@ void() manga_walk2	=[	$wa2,		manga_walk3	] {ai_walk(2);};
 void() manga_walk3	=[	$wa3,		manga_walk4	] {
 ai_walk(2);
 if (random() < 0.2)
-	sound (self, CHAN_VOICE, "kungfu.wav", 1, ATTN_IDLE);
+	sound (self, CHAN_VOICE, "mon_II/manga/kungfu.wav", 1, ATTN_IDLE);
 };
 void() manga_walk4	=[	$wa4,		manga_walk5	] {ai_walk(2);};
 void() manga_walk5	=[	$wa5,		manga_walk6	] {ai_walk(2);};
 void() manga_walk6	=[	$wa6,		manga_walk7	] {
 ai_walk(5);
 if (random() < 0.1)
-	sound (self, CHAN_VOICE, "hiyaa.wav", 1, ATTN_IDLE);
+	sound (self, CHAN_VOICE, "mon_II/manga/hiyaa.wav", 1, ATTN_IDLE);
 };
 void() manga_walk7	=[	$wa7,		manga_walk8	] {ai_walk(2);};
 void() manga_walk8	=[	$wa8,		manga_walk9	] {ai_walk(2);};
@@ -199,7 +203,7 @@ void() manga_walk18	=[	$wa18,	manga_walk1	] {ai_walk(2);};
 
 void() manga_run1	=[	$wa1,		manga_run2	] {ai_run(9);
 if (random() < 0.2)
-	sound (self, CHAN_VOICE, "ohdju.wav", 1, ATTN_IDLE);
+	sound (self, CHAN_VOICE, "mon_II/manga/ohdju.wav", 1, ATTN_IDLE);
 };
 void() manga_run2	=[	$wa3,		manga_run3	] {ai_run(12);};
 void() manga_run3	=[	$wa5,		manga_run4	] {ai_run(8);};
@@ -211,7 +215,7 @@ void() manga_run8	=[	$wa15,		manga_run9	] {ai_run(24);};
 void() manga_run9	=[	$wa17,		manga_run1	] {ai_run(24);};
 
 void() manga_swing1	=[	$ki1,		manga_swing2	] {ai_charge(11);
-sound (self, CHAN_WEAPON, "hiyaa.wav", 1, ATTN_NORM);
+sound (self, CHAN_WEAPON, "mon_II/manga/hiyaa.wav", 1, ATTN_NORM);
 };
 void() manga_swing2	=[	$ki2,		manga_swing3	] {ai_charge(1);};
 void() manga_swing3	=[	$ki3,		manga_swing4	] {ai_charge(4);};
@@ -232,7 +236,7 @@ void() manga_smash1	=[	$ki1,		manga_smash2	] {ai_charge(6);};
 void() manga_smash2	=[	$ki2,		manga_smash3	] {ai_charge(0);};
 void() manga_smash3	=[	$ki3,		manga_smash4	] {ai_charge(0);};
 void() manga_smash4	=[	$ki4,		manga_smash5	] {ai_charge(1);
-sound (self, CHAN_WEAPON, "tchak.wav", 1, ATTN_NORM);
+sound (self, CHAN_WEAPON, "mon_II/manga/tchak.wav", 1, ATTN_NORM);
 };
 void() manga_smash5	=[	$ki5,		manga_smash6	] {ai_charge(4);};
 void() manga_smash6	=[	$ki6,		manga_smash7	] {ai_charge(4); highkick(0);};
@@ -277,7 +281,7 @@ void(entity attacker, float damage)	manga_pain =
 		return;
 
 
-	sound (self, CHAN_VOICE, "ha.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "mon_II/manga/ha.wav", 1, ATTN_NORM);
 
 	manga_pain1 ();
 	self.pain_finished = time + 1;
@@ -322,7 +326,7 @@ void() manga_die =
 		return;
 	}
 
-	sound (self, CHAN_VOICE, "died.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "mon_II/manga/died.wav", 1, ATTN_NORM);
 	
 	
 		manga_die1 ();
@@ -336,6 +340,19 @@ void() manga_melee =
 		manga_swing1 ();
 };
 
+
+string(entity targ, entity attacker) manga_killmsg =
+{
+	if (random() < 0.5)
+		return " felt the powerful Kung-Fu of ";
+	else if (random() < 0.8)
+		return " got kicked out by ";
+	else
+	{
+		bprint(" examined Manga's boots in detail, you perv.\n");
+		return "return";
+	}
+};
 
 void(float ign) monster_manga =
 {
@@ -378,7 +395,8 @@ if (ign != A_MONSTER)
 	self.th_melee = manga_melee;
 	self.th_missile = manga_nail1;
 	self.th_pain = manga_pain;
-	
+	self._killmsg = manga_killmsg;
+
 	walkmonster_start();
 };
 

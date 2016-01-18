@@ -87,24 +87,24 @@ void()  raptor1_stand1   =[      $stand1,        raptor1_stand2   ]
     {
 	if (rsnd == 1)
 	{
-		sound (self, CHAN_VOICE, "ridle1.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 1;
 	}
 	if (rsnd == 2)
-		sound (self, CHAN_VOICE, "ridle2.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle2.wav", 1, ATTN_IDLE);
 	if (rsnd == 3)
-		sound (self, CHAN_VOICE, "ridle3.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle3.wav", 1, ATTN_IDLE);
 	if (rsnd == 4)
-		sound (self, CHAN_VOICE, "ridle4.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle4.wav", 1, ATTN_IDLE);
     }
     if ((self.impulse == 1) && (rsnd < 5))
 	{
-		sound (self, CHAN_VOICE, "ridle1.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 2;
 	}
     if ((self.impulse == 2) && (rsnd < 2))
 	{
-		sound (self, CHAN_VOICE, "ridle1.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 0;
 	}        
     ai_stand();
@@ -134,7 +134,7 @@ void()  raptor1_walk1    =[      $walk1,         raptor1_walk2    ]
     {
 	if (rsnd > 10)
 	{
-		sound (self, CHAN_VOICE, "ridle1.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 1;
 	}
       //  if (rsnd == 2)
@@ -146,12 +146,12 @@ void()  raptor1_walk1    =[      $walk1,         raptor1_walk2    ]
     }
     if ((self.impulse == 1) && (rsnd < 5))
 	{
-		sound (self, CHAN_VOICE, "ridle2.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle2.wav", 1, ATTN_IDLE);
 		self.impulse = 2;
 	}
     if ((self.impulse == 2) && (rsnd < 2))
 	{
-		sound (self, CHAN_VOICE, "ridle1.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 0;
 	}        
     ai_walk(2);
@@ -182,24 +182,24 @@ void()  raptor1_run1     =[      $run1,          raptor1_run2     ] {
     {
 	if (rsnd == 1)
 	{
-		sound (self, CHAN_VOICE, "ridle1.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 1;
 	}
 	if (rsnd == 2)
-		sound (self, CHAN_VOICE, "ridle2.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle2.wav", 1, ATTN_IDLE);
 	if (rsnd == 3)
-		sound (self, CHAN_VOICE, "ridle3.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle3.wav", 1, ATTN_IDLE);
 	if (rsnd == 4)
-		sound (self, CHAN_VOICE, "ridle4.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle4.wav", 1, ATTN_IDLE);
     }
     if ((self.impulse == 1) && (rsnd < 5))
 	{
-		sound (self, CHAN_VOICE, "ridle1.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 2;
 	}
     if ((self.impulse == 2) && (rsnd < 2))
 	{
-		sound (self, CHAN_VOICE, "ridle1.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/raptor/ridle1.wav", 1, ATTN_IDLE);
 		self.impulse = 0;
 	}        
 ai_run(20);
@@ -235,7 +235,7 @@ void()  raptor1_jump2    =[      $leap2,         raptor1_jump3    ] {ai_face();}
 void()  raptor1_jump3    =[      $leap3,         raptor1_jump4    ] {ai_face();};
 void()  raptor1_jump4    =[      $leap4,         raptor1_jump5    ] 
 {
-	sound (self, CHAN_VOICE, "rjump.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "mon_II/raptor/rjump.wav", 1, ATTN_NORM);
 	ai_face();
 	self.th_die = raptor_die;
 	self.touch = raptor_JumpTouch;
@@ -313,7 +313,7 @@ void()  raptor1_pain6    =[      $pain6,         raptor1_run1     ] {};
 
 
 void()  raptor1_die1             =[      $death1,                raptor1_die2     ] {
-sound (self, CHAN_VOICE, "rdeath1.wav", 1, ATTN_NORM);};
+sound (self, CHAN_VOICE, "mon_II/raptor/rdeath1.wav", 1, ATTN_NORM);};
 void()  raptor1_die2             =[      $death2,                raptor1_die3     ] {};
 void()  raptor1_die3             =[      $death3,                raptor1_die4     ] {};
 void()  raptor1_die4             =[      $death4,                raptor1_die5     ] {};
@@ -340,9 +340,9 @@ void()  raptor1_keel7             =[      $deathb7,                raptor1_keel8
 	local float rsnd;
 	rsnd = random() * 9;
 	if (rsnd > 4)
-		sound (self, CHAN_VOICE, "rdeath2.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "mon_II/raptor/rdeath2.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "rdeath1.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "mon_II/raptor/rdeath1.wav", 1, ATTN_NORM);
 };
 void()  raptor1_keel8             =[      $deathb8,                raptor1_keel9     ] {};
 void()  raptor1_keel9             =[      $deathb9,                raptor1_keel10    ] {};
@@ -397,9 +397,9 @@ void(entity attacker, float damage)     raptor1_pain =
 	self.pain_finished = time + 1;
 	rsnd = random() * 10;
 	if (rsnd < 7)
-		sound (self, CHAN_VOICE, "rpain1.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "mon_II/raptor/rpain1.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "rpain2.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "mon_II/raptor/rpain2.wav", 1, ATTN_NORM);
 
 	if (random()*170 > damage)
 		return;         // didn't flinch
@@ -416,9 +416,9 @@ void(entity attacker, float damage)     raptor1_stumble =
 	self.pain_finished = time + 1;
 	rsnd = random() * 10;
 	if (rsnd < 7)
-		sound (self, CHAN_VOICE, "rpain1.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "mon_II/raptor/rpain1.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "rpain2.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "mon_II/raptor/rpain2.wav", 1, ATTN_NORM);
 	if (random()*100 > damage)
 		return;         // didn't flinch
 		
@@ -474,6 +474,19 @@ void() raptor_MeleeAttackb =
 };
 
 
+string(entity targ, entity attacker) raptor_killmsg =
+{
+	if (random() < 0.5 || !ENHANCED)
+		return " was slashed by a ";
+	else if (random() < 0.9)
+		return " tried to examine the claws of a ";
+	else
+	{
+		bprint(" could not wait for modern times to be an archaeologist.\n");
+		return "return";
+	}
+};
+
 
 /*QUAKED monster_raptor (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 
@@ -523,7 +536,8 @@ if (ign != A_MONSTER)
 	self.th_melee = raptor_MeleeAttack;              // one of two attacks
 	self.th_missile = raptor1_jump1;                 // jump attack
 	self.th_pain = raptor1_pain;
-		
+	self._killmsg = raptor_killmsg;
+
 	walkmonster_start();
 };
 

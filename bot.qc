@@ -981,7 +981,9 @@ bprint("\n");
 	remove(self);
 }
 
-// take a shot at fixing 2 bot problems - infinite axe war / getting stuck on a level and being dead too long
+// take a shot at fixing 2 bot problems - bots getting stuck & doing nothing for a long time and being dead too long
+
+// not testing health because it didnt work right
 
 void() bot_fixer =
 {
@@ -1010,7 +1012,7 @@ bprint("bot fix removed\n");
 		bot_fix.classname = "bot_fix";
 		bot_fix.think = bot_fixer;
 		bot_fix.nextthink = time + BOT_FIX_TIME;
-		bot_fix.cnt = 3; // only do a dead check every 3 or 4
+		bot_fix.cnt = 11; // only do a dead check every 10 * cnt - about 150 secs
 
 		while (e)
 		{
@@ -1052,8 +1054,8 @@ bprint("\n");
 
 
 					}
-/*
-					else if (bot_fix.cnt < 1)
+// had to put this back in - bot inactivity is still happening
+					else if (bot_fix.cnt < 1) // note: this only checks frags on 14 sec loop - need a longer range check for this
 					{
 
 
@@ -1072,7 +1074,6 @@ bprint("\n");
 					f.owner = e;
 					f.frags = e.frags;
 					}
-*/
 				}
 			}
 			else
@@ -1086,7 +1087,7 @@ bprint("\n");
 
 		self.nextthink = time + BOT_FIX_TIME;
 		bot_fix.cnt = bot_fix.cnt - 1;
-		 if (bot_fix.cnt < 0) bot_fix.cnt = 2;
+		 if (bot_fix.cnt < 0) bot_fix.cnt = 11;
 	}
 };
 
@@ -1102,7 +1103,7 @@ void() Bot_Melee =
 //	W_FireAxe (); // called from in fireaxe now
 
 	if (!ax_dmg)
-	if (random() < 0.366) // unknown timing - this is a guess, might be really good or really bad or really medium  
+	if (random() < 0.8) // unknown timing - this is a guess, might be really good or really bad or really medium  
 	{
 		f = TRUE;
 		e = findradius(self.origin, 80);

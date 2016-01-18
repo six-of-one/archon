@@ -735,7 +735,7 @@ bprint(")\n");
 			self.model = self.mdl;
 			self.solid = SOLID_NOT; // cant touch till respawn
 		}
-		if (self.aflag == NO_REMOVE_NORET) self.nextthink = MAXFL;
+		if (self.aflag == NO_REMOVE_NORET) self.nextthink = -1;
 		return;
 	}
 
@@ -1122,11 +1122,12 @@ void() BackpackTouch =
 		self = self.eweapon;
 //		sprint (other, self.netname);
 
-		x_weapon_touch(); // prints "you got the"
+		x_weapon_touch(); // prints "you got the" - this puts the eweapon in SUB_regen !!
 		self = other;
 		best = W_BestWeapon();
 		self = st1;
-//		remove(self.eweapon); // this has a dyn_remove
+//		if (self.eweapon.stack1 == "threw")
+			remove(self.eweapon); // pack native have a dyn_remove - but we need to take away the threw weps left eweapons
 	}
 	else // ? may want
 	if (self.items)

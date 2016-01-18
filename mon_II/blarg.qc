@@ -124,9 +124,9 @@ void() blarg_stop =
 void() blarg_stand1     =[      $kikidl01,      blarg_stand2    ] {
 	ai_stand();
 	if (random() < 0.05)
-		sound (self, CHAN_VOICE, "bidle.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "mon_II/blarg/bidle.wav", 1, ATTN_NORM);
 	else if (random() < 0.1)
-		sound (self, CHAN_VOICE, "bidle2.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "mon_II/blarg/bidle2.wav", 1, ATTN_NORM);
 };
 void() blarg_stand2     =[      $kikidl02,      blarg_stand3    ] {ai_stand();};
 void() blarg_stand3     =[      $kikidl03,      blarg_stand4    ] {ai_stand();};
@@ -163,7 +163,7 @@ void() blarg_bstop7     =[      $kikdib05,      blarg_bstop7    ] {};
 void() blarg_walk1      =[      $kikwalk01 ,    blarg_walk2     ] 
 {
 	if (random() < 0.2)
-		sound (self, CHAN_VOICE, "bidle.wav", 1, ATTN_IDLE);
+		sound (self, CHAN_VOICE, "mon_II/blarg/bidle.wav", 1, ATTN_IDLE);
 	ai_walk(8);
 };
 void() blarg_walk2      =[      $kikwalk02 ,    blarg_walk3     ] {ai_walk(16);};
@@ -185,7 +185,7 @@ void() blarg_run4       =[      $kikatt15 ,     blarg_run5      ]
 	self.velocity = v_forward * 400 + '0 0 250';
 	if (self.flags & FL_ONGROUND)
 		self.flags = self.flags - FL_ONGROUND;
-	sound (self, CHAN_VOICE, "bjump.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "mon_II/blarg/bjump.wav", 1, ATTN_NORM);
 	return;
 };
 void() blarg_run5       =[      $kikatt08 ,     blarg_run6      ] {};
@@ -198,7 +198,7 @@ void() blarg_atta2      =[      $kikatt14,      blarg_atta3     ] {ai_charge(10)
 void() blarg_atta3      =[      $kikatt15,      blarg_atta4     ] {ai_charge(10); blarg_bite();};
 void() blarg_atta4      =[      $kikatt16,      blarg_atta5     ] 
 {
-	sound (self, CHAN_VOICE, "bjump2.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "mon_II/blarg/bjump2.wav", 1, ATTN_NORM);
 	blarg_bite();
 };
 void() blarg_atta5      =[      $kikatt17,      blarg_atta6     ] {ai_charge(10); blarg_bite();};
@@ -218,7 +218,7 @@ void() blarg_leap3      =[      $kikatt22,              blarg_leap4     ]
 	self.velocity = v_forward * 600 + '0 0 250';
 	if (self.flags & FL_ONGROUND)
 	self.flags = self.flags - FL_ONGROUND;
-	sound (self, CHAN_VOICE, "bjump.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "mon_II/blarg/bjump.wav", 1, ATTN_NORM);
 };
 
 void() blarg_leap4      =[      $kikatt23,              blarg_leap5     ] {};
@@ -294,6 +294,20 @@ float() BlargCheckAttack =
 	return FALSE;
 };
 
+
+string(entity targ, entity attacker) blarg_killmsg =
+{
+	if (random() < 0.5 || !ENHANCED)
+		return " was ripped apart by a  ";
+	else if (random() < 0.8)
+		return " bot viscerally mauled a ";
+	else
+	{
+		bprint(" found out Blargs dont make good pets.\n");
+		return "return";
+	}
+};
+
 //===========================================================================
 
 /*QUAKED monster_blarg (1 0 0) (-32 -32 -24) (32 32 40) Ambush
@@ -341,6 +355,7 @@ if (ign != A_MONSTER)
 	self.th_pain = blarg_pain;
 	self.th_die = blarg_stop;
 	self.pain_finished = time + 3;
+	self._killmsg = blarg_killmsg;
 
 	walkmonster_start();
 };

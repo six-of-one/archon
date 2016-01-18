@@ -605,7 +605,7 @@ void() SV_FlyMove =
 				{
 					self.phys_obj = spawn();
 					self.phys_obj.owner = self;
-					self.phys_obj.stack1 = "insta spawn phys_obj";
+					self.phys_obj.stack1 = "insta spawn phys_obj"; // test: nothing spawn test
 					if (WARNING)
 					bprint("WARNING: No physics entity spawned!\nMake sure BotInit was called\n");
 				}

@@ -2514,7 +2514,7 @@ void() crate_touch =
 	self.duration = time + 2 + random();
 
 	if (!self.cnt)
-		centerprint(other, "Hit the crate to bust it open\n");
+		centerprint(other, "Hit (or shoot) the crate to bust it open\n");
 	else if (random() < 0.5)
 		centerprint(other, "Come on bust 'er open\n");
 	else if (random() < 0.5)

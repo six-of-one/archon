@@ -27,23 +27,23 @@ if (random() < 0.2)
 	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
 ai_walk(4);};
 void() spid_walk2     =[      $frame2,       spid_walk3    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_walk(4);};
 void() spid_walk3     =[      $frame3,       spid_walk4    ] {ai_walk(4);};
 void() spid_walk4     =[      $frame4,       spid_walk5    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_walk(4);};
 void() spid_walk5     =[      $frame5,       spid_walk6    ] {ai_walk(4);};
 void() spid_walk6     =[      $frame6,       spid_walk7    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_walk(4);};
 void() spid_walk7     =[      $frame7,       spid_walk8    ] {ai_walk(4);};
 void() spid_walk8     =[      $frame8,       spid_walk9    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_walk(4);};
 void() spid_walk9     =[      $frame9,       spid_walk10    ] {ai_walk(4);};
 void() spid_walk10    =[      $frame10,       spid_walk1    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_walk(4);};
 
 void() spid_run1     =[      $frame1,       spid_run2    ] {
@@ -51,23 +51,23 @@ if (random() < 0.2)
 	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
 ai_run(12);};
 void() spid_run2     =[      $frame3,       spid_run3    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_run(12);};
 void() spid_run3     =[      $frame5,       spid_run4    ] {ai_run(12);};
 void() spid_run4     =[      $frame7,       spid_run5    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_run(12);};
 void() spid_run5     =[      $frame9,       spid_run6    ] {ai_run(12);};
 void() spid_run6     =[      $frame1,       spid_run7    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_run(12);};
 void() spid_run7     =[      $frame3,       spid_run8    ] {ai_run(12);};
 void() spid_run8     =[      $frame5,       spid_run9    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_run(12);};
 void() spid_run9     =[      $frame7,       spid_run10    ] {ai_run(12);};
 void() spid_run10    =[      $frame9,       spid_run1    ] {
-	sound (self,CHAN_VOICE, "tap.wav", 1, ATTN_IDLE);
+	sound (self,CHAN_VOICE, "mon_II/spider/tap.wav", 1, ATTN_IDLE);
 	ai_run(12);};
 
 //SC
@@ -236,7 +236,7 @@ void () spider_attack =
 
 void () PoisonDamage =
 {
-	if ( !(self.enemy.flags & FL_POISONED) )
+	if ( !(self.enemy.flags & FL_POISONED) || self.enemy.classname == OBSERVER)
 	{
 		remove(self);   // if no longer poisoned, return
 		return;
@@ -246,7 +246,7 @@ void () PoisonDamage =
 		T_Damage (self.enemy, self, self, 1);
 		self.nextthink = time + 1;
 	}
-	else if (self.enemy.health <= 0)
+	else // if (self.enemy.health <= 0)
 	{
 		remove(self);
 		return;
@@ -304,6 +304,20 @@ void(float offset) SpiderMissile =
 	newmis.velocity = vec*300;
 };
 
+
+string(entity targ, entity attacker) spider_killmsg =
+{
+	if (random() < 0.5 || !ENHANCED)
+		return " was dessicated by a ";
+	else if (random() < 0.8)
+		return " felt the powerful bite of a ";
+	else
+	{
+		bprint(" tried to pet the pretty Spider, aww.\n");
+		return "return";
+	}
+};
+
 //=================================================================
 
 /*QUAKED monster_spider (1 0 0) (-32 -32 -24) (32 32 48) Ambush
@@ -349,6 +363,7 @@ if (ign != A_MONSTER)
 	self.th_pain = spider_pain;
 	self.th_missile = spider_attack;
 	self.th_melee = spid_melee1;
+	self._killmsg = spider_killmsg;
 
 	self.think = walkmonster_start;
 	self.nextthink = time + 0.1 + random ()*0.1;    

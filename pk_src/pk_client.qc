@@ -2077,6 +2077,13 @@ bprint("\n");
 				targ.frags = targ.frags - frag_minus_cide(targ);
 //				nocide(targ);
 
+				if (inflictor.classname == "cluster_bomb")
+				{
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," checks his cluster bomb spread\n"," went to collect the cluster bombs\n","",""," checked to see if the cluster bombs were duds\n"));
+					else
+						bprint (" becomes bored with life\n");
+				}
 				if (inflictor.classname == "grenade")
 				{
 					if (ENHANCED)
@@ -2209,7 +2216,7 @@ bprint("\n");
 			}
 			else
 			{
-				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below
+				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below - this includes monsters! - NOTE: anode_x vector...
 
 // died & empathy damaged hit targ
 				if (empathy_dmg == 1)
@@ -2268,7 +2275,21 @@ bprint("\n");
 					return;
 				}
 
-            if (inflictor.classname == "bfg_ball")
+            if (inflictor.classname == "cluster_bomb")
+				{
+					bprint (targ.netname);
+					if (random()<0.5 || !ENHANCED)
+						bprint (" exploded under a rain of ");
+					else
+						bprint (" got more shrapnel than smiles with ");
+
+					bprint (attacker.netname);
+					bprint ("'s cluster bombs\n");
+					return;
+				}
+
+
+            if (inflictor.classname == "bfg_ball") // TDO: q2 message for direct hit
 				{
 					bprint (targ.netname);
 					if (random()<0.5)
@@ -2426,6 +2447,58 @@ bprint("\n");
 						return;
 					}
 				}
+
+
+			if (inflictor.classname == "dragon_fire") // owwie - note: not done yet
+				{
+					bprint (targ.netname);
+					if (random()<0.5 || !ENHANCED)
+						bprint (" was fried by a Dragon\n");
+					else
+						bprint (" became an amature throat specialist for Dragon kind\n");
+					return;
+				}
+
+			if (inflictor.classname == "poison") // spider attack
+				{
+					bprint (targ.netname);
+					if (random()<0.5 || !ENHANCED)
+						bprint (" was poisoned by a Spider\n");
+					else
+						bprint (" should have sucked out the Spider venom\n");
+					return;
+				}
+
+            if (inflictor.classname == "vomis") // vomis spike
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" was slimed by a Vomitus\n");
+					else if (random()<0.5)
+						bprint (" was vomited on by a Vomitus\n");
+					else
+						bprint (" got vomit all over him\n");
+
+//					bprint (attacker.netname);
+//					bprint ("\n");
+					return;
+				}
+
+            if (inflictor.classname == "vomisexplod") // vomis bomb
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" caught the vomitus exploding spittle\n");
+					else
+						bprint (" got vomit bombed!\n");
+
+//					bprint (attacker.netname);
+//					bprint ("\n");
+					return;
+				}
+
+
+
 				//rnum = attacker.weapon;
 				// For the correct death messages
 				rnum = inflictor.weapon; // set when wep fired
@@ -2688,7 +2761,7 @@ bprint("\n");
 			// killed by a montser?
 			if (attacker.flags & FL_MONSTER)
 			{
-				targ.frags = targ.frags - frag_minus(targ);
+				targ.frags = targ.frags - frag_minus(targ); // getting killed by dm monster losses a frag
 				if (attacker.classname == "monster_army")
 					bprint (" was shot by a Grunt\n");
 				else

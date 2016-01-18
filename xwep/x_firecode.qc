@@ -66,9 +66,8 @@ entity(entity e, float nw, float camcc) x_wep_store =
 
 	e.netname = self.netname;
 	e.mask_x = self.mask_x; // for bp touch & such
-//		e.mdl = self.mdl; - invisible
+
 	setmodel (e, self.vwepmdl);
-	e.mdl = e.model;
 	if (!VW)
 	{
 		if (!(e.weapon == IT_AXE && e.pk_currentitem == PK_IT_AXE)) // any axe replacement
@@ -76,6 +75,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 		if (e.mdl != "progs/vw_axe.mdl" && e.mdl != "progs/vw_mjolnir.mdl")
 			setmodel (e, VW_DEFGUN);
 	}
+	e.mdl = e.model; // get the assigned model for dead threws
 	if (self.skin) e.skin = self.skin;
 	e.weaponmodel = self.weaponmodel;
 	e.chaosweptime = self.chaosweptime;

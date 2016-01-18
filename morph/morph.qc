@@ -1822,6 +1822,20 @@ void() RND_Damage =
 	}
 };
 
+// for the obit
+
+void() W_FireClusterRock =
+{
+	W_FireRocket();
+	newmis.classname = "cluster_bomb";
+};
+
+void() W_FireClusterGren =
+{
+	W_FireGrenade();
+	newmis.classname = "cluster_bomb";	
+};
+
 void() chaos_bomb =
 {
 	local float r1;
@@ -1836,17 +1850,17 @@ void() chaos_bomb =
 			self.velocity_x = 50 * crandom();
 			self.velocity_y = 50 * crandom();
 		}
-		self.aflag = 0;
+		self.aflag = 0; // return call does bomb out
 		return;
 	}
 	r1 = floor(random() * 8.6);
 	wfire = W_FireSpikes;
 	vspk = SUB_Null;
-	if (self.weapon == IMP_MOGRE) { wfire = W_FireGrenade; r1 = 5; }
+	if (self.weapon == IMP_MOGRE) { wfire = W_FireClusterGren; r1 = 5; }
 	else if (r1 > 7) wfire = fire_laser1;
 //	else if (r1 > 6) wfire = fire_cbolt; // TDO: put back in for chaos morph
-	else if (r1 > 5) { wfire = W_FireGrenade; vspk = RND_Damage; }
-	else if (r1 > 5) { wfire = W_FireRocket; vspk = RND_Damage; }
+	else if (r1 > 5) { wfire = W_FireClusterGren; vspk = RND_Damage; }
+	else if (r1 > 5) { wfire = W_FireClusterRock; vspk = RND_Damage; }
 	else if (r1 > 4) wfire = W_FireLightning;
 	if (r1 < 4) vspk = RND_Spike;
 

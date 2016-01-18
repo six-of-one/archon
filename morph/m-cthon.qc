@@ -254,7 +254,7 @@ if (self.owner.watertype != CONTENT_LAVA)
 	{
 	self.skin = 1;
 	sound (self,CHAN_WEAPON,"chaos/freeze.wav",1,ATTN_NORM);
-	self.nextthink = MAXFL;
+	self.nextthink = -1;
 	}
 };
 void() lavacthon_death7 = [$death7, lavacthon_death8] {};

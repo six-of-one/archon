@@ -907,6 +907,8 @@ void(float silent) player_zombie_become =
 	self._killmsg=player_zombie_killmsg;
 	self._killmsg2=player_zombie_killmsg2;
 
+	self.movetype=MOVETYPE_WALK; // note: in case he got stuck during a pain frame or gas out?
+
 	self.cam_z = 16 / 100;
 	self.cam_y = 28;
 	stuffcmd(self, "chase_up 16\n");

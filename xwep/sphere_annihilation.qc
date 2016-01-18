@@ -244,7 +244,7 @@ if (WARNING)
 		bprint(self.classname);
 		bprint("\n");
 }
-		self.nextthink = MAXFL;
+		self.nextthink = -1;
 		self.rad_time = 0;
 		if (self.flags & FL_MONSTER && ! self.flags & FL_ANNIHILATED)
 		{

@@ -1865,7 +1865,7 @@ float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) 
 	else
 	{
 		e = spawn(); // note: no record keeping here, and test fail!
-					e.stack1 = "insta spawn drop_one";
+					e.stack1 = "insta spawn drop_one"; // test: nothing spawn test
 		ss = ""; // no fail message possible
 		DROP_NOTEST = TRUE; // because there are no real player bits to test
 	}
