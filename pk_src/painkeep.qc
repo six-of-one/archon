@@ -1096,6 +1096,8 @@ void() pk_liveupd =
 // list monster control bits
 	if (cvar("sv_monster_list"))
 	{
+		localcmd("monster_bits\n");
+	
 		cvar_set("sv_monster_list", "0");
 		bprint("\b--------------------------------\n");
 		bprint("Monsters bit list:\n");
@@ -2132,6 +2134,10 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 			localcmd(ADMINSRVCMD);
 		}
 */
+// these MUST be rest every map.  EVERY map
+
+	cvar_set("sv_bot_noway_below", "0"); // no bot waypoints below this
+	cvar_set("sv_bot_noway_above", "0"); // bot bot waypoints above this
 
 // server controls - override immediately
 		pk_mapcmd = cvar("sv_c_mapcmd");
@@ -2153,9 +2159,6 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		}
 // NOTE: chaos eng doesnt need to store defaults this way - they will save in config.cfg
 
-// done in another cfg
-//		localcmd("exec ");
-//		localcmd("info.cfg\n");
 
 		if (!deathmatch)
 		{
