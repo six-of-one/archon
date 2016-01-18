@@ -1887,6 +1887,7 @@ void() PK_CycleWeaponCommand =
 		else if (self.weapon == IT_MJOLNIR)
 		{
 			self.weapon = IT_AXE;
+			if (self.pk_currentInventory == PK_IT_CLIGHT) self.pk_currentInventory = PK_IT_AXE; // 7.18.13 - fixed item 128 / clg loop error
 			self.pk_currentitem = self.pk_currentInventory;
 		}
 		else if (self.weapon == IT_AXE && self.pk_currentitem == self.pk_currentInventory)
@@ -1971,6 +1972,7 @@ void() PK_CycleWeaponReverseCommand =
 		else if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_GRAPGUN)
 		{
 			self.weapon = IT_AXE;
+			if (self.pk_currentInventory == PK_IT_CLIGHT) self.pk_currentInventory = PK_IT_AXE; // 7.18.13 - fixed item 128 / clg loop error
 			self.pk_currentitem = self.pk_currentInventory;
 		}
 		else if (self.weapon == IT_AXE && self.pk_currentitem == self.pk_currentInventory) // Cataboligne - 2.13.11 - hipnotic support special wep

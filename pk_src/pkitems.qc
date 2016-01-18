@@ -88,8 +88,6 @@ void () PlaceItem =
 		return;
 	}
 
-	if (self.map == "repic") return; // dont set hidden items
-
 	bot_item_linx(self); // *bot - item tie in
 
 // used for translate - if *_100 on

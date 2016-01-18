@@ -2385,8 +2385,9 @@ void() check_translate =
 			local entity e;
 			DOOM_ALPHA = cvar("pk_doom_alpha"); // set doom alpha level - intended to be loaded by server cfg
 			f = MC_D_SAW;
-			while (f < MC_DOOM)
+			while (f <= MC_DOOM)
 			{
+				if (f == MC_DOOM) f = MC_D_NIGHTVS;
 				e = find(world,sscode,ftos(f));
 				while (e)
 				{
@@ -2847,18 +2848,18 @@ void(entity e, float mc) doom_alpha_tran =
 	}
 	if (e.mcode == MC_D_HBOTTLE || mc == MC_D_HBOTTLE)
 	{
-/*		if (DOOM_ALPHA == 0.6) // pre-beta
+		if (DOOM_ALPHA == 0.4 || DOOM_ALPHA == 0.5) // 0.4, 0.5
 		{
-		setmodel (e, "progs/d_.mdl");
+		setmodel(e, "progs/w_chalice.mdl");
 		e.frame = 1;
+		e.skin = 1;
 		}
-		else // release
+		else
 		{
-*/
 		setmodel(e, "progs/d_bottle.mdl");
 		e.frame = 0;
 		e.skin = 0;
-//		}
+		}
 		return;
 	}
 /// armor
@@ -2897,94 +2898,105 @@ void(entity e, float mc) doom_alpha_tran =
 /// ammo
 	if (e.mcode == MC_D_ACELLS || mc == MC_D_ACELLS)
 	{
-/* for neg or special xlate - not a cell pack
+/* for neg or special xlate - not live cell packs
 
 	if (DOOM_ALPHA == 0.4) // shield generator
+		{
+		setmodel (e, "progs/d_cellbox.mdl");
+		e.frame = 0;
+		e.skin = 3;
+		e.skin = 2;
+		}
+		*/
+
+		if (DOOM_ALPHA == 0.4 || DOOM_ALPHA == 0.5 || DOOM_ALPHA == 0.6) // 0.4, 0.5
 		{
 		setmodel (e, "progs/d_cellpack.mdl");
 		e.frame = 1;
 		e.skin = 1;
 		}
-		*/
-
-	if (DOOM_ALPHA == 0.4 || DOOM_ALPHA == 0.5) // 0.4, 0.5
+		else // release
 		{
-		setmodel (e, "progs/d_cellbox.mdl");
+		setmodel (e, "progs/d_cellpack.mdl");
 		e.frame = 0;
-		e.skin = 2;
-		}
-	else if (DOOM_ALPHA == 0.6) // pre-beta
-		{
-		setmodel (e, "progs/d_cellbox.mdl");
-		e.frame = 0;
-		e.skin = 3;
-		}
-	else // release
-		{
-			setmodel (e, "progs/d_cellpack.mdl");
-			e.frame = 0;
-			e.skin = 0;
+		e.skin = 0;
 		}
 		return;
 	}
 	if (e.mcode == MC_D_ABULLETS_LG || mc == MC_D_ABULLETS_LG)
 	{
-/*		if (DOOM_ALPHA == 0.6) // pre-beta
+		if (DOOM_ALPHA == 0.4 || DOOM_ALPHA == 0.5) // 0.4, 0.5
 		{
-		setmodel (e, "progs/d_.mdl");
-		e.frame = 1;
+		setmodel (e, "progs/d_clip.mdl");
+		e.frame = 3;
+		e.skin = 1;
 		}
 		else // release
 		{
-*/
 		setmodel (e, "progs/d_ammobox.mdl");
 		e.frame = 0;
-//		}
+		e.skin = 0;
+		}
 		return;
 	}
 	if (e.mcode == MC_D_ABULLETS || mc == MC_D_ABULLETS)
 	{
-/*		if (DOOM_ALPHA == 0.4)
+		if (DOOM_ALPHA == 0.4)
 		{
-		setmodel (e, "progs/d_.mdl");
+		setmodel (e, "progs/d_clip.mdl");
+		e.frame = 2;
+		e.skin = 1;
+		}
+		else if (DOOM_ALPHA == 0.5)
+		{
+		setmodel (e, "progs/d_clip.mdl");
 		e.frame = 1;
+		e.skin = 0;
 		}
 		else // release
 		{
-*/
 		setmodel (e, "progs/d_clip.mdl");
 		e.frame = 0;
-//		}
+		e.skin = 0;
+		}
 		return;
 	}
 	if (e.mcode == MC_D_AROCKET || mc == MC_D_AROCKET)
 	{
-/*		if (DOOM_ALPHA == 0.6) // pre-beta
+		if (DOOM_ALPHA == 0.4) // 0.4
 		{
-		setmodel (e, "progs/d_.mdl");
+		setmodel (e, "progs/d_rockbox.mdl");
 		e.frame = 1;
+		e.skin = 1;
 		}
-		else // release
+		else if (DOOM_ALPHA == 0.5) // 0.5
 		{
-*/
+		setmodel (e, "progs/d_rockbox.mdl");
+		e.frame = 1;
+		e.skin = 2;
+		}
+		else // release + 0.6
+		{
 		setmodel (e, "progs/d_1rocket.mdl");
 		e.frame = 0;
-//		}
+		e.skin = 0;
+		}
 		return;
 	}
 	if (e.mcode == MC_D_AROCKETS_LG || mc == MC_D_AROCKETS_LG)
 	{
-/*		if (DOOM_ALPHA == 0.6) // pre-beta
+		if (DOOM_ALPHA == 0.4 || DOOM_ALPHA == 0.5) // 0.4, 0.5
 		{
-		setmodel (e, "progs/d_.mdl");
+		setmodel (e, "progs/d_rockbox.mdl");
 		e.frame = 1;
+		e.skin = 1;
 		}
-		else // release
+		else // release + 0.6
 		{
-*/
 		setmodel (e, "progs/d_rockbox.mdl");
 		e.frame = 0;
-//		}
+		e.skin = 0;
+		}
 		return;
 	}
 	if (e.mcode == MC_D_ASHELLS || mc == MC_D_ASHELLS)
@@ -3003,13 +3015,23 @@ void(entity e, float mc) doom_alpha_tran =
 	}
 	if (e.mcode == MC_D_ASHELLS_LG || mc == MC_D_ASHELLS_LG)
 	{
-		setmodel (e, "progs/d_shellbox.mdl");
-		if (DOOM_ALPHA == 0.6) // pre-beta
+		if (DOOM_ALPHA == 0.4 || DOOM_ALPHA == 0.5) // 0.4, 0.5
 		{
+		setmodel (e, "progs/d_rockbox.mdl");
+		e.frame = 2;
+		if (ENHANCED)
+			e.skin = 4; // make alpha shells ammo look like shells & not bullets
+		else
+			e.skin = 3; // original design - bullet box
+		}
+		else if (DOOM_ALPHA == 0.6) // pre-beta
+		{
+		setmodel (e, "progs/d_shellbox.mdl");
 		e.frame = 1;
 		}
 		else // release
 		{
+		setmodel (e, "progs/d_shellbox.mdl");
 		e.frame = 0;
 		}
 		return;
@@ -3066,18 +3088,18 @@ void(entity e, float mc) doom_alpha_tran =
 /// stuff
 	if (e.mcode == MC_D_NIGHTVS || mc == MC_D_NIGHTVS)
 	{
-/*		if (DOOM_ALPHA == 0.6) // pre-beta
+		if (DOOM_ALPHA == 0.4 || DOOM_ALPHA == 0.5) // 0.4, 0.5
 		{
-		setmodel (e, "progs/d_.mdl");
-		e.frame = 1;
+		setmodel (e, "progs/d_cellpack.mdl");
+		e.frame = 2;
+		e.skin = 2;
 		}
-		else // release
+		else // release, 0.6
 		{
-*/
 		setmodel(e, "progs/d_vis.mdl");
 		e.frame = 0;
 		e.skin = 0;
-//		}
+		}
 		return;
 	}
 	

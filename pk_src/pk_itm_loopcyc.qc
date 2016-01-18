@@ -97,6 +97,15 @@ float(entity e, float p) loop_next =
 	return(f);
 };
 
+// 7.16.13 - fixed issue where hidden wad==q1 items could be collected after they were rotated to diff items by loopcyc
+
+void(entity e, string cl) lc_item_call_save =
+{
+	if (e.map == "repic") return; // dont modify these
+	
+	item_call_save(e, cl);
+};
+
 void() loopcyc_think =
 {
 	local float f, rp, rn, dr, svm;
@@ -126,7 +135,7 @@ void() loopcyc_think =
 		if (!self.cnt) self.cnt = e.mcode;
 		if (cvar("pk_cyc_halt") || rn)
 		{
-			item_call_save(e, item_by_mcode(e.scode));
+			lc_item_call_save(e, item_by_mcode(e.scode));
 		}
 		else if (e.event == "dynamic_item" && e.mcode != self.cnt)
 			dr = TRUE;
@@ -152,10 +161,10 @@ void() loopcyc_think =
 				if (!f)
 				{
 					if (WARNING) bprint("\b*** warning: loop code changed on live item loop - restoring item.\n");
-					item_call_save(e, item_by_mcode(e.scode));
+					lc_item_call_save(e, item_by_mcode(e.scode));
 				}
 				else
-					item_call_save(e, item_by_mcode(f)); // set replacement item
+					lc_item_call_save(e, item_by_mcode(f)); // set replacement item
 				if (self.map == "rune") self.map = ""; // rune server deal - this is a just in case - map runes should be pic or nopic
 			}
 		}

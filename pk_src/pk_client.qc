@@ -1615,6 +1615,8 @@ void () PlayerPostThink =
 		{
 			if (self.watertype == CONTENT_WATER)
 				sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
+			else if (self.map == "demon_jump") // demon jumping - clear indicator
+				self.map = "";
 			else if (self.jump_flag < -650)
 			{
 				T_Damage (self, world, world, 5); // IDEA: falling damage related to dist & velo (*_z)

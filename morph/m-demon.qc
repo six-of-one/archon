@@ -295,13 +295,15 @@ void() player_demon_explode =
 	}
 };
 
-void() player_demon_jump = {
+void() player_demon_jump =
+{
 	makevectors(self.v_angle);
 	self.origin_z = self.origin_z + 1;
 	self.velocity = v_forward * 800 + '0 0 350';
 	sound(self, CHAN_BODY, "demon/djump.wav", 1, ATTN_NORM);
 	self.touch = player_demon_jumptouch;
 	player_demon_jump1();
+	self.map = "demon_jump"; // fixed dmg & rune drop on landing - want better solution
 };
 
 void() player_demon_stand = [ $stand1, player_stand1 ] {

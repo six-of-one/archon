@@ -520,12 +520,6 @@ void(string cls) item_call =
 
 	self.flags = FL_ITEM;
 	self.movetype = MOVETYPE_TOSS;
-	if (self.map == "repic") // dont set hidden items
-	{
-		self.model = string_null;
-		return;		
-	}
-
 	if (self.event != "dynamic_item") // dont do these for dyn items
 	{
 		if (!NO_PI) pk_placeitem();

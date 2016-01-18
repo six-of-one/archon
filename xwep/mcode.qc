@@ -184,6 +184,7 @@ float MC_D_ACELLS;
 float MC_D_ACELLS_LG;
 
 float MC_D_PACK;
+
 float MC_D_NIGHTVS;
 float MC_D_AUTOMAP;
 
@@ -674,10 +675,11 @@ void() mcode_load =
 	MC_KEY2_1 = f = (f + 1);
 	MC_KEY2_2 = f = (f + 1);
 
+// note: out of seq - not randomly generated
 	MC_D_NIGHTVS = f = (f + 1);
 	MC_D_AUTOMAP = f = (f + 1);
 
-	MC_W_G_CROSS = f = (f + 1); // if these are here they will randomize onto map
+	MC_W_G_CROSS = f = (f + 1); // if these are here they will randomize onto map - 7.13: what map, how is it controlled?
 	MC_W_G_CHALICE = f = (f + 1);
 	MC_W_G_CHEST = f = (f + 1);
 	MC_W_G_CROWN = f = (f + 1);
