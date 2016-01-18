@@ -451,7 +451,13 @@ void() morphic_impulse =
 				else self.state = c.aflag;
 
 				morph_print(self);
-				self.mcode = 1000 + self.state;
+				if (self.state < 0)
+				{
+//					self.mcode = self.eweapon.mcode;
+					self.state = 0;
+				}
+				else
+					self.mcode = 1000 + self.state;
 			}
 
 			if (c.archon > 0)		// track this so we know player has options

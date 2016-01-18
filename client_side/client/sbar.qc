@@ -1670,7 +1670,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "press ALT-fire -> Archon", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 2 0', "or change weapon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			}
-			else if (mcode >= MC_MC && mcode < 1100)
+			else if (mcode >= MC_MC && mcode < 1105)
 			{
 				DrawInventoryAmmo(pwr_step + wep_step + '200 60 0', "gfx/mcb", ALPHA_FULL * k, 0.5);
 				Sbar_DrawString(pwr_step + wep_step + woff + '202 65 0', "Cube active", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
@@ -1678,140 +1678,143 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 12 0', "press ALT-fire to morph", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
 				Sbar_DrawString(pwr_step + wep_step + woff + '284 2 0', "or change weapon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			}
-			if (mcode >= MC_MC && mcode < 1100)
+			if (mcode >= MC_MC && mcode < 1105)
 			{
 				float decod;
 				string mctl;
 				decod = mcode - 1000;
 				mctl = "Select a form";
 
-				if (volspec)
+				if (mcode > 1004) // actual selection
+				if (had_decod != decod)
 				{
-// show points in menu text
-					localcmd("set mpts \"");
-					localcmd(ftos(0 - volspec));
-					localcmd("\"\n");
-
-					if (decod == IMP_MSCOURGE)
+// type selection paragraphs
+					if (decod == 101)
 					{
-						mctl = "Scourge";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n"); // display center description - moved from server
+						localcmd("exec cfg/morph/m-hdr_beast_cprint.cfg\n");
 					}
+					else
+/*
+					if (decod == 103)
+					{
+						localcmd("exec cfg/morph/m-hdr_doom_cprint.cfg\n");
+					}
+					else
+					if (decod == 103)
+					{
+						localcmd("exec cfg/morph/m-hdr_q2_cprint.cfg\n");
+					}
+					else
+*/
+					{
+// show points in menu text
+						localcmd("set mpts \"");
+						localcmd(ftos(0 - volspec));
+						localcmd("\"\n");
+					}
+
+
 					if (decod == IMP_MCHAOS)
 					{
 						mctl = "Archon Chaos";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-chaos_cprint.cfg\n");
 					}
 					if (decod == IMP_MORDER)
 					{
 						mctl = "Archon Order";
 						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+							localcmd("exec cfg/morph/m-order_cprint.cfg\n");
 					}
 					if (decod == IMP_MHUMAN)
 					{
 						mctl = "Marine";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-human_cprint.cfg\n");
 					}
 					if (decod == CHAR_D)
 					{
 						mctl = "UAC Marine";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-uac_cprint.cfg\n");
 					}
 					if (decod == CHAR_Q2)
 					{
 						mctl = "Space Marine";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-spm_cprint.cfg\n");
 					}
 					if (decod == CHAR_Q3)
 					{
 						mctl = "Sarge";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-sarge_cprint.cfg\n");
 					}
 					if (decod == CHAR_PK)
 					{
 						mctl = "Pain Killer";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-pk_cprint.cfg\n");
 					}
 					if (decod == CHAR_W)
 					{
 						mctl = "Blaskowitz";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-blask_cprint.cfg\n");
 					}
 					if (decod == IMP_MENF)
 					{
 						mctl = "Enforcer";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-enforcer_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-enforcer_cprint.cfg\n");
 					}
 					if (decod == IMP_MOGRE)
 					{
 						mctl = "Ogre";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-ogre_cprint.cfg\n");
 					}
 					if (decod == IMP_MHKNIGHT)
 					{
 						mctl = "Hell Knight";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-hknight_cprint.cfg\n");
 					}
 					if (decod == IMP_MSHALR)
 					{
 						mctl = "Vore";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-shalrath_cprint.cfg\n");
 					}
 					if (decod == IMP_MSHAMBLR)
 					{
 						mctl = "Shambler";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-shambler_cprint.cfg\n");
 					}
 					if (decod == IMP_MDEMON)
 					{
 						mctl = "Fiend";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-fiend_cprint.cfg\n");
 					}
 					if (decod == IMP_MWIZARD)
 					{
 						mctl = "Scrag";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-scragg_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-scragg_cprint.cfg\n");
 					}
 					if (decod == IMP_MZOMBIE)
 					{
 						mctl = "Zomby";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-zomby_cprint.cfg\n");
 					}
 //					if (decod == IMP_MCTHON) mctl = "Cthon";
 					if (decod == IMP_MCTHON)
 					{
 						mctl = "Lava Bomb";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-lava_cprint.cfg\n");
+					}
+					if (decod == IMP_MSCOURGE)
+					{
+						mctl = "Scourge";
+						localcmd("exec cfg/morph/m-scourge_cprint.cfg\n"); // display center description - moved from server
 					}
 					if (decod == IMP_MGREMLIN_F)
 					{
 						mctl = "Gremlin";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-gremlin_cprint.cfg\n");
 					}
 					if (decod == IMP_MGREMLIN_L)
 					{
 						mctl = "Gremlin";
-						if (had_decod != decod)
-							localcmd("exec cfg/morph/m-_cprint.cfg\n");
+						localcmd("exec cfg/morph/m-gremlin_cprint.cfg\n");
 					}
 					had_decod = decod;
 				}
