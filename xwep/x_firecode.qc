@@ -684,7 +684,12 @@ void() spike_touch =
 // hit something that bleeds
 	if (other.takedamage)
 	{
-		if (self.classname == "pulse_spike") self.classname = "spike"; // reflective gets removed
+		if (self.classname == "pulse_spike") 
+		{
+			self.wad = self.classname;
+			self.classname = "spike"; // reflective gets removed
+			self.owner = self.theowner; // restore owner - was set to world after bounce
+		}
 		if (other.solid == SOLID_SLIDEBOX || !ENHANCED)  // BLOODCHECK - in case some other bit of gib / dead body can make blood
 			spawn_touchblood (self.dmg);
 		T_Damage (other, self, self.owner, self.dmg);
@@ -716,7 +721,7 @@ void() spike_touch =
 
 		// rebound
 			self.movetype = MOVETYPE_BOUNCE;
-			self.think = pulse_rebound; //spike_pulse_rebound;
+			self.think = pulse_rebound; //spike_pulse_rebound; - this clears owner
 			self.ltime = self.nextthink;
 //		self.upgrade_time = self.nextthink;
 			self.nextthink = time + 0.1;

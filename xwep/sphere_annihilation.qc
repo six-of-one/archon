@@ -320,7 +320,7 @@ if (WARNING)
 
 // returns TRUE if ent can be annihilated
 
-// xTDO: comparison into cmod code ? - not sure of purpose, comp idea (archon code) was unclear
+// xTDO: comparison into cmod code ? - not sure of purpose, its likely meant to compare to move_check
 
 float(entity g) annihilation_check =
 {

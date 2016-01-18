@@ -40,6 +40,8 @@ $frame die17 die18 //add these to fix a frame problem but there's really only 16
 
 //=============================================================================
 
+/*
+deprecated - just duplicate ogre code !!
 
 void() mangaGrenadeExplode =
 {
@@ -72,12 +74,16 @@ void() mangaGrenadeTouch =
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
+*/
 
 /*
 ================
 mangaFireGrenade
 ================
 */
+/*
+deprecated for ogre fire code
+
 void() mangaFireGrenade =
 {
 	local	entity missile;
@@ -117,7 +123,7 @@ void() mangaFireGrenade =
 	setsize (missile, '0 0 0', '0 0 0');		
 	setorigin (missile, self.origin);
 };
-
+*/
 
 //=============================================================================
 
@@ -294,7 +300,13 @@ void() manga_nail4	=[	$at4,		manga_nail5	] {ai_face();};
 void() manga_nail5	=[	$at5,		manga_nail6	] {ai_face();};
 void() manga_nail6	=[	$at6,		manga_nail7	] {ai_face();};
 void() manga_nail7	=[	$at7,		manga_nail8	] {ai_face();};
-void() manga_nail8	=[	$at8,		manga_nail9	] {ai_face();mangaFireGrenade();};
+void() manga_nail8	=[	$at8,		manga_nail9	] {ai_face();
+	OgreFireGrenade();
+
+// fix obit message for these girls
+	newmis.classname = "grenade";
+	newmis.weapon = IT_GRENADE_LAUNCHER; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
+};
 void() manga_nail9	=[	$at9,		manga_nail10	] {ai_face();};
 void() manga_nail10	=[	$at10,		manga_run1	] {ai_face();};
 
@@ -429,6 +441,8 @@ if (ign != A_MONSTER)
 // map specced
 	if (self.netname == CFAST) self.speed = MON_FAST;
 	else if (self.netname == CSLOW) self.speed = MON_SLOW;
+
+	if (random() < 0.3) self.spawnflags = self.spawnflags | 2; // uses ogre grenade fire & this gives her multi
 
 	self.netname = "Manga Tai";
 

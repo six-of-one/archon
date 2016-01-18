@@ -2300,7 +2300,6 @@ void() w_item_cross =
 	self.mask_x = MORPH_ALL;
 };
 
-// TDO: finish treasure
 void() w_item_chalice =
 {
 	w_item_cross();

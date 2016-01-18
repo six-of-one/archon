@@ -1321,6 +1321,8 @@ float body_cnt;
 
 void(entity e, entity bq, float trm) BodyQueAsset =
 {
+	if ((e.model == null_string) || (e.model == null_model)) return;
+
 	if (trm) // terminate it later
 	{
 		bq = spawn(); // make one each time
@@ -1342,6 +1344,12 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 //	bq.colormap = 0; // Cataboligne - 10.29.12 - fix lava morph dead skin issues - done in death fn() now
 
 //	bq.clientcolors = e.clientcolors; // does nothing - colors happen thru the colormap, of which there are client slots count
+	if ((e.class_select == "class_monster") || (e.flags & FL_MONSTER)) // follow death frames if here
+	{
+		bq.think = e.think;
+		bq.nextthink = e.nextthink;
+	}
+
 	bq.flags = e.flags - (e.flags & (FL_CLIENT | FL_MONSTER) ); // mask off these flags
 	bq.movetype = e.movetype;
 	bq.velocity = e.velocity;

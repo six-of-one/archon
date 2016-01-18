@@ -1387,6 +1387,8 @@ float EXPLOSIVE				= 114688; // for things that explode - chaos mod
 //builtin definitions:
 void(entity e, entity tagentity, string tagname) setattachment = #443;
 
+float(entity e, float qw, float pkw) FL_MELEE; // tell if a wep is melee
+
 float qweps, pkweps; // inventory bit masks for weps
 .entity vwepent; // vis wep entity pointers
 .entity eweapon; // vis wep pointer

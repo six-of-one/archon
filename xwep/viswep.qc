@@ -61,6 +61,10 @@ float(entity e, float qw, float pkw) FL_MELEE =
 
 	c = FALSE;
 
+	if (e.eweapon)
+	if (e.eweapon.style == FL_MELEE_WEP) // moved above pkw because of harpoon slot use by other graps
+		c = TRUE;
+
 	if (pkw)
 	{
 		if (pkw & PK_MELEE) c = TRUE;
@@ -68,10 +72,6 @@ float(entity e, float qw, float pkw) FL_MELEE =
 	}
 
 	if (qw & Q_MELEE) c = TRUE;
-
-	if (e.eweapon)
-	if (e.eweapon.style == FL_MELEE_WEP)
-		c = TRUE;
 
 //	if (mc >= MC_CARRYABLE) c = TRUE; // demolition inventory bits hack
 	return(c);
@@ -1054,7 +1054,7 @@ void(entity e, string md, entity p) DeadThrew =
 	newmis.pk_touch = BackpackTouch;
 
 	item_eject(newmis, ' 210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
-	newmis.think = SUB_Remove; // IMP: dont just blink, fade or melt out of level
+	newmis.think = remove_fade; //SUB_Remove; // dont just blink, fade or melt out of level
 	if (DEAD_THROW_TIME)
 	{
 		newmis.nextthink = time + DEAD_THROW_TIME;

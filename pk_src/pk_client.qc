@@ -1057,7 +1057,7 @@ void () WaterMove =
 	if (DARKPLACES)
 	if (self.watertype == CONTENT_WATER)
 	{
-		surfnum  = getsurfacenearpoint(world, self.origin); // NOTE: does not continuosly detect = fail FIX:
+		surfnum  = getsurfacenearpoint(world, self.origin); // NOTE: does not continuosly detect = fail
 		if (surfnum >= 0)
 		{
 			f = FALSE;
@@ -1712,26 +1712,6 @@ float() frag_minus_envcide =
 	return(1);
 };
 
-// fn(no*cide) - dont count some suicide frags
-
-/* deprecated for conditionals below
-
-float NOCIDE_DEFRAG; // restore lost frags
-
-// frag already removed - so we add it back in - chaos mod vectors
-
-// no suicide frags at all
-void(entity e) nocide =
-{
-	if (NOCIDE) e.frags = e.frags + 1;
-};
-
-// no environment suicide frags
-void(entity e) noenvcide =
-{
-	if (!NOCIDE && NOENVCIDE) e.frags = e.frags + 1;
-};
-*/
 
 // called from killed - updated client obit for pk items
 
@@ -1740,6 +1720,18 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 	local	float rnum;
 	local	string deathstring, deathstring2;
 	rnum = random();
+
+
+/* TEST
+bprint ("att: ");
+bprint (attacker.netname);
+bprint ("targ: ");
+bprint (targ.netname);
+bprint ("inf: ");
+bprint (inflictor.netname);
+bprint ("\n");
+*/
+
 
 	if (attacker.classname == "bot_fix") return;
 
@@ -1851,7 +1843,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 		{
 			local string sa;
 			bprint (targ.netname);
-			deathstring = rnd_string(' 90.0 60.0 60.0'," has is ass crushed by  "," finds out where the black hole goes for ",null_string,null_string," goes beyond the event horizion of ");
+			deathstring = rnd_string(' 90.0 60.0 60.0'," has his ass crushed by  "," finds out where the black hole goes for ",null_string,null_string," goes beyond the event horizion of ");
 			if (sphere_a.owner)
 			{
 				if (sphere_a.owner ==  targ) // whoopsie - got a wee bit too close
@@ -1933,21 +1925,27 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					else
 					bprint (" forget about his beartrap\n");
 					if (!NOPKCIDE)
-						targ.frags = (targ.frags - frag_minus());
+						targ.frags = (targ.frags - frag_minus()); // reason these are up here - speical pkicide
 					return;
 				}
 
 				targ.frags = targ.frags - frag_minus_cide();
-//				nocide(targ);
 
-				if (inflictor.classname == "cluster_bomb")
+				if (inflictor.wad == "pulse_spike")
+				{
+					if (ENHANCED)
+						bprint (" figured out the math for his pulse spike trajectory\n");
+					else
+						bprint (" becomes bored with life\n");
+				}
+				else if (inflictor.classname == "cluster_bomb")
 				{
 					if (ENHANCED)
 						bprint(rnd_string(' 90.0 60.0 60.0'," checks his cluster bomb spread\n"," went to collect the cluster bombs\n",null_string,null_string," checked to see if the cluster bombs were duds\n"));
 					else
 						bprint (" becomes bored with life\n");
 				}
-				if (inflictor.classname == "grenade" || inflictor.classname == "MultiGrenade" || inflictor.classname == "MiniGrenade") // Cataboligne - 11.21.12 - added rogue weps
+				else if (inflictor.classname == "grenade" || inflictor.classname == "MultiGrenade" || inflictor.classname == "MiniGrenade") // Cataboligne - 11.21.12 - added rogue weps
 				{
 					if (ENHANCED)
 						bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n",null_string,null_string," tries to put the pin back in\n"));

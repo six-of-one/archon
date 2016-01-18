@@ -1775,8 +1775,6 @@ void() PK_AdminImpulse =
 			self.impulse = 46;
 		else if (f == 12) // admin backspace
 			self.impulse = 69;
-		else if (f == 13)
-			self.impulse = 201; // FIX: this impulse is deprecated
 		else if (f == 10) // admin 0
 			self.impulse = 38;
 		else

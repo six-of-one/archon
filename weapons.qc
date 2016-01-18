@@ -431,7 +431,6 @@ W_FireRocket
 */
 void () W_FireRocket =
 {
-	local	entity missile;
 	vector bfwd;
 
 	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, null_string);
@@ -440,11 +439,11 @@ void () W_FireRocket =
 
 	self.punchangle_x = -2;
 
-	newmis = missile = spawn ();
-	missile.owner = self;
-	missile.movetype = MOVETYPE_FLYMISSILE;
-	missile.solid = SOLID_BBOX;
-	missile.classname = "missile";
+	newmis = spawn ();
+	newmis.owner = self;
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.solid = SOLID_BBOX;
+	newmis.classname = "missile";
 	newmis.weapon = IT_ROCKET_LAUNCHER; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 
 // set missile speed
@@ -452,8 +451,8 @@ void () W_FireRocket =
 	if (self.class_select == "class_monster") // enhanced - monster firing a rocket
 	{
 		bfwd = self.enemy.origin - self.enemy.velocity*0.2;
-		missile.velocity = normalize (bfwd - self.origin);
-		missile.dmg = 80; // not as strong as player unless set that way
+		newmis.velocity = normalize (bfwd - self.origin);
+		newmis.dmg = 80; // not as strong as player unless set that way
 	}
 	else
 	{
@@ -461,42 +460,42 @@ void () W_FireRocket =
 
 		if (self.classname == "pk*bot")
 		{
-			missile.velocity = botaim ();
+			newmis.velocity = botaim ();
 			bfwd = botaim ();
 			bfwd_z = 0;
 		}
 		else
-		missile.velocity = aim (self,1000);
+		newmis.velocity = aim (self,1000);
 	}
-	missile.velocity = missile.velocity * 1000;
-	missile.angles = vectoangles (missile.velocity);
+	newmis.velocity = newmis.velocity * 1000;
+	newmis.angles = vectoangles (newmis.velocity);
 
 	if (!rune_haste(0.4))
-		missile.velocity = missile.velocity * 2;
+		newmis.velocity = newmis.velocity * 2;
 
-	missile.touch = T_MissileTouch;
+	newmis.touch = T_MissileTouch;
 
 // set missile duration
-	missile.nextthink = time + 5;
-	missile.think = SUB_Remove;
+	newmis.nextthink = time + 5;
+	newmis.think = SUB_Remove;
 
-	setmodel (missile,"progs/missile.mdl");
-	setsize (missile, '0 0 0', '0 0 0');
+	setmodel (newmis,"progs/missile.mdl");
+	setsize (newmis, '0 0 0', '0 0 0');
 	if (self.classname == "pk*bot")
 	{
 		if (autocvar_sv_centerwep)
-			setorigin (missile,((self.origin + (bfwd * 8)) + '0 0 16'));
+			setorigin (newmis,((self.origin + (bfwd * 8)) + '0 0 16'));
 		else
-			setorigin (missile,self.origin + bfwd * VWX_ROCKETL + v_right * VWY_ROCKETL + v_up * VWZ_ROCKETL); // Cataboligne - 9.30.9 - true position fire point
+			setorigin (newmis,self.origin + bfwd * VWX_ROCKETL + v_right * VWY_ROCKETL + v_up * VWZ_ROCKETL); // Cataboligne - 9.30.9 - true position fire point
 	}
 	else
 	{
 		if (autocvar_sv_centerwep)
-			setorigin (missile, self.origin + v_forward*8 + '0 0 16');
+			setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
 		else
-			setorigin (missile,self.origin + v_forward * VWX_ROCKETL + v_right * VWY_ROCKETL + v_up * VWZ_ROCKETL); // Cataboligne - 9.30.9 - true position fire point
+			setorigin (newmis,self.origin + v_forward * VWX_ROCKETL + v_right * VWY_ROCKETL + v_up * VWZ_ROCKETL); // Cataboligne - 9.30.9 - true position fire point
 	}
-	pk_missile_splash(missile); // *pk - splash & message setup
+	pk_missile_splash(newmis); // *pk - splash & message setup
 };
 
 /*
@@ -746,19 +745,17 @@ W_FireGrenade
 */
 void () W_FireGrenade =
 {
-	local	entity missile;
-
 	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, null_string);
 
 	sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
 
 	self.punchangle_x = -2;
 
-	newmis = missile = spawn ();
-	missile.owner = self;
-	missile.movetype = MOVETYPE_BOUNCE;
-	missile.solid = SOLID_BBOX;
-	missile.classname = "grenade";
+	newmis = spawn ();
+	newmis.owner = self;
+	newmis.movetype = MOVETYPE_BOUNCE;
+	newmis.solid = SOLID_BBOX;
+	newmis.classname = "grenade";
 	newmis.weapon = IT_GRENADE_LAUNCHER; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 	
 // set missile speed
@@ -766,43 +763,43 @@ void () W_FireGrenade =
 	makevectors (self.v_angle);
 
 	if (self.v_angle_x)
-		missile.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
+		newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
 	else
 	{
 		if (self.classname == "pk*bot")
 		{
-			missile.velocity = botaim ();
-			missile.velocity = (missile.velocity * 600);
-			missile.velocity_z = (missile.velocity_z + 200);
+			newmis.velocity = botaim ();
+			newmis.velocity = (newmis.velocity * 600);
+			newmis.velocity_z = (newmis.velocity_z + 200);
 		}
 		else
 		{
-		missile.velocity = aim (self,10000);
-		missile.velocity = missile.velocity * 600;
-		missile.velocity_z = 200;
+		newmis.velocity = aim (self,10000);
+		newmis.velocity = newmis.velocity * 600;
+		newmis.velocity_z = 200;
 		}
 	}
 
 	if (!rune_haste(0.3))
-		missile.velocity = missile.velocity * 2;
+		newmis.velocity = newmis.velocity * 2;
 
-	missile.avelocity = '300 300 300';
+	newmis.avelocity = '300 300 300';
 
-	missile.angles = vectoangles (missile.velocity);
+	newmis.angles = vectoangles (newmis.velocity);
 
-	missile.touch = GrenadeTouch;
+	newmis.touch = GrenadeTouch;
 
 // set missile duration
-	missile.nextthink = time + 2.5;
-	missile.think = GrenadeExplode;
+	newmis.nextthink = time + 2.5;
+	newmis.think = GrenadeExplode;
 
-	setmodel (missile,"progs/grenade.mdl");
-	setsize (missile, '0 0 0', '0 0 0');
+	setmodel (newmis,"progs/grenade.mdl");
+	setsize (newmis, '0 0 0', '0 0 0');
 	if (autocvar_sv_centerwep)
-		setorigin (missile,self.origin);
+		setorigin (newmis,self.origin);
 	else
-		setorigin (missile, self.origin + v_forward * VWX_GRENADEL + v_right * VWY_GRENADEL + v_up * VWZ_GRENADEL); // Cataboligne - 9.30.9 - true position fire point
-	pk_missile_splash(missile); // *pk - splash & message setup
+		setorigin (newmis, self.origin + v_forward * VWX_GRENADEL + v_right * VWY_GRENADEL + v_up * VWZ_GRENADEL); // Cataboligne - 9.30.9 - true position fire point
+	pk_missile_splash(newmis); // *pk - splash & message setup
 };
 
 

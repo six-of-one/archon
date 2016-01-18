@@ -710,7 +710,7 @@ void(float r1, string sn, float lts ) morph_sound =
 			{
 			sound (self, CHAN_VOICE, sn, 0.8, ATTN_NORM);
 			self.soundlock = time + lts;
-			self.soundoff = time + 2; // FIX: check to make sure all idle & sight < 2 secs
+			self.soundoff = time + 2; // CHECK: check to make sure all idle & sight < 2 secs
 			}}
 };
 
@@ -2059,7 +2059,7 @@ void() monster_respawn =
 				if (e.health <= 0)
 				if (e.think != monster_respawn_fire)
 				{
-					BodyQueAsset(e, world, TRUE); // make a dead body - FIX: make sure this follows deathframes to end
+					BodyQueAsset(e, world, TRUE); // make a dead body
 					e.model = null_string; // hide this guy
 					e.think = monster_respawn_fire;
 					e.nextthink = time + 10 + 20 * random();

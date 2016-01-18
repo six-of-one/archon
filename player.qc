@@ -408,7 +408,9 @@ void() player_pain =
 
 	if (self._pain != SUB_Null) { self._pain(world, 0); return; }
 
-	if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
+	if (FL_MELEE(self, self.weapon, self.pk_currentitem)) // melee eweapons need seen here or frames are wrong
+		player_axpain1 ();
+	else if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
 		player_axpain1 (); // *pk - run pk axe frames
 	else
 		player_pain1 ();

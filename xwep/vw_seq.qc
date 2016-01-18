@@ -20,6 +20,8 @@ float vv_pa; // pitch adjust
 vector vv_o_0, vv_a_0, vv_x_0;
 
 // editor storage
+
+/*
 vector  vv_o_1,  vv_a_1,  vv_x_1;
 vector  vv_o_2,  vv_a_2,  vv_x_2;
 vector  vv_o_3,  vv_a_3,  vv_x_3;
@@ -70,7 +72,7 @@ vector vv_o_47, vv_a_47, vv_x_47;
 vector vv_o_48, vv_a_48, vv_x_48;
 vector vv_o_49, vv_a_49, vv_x_49;
 vector vv_o_50, vv_a_50, vv_x_50;
-
+*/
 
  // animate the base melee weapon - q1 axe
  

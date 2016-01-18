@@ -138,7 +138,7 @@ void(float side) player_chainsaw =
 
 	sd1 = side;
 	if (side == 1) sd1 = crandom() * 100;
-	W_FireAxe(); // FIX:
+	W_FireAxe(); // IMP:
 //	melee_damage(self.origin, self.origin+ v_forward*100, (random() + random() + random()) * 4, 10, sd1, TE_GUNSHOT, miss, whit, fhit);
 
 };

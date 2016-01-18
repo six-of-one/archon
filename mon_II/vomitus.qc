@@ -197,7 +197,9 @@ void()	vom_stand1	=[	$stand1,	vom_stand1	]
 
 	self.frame = self.weaponframe;
 
-// TDO: idle sound
+// idle sound - heh heh - this was so obvious in retrospect
+	if (random() < 0.5) copb_checkFart();
+	self.copb_nextFartTimeout = time + 30 + rint(random() * 200);
 
 	ai_stand();
 };

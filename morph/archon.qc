@@ -104,13 +104,58 @@ void() archon_ppp_thk =
 	self.nextthink = time + 3;
 };
 
+// archon altar - map item - converts xp to archon pts
+
+void() altar_touch =
+{
+	if (self.attack_finished > time) return;
+	self.attack_finished = time + self.wait;
+
+	if (other.xp > self.aflag)
+	{
+		other.archon = other.archon + 1;
+		other.xp = other.xp - self.aflag;
+	}
+
+	if (random() < 0.1) sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+
+	if (time > 240) self.aflag = 64;
+	else if (time > 180) self.aflag = 32;
+	else if (time > 120) self.aflag = 16;
+	else if (time > 60) self.aflag = 8;
+	else if (time > 30) self.aflag = 4;
+	else if (time > 10) self.aflag = 2;
+};
+
+void() archon_altar =
+{
+	self.netname = "Altar";
+	if (!self.model)
+	{
+		setmodel (self,"progs/flag.mdl");
+		if (!self.skin) self.skin = rint(3 + random());
+	}
+	else
+	setmodel (self, self.model);
+	if (!self.noise) self.noise = "items/r_item2.wav";
+
+	self.mask_x = MORPH_ALL;
+	self.class_select = "chaos_item";
+	self.touch = altar_touch;
+
+	if (!self.aflag) self.aflag = 1; // conversion ratio
+	if (!self.wait) self.wait = 0.25; // allow retouch every
+
+	StartItem ();
+};
+
 // archon nodule - map item - gives archon pts
 
 void() archon_nodule =
 {
 	if (!self.netname) self.netname = "Nodule";
 	if (!self.model) setmodel (self,"progs/nodule1.mdl");
-	if (!self.noise) 	self.noise = "items/r_item2.wav";
+	if (!self.noise) self.noise = "items/r_item2.wav";
 	if (!self.archon) self.archon = 20 + crandom() * 5;
 
 	setmodel (self, self.model);

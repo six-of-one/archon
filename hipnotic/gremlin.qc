@@ -1806,7 +1806,7 @@ if (ign != A_MONSTER)
 		return;
 	}
    precache_model ("progs/gremlin.mdl");
-   precache_model ("progs/grem.mdl"); // TDO: remove - compiler warning issue
+ //  precache_model ("progs/grem.mdl");
 //   precache_model ("progs/h_grem.mdl");
 
    precache_sound ("grem/death.wav");
@@ -2005,8 +2005,6 @@ void(entity targ, entity attacker, float damage) Gremlin_Damage=
 
 void() Gremlin_Split =
    {
-   local entity grem;
-   local entity temp;
    local entity head;
    local float done;
    local vector ang;
@@ -2063,38 +2061,37 @@ void() Gremlin_Split =
          }
       }
    NumSpawnGremlins = NumSpawnGremlins + 1;
-   grem = spawn();
-   SUB_CopyEntity(self,grem);
-   grem.solid = SOLID_SLIDEBOX;
-   grem.movetype = MOVETYPE_STEP;
-	grem.class_select = "class_monster";
-   setmodel (grem, "progs/grem.mdl");
-   setsize (grem, VEC_HULL_MIN, VEC_HULL_MAX);
+   newmis = spawn();
+   SUB_CopyEntity(self,newmis);
+   newmis.solid = SOLID_SLIDEBOX;
+   newmis.movetype = MOVETYPE_STEP;
+	newmis.class_select = "class_monster";
+   setmodel (newmis, "progs/gremlin.mdl");
+   setsize (newmis, VEC_HULL_MIN, VEC_HULL_MAX);
    if (self.health < 100) self.health = 100;
-   grem.health = self.health / 2;
+   newmis.health = self.health / 2;
    self.health = self.health / 2;
-//   grem.max_health = 101;
-//   grem.gorging = FALSE;
-   grem.stoleweapon = FALSE;
-   grem.items = 0;
+//   newmis.max_health = 101;
+//   newmis.gorging = FALSE;
+   newmis.stoleweapon = FALSE;
+   newmis.items = 0;
    total_monsters = total_monsters + 1;
 //   WriteByte (MSG_BROADCAST, SVC_UPDATESTAT);
 //   WriteByte (MSG_BROADCAST, STAT_TOTALMONSTERS);
 //   WriteLong (MSG_BROADCAST, total_monsters);
-   setorigin(grem, pos);
-   temp = self;
-   self = grem;
+   setorigin(newmis, pos);
+   trace_ent = self;
+   self = newmis;
    gremlin_spawn1();
    self.enemy = world;
    self.gorging = FALSE;
-   self = temp;
+   self = trace_ent;
    };
 
 void(float side)  Gremlin_Gorge =
    {
 	local	float	ldmg;
 	local vector	delta;
-   local entity temp;
 
 //   ai_face ();
 //   walkmove (self.ideal_yaw, 6);   // allow a little closing
@@ -2115,13 +2112,13 @@ void(float side)  Gremlin_Gorge =
          {
          self.enemy.gorging = TRUE;
          sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
-         temp = self;
+         trace_ent = self;
          self = self.enemy;
          Gremlin_ThrowHead(-15);
 //         ThrowGib ("progs/gib1.mdl", -15);
 //         ThrowGib ("progs/gib2.mdl", -15);
 //         ThrowGib ("progs/gib3.mdl", -15);
-         self = temp;
+         self = trace_ent;
          ldmg = 150 + 100*random();
          T_Heal(self,ldmg,FALSE);
 //         if (self.health >= self.max_health)
@@ -2132,10 +2129,10 @@ void(float side)  Gremlin_Gorge =
 /*
       if (self.stoleweapon)
          {
-         temp = GremlinFindVictim();
-         if (temp != world)
+         trace_ent = GremlinFindVictim();
+         if (trace_ent != world)
             {
-            self.enemy = temp;
+            self.enemy = trace_ent;
             FoundTarget();
             self.search_time = time + 1.0;
 //            return;

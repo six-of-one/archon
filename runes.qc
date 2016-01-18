@@ -282,11 +282,6 @@ void() mk_rune_set =
 };
 
 
-// pull a rune forcefully from player
-
-// TDO: harp can grab ejected rune - will be in newmis if exists
-// TDO: level 3 rules that have incremental - will not pull a whole rune, but a series of increments
-
 // drop a single rune - in bit order 1 - 2 - 4 - 8 - 16 - 32 - 64 - 131072 - 262144 - 524288 - 1048576
 
 void(entity e) rune_drop =
@@ -343,10 +338,16 @@ void(entity e) rune_drop =
 	}
 };
 
+// pull a rune forcefully from player
+
+// ???: harp can grab ejected rune - will be in newmis if exists --- harp can already pull a rune from a player
+// IDEA: level 3 rules that have incremental - will not pull a whole rune, but a series of increments
+
+
 // test for a forced rune eject
 
 // entity - player or bot
-// pr - percentage test
+// pr - percentage of test
 
 void(entity e, float pr) rune_pull =
 {
@@ -358,6 +359,7 @@ void(entity e, float pr) rune_pull =
 
 // only players & bots for now
 	if (e.class_select != "class_player" && e.class_select != "class_bot") return;
+	if (e.mask_x & MORPH_ARCHON) return; // they dont really have runes, just the activation bit
 
 // no can has rune - go back
 	if (!e.rune_flag & RUNE_MASK_ALL) return;
@@ -1263,7 +1265,7 @@ void() run_runes =
 		rune_strength_sound = "items/damage3.wav";
 		rune_haste_sound = "boss1/sight1.wav";
 		rune_regen_sound = "items/r_item1.wav";
-		rune_vampire_sound = "q2_snd/makr_pain2.wav"; // TDO: appr q1 sound
+		rune_vampire_sound = "player/lburn2.wav";
 	}
 	else
 	{

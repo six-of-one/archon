@@ -487,24 +487,6 @@ string(entity targ, entity attacker) player_scourge_killmsg =
 
 	if (attacker.weapon == IT_AXE)
 		return " was stung by ";
-/*
-	else if  (attacker.weapon & IT_GRENADE_LAUNCHER) // FIX: no worky - NOTE: these should currently be handled by obit code
-		{
-		if (random() < 0.8)
-			return " was bombed by ";
-		else
-			return " tried to disarm a bomb set by ";
-		}
-	else if  (attacker.weapon & IT_LIGHTNING)
-		{
-		if (random() < 0.7)
-			return " was melted by ";
-		else
-			return " was lasered by ";
-		}
-	else
-		return " was perforated by ";
-	*/
 	else
 		return " was hated by ";
 };
@@ -562,9 +544,6 @@ void(float silent) player_scourge_become =
 	self.health_modifier = MSCOURGE_HEALMOD;
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
-
-
-//	fake_load(MC_ROTOR,ST_ROTOR); // FIX wont really be needed
 
 	if (self.armortype == 0) //scourge has some base armor on create
 		{

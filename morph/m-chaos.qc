@@ -2709,7 +2709,7 @@ void() archon_target =
 	if (trace_ent.flags & FL_ITEM)
 		trace_ent.bolt_target.scale = 0.7;
 
-//	trace_ent.effects = EF_BRIGHTLIGHT; // IMP: reticle, poss HUD info
+//	trace_ent.effects = EF_BRIGHTLIGHT; // IMP: poss HUD info
 	
 // first / main target
 

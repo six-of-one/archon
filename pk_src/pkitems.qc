@@ -605,7 +605,7 @@ if (!self.mask_x)
 	if (!self.mask_x & other.mask_x) f = TRUE; // morph cant collect
 	if ((other.mask_x & CB_GREMLIN) &&  (other.builtin & self.items)) f = TRUE; // gremlin trying to replace builtin, even if he can collect
 //	if (self.pk_currentitem & PK_IT_CARY)  f = FALSE; // all can get pki (but cthon)
-//	if (other.mask_x & CB_HUMAN) f = FALSE; // humans are ignoring the test - TDO: remove this
+//	if (other.mask_x & CB_HUMAN) f = FALSE; // humans are ignoring the test
 	if (other.model == "progs/cthon.mdl") f = TRUE; // cthon get nada
 	if (self.wad == "morph_cube")
 	{
