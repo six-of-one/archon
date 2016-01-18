@@ -381,7 +381,7 @@ void() player_gremlin_attack =
 	}
 
 // bot controlled gremlin
-	if (!self.ishuman)
+	if (self.class_select == "class_bot")
 	if (random() < 0.3)
 	{
 //		local float f;

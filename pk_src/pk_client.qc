@@ -68,7 +68,7 @@ void() SetChangeParms =
 // Cataboligne 9.11.3 purify - chase cam
 	cam_parms(0);
 
-	if (self.class_select != "class_bot")
+	if (self.class_select == "class_player")
 		parm15 = self.morphy;
 
 	if (self.health <= 0 || self.classname == OBSERVER) // Cataboligne - 5.3.10 - fix level change issue when in dead observer or admin observer
@@ -226,7 +226,7 @@ void() DecodeLevelParms =
 
 	self.msgcount = (parm16 & 255);
 
-	if (self.class_select != "class_bot") // a level change happened, this is not a bot, parm15 is valid - set it
+	if (self.class_select == "class_player") // a level change happened, this is not a bot, parm15 is valid - set it
 	if (cb_morph(parm15)) // set only if valid - respawn hack deal
 		self.morphy = parm15;
 
@@ -238,7 +238,6 @@ void() DecodeLevelParms =
 		if (CHAR_CON)
 		if (CHAR_CON >= CHAR_W && CHAR_CON  <= CHAR_Q3) self.morphy = CHAR_CON; // forced by server admin
 		else self.morphy = set_char_num(MAP_MODE);
-//		if (self.class_select != "class_bot") parm15 = self.morphy; // never save this for bots
 	}
 	if (PK_100) self.morphy = IMP_MHUMAN;
 
@@ -465,7 +464,7 @@ entity() PK_SelectSpawnPoint =
 
 void() pk_plcfg =
 {
-	if (self.ishuman)
+	if (self.class_select == "class_player")
 	{
 		crosshair_off(self); // save at init
 		pk_admincfg(self);
@@ -787,7 +786,7 @@ void () CheckPowerups =
 	if (self.health <= 0)
 		return;
 
-	if (self.ishuman)
+	if (self.class_select == "class_player")
 	if (self.x_items & X_PWR_ARMOR_ON || self.x_items & X_PWR_SCREEN_ON)
 	{
 		if ((time & 3) == 3 || (time & 3) == 2)
@@ -1729,8 +1728,7 @@ void () ClientConnect =
 {
 	local float v;
 
-//	if (FRIKBOT)  // this always must happen for ishuman test
-		ClientInRankings (); // sets .ishuman for humans
+	ClientInRankings (); // sets .ishuman & .class_select for humans
 	bot_con(TRUE); // *bot - doesnt depend on active bots, must always happen
 	if (Q_100 || Q_99)
 	{

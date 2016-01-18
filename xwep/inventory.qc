@@ -1809,7 +1809,7 @@ void() drop_inv_check =
 	e = find(world, classname, "player");
 	while (e)
 	{
-		if (e.ishuman)
+		if (e.class_select == "class_player")
 		if (e.dropent)
 		if (e.dropent.classname == "dropinv")
 			e.dropent.grap_firetest = 0;

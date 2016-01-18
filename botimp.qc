@@ -102,7 +102,7 @@ void () observer =
 
 	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0') return;
 
-	if (IROBOT(self)) return; // bots cant observe either
+	if (self.class_select == "class_bot") return; // bots cant observe either
 
 	if (!self.admin)
 	{

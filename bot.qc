@@ -99,9 +99,13 @@ void(entity who) UpdateClient =
 };
 */
 
+/*
+
 // fn(IROBOT) - return true if passed ent is a bot - meant to be a bot catch all
 
 // e - ent to test, see if he's a canner (or yul brynner)
+
+deprecated - *.class_select == "class_bot" does this now
 
 float(entity e) IROBOT =
 {
@@ -114,6 +118,7 @@ float(entity e) IROBOT =
 
 	return(c);
 };
+*/
 
 void (entity e) Update_Frags =
 {
@@ -572,7 +577,7 @@ this is really useless code, so we shall deprecate
  */
 
 // inactive while installed with frikbot code, which was adapted to work the same & noted *bot
-// TDO: adapt frikbot ishuman test
+// TDO: class_select test
 /*
 void(entity client, string s)	bot_stuffcmd = #21;
 void(entity client, string s)	bot_sprint = #24;
@@ -892,7 +897,7 @@ void (entity e) bot_froze =
 		f = find(world, classname, "player");
 		while (f != world)
 			{
-				if (IROBOT(f))
+				if (f.class_select == "class_bot")
 					bot_freeze(f);
 
 				f = find(f, classname, srch);
@@ -928,7 +933,7 @@ void() bot_wakey =
 {
 	if (self.owner.deadflag)
 	if (self.owner.button16 == -666000) // make sure bot didnt respawn or change state
-	if (!self.owner.ishuman)
+	if (self.owner.class_select == "class_bot")
 	{
 
 
@@ -959,7 +964,7 @@ bprint("\n");
 
 void() bot_fixed =
 {
-	if (!self.owner.ishuman)
+	if (self.owner.class_select == "class_bot")
 	if (self.frags == self.owner.frags) // hasnt changed
 	{
 		bot_fix.frags = bot_fix.frags + 1;

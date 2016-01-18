@@ -600,6 +600,7 @@ void() ClientInRankings =
 	
 	self.b_clientno = cno;
 	self.ishuman = TRUE; // this is where human players are indicated as human - Cataboligne, special NOTE:
+	self.class_select = "class_player"; // not redundant since frikbot has classname "player"
 	self.switch_wallhug = time + 1;
 };
 
@@ -627,7 +628,7 @@ float () BotPreFrame =
 {
 	if (self.b_clientno == -1)
 		return TRUE;
-	if (self.ishuman)
+	if (self.class_select == "class_player")
 	{
 		if (self.switch_wallhug)
 			ClientFixRankings();
@@ -666,7 +667,7 @@ float () BotPostFrame =
 {
 	if (self.b_clientno == -1)
 		return TRUE;
-	if (self.ishuman)
+	if (self.class_select == "class_player")
 	{
 
 		if (waypoint_mode > WM_LOADED)
@@ -1227,7 +1228,7 @@ void() BotFrame =
 	num = 0;
 	while (num < max_clients)
 	{
-		if (self.ishuman == FALSE)
+		if (self.class_select == "class_bot")
 		{
 			if (active_clients & ClientBitFlag(num))
 			{

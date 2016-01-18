@@ -1096,7 +1096,7 @@ float(string mm) set_char_num =
 // TEST:ING
 void(float silent) player_human_become = 
 {
-	if (self.ishuman)
+	if (self.class_select == "class_player")
 	{
 		self.cam_z = 10 / 100;
 		self.cam_y = 30;
@@ -1104,7 +1104,6 @@ void(float silent) player_human_become =
 		stuffcmd(self, "chase_back 30\n");
 		stuffcmd(self, "exec m-human.cfg\n");
 	}
-
 
 	if (self.morphy == CHAR_W) setmodel(self, "progs/plyr_bw.mdl");
 	if (self.morphy == CHAR_D) setmodel(self, "progs/plyr_dm.mdl");
@@ -1164,7 +1163,7 @@ void(float cmd, float pls) polymorph_check =
 		}
 		else // respawn or level load
 		{
-			if (!self.ishuman)
+			if (self.class_select == "class_bot")
 			if (cb_morph(cmd) != CB_HUMAN) // if bot score is low, become human
 			if (random() < 0.2) // 20% chance of test per respawn
 			{

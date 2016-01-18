@@ -89,7 +89,7 @@ void () corpsefollow =
 		self.angles = (self.tomb_target.angles + '0 0 0');
 		self.dodmg = 1;
 	}
-	if (!self.tomb_target.ishuman) // Cataboligne - 10.3.11 - just for stationary bots
+	if (self.tomb_target.class_select == "class_bot") // Cataboligne - 10.3.11 - just for stationary bots
 	if (random() < 0.3)
 		self.dodmg = 1;
 		
@@ -153,7 +153,7 @@ void () tombtouch =
 	{
 		if (self.enemy != other)
 		if (other.flags & FL_CLIENT)
-		if (other.ishuman)
+		if (other.class_select == "class_player")
 		{
 			if (random() < 0.5)
 				sprint(other, "Stop for a visit, why not stay for a while?...\n");

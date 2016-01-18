@@ -1822,11 +1822,11 @@ bprint(".\n");
 
 	if ((flg & TFL_INFR) && (cht_if > 0))
 	{
-		if (self.classname == "player" || IROBOT(self))
+		if (self.classname == "player" || self.class_select == "class_bot")
 			makevectors (self.v_angle);
-		else if (e.classname == "player" || IROBOT(e))
+		else if (e.classname == "player" || e.class_select == "class_bot")
 			makevectors (e.v_angle);
-		else if (f.classname == "player" || IROBOT(f))
+		else if (f.classname == "player" || f.class_select == "class_bot")
 			makevectors (f.v_angle);
 		else
 			makevectors (self.v_angle);
@@ -2555,7 +2555,7 @@ void(float recurse, vector p1, vector p2, entity from, float damage) LightningDa
 
 void(entity e, float i) crosshair_con =
 {
-	if (!e.ishuman) return;
+	if (e.class_select == "class_bot") return;
 
 	if (i < 0) // reactivate
 	{
@@ -2581,7 +2581,7 @@ void(entity e, float i) crosshair_con =
 
 void(entity e) crosshair_off =
 {
-	if (!e.ishuman) return;
+	if (e.class_select == "class_bot") return;
 
 	if (cvar("crosshair"))
 	if (e.crosshair_sv != cvar("crosshair"))

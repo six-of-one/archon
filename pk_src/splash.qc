@@ -227,7 +227,7 @@ void() CheckWaterLevels =
 						T_Damage (e,world,world,e.health + 10); //e.th_die(); // note: swim monsters dont set splash - have to damage for accounting - see random monsters
 						remove(self);
 					}
-					else if (IROBOT(e) || e.classname == "player")
+					else if (e.class_select == "class_bot" || e.classname == "player")
 					{
 						if (!e.portal_busy) // no action if under influence of portal contols
 						{
@@ -240,7 +240,7 @@ void() CheckWaterLevels =
 								f.owner = e;
 								f.think = phone_teleport;
 								f.nextthink = (time + 0.2);
-								if (!IROBOT(e)) centerprint(e, "You have fallen from grace - by grace you are restored!\n");
+								if (e.class_select != "class_bot") centerprint(e, "You have fallen from grace - by grace you are restored!\n");
 							}
 							else if (SV_FALLEN == 2)
 							{

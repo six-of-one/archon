@@ -219,7 +219,7 @@ void() q3_bob_height =
 //	if (q3_bob_on == 0) q3_bob_on = -1;
 
 	if (!self.flags & FL_CLIENT) return;
-	if (!self.ishuman) return; // already tested, but just in case
+	if (self.class_select == "class_bot") return; // already tested, but just in case
 
 	if (TR_Q3 > 0)
 	{

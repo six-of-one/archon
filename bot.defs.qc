@@ -154,7 +154,6 @@ float nearlight;
 //float () FindGood;
 
 // id bots
-float(entity e) IROBOT; // whats up canner?
 void() bot_fixer; // fix broke bots
 float BOT_FIX_TIME = 14;
 float BOT_FIXED = 1; // if this is true and a bots frags dont change in the time out, kill & restart that bot

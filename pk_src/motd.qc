@@ -22,7 +22,7 @@ void() connectmessage =
 //	\b_-=\b* \bC\bataboligne\n
 //	\bpainkeep-source-update\b
 
-if (self.classname != "pk*bot" && (!FRIKBOT ||self.ishuman))
+if (self.classname == "player" && self.class_select != "class_bot")
 {
 	// The welcome message
 	if (self.msgcount == 0)
@@ -137,7 +137,7 @@ void() updateStatusDisplay =
 {
 	local string Line3,Line5;
 
-	if (self.classname == "pk*bot" || !self.ishuman) // bots dont get status update
+	if (self.class_select == "class_bot") // bots dont get status update
 		return;
 
 	if (inHubMap) // Cataboligne - 8.22.9 - custom hubs can cause this message on non pk / non hub maps

@@ -1203,7 +1203,7 @@ void() th_saver =
 
 	self.nextthink = time + 1;
 
-	if (!self.aiment.ishuman) // NOTE: later exclude non score bots
+	if (self.aiment.class_select == "class_bot") // NOTE: later exclude non score bots
 	if (self.aiment.movetype != MOVETYPE_NONE)
 	if (random() < 0.5) // 50 / 50 chance a bot will decide to save
 	{

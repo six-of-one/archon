@@ -557,7 +557,7 @@ void(float maxplayers, float votecast, float timemins, float timesec) playerVote
 float hubStartTime;
 void() hub_control_status =
 {
-	if (!self.ishuman) return;
+	if (self.class_select == "class_bot") return;
 
 	// print some information
 	getHighestScores();
@@ -1196,7 +1196,7 @@ void() WaitForVotesThink =
 		return;
 
 // NOTE: bots only come here if they touched a vote portal
-	if (self.classname == "pk*bot" || !self.ishuman) // bots dont get status update
+	if (self.class_select == "class_bot") // bots dont get status update
 	{
 		self.nextthink = time + 0.333;
 		if (random() < 0.85) // dont let them exit vote often
@@ -1303,7 +1303,7 @@ void() WaitForVotesThink =
 
 // trick when 1 bot is left to vote
 			if ((maxplayers - votecast) == 1)
-			if (!e.ishuman)
+			if (e.class_select == "class_bot")
 			if (random() < 0.2)
 			{
 				pl = self;

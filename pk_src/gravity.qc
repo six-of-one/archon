@@ -19,7 +19,7 @@ float (entity targ) grav_visible =
 	v2 = v0;
 	if (targ.flags & FL_CLIENT) f = TRUE;
 	else
-	if (IROBOT(targ)) f = TRUE;
+	if (targ.class_select == "class_bot") f = TRUE;
 	if (targ.flags & FL_MONSTER) f = TRUE;
 	if (f) v2 = targ.view_ofs;
 

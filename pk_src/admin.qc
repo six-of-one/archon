@@ -85,7 +85,7 @@ void() admin_sv_cfg =
 	local string str;
 
 /*
-if (!self.ishuman)
+if (self.class_select == "class_bot")
 {//return;
 bprint("------------------- **  admin sv - bot = ");
 bprint(item_ident(self));
@@ -114,7 +114,7 @@ void(entity e) admin_clear =
 
 
 /*
-if (!self.ishuman)
+if (self.class_select == "class_bot")
 {
 bprint("------------------- **  admin clear ");
 bprint(e.netname);
@@ -123,7 +123,7 @@ bprint("\n");
 */
 
 
-	if (!e.ishuman) return;
+	if (e.class_select == "class_bot") return;
 
 	if (e.light_lev > 0)
 	{
@@ -2648,7 +2648,7 @@ void() PK_AdminImpulse =
 
 float() admin_postthink =
 {
-	if (IROBOT(self)) return(FALSE); // just incase a bot triggers user menu or admin entry...
+	if (self.class_select == "class_bot") return(FALSE); // just incase a bot triggers user menu or admin entry...
 
 	pk_adminframe = framecount;
 //	if (deathmatch) // admin is debateable in SP, but...

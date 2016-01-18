@@ -35,7 +35,7 @@ float PR_VIEWPC = 1; // set to 1 to show viewport changes - leaving this test in
 
 void( entity m_e, entity v_e) set_viewport =
 {
-	if (!m_e.ishuman) return; // no bots
+	if (m_e.class_select == "class_bot") return; // no bots
 
 
 if (PR_VIEWPC)
@@ -68,8 +68,7 @@ void( float opt ) Remove_chase_cam;
 
 void(string bcm) cam_setbob =
 {
-//	if (IROBOT(self)) return; // no cam for bots - no stuffcmd either
-	if (!self.ishuman) return; // no bots
+	if (self.class_select == "class_bot") return; // no bots
 
 	if (bcm == "")
 	{
@@ -122,7 +121,7 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 	}
 
-	if (Q_100 || PK_100 || NO_CAM || !cam_owner.ishuman) // Cataboligne - 8.16.9 - quake compatability mode - 9.19.11 dont allow bots in here
+	if (Q_100 || PK_100 || NO_CAM || cam_owner.class_select == "class_bot") // Cataboligne - 8.16.9 - quake compatability mode - 9.19.11 dont allow bots in here
 	{
 		return;
 	}
@@ -183,7 +182,7 @@ void() Reable_chase_cam =
 
 	self.nextthink = time + 0.1;
 
-	if ( (self.owner.solid == SOLID_NOT) || (!self.owner.ishuman) )
+	if ( (self.owner.solid == SOLID_NOT) || (self.owner.class_select == "class_bot") )
 	{
 		//owner died in water, reset .cam_x flag for respawn
 //		self.owner.cam_x = self.owner.cam_x | CHSCAM_ON;
@@ -893,8 +892,7 @@ void() Chase_cam_level_start =
 
 	local entity e;
 
-//	if (IROBOT(self)) return; // no cam start for bots
-	if (!self.ishuman) return; // no bots
+	if (self.class_select == "class_bot") return; // no bots
 
 	set_viewport( self, self); // Cataboligne 10.4.11 - fix bug while using dpcam where view gets borked
 
@@ -1001,8 +999,7 @@ void(float opt) Chase_cam_read_temp1 =
 
 void(float sel) cam_parms =
 {
-	if (IROBOT(self)) return; // no cam for bots
-//	if (!self.ishuman) return; // no bots
+	if (self.class_select == "class_bot") return; // no cam for bots
 
 	CAM_DEF = 1; // compiled default for non dp engines
 	if (DARKPLACES || chaos) // IDEA: move to live upd
@@ -1095,36 +1092,14 @@ void () dead_cam_set =
 
 // limit on frags from fire & forget implementation
 
-	if (self.flags & FL_CLIENT || IROBOT(self)) // should just be FL_CLIENT
+	if (self.flags & FL_CLIENT || self.class_select == "class_bot") // should just be FL_CLIENT
 	if (FFW_LIMIT > 0)
 	{
 		self.search_time = time + FFW_LIMIT;
 	}
 
 	if (self.disconnectPlayer) return; // dont set for disconnect frikbots that get splash damage!
-	if (!self.ishuman) return; // no bots past this - they get the code above
-/*
-	if (IROBOT(self))  // no deadcam for bots
-	{
-
-// deprecated - bot code already handles respawn, so no reason to duplicate this - tweak bot code for more random return to action
-
-// the issue is that this steals bot die stuff causing wierdness - the frikbot zombie corpse deal
-
-		local float cn, pn;
-
-		cn = cnt_ent(world, "classname", OBSERVER); // count observers
-		pn = cn + cnt_ent(world, "classname", "player") + cnt_ent(world, "classname", "pk*bot"); // count total players - need better way?
-		if ((pn > 4 && cn < 2) || (pn > 8 && cn < 3))
-		{
-			self.nextthink = time + 5 + random() * 20 + pn * 2 * random();
-			self.think = respawn;
-		}
-		else
-			respawn();
-		return;
-	}
-*/
+	if (self.class_select == "class_bot") return; // no bots past this - they get the code above
 
 // NOTE: wraith option still needs checked once we have chaos mod morph deal
 	
@@ -1149,7 +1124,7 @@ void() cam_punch =
 
 void () ccb_impulse_check =
 {
-	if (!self.ishuman) return; // no cam for bots - not sure how they would get here...
+	if (self.class_select == "class_bot") return; // no cam for bots - not sure how they would get here...
 
 	if (DARKPLACES || chaos)
 	{
@@ -1225,7 +1200,7 @@ void (vector ts) cam_CheckWaterJump =
 
 void() cam_waterjump =
 {
-	if (!self.ishuman) return; // no bots
+	if (self.class_select == "class_bot") return; // no bots
 
 //	if (! self.flags & FL_WATERJUMP)
 	cam_CheckWaterJump (' 0 0 -8');

@@ -723,7 +723,7 @@ void() viswep_post =
 			drw = TRUE;
 			vhead.owner.eweapon = vhead.eweapon;
 
-			if (self.ishuman)
+			if (self.class_select == "class_player")
 			if ( !(self.cam_x & CHSCAM_ON))
 			{
 				if (vhead.owner.eweapon)

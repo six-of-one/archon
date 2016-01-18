@@ -122,7 +122,7 @@ void(entity targ, entity attacker) Killed =
 
 	if (self.vwepent) viswep_ld(self, -2); // still have visweps
 
-	if (self.ishuman) // Cataboligne 9.19.11 - monsters were calling - just never saw because werent using dp cam
+	if (self.class_select == "class_player") // Cataboligne 9.19.11 - monsters were calling - just never saw because werent using dp cam
 		dead_cam_set(); // Cataboligne 9.11.3 purify - chase cam
 
 	self = oself;

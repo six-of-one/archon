@@ -2114,7 +2114,7 @@ void() painkeep_cube_use =
 		}
 
 		if (crate.message)
-		if (damage_attacker.ishuman)
+		if (damage_attacker.class_select == "class_player")
 		{
 			sprint(damage_attacker, crate.message);
 			sprint(damage_attacker, "\n");
@@ -2352,7 +2352,7 @@ void() cube_touch =
 	}
 
 	if (self.wad == "morph_cube")
-	if (!other.ishuman)
+	if (other.class_select == "class_bot")
 	{
 		if (other.wad == "pk*bot") return;
 
@@ -2376,7 +2376,7 @@ void() cube_touch =
 	if (self.wad == "morph_cube")
 	if (other.state)
 	{
-		if (other.ishuman) return;
+		if (other.class_select == "class_player") return;
 		else if (random() > 0.08) return;
 	}
 
@@ -2399,7 +2399,7 @@ void() cube_touch =
 	}
 
 	if (self.duration < time) // dont let bots hit cube too much
-	if (!other.ishuman)
+	if (other.class_select == "class_bot")
 	{
 		self.duration = time + 2;
 		if (self.wad == "pk_cube")
@@ -2421,7 +2421,7 @@ void() cube_touch =
 	{
 		other.cnt = -1;
 		other.state = other.morphy;
-		if (other.ishuman)
+		if (other.class_select == "class_player")
 		{
 			other.impulse = 10; // display first item
 			self.lefty = 8388608; // start bit will be 1
@@ -2431,7 +2431,7 @@ void() cube_touch =
 		}
 	}
 
-	if (other.ishuman)
+	if (other.class_select == "class_player")
 	if (cvar("r_ambient") > 0)
 		other.light_lev = cvar("r_ambient"); // because of cube re-arm
 
@@ -2452,7 +2452,7 @@ void() cube_touch =
 	self.count = time + 60 + random() * 10; // abandoned then
 	self.nextthink = time + 3 + random();
 
-	if (!other.ishuman)
+	if (other.class_select == "class_bot")
 	{
 		self.owner = world; // clear this now, only used for messages
 		self = other;
@@ -2521,7 +2521,7 @@ void() crate_touch =
 		return;
 	}
 
-	if (!other.ishuman)
+	if (other.class_select == "class_bot")
 		return;
 
 	if (other.health <= 0)
