@@ -2351,7 +2351,7 @@ var float autocvar_hud_spell_vessel_limit = 1;
 						}
 						else
 						{
-							if (pk_bt == 1) Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Sphere", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							if (pk_bt == 2) Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Sphere", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							else Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Diamond", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						}
 						cnt_left = pwr_step_y;

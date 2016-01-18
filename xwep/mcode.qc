@@ -199,7 +199,7 @@ float MC_D_RNDITM; // # of total items
 float MC_W_KNIFE;
 float MC_W_PISTOL;
 float MC_W_MACHGUN;
-float MC_W_CHAINGUN;
+//float MC_W_CHAINGUN;
 float MC_W_MORTAR;
 float MC_W_FLAMER;
 

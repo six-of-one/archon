@@ -458,6 +458,8 @@ void(string cls) item_call =
 	else if (cls == "ammo_gas") ammo_gas();
 	else if (cls == "ammo_gas_lg") ammo_gas_lg();
 	else if (cls == "chaos_item") chaos_item();
+// restore a polyed tele sphere - in theory anyway
+	else if (cls == "chaos_teleport_icon") func_chaos_teleport();
 
 /// archon
 	else if (cls == "archon_altar") archon_altar();

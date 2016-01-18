@@ -60,6 +60,8 @@ void() SetChangeParms =
 	// code xweaps - return poss map code for parm & clear items
 
 	parm3 = self.mcode;
+// attempt to fix chg akimbo giving LG after level transit
+	if (parm3 == MC_W_CHAINGUN) self.items = self.items - (self.items & IT_LIGHTNING);
 
 	if (self.class_select == "class_player")
 	{
@@ -549,6 +551,7 @@ void() PutClientInServer =
 	self.invincible_finished = 0;
 	self.effects = 0;
 	self.invincible_time = 0;
+	self.skin = 0;
 
 	DecodeLevelParms (); // note: sets char
 
@@ -614,8 +617,6 @@ void() PutClientInServer =
 	self.beartrap_time = 0;
 	self.bt_immune_time = time + BT_BUFFER;
 	self.voteIntermission = 0;
-
-	self.skin = 0;
 
 	self.grap_owner = world;
 

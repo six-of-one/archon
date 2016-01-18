@@ -49,6 +49,8 @@ float CHAOS_FIREBOLT_FRAME_ADJ = 8;
 		+---------------------------------------+
 */
 
+void() c_turret;
+
 void() m_precache_chaos =
 {
 	precache_model ("progs/chaos_b2.mdl");
@@ -76,6 +78,8 @@ void() m_precache_chaos =
 	precache_model ("progs/nodule110110110.bsp");
 	precache_model ("progs/arc_pp.bsp");
 	precache_sound ("items/r_item2.wav");
+
+	chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, null_string, null_string, SUB_Null, 180, c_turret, SUB_Null, self, world);
 };
 
 float FL_CSB						= 16; // star burst in progress
@@ -1092,6 +1096,12 @@ void() chaos_bomb =
 };
 */
 
+void() c_turret =
+{
+	self.nextthink = time + 120;
+	ci_tur = 1;
+};
+
 // Chaos beam - fired in attack by alt fire
 
 // fn(chaos_item) - randomly generate a chaos item
@@ -1173,6 +1183,8 @@ void() chaos_item =
 			else if (ci_fr == 9) { beartrap_dropBearTrap(); newmis.beartrap_time = time + 9 + random() * 20; }
 			else if (ci_fr == 10)
 			{
+/*
+				// first attemp to limit chaos turrets
 				self.cnt = 1;
 				if (self.morphy == IMP_MCHAOS) // chaos personal rnd turret toss
 				{
@@ -1182,16 +1194,20 @@ void() chaos_item =
 					if (ci_tur > self.cnt) self.cnt = 0;
 				}
 
-				if (self.cnt)
+				if (ci_tur < 3)
 				{
+*/
 					turret_dropTurret();
 					turret.owner = self.owner;
+					if (ci_tur) turret.turret_timeout = time + 10 / ci_tur;
+					ci_tur = ci_tur + 1;
+/*
 				}
 				else
 				{
 					beartrap_dropBearTrap();
 					newmis.beartrap_time = time + 9 + random() * 40;
-				}
+				}	*/
 			}
 			else if (ci_fr == 11)
 			{
@@ -1816,6 +1832,9 @@ void() multi_teleport =
 	}
 //	if (newmis.enemy.movetype == MOVETYPE_NONE) - find out why some stuff doesnt port
 
+// this should not be necc - bolt_targetTimeout should do this,but it doesnt always seem to work
+	archon_target_clear(self.bolt_target);
+	archon_target_clear(self.enemy);
 
 	trace_ent.spawnflags = newmis.spawnflags = 48 + 128; // NONDIR, nodeath, NOVEL code
 	trace_ent.movetarget = newmis; trace_ent.aflag = -6;
@@ -1825,6 +1844,14 @@ void() multi_teleport =
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.pk_explode_ammo = 0;
 	self.bolt_targetTimeout = 0;	
+};
+
+// remove teleport leavings
+
+void() Unitele_Remove =
+{
+	remove(self.enemy);
+	remove(self);
 };
 
 void() uni_teleport =
@@ -1870,10 +1897,16 @@ void() uni_teleport =
 
 
 // teleport to this
-	trace_ent = chaos_spawn(MOVETYPE_NONE, 0, 0, 0, v1, v0, v0, v0, v0, "chaos_teleport_dst_temp", null_string, SUB_Null, 0.3, SUB_Remove, SUB_Null, world, world);
+	trace_ent = chaos_spawn(MOVETYPE_NONE, 0, 0, 0, v1, v0, v0, v0, v0, "chaos_teleport_dst_temp", null_string, SUB_Null, 0.3, Unitele_Remove, SUB_Null, world, world);
 
-	newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, self.bolt_target.origin, '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+// was using touch fn with teleport_touch, but after teleporting some things seem untouchable, so this was changed
+	newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, self.bolt_target.origin, '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", null_string, SUB_Null, 0.05, teleport_touch, SUB_Null, world, world);
 	newmis.enemy = self.bolt_target;
+	trace_ent.enemy = newmis; // trace back for remove
+
+// this should not be necc - bolt_targetTimeout should do this,but it doesnt always seem to work
+	archon_target_clear(self.bolt_target);
+
 //	if (newmis.enemy.movetype == MOVETYPE_NONE) - find out why some stuff doesnt port
 
 	newmis.spawnflags = 16 + 128; // NONDIR, NOVEL  code - death allowed
@@ -1937,6 +1970,8 @@ void() poly_restore =
 	remove(self);
 };
 
+// poly other for non self via this
+
 void() poly_monster =
 {
 	trace_ent = self;
@@ -1947,6 +1982,13 @@ void() poly_monster =
 
 // so order can attempt to put it back
 	if (! self.target2) self.target2 = self.classname;
+
+// handle tele sphere trigger
+	if (self.classname == "chaos_teleport_icon")
+	{
+		remove(self.trigger_field);
+		self.trigger_field = world;
+	}
 
 // chaos poly stuff does not always stay so
 	if (trace_ent.morphy == IMP_MCHAOS)
@@ -2416,10 +2458,10 @@ bprint(" --- in archon release - released\n");
 		self.bolt_target.enemy.attack_finished = 0;
 		self.bolt_target.enemy.event = null_string;
 		remove(self.bolt_target.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
-		self.bolt_target.enemy.bolt_target = world;
-		remove(self.bolt_target);
+		archon_target_clear(self.bolt_target.enemy); // clear reticle - may change this so reticle is already removed, since we have the bubble
+		remove(self.bolt_target); // clear prison ent
 		self.bolt_target = world;
-		next_imprisoned();
+//		next_imprisoned();
 		self.archon = self.archon + self.pk_explode_ammo; // get back this many pts
 	}
 };
@@ -2594,9 +2636,14 @@ void() make_vessel =
 	if (self.height == IMP_MORDER)
 	{
 		newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, 0, v0, '-8 -8 -8', '8 8 8', v0, v0, null_string, "progs/sphere_annihilation.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world);
+		if (self.pk_beartrapammo == 1)
+		{
+			setmodel(newmis, "progs/diamond.mdl");
+			newmis.alpha = 0.8;
+		}
 		setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
-		newmis.scale = 0.4;
 		newmis.skin = 3;
+		newmis.scale = 0.5;
 		newmis.aflag = -6; // a "made" vessel 
 		self.bolt_target = newmis;
 	}
@@ -3162,6 +3209,8 @@ void() archon_target =
 
 // already targeted, power point protection or in a clg bolt loop
 /// *** an archon with a primary target will not be targetable!
+// NOTE: this must be cleared - if spell canceled, spell completed, archon de-archoned, caster dead, etc.
+//				  leaving behind block further spell casting
 	if (trace_ent.bolt_target) return;
 
 // already acquired - ignore

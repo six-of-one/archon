@@ -294,7 +294,11 @@ void() turret_searchForEnemy =
 
 #ifdef enhanced
 // fix attempt for "flying down" turret
-	if (self.velocity != self.turret_base.velocity) self.velocity = self.turret_base.velocity;
+//	if (self.velocity != self.turret_base.velocity) self.velocity = self.turret_base.velocity;
+//	self.velocity_z = 0;
+
+// this works...makes no sense, but it works
+	if (self.velocity_z < 0) self.movetype = MOVETYPE_NONE;
 #endifdef
 
 	// check if needs to be seet solid

@@ -81,6 +81,7 @@ void() morph_precache =
 	precache_model ("gfx/reticle2.spr");
 
 	precache_model ("progs/orderform.mdl");
+	precache_model ("progs/diamond.mdl");
 
 };
 

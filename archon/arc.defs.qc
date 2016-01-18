@@ -1110,6 +1110,7 @@ float ALT_FIRE_IMP			= 13; // impulse for alt fire
 .void(entity ew) _alt_fire;
 
 float MC_D_PISTOL; // for fists test
+float MC_W_CHAINGUN; // for xover sub off lg flag
 
 float DEF_X_ITEMS; // x bit flags
 
