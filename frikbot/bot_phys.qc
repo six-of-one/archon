@@ -592,7 +592,15 @@ void() SV_FlyMove =
 			self.phys_obj = find(self.phys_obj,classname,"phys_obj");
 			if (self.phys_obj == world)
 			{
-				error("No physics entity spawned!\nMake sure BotInit was called\n");
+				if (Q_100 && Q_100_OBJERR)
+					error("No physics entity spawned!\nMake sure BotInit was called\n");
+				else 
+				{
+					self.phys_obj = spawn();
+					self.phys_obj.owner = self;
+					if (WARNING)
+					bprint("WARNING: No physics entity spawned!\nMake sure BotInit was called\n");
+				}
 			}
 		}
 	}

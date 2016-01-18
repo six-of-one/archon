@@ -167,8 +167,9 @@ void() player_scourge_die =
 		+---------------------------------------+
 */
 
-
+// scourge with runes really hoses out some freaking nails
 // quad & dmg runes increase nail fire (6 slots for runes, 8 slots for quad)
+// having both rune & tech damage is same as quad
 
 void(float ox) player_scourge_FireSpikes =
 {
@@ -235,7 +236,7 @@ void()   player_scourge_atk2 =[ $shoot2,   player_scourge_atk3 ]
 //   player_scourge_FireSpikes(56);
    player_scourge_FireSpikes(-52);  // moving outside shots in 4 units
 
-	if (self.super_damage_finished)// quad or damage rune - extra nails
+	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(47);
 };
 void()   player_scourge_atk3 =[ $shoot1,   player_scourge_atk4 ]
@@ -247,6 +248,9 @@ void()   player_scourge_atk3 =[ $shoot1,   player_scourge_atk4 ]
 	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
 		player_scourge_FireSpikes(45);
 
+	if ((self.rune_flag & T_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - more extra nails
+		player_scourge_FireSpikes(-47);
+
 	};
 void()   player_scourge_atk4 =[ $shoot2,   player_scourge_atk5 ]
 {
@@ -254,7 +258,7 @@ void()   player_scourge_atk4 =[ $shoot2,   player_scourge_atk5 ]
    player_scourge_FireSpikes(52);
 //   player_scourge_FireSpikes(-56);
 
-	if (self.super_damage_finished)// quad or damage rune - extra nails
+	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
 };
 void()   player_scourge_atk5 =[ $shoot1,   player_scourge_atk6 ]
@@ -272,8 +276,11 @@ void()   player_scourge_atk6 =[ $shoot2,   player_scourge_atk7 ]
 //   player_scourge_FireSpikes(56);
    player_scourge_FireSpikes(-52);
 
-	if (self.super_damage_finished)// quad or damage rune - extra nails
+	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
+
+	if ((self.rune_flag & T_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - extra nails
+		player_scourge_FireSpikes(45);
 };
 void()   player_scourge_atk7 =[ $shoot1,   player_scourge_atk8 ]
 {
@@ -291,7 +298,7 @@ void()   player_scourge_atk8 =[ $shoot2,   player_stand1 ]
    player_scourge_FireSpikes(52);
 //   player_scourge_FireSpikes(-56);
 //   SUB_AttackFinished (4*random());
-	if (self.super_damage_finished)// quad or damage rune - extra nails
+	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
 
 	if (self.currentammo < 1 )  // firing lasers, out of ammo - // FIX

@@ -80,6 +80,34 @@ void (vector org) spawn_tarbaby =
 };
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
+// note: when we have the hot vomit & hot touch, we want to explode as a large lava ball, or puddle or shot fire balls & such
+
+void() T_Vomistouch =
+{
+	local float f;
+
+	if (other == self) return;
+	if (other.classname == "vomis") return;
+	if (other.classname == "vomisss") return;
+	if (other.classname == "vomisexplod") return;
+
+	if (other.classname == "monster_vomit") f = TRUE;
+	if (other.classname == "monster_tarbaby") f = TRUE;
+	if (other.morphy == IMP_MCTHON) f = TRUE;
+	if (other.morphy == IMP_MVOMIS) f = TRUE;
+	
+	if (f) // hit a friendly, remove & return
+	{
+		remove(self);
+		return;
+	}
+
+	if (self.classname == "vomisexplod") T_MissileTouch(); // idea: tweak damage
+	if (self.classname == "vomisss") superspike_touch();
+	else
+		spike_touch();
+
+};
 
 // Normal shot
 void(float offset) vom_shot =
@@ -100,11 +128,14 @@ void(float offset) vom_shot =
 	vec_z = 0 - vec_z + (random() - 0.5)*0.1;
 	
 	launch_spike (org, vec);
-	newmis.classname = "vomitnormal";
+	newmis.classname = "vomis";
 	setmodel (newmis, "progs/vomis.mdl");
 	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);		
+	newmis.frame = 0;
+	newmis.skin = 0;
 	newmis.velocity = vec*300;
-	
+	newmis.touch = T_Vomistouch;
+
 };
 
 // Exploding Missiles
@@ -126,15 +157,16 @@ void(float offset) vom_shot2 =
 	vec_z = 0 - vec_z + (random() - 0.5)*0.1;
 	
 	launch_spike (org, vec);
-	newmis.classname = "vomitexploder";
+	newmis.classname = "vomisexplod";
 	setmodel (newmis, "progs/vomis.mdl");
 	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);		
+	newmis.frame = 2;
+	newmis.skin = 1;
 	newmis.velocity = vec*300;
-	newmis.touch = T_MissileTouch;
+	newmis.touch = T_Vomistouch;
 
 };
 
-//FIXME: Get creature spawning properly implemented
 // Creture spawners
 void(float offset) vom_shot3 =
 {
@@ -242,9 +274,23 @@ void()      vom_die15   =[    $die15,     vom_die15   ] {};
 void()	vom_dieb1	=[	$die1,	vom_dieb2	] {self.takedamage = DAMAGE_NO;};
 void()	vom_dieb2	=[	$die2,	vom_run1	] 
 {
-	spawn_tarbaby(self.origin);
+	local float f;
+	local vector v;
 
 	T_RadiusDamage (self, self, 120, world);
+
+	f = rint(random() * 2);
+	while (f > 0)
+	{
+		if (random() < 0.6)
+		{
+			makevectors(self.v_angle);
+			v_y = crandom() * 60;
+			spawn_tarbaby(self.origin + v + (v_forward * (24 + 20 * f)));
+			newmis.velocity_z = 50 + random() * 100;
+		}
+		f = f - 1;
+	}
 
 	sound (self, CHAN_VOICE, "blob/death1.wav", 1, ATTN_NORM);
 	self.origin = self.origin - 8*normalize(self.velocity);
@@ -254,8 +300,10 @@ void()	vom_dieb2	=[	$die2,	vom_run1	]
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-	
-	BecomeExplosion ();
+
+	self.think = BecomeExplosion;
+	self.nextthink = time + 0.2;
+//	BecomeExplosion ();
 };
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
@@ -269,6 +317,13 @@ void() vom_die =
 		return; 
 	}
 // regular death
+	if (random() < 0.13)
+	{
+		makevectors(self.v_angle);
+		spawn_tarbaby(self.origin + (v_forward * 44));
+		newmis.velocity_z = 50 + random() * 100;
+	}
+
 	sound (self, CHAN_VOICE, "vomitus/die.wav", 1, ATTN_NORM);
 	vom_die1 ();
 
@@ -288,8 +343,24 @@ void()	vom_attacka8 =[	$attack8,	vom_attacka9 ] {vom_shot(-1);};
 void()	vom_attacka9 =[	$attack9,	vom_attacka10 ] {vom_shot(0);};
 void()	vom_attacka10 =[	$attack10,	vom_attacka11 ] {vom_shot(1);};
 void()	vom_attacka11 =[	$attack11,	vom_attacka12 ] {vom_shot(2);};
-void()	vom_attacka12 =[	$attack12,	vom_attacka13 ] {vom_shot(3);};
+void()	vom_attacka12 =[	$attack12,	vom_attacka13 ] {ai_face();};//{vom_shot(3);};
 void()	vom_attacka13 =[	$attack13,	vom_run1    ] {ai_face();};
+
+//いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
+
+void()	vom_attacke1 =[	$attack1,	vom_attacke2 ] {ai_face(); sound (self, CHAN_VOICE, "vomitus/attack2.wav", 1, ATTN_NORM);};
+void()	vom_attacke2 =[	$attack2,	vom_attacke3 ] {ai_face();};
+void()	vom_attacke3 =[	$attack3,	vom_attacke4 ] {ai_face();};
+void()	vom_attacke4 =[	$attack4,	vom_attacke5 ] {ai_face();};
+void()	vom_attacke5 =[	$attack5,	vom_attacke6 ] {ai_face();};
+void()	vom_attacke6 =[	$attack6,	vom_attacke7 ] {ai_face();}; //{vom_shot3(-1);};
+void()	vom_attacke7 =[	$attack7,	vom_attacke8 ] {vom_shot(-2);};
+void()	vom_attacke8 =[	$attack8,	vom_attacke9 ] {ai_face();};//{vom_shot(0);};
+void()	vom_attacke9 =[	$attack9,	vom_attacke10 ] {vom_shot(0);};
+void()	vom_attacke10 =[	$attack10,	vom_attacke11 ] {ai_face();}; //{vom_shot(0);};
+void()	vom_attacke11 =[	$attack11,	vom_attacke12 ] {vom_shot(2);};
+void()	vom_attacke12 =[	$attack12,	vom_attacke13 ] {vom_shot3(-1);};
+void()	vom_attacke13 =[	$attack13,	vom_run1     ] {ai_face();};
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 
@@ -298,32 +369,33 @@ void()	vom_attackb2 =[	$attack2,	vom_attackb3 ] {ai_face();};
 void()	vom_attackb3 =[	$attack3,	vom_attackb4 ] {ai_face();};
 void()	vom_attackb4 =[	$attack4,	vom_attackb5 ] {ai_face();};
 void()	vom_attackb5 =[	$attack5,	vom_attackb6 ] {ai_face();};
-void()	vom_attackb6 =[	$attack6,	vom_attackb7 ] {vom_shot2(-3);};
-void()	vom_attackb7 =[	$attack7,	vom_attackb8 ] {vom_shot2(-2);};
-void()	vom_attackb8 =[	$attack8,	vom_attackb9 ] {vom_shot2(-1);};
+void()	vom_attackb6 =[	$attack6,	vom_attackb7 ] {if (random() < 0.12) vom_shot(-3);};
+void()	vom_attackb7 =[	$attack7,	vom_attackb8 ] {if (random() < 0.06) vom_shot(-2);};
+void()	vom_attackb8 =[	$attack8,	vom_attackb9 ] {if (random() < 0.1) vom_shot(-1);};
 void()	vom_attackb9 =[	$attack9,	vom_attackb10 ] {vom_shot2(0);};
-void()	vom_attackb10 =[	$attack10,	vom_attackb11 ] {vom_shot2(1);};
-void()	vom_attackb11 =[	$attack11,	vom_attackb12 ] {vom_shot2(2);};
-void()	vom_attackb12 =[	$attack12,	vom_attackb13 ] {vom_shot2(3);};
+void()	vom_attackb10 =[	$attack10,	vom_attackb11 ] {if (random() < 0.08) vom_shot(1);};
+void()	vom_attackb11 =[	$attack11,	vom_attackb12 ] {if (random() < 0.2) vom_shot(2);};
+void()	vom_attackb12 =[	$attack12,	vom_attackb13 ] {if (random() < 0.1) vom_shot(3);};
 void()	vom_attackb13 =[	$attack13,	vom_run1     ] {ai_face();};
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 
-void()	vom_attackc1 =[	$attack1,	vom_attackc2 ] {ai_face(); sound (self, CHAN_VOICE, "vomitus/attack2.wav", 1, ATTN_NORM);};
+void()	vom_attackc1 =[	$attack1,	vom_attackc2 ] {ai_face(); sound (self, CHAN_VOICE, "vomitus/attack1.wav", 1, ATTN_NORM);};
 void()	vom_attackc2 =[	$attack2,	vom_attackc3 ] {ai_face();};
 void()	vom_attackc3 =[	$attack3,	vom_attackc4 ] {ai_face();};
 void()	vom_attackc4 =[	$attack4,	vom_attackc5 ] {ai_face();};
 void()	vom_attackc5 =[	$attack5,	vom_attackc6 ] {ai_face();};
-void()	vom_attackc6 =[	$attack6,	vom_attackc7 ] {vom_shot3(-3);};
-void()	vom_attackc7 =[	$attack7,	vom_attackc8 ] {vom_shot3(-2);};
-void()	vom_attackc8 =[	$attack8,	vom_attackc9 ] {vom_shot3(-1);};
-void()	vom_attackc9 =[	$attack9,	vom_attackc10 ] {vom_shot3(0);};
-void()	vom_attackc10 =[	$attack10,	vom_attackc11 ] {vom_shot3(1);};
-void()	vom_attackc11 =[	$attack11,	vom_attackc12 ] {vom_shot3(2);};
-void()      vom_attackc12 =[  $attack12,  vom_attackc13 ] {vom_shot3(3);};
+void()	vom_attackc6 =[	$attack6,	vom_attackc7 ] {if (random() < 0.08) vom_shot(-3); newmis.classname = "vomisss"; };
+void()	vom_attackc7 =[	$attack7,	vom_attackc8 ] {ai_face();}; //{vom_shot(-2);};
+void()	vom_attackc8 =[	$attack8,	vom_attackc9 ] {vom_shot(-1);};
+void()	vom_attackc9 =[	$attack9,	vom_attackc10 ] {if (random() < 0.1) vom_shot(0); newmis.classname = "vomisss"; };
+void()	vom_attackc10 =[	$attack10,	vom_attackc11 ] {ai_face();}; //{vom_shot(1);};
+void()	vom_attackc11 =[	$attack11,	vom_attackc12 ] {vom_shot(2);};
+void()      vom_attackc12 =[  $attack12,  vom_attackc13 ] {if (random() < 0.06) vom_shot(3); newmis.classname = "vomisss"; };
 void()	vom_attackc13 =[	$attack13,	vom_run1     ] {ai_face();};
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
+// 2 attacks, not used
 
 void()	vom_attackd1 =[	$attack1,	vom_attackd2 ] {ai_face(); sound (self, CHAN_VOICE, "vomitus/attack1.wav", 1, ATTN_NORM);};
 void()	vom_attackd2 =[	$attack2,	vom_attackd3 ] {ai_face();};
@@ -338,22 +410,6 @@ void()	vom_attackd10 =[	$attack10,	vom_attackd11 ] {vom_shot3(1);};
 void()	vom_attackd11 =[	$attack11,	vom_attackd12 ] {vom_shot2(2);};
 void()	vom_attackd12 =[	$attack12,	vom_attackd13 ] {vom_shot(3);};
 void()	vom_attackd13 =[	$attack13,	vom_run1     ] {ai_face();};
-
-//いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
-
-void()	vom_attacke1 =[	$attack1,	vom_attacke2 ] {ai_face(); sound (self, CHAN_VOICE, "vomitus/attack1.wav", 1, ATTN_NORM);};
-void()	vom_attacke2 =[	$attack2,	vom_attacke3 ] {ai_face();};
-void()	vom_attacke3 =[	$attack3,	vom_attacke4 ] {ai_face();};
-void()	vom_attacke4 =[	$attack4,	vom_attacke5 ] {ai_face();};
-void()	vom_attacke5 =[	$attack5,	vom_attacke6 ] {ai_face();};
-void()	vom_attacke6 =[	$attack6,	vom_attacke7 ] {vom_shot3(-3);};
-void()	vom_attacke7 =[	$attack7,	vom_attacke8 ] {vom_shot(-1);};
-void()	vom_attacke8 =[	$attack8,	vom_attacke9 ] {vom_shot(0);};
-void()	vom_attacke9 =[	$attack9,	vom_attacke10 ] {vom_shot(0);};
-void()	vom_attacke10 =[	$attack10,	vom_attacke11 ] {vom_shot(0);};
-void()	vom_attacke11 =[	$attack11,	vom_attacke12 ] {vom_shot(1);};
-void()	vom_attacke12 =[	$attack12,	vom_attacke13 ] {vom_shot3(3);};
-void()	vom_attacke13 =[	$attack13,	vom_run1     ] {ai_face();};
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 
@@ -373,34 +429,58 @@ void()	vom_attackf13 =[	$attack13,	vom_run1     ] {ai_face();};
 
 //いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 
-//FIXME: Make this work !!
+
 void() vom_attack =
 {
   
    local float r;
   
    r = random (); 
-   if (time < self.attack_finished)
-	return;	
 
+	if (random() < 0.16)
+	if (self.attack_finished > time + 1.2)
+	{
+      vom_attackc1(); // long attack time - chance of rnd spikes
+		self.attack_finished = 1.2;
+	}
+
+   if (time < self.attack_finished) return;
+
+	self.attack_finished = 1.2 + random();
    
-   if (r < 0.2) 
+   if (r < 0.62)
      {
-      vom_attackd1();
+      vom_attacka1(); // shot 5 normal
      }
-   else if (r < 0.4) 
+   else if (r < 0.7) 
      {
-      vom_attackc1();
+      vom_attacke1(); // 3 spikes, 1 tarbaby
+		self.attack_finished = 3 + random();
      }
-   else if (r < 0.6) 
+   else if (r < 0.9) 
      { 
-      vom_attackb1();
+      vom_attackb1(); // exploder, random spikes
+		self.attack_finished = 1.4 + random();
      }
    else 
      {
-      vom_attacka1();     
+      vom_attackc1(); // 2 + rand super spikes
+		self.attack_finished = 0.8 + random();
      } 
 };
+
+
+// note: need close range attack
+
+void() vom_melee =
+{
+	if (time < self.attack_finished)
+	return;	
+
+	if (random() > 0.6)
+		vom_attackc1(); // chance of rnd spikes
+};
+
 
 
 void() vom_idle_sound =
@@ -533,14 +613,18 @@ if (ign != A_MONSTER)
 
 	setmodel (self, "progs/vomitus.mdl");
 
-	setsize (self, '-16 -16 -24', '16 16 40');
+	setsize (self, '-24 -24 -24', '24 24 24');
+
+	self.skin = rint(random() * 1.4);
+	if (random() < 0.6) self.skin = 3; // original skin 1
+
 	self.health = 250;
 
 	self.th_stand = vom_stand1;
 	self.th_walk = vom_walk1;
 	self.th_run = vom_run1;
-	self.th_melee = vom_attackf1;
-	self.th_missile = vom_attack; //vom_attackb1;
+	self.th_melee = vom_melee;
+	self.th_missile = vom_attack;
 	self.th_pain = vom_pain;
 	self.th_die = vom_die;
 	

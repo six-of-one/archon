@@ -924,9 +924,9 @@ void() dyn_spawn =
 		sv = findradius(self.origin, PK_DYNRAD);
   }
 // give players notice
-	if (self.wad == "pk_cube") bprint("\n\n"); // space cubes so the notes are easier to see
-	else if (self.wad == "morph_cube") bprint("\n\n");
-	else if (self.wad == "pk_crate") bprint("\n\n");
+	if (self.wad == "pk_cube") bprint("\n"); // space cubes so the notes are easier to see
+	else if (self.wad == "morph_cube") bprint("\n");
+	else if (self.wad == "pk_crate") bprint("\n");
 	bprint("*** Dynamic item spawned: ");
 	bprint(self.wad);
 	if (sv)
@@ -936,9 +936,9 @@ void() dyn_spawn =
 	}
 	else
 		bprint(" on the map");
-	if (self.wad == "pk_cube") bprint("\n\n");
-	else if (self.wad == "morph_cube") bprint("\n\n");
-	else if (self.wad == "pk_crate") bprint("\n\n");
+	if (self.wad == "pk_cube") bprint("\n");
+	else if (self.wad == "morph_cube") bprint("\n");
+	else if (self.wad == "pk_crate") bprint("\n");
 	bprint("\n");
 
 	drop_inv_check(); // check for anyone in drop inventory menu

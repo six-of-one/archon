@@ -148,6 +148,7 @@ entity(entity e) vw_chain =
 		if (f.owner.deadflag || f.owner.classname == OBSERVER || f.owner.view_ofs == '0 0 0' || f.owner.model == "") // wep found with non owner - should not happen
 		{
 //			f.model = "";
+			setattachment(f, world, ""); // clear attachs
 			f.vwepent = world;
 			if (f.wad != "packwep") // pack deal
 				remove(f);
@@ -381,7 +382,7 @@ void(entity e, float pkbt) vwep_firecary =
 	if (f)
 	{
 		f.vwepent = world;
-//		if (f.wad != "packwep") // pack deal
+		setattachment(f, world, "");
 		remove(f);
 		vw_chain(e);
 	}
@@ -414,6 +415,7 @@ void(entity e, float cd) viswep_ld =
 			pr = tr;
 			tr = tr.vwepent;
 //			pr.mdl = "";
+			setattachment(pr, world, ""); // clear attachs
 			pr.vwepent = world;
 			if (pr.wad != "packwep") // pack deal
 				remove(pr);
@@ -449,6 +451,7 @@ void(entity e, float cd) viswep_ld =
 //				tr.model = "";
 				pr = tr.vwepent;
 				tr.vwepent = world;
+				setattachment(tr, world, "");
 				remove(tr);
 				rmv = TRUE;
 			}
@@ -467,6 +470,7 @@ void(entity e, float cd) viswep_ld =
 				{
 					pr = tr.vwepent;
 					tr.vwepent = world;
+					setattachment(tr, world, ""); // clear attachs
 					if (tr.wad != "packwep") // pack deal
 						remove(tr);
 					rmv = TRUE;
@@ -487,6 +491,7 @@ void(entity e, float cd) viswep_ld =
 //				pr.vwepent = tr.vwepent;
 				pr = tr.vwepent;
 				tr.vwepent = world;
+				setattachment(tr, world, ""); // clear attachs
 				if (tr.wad != "packwep") // pack deal
 					remove(tr);
 				rmv = TRUE;
@@ -576,8 +581,6 @@ void() viswep_pkbot =
 
 // self - player ent
 
-float vw_frame; // once per frame
-
 void() viswep_post =
 {
 	local entity vhead;
@@ -585,6 +588,7 @@ void() viswep_post =
 	local string vmdl;
 
 //	if (!self.flags & FL_CLIENT) return;
+	self.vw_frame = framecount;
 
 	vw_chain(self);
 
@@ -630,12 +634,14 @@ void() viswep_post =
 			{
 				if (self.vwepent.vwepent.weapon == IT_AXE)
 				{
+					setattachment(self.vwepent.vwepent, world, "");
 					remove(self.vwepent.vwepent);
 					self.vwepent.vwepent = world;
 				}
 				else if (self.vwepent.weapon == IT_AXE)
 				{
 					self.vwepent = vhead.vwepent;
+					setattachment(vhead, world, "");
 					remove(vhead);
 					self.vwepent.vwepent = world;
 				}
@@ -979,7 +985,7 @@ vector(entity hent) grap_vw_adj =
 
 // dead threw protos
 
-float PR_THREW = 1; // TEST: master print
+float PR_THREW = 0; // TEST: master print
 
 void(entity e, entity p) xwep_ammo;
 void(entity e, string cl) item_call_save;

@@ -485,7 +485,8 @@ self.mask_x = MORPH_MONSTER;
 	self.touch = painkeep_touch;
 	self.pk_touch = cube_touch;
 	self.noise = "items/r_item2.wav";
-	self._attack = morph_cube_use; // fire button to use
+	self._alt_fire = morph_cube_use; // fire button to use
+	self._attack = SUB_Null; //morph_cube_use; // fire button to use
 	self._fr_attack = SUB_Null; // fire button to use
 	self.attack_finished = 3;
 
@@ -660,7 +661,8 @@ float(entity atk, entity trg) morph_ffchk =
 	else if (mon.classname == "monster_shalrath") return(oth.morphy == IMP_MSHALR);
 	else if (mon.classname == "monster_shambler") return(oth.morphy == IMP_MSHAMBLR);
 	else if (mon.classname == "monster_tarbaby") return(oth.morphy == IMP_MCTHON);
-//	else if (mon.classname == "monster_vomit"
+	else if (mon.classname == "monster_vomit") return(oth.morphy == IMP_MVOMIS);
+
 	else if (mon.classname == "monster_wizard") return(oth.morphy == IMP_MWIZARD);
 	else if (mon.classname == "monster_zombie") return(oth.morphy == IMP_MZOMBIE);
 	else if (mon.classname == "monster_scourge") return(oth.morphy == IMP_MSCOURGE);
@@ -716,7 +718,7 @@ else if (self.classname == "monster_supervore") return  morph_test(chk,IMP_MOGRE
 else if (self.classname == "monster_shalrath") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,CB_GREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
 else if (self.classname == "monster_scourge") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,0,0,0,IMP_MSHAMBLR);
 else if (self.classname == "monster_gremlin") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MOGRE,0,IMP_MSHAMBLR);
-else if (self.classname == "monster_vomit") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MCTHON,0,IMP_MSHAMBLR);
+else if (self.classname == "monster_vomit") return morph_test(chk,IMP_MSCOURGE,CB_GREMLIN,IMP_MDEMON,IMP_MCTHON,IMP_MVOMIS,IMP_MSHAMBLR);
 // doom monsters - only friendly with doom dimension biengs
 else if (self.classname == "monster_imp") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
 else if (self.classname == "monster_arachnotron") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
@@ -1049,26 +1051,16 @@ float(entity e) shotgun_check =
 
 void(float mpy) morph_armor_check =
 {
-	local entity e;
-
 	if ((self.mask_x & MORPH_SARMOR) || self.armortype == ARM_SCRG) // builtin type armor is not thrown
 	{
-		if (!(mpy & (MORPH_SARMOR | CB_HKNIGHT))) self.armorvalue = self.armortype = 0; // not going to an armor morph - its gone
+		if (!(mpy & (MORPH_SARMOR | CB_HKNIGHT))) self.armorvalue = self.armortype = 0; // not going to an armored morph - its gone
 		return;
 	}
-
+ 
 	if (self.armorvalue * self.armortype)
 //	if (self.items & (IT_ARMOR1|IT_ARMOR1|IT_ARMOR3)) // dont really care what item it is if any
-	{
-//		proc_dropitem(code_bit(self.mode_y & (IV_ARM1|IV_ARM2|IV_ARM3),0,1),TRUE);
-		e = spawn();
-		e.event = "dynamic_item";  // TDO: make this a gen. armor toss fn - use with dead throw too - if d threw weps, do armor
-		setorigin(e, self.origin);
-		item_call_save(e, "item_armor2");
-		e.wad = "armor_toss"; // for get
-		e.currentammo = self.armorvalue;
-		e.volume = 150; // set max
-		if (e.currentammo > e.volume) e.volume = e.currentammo;
+	{	
+		drop_one(self, "Armor", 0, world, "", MED_BOUNCE_NOW, 1);
 
 		self.armorvalue = self.armortype = 0;
 	}
@@ -1432,6 +1424,9 @@ void() random_monster =
 	}	*/
 	if ((!C_MONSTER) && (!C_MONSTER_II)) return; // whoops - nothing to do - this shouldnt happen...of course
 
+	if (C_MONSTER_CNT > 0)
+	if (monster_rnd_cnt >= C_MONSTER_CNT) return; // hit limit
+
 //	f = 100;
 	self.cnt = rnd_bit_mask(C_MONSTER);
 	self.count = rnd_bit_mask(C_MONSTER_II);
@@ -1474,6 +1469,10 @@ void() random_monster =
 
 bprint("spawning: ");
 bprint(item_ident(self));
+bprint(" - cnt: ");
+bprint(ftos(monster_rnd_cnt));
+bprint(" - limit: ");
+bprint(ftos(C_MONSTER_CNT));
 bprint("\n");
 
 
@@ -1491,6 +1490,8 @@ bprint("\n");
 		}
 		else
 			f = 0;
+
+		monster_rnd_cnt = monster_rnd_cnt + 1;
 	}
 
 

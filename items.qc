@@ -160,6 +160,7 @@ void () q100_item_health =
 			self.healtype = HEAL_NORM;
 		}
 	setsize (self, '0 0 0', '32 32 56');
+	self.mask_x = MORPH_ALL;
 	StartItem ();
 };
 
@@ -364,7 +365,8 @@ void () item_armor1 =
 	self.skin = 0;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
-	self.mask_x = CB_HUMAN + CB_ENF;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_HKNIGHT;
+	self.volume = 100;
 };
 
 /*QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -378,7 +380,8 @@ void () item_armor2 =
 	self.skin = 1;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
-	self.mask_x = CB_HUMAN + CB_ENF;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_HKNIGHT;
+	self.volume = 150;
 };
 
 /*QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -392,7 +395,8 @@ void () item_armorInv =
 	self.skin = 2;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
-	self.mask_x = CB_HUMAN + CB_ENF;
+	self.mask_x = CB_HUMAN + CB_ENF + CB_HKNIGHT;
+	self.volume = 200;
 };
 
 /*

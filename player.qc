@@ -581,11 +581,12 @@ void(string gibname, float dm) ThrowHead =
 
 void() GibPlayer =
 {
-	if (PK)
+	if (!Q_100)
 	{
 		PK_GibPlayer();
 		return;
 	}
+
 	ThrowHead ("progs/h_player.mdl", self.health);
 	ThrowGib ("progs/gib1.mdl", self.health);
 	ThrowGib ("progs/gib2.mdl", self.health);
@@ -619,6 +620,7 @@ void() PlayerDie =
 		remove(self.dropent);
 		self.dropent = world;
 	}
+
 	if (DEAD_THROW_ARTIFACT)
 		dead_artifact(self);
 
@@ -690,11 +692,12 @@ void() PlayerDie =
 
 void() set_suicide_frame =
 { // used by kill command and diconnect command
+
 	if ( (Q_100 || PK_100) && self.model != "progs/player.mdl") // because of morph we cant test this
 		return;	// allready gibbed
-	else if (self.map == "set_suicide_frame")
+	else if (self.modelindex != self.modelindex_morph)
 		return;
-	self.map = "set_suicide_frame";
+
 	self.frame = $deatha11;
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_TOSS;

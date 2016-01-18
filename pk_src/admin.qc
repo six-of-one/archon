@@ -19,6 +19,8 @@ controls bots
 
 */
 
+.float admin_input; // gather administration input codes for exec
+
 // time limit on admin password entry
 float admin_time;
 float A_TIME = 10; // 10 secs for admin password - if this is not set, admin access attempt becomes free invulnerable state!
@@ -82,6 +84,15 @@ void() admin_sv_cfg =
 {
 	local string str;
 
+
+if (!self.ishuman)
+{//return;
+bprint("------------------- **  admin sv - bot = ");
+bprint(item_ident(self));
+bprint("\n");
+}
+
+
 	str = ftos(pk_flags);
 	if (pk_flags != pk_flags_ck)
 		cvar_set("savedgamecfg", str);
@@ -100,6 +111,15 @@ void() admin_sv_cfg =
 
 void(entity e) admin_clear =
 {
+
+
+bprint("------------------- **  admin clear ");
+bprint(e.netname);
+bprint("\n");
+
+
+	if (!e.ishuman) return;
+
 	if (e.light_lev > 0)
 	{
 		stuffcmd(e, "r_ambient ");
@@ -134,6 +154,8 @@ void(entity e) admin_clear =
 		remove(e.dropent);
 		e.dropent = world;
 	}
+
+	crosshair_con(e, -1);
 };
 
 // clear | set these for players
@@ -464,7 +486,7 @@ void() Admin_dmmapmenu =
 
 	self.wad = "";
 	self.admin = 14;
-	self.lefty = 0;
+	self.admin_input = 0;
 };
 
 // quake compat mode
@@ -473,45 +495,45 @@ string() MapQ99 =
 {
 	local string mname;
 	mname = "";
-	if (self.lefty == 01) mname = "dm1";
-	else if (self.lefty == 02) mname = "dm2";
-	else if (self.lefty == 03) mname = "dm3";
-	else if (self.lefty == 04) mname = "dm4";
-	else if (self.lefty == 05) mname = "dm5";
-	else if (self.lefty == 06) mname = "dm6";
-	else if (self.lefty == 07) mname = "start";
-	else if (self.lefty == 08) mname = "end";
-	else if (self.lefty == 09) mname = "e1m1";
-	else if (self.lefty == 10) mname = "e1m2";
-	else if (self.lefty == 11) mname = "e1m3";
-	else if (self.lefty == 12) mname = "e1m4";
-	else if (self.lefty == 13) mname = "e1m5";
-	else if (self.lefty == 14) mname = "e1m6";
-	else if (self.lefty == 15) mname = "e1m7";
-	else if (self.lefty == 16) mname = "e1m8";
-	else if (self.lefty == 17) mname = "e2m1";
-	else if (self.lefty == 18) mname = "e2m2";
-	else if (self.lefty == 19) mname = "e2m3";
-	else if (self.lefty == 20) mname = "e2m4";
-	else if (self.lefty == 21) mname = "e2m5";
-	else if (self.lefty == 22) mname = "e2m6";
-	else if (self.lefty == 23) mname = "e2m7";
-	else if (self.lefty == 24) mname = "e3m1";
-	else if (self.lefty == 25) mname = "e3m2";
-	else if (self.lefty == 26) mname = "e3m3";
-	else if (self.lefty == 27) mname = "e3m4";
-	else if (self.lefty == 28) mname = "e3m5";
-	else if (self.lefty == 29) mname = "e3m6";
-	else if (self.lefty == 30) mname = "e3m7";
-	else if (self.lefty == 31) mname = "e4m1";
-	else if (self.lefty == 32) mname = "e4m2";
-	else if (self.lefty == 33) mname = "e4m3";
-	else if (self.lefty == 34) mname = "e4m4";
-	else if (self.lefty == 35) mname = "e4m5";
-	else if (self.lefty == 36) mname = "e4m6";
-	else if (self.lefty == 37) mname = "e4m7";
-	else if (self.lefty == 38) mname = "e4m8";
-//	else if (self.lefty == 39) mname = "";
+	if (self.admin_input == 01) mname = "dm1";
+	else if (self.admin_input == 02) mname = "dm2";
+	else if (self.admin_input == 03) mname = "dm3";
+	else if (self.admin_input == 04) mname = "dm4";
+	else if (self.admin_input == 05) mname = "dm5";
+	else if (self.admin_input == 06) mname = "dm6";
+	else if (self.admin_input == 07) mname = "start";
+	else if (self.admin_input == 08) mname = "end";
+	else if (self.admin_input == 09) mname = "e1m1";
+	else if (self.admin_input == 10) mname = "e1m2";
+	else if (self.admin_input == 11) mname = "e1m3";
+	else if (self.admin_input == 12) mname = "e1m4";
+	else if (self.admin_input == 13) mname = "e1m5";
+	else if (self.admin_input == 14) mname = "e1m6";
+	else if (self.admin_input == 15) mname = "e1m7";
+	else if (self.admin_input == 16) mname = "e1m8";
+	else if (self.admin_input == 17) mname = "e2m1";
+	else if (self.admin_input == 18) mname = "e2m2";
+	else if (self.admin_input == 19) mname = "e2m3";
+	else if (self.admin_input == 20) mname = "e2m4";
+	else if (self.admin_input == 21) mname = "e2m5";
+	else if (self.admin_input == 22) mname = "e2m6";
+	else if (self.admin_input == 23) mname = "e2m7";
+	else if (self.admin_input == 24) mname = "e3m1";
+	else if (self.admin_input == 25) mname = "e3m2";
+	else if (self.admin_input == 26) mname = "e3m3";
+	else if (self.admin_input == 27) mname = "e3m4";
+	else if (self.admin_input == 28) mname = "e3m5";
+	else if (self.admin_input == 29) mname = "e3m6";
+	else if (self.admin_input == 30) mname = "e3m7";
+	else if (self.admin_input == 31) mname = "e4m1";
+	else if (self.admin_input == 32) mname = "e4m2";
+	else if (self.admin_input == 33) mname = "e4m3";
+	else if (self.admin_input == 34) mname = "e4m4";
+	else if (self.admin_input == 35) mname = "e4m5";
+	else if (self.admin_input == 36) mname = "e4m6";
+	else if (self.admin_input == 37) mname = "e4m7";
+	else if (self.admin_input == 38) mname = "e4m8";
+//	else if (self.admin_input == 39) mname = "";
 
 	return(mname);
 };
@@ -522,44 +544,44 @@ string() MapDM2 =
 {
 	local string mname;
 	mname = "";
-	if (self.lefty == 41) mname = "painkeep2";
-	else if (self.lefty == 01) mname = "pkts01";
-	else if (self.lefty == 02) mname = "pkts02";
-	else if (self.lefty == 03) mname = "pkts03";
-	else if (self.lefty == 04) mname = "pkts04";
-	else if (self.lefty == 05) mname = "pkts05";
-	else if (self.lefty == 06) mname = "pkts06";
-	else if (self.lefty == 07) mname = "pkts07";
-	else if (self.lefty == 08) mname = "pkts08";
-	else if (self.lefty == 09) mname = "pkts09";
-	else if (self.lefty == 10) mname = "pkts10";
-	else if (self.lefty == 11) mname = "pkts11";
-	else if (self.lefty == 12) mname = "pkts12";
-	else if (self.lefty == 13) mname = "pkts13";
-	else if (self.lefty == 14) mname = "pkts14";
-	else if (self.lefty == 15) mname = "pkts00";
-//	else if (self.lefty == 16) mname = "pkts15";
-	else if (self.lefty == 21) mname = "pkn1";
-	else if (self.lefty == 22) mname = "pkn2";
-	else if (self.lefty == 23) mname = "pkn3";
-	else if (self.lefty == 24) mname = "pkn4";
-	else if (self.lefty == 25) mname = "pkn5";
-	else if (self.lefty == 26) mname = "pkn6";
-	else if (self.lefty == 27) mname = "pkn7";
-	else if (self.lefty == 28) mname = "pkn8";
-	else if (self.lefty == 29) mname = "pkn9";
-	else if (self.lefty == 30) mname = "pkn10";
-	else if (self.lefty == 31) mname = "pkn11";
-	else if (self.lefty == 32) mname = "pkn12";
-	else if (self.lefty == 33) mname = "pkn13";
-	else if (self.lefty == 34) mname = "pkn14";
-	else if (self.lefty == 35) mname = "pkn15";
-	else if (self.lefty == 36) mname = "pkn16";
-	else if (self.lefty == 37) mname = "pkn17";
-	else if (self.lefty == 38) mname = "pkn18";
-	else if (self.lefty == 39) mname = "pkn19";
-	else if (self.lefty == 40) mname = "pkn20";
-	else if (self.lefty == 42)
+	if (self.admin_input == 41) mname = "painkeep2";
+	else if (self.admin_input == 01) mname = "pkts01";
+	else if (self.admin_input == 02) mname = "pkts02";
+	else if (self.admin_input == 03) mname = "pkts03";
+	else if (self.admin_input == 04) mname = "pkts04";
+	else if (self.admin_input == 05) mname = "pkts05";
+	else if (self.admin_input == 06) mname = "pkts06";
+	else if (self.admin_input == 07) mname = "pkts07";
+	else if (self.admin_input == 08) mname = "pkts08";
+	else if (self.admin_input == 09) mname = "pkts09";
+	else if (self.admin_input == 10) mname = "pkts10";
+	else if (self.admin_input == 11) mname = "pkts11";
+	else if (self.admin_input == 12) mname = "pkts12";
+	else if (self.admin_input == 13) mname = "pkts13";
+	else if (self.admin_input == 14) mname = "pkts14";
+	else if (self.admin_input == 15) mname = "pkts00";
+//	else if (self.admin_input == 16) mname = "pkts15";
+	else if (self.admin_input == 21) mname = "pkn1";
+	else if (self.admin_input == 22) mname = "pkn2";
+	else if (self.admin_input == 23) mname = "pkn3";
+	else if (self.admin_input == 24) mname = "pkn4";
+	else if (self.admin_input == 25) mname = "pkn5";
+	else if (self.admin_input == 26) mname = "pkn6";
+	else if (self.admin_input == 27) mname = "pkn7";
+	else if (self.admin_input == 28) mname = "pkn8";
+	else if (self.admin_input == 29) mname = "pkn9";
+	else if (self.admin_input == 30) mname = "pkn10";
+	else if (self.admin_input == 31) mname = "pkn11";
+	else if (self.admin_input == 32) mname = "pkn12";
+	else if (self.admin_input == 33) mname = "pkn13";
+	else if (self.admin_input == 34) mname = "pkn14";
+	else if (self.admin_input == 35) mname = "pkn15";
+	else if (self.admin_input == 36) mname = "pkn16";
+	else if (self.admin_input == 37) mname = "pkn17";
+	else if (self.admin_input == 38) mname = "pkn18";
+	else if (self.admin_input == 39) mname = "pkn19";
+	else if (self.admin_input == 40) mname = "pkn20";
+	else if (self.admin_input == 42)
 	{
 		admin_clear(self);
 		mname = "";
@@ -567,15 +589,15 @@ string() MapDM2 =
 		bprint("Admin loaded custom hub / start map...\n");
 		check_custom_hub(); 
 	}
-	else if (self.lefty == 18)
+	else if (self.admin_input == 18)
 	{
 		mname = "hub2";
 	}
-	else if (self.lefty == 19)
+	else if (self.admin_input == 19)
 	{
 		mname = "hub3";
 	}
-	else if (self.lefty == 20)
+	else if (self.admin_input == 20)
 	{
 		mname = "chv_hub";
 	}
@@ -589,40 +611,40 @@ float() MapDM =
 	local string mname;
 
 	if (Q_99) mname = MapQ99();
-	else if (PK_ADHUB && self.cnt && self.lefty < 60) mname = MapDM2();
-	else if (self.lefty == A_PAINKEEP) mname = "painkeep";
-	else if (self.lefty == A_PK0) mname = "pk0";
-	else if (self.lefty == A_PK1) mname = "pk1";
-	else if (self.lefty == A_PK2) mname = "pk2";
-	else if (self.lefty == A_PK3) mname = "pk3";
-	else if (self.lefty == A_PK4) mname = "pk4";
-	else if (self.lefty == A_PK5) mname = "pk5";
-	else if (self.lefty == A_PK6) mname = "pk6";
-	else if (self.lefty == A_PK7) mname = "pk7";
-	else if (self.lefty == A_PK8) mname = "pk8";
-	else if (self.lefty == A_PK9) mname = "pk9";
-	else if (self.lefty == A_PK10) mname = "pk10";
-	else if (self.lefty == A_PK11) mname = "pk11";
-	else if (self.lefty == A_PK12) mname = "pk12";
-	else if (self.lefty == A_PK13) mname = "pk13";
-	else if (self.lefty == A_PK14) mname = "pk14";
-	else if (self.lefty == A_PK15) mname = "pk15";
-	else if (self.lefty == A_PK16) mname = "pk16";
-	else if (self.lefty == A_PK17) mname = "pk17";
-	else if (self.lefty == A_PK18) mname = "pk18";
-	else if (self.lefty == A_PKHUB)
+	else if (PK_ADHUB && self.cnt && self.admin_input < 60) mname = MapDM2();
+	else if (self.admin_input == A_PAINKEEP) mname = "painkeep";
+	else if (self.admin_input == A_PK0) mname = "pk0";
+	else if (self.admin_input == A_PK1) mname = "pk1";
+	else if (self.admin_input == A_PK2) mname = "pk2";
+	else if (self.admin_input == A_PK3) mname = "pk3";
+	else if (self.admin_input == A_PK4) mname = "pk4";
+	else if (self.admin_input == A_PK5) mname = "pk5";
+	else if (self.admin_input == A_PK6) mname = "pk6";
+	else if (self.admin_input == A_PK7) mname = "pk7";
+	else if (self.admin_input == A_PK8) mname = "pk8";
+	else if (self.admin_input == A_PK9) mname = "pk9";
+	else if (self.admin_input == A_PK10) mname = "pk10";
+	else if (self.admin_input == A_PK11) mname = "pk11";
+	else if (self.admin_input == A_PK12) mname = "pk12";
+	else if (self.admin_input == A_PK13) mname = "pk13";
+	else if (self.admin_input == A_PK14) mname = "pk14";
+	else if (self.admin_input == A_PK15) mname = "pk15";
+	else if (self.admin_input == A_PK16) mname = "pk16";
+	else if (self.admin_input == A_PK17) mname = "pk17";
+	else if (self.admin_input == A_PK18) mname = "pk18";
+	else if (self.admin_input == A_PKHUB)
 	{
 		mname = "start";
 		pk_flags = pk_flags - (pk_flags & PK_HUB2); // just in case we were on a custom hub
 	}
 	else
 	{
-		if (self.lefty == 60) // switch menus
+		if (self.admin_input == 60) // switch menus
 		{
 			self.cnt = ! self.cnt;
 			Admin_dmmapmenu();
 		}
-		else if (self.lefty == 61) // hub links
+		else if (self.admin_input == 61) // hub links
 		{
 			local entity e, f, b;
 			local vector v1, v2;
@@ -752,7 +774,7 @@ void() find_Kick =
 		}
 		if (!self.enemy) Admin_mainmenu(); // nothing found for either search ?? - go back
 	}
-	self.lefty = 0;
+	self.admin_input = 0;
 };
 
 void() Admin_kickmenu =
@@ -762,7 +784,7 @@ void() Admin_kickmenu =
 					 "\b+-------------------------+\n"
 						"   1: kick player ->       \n\n";
 
-	self.lefty = 0;
+	self.admin_input = 0;
 	if (self.impulse == 1)
 	{
 		if (self.enemy == self)
@@ -781,7 +803,7 @@ void() Admin_kickmenu =
 						"  admin impulse exits      \n"
 					 "\b+-------------------------+\n"
 					 "\b      7 to confirm!        \n any other entry cancels  \n\b*** PLAYER WILL BE KICKED IF YOU ENTER 7! ***";
-	self.lefty = KICKCODE;
+	self.admin_input = KICKCODE;
 	}
 	else
 		self.wad =
@@ -842,7 +864,7 @@ void() Admin_botmenu =
 
 	self.wad = "";
 	self.admin = 18;
-	self.lefty = 0;
+	self.admin_input = 0;
 };
 
 /*
@@ -1030,7 +1052,7 @@ void() Admin_itemmenu =
 	}
 	self.wad = "";
 	self.admin = 26;
-	self.lefty = 0;
+	self.admin_input = 0;
 };
 
 /*
@@ -1265,7 +1287,7 @@ void() Admin_monstermenu =
 	if (self.cnt) Admin_monstermenu2();
 	self.wad = "";
 	self.admin = 30; //  - this & 3 must = 2
-	self.lefty = 0;
+	self.admin_input = 0;
 };
 
 /*
@@ -1312,7 +1334,7 @@ void() Admin_pkmenu =
 
 	self.wad = "";
 	self.admin = 22;
-	self.lefty = 0;
+	self.admin_input = 0;
 };
 
 /*
@@ -1448,7 +1470,7 @@ void() Admin_mainmenu =
 
 	self.target = self.path = self.wad = "";
 	self.admin = 6;
-	self.lefty = 0;
+	self.admin_input = 0;
 };
 
 // setup timer for closing menus
@@ -1489,7 +1511,7 @@ void() AdminCommands =
 
 	if (self.admin == 1)																// login
 	{
-		if (self.lefty != pk_admincode)
+		if (self.admin_input != pk_admincode)
 		{
 			self.attack_finished = time + A_DELAY; // penalty - cant use this for invulnerable state
 			self.admin = ADMIN_FAILED_LOGIN;
@@ -1508,74 +1530,74 @@ void() AdminCommands =
 	{
 		self.admin = 6;
 // main menu options
-		if (self.lefty == A_FRAGL)
+		if (self.admin_input == A_FRAGL)
 		{
 			self.wad = "\nEnter a new frag limit";
-			self.lefty = cvar("fraglimit");
+			self.admin_input = cvar("fraglimit");
 			self.admin = 10;
 			self.lip = 6;
 			self.path = "fraglimit ";
 			self.target = "\nfraglimit changed...";
 		}
 		else
-		if (self.lefty == A_TIMEL)
+		if (self.admin_input == A_TIMEL)
 		{
 			self.wad = "\nEnter a new time limit";
-			self.lefty = cvar("timelimit");
+			self.admin_input = cvar("timelimit");
 			self.admin = 10;
 			self.lip = 6;
 			self.path = "timelimit ";
 			self.target = "\ntimelimit changed...";
 		}
 		else
-		if (self.lefty == A_GRAVU)
+		if (self.admin_input == A_GRAVU)
 		{
 			self.cnt = 1;
 			Admin_varmenu();
 			self.noise = "sv_gravity ";
 			self.wad = "\nadjusting sv_gravity";
-			self.lefty = cvar("sv_gravity");
+			self.admin_input = cvar("sv_gravity");
 		}
 		else
-		if (self.lefty == A_FRICU)
+		if (self.admin_input == A_FRICU)
 		{
 			self.cnt = 0.01;
 			Admin_varmenu();
 			self.noise = "sv_friction ";
 			self.wad = "\nadjusting sv_friction";
-			self.lefty = cvar("sv_friction");
+			self.admin_input = cvar("sv_friction");
 		}
 		else
-		if (self.lefty == A_TEAMT) TeamToggle(); else
-		if (self.lefty == A_DMT) DMToggle(); else
-		if (self.lefty == A_COOPT) CoopToggle(); else
-		if (self.lefty == A_JUMP) JumptoNext(); else
-		if (self.lefty == A_RESET) ResetLevel(); else
-		if (self.lefty == A_NOEX) ToggleNoExit(); else
-		if (self.lefty == A_START) MapStart(); else
-		if (self.lefty == A_DMMAP)
+		if (self.admin_input == A_TEAMT) TeamToggle(); else
+		if (self.admin_input == A_DMT) DMToggle(); else
+		if (self.admin_input == A_COOPT) CoopToggle(); else
+		if (self.admin_input == A_JUMP) JumptoNext(); else
+		if (self.admin_input == A_RESET) ResetLevel(); else
+		if (self.admin_input == A_NOEX) ToggleNoExit(); else
+		if (self.admin_input == A_START) MapStart(); else
+		if (self.admin_input == A_DMMAP)
 		{
 			self.cnt = custom_hub_loaded; // pk_flags & PK_HUB2;
 			Admin_dmmapmenu();
 		}
 		else
-		if (self.lefty == A_BOTS) Admin_botmenu(); else
-		if (self.lefty == A_PKCON)
+		if (self.admin_input == A_BOTS) Admin_botmenu(); else
+		if (self.admin_input == A_PKCON)
 		{
 			if (!Q_99)  Admin_pkmenu();
 		}
 		else
-		if (self.lefty == A_ITEM)
+		if (self.admin_input == A_ITEM)
 		{
 			if (!PK_100) Admin_itemmenu();
 		}	
 		else
-		if (self.lefty == A_MONST) // Cat - 9.19.11 - added monster controls to admin interface
+		if (self.admin_input == A_MONST) // Cat - 9.19.11 - added monster controls to admin interface
 		{
 			if (!PK_100) Admin_monstermenu();
 		}	
 		else
-		if (self.lefty == A_PKMOD)
+		if (self.admin_input == A_PKMOD)
 		{
 		  if (!PK_100 && !Q_99)
 		 {
@@ -1607,14 +1629,14 @@ void() AdminCommands =
 		 }
 		}
 		else
-		if (self.lefty == A_SKICK)
+		if (self.admin_input == A_SKICK)
 		{
 			self.target = "player";
 			self.enemy = world;
 			find_Kick();
 			if (self.enemy) Admin_kickmenu();
 		}
-		else if (self.lefty == 97)													// live in game admin - not in menu
+		else if (self.admin_input == 97)													// live in game admin - not in menu
 		{
 			self.admin = LIVE_ADMIN;
 			self.wad = self.message = self.path = self.target = "";
@@ -1647,13 +1669,13 @@ void() AdminCommands =
 			sprint(self,"Use admin impulse to return to menu mode.\n");
 			return;
 		}
-		else if (self.lefty == 98)
+		else if (self.admin_input == 98)
 		{
 			observer();
 			self.goalentity.effects = 0;
 			setmodel(self.goalentity, ""); // no light on admin observer
 		}
-		else if (self.lefty == 99)													// admin respawn - exits admin mode
+		else if (self.admin_input == 99)													// admin respawn - exits admin mode
 		{
 			self.impulse = pk_adminimp;
 			PK_AdminImpulse();
@@ -1664,48 +1686,48 @@ void() AdminCommands =
 			return;
 		}
 		else
-			self.lefty = 0;
+			self.admin_input = 0;
 	}
 	else if (self.admin == 9)															// new data value entered
 	{
 		if (self.path == "observer_time")
 		{
-			observer_time = self.lefty;
+			observer_time = self.admin_input;
 		}
 		else
 		{
 			if (self.path == "fraglimit ") // TEST:
 			if (NOEXIT_SAVEFRAG > -1)
-				NOEXIT_SAVEFRAG = self.lefty;
+				NOEXIT_SAVEFRAG = self.admin_input;
 
 			if (self.path == "timelimit ") // TEST:
 			if (NOEXIT_SAVETIME > -1)
-				NOEXIT_SAVETIME = self.lefty;
+				NOEXIT_SAVETIME = self.admin_input;
 
 			localcmd(self.path);
-			localcmd(ftos(self.lefty));
+			localcmd(ftos(self.admin_input));
 			localcmd("\n");
 		}
 		self.admin = self.lip; // admin level we are on
 		self.wad = self.target;
 		self.target = self.path = "";
-		if (self.lip != 19) self.lefty = 0;
+		if (self.lip != 19) self.admin_input = 0;
 	}
 	else if (self.admin == 13)														// dm map from painkeep set
 	{
-		if (self.lefty == 666)
+		if (self.admin_input == 666)
 			Admin_mainmenu();
 		else
 		{
 			if (MapDM()) return;
 			self.admin = 14;
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
 		self.wad = "\nNo map change.";
 	}
 	else if (self.admin == 15)														// kick players
 	{
-		if (self.lefty == KICKCODE)
+		if (self.admin_input == KICKCODE)
 		{
 			if (self.impulse == 7)
 			{
@@ -1730,78 +1752,78 @@ void() AdminCommands =
 	else if (self.admin == 17)														// bots
 	{
 		self.admin = 18;
-		if (self.lefty == 666)
+		if (self.admin_input == 666)
 			Admin_mainmenu();
-		else if (self.lefty == 1 || self.lefty == 3 || self.lefty == 4)
+		else if (self.admin_input == 1 || self.admin_input == 3 || self.admin_input == 4)
 		{
 			self.wad = "\nCould NOT load pk*bot(s) on server.";
 			e = NUMBOTS;
-			if (self.lefty == 3) f = 1;
+			if (self.admin_input == 3) f = 1;
 			else f = -1;
 			AddAnotherBot (f);
 			if (e != NUMBOTS) self.wad = "\nLoaded a pk*bot on server.";
-			if (self.lefty != 1)
+			if (self.admin_input != 1)
 			{
 				e = NUMBOTS;
-				if (self.lefty == 3) f = f + 1;
+				if (self.admin_input == 3) f = f + 1;
 				AddAnotherBot (f);
-				if (self.lefty == 3) f = f + 1;
+				if (self.admin_input == 3) f = f + 1;
 				AddAnotherBot (f);
-				if (self.lefty != 3) AddAnotherBot (f);
+				if (self.admin_input != 3) AddAnotherBot (f);
 				if (e != NUMBOTS) self.wad = "\nLoaded requested pk*bot(s) on server.";
 			}
 			if (e != NUMBOTS)
 			if (DARKPLACES || chaos) th_bot_changeParms(3);
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
-		else if (self.lefty == 11 || self.lefty == 13 || self.lefty == 14)
+		else if (self.admin_input == 11 || self.admin_input == 13 || self.admin_input == 14)
 		{
 			self.wad = "\nCould NOT load frikbot(s) on server.";
 			e = bot_count;
-			if (self.lefty == 13) f = 1;
+			if (self.admin_input == 13) f = 1;
 			else f = cvar("skill");
 			BotConnect(0, 0, f);
 			if (e != bot_count) self.wad = "\nLoaded A frikbot on server.";
-			if (self.lefty != 11)
+			if (self.admin_input != 11)
 			{
 				e = bot_count;
-				if (self.lefty == 13) f = f + 1;
+				if (self.admin_input == 13) f = f + 1;
 				BotConnect(0, 0, f);
-				if (self.lefty == 13) f = f + 1;
+				if (self.admin_input == 13) f = f + 1;
 				BotConnect(0, 0, f);
-				if (self.lefty != 13) BotConnect(0, 0, f);
+				if (self.admin_input != 13) BotConnect(0, 0, f);
 				if (e != bot_count) self.wad = "\nLoaded requested frikbot(s) on server.";
 			}
 			if (e != bot_count)
 			if (DARKPLACES || chaos) th_bot_changeParms(3);
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
-		else if (self.lefty == 2)
+		else if (self.admin_input == 2)
 		{
 			e = NUMBOTS;
 			self.wad = "\nCould not remove a pk*bot from server.";
 			removeBot(world);
 			if (e != NUMBOTS) self.wad = "\nRemoved a pk*bot from server.";
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
-		else if (self.lefty == 12)
+		else if (self.admin_input == 12)
 		{
 			e = bot_count;
 			self.wad = "\nCould not remove a frikbot from server.";
 			KickABot();
 			if (e != bot_count) self.wad = "\nRemoved a frikbot from server.";
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
-		else if (self.lefty == 5)
+		else if (self.admin_input == 5)
 		{
 			setVerboseMode();
 			if (VERBOSEBOT)
 				self.wad = "\npk*bots will not be quiet.";
 			else
 				self.wad = "\ncats got pk*bots tongues.";
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
-		else if (self.lefty == 7)
+		else if (self.admin_input == 7)
 		{
 			if (serverflags & UNRESTRICTED)
 			{
@@ -1813,9 +1835,9 @@ void() AdminCommands =
 				serverflags = (serverflags | UNRESTRICTED);
 				self.wad = "\nBot commands NOT restricted on server.\n\banyone can issue bot admin commands!";
 			}
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
-		else if (self.lefty == 8)
+		else if (self.admin_input == 8)
 		{
 			if (serverflags & FL_OBSERVER)
 			{
@@ -1827,18 +1849,18 @@ void() AdminCommands =
 				serverflags = (serverflags | FL_OBSERVER);
 				self.wad = "\n\bAll players can observe.";
 			}
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
-		if (self.lefty == 9)
+		if (self.admin_input == 9)
 		{
 			self.wad = "\nEnter an observer time limit in seconds";
-			self.lefty = observer_time;
+			self.admin_input = observer_time;
 			self.admin = 10;
 			self.lip = 18;
 			self.path = "observer_time";
 			self.target = "\nObserver time limit changed...";
 		}
-		else if (self.lefty == 20)
+		else if (self.admin_input == 20)
 		{
 			f = skill_add(0);
 			if (!f) self.wad = "\nSkill level is 0.";
@@ -1846,10 +1868,10 @@ void() AdminCommands =
 			else if (f == 2) self.wad = "\nSkill level is 2.";
 			else if (f == 3) self.wad = "\nSkill level is 3.";
 			else self.wad = "\nSkill level is UNKNOWN!.";
-			self.lefty = 0;
+			self.admin_input = 0;
 		}
 		else
-			self.lefty = 0;
+			self.admin_input = 0;
 	}
 	else if (self.admin == 19)														// variable adjust
 	{
@@ -1867,25 +1889,25 @@ void() AdminCommands =
 			self.wad = "\nEnter a valid value";
 			self.admin = 10;
 		}
-		else if (self.impulse == 1) self.lefty = self.lefty + self.cnt;
-		else if (self.impulse == 2) self.lefty = self.lefty + (10 * self.cnt);
-		else if (self.impulse == 3) self.lefty = self.lefty + (100 * self.cnt);
-		else if (self.impulse == 4) self.lefty = self.lefty - (100 * self.cnt);
-		else if (self.impulse == 5) self.lefty = self.lefty - (10 * self.cnt);
-		else if (self.impulse == 6) self.lefty = self.lefty - self.cnt;
+		else if (self.impulse == 1) self.admin_input = self.admin_input + self.cnt;
+		else if (self.impulse == 2) self.admin_input = self.admin_input + (10 * self.cnt);
+		else if (self.impulse == 3) self.admin_input = self.admin_input + (100 * self.cnt);
+		else if (self.impulse == 4) self.admin_input = self.admin_input - (100 * self.cnt);
+		else if (self.impulse == 5) self.admin_input = self.admin_input - (10 * self.cnt);
+		else if (self.impulse == 6) self.admin_input = self.admin_input - self.cnt;
 		else if (self.impulse == 7)
 		{
 			localcmd(self.path);
-			localcmd(ftos(self.lefty));
+			localcmd(ftos(self.admin_input));
 			localcmd("\n");
 		}
 	}
 	else if (self.admin == 21)														// painkeep specific items
 	{
 		self.admin = 22;
-		if (self.lefty == 666)
+		if (self.admin_input == 666)
 			Admin_mainmenu();
-		else if (self.lefty == 1)
+		else if (self.admin_input == 1)
 		{
 			if (pk_flags & PK_TP_SPARKSFLASH)
 			{
@@ -1898,7 +1920,7 @@ void() AdminCommands =
 				pk_bas_flags(PK_TP_SPARKSFLASH, 0);
 			}
 		}
-		else if (self.lefty == 2)
+		else if (self.admin_input == 2)
 		{
 			if (pk_flags & PK_SF_HUB)
 			{
@@ -1911,7 +1933,7 @@ void() AdminCommands =
 				pk_bas_flags(PK_SF_HUB, 1);
 			}
 		}
-		else if (self.lefty == 3)
+		else if (self.admin_input == 3)
 		{
 			if (pk_flags & PK_TP_DUTYON)
 			{
@@ -1924,7 +1946,7 @@ void() AdminCommands =
 				pk_bas_flags(PK_TP_DUTYON, 1);
 			}
 		}
-		else if (self.lefty == 4)
+		else if (self.admin_input == 4)
 		{
 			self.wad = "\nSettings printed to console";
 			sprint(self, "\n\nPainkeep main controls:\n");
@@ -1974,7 +1996,7 @@ void() AdminCommands =
 			}
 			sprint(self, "\b-----------------------\n\n");
 		}
-		else if (self.lefty == 5 && !PK_100)
+		else if (self.admin_input == 5 && !PK_100)
 		{
 			if (pk_flags & PK_DYNAMIC)
 			{
@@ -1997,7 +2019,7 @@ void() AdminCommands =
 				}
 			}
 		}
-		else if (self.lefty == 6 && !PK_100)
+		else if (self.admin_input == 6 && !PK_100)
 		{
 			if (pk_flags & PK_SPIKER)
 			{
@@ -2010,7 +2032,7 @@ void() AdminCommands =
 				pk_flags = pk_flags | PK_SPIKER;
 			}
 		}
-		else if (self.lefty == 7)
+		else if (self.admin_input == 7)
 		{
 			if (pk_flags & PK_TP_USERMAPON)
 			{
@@ -2024,23 +2046,23 @@ void() AdminCommands =
 			}
 		}
 		else
-			self.lefty = 0;
+			self.admin_input = 0;
 
-		if (self.lefty) admin_sv_cfg();
+		if (self.admin_input) admin_sv_cfg();
 	}
 	else if (self.admin == 25)														// item overrides
 	{
 		self.admin = 26;
-		if (self.lefty == 666)
+		if (self.admin_input == 666)
 			Admin_mainmenu();
-		else if (self.lefty == 29)
+		else if (self.admin_input == 29)
 		{
 			pk_itemovr = 0;
 			admin_sv_cfg();
 		}
-		else if (self.lefty == 30)
+		else if (self.admin_input == 30)
 			Admin_itembits();
-		else if (self.lefty == 31)
+		else if (self.admin_input == 31)
 		{
 			z = spawn();
 			if (z)
@@ -2049,11 +2071,11 @@ void() AdminCommands =
 				z.nextthink = time + 0.1;
 			}
 		}
-		else if (self.lefty > 0 && self.lefty < 23)
+		else if (self.admin_input > 0 && self.admin_input < 23)
 		{
-			self.lefty = self.lefty - 1;
-			f = AdminBitFlag(self.lefty);
-			if (Q_99  && self.lefty == 6) f = 0;
+			self.admin_input = self.admin_input - 1;
+			f = AdminBitFlag(self.admin_input);
+			if (Q_99  && self.admin_input == 6) f = 0;
 			if (pk_itemovr & f)
 				pk_itemovr = pk_itemovr - (pk_itemovr & f);
 			else
@@ -2067,14 +2089,14 @@ void() AdminCommands =
 				admin_sv_cfg();
 			}
 		}
-		self.lefty = 0; //self.lefty + 1;
+		self.admin_input = 0; //self.admin_input + 1;
 	}
 	else if (self.admin == 29)														// monster overrides
 	{
 		self.admin = 30; // one more than select val above - enter key reduces by 1, menu display sets this code & 3 must = 2
-		if (self.lefty == 666)
+		if (self.admin_input == 666)
 			Admin_mainmenu();
-		else if (self.lefty == 26)
+		else if (self.admin_input == 26)
 		{
 			if (self.cnt)
 				cvar_set("sv_monster_map2", ftos(pk_monster_set));				
@@ -2085,7 +2107,7 @@ void() AdminCommands =
 			bit_print(MONSTER_MASK, pk_monster_set);
 			bprint("\n--- Please wait for the server to update monsters\n");
 		}
-		else if (self.lefty == 27)
+		else if (self.admin_input == 27)
 		{
 			if (self.cnt)
 				cvar_set("sv_monster_rnd2", ftos(pk_monster_set));				
@@ -2096,7 +2118,7 @@ void() AdminCommands =
 			bit_print(MONSTER_MASK, pk_monster_set);
 			bprint("\n--- Please wait for the server to update monsters\n");
 		}
-		else if (self.lefty == 28)
+		else if (self.admin_input == 28)
 		{
 			if (self.cnt)
 				cvar_set("sv_monster_resp2", ftos(pk_monster_set));				
@@ -2107,7 +2129,7 @@ void() AdminCommands =
 			bit_print(MONSTER_MASK, pk_monster_set);
 			bprint("\n--- Please wait for the server to update monsters\n");
 		}
-		else if (self.lefty == 29)
+		else if (self.admin_input == 29)
 		{
 			self.wad = "\nBit set cleared - 0";
 			if (!pk_monster_set)
@@ -2117,20 +2139,20 @@ void() AdminCommands =
 			if (pk_monster_set)
 				self.wad = "\nBit set filled - 1s";
 		}
-		else if (self.lefty == 30)
+		else if (self.admin_input == 30)
 			Admin_monsterbits();
-		else if (self.lefty == 31)
+		else if (self.admin_input == 31)
 			Admin_allmonsters();
-		else if (self.lefty == 32)
+		else if (self.admin_input == 32)
 		{
 			self.cnt = !self.cnt;
 			Admin_monstermenu();
 		}
-		else if (self.lefty > 0 && self.lefty < 20) // < 25) NOTE: only 1 - 17 used
+		else if (self.admin_input > 0 && self.admin_input < 20) // < 25) NOTE: only 1 - 17 used
 		{
-			self.lefty = self.lefty - 1;
-			f = AdminBitFlag(self.lefty);
-//			if (Q_99  && self.lefty == 6) f = 0;
+			self.admin_input = self.admin_input - 1;
+			f = AdminBitFlag(self.admin_input);
+//			if (Q_99  && self.admin_input == 6) f = 0;
 			if (pk_monster_set & f)
 				pk_monster_set = pk_monster_set - (pk_monster_set & f);
 			else
@@ -2141,14 +2163,14 @@ void() AdminCommands =
 			else
 				self.wad = "\nBit toggled off for selected monster";
 		}
-		self.lefty = 0; //self.lefty + 1;
+		self.admin_input = 0; //self.admin_input + 1;
 	}
 
 	if (self.admin == 15)
 		centerprint3(self, self.message, self.enemy.netname, self.wad);
 	else	if (self.admin == 19 || self.admin == 10)
 	{
-		str = ftos(self.lefty);
+		str = ftos(self.admin_input);
 		centerprint3(self, self.message, str, self.wad);
 	}
 	else
@@ -2170,7 +2192,7 @@ void() PK_SetAdmin =
 	local entity e;
 
 	e = spawn();
-	e.nextthink = time + 0.1;
+	e.nextthink = time + 0.2;
 	e.think = PK_SetAdmin;
 
 	if (self.classname == "admincode") 
@@ -2365,6 +2387,8 @@ void() PK_AdminImpulse =
 
 		if (cvar("chase_active") > 0) stuffcmd(self, "chase_active 0\n");
 
+		crosshair_off(self);
+
 		if (self.message == "")
 		{
 			if (cvar("r_ambient") > 0)
@@ -2392,7 +2416,7 @@ void() PK_AdminImpulse =
 			if (self.impulse == 11 || self.button0) //confirmed
 			{
 				self.goalentity.nextthink = time + USER_TIMEOUT;
-				drop_inventory(self.dropent.weapon, self);
+				drop_inventory(self.dropent.weapon, self, anti_bounce);
 				drop_setup(self, -1); // redo page
 				self.impulse = 0;
 				self.button0 = 0;
@@ -2539,10 +2563,11 @@ void() PK_AdminImpulse =
 			}
 			else // login
 			{
+				crosshair_off(self);
 				self.admin = ADMIN_LOGIN; // enter access code
 				admin_time = time + A_TIME; // 10 secs default - NOTE: this is 10 seconds of invulnerability
 			}
-			self.lefty = 0;
+			self.admin_input = 0;
 			self.takedamage = DAMAGE_NO;
 			if (cvar("r_ambient") > 0)
 				self.light_lev = cvar("r_ambient");
@@ -2555,14 +2580,14 @@ void() PK_AdminImpulse =
 	{
 		f = self.impulse; // cant change impulse to 0 - need to * password below
 		if (f == 10) f = 0; // translate 0
-		if (f < 10) self.lefty = (self.lefty * 10) + f; // build code
-		else if (self.impulse == 12) self.lefty = floor(self.lefty / 10); // backspace
+		if (f < 10) self.admin_input = (self.admin_input * 10) + f; // build code
+		else if (self.impulse == 12) self.admin_input = floor(self.admin_input / 10); // backspace
 		if (self.impulse == 11 || self.button0) self.admin = fabs(self.admin) - 1; // enter (accept fire button here) - done
-//		if (self.impulse == 11 && self.lefty) self.admin = fabs(self.admin) - 1; // enter - done
+//		if (self.impulse == 11 && self.admin_input) self.admin = fabs(self.admin) - 1; // enter - done
 		else if (self.admin > 0) // code for menu select go back now
 		{
 			as ="";
-			if (self.lefty) as = ftos(self.lefty);
+			if (self.admin_input) as = ftos(self.admin_input);
 			else if (self.admin < 9) self.wad = "";
 			if (self.admin < 9) centerprint3(self, self.message, as, "<");
 			else centerprint3(self, self.message, as, self.wad);
@@ -2588,24 +2613,24 @@ void() PK_AdminImpulse =
 		as = "";
 		if (pk_adminpwdmask) // cute password mask
 		{
-			if			(self.lefty > 9999999999) as	= "***********" ; // alas, my compiler for additive strings, just stop echoing new chars here
-			else if (self.lefty > 999999999) as		= "**********" ;
-			else if (self.lefty > 99999999) as		= "*********" ;
-			else if (self.lefty > 9999999) as		= "********" ;
-			else if (self.lefty > 999999) as			= "*******" ;
-			else if (self.lefty > 99999) as			= "******" ;
-			else if (self.lefty > 9999) as			= "*****" ;
-			else if (self.lefty > 999) as				= "****" ;
-			else if (self.lefty > 99) as				= "***" ;
-			else if (self.lefty > 9) as				= "**" ;
-			else if (self.lefty > 0) as				= "*" ;
+			if			(self.admin_input > 9999999999) as	= "***********" ; // alas, my compiler for additive strings, just stop echoing new chars here
+			else if (self.admin_input > 999999999) as		= "**********" ;
+			else if (self.admin_input > 99999999) as		= "*********" ;
+			else if (self.admin_input > 9999999) as		= "********" ;
+			else if (self.admin_input > 999999) as			= "*******" ;
+			else if (self.admin_input > 99999) as			= "******" ;
+			else if (self.admin_input > 9999) as			= "*****" ;
+			else if (self.admin_input > 999) as				= "****" ;
+			else if (self.admin_input > 99) as				= "***" ;
+			else if (self.admin_input > 9) as				= "**" ;
+			else if (self.admin_input > 0) as				= "*" ;
 		}
 		else
-			if (self.lefty) as = ftos(self.lefty); // NOTE: this option leaves password in clear text
+			if (self.admin_input) as = ftos(self.admin_input); // NOTE: this option leaves password in clear text
 		centerprint3(self, "Enter admin password: ", as, "\n");
 		self.impulse = 0;
 		}
-		else if (!self.lefty)
+		else if (!self.admin_input)
 		{
 			as = ftos(floor(admin_time - time));
 			centerprint3(self, "Enter admin password - seconds left: ", as, "\n");

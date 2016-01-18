@@ -363,8 +363,28 @@ void() SUB_Nop =
 
 void() func_model_frames =
 {
-	self.frame = self.frame + 1;
-	if (self.frame > self.state) self.frame = self.count;
+	if (self.state)
+	{
+		self.frame = self.frame + 1;
+		if (self.frame > self.state) self.frame = self.count;
+	}
+
+	if (self.dmg)
+	{
+		if (self.aflag)
+		{
+			self.skin = self.skin + 1;
+			if (self.skin > self.dmg) self.skin = self.cnt;
+		}
+		if (self.lip)
+		{
+			self.skin = self.skin + self.lip;
+			if (self.lip > 0)
+			if (self.skin == self.dmg) self.lip = -1;
+			if (self.lip < 0)
+			if (self.skin == self.cnt) self.lip = 1;
+		}
+	}
 	self.nextthink = time + self.delay;
 };
 
@@ -377,11 +397,19 @@ void() func_model =
 	setmodel (self,self.mdl);
 
 	self.frame = self.count;
-	if (self.state)
+	self.skin = self.cnt;
+
+	self.lip = self.aflag = 0;
+	if (self.dmg)
+	if (self.dmg < 0) self.lip = 1; // reversable loop
+	else self.aflag = 1; // regular loop
+	self.dmg = fabs(self.dmg);
+
+	if (self.state || self.dmg)
 	{
-	if (self.delay <= 0) self.delay = 0.1;
-	self.think = func_model_frames;
-	self.nextthink = time + self.delay;
+		if (self.delay <= 0) self.delay = 0.1;
+		self.think = func_model_frames;
+		self.nextthink = time + self.delay;
 	}
 };
 
@@ -1350,6 +1378,7 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 	bq.model = e.model;
 	bq.modelindex = e.modelindex;
 	bq.frame = e.frame;
+	bq.rune_flag = e.rune_flag;  // corpse have runes - when gibable, they will be protected by resist
 	bq.colormap = e.colormap; // player colors till disconnect - changes when changed live
 //	bq.clientcolors = e.clientcolors; // does nothing - colors happen thru the colormap, of which there are client slots count
 	bq.flags = FL_CLIENT;

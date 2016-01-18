@@ -2046,10 +2046,16 @@ void() PK_ImpulseCommands =
 	if (self.eweapon)
 	{
 		if (self.eweapon.wad == "morph_cube")
-		if (self.impulse >= 1 && self.impulse <= 10 || self.impulse == 12) // || self.impulse == 13) // wraith option
 		{
-			morphic_impulse();
-			if (self.impulse > 9) return; // only 1 - 9 exit cube selector
+			if (self.impulse == ALT_FIRE_IMP)
+			if (self.eweapon._alt_fire)
+				if (self.eweapon._alt_fire != SUB_Null) self.eweapon._alt_fire(self.eweapon);
+
+			if (self.impulse >= 1 && self.impulse <= 10 || self.impulse == 12) // || self.impulse == 13) // wraith option
+			{
+				morphic_impulse();
+				if (self.impulse > 9) return; // only 1 - 9 exit cube selector
+			}
 		}
 		if (self.eweapon.wad == "pk_cube") // any impulse will free a pk cube!
 		{
@@ -2119,6 +2125,7 @@ void() PK_ImpulseCommands =
 
 		W_SetCurrentAmmo();
 	}
+
 
 // GRAPPLING_START
 	else if (self.impulse == 50)

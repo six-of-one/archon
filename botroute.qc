@@ -378,6 +378,12 @@ void () DropBotPath =
 	{
 		return;
 	}
+
+	if (noway_below)
+	if (self.origin_z < noway_below) return;
+	if (noway_above)
+	if (self.origin_z > noway_above) return;
+
 	oldpath = self.movetarget;
 	if (oldpath.movetarget)
 	{

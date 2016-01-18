@@ -160,6 +160,8 @@ float SVRF;
 float IMP_RUNEID				= 51;
 float IMP_RUNEDROP			= 52;
 
+float rune_new_map; // display rune message on new map
+
 .float rune_flag;
 float RUNE_3_ACM; // amount to accumulate under rule 3
 .float rune_3_dmg; // rule 3 - these are cumulative effects
@@ -170,6 +172,7 @@ float rune_set;
 void() run_runes;
 void(entity e, entity p) rune_id;
 void(entity e) rune_drop;
+void() server_rune_follow;
 void() rune_regen;
 void() rune_vamp;
 float(float atf) rune_haste;
@@ -238,6 +241,8 @@ float RULE2_MASK				= 1966159; // original 4 + vampire + techs
 float RALL_MASK				= 1966207; // everything
 
 float RUNE_VAMPIRE_PER; // percent of damage added to suck heads health - rule 2
+
+float DEF_DOC_ARMORTYPE		= 0.6;
 
 // if both are true the damage mult for quad + rune + tech = 16 !!!
 float RUNE_QUAD_COMB			= 1; // allow damage runes to combind with quad
@@ -464,6 +469,9 @@ float DEAD_GIBPACK;
 float DEAD_BODYCOUNT			= 8; // TEST: 48; // number of bodies (+1) in bodyque loop, if 0 bodies spawn (no que) and use timeout below
 float DEAD_BODYTIME			= 120; // how long non que corpse hang around
 
+vector MED_BOUNCE				= ' 210 210 320'; // medium bounce for dead thrown stuff - idea: factor in dead body velo
+vector MED_BOUNCE_NOW		= '-210 -210 -320'; // medium bounce for dead thrown stuff - idea: factor in dead body velo
+
 // here because deathrew needs to detect them before mcode
 float MC_HOOK; // CTF hook map item
 float MC_Q2_GRAPPLE;
@@ -509,13 +517,18 @@ float WEP_MASK					= 4351; // mask off other items bits for def weap bits 1 + ..
 
 float DROP_ALLOW; // inv bits player is allowed to drop
 
-// inventory flags
+vector anti_bounce			= '-1 -1 -1'; // no bounce for items placed in the wild
+vector GEN_BOUNCE				= ' 340 340 300'; // generic bounce for items tossed in the wild
 
-void(entity de, entity ve) dropinview;
+// inventory code
+
+void(entity de, entity ve, vector vb) dropinview;
 void(entity p, float pg) drop_setup;
-void(float im, entity p) drop_inventory;
+void(float im, entity p, vector vb) drop_inventory;
 void() inventory;
 void(string sl, float b, entity e) drop_string;
+float(entity e, string ms) force_drop_set;
+float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) drop_one;
 void(entity e) dead_artifact;
 void (entity e, entity p) stack_touch;
 float(entity e, string ss) stack_search;
@@ -773,6 +786,11 @@ float DEF_X_ITEMS; // x bit flags
 entity sphere_a; // only one of these ever
 void() sphere_annihilation_phys_move;
 
+
+.float crosshair_sv; // save crosshair so it can be turned off during menus & such
+float IMP_CROSSHAIR			= 49; // impulse controls crosshair
+void(entity e, float i) crosshair_con;
+void(entity e) crosshair_off;
 
 // inits - by genre and map
 
@@ -1090,6 +1108,8 @@ float EXPLOSIVE				= 114688; // for things that explode - chaos mod
 
 // **************************************
 
+.float vw_frame; // only run once per frame per ent
+
 // attachs e to a tag on tagentity (note: use "" to attach to entity origin/angles instead of a tag)
 //description:
 //allows entities to be visually attached to model tags (which follow animations perfectly) on other entities, for example attaching a weapon to a player's hand, 
@@ -1228,6 +1248,7 @@ float VWZ_LASERCAN			= 12;
 // Cataboligne 9.11.3 purify - chase cam
 
 // **************************************
+void( entity m_e, entity v_e) set_viewport;
 void() chase_cam_precache;
 void(float sel) cam_parms;
 void() Chase_cam_level_start;

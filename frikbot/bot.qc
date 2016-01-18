@@ -1010,7 +1010,7 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
 	self.ishuman = 2; // pretend to be human for a bit
 	self.class_select = "class_bot";
 	ClientConnect();
-	PutClientInServer();
+	PutClientInServer(); /// *** NOTE: means bots use parm*, which is wrong
 
 	// this is risky... could corrupt .way files if done wrong
 	// If you're not the gambling type, comment this out

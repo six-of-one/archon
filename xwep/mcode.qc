@@ -2188,7 +2188,7 @@ bprint(")\n");
 		if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL) // cause barrels are special
 		{
 //			self = spawn();
-			self.classname = "";
+			self.event = self.classname = "";
 			self.scode = -1; // item call tests this for making barrels
 			item_call(self.wad);
 			newmis.th_stand = SUB_Remove; // go away after boom
@@ -2213,7 +2213,7 @@ bprint(")\n");
 		if (!crate)
 			self.punchangle = ' 110 110 280'; // for ejector
 		else
-			self.punchangle = '-1 -1 -1'; // for ejector - just a boost
+			self.punchangle = anti_bounce; // for ejector - just a boost
 
 // pk cube fix - spawned something and fns are reversed
 		if (self.class_select != "class_monster")
@@ -2304,11 +2304,15 @@ float BOT_NOUSE_MCUBE = 0.8;
 
 void() cube_touch =
 {
+	local entity e;
+
 	if (PK_100 || Q_100)
 	{
 		remove(self);
 		return;
 	}
+
+	if (other.wad == "pk*bot") return;
 
 	if (self.owner) // shouldnt happen
 		return;
@@ -2345,10 +2349,7 @@ void() cube_touch =
 		if (random() < BOT_NOUSE_PKCUBE) return;
 
 		if (self.wad == "morph_cube")
-		{
-			if (random() < BOT_NOUSE_MCUBE) return;
-			if (other.wad == "pk*bot") return;
-		}
+		if (random() < BOT_NOUSE_MCUBE) return;
 	}
 
 	if (self.wad == "morph_cube")
@@ -2381,7 +2382,7 @@ void() cube_touch =
 	self.eweapon = self;
 
 	other.weapon = 0;
-	other.eweapon = self;
+	e = other.eweapon = self;
 	self.effects = self.effects | EF_DIMLIGHT;
 	self.touch = SUB_Null;
 
@@ -2395,7 +2396,7 @@ void() cube_touch =
 			self.lefty = rnd_bit_mask(self.eweapon.mask_x);
 			self.state = cb_morph(self.lefty);
 			polymorph_check(self.state, 0);
-			remove(self.eweapon);
+			remove(e); // chaos vector - was not removing a cube
 			cube_rearm();
 		}
 		return;
@@ -2427,7 +2428,7 @@ void() pk_cube =
 	self.pk_touch = cube_touch;
 	self.noise = "items/r_item2.wav";
 	self._attack = painkeep_cube_use; // fire button to use
-	self._fr_attack = SUB_Null; // fire button to use
+	self._fr_attack = SUB_Null;
 	self.attack_finished = 3;
 	self.mask_x = MORPH_ALL;
 
@@ -2471,7 +2472,9 @@ void() crate_touch =
 		centerprint(other, "This crate could have a BFG in it!\n");
 	else if (random() < 0.5)
 		centerprint(other, "Contents: stuff\n");
-	self.cnt = 1;
+	self.cnt = self.cnt + 1;
+
+	if (self.cnt > 4) self.touch = SUB_Null;
 };
 
 void() crate_init =
@@ -2791,7 +2794,7 @@ void(float mc, vector vo, string wd) fn_make =
 		setorigin(self, v1);
 		item_call(sc);
 
-		item_eject(self, ' 340 340 300');
+		item_eject(self, GEN_BOUNCE);
 
 		if (self.map == "rune") self.map = ""; // rune server deal
 
@@ -3070,6 +3073,24 @@ void() barrel_explode =
 //	e = world;
 //	if (self.classname == "chaos_item") e = self.owner; // this made no sense in the chaos code - it meant owner gets direct damage!
 
+
+	boombox = spawn();
+	boombox.origin = self.origin;
+
+	boombox.takedamage = DAMAGE_NO;
+	boombox.classname = "explo_box";
+
+	sound (boombox, CHAN_VOICE, bsnd, 1, ATTN_NORM);
+	particle (boombox.origin, '0 0 0', 75, 255); // ?? realli
+//	boombox.origin_z = boombox.origin_z + 32;
+//	Explode(0, bdmg, e, 0, 0, BecomeExplosion); // chaos mod replacement for this code
+//	T_RadiusDamage (boombox, boombox, bdmg, world);
+//	BecomeExplosion ();
+	boombox.dmg = bdmg;
+	boombox.think = barrel_damage;
+	boombox.nextthink = time + 0.2;
+
+
 //	if (self.classname == "chaos_item" && random() > CI_EXPLBOX_RES)
 //		self.think = SUB_Remove;
 //	else
@@ -3085,23 +3106,6 @@ void() barrel_explode =
 	}
 	else
 		SUB_Remove();
-
-	boombox = spawn();
-	boombox.origin = self.origin;
-	self = boombox;
-
-	self.takedamage = DAMAGE_NO;
-	self.classname = "explo_box";
-
-	sound (self, CHAN_VOICE, bsnd, 1, ATTN_NORM);
-	particle (self.origin, '0 0 0', 75, 255); // ?? realli
-//	self.origin_z = self.origin_z + 32;
-//	Explode(0, bdmg, e, 0, 0, BecomeExplosion); // chaos mod replacement for this code
-//	T_RadiusDamage (self, self, bdmg, world);
-//	BecomeExplosion ();
-	self.dmg = bdmg;
-	self.think = barrel_damage;
-	self.nextthink = time + 0.2;
 };
 
 

@@ -361,6 +361,7 @@ void () weapon_grapgun =
 	self.netname = "Harpoon Gun";
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 // dynamic items go away when touched
@@ -602,7 +603,7 @@ void() painkeep_touch =
 
 
 
-if (!self.mask_x) 			bprint("\n\n\n\n\n*** - WARNING - item with no mask x\n\n\n");
+if (!self.mask_x) 			bprint("------------------- ** WARNING - item with no mask x\n");
 
 
 
@@ -667,7 +668,8 @@ if (self.classname == "") bprint("*** - blank classname in touch fn \n");
 
 
 
-		stack_touch(self, other); // save some items model string for drop codes
+		if ( !(other.rune_flag & self.spawnflags) || !(self.model == "progs/q3_art.mdl") )
+			stack_touch(self, other); // save some items model string for drop codes
 //		if (self.event == "dynamic_item")
 //		{
 //			f = TRUE;
@@ -1733,11 +1735,6 @@ void() pk_item_position_init =
 {
 //	if (WARNING) if (!PK) bprint("*** warning: pk_item_position_init called when not in PK mode.\n");
 
-	if (self.mcode != self.scode) // item was changed by rndize
-	{
-		item_eject(self, ' 0 0 400'); // shoot up
-	}
-
 	if (self.ip_orgOrigin == v0 || self.delay == RE_LOC)
 		self.ip_orgOrigin = self.origin;
 
@@ -1762,11 +1759,11 @@ void() pk_placeitem =
 	}
 	else
 	{
-		if (self.punchangle != '-1 -1 -1') // no eject
+		if (self.punchangle != anti_bounce) // no eject code
 		if (self.punchangle != v0)
 			item_eject(self, self.punchangle);
 		else
-			item_eject(self, ' 340 340 300');
+			item_eject(self, GEN_BOUNCE);
 	}
 
 // handle extra item stuff

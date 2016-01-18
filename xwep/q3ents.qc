@@ -1597,10 +1597,11 @@ void() q3_pwr_touch =
 	sprint (other,self.netname);
 	sprint (other,"\n");
 
+	self.mdl = self.model;
+
 	if (Q_99 || (deathmatch != 4)) // *pk - my new rule, logical extrapolation --- NOTE: why q99 here?
 	if (deathmatch)
 	{
-		self.mdl = self.model;
 		if (self.wait && self.class_select == "q3_item")
 			self.nextthink = time + self.wait;
 		else
@@ -1622,6 +1623,7 @@ void() q3_pwr_touch =
 		e.nextthink = time + 0.5;
 		e.owner = other;
 		e.enemy = vload(other, -1);
+//		e.volume = self.volume;
 		setmodel(e.enemy, "progs/player_sh.mdl");
 		e.enemy.mdl = e.enemy.model;
 		e.enemy.skin = Q3_SH_REGEN;
@@ -1658,7 +1660,8 @@ void() q3_pwr_touch =
 		else
 		e.nextthink = time + POW_TIME - e.aflag;
 		e.owner = other;
-		e.noise4 = self.noise4;
+//		e.noise4 = self.noise4; // included with below
+		e.wad = "art_shell";
 	}
 
 	activator = other;

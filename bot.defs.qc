@@ -153,8 +153,13 @@ float nearlight;
 // id bots
 float(entity e) IROBOT; // whats up canner?
 void() bot_fixer; // fix broke bots
-float BOT_FIX_TIME = 50;
+float BOT_FIX_TIME = 14;
 float BOT_FIXED = 1; // if this is true and a bots frags dont change in the time out, kill & restart that bot
+
+// waypoint limit
+float noway_above;
+float noway_below;
+float noway_radius = 160; // no new waypoint in this radius
 
 // client links
 float () getrandombotskin;

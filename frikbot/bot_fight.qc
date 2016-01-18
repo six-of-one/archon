@@ -265,7 +265,7 @@ void(float brange) bot_weapon_switch =
 
 	it = self.items & 127;
 
-	while(it)
+	while(it) // note: this looks like a loop inviting trouble - might need a safety, Cat
 	{
 		if ((self.ammo_rockets >= 1) && (it & 32))
 		{

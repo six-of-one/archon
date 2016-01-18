@@ -607,20 +607,26 @@ local float		rs;
 
 void() PK_GibPlayer =
 {
+	local float f;
 // DAMAGE_SKINS_START
 	self.skin = 0;
-	self.map = "set_suicide_frame"; // for suicide frame
 
 // GIBS_START
-	if (random() > 0.5)
-	{
-		ThrowHead ("progs/h_player.mdl", self.health);
+//	if (random() > 0.5)
+//	{
+	f = 0;
+	if (self.mdl == "progs/plyr_bw.mdl") f = HEADSKN_W;
+	else if (self.mdl == "progs/plyr_dm.mdl") f = HEADSKN_D;
+	else if (self.mdl == "progs/plyr_q3.mdl") f = HEADSKN_Q3;
+	ThrowHead ("progs/h_player.mdl", self.health);
+	self.skin = f;
+/*
 	}
 	else
 	{
-		ThrowHead ("progs/qtgib3.mdl", self.health);
+		ThrowHead ("progs/qtgib3.mdl", self.health); // this is just an unskinned head ?
 	}
-
+*/
 	if (random() > 0.5)
 	{
 		ThrowGib ("progs/gib1.mdl", self.health);
@@ -670,6 +676,7 @@ void() PK_GibPlayer =
 		sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE);
 	else
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+
 	if (pk_xsound) pk_player_sound(6); // NOTE: only functional extra sound because the files exist for this
 };
 

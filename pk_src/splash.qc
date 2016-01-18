@@ -190,7 +190,11 @@ void() CheckWaterLevels =
 						}
 					}
 				}
-				else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT) e.th_die(); // note: swim monsters dont set splash
+				else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT)
+				{
+					T_Damage (e,world,world,e.health + 10); //e.th_die(); // note: swim monsters dont set splash - have to damage for accounting - see random monsters
+					remove(self);
+				}
 				else if (IROBOT(e) || e.classname == "player")
 				{
 					if (!e.portal_busy) // no action if under influence of portal contols

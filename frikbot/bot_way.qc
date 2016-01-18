@@ -235,6 +235,12 @@ entity(entity start) FindWayPoint =
 			}
 		}
 		t = t._next;
+		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
+		{
+	local float sf;
+			sf = sf  + 1;
+			if (sf > 10) return best;
+		}
 	} 
 	return best;
 };
@@ -273,6 +279,28 @@ entity(vector org) make_waypoint =
 		}
 		return(world);
 	}
+
+// dont put points outside of server admin speced limits - Cataboligne - 10.5.11
+	if (noway_below)
+	if (org_z < noway_below) return(world);
+	if (noway_above)
+	if (org_z > noway_above) return(world);
+
+	if (noway_radius)
+	{
+		local vector v1, v2;
+		v1 = v2 = v0;
+		v1_z = org_z;
+		point = findradius(org, noway_radius);
+		while (point)
+		{
+			v2_z = point.origin_z;
+			if (vlen(v1 - v2) < 64)
+			if (point.classname == "waypoint") return(world);
+			point = point.chain;
+		}
+	}
+
 // END added to pk 2.1 code 7/13/10
 	point = spawn();
 	point.classname = "waypoint";
@@ -531,6 +559,12 @@ void() ClearAllWays =
 		n = t._next;
 		remove(t);
 		t = n;
+		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
+		{
+	local float sf;
+			sf = sf  + 1;
+			if (sf > 100) t = world;
+		}
 	}
 	way_head = world;
 	way_foot = world;
@@ -549,6 +583,12 @@ entity(float num) WaypointForNum =
 		if (t.count == num)
 			return t;
 		t = t._next;
+		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
+		{
+	local float sf;
+			sf = sf  + 1;
+			if (sf > 10) return world;
+		}
 	}
 	return world;
 };
@@ -599,6 +639,7 @@ void(entity what) delete_waypoint =
 		if (CheckLinked(t, what))
 			UnlinkWays(t, what);
 		t = t._next;
+//		if (t == way_head) t = world; // looped around - Cataboligne 10.5.11 - added loop safety
 	}
 	if (self.current_way == what)
 		self.current_way = world;
@@ -670,7 +711,13 @@ entity(entity lastone) FindRoute =
 			}
 		} 
 		t = t._next;
-	} 
+		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
+		{
+	local float sf;
+			sf = sf  + 1;
+			if (sf > 10) return best;
+		}
+	}
 	return best;
 };
 /*
@@ -693,6 +740,12 @@ void() ClearRouteTable =
 		t.enemy = world;
 		t.items = -1; // not in table
 		t = t._next;
+		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
+		{
+	local float sf;
+			sf = sf  + 1;
+			if (sf > 50) return;
+		}
 	}
 };
 
@@ -708,9 +761,14 @@ void() ClearMyRoute =
 	{
 		t.b_sound = t.b_sound - (t.b_sound & flag);
 		t = t._next;
+		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
+		{
+	local float sf;
+			sf = sf  + 1;
+			if (sf > 100) return;
+		}
 	}
 };
-
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

@@ -166,12 +166,17 @@ lavablob_jump5 ();
 }
 };
 
-void()	lavablob_jump1		=[	$jump1,	lavablob_jump2		] { };
-void()	lavablob_jump2		=[	$jump2,	lavablob_jump3		] { };
-void()	lavablob_jump3		=[	$jump3,	lavablob_jump4		] { };
-void()	lavablob_jump4		=[	$jump4,	lavablob_jump5		] { };
+void()	lavablob_jump1		=[	$jump1,	lavablob_jump2		] { if (intermission_running) player_stand1(); };
+void()	lavablob_jump2		=[	$jump2,	lavablob_jump3		] { if (intermission_running) player_stand1(); };
+void()	lavablob_jump3		=[	$jump3,	lavablob_jump4		] { if (intermission_running) player_stand1(); };
+void()	lavablob_jump4		=[	$jump4,	lavablob_jump5		] { if (intermission_running) player_stand1(); };
 void()	lavablob_jump5		=[	$jump5,	lavablob_jump6		]
 {	
+	if (intermission_running)
+	{
+		player_stand1();
+		return;
+	}
 	self.movetype = MOVETYPE_BOUNCE;
 	self.touch = Lavablob_JumpTouch;
 	makevectors (self.angles);
@@ -182,7 +187,7 @@ void()	lavablob_jump5		=[	$jump5,	lavablob_jump6		]
 		self.flags = self.flags - FL_ONGROUND;
 	self.cnt = 0;
 };
-void()	lavablob_jump6	=[	$jump6,lavablob_fly1	] { };
+void()	lavablob_jump6	=[	$jump6,lavablob_fly1	] { if (intermission_running) { player_stand1(); self.velocity = v0; } };
 
 // fn(lavablob_eject) - throw stuff on explode
 
@@ -244,6 +249,8 @@ void() lavablob_die_explode8	=	[ $exp,		SUB_Nop ]
 {
 	lavablob_eject();
 
+	setmodel(self, "");
+
 //	NO_BLAST = TRUE;
 //	if (random() < 0.02) volcano_spawn(self.origin, 1.1); TDO: restore
 
@@ -260,7 +267,8 @@ void() lavablob_die_explode8	=	[ $exp,		SUB_Nop ]
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-	
+
+	self = spawn();
 	BecomeExplosion ();
 };
 

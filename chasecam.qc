@@ -281,6 +281,8 @@ void () cam_deathmove =
 			self.owner.think = respawn;
 			self.owner.nextthink = time + 0.5;
 		}
+
+		crosshair_con(self.owner, -1);
 // fix - set viewport back if default no
 //		if (!cvar("sv_cam_def") || NO_CAM || (chaos && !cvar("cl_cam_def")))
 //			set_viewport(self.owner, self.owner); // NOTE: not the fix we wanted?
@@ -321,11 +323,16 @@ void () cam_deathmove =
 		self.owner.water_notify = ""; // Cataboligne - 6.13.10 - deadcam splash issue
 		self.oldorigin = self.owner.origin;
 		setorigin(self.owner, self.origin);
-		set_viewport(self.owner, self.owner);
+		set_viewport(self.owner, self.owner); // back to moving players own ent, cams off
 
 
 
-if (PR_VIEWPC) bprint ("set_viewport: deathmove\n");
+if (PR_VIEWPC)
+{
+bprint ("set_viewport: deathmove -- model was: ");
+bprint (self.owner.model);
+bprint ("\n");
+}
 
 
 
@@ -349,11 +356,11 @@ void () cam_deathview =
 	{
 
 // FIXED - viewport restore here
-		set_viewport(self.owner, self.owner); // test this
+//		set_viewport(self.owner, self.owner); // test this
 
 
 
-if (PR_VIEWPC) bprint ("set_viewport: cam dview\n");
+if (PR_VIEWPC) bprint ("--------------- non_viewport: cam dview\n");
 
 
 
@@ -400,6 +407,8 @@ if (PR_VIEWPC) bprint ("set_viewport: cam dview\n");
 	}
 
 	self.owner.health = 1; //hack so engine doesnt tilt view
+
+	crosshair_off(self.owner);
 };
 
 // fn(cam_startdeathview) - died and didnt have chasecam on

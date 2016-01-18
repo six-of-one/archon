@@ -68,9 +68,11 @@ void() SetChangeParms =
 // Cataboligne 9.11.3 purify - chase cam
 	cam_parms(0);
 
+	if (self.class_select != "class_bot")
+		parm15 = self.morphy;
+
 	if (self.health <= 0 || self.classname == OBSERVER) // Cataboligne - 5.3.10 - fix level change issue when in dead observer or admin observer
 	{
-		parm15 = self.morphy;
 		morph_clearparms(self, TRUE);
 		SetNewParms_PK();
 		parm16 = parm16 | 256; // Cataboligne - 8.22.9 - pk orig oper
@@ -87,7 +89,7 @@ void() SetChangeParms =
 		self.pk_items = self.pk_items - (self.pk_items & PK_IT_GRAPGUN);
 	}
 // remove items
-	self.items = self.items - (self.items & (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD | self.scode));
+	self.items = self.items - (self.items & (IT_KEY1 | IT_KEY2 | IT_SUPERHEALTH | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD | self.scode));
 
 	self.health = ceil(self.health / self.health_modifier); // morph back to human level
 
@@ -120,7 +122,6 @@ void() SetChangeParms =
 	 + ((self.pkplus_egoammo & 3) * 4096) + ((self.pkplus_tombammo & 3) * 16384) + ((self.pkplus_actorammo & 3) * 65536) + ((self.pkplus_phoneammo & 3) * 262144);
 // end pk_art
 
-	parm15 = self.morphy;// + 256 * (self.char_mode & 7);
 	// do hub message.
 	parm16 = self.msgcount | 256; // | (self.pk_items & PK_IT_EXTRADISP);
 };
@@ -153,6 +154,8 @@ void() SetNewParms =
 	{
 		parm16 = parm16 | PK_IT_EXTRADISP;
 	}
+
+	parm15 = -1;
 
 // Cataboligne 2.18.11 - set defaults code
 	if (!Q_100 && !PK_100)
@@ -210,7 +213,9 @@ void() DecodeLevelParms =
 
 	self.msgcount = (parm16 & 255);
 
-	self.morphy = parm15;
+	if (self.class_select != "class_bot") // a level change happened, this is not a bot, parm15 is valid - set it
+	if (cb_morph(parm15)) // set only if valid - respawn hack deal
+		self.morphy = parm15;
 
 // char init
 
@@ -220,6 +225,7 @@ void() DecodeLevelParms =
 		if (CHAR_CON)
 		if (CHAR_CON >= CHAR_W && CHAR_CON  <= CHAR_Q3) self.morphy = CHAR_CON; // forced by server admin
 		else self.morphy = set_char_num(MAP_MODE);
+//		if (self.class_select != "class_bot") parm15 = self.morphy; // never save this for bots
 	}
 	self.mask_x = cb_morph(self.morphy);
 
@@ -435,6 +441,7 @@ void() pk_plcfg =
 {
 	if (self.ishuman)
 	{
+		crosshair_off(self); // save at init
 		pk_admincfg(self);
 		if (pk_mapcmd) // alias cmd
 		{
@@ -457,15 +464,15 @@ void() pk_plcfg =
 			if (MAP_MODE == "Q3")
 				q3_bob_height();
 		}
-	}
 // web site segment
-	stuffcmd(self, "alias version \"echo quake-c: chaos archon alpha 3.0\"\n");
-	stuffcmd(self, "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
-	stuffcmd(self, "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
-	stuffcmd(self, "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
-	stuffcmd(self, "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
+		stuffcmd(self, "alias version \"echo quake-c: chaos archon alpha 3.0\"\n");
+		stuffcmd(self, "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
+		stuffcmd(self, "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
+		stuffcmd(self, "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
+		stuffcmd(self, "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
 
-	stuffcmd(self, "infobar 30 \"you are playing: Archon 3.1 alpha\"\n");
+		stuffcmd(self, "infobar 30 \"you are playing: Archon 3.1 alpha\"\n");
+	}
 };
 
 // called from PutClientInServer
@@ -474,12 +481,20 @@ void() pk_plcfg =
 void() PutClientInServer =
 {
 	local entity spot;
+	local float f;
 
 	set_initBotLevel(); // *bot
 	self.button16 = 0; // bot fixer
 
 	self.admin = 0;
 	self.rune_flag = 0;
+
+	f = cvar("scratch3");
+	if (f < 0 && !deathmatch && !coop) // morphic single player - because the server is reloaded every restart
+	{
+		parm15 = self.morphy = fabs(f);
+		cvar_set("scratch3","0");
+	}
 
 	if (Q_100 || Q_99)
 	{
@@ -659,6 +674,7 @@ void() PutClientInServer =
 	// PAINKEEP Fix the velocity on respawn bug
 	self.velocity = '0 0 0';
 
+	set_viewport( self, self); // Cataboligne 10.4.11 - fix bug while using dpcam where view gets borked
 	Chase_cam_level_start(); // Cataboligne 8.9.9 purify - chase cam
 };
 
@@ -1481,7 +1497,8 @@ void () PlayerPostThink =
 		}
 	}
 
-	viswep_post(); // Cataboligne - 9.26.9 - viswep code link - always have to run this for 1 player + pk*bots deal
+	if (self.vw_frame != framecount)
+		viswep_post(); // Cataboligne - 9.26.9 - viswep code link - always have to run this for 1 player + pk*bots deal
 
 	if (self.admin == USER_MENU) // user menu does not allow skip postthink codes
 	{
@@ -1577,13 +1594,15 @@ void () PlayerPostThink =
 				sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
 			else if (self.jump_flag < -650)
 			{
-				T_Damage (self, world, world, 5);
+				T_Damage (self, world, world, 5); // IDEA: falling damage related to dist & velo (*_z)
 				//sound (self, CHAN_VOICE, "player/fall_2.wav", 1, ATTN_NORM);
-				sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
+				if (self.mask_x == CB_HUMAN)
+					sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
 				self.deathtype = "falling";
 			}
 			else
-				sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
+				if (self.mask_x == CB_HUMAN)
+					sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
 				//sound (self, CHAN_VOICE, "player/fall_1.wav", 1, ATTN_NORM);
 
 			self.jump_flag = 0;
@@ -1843,9 +1862,10 @@ Infl = inflictor;
 Targ = targ;
 Att = attacker;
 
-bprint("\nInflcitor was:");
-bprint(item_ident(inflictor));
-bprint("\n");
+
+//bprint("\nInflicitor was:");
+//bprint(item_ident(inflictor));
+//bprint("\n");
 
 
 
@@ -2136,37 +2156,6 @@ bprint("\n");
                return;
                }
 
-				if (attacker.eweapon)
-				if (attacker.eweapon._killmsg != SUB_Null) // xwep kill - falls out below if not set or returns blank 1st msg
-				{
-					deathstring = attacker.eweapon._killmsg(targ, attacker);
-					deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
-					if (deathstring != "")
-					{
-						bprint (targ.netname);
-						bprint (deathstring);
-						bprint (attacker.netname);
-						bprint (deathstring2);
-						return;
-					}
-				}
-
-				if (attacker._killmsg != SUB_Null) // morphic kill
-				{
-					deathstring = attacker._killmsg(targ, attacker);
-					deathstring2 = attacker._killmsg2(targ, attacker);
-					if (deathstring == "") // nope, ur?
-					{
-						deathstring = DEF_MORPH_DEATH1; //   was killed by 
-						deathstring2 =  DEF_MORPH_DEATH2; // some how, we just arent sure
-					}
-					bprint (targ.netname);
-					bprint (deathstring);
-					bprint (attacker.netname);
-					bprint (deathstring2);
-					return;
-				}
-
 				// For the correct death messages
 				//rnum = attacker.weapon;
 				rnum = inflictor.weapon;
@@ -2237,6 +2226,44 @@ bprint("\n");
 // BOLT_END
 // PAINKEEP_END
 				}
+
+
+				if (attacker.eweapon)
+				if (attacker.eweapon._killmsg != SUB_Null) // xwep kill - falls out below if not set or returns blank 1st msg
+				if (attacker.eweapon._killmsg != (void ()) 0)
+				{
+					deathstring = attacker.eweapon._killmsg(targ, attacker);
+					if (attacker.eweapon._killmsg2 != (void ()) 0)
+					deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
+					if (deathstring != "")
+					{
+						bprint (targ.netname);
+						bprint (deathstring);
+						bprint (attacker.netname);
+						bprint (deathstring2);
+						return;
+					}
+				}
+
+				if (attacker._killmsg != (void ()) 0)
+				if (attacker._killmsg != SUB_Null) // morphic kill
+				{
+					deathstring = attacker._killmsg(targ, attacker);
+					if (attacker._killmsg2 != (void ()) 0)
+					deathstring2 = attacker._killmsg2(targ, attacker);
+					if (deathstring == "") // nope, ur?
+					{
+						deathstring = DEF_MORPH_DEATH1; //   was killed by 
+						deathstring2 =  DEF_MORPH_DEATH2; // some how, we just arent sure
+					}
+					bprint (targ.netname);
+					bprint (deathstring);
+					bprint (attacker.netname);
+					bprint (deathstring2);
+					return;
+				}
+
+
 				if (rnum == IT_SHOTGUN)
 				{
 // EXPLODESHELLS_START

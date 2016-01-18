@@ -106,6 +106,9 @@ void(entity targ, entity attacker) Killed =
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;
 
+	if (self.event == "dyn_monster") monster_rnd_cnt = monster_rnd_cnt - 1;
+	if (monster_rnd_cnt < 0) monster_rnd_cnt = 0;
+
 	monster_death_use ();
 	self.th_die ();
 

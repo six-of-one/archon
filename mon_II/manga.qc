@@ -342,7 +342,7 @@ void(float ign) monster_manga =
 
 if (ign != A_MONSTER)
 {
-	if (!M_MONSTER_II & CB_M_KNIGHT)
+	if (!M_MONSTER_II & CB_M_MANGA)
 	if (deathmatch)
 	{
 		if (R_MONSTER)
@@ -367,7 +367,7 @@ if (ign != A_MONSTER)
 
 	setmodel (self, "progs/manga3.mdl");
 
-	setsize (self, '-20 -20 0', '20 20 80');
+	setsize (self, '-16 -16 -24', '16 16 32');
 
 	self.health = 250;
 

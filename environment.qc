@@ -488,7 +488,7 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 		{
 			if (WARNING)
 			{
-			bprint("\n]nfire_burst (chaos_env.qc, 1168) called with bad parms\n");
+			bprint("\n------------------- ** fire_burst (chaos_env.qc, 1168) called with bad parms\n");
 			}
 			return; // no fn, no model, nothing to do
 		}

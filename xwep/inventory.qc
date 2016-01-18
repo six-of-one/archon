@@ -803,11 +803,12 @@ void() inventory =
 
 // for tossed items
 
-// fn(dropinview) - toss stuff out
+// fn(dropinview) - set vector for tossed stuff
 // de - ent doing tossing (player) - if world, pick a random location
 // ve - ent being tossed
+// vb - bounce item with item eject
 
-void(entity de, entity ve) dropinview =
+void(entity de, entity ve, vector vb) dropinview =
 {
 	local vector vec;
 	local float at;
@@ -817,11 +818,20 @@ void(entity de, entity ve) dropinview =
 
 	if (ve.event == "dynamic_item")
 	{
-		at = TRUE; // allow long throw
-		ve.punchangle = '-1 -1 -1'; // dont re bounce
+		at = TRUE; // allow long throw - note: throw back to chaos mod 1, where this was a player tossed ent only
+		
+		if (vb == MED_BOUNCE_NOW)  // bounce it now
+		{
+			item_eject(newmis, MED_BOUNCE);
+			ve.punchangle = anti_bounce;
+		}
+		else
+			ve.punchangle = vb; // these are bounced by place code
 	}
+	else if (vb != anti_bounce)
+		item_eject(newmis, vb);
 
-	if (!de)
+	if (!de) // called with world, need location now
 	{
 		e = find_tdest(FL_RSALL, "");
 		if (!e) return; // might not be good - this ent will be at v0
@@ -832,6 +842,8 @@ void(entity de, entity ve) dropinview =
 
 	if (ve.origin == v0)
 		setorigin(ve, de.origin);
+
+	if (vb != anti_bounce) return;
 
 	makevectors(de.v_angle);
 	vec = normalize(v_forward);
@@ -848,15 +860,26 @@ void(entity de, entity ve) dropinview =
 		}
 }
 
-// drop a random item
-// will not make functioning rune server runes or anything else that needs a classname
+// set bounce up for dropped inventory
+/*
+void(entity e, vector vb) drop_setbounce =
+{
+	if (e.event == "dynamic_item")
+		e.punchangle = vb;
+	else
+		if (vb != anti_bounce) item_eject(e, vb);
+		
+};
+*/
+
+// drop arbitrary item
 
 // mc - valid map code
-// cls - classname
+// cls - classname - overrides map code
 // de - drop ent (for origin, v_angle)
-// v1 - random throw vector
+// vb - random bounce vector
 
-entity(float mc, string cls, entity de, vector v1) drop_item =
+entity(float mc, string cls, entity de, vector vb) drop_item =
 {
 	local entity e;
 	local string scls;
@@ -874,26 +897,27 @@ entity(float mc, string cls, entity de, vector v1) drop_item =
 	e = spawn(); // for tossed item
 	e.event = "dynamic_item";
 	item_call_save(e, scls);
-	dropinview(de, e);
-
-	if (v1 != '-1 -1 -1') // use dropinview throw calc, unless from world
-	if (v1 != v0)
-		e.punchangle = v1;
-	else
-		e.punchangle = ' 160 160 240';
+	dropinview(de, e, vb);
 
 	return(e);
 };
+
 // dropping imventory - the complicated method
+
+float DROP_NOTEST; // just drop it, no testing
 
 // p - ent to drop inv - player
 // im - selection from menu
+// vb - bounce item with item eject
 
-void(float im, entity p) drop_inventory =
+void(float im, entity p, vector vb) drop_inventory =
 {
 	local string sel, ic;
-	local float b, f;
+	local float b, f, nt;
 	local entity e, d;
+
+	nt = DROP_NOTEST;
+	DROP_NOTEST = FALSE;
 
 	if (!im) return;
 
@@ -994,13 +1018,14 @@ void(float im, entity p) drop_inventory =
 			serverflags = serverflags - (serverflags & b); // remove server rune
 			serverflags = serverflags | (SVR1 * b); // so we know it was collected and pooted out
 		}
-		dropinview(p, e);
+		dropinview(p, e, vb);
 		p.dropent.map = sel;
+
 		return;
 	}
 
 // dropping an artifact
-	if (sel == "Invulerability" && (p.items & b))
+	if (sel == "Invulerability" && (nt || (p.items & b)))
 	{
 		ic = "item_artifact_invulnerability";
 		if (stack_search(p, "item_invulnerability"))  ic = "item_invulnerability";
@@ -1011,7 +1036,7 @@ void(float im, entity p) drop_inventory =
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Quad Damage" && (p.items & b))
+	if (sel == "Quad Damage" && (nt || (p.items & b)))
 	{
 		ic = "item_artifact_super_damage";
 		if (stack_search(p, "q2_item_quad"))  ic = "q2_item_quad";
@@ -1023,7 +1048,7 @@ void(float im, entity p) drop_inventory =
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Limited Invisibility" && (p.items & b))
+	if (sel == "Limited Invisibility" && (nt || (p.items & b)))
 	{
 		ic = "item_artifact_invisibility";
 		if (stack_search(p, "item_invis"))  ic = "item_invis";
@@ -1034,7 +1059,7 @@ void(float im, entity p) drop_inventory =
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Hazmat Suit" && (p.items & b))
+	if (sel == "Hazmat Suit" && (nt || (p.items & b)))
 	{
 		ic = "item_artifact_envirosuit";
 		if (stack_search(p, "q2_item_enviro"))  ic = "q2_item_enviro";
@@ -1046,7 +1071,7 @@ void(float im, entity p) drop_inventory =
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Diving Suit" && (p.items & b))
+	if (sel == "Diving Suit" && (nt || (p.items & b)))
 	{
 		item_call_save(e, "item_artifact_envirosuit");
 		f = p.wetsuit_finished;
@@ -1054,7 +1079,7 @@ void(float im, entity p) drop_inventory =
 		if (f < 1) f = time + 10;
 	}
 
-	if (sel == "Empathy Shields" && (p.empathy_finished))
+	if (sel == "Empathy Shields" &&(nt ||  (p.empathy_finished)))
 	{
 		item_call_save(e, "item_artifact_empathy_shields");
 		f = p.empathy_finished;
@@ -1069,7 +1094,7 @@ void(float im, entity p) drop_inventory =
 		f = f - time;
 		if (f < 10) f = 10;
 		e.dmgtime = f;
-		dropinview(p, e);
+		dropinview(p, e, vb);
 		p.dropent.map = sel;
 		if (sel == "Limited Invisibility") viswep_post(); // reset viswep
 		return;
@@ -1077,7 +1102,7 @@ void(float im, entity p) drop_inventory =
 
 // note: when droping search .map for mega_health_rot & get value in duration for next add - goes in .healamount & take away from player
 
-	if (sel == "Mega Health" && (p.items & b))
+	if (sel == "Mega Health" && (nt || (p.items & b)))
 	{
 		ic = "item_health_mega";
 //		if (stack_search(p, "d_art_megasphere"))  ic = "d_art_megasphere"; // note: this is not mega health!
@@ -1087,27 +1112,59 @@ void(float im, entity p) drop_inventory =
 		item_call_save(e, ic);
 		p.items = p.items - (p.items & b);
 
-		dropinview(p, e);
+		dropinview(p, e, vb);
 		p.dropent.map = sel;
 		return;
 	}
 
-	if (sel == "Ammo Pack" && (p.rune_flag & RUNE_AMMO))
+	if (sel == "Ammo Pack" && (nt || (p.rune_flag & RUNE_AMMO)))
 	{
 		item_call_save(e, "d_item_pack");
 		p.rune_flag = p.rune_flag - (p.rune_flag & b);
-		dropinview(p, e);
+		dropinview(p, e, vb);
 		p.dropent.map = sel;
 		return;
 	}
 
 // q3 flight
-	if (sel == "Flying Rune" && (p.rune_flag & RUNE_FLG_FLY)) // note: flight time left is in expiry
+	if (sel == "Flying Rune" && (nt || (p.rune_flag & RUNE_FLG_FLY))) // note: flight time left is in expiry
 	{
 		item_call_save(e, "item_flight");
 		p.rune_flag = p.rune_flag - (p.rune_flag & b);
 		p.movetype = MOVETYPE_WALK;
-		dropinview(p, e);
+		dropinview(p, e, vb);
+		p.dropent.map = sel;
+		return;
+	}
+
+	if (sel == "Armor" && (nt || (p.armorvalue * p.armortype)))
+	{
+		ic = "item_armor1";
+		if (stack_search(p, "d_item_armorgreen"))  ic = "d_item_armorgreen";
+		else if (stack_search(p, "d_item_armorblue"))  ic = "d_item_armorblue";
+		else if (stack_search(p, "d_item_spiritarmor"))  ic = "d_item_armorblue"; // note: spirit armors & shards convert to reg. armors
+		else if (stack_search(p, "q2_item_armor_body"))  ic = "q2_item_armor_body";
+		else if (stack_search(p, "q2_item_armor_combat"))  ic = "q2_item_armor_combat";
+		else if (stack_search(p, "item_armor_jacket"))  ic = "item_armor_jacket";
+		else if (stack_search(p, "q2_item_armor_shard"))  ic = "q2_item_armor_body";
+		else if (stack_search(p, "q3_item_armor_body"))  ic = "q3_item_armor_body";
+		else if (stack_search(p, "q3_item_armor_combat"))  ic = "q3_item_armor_combat";
+		else if (stack_search(p, "q3_item_armor_shard"))  ic = "q3_item_armor_body";
+		else if (p.items & IT_ARMOR2) ic = "item_armor2";
+		else if (p.items & IT_ARMOR3) ic = "item_armorInv";
+
+		item_call_save(e, ic);
+
+		e.wad = "armor_toss"; // for get
+		e.currentammo = p.armorvalue;
+		if (nt && (e.currentammo < 1)) e.currentammo = 150; // default for weird possibilities
+
+// note: this ups the max add allowed to match armor thrown out
+		if (e.volume > 0) // q2 deal
+		if (e.currentammo > e.volume) e.volume = e.currentammo; // note: max should be set by item_call
+		p.armorvalue = p.armortype = 0;
+
+		dropinview(p, e, vb);
 		p.dropent.map = sel;
 		return;
 	}
@@ -1171,6 +1228,8 @@ void(string sl, float b, entity e) drop_string =
 // weapon - current item
 // count - bit flags of eweaps so we can find reg weps
 
+// p - player
+// pg - page code, 1 - next page, 0 setup, -1 - same page
 
 void(entity p, float pg) drop_setup =
 {
@@ -1287,6 +1346,14 @@ void(entity p, float pg) drop_setup =
 				}
 			}
 
+			if (d == 16)
+			{
+				a = RUNE_AMMO;
+				if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
+				if (p.rune_flag & RUNE_AMMO)
+					drop_string("Ammo Pack", RUNE_AMMO, world);
+			}
+
 			if (d == 32)
 			{
 				a = RUNE_FLG_FLY;
@@ -1334,22 +1401,17 @@ void(entity p, float pg) drop_setup =
 			if (p.empathy_finished) drop_string("Empathy Shields", 0, world);
 
 			if (d == 131072)
-			{
-				a = RUNE_AMMO;
-				if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
-				if (p.rune_flag & RUNE_AMMO)
-					drop_string("Ammo Pack", RUNE_AMMO, world);
-			}
-
-			if (d == 262144)
 			if (p.items & IT_SUPERHEALTH) drop_string("Mega Health", IT_SUPERHEALTH, world);
 
-
-
-
 // note: protect builtin armors
-//			if (d == 65536)
-//			if (p.items & IT_ARMOR_BITS) drop_string("Armor", IT_ARMOR_BITS, world);
+			if (d == 262144)
+			{
+				if (!((p.mask_x & MORPH_SARMOR) || p.armortype == ARM_SCRG)) // builtin type armor is not thrown
+				if (p.armorvalue * p.armortype)
+					drop_string("Armor", 0, world);
+			}
+ 
+
 
 			d = d * 2;
 		}
@@ -1654,7 +1716,79 @@ void() drop_inv_check =
 	}
 };
 
-// put model strings of some player touched ents in a string stack
+// sequences an item drop from inventory outside of menu - used for dead drop
+
+// set a temp dropent, and mark it for reuse
+
+float(entity e, string ms) force_drop_set =
+{
+	if (!e.dropent)
+	{
+		e.dropent = spawn();
+		e.dropent.classname = "dropinv";
+		e.dropent.vwepmdl = "forcedrop"; // set so we can reuse ent
+
+// save notify stats
+		e.dropent.grap_state = cvar("con_notifytime");
+		e.dropent.grap_length = cvar("con_notify");
+	}
+	else if (e.dropent.vwepmdl != "forcedrop")
+	{
+		if (ms != "") sprint(e, ms);
+		return(TRUE);
+	}
+	return(FALSE);
+};
+
+// drop the specified item from player inventory - if world is sent, can drop any valid inventory item
+
+// returns true on sucess
+
+// p - player ent or world
+
+// ds - descriptor - must match drop_inventory test value
+// bv - bit value of item - removed from flag
+// ew - eweapon pointer
+// fm - fail message
+// vb - bounce vector
+// ke - if true remove dropent link
+
+float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) drop_one =
+{
+	local entity e;
+	local string ss;
+
+	ss = fm;
+	if (p) e = p;
+	else
+	{
+		e = spawn(); // note: no record keeping here, and test fail!
+		ss = ""; // no fail message possible
+		DROP_NOTEST = TRUE; // because there are no real player bits to test
+	}
+
+	if (force_drop_set(e, ss)) return(FALSE); // setup fail
+
+	e.dropent.cnt = 1;
+	drop_string(ds, bv, ew);
+	drop_inventory(1, e, vb);
+
+	if (!p || ke)
+	{
+		remove(e.dropent);
+		e.dropent = world;
+		if (!p) remove(e);
+	}
+
+	return(TRUE);
+};
+
+// touched item stack - so inventory drop & dead throws can toss out the correct item - this works most of the time
+// note: this might require more string space, perhaps done on command line with -zone
+
+// idea: when item is dropped, remove from stack
+
+// put classname or other strings of some player touched ents in a string stack
 
 .string stack1, stack2, stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
 
@@ -1701,11 +1835,13 @@ void(entity e, string ss) stack_string =
 	e.stack1 = ss;
 };
 
+// idea: replace some classnames with an ascending order system
+
 void (entity e, entity p) stack_touch =
 {
 	if (e.model == "progs/q3_art.mdl") stack_string(p, e.classname);
 	else if ( (e.items & IT_ARTIFACT) && (e.mcode >= MC_D_SAW ) ) stack_string(p, e.classname);
-	else if ( (e.items & IT_ARMOR_BITS) && (e.mcode >= MC_D_SAW ) ) stack_string(p, e.model);
+	else if ( (e.items & IT_ARMOR_BITS) && (e.mcode >= MC_D_SAW ) ) stack_string(p, e.classname);
 	else if ( (e.items & (IT_KEY1 | IT_KEY2)) && (e.mcode >= MC_D_SAW ) && !e.x_items ) stack_string(p, e.model);
 	else if ((e.mcode >= MC_D_BERS) && (e.mcode <= MC_D_MEGASPH) ) stack_string(p, e.classname);
 	if (e.model == "progs/g_fnail.mdl") stack_string(p, e.model);

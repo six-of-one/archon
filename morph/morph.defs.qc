@@ -43,6 +43,7 @@ float S_MONSTER_DEV;
 float C_MONSTER_WAIT; // how long till we spawn another random mosnter
 float C_MONSTER_DEV;
 float C_MONSTER_CNT;	// random monster total
+float monster_rnd_cnt; // random monsters on level
 
 void() lavaball_shot;
 void(entity e) chaos_mdlsize;
@@ -256,15 +257,16 @@ float IMP_MDRAGON					= 96;	// string STI_MDRAGON		= "impulse 96";
 float IMP_MSCOURGE				= 97;	// string STI_MSCOURGE		= "impulse 97";
 float IMP_MGREMLIN_F				= 98;	// string STI_MGREMLIN		= "impulse 98"; // flying gremlin
 float IMP_MGREMLIN_L				= 99;	// landlubber gremlin
+float IMP_MVOMIS					= 100;// string STI_MCTHON			= "impulse 95";
 
 // head skin map
 
-float HEADSKN_W					= 1;
-float HEADSKN_D					= 1; // 2;
 float HEADSKN_Q					= 0;
+float HEADSKN_W					= 1;
+float HEADSKN_D					= 2; // 2;
 float HEADSKN_PK					= 3;
 float HEADSKN_Q2					= 4;
-float HEADSKN_Q3					= 5;
+float HEADSKN_Q3					= 3; // 5;
 
 // evolution
 void(float silent) player_scourge_become;

@@ -385,7 +385,7 @@ void () respawn =
 		// get the spawn parms as they were at level start
 		setspawnparms (self);
 		// respawn
-		parm15 = self.morphy;
+		parm15 = -1;
 		PutClientInServer ();
 	}
 	else if (deathmatch)
@@ -397,18 +397,21 @@ void () respawn =
 		morph_clearparms(self, TRUE);
 
 		// set default spawn parms
-		parm15 = self.morphy;
 
 		if (!Q_100) // Cataboligne - 8.22.9 - pk orig oper
 			SetNewParms_PK();
 		else
 		SetNewParms ();
 	// respawn
+		parm15 = -1;
 		PutClientInServer ();
 	}
 	else
 	{	// restart the entire server
-			localcmd ("restart\n");
+// died in SP hack to restart
+		cvar_set("scratch3",ftos(0 - self.morphy)); // Cataboligne - 9.28.3
+
+		localcmd ("restart\n");
 	}
 };
 

@@ -2390,3 +2390,50 @@ void(float recurse, vector p1, vector p2, entity from, float damage) LightningDa
 {
 	LightningDamage (p1, p2, from, damage);
 };
+
+// crosshair controls
+
+// i - increment, if not 0, check sv against cvar
+// if i = -1, just reactivate crosshair
+
+void(entity e, float i) crosshair_con =
+{
+	if (!e.ishuman) return;
+
+	if (i < 0) // reactivate
+	{
+		if (	e.crosshair_sv == -666) 	e.crosshair_sv = 0;
+		e.crosshair_sv = fabs(e.crosshair_sv);
+	}
+
+	if (e.crosshair_sv < 0) return; // no impulse controls while off
+
+	if (i > 0)
+	{
+		if (e.crosshair_sv != cvar("crosshair"))
+			e.crosshair_sv = cvar("crosshair");
+
+		e.crosshair_sv = fabs(e.crosshair_sv) + i;
+		if (e.crosshair_sv > 7) e.crosshair_sv = 0;
+	}
+
+	stuffcmd(e, "crosshair ");
+	stuffcmd(e, ftos(e.crosshair_sv));
+	stuffcmd(e, "\n");	
+};
+
+void(entity e) crosshair_off =
+{
+	if (!e.ishuman) return;
+
+	if (cvar("crosshair"))
+	if (e.crosshair_sv != cvar("crosshair"))
+		e.crosshair_sv = cvar("crosshair");
+
+	e.crosshair_sv = 0 - fabs(e.crosshair_sv);
+	if (!e.crosshair_sv) e.crosshair_sv = -666;
+
+	stuffcmd(e, "crosshair ");
+	stuffcmd(e, ftos(e.crosshair_sv)); // save this so if game exists while off, it restores on reentry
+	stuffcmd(e, "\n");	
+};

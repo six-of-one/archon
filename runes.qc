@@ -260,26 +260,9 @@ void() mk_rune_set =
 	}
 };
 
-float(entity e, string ms) force_drop_set =
-{
-	if (!e.dropent)
-	{
-		e.dropent = spawn();
-		e.dropent.classname = "dropinv";
 
-// save notify stats
-		e.dropent.grap_state = cvar("con_notifytime");
-		e.dropent.grap_length = cvar("con_notify");
-	}
-	else
-	{
-		if (ms != "") sprint(e, ms);
-		return(TRUE);
-	}
-	return(FALSE);
-};
 
-// drop a single rune - in bit order 1 - 2 - 4 - 8
+// drop a single rune - in bit order 1 - 2 - 4 - 8 - 16 - 32 - 64 - 131072 - 262144 - 524288 - 1048576
 
 void(entity e) rune_drop =
 {
@@ -300,7 +283,7 @@ void(entity e) rune_drop =
 		f = f * 2;
 	}
 
-	if (k & RUNE_MASK_ALL) // drop a rune
+	if (k & RUNE_MASK) // drop a rune - wont drop if it was disabled by admin
 	{
 		if (force_drop_set(e, "Rune drop failure - clear menus and try again\n")) return;
 		drop_setup(e, 0);
@@ -312,7 +295,7 @@ void(entity e) rune_drop =
 			e.dropent = world;
 			return;
 		}
-		drop_inventory(1, e);
+		drop_inventory(1, e, anti_bounce); // must have anti bounce  here - rune could have been eject manually with impulse
 		remove(e.dropent);
 		e.dropent = world;
 	}
@@ -337,114 +320,127 @@ void(entity e) dead_runes =
 	{
 		newmis = world;
 		rune_drop(e);
-		if (newmis) item_eject(newmis, ' 340 340 300');
+		if (newmis) item_eject(newmis, GEN_BOUNCE);
 		f = f  * 2;
 	}
 	
 };
 
+// server runes were released on previous level - spawn them on new levels till retaken
+
+void() server_rune_follow =
+{
+	local float f, k, a;
+	local vector v;
+	local entity e;
+
+	f = 1;
+	k = SVR1;
+	if (serverflags & SVRF)
+	while (k < SVRF)
+	{
+		if ((k & serverflags) && !(f & serverflags))
+		{
+			e = find_tdest(FL_RSALL, "");
+			v = e.origin;
+
+			e = spawn();
+			e.spawnflags = f;
+			item_call_save(e, "item_sigil");
+			setorigin(e, v);
+			item_eject(e, GEN_BOUNCE);
+			a = 1;
+		}
+		else
+			serverflags = serverflags - (serverflags & k);
+
+		f = f * 2;
+		k = k * 2;
+	}
+	if (a)
+		bprint("\n***   \bRunes\b of power are following and have spawned on the map\n\n");
+}
 
 
 void(entity e) dead_artifact =
 {
 	local float f, a;
 
-	if (force_drop_set(e, "")) return;
+//	if (force_drop_set(e, "")) return;
 
 	if (e.items & IT_ARTIFACT)
 	{
 		f = IT_SUPERHEALTH;
-		
+
 		while (f <= IT_QUAD)
 		{
-			e.dropent.cnt = 1;
 
 			if (f == IT_SUPERHEALTH)
 			{
-				drop_string("Mega Health", IT_SUPERHEALTH, world);
+//				drop_string("Mega Health", IT_SUPERHEALTH, world);
+				drop_one(e, "Mega Health", IT_SUPERHEALTH, world, "", MED_BOUNCE_NOW, 0);
 			}
 
 			else if (f == IT_INVISIBILITY)
 			{
-				drop_string("Limited Invisibility", IT_INVISIBILITY, world);
+				drop_one(e, "Limited Invisibility", IT_INVISIBILITY, world, "", MED_BOUNCE_NOW, 0);
 			}
 
-			else if (f == IT_INVULNERABILITY)
+			else if (f == IT_INVULNERABILITY) // note: could only happen if admin kick comes thru here
 			{
-				drop_string("Invulerability", IT_INVULNERABILITY, world);
+				drop_one(e, "Invulerability", IT_INVULNERABILITY, world, "", MED_BOUNCE_NOW, 0);
 			}
 
 			else if (f == IT_QUAD)
 			{
-				drop_string("Quad Damage", IT_QUAD, world);
+				drop_one(e, "Quad Damage", IT_QUAD, world, "", MED_BOUNCE_NOW, 0);
 			}
 
 			else if ( (f == IT_SUIT) && !e.wetsuit_finished)
 			{
-				drop_string("Hazmat Suit", IT_SUIT, world);
+				drop_one(e, "Hazmat Suit", IT_SUIT, world, "", MED_BOUNCE_NOW, 0);
 			}
 
 			else if ( (f == IT_SUIT) && e.wetsuit_finished)
 			{
-				drop_string("Diving Suit", IT_SUIT, world);
+				drop_one(e, "Diving Suit", IT_SUIT, world, "", MED_BOUNCE_NOW, 0);
 			}
-
+/*
 			if (e.dropent.cnt == 2)
 			{
-				drop_inventory(1, e);
-				item_eject(newmis, ' 210 210 320');
-			}
+				drop_inventory(1, e, MED_BOUNCE);
+			}*/
 			f = f * 2;
 		}
 	}
 
 	if (e.empathy_finished)
 	{
-		e.dropent.cnt = 1;
-		drop_string("Empathy Shields", 0, world);
-		drop_inventory(1, e);
-		item_eject(newmis, ' 210 210 320');
+		drop_one(e, "Empathy Shields", 0, world, "", MED_BOUNCE_NOW, 0);
 	}
 
 	a = RUNE_FLG_FLY;
 	if (!(a & RUNE_MASK_ALL))
 	if (e.rune_flag & RUNE_FLG_FLY)
 	{
-		e.dropent.cnt = 1;
-		drop_string("Flying Rune", RUNE_FLG_FLY, world);
-		drop_inventory(1, e);
-		item_eject(newmis, ' 210 210 320');
+		drop_one(e, "Flying Rune", RUNE_FLG_FLY, world, "", MED_BOUNCE_NOW, 0);
 	}
 
 	a = RUNE_AMMO;
 	if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
 	if (e.rune_flag & RUNE_AMMO)
 	{
-		e.dropent.cnt = 1;
-		drop_string("Ammo Pack", RUNE_AMMO, world);
-		drop_inventory(1, e);
-		item_eject(newmis, ' 210 210 320');
+		drop_one(e, "Ammo Pack", RUNE_AMMO, world, "", MED_BOUNCE_NOW, 0);
 	}
 
-	remove(e.dropent);
-	e.dropent = world;
-};
-/*
-	if (e.wetsuit_finished || e.empathy_finished || e.silencer_finished || k)
-		sprint(p, "and the following items:\n");
-	if (e.wetsuit_finished)
+	if (e.dropent)
+	if (e.dropent.vwepmdl == "forcedrop")
 	{
-		if (e.items & IT_SUIT) 
+		remove(e.dropent);
+		e.dropent = world;
+	}
+};
 
-	f = RUNE_AMMO;
-	if (!(f & RUNE_MASK_ALL))
-	if (e.rune_flag & RUNE_AMMO) k = 1; //didnt show pack as rune, show it below
-
-	
-	f = RUNE_FLG_FLY;
-	if (!(f & RUNE_MASK_ALL))
-	if (e.rune_flag & RUNE_FLG_FLY) g = 1; //didnt show flight as rune, show it below
-*/
 
 // print rune info on impulse from e to p's console
 
@@ -501,6 +497,10 @@ void(entity e, entity p) rune_id =
 	if (!(f & RUNE_MASK_ALL))
 	if (e.rune_flag & RUNE_FLG_FLY) g = 1; //didnt show flight as rune, show it below
 
+	f = RUNE_AMMO;
+	if (!(f & RUNE_MASK_ALL))
+	if (e.rune_flag & RUNE_AMMO) k = 1; //didnt show pack as rune, show it below
+
 	f = e.items & IT_ARTIFACT;
 
 	if (!(e.rune_flag & RUNE_MASK_ALL) && (!g))
@@ -518,6 +518,8 @@ void(entity e, entity p) rune_id =
 		f = 1;
 		while (f < RUNE_MASK_ALL)
 		{
+			if (!g || f != RUNE_FLG_FLY)
+			if (!k || f != RUNE_AMMO)
 			if (f & e.rune_flag) rune_print(p, f, TRUE); 
 			f = f * 2;
 		}
@@ -527,10 +529,6 @@ void(entity e, entity p) rune_id =
 		sprint(p, "\n");
 
 	}
-
-	f = RUNE_AMMO;
-	if (!(f & RUNE_MASK_ALL))
-	if (e.rune_flag & RUNE_AMMO) k = 1; //didnt show pack as rune, show it below
 
 	f = e.items & IT_ARTIFACT;
 	if (f)
@@ -627,14 +625,17 @@ void () rune_1_expire =
 		if (self.rune_flag & RUNE_FLG_FLY)	
 			self.owner.movetype = MOVETYPE_WALK;
 		self.owner.rune_flag = self.owner.rune_flag - (self.owner.rune_flag & self.rune_flag);
-		if (self.owner.target2 == "progs/q3_art.mdl") self.owner.target2 = "";
+		if (self.wad == "art_shell")
+		{
+			self.owner.volume = 0;
+		}
 		else // for now not printing final message on q3 arts - q1 arts dont final message
 		{
 			sprint(self.owner, "The power of the ");
 			sprint(self.owner, self.netname);
-			if (self.noise4 == "q3_snd/poweruprespawn.wav")
-				sprint(self.owner, " has expired.\n");
-			else
+//			if (self.wad == "art_shell")
+//				sprint(self.owner, " has expired.\n");
+//			else
 			sprint(self.owner, " rune has expired.\n");
 		}
 	}
@@ -682,7 +683,7 @@ void () rune_touch =
 	if (!deathmatch) rune_sigil_touch(); // map rune in sp must allow touch even if rules prevent getting rune
 
 	if (RUNES < 3)
-	if (!RUNE_AR1M) // allow rule 1 / 2 multiple runes if not, only 1 each of rune & tech
+	if (!RUNE_AR1M) // allow rule 1 / 2 multiple runes  -- if not, only 1 each of rune & tech
 	{
 		if (self.spawnflags & TECH_MASK_ALL)
 		if (other.rune_flag & TECH_MASK_ALL) // has a tech already
@@ -1021,7 +1022,7 @@ void() run_runes =
 
 	if (RUNE_MASK < 1)
 	{
-		bprint("\n***   Runes of power misconfigured - nothing to do, exiting...\n");
+		bprint("\n***   \bRunes\b of power misconfigured - nothing to do, exiting...\n");
 		return;
 	}
 
@@ -1171,10 +1172,11 @@ void() run_runes =
 				e.think = rune_maker;
 				e.nextthink = time + PIC_TO + 2 + 23 * random(); // do this well after items spawn - PIC_TO
 			}
-			bprint("\n***   Runes of power will spawn on this map - keep an eye out\n");
+			bprint("\n***   \bRunes\b of power will spawn on this map - keep an eye out\n");
+			rune_new_map = TRUE;
 		}
 		else
-			bprint("\n***   Rune server - turned off and all spawned runes removed\n");
+			bprint("\n***   \bRune\b server - turned off and all spawned runes removed\n");
 
 		if (!cvar("sv_c_rune_cnt")) // defaults - must check any time rule is changed
 		{
@@ -1182,6 +1184,12 @@ void() run_runes =
 			if (r == -2) RUNE_CNT = 5;
 			if (RUNES > 1) RUNE_CNT = 9;
 		}
+	}
+	else if (RUNES)
+	if (!rune_new_map)
+	{
+		bprint("\n***   \bRunes\b of power will spawn on this map - keep an eye out\n");
+		rune_new_map = TRUE;
 	}
 
 
@@ -1192,7 +1200,7 @@ void() run_runes =
 		rune_count = cnt_ent(world, "map", "rune");
 		if (RUNE_CNT < 1)
 		{
-			bprint("\n***   Rune server - manually configured < 1 rune - no runes will exist!\n");
+			bprint("\n***   \bRune\b server - manually configured < 1 rune - no runes will exist!\n");
 		}
 		if (rune_count > 0)
 		{
@@ -1317,7 +1325,7 @@ cap = 3.5
 
 // note: q3 regen item is not combind with runes
 
-	if (self.target2 == "progs/q3_art.mdl") // q3 regen takes health to 200
+	if (self.wad == "art_shell") // q3 regen takes health to 200
 	{
 		f = 5; // incase of tech overlap
 		if (self.volume > 100) // set for player during item touch q3_pwr_touch
@@ -1346,19 +1354,25 @@ cap = 3.5
 			h = 150;
 			f = 5;
 			if (self.armorvalue < h)
+			{
 				self.armorvalue = self.armorvalue + f;
+				if (self.armorvalue > h) self.armorvalue = h;
+				if (self.armortype < DEF_DOC_ARMORTYPE) self.armortype = DEF_DOC_ARMORTYPE;
+				if (!self.items & IT_ARMOR_BITS) self.items = self.items | IT_ARMOR2;
+			}
 		}
 		return;
 	}
 
-	if (self.target2 != "progs/q3_art.mdl") // apparently q3 doesnt regen armor
+//	if (self.target2 != "progs/q3_art.mdl") // apparently q3 doesnt regen armor
+	if (!stack_search(self, "item_regen")) // apparently q3 doesnt regen armor
 	if (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3))
 	if (self.armorvalue < 200) // q2 allows values over 200
 	{
 		self.armorvalue = self.armorvalue + f;
 		if ((self.items & IT_ARMOR3) && (self.armorvalue > 200)) // NOTE: increments q2 armor beyond local max limit in some cases (q2 jacket)
 			self.armorvalue = 200;
-		else if ((self.items & IT_ARMOR2) && (self.armorvalue > 150))
+		else if ((self.items & IT_ARMOR2) && (self.armorvalue > 150)) // note: these need to be chaos change able
 		  self.armorvalue = 150;
 		else if ((self.items & IT_ARMOR1) && (self.armorvalue > 100))
 			self.armorvalue = 100;
@@ -1416,9 +1430,11 @@ void() rune_dmg_sound =
 {
 	if (self.rune_flag & RUNE_FLG_DM || self.rune_flag & T_AMP)
 	{
-		if (!(self.rune_flag & RUNE_FLG_DM) && (self.rune_flag & T_AMP) )
+		if (RUNE_QUAD_COMB)
+		if (self.rune_flag & T_AMP)
 //		if (cvar("sv_c_rune") > 1 && ULOK2) // quad & rune
 		if (self.items & IT_QUAD)
+		if (self.super_sound == (time + 1))
 		{
 			sound (self, CHAN_BODY, "q2_snd/tech2x.wav", 1, ATTN_NORM);
 			return;
@@ -1427,6 +1443,9 @@ void() rune_dmg_sound =
 		if (self.super_sound < time) // note - quad sound blocks this
 		{
 			self.super_sound = time + 1;
+			if (RUNE_TECH_DMG_COMB && (self.rune_flag & T_AMP) && (self.rune_flag & RUNE_FLG_DM))
+				sound (self, CHAN_BODY, "q2_snd/tech2x.wav", 1, ATTN_NORM);
+			else
 			if ( (self.rune_flag & T_AMP) && !(self.rune_flag & RUNE_FLG_DM) )
 				sound (self, CHAN_BODY, tech_amp_sound, 1, ATTN_NORM);
 			else

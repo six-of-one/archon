@@ -927,18 +927,28 @@ void (entity e) bot_froze =
 void() bot_wakey =
 {
 	if (self.owner.deadflag)
-	if (self.owner.button16 == -66)
+	if (self.owner.button16 == -666000) // make sure bot didnt respawn or change state
 	if (!self.owner.ishuman)
 	{
+
+
+bprint("------------------- ** bot woken  ");
+//bprint(item_ident(e));
+bprint(self.owner.netname);
+bprint("\n");
+
+
+		self.owner.button16 = self.owner.frags;
 		if (self.owner.classname == "pk*bot")
 		{
-			self.owner.nextthink = time + 1 + random();
+			self.owner.nextthink = time + random();
 			self.owner.think = respawnBot;
 		}
 		else
 		{
-			self.owner.nextthink = time + 1 + random();
-			self.owner.think = BotAI;
+			self.owner.nextthink = time + random();
+			self.owner.think = respawn;
+			self.owner.button0 = 1; // try to force a respawn - this may not work
 		}
 	}
 	remove(self);
@@ -980,6 +990,7 @@ bprint("bot fix started\n");
 		bot_fix.classname = "bot_fix";
 		bot_fix.think = bot_fixer;
 		bot_fix.nextthink = time + BOT_FIX_TIME;
+		bot_fix.cnt = 3; // only do a dead check every 3 or 4
 
 		while (e)
 		{
@@ -992,54 +1003,59 @@ bprint("bot fix started\n");
 
 	if (self.classname == "bot_fix")
 	{
+		if (!BOTFREEZE)
 		while (e)
 		{
 			if (BOT_FIXED)
 			if (e.button16 == e.frags)
 			{
-				if (e.deadflag)
+				if (!(inHubMap && e.map != "")) // do nothing on hub maps
 				{
-					f = spawn();
-					f.think = bot_wakey;
-					f.nextthink = time + 5 + random() * 10;
-					f.owner = e;
-					f.owner.button16 = -66;
+					if (e.deadflag)
+					{
+						f = spawn();
+						f.think = bot_wakey;
+						f.nextthink = time + 2 + random() * 5;
+						f.owner = e;
+						e.button16 = -666000;
 
 
-bprint("** bot waking  ");
+bprint("------------------- ** bot waking  ");
 //bprint(item_ident(e));
 bprint(e.netname);
 bprint("\n");
 
 
 
-				}
-				else
-				{
+					}
+					else if (bot_fix.cnt < 1)
+					{
 
 
-bprint("** bot fixing  ");
+bprint("------------------- ** bot fixing  ");
 bprint(e.netname);
 //bprint(item_ident(e));
 bprint("\n");
 
 
-				bot_fix.frags = bot_fix.frags + 1;
-				e.armorvalue = 0;
-				e.invincible_finished = 0;
-				T_Damage (e,world,bot_fix,e.health + 10);
+					bot_fix.frags = bot_fix.frags + 1;
+					e.armorvalue = 0;
+					e.invincible_finished = 0;
+					T_Damage (e,world,bot_fix,e.health + 10);
+					}
 				}
 			}
-			e.button16 = e.frags;
+			else
+			if (e.button16 != -666000)
+				e.button16 = e.frags;
 			e = find(e,class_select,"class_bot");
 		}
 
 		self.nextthink = time + BOT_FIX_TIME;
+		bot_fix.cnt = bot_fix.cnt - 1;
+		 if (bot_fix.cnt < 0) bot_fix.cnt = 2;
 	}
-
 };
-
-
 
 
 

@@ -494,7 +494,7 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	e1 = e2 = world;
 
 	traceline (p1, p2, FALSE, self);
-	if (trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT))
+	if (trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent,from,from,damage);
@@ -507,7 +507,7 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	e1 = trace_ent;
 
 	traceline (p1 + f, p2 + f, FALSE, self);
-	if (trace_ent != e1 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT))
+	if (trace_ent != e1 && trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent,from,from,damage);
@@ -515,7 +515,7 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	e2 = trace_ent;
 
 	traceline (p1 - f, p2 - f, FALSE, self);
-	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT))
+	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent,from,from,damage);
@@ -1435,6 +1435,69 @@ void () QuadCheat =
 		if (deathmatch || coop)	b_launch(1);
 		else bprint("*** warning: botmatch attempted in single player!\n");
 	}
+// TEST:
+
+	setmodel(self, self.model);
+	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+
+	if (cvar("saved1") == -555) // simple bot watch
+	if (find(world, class_select,"class_bot")|| find(world, map,"rune"))
+	{
+		if (!self.enemy) // simple bot watch
+		{
+			self.enemy = find(world, class_select,"class_bot");
+			if (!self.enemy) 
+				self.enemy = find(world, map,"rune");
+			if (self.enemy) 
+			{
+				set_viewport( self, self.enemy);
+				bprint(" --- *** view:  ");
+				bprint(self.enemy.netname);
+				bprint("\n");
+			}
+		}
+		else
+		if (self.enemy.map == "rune")
+		{
+			self.enemy = find(self.enemy, map,"rune");
+			if (self.enemy)
+			{
+				set_viewport( self, self.enemy);
+				bprint(" --- rune view:  ");
+				bprint(self.enemy.netname);
+				bprint("\n");
+			}
+			else
+			{
+				set_viewport( self, self);
+				bprint(" --- *** view: home ");
+				bprint("\n");
+			}
+			
+		}
+		else
+		{
+			self.enemy = find(self.enemy, class_select,"class_bot");
+			if (self.enemy)
+			{
+				set_viewport( self, self.enemy);
+				bprint(" --- bot view:  ");
+				bprint(self.enemy.netname);
+				bprint("\n");
+			}
+			else
+			{
+				self.enemy = find(world, map,"rune");
+				if (!self.enemy)
+				{
+					set_viewport( self, self);
+					bprint(" --- *** view: home ");
+					bprint("\n");
+				}
+			}
+		}
+	}
+
 	if (deathmatch || coop)
 		return ;
 	self.super_time = 1;
@@ -1454,13 +1517,19 @@ void () ImpulseCommands =
 // runes
 	if (self.impulse == IMP_RUNEID)
 		rune_id(self, self);
-	if (self.impulse == IMP_RUNEDROP)
+	else if (self.impulse == IMP_RUNEDROP)
 		rune_drop(self);
+
+// crosshair
+	if (self.impulse == IMP_CROSSHAIR)
+	{
+		crosshair_con(self, 1);
+	}
 
 // inventory
 	if (self.impulse == IMP_INV)
 		inventory();
-	if (self.impulse == IMP_DROPI) // CHECK: *_100
+	else if (self.impulse == IMP_DROPI) // CHECK: *_100
 	{
 		if (!self.admin)
 			self.admin = USER_MENU;
@@ -1554,8 +1623,8 @@ void () SuperDamageSound =
 			self.super_sound = time + 1;
 			sound (self, CHAN_BODY, "items/damage3.wav", 1, ATTN_NORM);
 		}
-		rune_dmg_sound();
 	}
+	rune_dmg_sound();
 };
 
 

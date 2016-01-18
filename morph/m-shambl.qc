@@ -134,6 +134,7 @@ void() player_CastLightning =
 	org = self.origin + '0 0 40';
 
 //	makevectors (self.v_angle);
+
 	dir = normalize (v_forward);
 
 	traceline (org, self.origin + dir*4096, TRUE, self);

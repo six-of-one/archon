@@ -108,21 +108,21 @@ void() boss_blahblah =
 			f = 0;
 			if (vlen(e.origin - self.origin) < (BOSS_BLAH_DIST * 0.6))
 				f = 2 * random();
-//				T_Damage (e, self, self, 2 * random());
+
 			if (vlen(e.origin - self.origin) < (BOSS_BLAH_DIST * 0.25))
 				f = f + 2 + 4 * random();
-//				T_Damage (e, self, self, 2 + 4 * random());
-if (!e.flags & FL_CLIENT)//TEST:
+
 			T_Damage (e, self, self, BOSS_BLAH_DMG + f);
 
 
-
+if (WARNING)
+{
 bprint("boss blah attack: ");
 bprint(item_ident(e));
 bprint(" - dmg = ");
 bprint(ftos(f + 1));
 bprint("\n");
-
+}
 
 
 

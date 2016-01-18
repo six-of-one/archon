@@ -173,36 +173,17 @@ void() PK_init =
 
 	if (!RUNES)
 	{
-		local float f, k, a;
-		local vector v;
-		SVRF = SVR1 + SVR2 + SVR4 + SVR8;
+		SVRF = SVR1 + SVR2 + SVR4 + SVR8; // detect follower runes
 	
-		f = 1;
-		k = SVR1;
 		if (serverflags & SVRF)
-		while (k < SVRF)
 		{
-			if ((k & serverflags) && !(f & serverflags))
-			{
-				e = find_tdest(FL_RSALL, "");
-				v = e.origin;
-				
-				e = spawn();
-				e.spawnflags = f;
-				item_call_save(e, "item_sigil");
-				setorigin(e, v);
-				item_eject(e, ' 340 340 300');
-				a = 1;
-			}
-			else
-				serverflags = serverflags - (serverflags & k);
-
-			f = f * 2;
-			k = k * 2;
+			e = spawn();
+			e.think = server_rune_follow;
+			e.nextthink = time + PIC_TO - 2;
 		}
-		if (a) tbprint("\n***   \bRunes\b of power are following and have spawned on the map\n\n");
 	}
-
+	rune_new_map = FALSE;
+	
 // extra sounds by...are apparently not supplied, except gib_?.wav
 
 	pk_xsound = (pk_flags & PK_XSOUND);
@@ -654,7 +635,11 @@ void() pk_liveupd =
 	ADMINLOCK = cvar("sv_c_adminlock");
 	WARNING = cvar("sv_c_warning");
 
+// bots
 	if (BOTFREEZE != cvar("sv_c_botfreeze")) bot_froze(world);
+
+	noway_below = cvar("sv_bot_noway_below"); // no bot waypoints below this
+	noway_above = cvar("sv_bot_noway_above"); // bot bot waypoints above this
 
 	NODECOR = cvar("sv_c_nodecor");
 
@@ -1521,6 +1506,10 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_bot_pk", "0"); // bot count . skills non team - replaces parm12
 		registercvar("sv_bot_pktm", "0"); // bot count . skills - team - replaces parm13
 		registercvar("sv_bot_pkset", "0"); // bot stats saved
+
+// bot waypoint
+		registercvar("sv_bot_noway_below", "0"); // no bot waypoints below this
+		registercvar("sv_bot_noway_above", "0"); // bot bot waypoints above this
 
 // rune server
 		registercvar("sv_c_rune", "0");
