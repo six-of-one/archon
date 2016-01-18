@@ -134,10 +134,13 @@ void() health_touch =
 //		}
 	other.healtype = self.healtype; // fire, plague & continous health rot stop - Cataboligne 1.15.8
 
-	sprint(other, "You receive ");
-	s1 = ftos(self.healamount + amount);
-	sprint(other, s1);
-	sprint(other, " health\n");
+	if (self.netname != "Mega Sphere")
+	{
+		sprint(other, "You receive ");
+		s1 = ftos(self.healamount + amount);
+		sprint(other, s1);
+		sprint(other, " health\n");
+	}
 	
 // health touch sound
 	sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
@@ -200,6 +203,90 @@ void () item_health =
 			self.volume = Q_MEGA_MAX;
 	}
 };
+
+// x powerup touch
+
+void() x_pwr_touch =
+{
+	local float t;
+
+	if (other.classname != "player")
+			return;
+	if (other.health <= 0)
+		return ;
+
+	sprint (other,"You got the ");
+	sprint (other,self.netname);
+	sprint (other,"\n");
+
+	if (Q_99 || (deathmatch != 4)) // *pk - my new rule, logical extrapolation
+	if (deathmatch)
+	{
+		self.mdl = self.model;
+
+		if (self.wait)
+			self.nextthink = time + self.wait;
+		else
+			self.nextthink = time + RSP_TIME * 2;
+
+		self.think = SUB_regen;
+	}
+
+	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	stuffcmd (other, "bf\n");
+	self.solid = SOLID_NOT;
+	other.items = other.items | self.items;
+	self.model = string_null;
+
+	t = self.dmgtime;
+	if (!t) t = POW_TIME;
+
+	if (self.items == IT_SUIT)
+	{
+		other.rad_time = 1;
+		if (other.radsuit_finished < time)
+			other.radsuit_finished = time + t;
+		else
+			other.radsuit_finished = other.radsuit_finished + t;
+	}
+
+	if (self.items == IT_INVISIBILITY)
+	{
+		other.invisible_time = 1;
+		if (other.invisible_finished < time)
+			other.invisible_finished = time + t;
+		else
+			other.invisible_finished = other.invisible_finished + t;
+	}
+
+	if (self.items == IT_INVULNERABILITY)
+	{
+		other.invincible_time = 1;
+		if (other.invincible_finished < time)
+			other.invincible_finished = time + t;
+		else
+			other.invincible_finished = other.invincible_finished + t;
+	}
+
+	if (self.items == IT_QUAD)
+	{
+		if (self.mdl == "progs/d_berzerk.mdl") // special - doom berserk - TDO: even more special - 4x only for fists, red haze
+			health_touch();
+
+		other.super_time = 1;
+		if (other.super_damage_finished < time)
+			other.super_damage_finished = time + t;
+		else
+			other.super_damage_finished = other.super_damage_finished + t;
+	}
+
+	if (self.netname == "Mega Sphere")
+	{
+		health_touch();
+		armor_touch();
+	}
+};
+
 
 // inventory display & control
 

@@ -813,12 +813,14 @@ void() item_power_screen =
 void() item_silencer =
 {
 	q100_weapon_shotgun();
+	self.netname = "Silencer";
+
+	self.wait = Q2_POWER_WAIT;
+	self.dmgtime = Q2_POWER_TIME;
+
 	setmodel (self, "progs/q2_silencer.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Silencer";
-	self.wait = Q2_POWER_WAIT;
-	self.dmgtime = Q2_POWER_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -827,12 +829,16 @@ void() item_silencer =
 void() item_invulnerability =
 {
 	item_artifact_invulnerability();
-	self.noise = "doom/dsgetpow.wav";
-	self.noise4 = "q2_snd/respawn1.wav";
-	setmodel (self, "progs/q2_inv.mdl");
 	self.netname = "Invulnerability";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_INVULNERABILITY;
 	self.wait = Q2_POWER_WAIT;
 	self.dmgtime = Q2_POWER_TIME;
+
+	setmodel (self, "progs/q2_inv.mdl");
+	self.noise = "doom/dsgetpow.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -840,12 +846,16 @@ void() item_invulnerability =
 void() q2_item_enviro =
 {
 	item_artifact_envirosuit();
-	self.noise = "doom/dsitemup.wav";
-	setmodel (self, "progs/q2_envirosuit.mdl");
-	self.delay = POW_TIME;
 	self.netname = "Environmental Suit";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_SUIT;
+	self.delay = POW_TIME;
 	self.wait = Q2_POWER_WAIT;
 	self.dmgtime = Q2_POWER_TIME;
+
+	setmodel (self, "progs/q2_envirosuit.mdl");
+	self.noise = "doom/dsitemup.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -853,12 +863,16 @@ void() q2_item_enviro =
 void() q2_item_quad =
 {
 	item_artifact_super_damage();
-	self.noise = "doom/dsitemup.wav";
-	setmodel (self, "progs/q2_quad.mdl");
-	self.delay = POW_TIME;
 	self.netname = "Quad Damage";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_QUAD;
+	self.delay = POW_TIME;
 	self.wait = Q2_POWER_WAIT;
 	self.dmgtime = Q2_POWER_TIME;
+
+	setmodel (self, "progs/q2_quad.mdl");
+	self.noise = "doom/dsitemup.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -866,14 +880,16 @@ void() q2_item_quad =
 void() item_adrenaline =
 {
 	q100_item_health();
-	setmodel(self, "progs/q2_adrenaline.mdl");
-	self.noise = "doom/dsitemup.wav";
-	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Adrenaline";
+
 	self.healamount = Q2_DEF_HMEGATUBE;
 	self.healtype = HEAL_NORM;
 	self.volume = 100; // max add
 	self.wait = Q2_POWER_WAIT;
+
+	setmodel(self, "progs/q2_adrenaline.mdl");
+	self.noise = "doom/dsitemup.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -881,11 +897,13 @@ void() item_adrenaline =
 void() item_bandolier =
 {
 	item_spikes();
+	self.netname = "Bandolier";
+
+	self.wait = RSP_TIME;
+
 	setmodel(self, "progs/q2_bando.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Bandolier";
-	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -893,17 +911,18 @@ void() item_bandolier =
 void() item_pack =
 {
 	item_spikes();
+	self.netname = "Ammo Pack";
+
 	self.ammo_bullet = 50;
 	self.ammo_shells = 10;
 	self.ammo_rockets = 10; // 5; // includes 5 grenades
 	self.ammo_cells = 50;
 	self.ammo_slug = 10;
+	self.wait = RSP_TIME;
 
 	setmodel(self, "progs/q2_pack.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Ammo Pack";
-	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -911,12 +930,14 @@ void() item_pack =
 void() item_breather =
 {
 	item_spikes();
+	self.netname = "Re-breather";
+
+	self.wait = Q2_POWER_WAIT;
+	self.dmgtime = Q2_POWER_TIME;
+
 	setmodel(self, "progs/q2_breather.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Re-breather";
-	self.wait = Q2_POWER_WAIT;
-	self.dmgtime = Q2_POWER_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };

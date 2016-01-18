@@ -455,6 +455,7 @@ void() d_weapon_bfg =
 	self.dmg = DOOM_BFG_DMG;
 //	self.dodmg = 128; // splash
 	self.dmg_save = 40;
+	self.punchangle = ' 0.45 0.45 0'; // for traces ?
 	self.wait = RSP_TIME;
 
 // appearances
@@ -714,14 +715,18 @@ void() d_item_pack =
 void() d_art_berserker =
 {
 	q100_item_health();
-	setmodel(self, "progs/d_berzerk.mdl");
-	self.noise = "doom/dsitemup.wav";
-	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Berserker";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_QUAD;
 	self.healamount = 100;
 	self.healtype = HEAL_NORM;
 	self.wait = D_POWER_WAIT;
 	self.dmgtime = D_POWER_TIME;
+
+	setmodel(self, "progs/d_berzerk.mdl");
+	self.noise = "doom/dsitemup.wav"; // TDO: check this
+	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -731,15 +736,17 @@ void() d_art_berserker =
 void() d_art_soulsphere =
 {
 	q100_item_health();
-	setmodel(self, "progs/d_spheres.mdl");
-	self.skin = 0;
-	self.noise = "doom/dsgetpow.wav";
-	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Soul Sphere";
+
 	self.healamount = D_DEF_SOULSPH;
 	self.healtype = HEAL_SOUL;
 	self.volume = 200; // max add
 	self.wait = D_POWER_WAIT;
+
+	setmodel(self, "progs/d_spheres.mdl");
+	self.skin = 0;
+	self.noise = "doom/dsgetpow.wav";
+	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -748,17 +755,19 @@ void() d_art_megasphere =
 {
 // armor
 	d_item_armorblue();
+	self.netname = "Mega Sphere";
+
+	self.touch = x_pwr_touch;
+// heal
+	self.healamount = 200;
+	self.healtype = HEAL_SOUL;
+	self.volume = 200; // max add - done by armor as well, ok they are same max
+	self.wait = D_POWER_WAIT;
+
 	setmodel(self, "progs/d_spheres.mdl");
 	self.skin = 1;
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
-	self.netname = "Mega Sphere";
-	self.touch = mega_touch;
-// heal
-	self.healamount = D_DEF_SOULSPH;
-	self.healtype = HEAL_SOUL;
-	self.volume = 200; // max add
-	self.wait = D_POWER_WAIT;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -766,13 +775,17 @@ void() d_art_megasphere =
 void() d_art_invulnerable =
 {
 	item_artifact_invulnerability();
-	self.noise = "doom/dsgetpow.wav";
-	self.noise4 = "doom/dsitembk.wav";
-	setmodel (self, "progs/d_spheres.mdl");
-	self.skin = 2;
 	self.netname = "Invulnerability";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_INVULNERABILITY;
 	self.wait = D_POWER_WAIT;
 	self.dmgtime = D_POWER_TIME;
+
+	setmodel (self, "progs/d_spheres.mdl");
+	self.skin = 2;
+	self.noise = "doom/dsgetpow.wav";
+	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -780,13 +793,17 @@ void() d_art_invulnerable =
 void() d_art_invisible =
 {
 	item_artifact_invisibility();
-	self.noise = "doom/dsgetpow.wav";
-	self.noise4 = "doom/dsitembk.wav";
-	setmodel (self, "progs/d_spheres.mdl");
-	self.skin = 3;
 	self.netname = "Invisibilty";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_INVISIBILITY;
 	self.wait = D_POWER_WAIT;
 	self.dmgtime = D_POWER_TIME;
+
+	setmodel (self, "progs/d_spheres.mdl");
+	self.skin = 3;
+	self.noise = "doom/dsgetpow.wav";
+	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -794,11 +811,16 @@ void() d_art_invisible =
 void() d_art_radsuit =
 {
 	item_artifact_envirosuit();
-	self.noise = "doom/dsitemup.wav"; // radsuit finish sounds, proper op
-	setmodel (self, "progs/d_radsuit.mdl");
 	self.netname = "Radiation Suit";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_SUIT;
 	self.wait = D_POWER_WAIT;
 	self.dmgtime = D_POWER_TIME;
+
+	setmodel (self, "progs/d_radsuit.mdl");
+	self.noise = "doom/dsitemup.wav"; // radsuit finish sounds, proper op
+	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -1229,36 +1251,6 @@ void() d_rep_set =
 		e.classname = "d_reps";
 		e.owner = self;
 	}
-};
-
-float() mega_touch =
-{
-//	health_touch();
-//	armor_touch();
-
-	local float arm, hl;
-	arm = hl = 1;
-
-// supply armor
-	if (other.armorvalue < self.currentammo)
-	{
-			arm = 0; // got armor portion of mega sphere
-			other.armortype = self.style;
-			other.armorvalue = self.currentammo;
-			other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + self.items;
-		
-	}
-
-// supply health
-	if (T_Heal(other, self.healamount, 1))
-	{
-		if (self.healtype == HEAL_SOUL)
-		if (other.health >= D_SOUL_MAX) // * other.health_modifier)
-			other.health = D_SOUL_MAX; // * other.health_modifier;
-	hl = 0;
-	}
-
-	return(arm & hl);
 };
 
 void() wchg2_weapon_touch =

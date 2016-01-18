@@ -1103,6 +1103,10 @@ void() q3_item_quad =
 {
 	self.classname = "item_artifact_super_damage";
 	item_artifact_super_damage();
+	self.netname = "Quad Damage";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_QUAD;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -1128,6 +1132,9 @@ void() item_regen =
 	self.classname = "item_sigil";
 	self.spawnflags = RUNE_FLG_RG; //rune_bit_code(rune_bit_code(0, RUNE_FLG_RG),0);
 	item_sigil();
+	self.netname = "Regeneration";
+
+
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -1137,6 +1144,10 @@ void() item_invis =
 {
 	self.classname = "item_artifact_invisibility";
 	item_artifact_invisibility();
+	self.netname = "Invisibility";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_INVISIBILITY;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -1147,6 +1158,10 @@ void() q3_item_enviro =
 {
 	self.classname = "item_artifact_envirosuit";
 	item_artifact_envirosuit();
+	self.netname = "Battle Suit";
+
+	self.touch = x_pwr_touch;
+	self.items = IT_SUIT;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -1172,6 +1187,8 @@ void() item_haste =
 	self.classname = "item_sigil";
 	self.spawnflags = RUNE_FLG_HS; //rune_bit_code(rune_bit_code(0, RUNE_FLG_HS),0);
 	item_sigil();
+	self.netname = "Haste";
+
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -1183,6 +1200,8 @@ void() item_flight =
 //	self.spawnflags = rune_bit_code(0, RUNE_FLG_FLT);
 //	item_sigil();
 	item_pack(); // FIX: placeholder only
+	self.netname = "Flight";
+
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -1195,6 +1214,8 @@ void() holdable_medkit =
 {
 	self.classname = "item_painkeep_can";
 //	item_painkeep_can();
+	self.netname = "Holdable Medkit";
+
 	if (!self.wait) self.wait = RSP_TIME * 2;
 
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -1205,6 +1226,8 @@ void() holdable_teleporter =
 {
 	self.classname = "item_pkplus_phone";
 //	item_pkplus_phone();
+	self.netname = "Holdable Teleport";
+
 	if (!self.wait) self.wait = RSP_TIME * 2;
 
 	if (self.class_select == "") self.class_select = "q3_item";
