@@ -520,6 +520,25 @@ vector(vector src, float lbper, vector lbvec, float lcnt) lava_shot =
 
 void () fire_fly_touch =
 {
+	if (other)
+	if (other == self.owner)
+		return;
+
+	if (Q_100 || PK_100)
+	{
+		if (pointcontents(self.origin) == CONTENT_SKY) { SUB_Remove(); return; }
+	}
+	else
+
+	if (sky_touch("", v0, self))
+	{
+		SUB_Remove();
+		return;
+	}
+
+	if (other.solid == SOLID_TRIGGER)
+		return;	// trigger field, do nothing
+
 	if (other.mask_x != CB_CTHON) // Cataboligne - 9.22.11 - only here till we get chaos_ff done IMP: remove
 	T_Damage (other,self,self,self.dmg);
 	remove (self);

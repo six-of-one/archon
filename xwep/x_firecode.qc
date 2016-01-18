@@ -2168,6 +2168,24 @@ float(entity o) BlastProof =
 	else if (o.map == "blastproof_.25") d = 0.25;
 	else if (o.map == "blastproof_.5") d = 0.5;
 	else if (o.map == "blastproof_.75") d = 0.75; */
+	else if (o.wad == "MEGA") d = 0.8;	// mega monsters take 8o% dmg
+	else if (o.wad == "SUPER") d = 0.4;	// super monsters take less dmg
+	else if (o.wad == "SUPER_XMAD") d = 0.3 - random();	// extra nad super monsters take _even_ less dmg
 
 	return(d);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

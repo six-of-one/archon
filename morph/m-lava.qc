@@ -339,7 +339,7 @@ void() lavablob_mytosis =
 
 	self.pain_finished = time + 2;
 
-	tbaby_mitosis();
+	tbaby_mitosis(0);
 	if (!newmis) return; // didnt spawn, go back
 
 	self.th_pain = player_pain; // because mytosis fn nulls this

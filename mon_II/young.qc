@@ -425,6 +425,8 @@ void() young_lg =
 //	self.rad_time = time + YOUNG_LIFE_LG + random() * 18;
 	self.rad_time = MAXFL; // no more evolution for now
 	self.dmg = 40;
+	self.wad = "MEGA";
+
 	young_lgwalk1();
 };
 
