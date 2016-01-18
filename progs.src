@@ -162,12 +162,16 @@ pk_src/pk_artifacts.qc
 morph/morph_print.qc
 morph/morph.qc
 morph/m-scourge.qc
+morph/m-cthon.qc
+morph/m-lava.qc
 morph/m-wizard.qc
 morph/m-shalra.qc
 morph/m-enforcer.qc
 morph/m-zombie.qc
 morph/m-demon.qc
 morph/m-hknigh.qc
+morph/m-ogre.qc
+morph/m-shambl.qc
 morph/m-anode.qc
 
 anode.qc

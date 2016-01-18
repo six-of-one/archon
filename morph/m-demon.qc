@@ -334,8 +334,8 @@ void(float silent) player_demon_become =
 	self._attack=player_demon_attack;
 	self._impulse=player_demon_impulse;
 //	self._can_get_p=SUB_False;
-//	self._killmsg=player_demon_killmsg;
-//	self._killmsg2=player_demon_killmsg2;
+	self._killmsg=player_demon_killmsg;
+	self._killmsg2=player_demon_killmsg2;
 
 	setmodel(self,"progs/demon.mdl");
 //	self.modelindex_morph=self.modelindex;

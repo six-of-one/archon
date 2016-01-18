@@ -512,6 +512,8 @@ void() PutClientInServer =
 	self._die = SUB_Null;
 	self._summon = SUB_Null;
 	self._alt_fire = SUB_Null;
+	self._killmsg = SUB_Null;
+	self._killmsg2 = SUB_Null;
 
 	DecodeLevelParms ();
 
@@ -549,7 +551,7 @@ void() PutClientInServer =
 		stuffcmd(self, "exec anode.cfg");
 	}
 
-//	self.morphy = IMP_MZOMBIE; // TEST:
+//s	self.morphy = IMP_MOGRE; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
 
 	W_SetCurrentAmmo (); // moved for m0rphic
@@ -931,6 +933,200 @@ void () CheckPowerups =
 
 };
 
+/*
+===========
+WaterMove
+
+============
+*/
+void () q100_WaterMove;
+
+void () WaterMove =
+{
+	local float f;
+	local float ISL,drown; // new drown test
+	local entity e;
+
+	if (self.classname == OBSERVER) // Cataboligne 8.9.9 purify - chase cam (dead) & observer - no water stuff
+		return;
+
+	if (Q_100 || PK_100)
+	{
+		q100_WaterMove();
+		return;
+	}
+
+//dprint (ftos(self.waterlevel));
+
+	if (DARKPLACES)
+	if (self.watertype == CONTENT_WATER)
+	{
+		surfnum  = getsurfacenearpoint(world, self.origin);
+		if (surfnum >= 0)
+		{
+			f = FALSE;
+	
+			surface = getsurfacetexture(world, surfnum);
+			if (surface == "*teleport") f = TRUE; // teleport is not water, cant swim. cant drown
+			if (surface == "*teleport2") f = TRUE;
+			if (surface == "*teleport_pk") f = TRUE;
+			if (surface == "*teleport_pk2") f = TRUE;
+			if (surface == "*teleport_pk3") f = TRUE;
+			if (surface == "*hellaport") f = TRUE;
+			if (surface == "*time") f = TRUE;
+			if (surface == "*tele1") f = TRUE;
+			if (surface == "*tele_t1") f = TRUE;
+
+			if (f)
+			{
+				self.watertype = self.waterlevel = 0;
+			}
+		}
+	}
+
+	if (self.waterlevel != 3)
+	{
+		if (self.mask_x == CB_HUMAN)
+		{
+			if (self.air_finished < time)
+				sound (self, CHAN_VOICE, "player/gasp2.wav", 1, ATTN_NORM);
+			else if (self.air_finished < time + 9)
+				sound (self, CHAN_VOICE, "player/gasp1.wav", 1, ATTN_NORM);
+		}
+		else
+			morph_sound( 0.8, self.noise3, 1);
+
+//		if (pk_xsound) pk_gasp_sound();
+		self.air_finished = time + 12;
+		self.dmg = 2;
+	}
+	else if (self.air_finished < time)
+	{	// drown!
+		if (self.pain_finished < time)
+		{
+			drown = TRUE;
+			if (!MONSTER_DROWN && (self.flags & FL_MONSTER)) drown = FALSE;
+		}
+	}
+
+	ISL = FALSE;
+	if (self.morphy == IMP_MCTHON) ISL = TRUE;
+	else if (self.morphy == IMP_MCHAOS) ISL = TRUE;
+	else if (self.model == "progs/boss.mdl") ISL = TRUE;
+	else if (self.classname == "monster_tarbaby") ISL = TRUE;
+
+	if (ISL && self.pain_finished < time)  //checks for non breathers based on lava / plasma makeup
+	{
+//		if (IS_CHAOS_PURE(self)) drown = FALSE;
+//		else 
+		if (self.watertype == CONTENT_LAVA) drown = FALSE;
+		else if (self.watertype == CONTENT_SLIME) drown = FALSE;
+		else if (self.watertype == CONTENT_WATER) drown = TRUE;
+		if (random() < 0.3) self.dmg = self.dmg / 2; // keep this down, water damage should not be excessive
+	}
+
+	if (self.classname == "monster_fish" || // like a fish in the deep blue sea
+		(self.classname == "monster_zombie" && !MONSTER_ZOMBIE_DROWN)) drown = FALSE; 
+
+	if (drown)
+	{
+		self.dmg = self.dmg + 2;
+		if (self.dmg > 15)
+			self.dmg = 10;
+
+		if (!Q_100) ignorearmor = TRUE; // *pk - no armor taken when drowning
+			// Cataboligne 9.11.3 purify
+		e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "drowning", "", SUB_Null, 0.01, SUB_Remove, SUB_Null, self, world);
+		T_Damage (self, e, world, self.dmg);
+		ignorearmor = FALSE;
+		self.pain_finished = time + 1;
+	}
+
+	if (!self.waterlevel)
+	{
+		if (self.flags & FL_INWATER)
+		{
+			// play leave water sound
+			sound (self, CHAN_BODY, "misc/outwater.wav", 1, ATTN_NORM);
+			self.flags = self.flags - FL_INWATER;
+		}
+		return;
+	}
+
+	if (self.watertype == CONTENT_LAVA)
+	{	// do damage
+		if (self.dmgtime < time)
+		{
+			if (self.radsuit_finished > time)
+				self.dmgtime = time + 1;
+			else
+				self.dmgtime = time + 0.2;
+
+			if (self.classname == "monster_tarbaby" && self.model != "progs/lavabomb.mdl") // tarbaby mutates in lava
+			{
+				setmodel(self,"progs/lavabomb.mdl");
+				setsize (self, '-16 -16 -24', '16 16 40');
+				self.health = self.health * 2;
+				self.th_missile = lavaball_shot;
+			}
+
+			T_FireDamage (self, world, world, 10*self.waterlevel);
+		}
+	}
+	else if (self.watertype == CONTENT_SLIME)
+	{	// do damage
+		if (self.dmgtime < time && self.radsuit_finished < time)
+		{
+			self.dmgtime = time + 1;
+			if (self.morphy == IMP_MGREMLIN || self.classname == "monster_gremlin")
+				{
+				self.dmgtime = time + 7 + (random() * 5);
+				if (self.health < (66.6 * MGREMLIN_HEALMOD))
+					if (random() < 0.16) T_Heal(self, self.waterlevel + random() * self.waterlevel, 0);
+				}
+			else if (self.morphy == IMP_MIMP) return; // NOTE - means imp can move full speed in slime, but does not benefit from wetsuit
+			else if (! ISL) T_Damage (self, world, world, 4*self.waterlevel);
+		}
+	}
+	
+/* TDO: enable with gremlin
+	else if (self.watertype == CONTENT_WATER)
+	{
+		if (self.morphnum == IMP_MGREMLIN || (self.classname == "monster_gremlin" && (GREM_AASPAWN | !deathmatch)))
+		if (self.waterlevel > 0)
+			gremlin_spawn(1.0 + random());
+
+/*
+lefty - gremlin count, dont exceed a certain amount
+player 50?
+npc 20?
+server total 100?
+
+*
+	}
+*/
+
+	if (!(self.flags & FL_INWATER))
+	{
+
+// player enter water sound
+
+		if (self.watertype == CONTENT_LAVA)
+			sound (self, CHAN_BODY, "player/inlava.wav", 1, ATTN_NORM);
+		if (self.watertype == CONTENT_WATER)
+			sound (self, CHAN_BODY, "player/inh2o.wav", 1, ATTN_NORM);
+		if (self.watertype == CONTENT_SLIME)
+			sound (self, CHAN_BODY, "player/slimbrn2.wav", 1, ATTN_NORM);
+
+		self.flags = self.flags + FL_INWATER;
+		self.dmgtime = 0;
+	}
+
+	if (!PK) // *pk - done elsewhere CHECK:
+	if (! (self.flags & FL_WATERJUMP))
+		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
+};
+
 
 //void() pk_pre_think =
 
@@ -968,10 +1164,15 @@ void () PlayerPreThink =
 	if (self.pk_dutychecking == 0)
 	{
 		CheckRules ();
-		WaterMove ();
+		if (self.movetype != MOVETYPE_NOCLIP)
+		if (self.health > 0)
+		if (self.classname == "player" || self.classname == "pk*bot")
+		{
+			WaterMove ();
 
-	 if (self.waterlevel == 2)
-		CheckWaterJump ();
+			if (self.waterlevel == 2)
+				CheckWaterJump ();
+		}
 
 //		if (!Q_100 && !PK_100)
 		if (self.waterlevel)
@@ -985,10 +1186,15 @@ void () PlayerPreThink =
 	else if (time > self.pk_dutychecking)
 	{
 		CheckRules ();
-		WaterMove ();
+		if (self.movetype != MOVETYPE_NOCLIP)
+		if (self.health > 0)
+		if (self.classname == "player" || self.classname == "pk*bot")
+		{
+			WaterMove ();
 
-	if (self.waterlevel == 2)
-		CheckWaterJump ();
+			if (self.waterlevel == 2)
+				CheckWaterJump ();
+		}
 
 		if (self.waterlevel)
 		if (! self.flags & FL_WATERJUMP)
@@ -1429,6 +1635,7 @@ void(entity e) noenvcide =
 */
 
 // called from killed - updated client obit for pk items
+entity Infl, Targ, Att;
 
 void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 {
@@ -1436,8 +1643,30 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 	local	string deathstring, deathstring2;
 	rnum = random();
 
+
+
+//TEST:
+Infl = inflictor;
+Targ = targ;
+Att = attacker;
+
+bprint("\nInflcitor was:");
+bprint(item_ident(inflictor));
+bprint("\n");
+
+
+
+
 	if (targ.classname == "player")
 	{
+		if (targ.watertype != CONTENT_LAVA && targ.flags & FL_DEMONBOOM) // because a dying demon in a rage still explodes...
+		{
+			targ.deathtype = "";
+			bprint (targ.netname);
+			bprint (" went to pieces in a fit of rage!\n");
+			return;
+		}
+
 		if (attacker.classname == "teledeath")
 		{
 			bprint (targ.netname);
@@ -1462,7 +1691,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 // Cataboligne 8.12.9 purify - pk artifacts
 		if (inflictor.classname == "ego")
 		{
-			rnum = random ();
+//			rnum = random ();
 			bprint (targ.netname);
 			if (inflictor.owner == targ)
 			{
@@ -1494,7 +1723,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 		}
 		if (inflictor.classname == "corpse")
 		{
-			rnum = random ();
+//			rnum = random ();
 			bprint (targ.netname);
 			if (inflictor.owner == targ)
 			{
@@ -1525,7 +1754,38 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			return;
 		}
 // end pk_art
+		if (inflictor.classname == "sphere_annihilation")
+		{
+			local string sa;
+			bprint (targ.netname);
+			deathstring = rnd_string(' 90.0 60.0 60.0'," has is ass crushed by  "," finds out where the black hole goes for ","",""," goes beyond the event horizion of ");
+			if (sphere_a.owner)
+			{
+				if (sphere_a.owner ==  targ) // whoopsie - got a wee bit too close
+				{
+					if (!NOPKCIDE)
+						targ.frags = (targ.frags - frag_minus(targ));
+					if (random() < 0.5)
+					{
+						deathstring = rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n","",""," made a really bad mistake\n");
+						bprint (deathstring);
+					}
+					else
+						bprint(" - oh my god...its full of stars.\n");
+					return;
+				}
 
+				sa = sphere_a.owner.netname;
+			}
+			else sa = " a wild ";
+			bprint (deathstring);
+			bprint (sa);
+			bprint(" sphere of annihilation\n");
+			attacker.frags = (attacker.frags + frag_plus(attacker)); // add it up
+			return;
+		}
+
+// NOTE: non score list bot
 		if (attacker.classname == "player" ||  attacker.classname == OBSERVER) // Cataboligne 9.23.9 - attacker could have died & become observer
 		{
 			if (targ == attacker)
@@ -1533,7 +1793,8 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				// killed self
 				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_GRAVITYWELL)
 				{
-					bprint (" visits another dimension\n");
+//					bprint (" visits another dimension\n");
+					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n","",""," visits another dimension\n"));
 					if (!NOPKCIDE)
 						targ.frags = (targ.frags - frag_minus(targ));
 					return;
@@ -1541,7 +1802,8 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 
 				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_BEARTRAP)
 				{
-					bprint (" forget about his beartrap\n");
+					bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n","",""," forgot about his beartrap\n"));
+//					bprint (" forget about his beartrap\n");
 					if (!NOPKCIDE)
 						targ.frags = (targ.frags - frag_minus(targ));
 					return;
@@ -1551,16 +1813,87 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 //				nocide(targ);
 				bprint (targ.netname);
 
-				if ((inflictor.weapon == IT_LIGHTNING) || ((inflictor.weapon == IT_AXE) && (targ.pk_currentitem == PK_IT_CLIGHT)) && attacker.waterlevel > 1)
-				{
-					bprint (" discharges into the water.\n");
-					return;
-				}
+				if (inflictor.classname == "grenade")
+					bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n","",""," tries to put the pin back in\n"));
+				else if (inflictor.classname == "missile")
+					bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n","",""," becomes bored with life\n"));
 
-				if (inflictor.weapon == IT_GRENADE_LAUNCHER)
-					bprint (" tries to put the pin back in\n");
+//				if (curwep_mapcode(targ, 0) == MC_GRAVITY)
+//				else if (inflictor.classname == "gravity_armed")
+//					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n","",""," visits another dimension\n"));
+
+//				if (curwep_mapcode(targ, 0) == MC_BEARTRAP)
+//				else if (inflictor.classname == "beartrap_armed")
+//					bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n","",""," forgot about his beartrap\n"));
+
+//				else if (inflictor.classname == "turret")
+//					bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
+
+//				if (curwep_mapcode(targ, 0) == MC_BOMB)
+				else if (inflictor.classname == "bomb")
+					bprint(rnd_string(' 90.0 60.0 60.0'," parties with Wile E. Coyote\n"," finds his bomb in the dark\n","",""," was too late to snuff the fuse\n"));
+
+				else if (inflictor.classname == "democharge")
+					bprint(rnd_string(' 90.0 60.0 60.0'," blew his own ass to hell\n"," forgot to check the safety\n","",""," didnt run fast enough\n"));
+
+				else if (inflictor.classname == "proximity_grenade")
+					bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n","",""," tested the prox grenade motion sensor\n"));
+
+				else if (inflictor.classname == "ball_lightning")
+					bprint(rnd_string(' 90.0 60.0 60.0'," felt the shaft of the ball lightning\n"," didnt respect the power of the dynamo\n","",""," hung around to watch\n"));
+
+//				else if (inflictor.classname == "sphere_annihilation")
+//					bprint(rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n","",""," made a really bad mistake\n"));
 				else
-					bprint (" becomes bored with life\n");
+				{
+// NOTE: conflict - morph that can get eweaps - fires builtin (capable of morphicide) & switches to eweap or v.v
+					if (attacker.eweapon)
+					{
+						if (attacker.eweapon._killmsg != SUB_Null) // xwep kill
+						{
+							deathstring = attacker.eweapon._killmsg(targ, attacker);
+							deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
+							if (deathstring != "")
+							{
+								bprint (deathstring);
+		//						bprint (attacker.netname);
+								bprint (deathstring2);
+							}
+							else
+								bprint (" fell victim to an experimental weapon");
+						}
+						else
+							bprint (" fell victim to an experimental weapon");
+						return;
+					}
+
+					if (attacker._killmsg != SUB_Null) // morphicide
+					{
+						deathstring = attacker._killmsg(targ, attacker);
+						deathstring2 = attacker._killmsg2(targ, attacker);
+						if (deathstring == "") // nope, ur?
+						{
+//							deathstring = DEF_MORPH_DEATH1; //   was killed by 
+							deathstring = " was killed"; //   was killed by 
+							deathstring2 =  DEF_MORPH_DEATH2; // some how, we just arent sure
+						}
+						bprint (deathstring);
+						bprint (deathstring2);
+						return;
+					}
+
+					if ((inflictor.weapon == IT_LIGHTNING) || ((inflictor.weapon == IT_AXE) && (targ.pk_currentitem == PK_IT_CLIGHT)) && attacker.waterlevel > 1)
+					{
+	//					bprint (" discharges into the water.\n");
+						bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n","",""," discharges into the water\n"));
+						return;
+					}
+
+					if (inflictor.weapon == IT_GRENADE_LAUNCHER)
+						bprint (" tries to put the pin back in\n");
+					else
+						bprint (" becomes bored with life\n"); // NOTE: generic death
+				}
 				return;
 			}
 			else if ((teamplay == 2) && (targ.team > 0)&&(targ.team == attacker.team))
@@ -1580,10 +1913,24 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			}
 			else
 			{
-				attacker.frags = attacker.frags + frag_plus(attacker);
+				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below
+
+// died & empathy damaged hit targ
+				if (empathy_dmg == 1)
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" shares ");
+					else
+						bprint (" feels ");
+					bprint (attacker.netname);
+					bprint ("'s pain\n");
+					return;
+				}
+// TDO: all fire & forget
 
 //MED 11/18/96
-            if (targ.dmg_inflictor.classname == "proximity_grenade")
+            if (inflictor.classname == "proximity_grenade") // TDO:TDO: CHECK - vet this code here - maybe below with turret, as all ffw might be
                {
                bprint (targ.netname);
                if (random()<0.5)
@@ -1594,6 +1941,37 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
                bprint ("'s bomb\n");
                return;
                }
+
+				if (attacker.eweapon)
+				if (attacker.eweapon._killmsg != SUB_Null) // xwep kill - falls out below if not set or returns blank 1st msg
+				{
+					deathstring = attacker.eweapon._killmsg(targ, attacker);
+					deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
+					if (deathstring != "")
+					{
+						bprint (targ.netname);
+						bprint (deathstring);
+						bprint (attacker.netname);
+						bprint (deathstring2);
+						return;
+					}
+				}
+
+				if (attacker._killmsg != SUB_Null) // morphic kill
+				{
+					deathstring = attacker._killmsg(targ, attacker);
+					deathstring2 = attacker._killmsg2(targ, attacker);
+					if (deathstring == "") // nope, ur?
+					{
+						deathstring = DEF_MORPH_DEATH1; //   was killed by 
+						deathstring2 =  DEF_MORPH_DEATH2; // some how, we just arent sure
+					}
+					bprint (targ.netname);
+					bprint (deathstring);
+					bprint (attacker.netname);
+					bprint (deathstring2);
+					return;
+				}
 
 				// For the correct death messages
 				//rnum = attacker.weapon;
@@ -1764,6 +2142,12 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
                deathstring2 = "'s hammer\n";
 				}
 
+				if (deathstring2 == "" && deathstring == "") // no wep kill msg, how strange - use defaults
+				{
+					deathstring = DEF_WEP_DEATH1; //  was just plain shot with 
+					deathstring2 =  DEF_WEP_DEATH2; // 's random weapon of choice
+				}
+
 				bprint (targ.netname);
 				bprint (deathstring);
 				bprint (attacker.netname);
@@ -1787,27 +2171,28 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			return;
 		}
 // TURRET_START
-	 else if (attacker.classname == "turret" || attacker.classname == "turret_gib")
-	 {
+		else if (attacker.classname == "turret" || attacker.classname == "turret_gib")
+		{
 			bprint(targ.netname);
 
-	 	// check if killed the droper of the turret.
-		if (attacker.owner == targ) {
-				// killed self
-				if (!NOPKCIDE)
-					targ.frags = targ.frags - frag_minus(targ);
-				bprint(" forgot to hide from his own AutoSentry!\n");
-			return;
-		}
+		// check if killed the droper of the turret.
+			if (attacker.owner == targ) {
+					// killed self
+					if (!NOPKCIDE)
+						targ.frags = targ.frags - frag_minus(targ);
+//					bprint(" forgot to hide from his own AutoSentry!\n");
+					bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
+				return;
+			}
 
 		// increase frags & print message.
-		attacker.owner.frags = attacker.owner.frags + frag_plus(attacker.owner);
+			attacker.owner.frags = attacker.owner.frags + frag_plus(attacker.owner);
 
-		bprint(" was ventilated by ");
-		bprint(attacker.owner.netname);
-		bprint("'s AutoSentry\n");
-		return;
-	 }
+			bprint(" was ventilated by ");
+			bprint(attacker.owner.netname);
+			bprint("'s AutoSentry\n");
+			return;
+		}
 // TURRET_END
 		else
 		{

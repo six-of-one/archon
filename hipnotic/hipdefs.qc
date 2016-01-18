@@ -35,6 +35,9 @@ float TOOCLOSE_CHARMER_DISTANCE = 120;
 float horn_active;
 entity horn_charmer;
 
+// pathy shields
+float empathy_dmg; // damage taken is from empathy shield reflection
+
 // scourge code
 .void() th_turn; // NOTE - not really used
 float AS_DODGING     = 5;

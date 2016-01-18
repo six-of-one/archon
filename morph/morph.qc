@@ -53,6 +53,8 @@ void() morph_precache =
 	m_precache_zombie();
 	m_precache_hknight();
 	m_precache_wizard();
+	m_precache_shambler();
+	m_precache_lavablob();
 };
 
 
@@ -905,18 +907,9 @@ void(float cmd, float pls) polymorph_check =
 //		self.eweapon = world;
 		self._summon = SUB_Null;
 
-	//	if (cmd == IMP_MCHAOS) player_chaos_become(pls);
-		if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
-		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
-		else if (cmd == IMP_MENF) player_enforcer_become(pls);
-		else if (cmd == IMP_MDEMON) player_demon_become(pls);
-		else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
-		else if (cmd == IMP_MHKNIGHT) player_hknight_become(pls);
-		else if (cmd == IMP_MWIZARD) player_wizard_become(pls);
-		else if (cmd == IMP_MANODEX) player_anode_become(pls);
-		else player_human_become(pls);
-	/*
-		else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
+//		if (cmd == IMP_MCHAOS) player_chaos_become(pls);
+//		else 
+			if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
 		else if (cmd == IMP_MWIZARD) player_wizard_become(pls);
 		else if (cmd == IMP_MHKNIGHT) player_hknight_become(pls);
@@ -925,8 +918,12 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MOGRE) player_ogre_become(pls);
 		else if (cmd == IMP_MCTHON) player_lavablob_become(pls);
 		else if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
-		else if (cmd == IMP_MGREMLIN) player_gremlin_become(pls);
 		else if (cmd == IMP_MENF) player_enforcer_become(pls);
+
+		else if (cmd == IMP_MANODEX) player_anode_become(pls);
+		else player_human_become(pls);
+	/*
+		else if (cmd == IMP_MGREMLIN) player_gremlin_become(pls);
 		else if (cmd == IMP_MIMP) player_imp_become(pls);
 		else if (cmd == IMP_MCYBER) player_cyber_become(pls);
 		else if (cmd == IMP_MARACHN) player_arachn_become(pls);
@@ -1228,23 +1225,10 @@ float(entity e) IS_LAVA =
 // default melt = 16, default damage = 20
 // NOTE: this uses missile ent for sounds
 
-float FIRE_FLY_TM                               = 5; // time for fly to live
-float FIRE_FLY_TDEV                     = 4; // std dev fly life
-float FIRE_FLY_VELBASE          = 600; // fire fly base velocity - not the Q1 launcher default!
-float FIRE_FLY_VELLARGE         = 600; // larger fire fly base velocity
-float FIRE_FLY_VELDEV           = 200; // fire fly velocity deviation
-float FIRE_FLY_VELXY                    = 50; // fire fly x & y velocity
-float FIRE_FLY_VELBW                    = 400; // fire fly velocity when fireball wep hits world
-float FIRE_FLY_VELMIRV          = 100; // fire fly velocity when a mirv occurs
-float FIRE_FLY_DMG                      = 20; // base dmg - Q1 default
-vector FIREB_MSL_AVEL           = ' 200 100 300'; // default fireball missile avelocity
-
 void(float vel, string cl, string md, string sd, float flg) fireball_missile =
 {
-//	fire_missile(vel, MOVETYPE_FLYMISSILE, flg, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | PF_LAVA | CK_EARTHQUAKE, self.origin, 
-//					 v0, cl, md, sd, fire_fly_touch, FIRE_FLY_TM + random() * FIRE_FLY_TDEV, meltthink, fire_fly_adj);
 	fire_missile(vel, MOVETYPE_FLYMISSILE, flg, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | PF_LAVA | CK_EARTHQUAKE, self.origin, 
-					 v0, cl, md, sd, fire_fly_touch, FIRE_FLY_TM + random() * FIRE_FLY_TDEV, SUB_Remove, SUB_Remove);
+					 v0, cl, md, sd, fire_fly_touch, FIRE_FLY_TM + random() * FIRE_FLY_TDEV, meltthink, fire_fly_adj);
 
 	newmis.avelocity = FIREB_MSL_AVEL;
 	newmis.dmgtime = time + 0.1;  // clear fields
@@ -1305,6 +1289,102 @@ void(entity e) chaos_mdlsize =
 	if (vmin != v0 && vmax != v0) setsize(e, vmin, vmax);
 };
 
+// fn(chaos_bomb_rndmdl) - random model for chaos bomb
+// if e == world return model string, else set model / sizes
+
+string(entity e) chaos_bomb_rndmdl =
+{
+	local string s1;
+	local float r1;
+	r1 = floor(random() * 17.3);
+
+	s1 = "progs/teleport.mdl";
+	if (r1 > 15) s1 = "progs/gas.mdl";
+	else if (r1 > 13) s1 = "progs/grenade.mdl";
+	else if (r1 > 10) s1 = "maps/b_exbox2.bsp";
+	else if (r1 > 8) s1 = "maps/b_rock0.bsp";
+	else if (r1 > 7) s1 = "progs/ejbatt.mdl";
+	else if (r1 > 5) s1 = "progs/proxbomb.mdl";
+	else if (r1 > 3) s1 = "progs/hook.mdl";
+	else if (r1 > 2) s1 = "progs/v_spike.mdl";
+	if (e)
+	{
+		setmodel(e, s1);
+	}
+	return(s1);
+};
+
+// fn(chaos_bomb) - explode a chaos thrown item shooting variable wep missiles
+// fn(RND_Spike) - create random spikes for chaos bomb
+// fn(RND_Damage) - random damage for explosives (just because 10 random grenades from a betty are pretty damn dangerous for anything nearby)
+
+float RND_frame;
+float RND_skin;
+float RND_maxdmg; // set to CBOMB_DEF_MAX if > 0 this is the max damage all explosives from bomb can cause
+
+void() RND_Spike =
+{
+	if (newmis)
+	{
+		newmis.frame = RND_frame;
+		newmis.skin = RND_skin;
+	}
+};
+
+void() RND_Damage =
+{
+	local float dm;
+
+	if (newmis)
+	{
+		dm = CBOMB_DEF_DMG + random() * DUD_DEF_DMG; // 10 + rnd * 20
+		if (RND_maxdmg >= 0) // in use if not < 0
+		{
+			if (dm > RND_maxdmg) dm = RND_maxdmg;
+			RND_maxdmg = RND_maxdmg - dm;
+			if (RND_maxdmg < 0) RND_maxdmg = 0;
+		}
+		newmis.dmg = dm;
+	}
+};
+
+void() chaos_bomb =
+{
+	local float r1;
+	local void() wfire, vspk;
+
+	if (self.aflag == MOVETYPE_BOUNCE) // the bouncing part of betty, she is a bad ass too
+	{
+		self.nextthink = time + 0.1 + random() * 0.4; // time to bounce
+		self.velocity_z = 200 + 200 * random();
+		if (random() < 0.5)
+		{
+			self.velocity_x = 50 * crandom();
+			self.velocity_y = 50 * crandom();
+		}
+		self.aflag = 0;
+		return;
+	}
+	r1 = floor(random() * 8.6);
+	wfire = W_FireSpikes;
+	vspk = SUB_Null;
+	if (self.weapon == IMP_MOGRE) { wfire = W_FireGrenade; r1 = 5; }
+	else if (r1 > 7) wfire = fire_laser1;
+//	else if (r1 > 6) wfire = fire_cbolt; // TDO: put back in for chaos morph
+	else if (r1 > 5) { wfire = W_FireGrenade; vspk = RND_Damage; }
+	else if (r1 > 5) { wfire = W_FireRocket; vspk = RND_Damage; }
+	else if (r1 > 4) wfire = W_FireLightning;
+	if (r1 < 4) vspk = RND_Spike;
+
+	RND_frame = random() * 7.4;
+	RND_skin = random() * 3.4;
+	RND_maxdmg = CBOMB_DEF_MAX;
+	
+// really just a fancy bouncing betty
+	fire_burst (wfire, self.origin + ' 0 0 30', 0, 0, "", "", 0, 3, 8, ' 120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
+	RND_maxdmg = 0; // reset
+	remove(self);
+};
 
 
 

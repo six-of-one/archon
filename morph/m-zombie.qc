@@ -436,7 +436,7 @@ void() PlagueTouch =
 void() GibTDie =
 {
 //	self.dest_y = ITEM_MELTD;
-	self.think = SUB_Remove; //meltthink;
+	self.think = meltthink;
 };
 
 // fn(GibTracer) - shoot zombies enemys in range
@@ -492,7 +492,7 @@ void() ZombieGrenadeTouch2 =
 
 void() player_ZombieFireGrenade =
 {
-	if (self.weapon == IT_SHOTGUN) // shoot gib fountain chunk - TDO: vet this
+	if (self.weapon == IT_NAILGUN) // shoot gib fountain chunk
 	{
 		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', ' 0 0 0', "gib_tracer", "progs/gib_m.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 0.1, GibTracer, GibTDie);
 		newmis.frame = 7;
@@ -508,7 +508,7 @@ void() player_ZombieFireGrenade =
 	newmis.dmg = 10 + random() * 15;  // player stinks a little bit more, thus more dmg
 	newmis.avelocity = '3000 1000 2000';
 
-	if (self.weapon == IT_SUPER_SHOTGUN) newmis.touch = PlagueTouch;
+	if (self.weapon == IT_SUPER_SHOTGUN) newmis.touch = PlagueTouch; // plague'd meat - regular shot  + plague touch
 };
 
 
@@ -531,7 +531,7 @@ float CLOUD2_STATE			= 40; // if 2nd cloud is to start - cloud 1 state must be <
 
 void() cloudkill =
 {
-	local float dist, mult;
+	local float dist, mult, f, clc;
 	local entity head;
 
 	if (self.classname != "cloudkill") // called as fn - make a cloudkill
@@ -569,7 +569,7 @@ void() cloudkill =
 		remove(self);
 		return;
 	}
-	
+
 	mult = 1;
 
 	if (self.state < 100) // wind down
@@ -592,9 +592,19 @@ void() cloudkill =
 		if (random() < 0.2) self.state = self.state - 1.5 * random();
 	}
 
+	
 	self.nextthink = time + 0.2;
 
+	clc = 0; // cloud blob cound
 	dist = (self.cnt + random() * self.lip) * mult;
+
+
+bprint("cloud loop: ");
+bprint(ftos(dist));
+bprint("\n");
+
+
+
 	while (dist > 0) // particle effects cloud
 	{
 		dist = dist - 1;
@@ -603,18 +613,32 @@ void() cloudkill =
 		if (DARKPLACES) // clouds from mdl
 		{
 			local entity e;
-			e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, cparticle_lorg, v0, v0, v0, v0, "clouds", "progs/lavaball.mdl", SUB_Null, 0.4,SUB_Remove, SUB_Null, self, world);
-//			e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "clouds", "progs/lavaball.mdl", SUB_Null, 0.4,SUB_Remove, SUB_Null, self, world);
-//			e.origin_x = e.origin_x + crandom() * 60;
-//			e.origin_y = e.origin_y + crandom() * 60;
-//			e.origin_z = e.origin_z + crandom() * 60;
-			if (e.origin_z < 10) e.origin_z = e.origin_z + 5 +  random() * 8; // get out of floor - turns dark when unlit from origin outside level
-			e.alpha = 0.01 + random() * 0.1;
-			e.frame = 12;
-			e.skin = 5;
-			e.effects = EF_NOMODELFLAGS;
-			e.angles_y = crandom() * 180;
-			e.angles_z = crandom() * 180;
+			head = findradius(self.origin, self.distance * mult);
+			f = TRUE;
+			if (clc > 15)
+			while (head && f)
+			{
+				if (head.classname == "clouds")
+				if (vlen(head.origin - cparticle_lorg) < 10)
+					f = FALSE;
+				head = head.chain;
+			}
+			if (f && clc < 100)
+			{
+				clc = clc + 1;
+				e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, cparticle_lorg, v0, v0, v0, v0, "clouds", "progs/lavaball.mdl", SUB_Null, 0.4,SUB_Remove, SUB_Null, self, world);
+//				e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "clouds", "progs/lavaball.mdl", SUB_Null, 0.4,SUB_Remove, SUB_Null, self, world);
+//				e.origin_x = e.origin_x + crandom() * 60;
+//				e.origin_y = e.origin_y + crandom() * 60;
+//				e.origin_z = e.origin_z + crandom() * 60;
+				if (e.origin_z < 10) e.origin_z = e.origin_z + 5 +  random() * 8; // get out of floor - turns dark when unlit from origin outside level
+				e.alpha = 0.01 + random() * 0.1;
+				e.frame = 12;
+				e.skin = 5;
+				e.effects = EF_NOMODELFLAGS;
+				e.angles_y = crandom() * 180;
+				e.angles_z = crandom() * 180;
+			}
 		}
 	}
 
@@ -833,8 +857,8 @@ void(float silent) player_zombie_become =
 	self._attack=player_zombie_attack;
 	self._impulse=player_zombie_impulse;
 //	self._can_get_p=SUB_False;
-//	self._killmsg=player_zombie_killmsg;
-//	self._killmsg2=player_zombie_killmsg2;
+	self._killmsg=player_zombie_killmsg;
+	self._killmsg2=player_zombie_killmsg2;
 
 	setmodel(self,"progs/zombie.mdl");
 //	self.modelindex_morph=self.modelindex;

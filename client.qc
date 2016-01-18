@@ -829,12 +829,9 @@ WaterMove
 
 ============
 */
-.float dmgtime;
 
-void () WaterMove =
+void () q100_WaterMove =
 {
-	if (self.classname == OBSERVER) // Cataboligne 8.9.9 purify - chase cam (dead) & observer - no water stuff
-		return;
 //dprint (ftos(self.waterlevel));
 	if (self.movetype == MOVETYPE_NOCLIP)
 		return;
@@ -972,7 +969,7 @@ void () q100_PlayerPreThink =
 	makevectors (self.v_angle);		// is this still used
 
 	CheckRules ();
-	WaterMove ();
+	q100_WaterMove ();
 
 	if (self.waterlevel == 2)
 		CheckWaterJump ();

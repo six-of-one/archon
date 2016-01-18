@@ -139,10 +139,21 @@ void () tombtouch =
 	{
 		return ;
 	}
+	if (other.mask_x & CB_ZOMBY || other.model == "progs/zombie.mdl")
+	{
+		if (self.class_select != "progs/zombie.mdl")
+		if (self.flags & FL_CLIENT)
+			sprint(other, "Theres and old friend down there...\n");
+		self.class_select = "progs/zombie.mdl";
+		return ;
+	}
 	holdowner = self.owner;
 	self.owner = holdowner.owner;
 	sound (self,CHAN_AUTO,"tomb/tombopen.wav",1,ATTN_NORM);
-	setmodel (self,"progs/player.mdl");
+	if (self.class_select)
+		setmodel (self,self.class_select);
+	else
+		setmodel (self,"progs/player.mdl");
 	self.classname = "corpse";
 	self.skin = 4;
 	self.movetype = MOVETYPE_STEP;

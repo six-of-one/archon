@@ -493,7 +493,12 @@ void() PK_SetCurrentAmmo =
 		self.weaponframe = 0;
 		self.items = self.items | IT_NAILS;
 		if (wchanged)
-			sprint(self, "Pulse Rifle\n");
+		{
+			if (PK)
+				sprint(self, "Pulse Rifle\n");
+			else
+				sprint(self, "Nail Gun\n");
+		}
 	}
 	else if (self.weapon == IT_SUPER_NAILGUN)
 	{

@@ -302,6 +302,9 @@ void() player_hknight_impulse =
 
 string(entity targ, entity attacker) player_hknight_killmsg =
 {
+	if (targ == attacker)
+		return " goes back home to hell";
+	else
 	if(attacker.weapon & IT_AXE)
 		return " was slashed by ";
 	else
@@ -330,8 +333,8 @@ void(float silent) player_hknight_become =
 	self._attack=player_hknight_attack;
 	self._impulse=player_hknight_impulse;
 //	self._can_get_p=SUB_False;
-//	self._killmsg=player_hknight_killmsg;
-//	self._killmsg2=player_hknight_killmsg2;
+	self._killmsg=player_hknight_killmsg;
+	self._killmsg2=player_hknight_killmsg2;
 
 	setmodel(self,"progs/hknight.mdl");
 //	self.modelindex_morph=self.modelindex;

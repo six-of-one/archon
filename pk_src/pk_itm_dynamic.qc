@@ -700,6 +700,9 @@ float(float cn, entity e, string op) ammo_con =
 
 	if (op == "") // operation not specced - assume 0 cn if inf or ...
 	{
+		if (e.weapon & e.builtin) // ins never use ammo
+			return(0);
+
 		if (pk_itemovr & CON_INF)
 		{
 		if (e.weapon == IT_AXE && e.pk_currentitem == PK_IT_CLIGHT)

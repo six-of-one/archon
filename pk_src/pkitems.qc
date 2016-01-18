@@ -584,13 +584,13 @@ void() painkeep_touch =
 		return;
 
 // cubic - because anything that sets eweap fsck's cube op
-	if (self.eweapon)
+	if (other.eweapon)
 	{
-		if (self.eweapon.wad == "pk_cube" || self.eweapon.wad == "morph_cube")
+		if (other.eweapon.wad == "pk_cube" || other.eweapon.wad == "morph_cube")
 		{
-			if (self.eweapon.duration > time) return;
-			self.eweapon.duration = time + 3;
-			sprint(self, "You cannot collect items while linked to a cube - change weapons or activate cube.\n");
+			if (other.eweapon.duration > time) return;
+			other.eweapon.duration = time + 3;
+			sprint(other, "You cannot collect items while linked to a cube - change weapons or activate cube.\n");
 			return;
 		}
 	}

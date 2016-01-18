@@ -537,7 +537,7 @@ texture/ * skies - q3 maps
 float(string surf, vector v, entity e) sky_touch =
 {
 	local entity f;
-	local float t, surfnum;
+	local float t, surfnum2;
 //	local string s3;
 	string last_texture;
 
@@ -546,7 +546,7 @@ float(string surf, vector v, entity e) sky_touch =
 
 	if (surf == "") // note - no q1 mode qual on surface string
 	{
-		surfnum = -1;
+		surfnum2 = -1;
 		t = FALSE;
 		f = e;
 		if (v == v0 && !f) f = self;
@@ -556,7 +556,7 @@ float(string surf, vector v, entity e) sky_touch =
 		if (pointcontents(v) == CONTENT_SKY) t = TRUE;
 
 		last_texture = "";
-		surfnum = getsurfacenearpoint(world, v);
+		surfnum2 = getsurfacenearpoint(world, v);
 	}
 
 // new sky contents code

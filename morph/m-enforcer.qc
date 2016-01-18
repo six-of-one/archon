@@ -302,8 +302,8 @@ void(float silent) player_enforcer_become =
 	self._attack = player_enf_atk1;
 	self._impulse = player_enf_impulse;
 //	self._can_get_p = SUB_False;
-//	self._killmsg = player_enf_killmsg;
-//	self._killmsg2 = player_enf_killmsg2;
+	self._killmsg = player_enf_killmsg;
+	self._killmsg2 = player_enf_killmsg2;
 
 	setmodel(self,"progs/enforcer.mdl");
 //	self.modelindex_morph = self.modelindex;

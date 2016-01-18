@@ -109,7 +109,8 @@ void(entity f, float all) morph_clearparms;
 float(float sel) cb_morph;
 float(entity chk) morph_clichk;
 void() morph_die;
-
+              void(float r1, string sn, float lts ) morph_sound;
+				  
 float(entity targ, float sdot, vector vang, vector vorg) infront;
 float(entity ck, float hl) morph_heal;
 
@@ -127,6 +128,8 @@ void(float dx) morph_CycleWeaponCommand;
 .float() _jump2;
 .void() _die;
 .void() _summon;
+.string(entity targ, entity attacker) _killmsg;
+.string(entity targ, entity attacker) _killmsg2;
 
 .float modelindex_morph; // cant use a global when all players can use diff models
 
@@ -233,6 +236,9 @@ void(float silent) player_demon_become;
 void(float silent) player_zombie_become;
 void(float silent) player_hknight_become;
 void(float silent) player_wizard_become;
+void(float silent) player_ogre_become;
+void(float silent) player_shambler_become;
+void(float silent) player_lavablob_become;
 
 //morph health modifiers            original code
 float MHUMAN_HEALMOD				= 1.0;	// 100 = 1.0
@@ -273,6 +279,17 @@ float SCRAGG_SHT_VEL				= 800;
 float SHALRATH_SHT_VEL			= 400;
 float FIREBALL_WEP_VEL			= 300;
 
+string DEF_MORPH_DEATH1			= " was killed by ";
+string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n"
+
+// lava
+
+void(entity e) lavacthon_blobme;
+void() lavablob_slimeflare;
+float LEVEL_CTHON					= TRUE; // bring cthon up to lava level found in house of cthon
+float hoc_level					= 16; // default house of cthon level
+float NO_TFOG						= -2222; // no telefog when transforming
+
 //scourges
 
 float (entity p, float heala, float ign) player_scourge_armor;
@@ -302,3 +319,6 @@ void() m_precache_demon;
 void() m_precache_zombie;
 void() m_precache_hknight;
 void() m_precache_wizard;
+void() m_precache_ogre;
+void() m_precache_shambler;
+void() m_precache_lavablob;

@@ -15,6 +15,7 @@
 		|  Frame code                           | SEC-HEAD
 		+---------------------------------------+
 */
+
 $cd hipwork\models\scourge
 $origin 0 0 23
 $base scorbase.asc
@@ -351,6 +352,7 @@ void() player_scourge_impulse =
 		+---------------------------------------+
 */
 
+
 // fn(player_scourge_armor) - a scourges built in armor can heal.
 // armor can be added to non scourge, but not healed
 
@@ -391,6 +393,33 @@ float (entity p, float heala, float ign) player_scourge_armor =
 	return TRUE;
 };
 
+
+string(entity targ, entity attacker) player_scourge_killmsg = {
+	if (attacker.weapon == SEL_SCRGTAIL)
+		return " was stung by ";
+	else if  (attacker.weapon & IT_GRENADE_LAUNCHER)
+		{
+		if (random() < 0.8)
+			return " was bombed by ";
+		else
+			return " tried to disarm a bomb set by ";
+		}
+	else if  (attacker.weapon & IT_LIGHTNING)
+		{
+		if (random() < 0.7)
+			return " was melted by ";
+		else
+			return " was lasered by ";
+		}
+	else
+		return " was perforated by ";
+};
+
+string(entity targ, entity attacker) player_scourge_killmsg2 = {
+	return ".\n";
+};
+
+
 /*
 		+---------------------------------------+
 		|  create code                          | SEC-HEAD
@@ -410,8 +439,8 @@ void(float silent) player_scourge_become =
 	self._attack = player_scourge_attack;
 	self._impulse = player_scourge_impulse;
 //	self._can_get_p=SUB_True; // player_scourge_can_get;
-//	self._killmsg=player_scourge_killmsg;
-//	self._killmsg2=player_scourge_killmsg2;
+	self._killmsg=player_scourge_killmsg;
+	self._killmsg2=player_scourge_killmsg2;
 
 	setmodel(self,"progs/scor.mdl");
 

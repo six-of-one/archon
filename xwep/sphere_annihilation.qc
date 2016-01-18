@@ -64,7 +64,7 @@ void() sphere_gravity_pulse20 = [ $grvbomb16, sphere_gravity_pulse1 ] { gravity_
 void() sphere_become_gravbomb =
 {
 	sphere_a = world;
-	self.attack_finished = time + 4.0;
+	self.attack_finished = time + 4.0 + random() * 4;
 	self.touch = gravity_touch;
 	self.effects = self.effects | EF_BRIGHTLIGHT;
 	self.think = sphere_gravity_pulse1;
@@ -177,6 +177,8 @@ void () respawnBot;
 // FL_ANNIHILATED - for monster so heads can also be sucked
 // self.cnt - countdown to destruction & motion into sphere
 
+// NOTE: it is possible for some missile to evade motion into sphere somehow
+
 void() annihilate =
 {
 
@@ -214,14 +216,14 @@ if (WARNING)
 		self.nextthink = MAXFL;
 		self.rad_time = 0;
 		if (self.flags & FL_MONSTER && ! self.flags & FL_ANNIHILATED)
-			{
+		{
 			self.think = SUB_Null; // just in case some deaths dont set think fn
 			T_Damage (self, world, world, self.health * 3);
 			self.flags = self.flags | FL_ANNIHILATED; // allow head to be sucked
 			return;
-			}
+		}
 		else if (self.flags & FL_CLIENT) // gib players - gibs should be sucked
-			{
+		{
 				if (self.classname == "pk*bot")
 				{
 					self.think = respawnBot;
@@ -232,7 +234,7 @@ if (WARNING)
 				CheckPowerups();
 				T_Damage (self, world, world, self.health * 2); // this shit can kill anybody
 				return;
-			}
+		}
 		if (self.classname == "Harpoon")
 		{
 			if (self.th_stand != SUB_Null) self.th_stand();
@@ -261,6 +263,8 @@ float(entity g) annihilation_check =
 	else if (g.think == annihilate) t = FALSE;
 	else if (g.model == "") t = FALSE;
 	else if (g.classname == "whirl") t = FALSE;
+	else if (g.classname == OBSERVER) t = FALSE;
+	else if (g.flags & FL_CLIENT && g.health <= 0) t = FALSE;
 	else if (g.flags & FL_CLIENT && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_CLI) t = FALSE;
 	else if (g.classname == "viswep" && g.owner != world) t = FALSE;
 	else if (! IS_MISSILE(g) && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
@@ -280,6 +284,19 @@ float(entity g) annihilation_check =
 
 void(entity g) set_annihilate =
 {
+	local float t;
+
+	if (g.classname == "gravity") // whoopsie
+	{
+		t = g.attack_finished - time; // time left on grav well
+		remove(g);
+		sphere_become_gravbomb();
+		self.attack_finished = time + (t * 48) + random() * 100 + 60;
+		sphere_a = world; // free now
+		bprint("\nSome idiots just put a sphere of annihilation and a gravity well together!\nSmooth move on making a \bReality Bomb\b genius!");
+		return;
+	}
+
 	g.think = annihilate;
 	g.nextthink = time + 0.02;
 	g.touch = SUB_Null; // touch is restored by SUB_Regen
@@ -301,6 +318,7 @@ void(entity g) set_annihilate =
 
 void() sphere_annihilation_touch =
 {
+
 	if (annihilation_check(other))
 		set_annihilate(other);
 };
@@ -316,6 +334,7 @@ void() sphere_annihilation_spawn =
 	sphere_a.state = ST_FOLLOW; // tag along to start
 	sphere_a.frame = $live2;
 	sphere_a.skin = 2;
+	sphere_a.map = "sphere_annihilation"; // double check search
 // spawn sound?
 };
 
@@ -346,6 +365,16 @@ void() sphere_whirl =
 void() sphere_annihilation_phys_move =
 {
 	local entity head;
+	local vector v1;
+	local float f;
+
+	if (sphere_a.classname != "sphere_annihilation") // something has gone wrong with the pointer!
+	{
+		head = find(world, map, "sphere_annihilation");
+		if (head) remove(head); // get rid of it - cant control with global and we'd rather not reass.
+		sphere_a = world; // finally - clear it
+		return;
+	}
 
 	if (sphere_a.owner)
 		if(sphere_a.state & ST_FOLLOW == ST_FOLLOW) // move sphere with controlling player
@@ -377,6 +406,14 @@ void() sphere_annihilation_phys_move =
 // TDO: sound effect (maybe from black hole 06 ?) - also swirl things like grav suck
 		if (random() < 0.06) // sphere pulls particles out of air - IDEA: something else in water - whirl around sphere of water tex
 		{
+			f = FALSE;
+			v1 = v0;
+			if (random() < 0.75)
+			while ( (v1_z > -48) && (!f) )
+			{
+				if (pointcontents(sphere_a.origin + v1) == CONTENT_LAVA) f = TRUE;
+				v1_z = v1_z - 1;
+			}
 			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_BBOX, 0, RM_SKY,  sphere_a.origin , v0, v0, v0, v0, "whirl", "progs/steam.mdl", SUB_Null, 5 + random() * 4, SUB_Remove, SUB_Null, self, world);
 			newmis.origin_x = newmis.origin_x + crandom() * 80;
 			newmis.origin_y = newmis.origin_y + crandom() * 80;
@@ -384,6 +421,25 @@ void() sphere_annihilation_phys_move =
 			newmis.think = sphere_whirl;
 			newmis.nextthink = time + 0.1;
 			newmis.attack_finished = time + 3 + random() * 4;
+			if (random() < 0.1 || f)
+			{
+				setmodel(newmis, "progs/lavaball.mdl");
+				if (!f)
+				if (random() < 0.5)
+					newmis.effects = EF_NOMODELFLAGS;
+				setsize(newmis, v0, v0);
+				newmis.skin = 8 + rint(random() * 4);
+				newmis.frame = 18 + rint(random());
+			}
+			if (f) // suck lava
+			{
+				newmis.skin = 0;
+				newmis.frame = 2 + rint(random() * 2);
+				newmis.origin_z = v1_z + crandom() * 5;
+				newmis.velocity = v0;
+				newmis.velocity_z = 20 + random() *  100;
+				set_annihilate(newmis);
+			}
 		}
 	}
 	else

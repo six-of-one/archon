@@ -59,6 +59,11 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	if (self._alt_fire != (void ()) 0) e._alt_fire = self._alt_fire; // multi modes
 	else self._alt_fire = e._alt_fire = SUB_Null;
 
+	if (self._killmsg != (void ()) 0) e._killmsg = self._killmsg; // kill messages
+	else self._killmsg = e._killmsg = SUB_Null;
+	if (self._killmsg2 != (void ()) 0) e._killmsg2 = self._killmsg2;
+	else self._killmsg2 = e._killmsg2 = SUB_Null;
+
 	e.netname = self.netname;
 //		e.mdl = self.mdl; - invisible
 	setmodel (e, self.vwepmdl);

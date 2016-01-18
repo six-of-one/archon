@@ -126,6 +126,9 @@ float (float lMean, float lStDev) meantime;
 // DARKPLACES specials
 // wrap - fix fte broke ass shit
 
+float surfnum;
+string surface;
+
 float(entity e, float s) getsurfacenumpoints_wrap = #434;
 vector(entity e, float s, float n) getsurfacepoint_wrap = #435;
 vector(entity e, float s) getsurfacenormal_wrap = #436;
@@ -404,6 +407,19 @@ float MC_Q3_HOLDTELE;
 
 // **************************************
 
+// goes elsewhere section
+float NO_FLOAT					= -671234; // dont float anything with this offset, or?
+
+float MONSTER_DROWN			= FALSE; // if true monsters will take drown damage - NOTE: they dont know how to swim or get out of water yet
+float MONSTER_ZOMBIE_DROWN = FALSE; // even if monsters can drown, zombie never will, and they make mucho noise while taking the damage - ruins SP ambience
+
+.float dmgtime;
+
+
+float CBOMB_DEF_DMG			= 10; // base rnd damage when a chaos bomb makes explosives
+float CBOMB_DEF_MAX			= 160; // if not negative, chaos bomb blast potential will not exceed this for all explosives
+float RND_maxdmg; // set to CBOMB_DEF_MAX if > 0 this is the max damage all explosives from bomb can cause
+float DUD_DEF_DMG				= 20; // defualt base damage for a dud explosive that blow
 
 // inventory flags
 
@@ -425,9 +441,17 @@ float EF_FULLBRIGHT			= 512;
 
 // env stuff - part of chaos engine env effects - mostly unused
 
-float LAVA_SHOT				= 0.17; // % chance a bullet hitting lava will release a mini lavaball
-
 void(vector v1, vector v2, float typ, string snd) lightning_bolt;
+
+void(vector org, float ofs, vector vp, vector vr, float dur, float amt, float rmt, float flg, vector clm, vector crm, vector per) particle_burst;
+float FL_RND					= 1; // pick a random color
+float FL_COL1					= 2; // this color active
+float FL_COL2					= 4;
+float FL_COL3					= 8;
+float FL_ALLCL					= 16; // fire particles of all 3 colors
+float FL_PERC					= 32; // percentage determins how much of each to throw if more than 1 used, usage always rand() < per_x < _y < _z
+float FL_RNDUR					= 64; // randomize duration
+
 
 void(void() fr, vector org, float mvt, float vel, string cln, string md, float ct, float amt, float rmt, vector vp, vector vr, void() cb, float flg, entity s) fire_burst;
 float FL_FRCORG				= 1; // force load origin
@@ -439,6 +463,54 @@ float FL_ANGADR				= 32; // random addition
 float FL_ANGADS				= 48; // any angle add flag
 float FL_OWNOWN				= 64; // selfs owner (instead of just self)
 //float FL_MSTOWN				= 128; // if master_owner is set use that otherwise fall back to other flags
+
+// fireball & fire fly stuff
+float NOFLY						= 88800; // dont make a launcher
+float NOFLYMIRV				= 88400; // no launcher, no mirv
+float NOMIRV					= 88200; // dont mirv
+float MIRV_RESIZE				= TRUE; // when a mirv happens, make smaller balls
+float MIRV_MIN					= 0; // minimum number of balls to mirv
+float MIRV_RND					= 4; // additional random balls to mirv
+float FIRE_FLY_TM				= 5; // time for fly to live
+float FIRE_FLY_TDEV			= 4; // std dev fly life
+// fire fly velocity controls
+float FIRE_FLY_VELBASE		= 600; // fire fly base velocity - not the Q1 launcher default!
+float FIRE_FLY_VELLARGE		= 600; // larger fire fly base velocity
+float FIRE_FLY_VELDEV		= 200; // fire fly velocity deviation
+float FIRE_FLY_VELXY			= 50; // fire fly x & y velocity
+float FIRE_FLY_VELBW			= 400; // fire fly velocity when fireball wep hits world
+float FIRE_FLY_VELMIRV		= 100; // fire fly velocity when a mirv occurs
+float FIRE_FLY_DMG			= 20; // base dmg - Q1 default
+vector FIREB_MSL_AVEL		= ' 200 100 300'; // default fireball missile avelocity
+
+
+// skin sequence in volcano.mdl
+float LAVA_START				= 0; // lava puddle / volcano start skin
+float LAVA_FLOWEND			= 9; // lava volcano end skin
+float LAVA_DARKCOOL			= 10; // hot lava cooling - volcano
+float LAVA_DEADSKIN			= 11; // dead skin - volcano / puddle
+
+float VOLCANO_LOC				= 3000; // quake units to settle volcano
+float VOLCANO_ERUPT			= 180;//600; // secs for volcano to erupt before it can change state again
+float MAX_ASH_CYC				= 128; // max cycles ash will burn
+float LAVA_BLAST				= 0.6; // < % chance of one flare if explosion in lava
+float LAVA_SHOT				= 0.17; // % chance a bullet hitting lava will release a mini lavaball
+float LAVA_PLASMA_MLT		= 0.5; // % chance of melting a plasma bomb in lava
+// lava puddle stuff
+float LAVA_PUDEND				= 6; // lava puddle end skin
+
+// super lavaball
+float LAVA_LGSKIN				= 2; // skin for large lavaball
+// lavaballs
+// lavaball.mdl :== 0 - 4 irregular lavaball, 5 - 9 spherical, 10 - large irregular, 11 - large sphere
+float LAVA_LGFRAME			= 10; // frame for large lavaball, 11 = large sphere
+float LAVA_MINFRAME			= 3; // frame for mini lavaball
+float LAVA_MCRFRAME			= 4; // frame for micro lavaball
+float HTLAVA					= 0; // hot lava skin in lavaball / snowball
+float DKLAVA					= 1; // dark lava skin in lavaball / snowball
+float SKSNOW					= 3; // snow skin in lavaball / snowball
+float SKTELE					= 4; // teleport skin in lavaball / snowball
+float SKGTELE					= 4; // teleport skin in grenade
 
 
 /// *** DUMMY SECTION - IDEA: move to better location later on
@@ -596,6 +668,9 @@ float DEF_AMMO_BASE			= 25; // if no ammo given for a default wep, this is it
 // X (extra) weapon stuff
 
 // **************************************
+
+string DEF_WEP_DEATH1		= " was just plain shot with ";
+string DEF_WEP_DEATH2		= "'s random weapon of choice\n";
 
 .vector bulletspread; // weapon fire spread - used to be punchangle
 
@@ -930,6 +1005,7 @@ float qweps, pkweps; // inventory bit masks for weps
 .entity vwepent; // vis wep entity pointers
 .entity eweapon; // vis wep pointer
 .string vwepmdl; // visible weapon model load
+.float viswframe; // special framing - drop / pull [not used yet]
 .void() _attack; // fires weapon - null if fire from frames
 .void() _fr_attack; // starts frame set
 void() e_weap_Attack;

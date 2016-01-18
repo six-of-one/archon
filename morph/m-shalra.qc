@@ -230,8 +230,8 @@ void() player_shalrath_impulse =
 
 	if (sphere_a.owner == self && sphere_a.state != ST_FREEZE)
 	{
-	sphere_control();
-	return;
+		sphere_control();
+		return;
 	}
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
@@ -284,8 +284,8 @@ void(float silent) player_shalrath_become =
 	self._impulse=player_shalrath_impulse;
 
 //	self._can_get_p=SUB_False;
-//	self._killmsg=player_shalrath_killmsg;
-//	self._killmsg2=player_shalrath_killmsg2;
+	self._killmsg=player_shalrath_killmsg;
+	self._killmsg2=player_shalrath_killmsg2;
 
 	setmodel(self,"progs/shalrath.mdl");
 

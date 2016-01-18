@@ -11,6 +11,13 @@
  */
 
 
+// TDO: remove - placeholder
+
+void() meltthink =
+{
+	SUB_Remove();
+};
+
 // NOTE: came from chaos_env.qc
 
 // fn(move_stop) halt a moving entity, play looped sound ns
@@ -219,7 +226,7 @@ void(vector org, vector end, float fr) multi_beam =
 
 	sv = self;
 
-//	cf_x = E_ORG | E_OWNER | E_VELOCITY | E_SIZE | E_MOVETYPE | E_SOLID | E_FLAGS | E_MORPHNUM | E_ITEMS | E_FRAME | E_AANGLES;
+//	cf_x = E_ORG | E_OWNER | E_VELOCITY | E_SIZE | E_MOVETYPE | E_SOLID | E_FLAGS | E_morphy | E_ITEMS | E_FRAME | E_AANGLES;
 //	s2 = ent_copy(cf, self, world);
 	s2 = spawn();
 	if (s2)
@@ -321,6 +328,75 @@ void(vector org, float rn, float pr, float col) chaos_particle =
 
 
 
+// fn(particle_burst) - throw off a burst of particles of a given color set
+// org - burst origin
+// ofs - offset around origin (gives - (ofs / 2) to + (ofs / 2)
+// vp - vector pointer							\__ direction
+// vr - vector randomizer					/
+// dur - duration											particle duration / #
+// amt - burst amount							\__ particle launch counter
+// rmt - burst random amount			/
+// cl* - color 1,2,n									\
+// cr* - random incr to color 1,2,n	+- color control
+// per - color percentage					/
+
+// flg - flag controls
+/*
+float FL_RND			= 1; // pick a random color
+float FL_COL1		= 2; // use this color
+float FL_COL2		= 4;
+float FL_COL3		= 8;
+float FL_ALLCL			= 16; // fire particles of all colors
+float FL_PERC		= 32; // percentage determins how much of each to throw if more than 1 used, usage always rand() < per_x < _y < _z
+float FL_RNDUR	= 64; // randomize duration
+*/
+
+void(vector org, float ofs, vector vp, vector vr, float dur, float amt, float rmt, float flg, vector clm, vector crm, vector per) particle_burst =
+{
+	local float r1, r2, cl, dr;
+	local vector of, pr;
+
+	r2 = amt + rint(random() * rmt);
+	while (r2 > 0) // particle burst, red & yellow
+		{
+		dr = dur;
+		if (flg & FL_RNDUR) dr = dr + (random() * 10);
+		of = pr = ' 0 0 0';
+
+		pr_x = vp_x + (random() * vr_x) - (vr_x / 2.0); // dir + velo
+		pr_y = vp_y + (random() * vr_y) - (vr_y / 2.0);
+		pr_z = vp_z + (random() * vr_z) - (vr_z / 2.0);
+
+		of_x = (random() * ofs) - (ofs / 2.0); // offset from origin
+		of_y = (random() * ofs) - (ofs / 2.0);
+		of_z = (random() * ofs) - (ofs / 2.0);
+
+		r1 = random();
+		cl = clm_x + random() * crm_x;
+		if (flg & (FL_ALLCL | FL_COL1))
+			{
+			if (!(flg & FL_PERC) || (r1 < per_x))
+				particle (org + of, pr, cl, dr);
+			}
+		cl = clm_y + random() * crm_y;
+		if (flg & (FL_ALLCL | FL_COL2))
+			{
+			if (!(flg & FL_PERC) || (r1 < per_y))
+				particle (org + of, pr, cl, dr);
+			}
+		cl = clm_z + random() * crm_z;
+		if (flg & (FL_ALLCL | FL_COL3))
+			{
+			if (!(flg & FL_PERC) || (r1 < per_z))
+				particle (org + of, pr, cl, dr);
+			}
+
+		r2 = r2 - 1;
+		}
+
+};
+
+
 // fn(fire_burst) - fire off a burst of stuff
 
 // fr - fire fn, will just shoot out if SUB_Null, not weaponized
@@ -407,7 +483,7 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 				}
 			}
 		else if (md != "")
-			fire_missile(v, mvt, 0, ct, self.origin, ' 0 0 0', cln, md, "", SUB_Null, 5 + (random() * 10), SUB_Remove, SUB_Null); // meltthink, SUB_Null);
+			fire_missile(v, mvt, 0, ct, self.origin, ' 0 0 0', cln, md, "", SUB_Null, 5 + (random() * 10), meltthink, SUB_Null);
 		else
 		{
 			if (WARNING)
@@ -422,7 +498,7 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 /* TDO: later
 		if (flg & FL_NEWSELF) // because of engine lightning bolt code...
 			{ // just some stuff we might want
-			cf_x = E_ORG | E_OWNER | E_VELOCITY | E_SIZE | E_MOVETYPE | E_SOLID | E_FLAGS | E_MORPHNUM | E_ITEMS | E_FRAME | E_AANGLES;
+			cf_x = E_ORG | E_OWNER | E_VELOCITY | E_SIZE | E_MOVETYPE | E_SOLID | E_FLAGS | E_morphy | E_ITEMS | E_FRAME | E_AANGLES;
 			s2 = ent_copy(cf, self, world);
 			if (self != sv && self != s) remove(self); // dont remove entry self, or parm ent s
 			self = s2;
@@ -433,7 +509,6 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 	if (self != sv && self != s) remove(self);
 	self = sv;
 };
-
 
 
 vector(vector src, float lbper, vector lbvec, float lcnt) lava_shot =
@@ -462,7 +537,7 @@ void() firefall =
 		self.solid = SOLID_TRIGGER;
 		self.classname = "fireball";
 		self.touch = fire_fly_touch;
-		self.think = SUB_Remove; //meltthink;
+		self.think = meltthink;
 		self.nextthink = time + 5 + (random() * 4);
 		self.view_ofs = ' 0 0 2';
 		self.dmg = 1 + random(); // stings a bit
@@ -812,7 +887,7 @@ entity(float fl, string clsn) find_tdest =
 	return(p);
 
 /*
-																								if (DEVMSG)
+																								if (WARNING)
 																								if (FALSE) {
 																									bprint("find_dest selected: ");
 																									bprint(p.classname);
@@ -877,3 +952,395 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 	newmis.aiment = loop_sound(newmis, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, torg, 0, LOOPFOREVER);
 };
 
+
+
+
+// goes back in volcano
+
+// temp
+
+void () fire_fly;
+
+void(string md) chaos_fire_fly =
+{
+	fire_fly();
+};
+
+float(entity ent, float flg) content =
+{
+
+	if (ent != world) return(pointcontents (ent.origin + ent.view_ofs));
+
+	if (self == world)
+	{
+		return FALSE;
+	}
+	else
+		return(pointcontents (self.origin + self.view_ofs));
+
+};
+
+
+// fn(T_FireDamage) - damage from fires & hot stuff, will heal lavablobs!
+
+void (entity targ, entity inflictor, entity attacker, float damage) T_FireDamage =
+{
+	if ((targ.morphy == IMP_MCTHON) || (targ.morphy == IMP_MCHAOS) || (targ.classname == "monster_tarbaby")) // lava capable ents wont get burned...often
+//	if (IS_LAVA(targ)) 
+		{
+		if (targ.morphy == IMP_MCTHON) T_Heal(targ, damage, 0); // LOL - lava is "healed" by fire - such a horta situation...
+		else if (targ.classname == "monster_tarbaby") { if (random() < 0.2) T_Heal(targ, damage, 0); } // tarbabys too..
+		else // chaos here
+			{
+			if (targ.watertype == CONTENT_LAVA)
+				{
+				if (random() < 0.05) T_Heal(targ, damage * random(), 0); // CHAOS_LEVEL ph
+				else if (random() < 0.015) T_Damage (targ, inflictor, attacker, damage * random()); // even less chance of damage
+				}
+			else
+				if (random() < 0.02) T_Damage (targ, inflictor, attacker, damage * random());
+			}
+		}
+	else T_Damage (targ, inflictor, attacker, damage);
+};
+
+// fn(smallent_free) - free edges of smaller non player / monster ents from solids
+// sz - size radius to check
+// moves ent to clear pos - removes self if not clear within 161 checks
+
+// designed for lava puddles - notorious for the 1/2 puddle in the wall move
+// IDEA: z check? (repos?) flag for remove, check lower edge for hanging over drop offs
+
+float smallent_sf; // loop safety - _must_ be set before fn() call
+
+void(float sz) smallent_free =
+{
+	local vector v1, v2;
+
+	v1 = v0;
+	for (v1_x = 0 - sz; v1_x < (sz + 1); v1_x = v1_x + sz)
+	for (v1_y = 0 - sz; v1_y < (sz + 1); v1_y = v1_y + sz)
+	if (pointcontents(self.origin + v1) == CONTENT_SOLID)
+	{
+		v2 = v0;
+		v2_x = 0 - v1_x;
+		v2_y = 0 - v1_y;
+		self.origin = self.origin + v2;
+		smallent_sf = smallent_sf + 1;
+		if (smallent_sf > 160)
+		{
+			SUB_Remove();
+			self = world;
+			return;
+		}
+		smallent_free(sz);  // recursive (ish)
+		return;
+	}
+};
+
+
+
+// fn(fire_fly_adj) - adjust fire flys return to lava or entry to other liquids
+
+void() fire_fly_adj =
+{
+if (self.watertype == CONTENT_LAVA)
+	{
+	self.flags = self.flags | FL_NOPART;
+	self.skin = HTLAVA;
+//	content_clear(self);
+//	if (self.model == "progs/snowball.mdl") self.skin = HTLAVA;
+	if (self.frame >= LAVA_LGFRAME) self.skin = LAVA_LGSKIN; // large balls, also *** FIX turn off exploder if on
+	}
+else if (self.watertype == CONTENT_WATER || self.watertype == CONTENT_SLIME)
+	{
+		if (self.frame < LAVA_LGFRAME)// && self.model == "progs/lavaball.mdl")
+		{
+			if (self.watertype == CONTENT_WATER) self.skin = DKLAVA;
+			else if (self.watertype == CONTENT_SLIME && random() < 0.5) self.skin = DKLAVA;
+//			if (self.sFloating != "floating") floaterPointer();//Enable(self, self.mins_z / 2);
+//			self.bubble_count = NO_BUBBLES;
+			if (self.skin == DKLAVA)// && self.model == "progs/lavaball.mdl")
+			{
+				setmodel(self, "progs/snowball.mdl");
+				chaos_mdlsize(self);
+				self.movetype = MOVETYPE_BOUNCE;
+				sound (self,CHAN_WEAPON,"chaos/freeze.wav",1,ATTN_NORM);
+				self.dmg = 0;
+			}
+		}
+	}
+/*
+else if (self.watertype == CONTENT_EMPTY)
+	{
+		if (!self.wait) self.wait = time + random();
+		if (self.wait < time)
+		{
+			self.wait = time + random();
+			if (self.frame < LAVA_LGFRAME && self.skin != DKLAVA)
+			if (self.velocity == v0 && random () < 0.2) // motionless lavaball in 
+			{
+				self.think = fire_fly_cooled;
+				self.nextthink = 2 + random();
+			}
+		}
+	}*/
+};
+
+// fn(lavaball_large) - set parms for large lavaball
+
+void(entity lb, float mvt, vector avl, vector vel, string snd) lavaball_large =
+{
+	if (lb != world) newmis = lb;
+	if (newmis == world)
+		newmis = chaos_spawn(mvt, SOLID_TRIGGER, 0, RM_SKY | FLT_IMM | FLT_LAVA | MLT_LAVA | PF_LAVA | SF_CHK | PF_EMPTY | CK_EARTHQUAKE, 
+									v0, v0, v0, v0, v0, "fireball", "progs/lavaball.mdl", fire_fly_touch, 3 * (FIRE_FLY_TM + random() * FIRE_FLY_TDEV), meltthink, SUB_Null, self, world);
+
+	if (newmis.model != "progs/lavaball.mdl") setmodel(newmis, "progs/lavaball.mdl");
+	if (!mvt) mvt = MOVETYPE_TOSS;
+
+	newmis.frame = LAVA_LGFRAME;
+	newmis.skin = LAVA_LGSKIN;
+	newmis.view_ofs = ' 0 0 -4';
+	setsize(newmis, '-14 -14 -14', ' 14 14 14');
+	newmis.dest_y = 32;
+	newmis.dmg = 100;
+	newmis.wait = NOFLY; // these wont make launchers
+	newmis.movetype = mvt;
+	newmis.avelocity = avl;
+	newmis.velocity = vel;
+	newmis.th_walk = fire_fly_adj;
+//	newmis.grab_callback = grab_lavaball;
+	newmis.class_select = "class_lavaballbig"; // this guy is special all around
+	if (random() < 0.5) // some large lavaballs mirv
+		{
+//		newmis.th_stand = fire_splitter;
+		newmis.oldorigin = newmis.origin;
+		}
+	if (snd != "") sound (newmis, CHAN_WEAPON, snd, 1, ATTN_NORM);
+};
+
+
+
+// fn(rnd_size) - randomize size when lavaball is newmis
+// fn(burst_rnd_size) - randomize size callback for fire_burst
+
+// pr - rnd < percent chance to chg size
+// super - rnd < percent added chance of super size fireball
+// ts - rnd < percent chance to toss (assumes state is MOVETYPE_FLY*)
+// -1.0 is lockout for each chance, 1.1 is always
+// sd - super ball launch sound to play
+
+void(float pr, float ts, float super, string sd) rnd_size =
+{
+	if (newmis == world) return;
+	newmis.frame = 0;
+	if (random() < ts) newmis.movetype = MOVETYPE_TOSS;
+	if (random() < pr)
+		{
+		newmis.frame = rint(random() * 3.2);
+		if (random() < 0.13 && newmis.frame < 5) newmis.frame = newmis.frame + 5;
+		if (random() < super) lavaball_large(newmis, 0, ' 200 0 0', newmis.velocity, sd);
+		}
+};
+
+
+
+$frame lavasm1 lavasm2 lavasm3 lavasm4 lavasm5
+$frame lavamd1 lavamd2 lavamd3 lavamd4 lavamd5
+$frame lavalg1 lavalg2 lavalg3 lavalg4 lavalg5
+
+float smallent_sf; // loop safety - _must_ be set before fn() call
+
+
+// fn(lavapud_ground) - attempt to ground floating puddles
+// .th_run - original think fn MUST be stored here!
+
+void() lavapud_ground =
+{
+//	local float sf;
+
+//	sf = 100;
+	if (!self.aflag) self.aflag = 100;
+	if (content(world,CKO) != CONTENT_SOLID && content(world,CKO) != CONTENT_LAVA && self.aflag > 0) // try to ground puddles
+		{
+//		setorigin(self, self.origin + ' 0 0 -2');
+		if (self.velocity_z > -75) self.velocity_z = self.velocity_z - 10;
+		self._stand = self.think = lavapud_ground;
+		self.aflag = self.aflag - 1;
+		if (!self.aflag) self.aflag = -1;
+		}
+	else
+		{
+//		while ((content(world,CKO) == CONTENT_SOLID || content(world,CKO) == CONTENT_LAVA) && sf > 0)
+//		{
+//			sf = sf - 1;
+//			setorigin(self, self.origin + ' 0 0 2');
+//		}
+		setorigin(self, self.origin + ' 0 0 1');
+		self._stand = self.think = self.th_run;
+//		content_clear(world);
+//		self.velocity_z = 0;
+		}
+
+	self.nextthink = time + 0.05;
+};
+
+
+// fn(lavapdl_touch) - something touched a lava puddle
+// dummy = burn em!
+
+void() lavapdl_touch =
+{
+//bprint("lava pdl touch\n"); // TEST
+	local float s1;
+
+	if (other == world)
+	{
+		s1 = 24;
+		if (self.viswframe > $lavamd5) s1 = 36;
+		else if (self.viswframe > $lavasm5) s1 = 30;
+		smallent_sf = 0;
+		smallent_free(s1);  // IDEA - radius frame factor
+		return;
+	}
+	if (other == self.owner) return;
+
+	if (other.health > 0)
+	if (other.dmgtime < time)
+		{
+if (WARNING)
+{
+bprint("doing ");
+bprint(ftos(self.dmg));
+bprint(" damage\n");
+}
+		if (other.morphy == IMP_MCTHON) 
+			{
+			self.dmg = self.dmg * 0.75; // really a heal of another player lava morph at this point
+			if (self.dmg < 1)
+				{
+				self.wait = time; // ran out of heat, freeze it
+				self.lefty = -1;
+				}
+			T_FireDamage (other, self, self.owner, self.dmg); // dont want flame touch for lava
+			}
+		else 
+			FlameTouch();
+		other.dmgtime = time + 0.09 + random();
+		}
+}
+
+// fn(lavapdl_live) - hot puddle flow, handle player spawned launcher
+// lava bomb left a messy puddle...cleanup on isle 6 please, bring a radsuit!
+
+//.wait - time to live
+//.delay - timer for blobdown
+//.viswframe - base frame for puddle size (sm, md, lg)
+//.lefty = shots
+//.lip - ball size
+//.skin - hot or cooled
+//.style - set to NO_FLOAT for floater code
+//.aflag - used to time out grounder
+
+
+void() lavapud_live =
+{
+	local float pco, pcf;
+
+	pco = pointcontents(self.origin + ' 0 0 1'); // for actual lavapud contain
+	pcf = pointcontents(self.origin + ' 0 0 -4'); // for lavapud floating on lava
+
+if (WARNING)
+if (FALSE)
+{
+bprint("lavapud content: ");
+bprint(ftos(pco));
+bprint(", at float: ");
+bprint(ftos(pcf));
+newline(world);
+}
+	
+	if (self.classname != "lavapud") // not initialized, do a setup
+		{
+//		if (self.model == "progs/snowball.mdl" && self.skin == DKLAVA) self.model = "progs/lavaball.mdl";
+		self.mdl = "";
+		if(self.owner.morphy == IMP_MCHAOS) self.mdl = self.model; // for chaos bizzare launchers
+// this call sets all this - takes over self
+		newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, 0, self.origin, v0, v0, v0, v0, "lavapud", "progs/volcano.mdl", lavapdl_touch, 0.3, lavapud_live, SUB_Null, self.owner, self);
+		self.content_flag = self.content_flag - (self.content_flag & (MLT_LAVA | PF_LAVA | SF_CHK | PF_EMPTY));
+//		self.grab_callback = grab_lavaball;
+		self.skin = self.height = 1;
+		self.style = NO_FLOAT; // dont float these
+		self.lefty = 2 + (random() * 5.1) + (random() * 5.1) + (random() * 5.1); // load up launcher
+		self.dmg = 5 * self.lefty;
+		self.avelocity = ' 0 0 0';
+		self.angles_y = 360 * random();
+		self.view_ofs = ' 0 0 -2';
+		self.aflag = self.walkframe = 0;
+		self.viswframe = $lavasm1;
+		if (random() < 0.3)
+			{
+			if (random() < 0.3) self.viswframe = $lavalg1;
+			else self.viswframe = $lavamd1;
+			}
+		self.delay = time + 3 + rint(random() * 2.2);
+		if (self.wait <= time) self.wait = time + 20 + random() * 10;
+		}
+
+	self.nextthink = time + 0.3;
+	self.skin = self.skin + self.height;				// live a little, stops once solidified | cooled
+
+	if (self.skin == LAVA_PUDEND) self.height = -1;
+	if (self.skin == LAVA_START) self.height = 1;
+
+	self.lip = 1;
+	if (pcf != CONTENT_LAVA)
+		{
+		if (self.walkframe != 4)
+		if (self.delay < time) // blob puddles down
+			{
+			if (pco == CONTENT_SLIME) lavablob_slimeflare();
+			self.delay = time + 3 + rint(random() * 2.2);
+			self.walkframe = self.walkframe + 1;
+			}
+		self.frame = self.viswframe + self.walkframe;
+		if (MIRV_RESIZE) self.lip = rint(1 + random() * 2.1);
+		}
+	else
+		if (MIRV_RESIZE) self.lip = rint(0 + random() * 3.1);
+
+	if (self.chaosweptime)
+	if (self.chaosweptime < time)
+		{
+			self.speed = 300 + random() * 100;
+			chaos_fire_fly(self.mdl); // fire off a fly - this code reduces .lefty count
+			self.dmg = 5 * self.lefty;
+			newmis.frame = self.lip;
+		}
+
+	if ((self.wait < time) || (pco == CONTENT_WATER) || self.skin == LAVA_DEADSKIN) // cold now
+		{
+		if (pcf == CONTENT_LAVA && self.skin != LAVA_DEADSKIN)
+		if (random() < (0.5 + (self.lefty / 30.0))) // on or in lava
+			{																																								if (WARNING) bprint("time extend\n");
+			self.wait = time + 5 + random() * 15;
+			self.lefty = 5 + random() * 25;
+			return;
+			}
+		if (pcf != CONTENT_LAVA) self.skin = LAVA_DEADSKIN;
+		self.dmg = 0;
+		self.nextthink = time + 20; // gone in 20 secs, hey who stole my lava puddle?!
+		self.dest_y = 16;
+		self._stand = self.think = meltthink;
+		self.classname = "lavacool";
+		}
+
+	if (!self.flags & FL_HELD)
+	if (pcf == CONTENT_EMPTY && !self.aflag) // item_held() - try to ground puddles
+		{																																									if (WARNING) bprint("adjusting z\n");
+		self.th_run = lavapud_live;
+		lavapud_ground();
+		}
+
+};

@@ -197,6 +197,7 @@ void() CheckWaterLevels =
 					{
 						if (SV_FALLEN == 1)
 						{
+							if (e.model == "progs/cthon.mdl") lavacthon_blobme(e); // re-blob cthon
 							f = spawn ();
 							f.owner = e;
 							f.think = phone_teleport;

@@ -68,6 +68,7 @@ void() gravity_touch =
 	{
 		turret_KillStraker(other, 1 + random() * 5);
 	}
+
 };
 
 void() gravity_pull =
@@ -76,8 +77,17 @@ void() gravity_pull =
 	local float d;
 	local vector org;
 	local float gPercent;
-	local float gDist = 960;		// range of the weapon
-	local float gPower = 512;	// ideal speed of pull
+	local float gDist;
+	local float gPower;
+
+	gDist = 960;		// range of the weapon
+	gPower = 512;	// ideal speed of pull
+
+	if (self.classname == "sphere_annihilation") // these are a bit more powerfull
+	{
+		gDist = 1290 + random() * 200;
+		gPower = 640 + random() * 100;		
+	}
 
 	if (time > self.attack_finished)
 	{
@@ -132,6 +142,7 @@ if (!pk_art_movshot_ck(e, "grav"))
 		if (grav_visible(e))
 		if (e.classname != "gravity") // don't yank on any other gravity wells
 		if (e.classname != "beartrap")
+		if (e.model != "progs/boss.mdl" && e.model != "progs/oldone.mdl" && e.model != "progs/cthon.mdl") // dont pull bosses or cthon morph
 		if (pk_art_movshot_ck(e, "grav")) // Cataboligne 8.12.9 purify - pk artifacts
 		if (e.classname != "chase_cam")
 		//if (e != self.owner)

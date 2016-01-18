@@ -784,6 +784,14 @@ void(entity e) InitiateHook =
 	newhook.armortype = MAX_CHAIN_LEN;
 	newhook.morphy = 0;
 
+
+// default sounds
+	newhook.target = "player/axhit2.wav"; // hook hit a solid - not damaged
+	newhook.noise1 = "hook/retract.wav"; // drop
+	newhook.target1 = "hook/chain1.wav"; // out
+	newhook.target2 = "hook/chain2.wav"; // in
+	newhook.targetname = "weapons/ax1.wav"; // launch snd
+
 	if (e.mask_x & MORPH_HOOK)
 	{
 		newhook.lefty = SEL_S_HOOK;
@@ -793,6 +801,7 @@ void(entity e) InitiateHook =
 		{
 			setmodel(newhook, "progs/lavaball.mdl");
 			newhook.target = "blob/hit1.wav";
+			newhook.targetname = 
 			newhook.noise1 = "boss1/throw.wav";
 			newhook.target1 = "boss1/throw.wav";
 			newhook.target2 = "boss1/throw.wav";
@@ -803,6 +812,7 @@ void(entity e) InitiateHook =
 			setmodel(newhook, "progs/gib_m.mdl");
 			newhook.target = "zombie/z_hit.wav";
 			newhook.noise1 = "zombie/z_shot1.wav";
+			newhook.targetname = 
 			newhook.target1 = "zombie/z_fall.wav";
 			newhook.target2 = "zombie/z_fall.wav";
 		}
@@ -817,13 +827,6 @@ void(entity e) InitiateHook =
 		e.hook = e.hook | MODE2;// Cataboligne - 9.18.11 - morph hook only do one shot, no I_HOOK op
 	}
 
-
-// default sounds
-	newhook.target = "player/axhit2.wav"; // hook hit a solid - not damaged
-	newhook.noise1 = "hook/retract.wav"; // drop
-	newhook.target1 = "hook/chain1.wav"; // out
-	newhook.target2 = "hook/chain2.wav"; // in
-	newhook.targetname = "weapons/ax1.wav"; // launch snd
 
 	if (e.eweapon)
 	if (e.eweapon.netname == "Grappling hook")

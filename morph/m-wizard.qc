@@ -433,7 +433,8 @@ string() player_wizard_killmsg2 = {
 	return ".\n";
 };
 
-void(float silent) player_wizard_become = {
+void(float silent) player_wizard_become =
+{
 	self._stand=player_wizard_stand;
 	self._run=player_wizard_run;
 	self._pain=player_wizard_pain1;
@@ -443,8 +444,8 @@ void(float silent) player_wizard_become = {
 	self._attack=player_wizard_attack;
 	self._impulse=player_wizard_impulse;
 //	self._can_get_p=SUB_False;
-//	self._killmsg=player_wizard_killmsg;
-//	self._killmsg2=player_wizard_killmsg2;
+	self._killmsg=player_wizard_killmsg;
+	self._killmsg2=player_wizard_killmsg2;
 	setmodel(self,"progs/wizard.mdl");
 
 	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;

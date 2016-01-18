@@ -125,8 +125,7 @@ void(string rubblename, float rubblefr, float rubblesk, vector org, string code)
 	}
 
 	newmis.flags = 0;
-//	newmis.think = meltthink;
-	newmis.think = SUB_Remove;
+	newmis.think = meltthink;
 	newmis.th_die = RubbleInSolid;
 	newmis.noise4 = "";
 	newmis.nextthink = time + RUBBLE_TIME + crandom()* RUBBLE_TDEV;
@@ -281,10 +280,10 @@ void() menhir_think =
 void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 {
 	local float v, fr, rb, rs, dm, mflg, mr, menhr, menhsz, menhsk, m;
-	local string rubblemode, surface, msnd;
+	local string rubblemode, surface2, msnd;
 	local vector org, vel2, menhv;
 	
-	local float surfnum;
+	local float surnum2;
 
 // no rubble if env turned off or in *_100 mode
 	if (XENV) return;
@@ -357,20 +356,20 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 					org = org + v_up * crandom() * 24;
 					org = org + v_right * crandom() * 24;
 				}
-				surfnum = -1;
-				surfnum = getsurfacenearpoint(world, rorg + org);
-				if (surfnum >= 0)
-					surface = getsurfacetexture(world, surfnum);
+				surnum2 = -1;
+				surnum2 = getsurfacenearpoint(world, rorg + org);
+				if (surnum2 >= 0)
+					surface2 = getsurfacetexture(world, surnum2);
 
 					if (rskn > 0)
 						rs = rskn;
-					else if (surface == "*lava1") // skin support for quake texs, also generic support on some maps
+					else if (surface2 == "*lava1") // skin support for quake texs, also generic support on some maps
 						{ rs = 6; mflg = MLT_LAVA; } //$aa_lava; mflg = MLT_LAVA; }
-					else if (surface == "metal1_6")
+					else if (surface2 == "metal1_6")
 						rs = 3; // $metal1_6;
-					else if (surface == "metal1_3")
+					else if (surface2 == "metal1_3")
 						rs = 4; // $metal1_3;
-					else if (surface == "mmetal1_3")
+					else if (surface2 == "mmetal1_3")
 						rs = 5; // $mmetal1_3;
 					else if (world.model == "maps/dm4.bsp")
 						rs = 3 + floor(random() * 2.1);
@@ -486,7 +485,7 @@ if (WARNING) bprint("menhir ck found open\n");
 					}
 					else if (self.classname == "explosion") rubblemode = "explosion";
 					else rubblemode = "rubble";
-					if ((m < 1) && ! sky_touch(surface, v0, world))
+					if ((m < 1) && ! sky_touch(surface2, v0, world))
 					{
 						hipThrowRubble( "progs/rubble_m.mdl", rb, rs, rorg + org, rubblemode );
 						if (!newmis) return;

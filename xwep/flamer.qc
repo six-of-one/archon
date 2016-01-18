@@ -23,31 +23,7 @@ void() flamer_precache =
 //	precache_sound ("flamethrower/.wav");
 };
 
-// TDO: put back into volcano
-// fn(T_FireDamage) - damage from fires & hot stuff, will heal lavablobs!
 
-void (entity targ, entity inflictor, entity attacker, float damage) T_FireDamage =
-{
-//	if ((targ.morphnum == IMP_MCTHON) || (targ.morphnum == IMP_MCHAOS) || (targ.classname == "monster_tarbaby")) // lava capable ents wont get burned...often
-	if (targ.classname == "monster_tarbaby") // lava capable ents wont get burned...often
-//	if (IS_LAVA(targ)) 
-		{
-//		if (targ.morphnum == IMP_MCTHON) T_Heal(targ, damage, 0); // LOL - lava is "healed" by fire - such a horta situation...
-//		else 
-			if (targ.classname == "monster_tarbaby") { if (random() < 0.2) T_Heal(targ, damage, 0); } // tarbabys too..
-		else // chaos here
-			{
-			if (targ.watertype == CONTENT_LAVA)
-				{
-				if (random() < 0.05) T_Heal(targ, damage * random(), 0); // CHAOS_LEVEL ph
-				else if (random() < 0.015) T_Damage (targ, inflictor, attacker, damage * random()); // even less chance of damage
-				}
-			else
-				if (random() < 0.02) T_Damage (targ, inflictor, attacker, damage * random());
-			}
-		}
-	else T_Damage (targ, inflictor, attacker, damage);
-};
 
 // fn(gas_gauge) - calculate gauge indication level
 
