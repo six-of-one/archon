@@ -142,6 +142,7 @@ void() pk_run_frames =
 		local float f;
 		f = cvar("sv_maxspeed") * 1.6;
 		if (vlen(self.velocity) < f)
+		if (self.button1)
 			self.velocity = self.velocity * (f / vlen(self.velocity));
 	}
 	return;

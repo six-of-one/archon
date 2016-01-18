@@ -858,6 +858,17 @@ void() pk_liveupd =
 	}
 
 	S_MONSTER = cvar("sv_monster_resp");
+	if (S_MONSTER & MONSTER_MASK)
+	{
+		if (!monster_respawner) monster_respawn();
+	}
+	else
+	if (monster_respawner)
+	{
+		remove(monster_respawner);
+		monster_respawner = world;
+	}
+
 	C_MONSTER_CNT = cvar("sv_monster_cnt");
 	if ( (C_MONSTER != cvar("sv_monster_rnd")) || (C2_MONSTER != cvar("sv_monster_rnd2")) )
 	{

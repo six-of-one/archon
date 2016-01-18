@@ -1335,6 +1335,42 @@ entity bodyque_first; // start up pointer
 entity bodyque_head;
 float body_cnt;
 
+// so other stuff can bodyque
+void(entity e, entity bq, float trm) BodyQueAsset =
+{
+	if (trm) // terminate it later
+	{
+		bq = spawn(); // make one each time
+		bq.think = SUB_Remove;
+		bq.nextthink = time + DEAD_BODYTIME + random() * 30;
+		bq.classname = "bodyque";	
+	}
+
+	bq.angles = e.angles;
+	bq.model = e.model;
+	bq.modelindex = e.modelindex;
+	bq.frame = e.frame;
+	bq.colormap = e.colormap; // player colors till disconnect - changes when changed live
+//	bq.clientcolors = e.clientcolors; // does nothing - colors happen thru the colormap, of which there are client slots count
+	bq.flags = FL_CLIENT;
+	bq.movetype = e.movetype;
+	bq.velocity = e.velocity;
+	bq.flags = 0;
+	bq.skin = e.skin; // *pk damage skins
+	setorigin (bq,e.origin);
+	setsize (bq,e.mins,e.maxs);
+
+/*
+// this actually sets colors for a given colormap = clientno + 1 (this example sets colors for colormap = 2)
+// to set a color map above 1 a listen server must be running
+
+	bq.b_clientno = 1;
+	bq.b_shirt = 9;
+	bq.b_pants = 10;
+	UpdateClient(bq);
+*/
+};
+
 void (entity e) CopyToBodyQue =
 {
 	if (PK_100 || Q_100)
@@ -1379,27 +1415,5 @@ void (entity e) CopyToBodyQue =
 			bodyque_head = bodyque_head.owner; // cycle loop
 	}
 
-	bodyque_head.angles = e.angles;
-	bodyque_head.model = e.model;
-	bodyque_head.modelindex = e.modelindex;
-	bodyque_head.frame = e.frame;
-	bodyque_head.colormap = e.colormap; // player colors till disconnect - changes when changed live
-//	bodyque_head.clientcolors = e.clientcolors; // does nothing - colors happen thru the colormap, of which there are client slots count
-	bodyque_head.flags = FL_CLIENT;
-	bodyque_head.movetype = e.movetype;
-	bodyque_head.velocity = e.velocity;
-	bodyque_head.flags = 0;
-	bodyque_head.skin = e.skin; // *pk damage skins
-	setorigin (bodyque_head,e.origin);
-	setsize (bodyque_head,e.mins,e.maxs);
-
-/*
-// this actually sets colors for a given colormap = clientno + 1 (this example sets colors for colormap = 2)
-// to set a color map above 1 a listen server must be running
-
-	bodyque_head.b_clientno = 1;
-	bodyque_head.b_shirt = 9;
-	bodyque_head.b_pants = 10;
-	UpdateClient(bodyque_head);
-*/
+	BodyQueAsset(e, bodyque_head, FALSE);
 };

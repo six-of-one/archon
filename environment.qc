@@ -289,6 +289,121 @@ void(vector lorg1, vector lorg2) seq_bolt =
 
 
 
+// fn(fire_burst) - fire off a burst of stuff
+
+// fr - fire fn, will just shoot out if SUB_Null, not weaponized
+// org - origin
+// mvt - movetype - overrides newmis.movetype if defined
+// velm - velocity multiplier - overrides newmis.velocity if defined
+// cln - classname
+// md - model to use
+// ct - content control
+// amt - amount to burst
+// rmt - random amount
+// vp - vector pointer							\__ direction
+// vr - vector randomizer					/
+// cb - call back function for adding stuff (particle bursts, etc)
+// s - entity to use, world indicates spawn new ent
+/* flg - flags 
+FL_VELRND		- randomize velocity * random()
+FL_VELRND2		- randomize 1/2 velocity + 1/2 vel * random()
+FL_NEWSELF	- new self ent every iter
+FL_ANGADD		- angles are additive every iter - vp_x = vp_x + vr_x
+FL_ANGADR		- angles added randomly / iter - vp_x = vp_x + vr_x * random()
+*/
+
+void(void() fr, vector org, float mvt, float velm, string cln, string md, float ct, float amt, float rmt, vector vp, vector vr, void() cb, float flg, entity s) fire_burst =
+{
+	local float r1, v;
+	local entity sv, s2;
+	local vector cf;
+
+	sv = self;
+	self = s;
+	if (s == world) self = spawn();
+	if (self == world) { self = sv; return; } // IDEA: error msg?
+	newmis = world;
+
+	r1 = amt + rint(random() * rmt);
+
+	while (r1 > 0)
+		{
+		self.origin = org; // ISSUE: causes origin drift if org != self.origin
+		self.owner = sv;
+		if (flg & FL_ANGADS)
+			{
+			v = vr_x;
+			if (flg & FL_ANGADR) v = vr_x * random();
+			self.v_angle_x = vp_x = vp_x + v;
+			v = vr_y;
+			if (flg & FL_ANGADR) v = vr_y * random();
+			self.v_angle_y = vp_y = vp_y + v;
+			v = vr_z;
+			if (flg & FL_ANGADR) v = vr_z * random();
+			self.v_angle_z = vp_z = vp_z + v;
+			}
+		else
+			{
+			self.v_angle_x = vp_x + (random() * vr_x) - (vr_x / 2.0);
+			self.v_angle_y = vp_y + (random() * vr_y) - (vr_y / 2.0);
+			self.v_angle_z = vp_z + (random() * vr_z) - (vr_z / 2.0);
+			}
+		makevectors(self.v_angle); // for the v_forward things
+		v = velm;
+		if (flg & FL_VELRND) v = velm * random();
+		if (flg & FL_VELRND2) v = velm + random() * velm;//(velm * 0.5) + (velm * 0.5 *random());
+
+		if (fr != SUB_Null)
+			{
+			fr();
+
+// FIX - imp content control for ct
+			if (newmis)
+				{
+				if (flg & FL_FRCORG) newmis.origin = org;
+				if (flg & FL_OWNOWN)
+				{
+					if (sv.owner) newmis.owner = sv.owner; // owner of the launching platform
+				}
+				else
+					newmis.owner = sv;
+
+				if (mvt) newmis.movetype = mvt;
+				if (v) newmis.velocity = normalize(newmis.velocity) * v;
+				if (flg & FL_VELRND) newmis.velocity = newmis.velocity * random();
+				if (flg & FL_VELRND2) newmis.velocity = newmis.velocity + random() * newmis.velocity;//(newmis.velocity * 0.5) + (newmis.velocity * 0.5 *random());
+				}
+			}
+		else if (md != "")
+			fire_missile(v, mvt, 0, ct, self.origin, ' 0 0 0', cln, md, "", SUB_Null, 5 + (random() * 10), SUB_Remove, SUB_Null); // meltthink, SUB_Null);
+		else
+		{
+			if (WARNING)
+			{
+			bprint("\n]nfire_burst (chaos_env.qc, 1168) called with bad parms\n");
+			}
+			return; // no fn, no model, nothing to do
+		}
+
+		if (cb != SUB_Null) cb();
+
+/* TDO: later
+		if (flg & FL_NEWSELF) // because of engine lightning bolt code...
+			{ // just some stuff we might want
+			cf_x = E_ORG | E_OWNER | E_VELOCITY | E_SIZE | E_MOVETYPE | E_SOLID | E_FLAGS | E_MORPHNUM | E_ITEMS | E_FRAME | E_AANGLES;
+			s2 = ent_copy(cf, self, world);
+			if (self != sv && self != s) remove(self); // dont remove entry self, or parm ent s
+			self = s2;
+			}
+*/
+		r1 = r1 - 1;
+		}
+	if (self != sv && self != s) remove(self);
+	self = sv;
+};
+
+
+
 void () fire_fly_touch =
 {
 	T_Damage (other,self,self,self.dmg);

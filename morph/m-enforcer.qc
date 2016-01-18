@@ -142,7 +142,7 @@ void() player_enf_run = [ $run1, player_run ]
 
 void()	player_enf_atk12;
 
-void()	player_enf_atk1	=[	$attack1,	player_enf_atk2	] { self.attack_finished = 0.3; };
+void()	player_enf_atk1	=[	$attack1,	player_enf_atk2	] { if (rune_haste(0.15)) self.attack_finished = 0.3; };
 void()	player_enf_atk2	=[	$attack2,	player_enf_atk3	] {};
 void()	player_enf_atk3	=[	$attack3,	player_enf_atk4	] {};
 void()	player_enf_atk4	=[	$attack4,	player_enf_atk5	] {};
@@ -316,7 +316,7 @@ void(float silent) player_enforcer_become =
 	self.noise2 = "enforcer/pain1.wav";
 	self.noise3 = "";
 	self.view_ofs = ' 0 0 24';
-	self.dest2_z = 0.1;
+	self.cam_z = 0.1;
 //	if(!deathmatch)
 //		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else

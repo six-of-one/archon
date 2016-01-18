@@ -50,12 +50,15 @@ void(entity e) chaos_mdlsize;
 
 // monster bit flags - still use mask_x
 void() random_monster;
+void() monster_respawn;
 
 float MONSTER_MASK; // all monster bits
 float pk_monster_set; // admin var to store bits for setting monster values
 
 string(float mb, float mode) monster_id;
 void() random_monster_wakey;
+
+entity monster_respawner;
 
 float CB_M_ARMY					= 1;
 float CB_M_FISH					= 2;
@@ -226,6 +229,7 @@ void(float silent) player_scourge_become;
 void(float silent) player_shalrath_become;
 void(float silent) player_enforcer_become;
 void(float silent) player_anode_become;
+void(float silent) player_demon_become;
 
 //morph health modifiers            original code
 float MHUMAN_HEALMOD				= 1.0;	// 100 = 1.0
@@ -274,6 +278,9 @@ float SCOURGE_ARMORMAX			= 100;
 float GIVEARMOR					= 333;
 float ARM_SCRG						= 0.35; // scourge morph built in def armor
 
+// fiends
+
+float FL_DEMONBOOM				= 65536; // demon on overload!
 
 // wratihs
 
@@ -286,4 +293,4 @@ void() morph_precache;
 void() m_precache_scourge;
 void() m_precache_shalrath;
 void() m_precache_enforcer;
-
+void() m_precache_demon;

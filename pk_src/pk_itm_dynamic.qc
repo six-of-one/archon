@@ -463,6 +463,12 @@ void(string cls) item_call =
 		self.pausetime = 0;
 		return;
 	}
+	if (self.class_select == "class_monster")
+	{
+		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2, random_monster_wakey, SUB_Null, self, world);
+		self.pausetime = 0;
+		return;		
+	}
 	self.flags = FL_ITEM;
 	self.movetype = MOVETYPE_TOSS;
 	if (self.classname != "dyn_item") // dont do these for dyn items

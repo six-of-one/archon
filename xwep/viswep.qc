@@ -864,7 +864,7 @@ vector(entity hent) grap_vw_adj =
 
 // dead threw protos
 
-float PR_THREW = 0; // TEST: master print
+float PR_THREW = 1; // TEST: master print
 
 void(entity e, entity p) xwep_ammo;
 void(entity e, string cl) item_call_save;

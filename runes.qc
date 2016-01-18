@@ -144,11 +144,16 @@ void() mk_rune_set =
 
 // print rune info on impulse from e to p
 
+// only admin is supposed to print where e != p
+
+// TDO: q3/q2/doom non rune goodies - flight
+
+float IT_ARTIFACT = 7929856;
+
 void(entity e, entity p) rune_id =
 {
 	local float f;
 
-	f = 1;
 
 	if (WARNING)
 	if (!RUNES)
@@ -156,22 +161,72 @@ void(entity e, entity p) rune_id =
 		sprint(p, "*** Rune server is turned off.\n\n");
 	}
 
-	if (e == p) sprint(p, "You have");
+	if (e == p) sprint(p, "\nYou have");
 	else
 	{
 		sprint(p, e.netname);
 		sprint(p, " has");
 	}
+
+	f = e.items & IT_ARTIFACT;
+
 	if (!e.rune_flag)
 	{
-		sprint(p, " no runes.\n\n");
-		return;
+		sprint(p, " no Runes ");
+		if (!f)
+		{
+			sprint(p, "and no Artifacts.\n\n");
+			return;
+		}
 	}
-	else	sprint(p, " the following runes:\n\n");
-	while (f & RUNE_MASK_ALL)
+	else	
 	{
-		if (f & e.rune_flag) rune_print(p, f, TRUE); 
-		f = f * 2;
+		sprint(p, " the following Runes of power:\n\n");
+
+		f = 1;
+		while (f & RUNE_MASK_ALL)
+		{
+			if (f & e.rune_flag) rune_print(p, f, TRUE); 
+			f = f * 2;
+		}
+		sprint(p, "\n");
+	}
+
+	f = e.items & IT_ARTIFACT;
+	sprint(p, "and the following Artifacts:\n");
+	if  ((self.pkplus_actortype == PKPLUS_ACTORPENT) && (self.pkplus_actortype == PKPLUS_ACTORQUAD))
+	{
+		f = 0; // dont show other msgs
+		sprint(p, "Acting:\nPenta-Quad - dontcha wish you had the real thing?\n");
+		
+	}
+	else if  (self.pkplus_actortype == PKPLUS_ACTORPENT)
+	{
+		f = 0; // dont show other msgs
+		sprint(p, "Acting:\nPentagram of Protection - syke!\n");
+	}
+	else if (self.pkplus_actortype == PKPLUS_ACTORQUAD)
+	{
+		f = 0;
+		sprint(p, "Acting:\nQuad Damage and wishin in one hand!\n");
+	}
+	if (f == IT_ARTIFACT) sprint(p, "\nALL of them!!!\n\n \bQUAKE GOD\b - go kill everyone now, fast!\n\n");
+	else if (f && (e.items & IT_QUAD) && (e.items & IT_INVULNERABILITY) )
+	{
+		sprint(p, "\bPENTA-QUAD\b !!\n(shoot quick they're all running away...\n");
+		if (e.items & IT_SUPERHEALTH) sprint(p, "Mega Health\n");
+		if (e.items & IT_INVISIBILITY) sprint(p, "Limited Invisibility\n");
+		if (e.items & IT_SUIT) sprint(p, "Hazmat Suit\n");
+		if (!e.items & (IT_SUIT | IT_INVISIBILITY | IT_SUPERHEALTH) ) sprint(p, "\n");
+	}
+	else
+	{
+		if (e.items & IT_SUPERHEALTH) sprint(p, "Mega Health\n");
+		if (e.items & IT_INVISIBILITY) sprint(p, "Limited Invisibility\n");
+		if (f && (e.items & IT_INVULNERABILITY)) sprint(p, "\bPENTAGRAM of Protection !!\n");
+		if (e.items & IT_SUIT) sprint(p, "Hazmat Suit\n");
+		if (f && (e.items & IT_QUAD)) sprint(p, "\bQuad\b freakin Damage !\n");
+		sprint(p, "\n");
 	}
 };
 
@@ -691,8 +746,9 @@ void() HasteSound =
 };
 
 // op haste - ret true if att_fin needs set
-
 // returns false if haste rune in effect
+
+// atf - attack finished time to add - this must be the hasted value
 
 float(float atf) rune_haste =
 {

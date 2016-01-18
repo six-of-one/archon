@@ -135,7 +135,8 @@ void() player_shalrath_attack1 = [ $attack1, player_shalrath_attack2 ]
 {
 	local vector v;
 	sound (self, CHAN_VOICE, "shalrath/attack.wav", 1, ATTN_NORM);
-	self.attack_finished=time+1;
+	if (rune_haste(0.5))
+		self.attack_finished=time+1;
 	makevectors(self.v_angle);
 	v = v_forward; //gun_aim(self, v0);
 	traceline(self.origin+ self.view_ofs, self.origin+v * 2048 + self.view_ofs, FALSE, self);
@@ -210,7 +211,8 @@ void() player_shalrath_attack =
 		}
 		else if (self.weapon == SEL_SHAL_LTN)
 		{
-			self.attack_finished = time + 0.9;
+			if (rune_haste(0.45))
+				self.attack_finished = time + 0.9;
 			player_shalrath_lightning1(); // lightning
 		}
 		else

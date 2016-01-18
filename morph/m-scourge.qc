@@ -173,7 +173,8 @@ void(float ox) player_scourge_FireSpikes =
 	local vector   src;
 	local float am;
 
-	self.attack_finished = time + 0.2;
+	if (rune_haste(0.1))
+		self.attack_finished = time + 0.2;
 
 	if (ox > 0) ox = ox - 16; // move shooting position in 16 qu, and I dont know why this needs done
 	else ox = ox + 16;

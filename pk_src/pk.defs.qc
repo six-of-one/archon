@@ -427,6 +427,18 @@ float EF_FULLBRIGHT			= 512;
 
 void(vector v1, vector v2, float typ, string snd) lightning_bolt;
 
+void(void() fr, vector org, float mvt, float vel, string cln, string md, float ct, float amt, float rmt, vector vp, vector vr, void() cb, float flg, entity s) fire_burst;
+float FL_FRCORG				= 1; // force load origin
+float FL_VELRND				= 2; // randomize velocity * random()
+float FL_VELRND2				= 4; // randomize 1/2 velocity + * random()
+float FL_NEWSELF				= 8; // use a new self ent every iteration - lightning req.
+float FL_ANGADD				= 16; // angle progression
+float FL_ANGADR				= 32; // random addition
+float FL_ANGADS				= 48; // any angle add flag
+float FL_OWNOWN				= 64; // selfs owner (instead of just self)
+//float FL_MSTOWN				= 128; // if master_owner is set use that otherwise fall back to other flags
+
+
 /// *** DUMMY SECTION - IDEA: move to better location later on
 
 // 8192 section

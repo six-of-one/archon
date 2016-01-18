@@ -49,6 +49,7 @@ void() morph_precache =
 	m_precache_scourge();
 	m_precache_enforcer();
 	m_precache_shalrath();
+	m_precache_demon();
 };
 
 
@@ -887,6 +888,7 @@ void(float cmd, float pls) polymorph_check =
 		if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
 		else if (cmd == IMP_MENF) player_enforcer_become(pls);
+		else if (cmd == IMP_MDEMON) player_demon_become(pls);
 		else if (cmd == IMP_MANODEX) player_anode_become(pls);
 		else player_human_become(pls);
 	/*	else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
@@ -984,11 +986,31 @@ void() random_monster_wakey =
 {
 	local entity f;
 
-	f = self;
-	self = self.owner;
-	FoundTarget();
-	remove(f);
+	if (self.owner.class_select == "class_monster")
+	if (self.owner.enemy.classname == "player")
+	{
+		self.owner.goalentity = self.owner.enemy;
+		self.owner.nextthink = time + 2 + random() * 2;
+		self.owner.think = self.owner.th_walk;
+		remove(self);
+		return;
+	}
+//	f = self;
+	f =  find_tdest(FL_RSTELE | FL_RSSTART | FL_ITEM, "");
+	if (!f) f = findradius(self.owner.origin, PK_DYNRAD);
+
+//	self = self.owner;
+//	FoundTarget();
+	if (f)
+//	if((self.owner.enemy == world) || (self.owner.enemy == self))	//If he doesn't have an enemy
+	{
+		self.owner.goalentity = f;	// target entity f
+		self.owner.nextthink = time + 2 + random() * 2;
+		self.owner.think = self.owner.th_walk;
+	}
+	remove(self);
 };
+
 
 void() random_monster =
 {
@@ -1077,7 +1099,71 @@ void() random_monster =
 			bprint(" on the map");
 		bprint("\n");
 	}
-}
+};
+
+// TDO: upgrades
+
+// do the respawn
+void() monster_respawn_fire =
+{
+	setorigin(self, self. origin + ' 0 0 8');
+	item_call(self.classname); // back to life
+	spawn_tfog (self.origin);
+};
+
+void() monster_respawn =
+{
+
+	if (self.classname != "monster_respawn")
+	{
+// turned on
+		if (!monster_respawner)
+		{
+			monster_respawner = spawn();
+			monster_respawner.classname = "monster_respawn";
+		}
+		if (monster_respawner.classname != "monster_respawn")
+		{
+			remove(monster_respawner); // NOTE: this could be removing an important ent, maybe it should be qualified?
+			monster_respawner = spawn();
+			monster_respawner.classname = "monster_respawn";
+		}
+		monster_respawner.think = monster_respawn;
+		monster_respawner.nextthink = time + S_MONSTER_WAIT * random() +  S_MONSTER_DEV * crandom();
+		return;
+	}
+
+	local float f;
+	local entity e;
+	local string mn;
+	self.nextthink = time + S_MONSTER_WAIT * random() +  S_MONSTER_DEV * crandom();
+
+	f = 1;
+	while ( f < MONSTER_MASK)
+	{
+		if (f & S_MONSTER) // want to try and respawn these guys
+		{
+			mn = monster_id(f, TRUE);
+			e = find(world, classname, mn);
+			while (e)
+			{
+				if (e.model != "")
+				if (e.health <= 0)
+				if (e.think != monster_respawn_fire)
+				{
+					BodyQueAsset(e, world, TRUE); // make a dead body
+					e.model = ""; // hide this guy
+					e.think = monster_respawn_fire;
+					e.nextthink = time + 10 + 20 * random();
+				}
+				e = find(e, classname, mn);
+			}
+		}
+		f = f * 2;
+	}
+
+};
+
 
 // NOTE: TDO: put back in volcano when added to mod
 
@@ -1173,6 +1259,87 @@ void(entity e) chaos_mdlsize =
 };
 
 
+// put in m-zomby.qc
+
+// gib tracer deal
+// fn(GibTDie) - gib tracer done
+
+void() GibTDie =
+{
+//	self.dest_y = ITEM_MELTD;
+	self.think = SUB_Remove; //meltthink;
+};
+
+// fn(GibTracer) - shoot zombies enemys in range
+
+// IDEA - squisy slashy type sound made periodically
+
+void() ZombieGrenadeTouch2;
+
+void() GibTracer =
+{
+	self.nextthink = time + 0.1;
+
+	if (self.turret_timeout < time || self.health < 0) // ran out
+	{
+		self.th_die(); // gib tracer
+		return;
+	}
+
+	if (self.owner.enemy)
+	if (self.owner.enemy.takedamage && (self.owner.enemy.classname == "player" || self.owner.enemy.flags & FL_MONSTER))
+	{
+		if (self.owner.enemy.mask_x & CB_ZOMBY) return; // can this even happen?
+
+		fire_missile(ZOMBIE_FLSH_VEL * 0.833335, MOVETYPE_FLYMISSILE, FL_CTHONF, RM_SKY | MLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 10', self.owner.enemy.origin - self.origin, "grenade", "progs/zom_gib.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 2.5, SUB_Remove, SUB_Null);
+		newmis.dmg = 10 + random() * 5;
+		self.health = self.health - newmis.dmg;
+		newmis.avelocity = '3000 1000 2000';
+
+		self.nextthink = time + 1.3; // only shoot so often
+	}
+};
+
+void() ZombieGrenadeTouch2 =
+{
+	local float h;
+	
+	if (other.mask_x & CB_ZOMBY) return;
+
+	if (self.classname == "gib_tracer") // touched a gib tracer - do a bit of damage - IDEA chance of plague
+	if (self.attack_finished < time) // limit to touch hits
+	{
+		h = 5 + random() * 5;
+		T_Damage (other, self, self.owner, h);
+		self.health = self.health + h;
+		sound (self, CHAN_WEAPON, "zombie/z_hit.wav", 1, ATTN_NORM);
+		self.attack_finished = time + 0.3 + random();
+		return;
+	}
+	self.owner.enemy = other;
+	ZombieGrenadeTouch(); // reg damage
+};
+
+void() player_ZombieFireGrenade =
+{
+	if (self.weapon == IT_SHOTGUN) // shoot gib fountain chunk - TDO: vet this
+	{
+		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', ' 0 0 0', "gib_tracer", "progs/gib_m.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 0.1, GibTracer, GibTDie);
+		newmis.frame = 7;
+		newmis.takedamage = DAMAGE_YES;
+		newmis.health = 300;
+		newmis.turret_timeout = 30 + random() * 60 + time;
+		newmis.avelocity = '400 250 500';
+		return;
+	}
+	else
+		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', ' 0 0 0', "grenade", "progs/zom_gib.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 2.5, SUB_Remove, SUB_Null);
+
+	newmis.dmg = 10 + random() * 15;  // player stinks a little bit more, thus more dmg
+	newmis.avelocity = '3000 1000 2000';
+
+//	if (self.weapon == SEL_MRANGE) newmis.touch = PlagueTouch;
+};
 
 
 

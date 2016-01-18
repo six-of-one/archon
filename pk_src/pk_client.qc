@@ -483,11 +483,12 @@ void() PutClientInServer =
 
 	self.classname = "player";
 	self.health = 100;
+	self.max_health = 100;
+	self.health_modifier = 1.0;
 	self.takedamage = DAMAGE_AIM;
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
 	self.show_hostile = 0;
-	self.max_health = 100;
 	self.flags = FL_CLIENT;
 	self.air_finished = time + 12;
 	self.dmg = 2;   		// initial water damage

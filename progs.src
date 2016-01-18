@@ -164,6 +164,7 @@ morph/morph.qc
 morph/m-scourge.qc
 morph/m-shalra.qc
 morph/m-enforcer.qc
+morph/m-demon.qc
 morph/m-anode.qc
 
 anode.qc
