@@ -2808,6 +2808,10 @@ void() player_chaos_attack =
 //		if ((self.ammo_nails > 3) && self.bolt_target == self) return; // cant target self w/ this spell
 
 		self.th_melee(); // cast spell
+// store last spell used
+// pkplus_egoammo - for spell recall
+// pkplus_actorskin - spell currently selected
+		self.pkplus_egoammo = self.pkplus_actorskin;
 		return;
 	}
 
@@ -3012,10 +3016,11 @@ void() spell_target =
 	if (self.weapon == IT_SHOTGUN)
 	{
 		if (!self.ammo_shells) self.ammo_shells = 7; // teleport - default self
-		if (self.ammo_shells == 3) { self.pk_explode_ammo = 15; self.pkplus_actorammo = 3; self.th_melee = uni_teleport; }
-		else if (self.ammo_shells == 5) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 7; self.th_melee = multi_teleport; }
+		if (self.ammo_shells == 3) { self.pkplus_actorskin = 3; self.pk_explode_ammo = 15; self.pkplus_actorammo = 3; self.th_melee = uni_teleport; }
+		else if (self.ammo_shells == 5) { self.pkplus_actorskin = 5; self.pk_explode_ammo = 30; self.pkplus_actorammo = 7; self.th_melee = multi_teleport; }
 		else if (self.ammo_shells == 7)
 		{
+			self.pkplus_actorskin = 7;
 			self.pk_explode_ammo = 5;
 			self.pkplus_actorammo = 1;
 			self.th_melee = uni_teleport;
@@ -3023,6 +3028,7 @@ void() spell_target =
 		}
 		else if (self.ammo_shells == 11)
 		{
+			self.pkplus_actorskin = 11;
 			self.pk_explode_ammo = 20;
 			self.pkplus_actorammo = 1;
 			self.th_melee = set_beacon;
@@ -3038,6 +3044,7 @@ void() spell_target =
 // NOTE: if vessel exists, this should be blocked
 		else if (self.ammo_shells == 13) // create vessel
 		{
+			self.pkplus_actorskin = 0;
 			self.pk_explode_ammo = 2000;
 			self.th_melee = make_vessel;
 			if (self.bolt_target == self) self.bolt_target = world;
@@ -3048,40 +3055,95 @@ void() spell_target =
 	if (self.weapon == IT_SUPER_SHOTGUN)
 	{
 		if (!self.ammo_nails) self.ammo_nails = 3;
-		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; self.bolt_target = self; }
-		if (self.ammo_nails == 5) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; if (self.bolt_target == self) self.bolt_target = world; }
-		if (self.ammo_nails == 7) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; if (self.bolt_target == self) self.bolt_target = world; } // repeat last monster poly
-		if (self.ammo_nails == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); }
+		if (self.ammo_nails == 3) { self.pkplus_actorskin = 13; self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; self.bolt_target = self; }
+		if (self.ammo_nails == 5) { self.pkplus_actorskin = 15; self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; if (self.bolt_target == self) self.bolt_target = world; }
+		if (self.ammo_nails == 7) { self.pkplus_actorskin = 17; self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; if (self.bolt_target == self) self.bolt_target = world; } // repeat last monster poly
+		if (self.ammo_nails == 11) { self.pkplus_actorskin = 19; self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); }
 	}
 	if (self.weapon == IT_NAILGUN)
 	{
 		if (!self.ammo_rockets) self.ammo_rockets = 7;
-		if (self.ammo_rockets == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 0; self.th_melee = rune_powers; }
-		if (self.ammo_rockets == 5) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_gwell; }
-		if (self.ammo_rockets == 7) { self.pk_explode_ammo = 5; self.pkplus_actorammo = 35; self.th_melee = monster_speed; if (self.bolt_target == self) self.bolt_target = world; }
+		if (self.ammo_rockets == 3) { self.pkplus_actorskin = 21; self.pk_explode_ammo = 20; self.pkplus_actorammo = 0; self.th_melee = rune_powers; }
+		if (self.ammo_rockets == 5) { self.pkplus_actorskin = 23; self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_gwell; }
+		if (self.ammo_rockets == 7) { self.pkplus_actorskin = 25; self.pk_explode_ammo = 5; self.pkplus_actorammo = 35; self.th_melee = monster_speed; if (self.bolt_target == self) self.bolt_target = world; }
 	}
 	if (self.weapon == IT_SUPER_NAILGUN)
 	{
 		if (!self.ammo_bullet) self.ammo_bullet = 7;
-		if (self.ammo_bullet == 3) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_makepp; }
-		if (self.ammo_bullet == 5) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_maketele; }
-		if (self.ammo_bullet == 7) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
-		if (self.ammo_bullet == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
+		if (self.ammo_bullet == 3) { self.pkplus_actorskin = 27; self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_makepp; }
+		if (self.ammo_bullet == 5) { self.pkplus_actorskin = 29; self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_maketele; }
+		if (self.ammo_bullet == 7) { self.pkplus_actorskin = 31; self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
+		if (self.ammo_bullet == 11) { self.pkplus_actorskin = 33; self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
 // arc vessel spells
-		if (self.ammo_bullet == 13) { self.pk_explode_ammo = 200; self.pkplus_actorammo = 0; self.th_melee = remove_vessel; }
-		if (self.ammo_bullet == 15) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; }
-		if (self.ammo_bullet == 17) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; } // note - this adds 500 to archon pts, reduces soul vessel by 500
+		if (self.ammo_bullet == 13) { self.pkplus_actorskin = 35; self.pk_explode_ammo = 200; self.pkplus_actorammo = 0; self.th_melee = remove_vessel; }
+		if (self.ammo_bullet == 15) { self.pkplus_actorskin = 37; self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; }
+		if (self.ammo_bullet == 17) { self.pkplus_actorskin = 39; self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; } // note - this adds 500 to archon pts, reduces soul vessel by 500
 	}
 	if (self.weapon == IT_LIGHTNING)
 	{
 		if (self.bolt_target == self) self.bolt_target = world;
 		if (!self.ammo_cells) self.ammo_cells = 3;
-		if (self.ammo_cells == 5) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 43; self.th_melee = archon_imprison; }
-		if (self.ammo_cells == 7) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 0; self.th_melee = archon_release; self.bolt_target = world; next_imprisoned(); }
-		if (self.ammo_cells == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 3; self.th_melee = archon_heal; }
-		if (self.ammo_cells == 11) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_summon; }
-		if (self.ammo_cells == 13) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 3; self.th_melee = archon_banish; }
-		if (self.ammo_cells == 17) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 0; self.th_melee = archon_time_flow; }
+		if (self.ammo_cells == 5) { self.pkplus_actorskin = 42; self.pk_explode_ammo = 100; self.pkplus_actorammo = 43; self.th_melee = archon_imprison; }
+		if (self.ammo_cells == 7) { self.pkplus_actorskin = 43; self.pk_explode_ammo = 50; self.pkplus_actorammo = 0; self.th_melee = archon_release; self.bolt_target = world; next_imprisoned(); }
+		if (self.ammo_cells == 3) { self.pkplus_actorskin = 45; self.pk_explode_ammo = 20; self.pkplus_actorammo = 3; self.th_melee = archon_heal; }
+		if (self.ammo_cells == 11) { self.pkplus_actorskin = 47; self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_summon; }
+		if (self.ammo_cells == 13) { self.pkplus_actorskin = 49; self.pk_explode_ammo = 500; self.pkplus_actorammo = 3; self.th_melee = archon_banish; }
+		if (self.ammo_cells == 17) { self.pkplus_actorskin = 51; self.pk_explode_ammo = 100; self.pkplus_actorammo = 0; self.th_melee = archon_time_flow; }
+	}
+// special - select last spell that used power
+	if (self.weapon == 128) // IT_EXTRA_WEAPON
+	{
+		if (self.pkplus_egoammo == 3) { self.weapon = IT_SHOTGUN; self.pk_explode_ammo = 15; self.pkplus_actorammo = 3; self.th_melee = uni_teleport; }
+		else if (self.pkplus_egoammo == 5) { self.weapon = IT_SHOTGUN; self.pk_explode_ammo = 30; self.pkplus_actorammo = 7; self.th_melee = multi_teleport; }
+		else if (self.pkplus_egoammo == 7)
+		{
+			self.weapon = IT_SHOTGUN;
+			self.pk_explode_ammo = 5;
+			self.pkplus_actorammo = 1;
+			self.th_melee = uni_teleport;
+			self.bolt_target = self;
+		}
+		else if (self.pkplus_egoammo == 11)
+		{
+			self.weapon = IT_SHOTGUN;
+			self.pk_explode_ammo = 20;
+			self.pkplus_actorammo = 1;
+			self.th_melee = set_beacon;
+ 			if (self.goalentity)
+			if (self.goalentity.classname == "beacon") // beacon has been set
+			{
+				self.pk_explode_ammo = 5;
+				self.pkplus_actorammo = 0;
+				self.th_melee = uni_teleport;
+				self.bolt_target = self.goalentity;
+			}
+		}
+
+		if (self.pkplus_egoammo == 13) { self.weapon = IT_SUPER_SHOTGUN; self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; self.bolt_target = self; }
+		if (self.pkplus_egoammo == 15) { self.weapon = IT_SUPER_SHOTGUN; self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; if (self.bolt_target == self) self.bolt_target = world; }
+		if (self.pkplus_egoammo == 17) { self.weapon = IT_SUPER_SHOTGUN; self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; if (self.bolt_target == self) self.bolt_target = world; } // repeat last monster poly
+		if (self.pkplus_egoammo == 19) { self.weapon = IT_SUPER_SHOTGUN; self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); }
+
+		if (self.pkplus_egoammo == 21) { self.weapon =IT_NAILGUN; self.pk_explode_ammo = 20; self.pkplus_actorammo = 0; self.th_melee = rune_powers; }
+		if (self.pkplus_egoammo == 23) { self.weapon = IT_NAILGUN; self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_gwell; }
+		if (self.pkplus_egoammo == 25) { self.weapon = IT_NAILGUN; self.pk_explode_ammo = 5; self.pkplus_actorammo = 35; self.th_melee = monster_speed; if (self.bolt_target == self) self.bolt_target = world; }
+
+		if (self.pkplus_egoammo == 27) { self.weapon = IT_SUPER_NAILGUN; self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_makepp; }
+		if (self.pkplus_egoammo == 29) { self.weapon = IT_SUPER_NAILGUN; self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_maketele; }
+		if (self.pkplus_egoammo == 31) { self.weapon = IT_SUPER_NAILGUN; self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
+		if (self.pkplus_egoammo == 33) { self.weapon = IT_SUPER_NAILGUN; self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
+
+		if (self.pkplus_egoammo == 35) { self.weapon = IT_SUPER_NAILGUN; self.pk_explode_ammo = 200; self.pkplus_actorammo = 0; self.th_melee = remove_vessel; }
+		if (self.pkplus_egoammo == 37) { self.weapon = IT_SUPER_NAILGUN; self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; }
+		if (self.pkplus_egoammo == 39) { self.weapon = IT_SUPER_NAILGUN; self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; } // note - this adds 500 to archon pts, reduces soul vessel by 500
+
+		if (self.bolt_target == self) self.bolt_target = world;
+		if (self.pkplus_egoammo == 42) { self.weapon = IT_LIGHTNING; self.pk_explode_ammo = 100; self.pkplus_actorammo = 43; self.th_melee = archon_imprison; }
+		if (self.pkplus_egoammo == 43) { self.weapon = IT_LIGHTNING; self.pk_explode_ammo = 50; self.pkplus_actorammo = 0; self.th_melee = archon_release; self.bolt_target = world; next_imprisoned(); }
+		if (self.pkplus_egoammo == 45) { self.weapon = IT_LIGHTNING; self.pk_explode_ammo = 20; self.pkplus_actorammo = 3; self.th_melee = archon_heal; }
+		if (self.pkplus_egoammo == 47) { self.weapon = IT_LIGHTNING; self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_summon; }
+		if (self.pkplus_egoammo == 49) { self.weapon = IT_LIGHTNING; self.pk_explode_ammo = 500; self.pkplus_actorammo = 3; self.th_melee = archon_banish; }
+		if (self.pkplus_egoammo == 51) { self.weapon = IT_LIGHTNING; self.pk_explode_ammo = 100; self.pkplus_actorammo = 0; self.th_melee = archon_time_flow; }
 	}
 
 	if (self.pkplus_actorammo == 0) // changed - remove existing reitcles
@@ -3381,6 +3443,12 @@ void() player_chaos_impulse =
 			if (self.ammo_cells == 17) aux_bits(7);
 		}
 	}
+	else if (self.impulse == 17)
+	{
+		if (self.rune_flag & RUNE_VESS)
+		if (self.pkplus_egoammo)
+			self.weapon = 128; // last spell
+	}
 
 	if (self.weapon == IT_AXE)
 	{
@@ -3642,6 +3710,7 @@ void() player_chaos_become =
 	self.ammo_rockets = 7;
 	self.ammo_cells = 3;
 	self.ammo_bullet = 7;
+	self.pkplus_actorskin = self.pkplus_egoammo = 0; // clear last spelly
 	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	self.pk_explode_ammo = 0; // spell cost

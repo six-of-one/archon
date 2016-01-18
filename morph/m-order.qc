@@ -248,6 +248,7 @@ void() player_order_attack =
 //		if ((self.ammo_nails > 3) && self.bolt_target == self) return; // cant target self w/ this spell
 
 		self.th_melee(); // cast spell
+		self.pkplus_egoammo = self.pkplus_actorskin; // store last spell used
 		return;
 	}
 
@@ -385,6 +386,12 @@ void() player_order_impulse =
 
 		if (self.model == "progs/chaos_b2.mdl") self.skin = 4;
 	}
+	else if (self.impulse == 17)
+	{
+		if (self.rune_flag & RUNE_VESS)
+		if (self.pkplus_egoammo)
+			self.weapon = 128; // last spell
+	}
 
 	if (self.impulse == 1) // spell list 0 - attacks
 	{
@@ -397,7 +404,12 @@ void() player_order_impulse =
 		self.weapon = IT_AXE;
 	}
 
-	if (self.weapon == IT_AXE) clear_spell(); // timeout any spell in selection
+	if (self.weapon == IT_AXE)
+	{
+		clear_spell(); // timeout any spell in selection
+// fix bug where wheel select after not using a spell left order unable to fire
+		if (!self.pk_beartrapammo & 7) self.aflag = self.pk_beartrapammo = 1;
+	}
 
 	if (self.rune_flag & RUNE_VESS) // inv flag for vessel
 	{
@@ -613,6 +625,7 @@ void() player_order_become =
 	self.ammo_rockets = 7;
 	self.ammo_cells = 3;
 	self.ammo_bullet = 7;
+	self.ammo_gaspr = 0; // clear last spell
 	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	self.pk_explode_ammo = 0; // spell cost

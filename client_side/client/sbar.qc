@@ -2914,7 +2914,7 @@ var float autocvar_hud_spell_vessel_limit = 1;
 			if (morph == IMP_MORDER)
 			{
 				if (pk_bt == 4)
-					DrawInventoryAmmo('362 50 0', "gfx/order", ALPHA_FULL, 0.1);
+					DrawInventoryAmmo('362 50 0', "gfx/oma", ALPHA_FULL, 0.1);
 				else
 				if (pk_bt == 2)
 					DrawInventoryAmmo('362 50 0', "gfx/inv_order_shot", ALPHA_FULL, 0.15);

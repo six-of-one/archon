@@ -2000,7 +2000,7 @@ void() PK_ImpulseCommands =
 		}		
 	}
 
-	if ((self.impulse >= 1 && self.impulse <= 16) && self._impulse != SUB_Null) 
+	if ((self.impulse >= 1 && self.impulse <= 17) && self._impulse != SUB_Null) 
 	{
 //		if (!self.holdent.flags & FL_HELD) 
 			self._impulse(); // item_held()
