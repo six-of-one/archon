@@ -82,7 +82,7 @@ void(entity e) set_relocate =
 	e.nextthink = time + 0.1;
 	e.lip = -0.05;
 	e.ip_orgOrigin = e.origin; // if no location found it will bounce here
-	if (e.enemy) e.ip_orgOrigin = e.enemy.origin + '0 0 4'; // something found - move rune here
+	if (e.enemy) e.ip_orgOrigin = e.enemy.origin + '0 0 4'; // something found - move item / rune here
 	e.enemy = world;
 
 #ifdef warning

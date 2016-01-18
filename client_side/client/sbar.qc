@@ -550,6 +550,80 @@ void(vector valor, string pic, float transparencia, float scale) DrawInventoryAm
 	Sbar_DrawPic(v, pic, transparencia, scale);
 }; 
 
+
+// score
+float plscore;
+string plname;
+
+float p1, plnum, p3rd, fgl, topscore, rfgl, rhs, fraglimit;
+var float autocvar_hud_frags_style = 3;
+
+// print score line for player #pr - 1 at vr
+
+void(float plr, vector vr) score_line =
+{
+	float f;
+	vector cl1, cl2;
+
+	cl1 = '1 0.9 1';
+	cl2 = '1 1 1';
+
+	plscore = stof(getplayerkey(plr - 1, "frags"));
+	f = fabs(plscore);
+
+	if (plr == p1) // high score - red
+	{
+		cl1 = '1 0.4 0.4';
+		cl2 = '1 0.1 0.1';
+	}
+	else
+	if (plr == plnum) // on list, blue style name & score
+	{
+		cl1 = '0.2 0.2 1';
+		cl2 = '0.1 0.1 1';
+	}
+	plname = getplayerkey(plr - 1, "name");
+	Sbar_DrawString(vr + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
+	while (f > 999)
+	{
+		f = floor(f / 10);
+		vr_x = vr_x - 7;
+	}
+	if (plscore < -99) vr_x = vr_x - 7; // compensate (-) sign
+	if (plscore > -10 && plscore < 0) vr_x = vr_x + 7; // compensate wut?
+	if (plscore > p3rd) DrawAmmo(cl2, vr, plscore, ALPHA_FULL);
+	if (plr == plnum)
+	{
+		if (fraglimit)
+		{
+			vr_x = vr_x - 24;
+			f = fraglimit - plscore;
+			while (f > 999)
+			{
+				f = floor(f / 10);
+				vr_x = vr_x - 7;
+			}
+			DrawAmmo('0.1 1 0.1', vr, floor(fraglimit - plscore), ALPHA_FULL);
+			rfgl = TRUE;
+		}
+//		if (plr != p1)
+		if (autocvar_hud_frags_style & 16)
+		if (maxclients > 1)
+		if (topscore > plscore)
+		{
+			vr_x = vr_x - 24;
+			f = topscore - plscore;
+			while (f > 999)
+			{
+				f = floor(f / 10);
+				vr_x = vr_x - 7;
+			}
+			DrawAmmo('0.76 0.12 1', vr, floor(topscore - plscore), ALPHA_FULL);
+			rhs = TRUE;
+		}
+	}
+};
+
 // scale power bar for console display
 
 // pow - power level for bar indicator or sub level
@@ -963,10 +1037,6 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if (cl_items & (IT_KEY1 | IT_KEY2)) pwr_step_y = pwr_step_y + 4;
 	}
 
-// score
-	float plscore;
-	string plname;
-
 /// hud message for cfg scripts - instead of console print which gets lost fast on busy servers
 	
 	var string autocvar_hud_message, autocvar_hud_message2, autocvar_hud_message3, autocvar_hud_message0;
@@ -976,7 +1046,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	var float autocvar_hud_message_dualpr = 0;
 	var float autocvar_hud_rels = 0;
 	vector hudoff;
-	float huds, hudtime, timelimit, fraglimit;
+	float huds, hudtime, timelimit;
 
 // for countdowns
 	timelimit = cvar("timelimit"); //GetStat_FLOAT_TRUNCATED(STAT_TIMELIMIT);
@@ -1015,14 +1085,13 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			}
 		}
 
-float p1, p2, p3, p4, p5, p6, p2nd, style, plnum, pself, fgl, topscore, rfgl, rhs;
+float p2, p3, p4, p5, p6, p2nd, style, pself;
 float mons, secs, tmon, tsec;
 vector cl1, cl2;
-var float autocvar_hud_frags_style = 3;
 var float autocvar_hud_frags_off = 0;
+var float autocvar_hud_frags_negative = 0;
 
 // scores on new HUD
-// 0 and (-) scores are not displayed
 // singleplayer:
 // 	display monster & secret counts
 
@@ -1043,7 +1112,16 @@ var float autocvar_hud_frags_off = 0;
 
 			k = maxclients;
 			p2 = p3 = p4 = p5 = p6 = 0;
+
+// idic - logic for display of scores
 			p2nd = 0;
+			if (autocvar_hud_frags_negative)
+			{
+				if (autocvar_hud_frags_negative < 0) p2nd = autocvar_hud_frags_negative;
+				else p2nd = -32767;
+			}
+			p3rd = p2nd;
+
 			fgl = 0;
 			while (k > 0)
 			{
@@ -1056,15 +1134,17 @@ var float autocvar_hud_frags_off = 0;
 				}
 				k = k - 1;
 			}
-			if (p1 == plnum && p2nd > 0) pself = TRUE;
+			if (p1 == plnum && p2nd != p3rd) pself = TRUE;
 
 // nasty brute force trickle down search
 			if (maxclients > 1)
 			{
 				k = maxclients;
-				p2nd = 0;
+				p2nd = p3rd;
 				while (k > 0)
 				{
+					plname = getplayerkey(k - 1, "name");
+					if (plname != "")
 					if (k != p1)
 					{
 						plscore = stof(getplayerkey(k - 1, "frags"));
@@ -1076,14 +1156,16 @@ var float autocvar_hud_frags_off = 0;
 					}
 					k = k - 1;
 				}
-				if (p2 == plnum && p2nd > 0) pself = TRUE;
+				if (p2 == plnum && p2nd != p3rd) pself = TRUE;
 
 				if (maxclients > 2)
 				{
 					k = maxclients;
-					p2nd = 0;
+					p2nd = p3rd;
 					while (k > 0)
 					{
+						plname = getplayerkey(k - 1, "name");
+						if (plname != "")
 						if (k != p1 && k != p2)
 						{
 							plscore = stof(getplayerkey(k - 1, "frags"));
@@ -1095,15 +1177,17 @@ var float autocvar_hud_frags_off = 0;
 						}
 						k = k - 1;
 					}
-					if (p3 == plnum && p2nd > 0) pself = TRUE;
+					if (p3 == plnum && p2nd != p3rd) pself = TRUE;
 				}
 
 				if (maxclients > 3)
 				{
 					k = maxclients;
-					p2nd = 0;
+					p2nd = p3rd;
 					while (k > 0)
 					{
+						plname = getplayerkey(k - 1, "name");
+						if (plname != "")
 						if (k != p1 && k != p2 && k != p3)
 						{
 							plscore = stof(getplayerkey(k - 1, "frags"));
@@ -1115,15 +1199,17 @@ var float autocvar_hud_frags_off = 0;
 						}
 						k = k - 1;
 					}
-					if (p4 == plnum && p2nd > 0) pself = TRUE;
+					if (p4 == plnum && p2nd != p3rd) pself = TRUE;
 				}
 
 				if (maxclients > 4)
 				{
 					k = maxclients;
-					p2nd = 0;
+					p2nd = p3rd;
 					while (k > 0)
 					{
+						plname = getplayerkey(k - 1, "name");
+						if (plname != "")
 						if (k != p1 && k != p2 && k != p3 && k != p4)
 						{
 							plscore = stof(getplayerkey(k - 1, "frags"));
@@ -1135,15 +1221,17 @@ var float autocvar_hud_frags_off = 0;
 						}
 						k = k - 1;
 					}
-					if (p5 == plnum && p2nd > 0) pself = TRUE;
+					if (p5 == plnum && p2nd != p3rd) pself = TRUE;
 				}
 
 				if (maxclients > 5)
 				{
 					k = maxclients;
-					p2nd = 0;
+					p2nd = p3rd;
 					while (k > 0)
 					{
+						plname = getplayerkey(k - 1, "name");
+						if (plname != "")
 						if (k != p1 && k != p2 && k != p3 && k != p4 && k != p5)
 						{
 							plscore = stof(getplayerkey(k - 1, "frags"));
@@ -1155,12 +1243,12 @@ var float autocvar_hud_frags_off = 0;
 						}
 						k = k - 1;
 					}
-					if (p6 == plnum && p2nd > 0) pself = TRUE;
+					if (p6 == plnum && p2nd != p3rd) pself = TRUE;
 				}
 			}
 
 	float intoff_frags = -140; // internal offset
-			k = autocvar_hud_frags; // player preference cfg offset
+			k = autocvar_hud_frags; // player preference cfg cnt <= 6
 			if (k > 6) k = 6;
 			v = '0 0 0';
 			v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
@@ -1170,6 +1258,8 @@ var float autocvar_hud_frags_off = 0;
 			{
 				if (!pself && (style == 3))
 				{
+					score_line(plnum, v);
+/*
 					cl1 = '0.2 0.2 1';
 					cl2 = '0.1 0.1 1';
 					plname = getplayerkey(plnum - 1, "name");
@@ -1180,8 +1270,8 @@ var float autocvar_hud_frags_off = 0;
 						f = floor(f / 10);
 						v_x = v_x - 7;
 					}
-					if (plscore > 0) DrawAmmo(cl2, v, plscore, ALPHA_FULL);
-					if (fraglimit) // frags to the limit
+					if (plscore > p3rd) DrawAmmo(cl2, v, plscore, ALPHA_FULL);
+					if (fraglimit) // frags to reach the limit
 					{
 						v_x = v_x - 24;
 						f = fraglimit - plscore;
@@ -1207,15 +1297,22 @@ var float autocvar_hud_frags_off = 0;
 						DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
 						rhs = TRUE;
 					}
+*/
 					v_y = v_y - 10;
 				}
-				cl1 = '1 0.9 1';
-				cl2 = '1 1 1';
 				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
-				f = plscore = stof(getplayerkey(p1 - 1, "frags"));
-				if (plscore > 0)
+				plscore = stof(getplayerkey(p1 - 1, "frags"));
+// top score
+				if (plscore > p3rd)
 				{
-					plname = getplayerkey(p1 - 1, "name");
+					if (fraglimit)
+					{
+						f = fraglimit - plscore;
+						if (f < 4) fgl = floor(f); // show frags left at bottom
+					}
+					score_line(p1, v);
+/*
+						plname = getplayerkey(p1 - 1, "name");
 					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.4 0.4');
 					while (f > 999)
 					{
@@ -1239,15 +1336,21 @@ var float autocvar_hud_frags_off = 0;
 							rfgl = TRUE;
 						}
 					}
+*/
 					v_y = v_y - 10;
 				}
+				cl1 = '1 0.9 1';
+				cl2 = '1 1 1';
 				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				k = k - 1;
 				if ((k > 0) && p2 > 0)
 				{
-					f = plscore = stof(getplayerkey(p2 - 1, "frags"));
-					if (plscore > 0)
+					plscore = stof(getplayerkey(p2 - 1, "frags"));
+					if (plscore > p3rd)
 					{
+						score_line(p2, v);
+
+/*
 						if (p2 == plnum) // on list, blue style name & score
 						{
 							cl1 = '0.2 0.2 1';
@@ -1290,6 +1393,7 @@ var float autocvar_hud_frags_off = 0;
 								rhs = TRUE;
 							}
 						}
+*/
 						v_y = v_y - 10;
 					}
 					k = k - 1;
@@ -1299,9 +1403,11 @@ var float autocvar_hud_frags_off = 0;
 				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p3 > 0)
 				{
-					f = plscore = stof(getplayerkey(p3 - 1, "frags"));
-					if (plscore > 0)
+					plscore = stof(getplayerkey(p3 - 1, "frags"));
+					if (plscore > p3rd)
 					{
+						score_line(p3, v);
+/*
 						if (p3 == plnum)
 						{
 							cl1 = '0.2 0.2 1';
@@ -1345,6 +1451,7 @@ var float autocvar_hud_frags_off = 0;
 								rhs = TRUE;
 							}
 						}
+*/
 						v_y = v_y - 10;
 					}
 					k = k - 1;
@@ -1354,9 +1461,11 @@ var float autocvar_hud_frags_off = 0;
 				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p4 > 0)
 				{
-					f = plscore = stof(getplayerkey(p4 - 1, "frags"));
-					if (plscore > 0)
+					plscore = stof(getplayerkey(p4 - 1, "frags"));
+					if (plscore > p3rd)
 					{
+						score_line(p4, v);
+/*
 						if (p4 == plnum)
 						{
 							cl1 = '0.2 0.2 1';
@@ -1400,7 +1509,7 @@ var float autocvar_hud_frags_off = 0;
 								rhs = TRUE;
 							}
 						}
-
+*/
 						v_y = v_y - 10;
 					}
 					k = k - 1;
@@ -1411,8 +1520,10 @@ var float autocvar_hud_frags_off = 0;
 				if ((k > 0) && p5 > 0)
 				{
 					f = plscore = stof(getplayerkey(p5 - 1, "frags"));
-					if (plscore > 0)
+					if (plscore > p3rd)
 					{
+						score_line(p5, v);
+/*
 						if (p5 == plnum)
 						{
 							cl1 = '0.2 0.2 1';
@@ -1456,7 +1567,7 @@ var float autocvar_hud_frags_off = 0;
 								rhs = TRUE;
 							}
 						}
-
+*/
 						v_y = v_y - 10;
 					}
 					k = k - 1;
@@ -1467,8 +1578,10 @@ var float autocvar_hud_frags_off = 0;
 				if ((k > 0) && p6 > 0)
 				{
 					f = plscore = stof(getplayerkey(p6 - 1, "frags"));
-					if (plscore > 0)
+					if (plscore > p3rd)
 					{
+						score_line(p6, v);
+/*
 						if (p6 == plnum)
 						{
 							cl1 = '0.2 0.2 1';
@@ -1511,12 +1624,14 @@ var float autocvar_hud_frags_off = 0;
 								rhs = TRUE;
 							}
 						}
-
+*/
 						v_y = v_y - 10;
 					}
 				}
 				if (!pself && (style == 2))
 				{
+					score_line(plnum, v);
+/*
 					cl1 = '0.2 0.2 1'; // idea: yellow ? (as in belly)
 					cl2 = '0.1 0.1 1';
 					plname = getplayerkey(plnum - 1, "name");
@@ -1527,7 +1642,7 @@ var float autocvar_hud_frags_off = 0;
 						f = floor(f / 10);
 						v_x = v_x - 7;
 					}
-					if (plscore > 0) DrawAmmo(cl2, v, plscore, ALPHA_FULL);
+					if (plscore > p3rd) DrawAmmo(cl2, v, plscore, ALPHA_FULL);
 					if (fraglimit)
 					{
 						v_x = v_x - 24;
@@ -1553,6 +1668,7 @@ var float autocvar_hud_frags_off = 0;
 						}
 						DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
 					}
+*/
 					v_y = v_y - 10;
 				}
 				if (style)
@@ -1587,7 +1703,7 @@ var float autocvar_hud_frags_off = 0;
 					f = plscore = stof(getplayerkey(p1 - 1, "frags"));
 					plname = getplayerkey(p1 - 1, "name");
 					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.4 0.4');
-					if (plscore > 0)
+					if (plscore > p3rd)
 					{
 						while (f > 999)
 						{

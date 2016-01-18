@@ -44,6 +44,7 @@ float WARNING;								// display warnings - dev work mainly - now uses the follo
 												// & 1024 - hammer
 												// & 2048 - hub ops
 												// & 4096 - archon ops
+												// & 8192 - looped ops
 												// & 262144 - block some repeating warnings
 //
 // control over test code
@@ -404,6 +405,7 @@ void(entity e, entity p) rune_id;
 void(entity e) rune_drop;
 void() server_rune_follow;
 void() fade_relocate;
+void() rune_relocate;
 void(entity e) set_relocate;
 void() rune_regen;
 void() rune_vamp;

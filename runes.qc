@@ -456,7 +456,12 @@ void(entity e) dead_artifact =
 			if (f == IT_SUPERHEALTH)
 			{
 //				drop_string("Mega Health", IT_SUPERHEALTH, world);
-				drop_one(e, "Mega Health", IT_SUPERHEALTH, world, null_string, MED_BOUNCE_NOW, 0);
+				if (e.health > (e.health_modifier * 100))
+				{
+					drop_one(e, "Mega Health", IT_SUPERHEALTH, world, null_string, MED_BOUNCE_NOW, 0);
+					e.dropent.healamount = e.health - (e.health_modifier * 100);
+					if (e.dropent.healamount > 100) e.dropent.healamount = 100;
+				}
 			}
 
 			else if (f == IT_INVISIBILITY)
@@ -1087,13 +1092,13 @@ void() rune_relocate =
 {
 	local entity e;
 
-	if (self.think == fade_relocate) return; // heh heh - dont relocate while relocating
+	if (self.think == fade_relocate) return; // heh heh - dont relocate while relocating, xzibit would be proud
 
 	self.cnt = self.cnt + 1;
 	self.delay = self.delay + 1;
 	if (self.cnt > self.count || self.delay > RUNE_MOVE || self.hook) // not touched in 2 - 6 mins or > 10 mins, or force relocate with .hook
 	{
-		self.hook = FALSE;
+		self.hook = FALSE; // message debounce
 		if (self.delay > RUNE_MOVE) // reload val
 		{
 			RUNE_MOVE = 10 + rint(random() * 2.5 + random() * 2.5);
@@ -1113,7 +1118,7 @@ void() rune_relocate =
 		self.ip_orgOrigin = self.origin; // if no location found it will bounce here
 		self.count = 2 + random() * 3.8; // reset for new location
 		self.cnt = 0;
-		self.revotemsg = 0; // clear out of bounds test - solid, lava, noway
+//		self.revotemsg = 0; // clear out of bounds test - solid, lava, noway - done in fade_relocate
 
 		if (e)
 		{

@@ -1675,6 +1675,11 @@ void() DropBackpack =
 	if (noway_above)
 	if (self.origin_z > noway_above) return;
 
+#ifdef enhanced
+// none tossed in lava
+	if (pointcontents(self.origin) == CONTENT_LAVA) return;
+#endifdef
+
 	if (!self.flags & FL_MONSTER) // monsters always get to throw down
 	if (DEAD_XPACK == 3) return; // code for no packs at all
 

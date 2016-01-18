@@ -130,7 +130,6 @@ void() CheckWaterLevels =
 // clear any op states if in these contents
 		if (pc == CONTENT_EMPTY || pc == CONTENT_WATER)
 		{
-	//		if (!e.flags & FL_CLIENT) e.revotemsg = 0;
 			e.revotemsg = 0;
 		}
 
@@ -138,10 +137,13 @@ void() CheckWaterLevels =
 			pc = NOT_IN_WATER;
 
 // need an extra rune test - they dont always vacate lava
+/*
 		if (pc == CONTENT_LAVA)
 		if (e.map  == "rune" && e.classname == "item_sigil")
 		if (!e.hook)
+		if (!e.revotemsg)
 			e.inwater = 0; // re-check
+*/
 
 //		if (inWater(e) != e.inwater) // de-looping this call - this is call heavy
 		if (pc != e.inwater)
@@ -156,6 +158,18 @@ void() CheckWaterLevels =
 				if ((! pk_flags & PK_TP_SPARKSFLASH) || !XENV)
 				  MakeSplash(e);
 
+#ifdef warning
+					if (e.inwater != CONTENT_LAVA && pc == CONTENT_LAVA)
+					if (!e.revotemsg)
+					if (WARNING & 128)
+					{
+						bprint("*** warning: in lava - ");
+						bprint(item_ident(e));
+						if (e.classname == "Backpack") bprint(" (backpack)");
+						bprint("\n");
+					}
+#endifdef
+
 				e.inwater = pc;
 
 // Remove turrets and beartraps if they fall into the lava
@@ -169,7 +183,7 @@ void() CheckWaterLevels =
 //						e.velocity = v0; // stop on surface
 						
 					}
-					if (e.classname == "beartrap")
+					else if (e.classname == "beartrap")
 					{
 						e.think = beartrapDie;
 						e.nextthink = time + 0.1;
@@ -186,7 +200,19 @@ void() CheckWaterLevels =
 //						e.velocity = v0; // stop on surface - this fails
 						e.nextthink = (time + 2 + random() * 5 );
 					}
-					else if (e.flags & FL_ITEM) e.revotemsg = time + 5; // clear items from lava as well as the void
+					if (e.classname == "thrownwep" || e.classname == "Backpack") // no FL_ITEM, so look here
+					{
+						if (!e.revotemsg)
+							e.revotemsg = time + 5 * random();
+					}
+					if (e.flags & FL_ITEM)
+					{
+						if (e.think != fade_relocate)
+						if (!e.revotemsg)
+							e.revotemsg = time + 5 * random(); // clear items from lava as well as the void
+					}
+// note: melt items in lava goes here - non dyn / runes have to be reset after melt
+//				tomb can be melted
 
 /*
  moved below
@@ -205,8 +231,43 @@ void() CheckWaterLevels =
 */
 				}
 				if (pc == CONTENT_SLIME)
-				if (e.flags & FL_ITEM) e.revotemsg = time + 20 + random() * 60; // clear items from slime after a wait - idea: hiss sound ?
+				{
+					if (e.classname == "thrownwep") // no FL_ITEM, so look here
+					{
+						if (!e.revotemsg)
+							e.revotemsg = time + 5 + 25 * random();
+					}
+					if (e.flags & FL_ITEM)
+					if (e.think != fade_relocate)
+					if (!e.revotemsg)
+						e.revotemsg = time + 10 + random() * 50; // clear items from slime after a wait - idea: hiss sound ?
+				}
 			}
+		}
+		else // double check because some items just dont get caught
+		{
+			if (e.inwater == CONTENT_LAVA || (e.inwater == CONTENT_SLIME))
+			{
+				if (e.classname == "thrownwep" || e.classname == "Backpack") // no FL_ITEM, so look here
+				{
+					if (!e.revotemsg)
+					{
+						e.revotemsg = time + 5 * random();
+						if (e.inwater == CONTENT_SLIME) e.revotemsg = time + 5 + 25 * random();
+					}
+				}
+				if (e.flags & FL_ITEM)
+				{
+					if (e.think != fade_relocate)
+					if (!e.revotemsg)
+					{
+						e.revotemsg = time + 5 * random();
+						if (e.inwater == CONTENT_SLIME) e.revotemsg = time + 10 + random() * 50;
+					}
+				}
+// note: melt items in lava goes here - non dyn / runes have to be reset after melt
+//				tomb can be melted
+			}	
 		}
 
 // fall from grace - stuff in void checks
@@ -222,6 +283,50 @@ void() CheckWaterLevels =
 		if ((framecount & 7) == 3)
 #endifdef
 		{
+// rune outside noway bounds checks
+			if (RUNE_NOWAY)
+			if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
+			{
+	//				now = FALSE;
+
+#ifdef warning
+				if (noway_below)
+				if (e.origin_z < noway_below) e.revotemsg = 2;
+				if (noway_above)
+				if (e.origin_z > noway_above) e.revotemsg = 2;
+
+						if (e.think != rune_relocate) // not set to move
+						if (e.think != fade_relocate) // not already moving
+						if (e.revotemsg == 2)
+						if (WARNING & 128)
+							{
+								bprint("*** warning: noway splash rune = ");
+								bprint(e.netname);
+								bprint("\n");
+							}
+#else
+				if (noway_below)
+				if (e.origin_z < noway_below) e.revotemsg = 1;
+				if (noway_above)
+				if (e.origin_z > noway_above) e.revotemsg = 1;
+#endifdef
+
+	/*
+				if (now)
+				if (e.think != fade_relocate) // not already moving
+				{
+					e.think = ip_checkForMovement;
+					e.nextthink = time + random() * 4;
+					e.hook = TRUE;
+					if (e.solid == SOLID_NOT) e.solid = SOLID_TRIGGER; // 9.27.12 - make sure think fn() fires relocate
+				}
+	*/
+
+	// fixed lost nextthink
+				if (!e.nextthink) // was ending up 0, consider < 2 test or so, need more qualifier for that
+					e.nextthink = time + CFM_TIME;
+			}
+
 			if (e.movetype != MOVETYPE_NONE)
 			if (pcc == CONTENT_SOLID)
 			{
@@ -256,49 +361,6 @@ void() CheckWaterLevels =
 				if (!e.revotemsg) e.revotemsg = e.cnt;
 			}
 
-// rune outside noway bounds checks
-			if (RUNE_NOWAY)
-			if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
-			{
-	//				now = FALSE;
-				if (!e.revotemsg)
-				{
-					if (noway_below)
-					if (e.origin_z < noway_below) e.revotemsg = 1;
-					if (noway_above)
-					if (e.origin_z > noway_above) e.revotemsg = 1;
-
-
-
-#ifdef warning
-							if (e.revotemsg)
-							if (WARNING & 128)
-							{
-								bprint("*** warning: noway splash rune - model = ");
-								bprint(e.model);
-								bprint("\n");
-							}
-#endifdef
-
-
-				}
-
-	/*
-				if (now)
-				if (e.think != fade_relocate) // not already moving
-				{
-					e.think = ip_checkForMovement;
-					e.nextthink = time + random() * 4;
-					e.hook = TRUE;
-					if (e.solid == SOLID_NOT) e.solid = SOLID_TRIGGER; // 9.27.12 - make sure think fn() fires relocate
-				}
-	*/
-
-	// fixed lost nextthink
-				if (!e.nextthink) // was ending up 0, consider < 2 test or so, need more qualifier for that
-					e.nextthink = time + CFM_TIME;
-			}
-
 // monster liquid handle
 			if (pc)
 			if (e.flags & FL_MONSTER)
@@ -326,6 +388,7 @@ void() CheckWaterLevels =
 			{
 				if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES) // rune move is special
 				{
+					if (!e.hook) // not set to move
 					if (e.think != fade_relocate) // not already moving
 					{
 
@@ -334,8 +397,8 @@ void() CheckWaterLevels =
 							if (pcc == CONTENT_SOLID)
 							if (WARNING & 128)
 							{
-								bprint("*** warning: solid splash rune - model = ");
-								bprint(e.model);
+								bprint("*** warning: solid splash rune = ");
+								bprint(e.netname);
 								bprint("\n");
 							}
 
@@ -343,13 +406,15 @@ void() CheckWaterLevels =
 							if (pcc == CONTENT_LAVA)
 							if (WARNING & 128)
 							{
-								bprint("*** warning: lava splash rune - model = ");
-								bprint(e.model);
+								bprint("*** warning: lava splash rune = ");
+								bprint(e.netname);
 								bprint("\n");
 							}
 #endifdef
 
-						e.think = ip_checkForMovement;
+						e.think = rune_relocate;
+						if (pcc == CONTENT_SOLID) e.nextthink = time + 0.1;
+						else
 						if ( (e.nextthink > time + 6) || (e.nextthink <= 0) )
 							e.nextthink = time + random() * 4;
 						e.hook = TRUE;
@@ -366,56 +431,25 @@ void() CheckWaterLevels =
 						bprint("\n");
 					}
 #endifdef
-					e.revotemsg = 0;
-					remove(e); // remove dynamics
+					e.revotemsg = -1;
+//					remove(e);
+					e.think = remove_fade;
+					e.nextthink = time + 0.1;
 				}
 				else if (pcc != CONTENT_SOLID) // in lava or slime, just relocate
 				{
-					if (e.event == "dynamic_item") e.revotemsg = -2;
-					if (e.ip_orgOrigin != e.origin) e.revotemsg = -2; // for a map spawned item on origin point, we can do nada
-				}
-				else if (e.ip_orgOrigin != v0) // put map spawned items with a storage position back now
-				{
-					e.revotemsg = e.revotemsg + 1; // count resets, & freeze on 3rd try
-					e.msgcount = e.msgcount + 1; // count resets, freeze for bouncy bouncy (where revotemsg is clear by empty space but it keeps bouncing out)
-
-#ifdef warning
-					if (WARNING & 128)
-					if (e.movetype != MOVETYPE_NONE)
+					if (e.event == "dynamic_item")
 					{
-						bprint("*** warning: falling item reset - ");
-						bprint(item_ident(e));
-						if (e.revotemsg > 6) bprint(" - FROZEN");
-						bprint("\n");
+						e.revotemsg = -2;
 					}
-#endifdef
-
-					if (e.msgcount > 16) e.revotemsg = 7;
-
-					if (e.revotemsg > 6) 
+					else if (e.ip_orgOrigin != v0)
 					{
-						e.ip_orgOrigin_z = e.ip_orgOrigin_z - 6;
-						setorigin (e, e.ip_orgOrigin);
-// final time - #6 - freeze it at orgOrigin
-						e.movetype = MOVETYPE_NONE; // drastic but neccesary if a bounding box seems to cut into a wall / solid because item keeps falling after every reset
+						if (e.ip_orgOrigin != e.origin) e.revotemsg = -2; // for a map spawned item on origin point, we can do nada
 					}
 					else
 					{
-// 2 times - see if a slight bump up will solve "falls through floors"
-						if (e.revotemsg > 4) e.ip_orgOrigin_z = e.ip_orgOrigin_z + 3;
-// 3 times - just put it back
-						setorigin (e, e.ip_orgOrigin);
-						e.velocity = v0;
-#ifdef warning
-						if (WARNING & 2)
-						{
-							bprint("*** warning: item in solid - ");
-							bprint(item_ident(e));
-							bprint (" - z adjust ");
-							bprint (vtos (e.origin));
-							bprint ("\n");
-						}
-#endifdef
+						e.think = remove_fade;
+						e.nextthink = time + random() * 3;
 					}
 				}
 				else if (e.event == "dynamic_item")
@@ -428,8 +462,54 @@ void() CheckWaterLevels =
 						bprint("\n");
 					}
 #endifdef
-					e.revotemsg = 0;
 					remove(e); // remove dynamics
+				}
+				else if (e.ip_orgOrigin != v0) // put map spawned items with a storage position back now
+				{
+					if (e.origin != e.ip_orgOrigin)
+					{
+						e.revotemsg = e.revotemsg + 1; // count resets, & freeze on 3rd try
+						e.msgcount = e.msgcount + 1; // count resets, freeze for bouncy bouncy (where revotemsg is clear by empty space but it keeps bouncing out)
+
+#ifdef warning
+								if (WARNING & 128)
+								if (e.movetype != MOVETYPE_NONE)
+								{
+									bprint("*** warning: falling item reset - ");
+									bprint(item_ident(e));
+									if (e.revotemsg > 2) bprint(" - FROZEN");
+									bprint("\n");
+								}
+#endifdef
+
+						if (e.msgcount > 16) e.revotemsg = 7;
+
+						if (e.revotemsg > 2) 
+						{
+//						e.ip_orgOrigin_z = e.ip_orgOrigin_z - 6;
+							setorigin (e, e.ip_orgOrigin);
+// final time - #3 - freeze it at orgOrigin
+							e.movetype = MOVETYPE_NONE; // drastic but neccesary if a bounding box seems to cut into a wall / solid because item keeps falling after every reset
+						}
+						else
+						{
+// 2 times - see if a slight bump up will solve "falls through floors"
+//							if (e.revotemsg > 4) e.ip_orgOrigin_z = e.ip_orgOrigin_z + 3;
+// 3 times - just put it back
+							setorigin (e, e.ip_orgOrigin);
+							e.velocity = v0;
+#ifdef warning
+								if (WARNING & 2)
+								{
+									bprint("*** warning: item in solid - ");
+									bprint(item_ident(e));
+									bprint (" - v: ");
+									bprint (vtos (e.origin));
+									bprint ("\n");
+								}
+#endifdef
+						}
+					}
 				}
 				else
 				{
@@ -450,7 +530,6 @@ void() CheckWaterLevels =
 				else
 				{
 					T_Damage (e,world,world,e.health + 10); //e.th_die(); // have to damage for accounting - see random monsters
-					e.revotemsg = 0;
 					remove(e);
 				}
 			}
@@ -498,7 +577,7 @@ void() CheckWaterLevels =
 						e.armorvalue = 0;
 						e.revotemsg = 0;
 						e.invincible_finished = 0; // turn off invincible
-						T_Damage(e, e, f, e.health + 10);
+						T_Damage(e, e, f, e.health + 10); // note: leaves a dead body in solid !
 						remove(f);
 					}
 				}
@@ -514,19 +593,27 @@ void() CheckWaterLevels =
 				}
 #endifdef
 				if (e.classname == "turret") remove(e.turret_base);
-				e.revotemsg = 0;
 				remove(e); // remove all else
 			}
 
 // idic - logic wants us to relocate this ent
 			if (e.revotemsg == -2)
 			{
-				e.revotemsg = 0;
 				if (e.think != fade_relocate) set_relocate(e);
 //				newmis = dyn_rndloc();
 //				if (!newmis) newmis= findradius(world.origin, 256000);
 //				setorigin (e, newmis.origin + '0 0 40');
 //				droptofloor(0, 0); // likely only works on self
+#ifdef warning
+//				if (e.think == fade_relocate)
+				if (WARNING & 128)
+				{
+					bprint("*** warning: bouncing (rnd relocate) item - ");
+					bprint(item_ident(e));
+					bprint("\n");
+				}
+				e.revotemsg = -1;
+#endifdef
 			}
 
 		}

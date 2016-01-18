@@ -292,6 +292,11 @@ void() turret_searchForEnemy =
 	// set the gun, so always lines up with the stand
 	setorigin(self, self.turret_base.origin);
 
+#ifdef enhanced
+// fix attempt for "flying down" turret
+	if (self.velocity != self.turret_base.velocity) self.velocity = self.turret_base.velocity;
+#endifdef
+
 	// check if needs to be seet solid
 	if (self.solid == SOLID_NOT)
 	{

@@ -133,7 +133,7 @@ void(string cls) item_call =
 		self.style = 0; // so we dont get range weps using melee frames
 		self.dodmg = 0; // might give some things extra blast dmg
 		self.wait = 0; // RSP_TIME; // damn q3 respawn time rules - hope this doesnt fxk rndize
-		self.revotemsg = 0; // -888 lock in splash.qc
+		self.revotemsg = 0; // relocate in splash.qc
 		self.dmgtime = POW_TIME;
 		self.x_items = 0;
 		self.pk_currentitem = 0;
@@ -856,7 +856,7 @@ float(float cn, entity e, string op) ammo_con =
 // fn(dyn_rem) - remove a dynamic item after a timeout
 // fn(dyn_rndloc) - get a random location to spawn an item dynamically
 
-// really should be client side coding
+// really should be client side coding - server could set an indicator, and think to remove in 3 secs, while client makes fade happen
 
 void() remove_fade =
 {
@@ -867,7 +867,7 @@ void() remove_fade =
 	else
 		e = self;
 
-//	self.think = remove_fade; - things were going to go remove_fade(); - but so far none do
+//	e.think = remove_fade;  // some things might call remove_fade(); - none do
 
 // cant remove fade clients - idea: copytobodyque & send player / bot to dcam / respawn code
 	if (e.flags & FL_CLIENT)
@@ -1051,12 +1051,24 @@ entity() dyn_rndloc =
 	local entity e, sv;
 
 	ri = sf = 0;
-	sv = e = find(world,classname,"player");
+	e = find(world,classname,"player");
 	while (e)
 	{
-		sv = e;
+		if (pointcontents(e.origin) != CONTENT_SOLID) sv = e; // players (Archons) can be in solid now - find one that isnt
 		e = find(e,classname,"player");
 	}
+
+#ifdef warning
+					if (WARNING & 8194)
+					{
+						bprint("*** warning: dyn_rndloc - search center - ");
+						bprint(item_ident(sv));
+						bprint(" v: ");
+						bprint(vtos(sv.origin));
+						bprint("\n");
+					}
+#endifdef
+
 	e = findradius(sv.origin, PK_DYNRAD);
 	if (!e) return(world); // nothing found!
 	sv = e;
@@ -1064,10 +1076,59 @@ entity() dyn_rndloc =
 	{
 		if (!e.chain) e = world;
 // 11.12.13 - dont pick out of bounds origins
+#ifdef warning
+		else if (noway_below && (e.chain.origin_z < noway_below)) {
+					if (WARNING & 8192)
+					{
+						bprint("*** warning: dyn_rndloc - skipped (below) - ");
+						bprint(item_ident(e.chain));
+						bprint(" v: ");
+						bprint(vtos(e.chain.origin));
+						bprint("\n");
+					}
+			e.chain = e.chain.chain;
+			}
+		else if (noway_above && (e.chain.origin_z > noway_above)) {
+					if (WARNING & 8192)
+					{
+						bprint("*** warning: dyn_rndloc - skipped (above) - ");
+						bprint(item_ident(e.chain));
+						bprint(" v: ");
+						bprint(vtos(e.chain.origin));
+						bprint("\n");
+					}
+			e.chain = e.chain.chain;
+			}
+		else if ((pointcontents(e.chain.origin) == CONTENT_SOLID) && (pointcontents(e.chain.origin + '0 0 8') == CONTENT_SOLID))  {
+					if (WARNING & 8192)
+					{
+						bprint("*** warning: dyn_rndloc - skipped (solid) - ");
+						bprint(item_ident(e.chain));
+						bprint(" v: ");
+						bprint(vtos(e.chain.origin));
+						bprint("\n");
+					}
+			e.chain = e.chain.chain;
+			}
+		else if ((pointcontents(e.chain.origin) == CONTENT_LAVA) || (pointcontents(e.chain.origin + '0 0 4') == CONTENT_LAVA))  {
+					if (WARNING & 8192)
+					{
+						bprint("*** warning: dyn_rndloc - skipped (lava) - ");
+						bprint(item_ident(e.chain));
+						bprint(" v: ");
+						bprint(vtos(e.chain.origin));
+						bprint("\n");
+					}
+			e.chain = e.chain.chain;
+			}
+#else
 		else if (noway_below && (e.chain.origin_z < noway_below)) e.chain = e.chain.chain;
 		else if (noway_above && (e.chain.origin_z > noway_above)) e.chain = e.chain.chain;
 // 11.15.13 - and dont pick solid origins
-		else if ((pointcontents(e.origin) == CONTENT_SOLID) && (pointcontents(e.origin + '0 0 8') == CONTENT_SOLID))  e.chain = e.chain.chain;
+		else if ((pointcontents(e.chain.origin) == CONTENT_SOLID) && (pointcontents(e.chain.origin + '0 0 8') == CONTENT_SOLID))  e.chain = e.chain.chain;
+// 11.20.13 - and dont pick lava origins
+		else if ((pointcontents(e.chain.origin) == CONTENT_LAVA) || (pointcontents(e.chain.origin + '0 0 4') == CONTENT_LAVA))  e.chain = e.chain.chain;
+#endifdef
 // choose among these empty space items
 		else if (e.chain.flags & FL_ITEM) { ri = ri + 1; e = e.chain; }
 		else if (e.chain.classname == "info_player_deathmatch") { ri = ri + 1; e = e.chain; }
@@ -1087,6 +1148,18 @@ entity() dyn_rndloc =
 		e = e.chain;
 		sf = sf - 1;
 	}
+
+#ifdef warning
+					if (WARNING & 8194)
+					{
+						bprint("*** warning: dyn_rndloc - search found - ");
+						bprint(item_ident(sv));
+						bprint(" v: ");
+						bprint(vtos(sv.origin));
+						bprint("\n");
+					}
+#endifdef
+
 	rseu = sv;
 	return(sv);
 };
