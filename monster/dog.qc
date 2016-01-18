@@ -507,7 +507,7 @@ if (ign != A_MONSTER)
 
 	setmodel (self, "progs/dog.mdl");
 
-	setsize (self, '-32 -32 -24', '32 32 40');
+	setsize (self, '-32 -32 -24', '32 32 40'); // slight smaller than VEC_HULL2
 	self.health = 25;
 
 	self.th_stand = dog_stand1;
@@ -550,11 +550,12 @@ if (ign != A_MONSTER)
 		}
 
 #ifdef testset
-		if (random() < 0.5) self.spawnflags = 4; // test a fluffy
+		if (random() < 0.1) self.spawnflags = 4; // test a fluffy
 #endifdef
 
 		if (self.spawnflags & 4) // FLUFFY
 		{
+			setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
 			self.health = 300;
 			self.walkframe = $rxattack1;
 			self.wad = "SUPER";

@@ -1,0 +1,47 @@
+Source file: client.src
+outputfile: csprogs.dat
+compiling client/defs.qc
+compiling client/constants.qc
+compiling common/constants.qc
+compiling client/extensions.qc
+compiling client/vars.qc
+compiling client/kleshikstuff.qc
+compiling client/sbar.qc
+in function DrawInventoryWeapon (line 449),
+client/sbar.qc:519: warning: You may wish to add brackets after that ! operator
+in function Sbar_DrawInventory (line 683),
+client/sbar.qc:805: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:808: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:811: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:822: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:827: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:828: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:829: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:830: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:1512: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:2330: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:2349: warning: You may wish to add brackets after that ! operator
+client/sbar.qc:2363: warning: You may wish to add brackets after that ! operator
+compiling client/main.qc
+Warning: progs CRC not recognised from quake nor clones
+Progs should run on any Quake executor
+ 30088 strofs (of 1000000)
+  7685 numstatements (of 524288)
+   186 numfunctions (of 16384)
+  1947 numglobaldefs (of 32768)
+    64 numfielddefs (53 unique) (of 2048)
+  2089 numpr_globals (of 65536)
+Writing csprogs.dat
+122896 TOTAL SIZE
+Writing csprogs.lno
+Compile Complete
+
+optres_shortenifnots 64
+optres_overlaptemps 4236
+optres_constantarithmatic 30
+optres_nonvec_parms 1733
+optres_assignments 546
+optres_unreferenced 129
+optres_dupconstdefs 184
+numtemps 27
+13 warnings

@@ -45,15 +45,15 @@ SOLDIER CODE
 
 // enhanced - more weapons
 
-float ARMY_NAILS = 2; // nail gun
-float ARMY_SSGUN = 4; // super shot gun
-float ARMY_ROCK = 8;
+//float ARMY_NAILS = 2; // nail gun
+//float ARMY_SSGUN = 4; // super shot gun
+//float ARMY_ROCK = 8;
 float ARMY_XWEP = 14; // det all x bits
 
 //float army_ofone = 0.2; // total chance for a better map grunt
 //float army_rndenh = 0.8; // total chance for a better random grunt
-float army_fire_grenades = 0.87; // chance to fire grenades if he has some
-float army_canhas_grenades = 5; // random grenades to give enhanced grunts
+//float army_fire_grenades = 0.87; // chance to fire grenades if he has some
+//float army_canhas_grenades = 5; // random grenades to give enhanced grunts
 
 void() army_firenails;
 
@@ -64,6 +64,10 @@ float ARMY_ROCKET_DMG = 20; // dmg from soldier rockets
 
 void() army_fire;
 
+
+framer($stand1, $stand8, army_stand1, army_stand1, 0.1,ai_stand(););
+
+/*
 void()	army_stand1	=[	$stand1,	army_stand1	]
 {
 	if ((self.duration < $stand1) || (self.duration > $stand7))
@@ -76,7 +80,6 @@ void()	army_stand1	=[	$stand1,	army_stand1	]
 
 	ai_stand();
 };
-
 /*
 void()	army_stand1	=[	$stand1,	army_stand2	] {ai_stand();};
 void()	army_stand2	=[	$stand2,	army_stand3	] {ai_stand();};
@@ -135,7 +138,7 @@ void()	army_atk4	=[	$shoot4,	army_atk5	] {ai_face();};
 void()	army_atk5	=[	$shoot5,	army_atk6	]
 {
 	ai_face();
-	if ((self.ammo_rockets > 0) && (random() > army_fire_grenades) && (!self.spawnflags & ARMY_ROCK))
+	if ((self.ammo_rockets > 0) && (random() > 0.87 /* army_fire_grenades */) && (!self.spawnflags & 8)) //ARMY_ROCK))
 	{
 		self.ammo_rockets = self.ammo_rockets - 1;
 		OgreFireGrenade();
@@ -169,14 +172,18 @@ void()  army_natk8   =[  $shoot8,    army_natk9   ] {ai_face();};
 void()  army_natk9   =[  $shoot9,    army_run1   ] {ai_face();};
 //*****************************
 
-
+/*
 void()	army_pain1	=[	$pain1,		army_pain2	] {};
 void()	army_pain2	=[	$pain2,		army_pain3	] {};
 void()	army_pain3	=[	$pain3,		army_pain4	] {};
 void()	army_pain4	=[	$pain4,		army_pain5	] {};
 void()	army_pain5	=[	$pain5,		army_pain6	] {};
 void()	army_pain6	=[	$pain6,		army_run1	] {ai_pain(1);};
+*/
 
+framer($pain1, $pain6, army_pain1, army_run1, 0.1,frame_arb($pain6,ai_pain(1);););
+
+/*
 void()	army_painb1	=[	$painb1,	army_painb2	] {};
 void()	army_painb2	=[	$painb2,	army_painb3	] {ai_painforward(13);};
 void()	army_painb3	=[	$painb3,	army_painb4	] {ai_painforward(9);};
@@ -191,6 +198,16 @@ void()	army_painb11=[	$painb11,	army_painb12] {};
 void()	army_painb12=[	$painb12,	army_painb13] {ai_pain(2);};
 void()	army_painb13=[	$painb13,	army_painb14] {};
 void()	army_painb14=[	$painb14,	army_run1	] {};
+*/
+
+framer($painb1, $painb14, army_painb1, army_run1, 0.1,
+{
+	frame_arb($painb2,ai_painforward(13););
+	frame_arb($painb3,ai_painforward(9););
+	frame_arb($painb12,ai_pain(2););
+}
+);
+
 
 void()	army_painc1	=[	$painc1,	army_painc2	] {};
 void()	army_painc2	=[	$painc2,	army_painc3	] {ai_pain(1);};
@@ -253,13 +270,13 @@ void() army_fire =
 	self.dest = e.origin - e.velocity*0.2;
 	self.dest = normalize (self.dest - self.origin);
 	
-   if ((self.spawnflags & ARMY_ROCK) && (self.ammo_rockets > 0))
+   if ((self.spawnflags & 8) && (self.ammo_rockets > 0))
 	{
 //		self.ammo_rockets = self.ammo_rockets - 1; - done in W_Fire
 		W_FireRocket();
 		newmis.dmg = ARMY_ROCKET_DMG;
 	}
-	else if (self.spawnflags & ARMY_SSGUN)
+	else if (self.spawnflags & 4) //ARMY_SSGUN)
 	{
 		sound (self ,CHAN_WEAPON, "weapons/shotgn2.wav", 1, ATTN_NORM); 
 		FireBullets (14, self.dest, '0.1 0.1 0');
@@ -284,6 +301,7 @@ void() army_firenails =
 	launch_spike (self.origin + '0 0 16', self.dest);
 };
 
+/*
 void()	army_die1	=[	$death1,	army_die2	] {};
 void()	army_die2	=[	$death2,	army_die3	] {};
 void()	army_die3	=[	$death3,	army_die4	]
@@ -295,6 +313,10 @@ void()	army_die7	=[	$death7,	army_die8	] {};
 void()	army_die8	=[	$death8,	army_die9	] {};
 void()	army_die9	=[	$death9,	army_die10	] {};
 void()	army_die10	=[	$death10,	army_die10	] {};
+*/
+
+framer($death1, $death10, army_die1, SUB_Null, 0.1,frame_arb($death3,self.solid = SOLID_NOT;DropBackpack();););
+
 
 void()	army_cdie1	=[	$deathc1,	army_cdie2	] {};
 void()	army_cdie2	=[	$deathc2,	army_cdie3	] {ai_back(5);};
@@ -312,11 +334,14 @@ void()	army_cdie11	=[	$deathc11,	army_cdie11	] {};
 // BOLT_START
 void() army_die;
 
+/*
 void()	army_conduitPain1	=[	$pain1,		army_conduitPain2	] {};
 void()	army_conduitPain2	=[	$pain2,		army_conduitPain3	] {};
 void()	army_conduitPain3	=[	$pain3,		army_conduitPain4	] {};
 void()	army_conduitPain4	=[	$pain4,		army_conduitPain5	] {};
 void()	army_conduitPain5	=[	$pain5,		army_conduitPain6	] {};
+*/
+
 void()	army_conduitPain6	=[	$pain6,		army_conduitPain1	]
 {
 	// check if conduit times up
@@ -330,6 +355,9 @@ void()	army_conduitPain6	=[	$pain6,		army_conduitPain1	]
     army_die();
   }
 };
+
+framer($pain1, $pain5, army_conduitPain1, army_conduitPain6, 0.1,SUB_Null(););
+
 
 // BOLT_END
 
@@ -453,7 +481,7 @@ if (ign != A_MONSTER)
 	if ((enhance) || (self.spawnflags & ARMY_XWEP))
 	{
 		local float r;
-		self.ammo_rockets = ceil(army_canhas_grenades * random()); // give 'em some grenades
+		self.ammo_rockets = ceil(5 * random()); // give 'em some grenades
 
 		chance = 0.2; // army_ofone;
 		if (ign == A_MONSTER) chance = 0.8; // army_rndenh;
@@ -462,18 +490,18 @@ if (ign != A_MONSTER)
 		if (random() < chance)
 		{
 			r = random();
-			if (r > 0.85) self.spawnflags = self.spawnflags | ARMY_ROCK;
-			else if (r > 0.6) { self.spawnflags = self.spawnflags | ARMY_SSGUN; self.ammo_shells = 25; }
-			else self.spawnflags = self.spawnflags | ARMY_NAILS;
+			if (r > 0.85) self.spawnflags = self.spawnflags | 8; //ARMY_ROCK;
+			else if (r > 0.6) { self.spawnflags = self.spawnflags | 4; self.ammo_shells = 25; }
+			else self.spawnflags = self.spawnflags | 2; //ARMY_NAILS;
 		}
 
-		if (self.spawnflags & ARMY_ROCK)
+		if (self.spawnflags & 8) //ARMY_ROCK)
 		{
 //			self.th_missile = army_natk1;
-			self.ammo_rockets = ceil(self.ammo_rockets + 20 + random() * army_canhas_grenades);
+			self.ammo_rockets = ceil(self.ammo_rockets + 20 + random() * 5); //army_canhas_grenades);
 		}
 		else
-		if (self.spawnflags & ARMY_NAILS)
+		if (self.spawnflags & 2) //ARMY_NAILS)
 		{
 			self.th_missile = army_natk1;
 			self.ammo_nails = 15;

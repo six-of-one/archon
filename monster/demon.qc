@@ -89,9 +89,9 @@ $frame semattacka9 semattacka10 semattacka11 semattacka12 semattacka13 semattack
 
 float	DEMON_DBL	= 2;
 float	DEMON_SUPER	= 4;
-float	DEMON_BOB	= 8;
+//float	DEMON_BOB	= 8;
 float	DEMON_SUPER_MAD	= 16; // got extra mad
-float DEMON_BOOM = 32; // raged and exploding
+//float DEMON_BOOM = 32; // raged and exploding
 
 //float super_demon_chance = 0.08;
 //float dbl_demon_chance = 0.25;
@@ -454,6 +454,8 @@ void()	Monster_JumpTouch =
 	if (self.health <= 0)
 		return;
 
+	self.nextthink = time + 0.1;
+
 	if (self.classname == "monster_young")
 	if (other.classname == self.classname)
 		return;
@@ -462,7 +464,8 @@ void()	Monster_JumpTouch =
 	{
 		if (vlen(self.velocity) > self.jump_flag) // 400 - demon, 300 - dog
 		{
-			if (self.spawnflags & DEMON_SUPER_MAD) self.dmg = 100 + 100*random();
+			if ((self.classname == "monster_demon1") &&
+				self.spawnflags & DEMON_SUPER_MAD) self.dmg = 100 + 100*random();
 			else
 //			if (self.spawnflags & DEMON_SUPER) self.dmg = 80 + 40*random();
 //			else
@@ -478,7 +481,7 @@ void()	Monster_JumpTouch =
 //dprint ("popjump\n");
 	self.touch = SUB_Null;
 	self.think = self._jump;
-	self.nextthink = time + 0.1;
+//	self.nextthink = time + 0.1;
 
 //			self.velocity_x = (random() - 0.5) * 600;
 //			self.velocity_y = (random() - 0.5) * 600;
@@ -490,7 +493,7 @@ void()	Monster_JumpTouch =
 
 	self.touch = SUB_Null;
 	self.think = self._jump2;
-	self.nextthink = time + 0.1;
+//	self.nextthink = time + 0.1;
 };
 
 

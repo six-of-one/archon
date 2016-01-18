@@ -55,7 +55,10 @@ sound (self, CHAN_WEAPON, "boss1/out1.wav", 1, ATTN_NORM);
 };
 void() boss_rise2	=[	$rise2, boss_rise3 ] {
 sound (self, CHAN_VOICE, "boss1/sight1.wav", 1, ATTN_NORM);
-};
+}
+// rise3 down below
+;
+/*
 void() boss_rise3	=[	$rise3, boss_rise4 ] {};
 void() boss_rise4	=[	$rise4, boss_rise5 ] {};
 void() boss_rise5	=[	$rise5, boss_rise6 ] {};
@@ -71,7 +74,9 @@ void() boss_rise14	=[	$rise14, boss_rise15 ] {};
 void() boss_rise15	=[	$rise15, boss_rise16 ] {};
 void() boss_rise16	=[	$rise16, boss_rise17 ] {};
 void() boss_rise17	=[	$rise17, boss_missile1 ] {};
+*/
 
+/*
 void() boss_idle1	=[	$walk1, boss_idle2 ]
 {
 // look for other players
@@ -106,7 +111,11 @@ void() boss_idle28	=[	$walk28, boss_idle29 ] {boss_face();};
 void() boss_idle29	=[	$walk29, boss_idle30 ] {boss_face();};
 void() boss_idle30	=[	$walk30, boss_idle31 ] {boss_face();};
 void() boss_idle31	=[	$walk31, boss_idle1 ] {boss_face();};
+*/
 
+framer($walk1, $walk31, boss_idle1, boss_idle1, 0.1,boss_face(););
+
+/*
 void() boss_missile1	=[	$attack1, boss_missile2 ] {boss_face();};
 void() boss_missile2	=[	$attack2, boss_missile3 ] {boss_face();};
 void() boss_missile3	=[	$attack3, boss_missile4 ] {boss_face();};
@@ -130,7 +139,19 @@ void() boss_missile20	=[	$attack20, boss_missile21 ] {boss_missile('100 -100 200
 void() boss_missile21	=[	$attack21, boss_missile22 ] {boss_face();};
 void() boss_missile22	=[	$attack22, boss_missile23 ] {boss_face();};
 void() boss_missile23	=[	$attack23, boss_missile1 ] {boss_face();};
+*/
 
+framer($attack1, $attack23, boss_missile1, boss_missile1, 0.1,
+{
+	boss_face();
+	frame_arb($attack9,boss_missile('100 100 200'););
+	frame_arb($attack20,boss_missile('100 -100 200'););
+}
+);
+
+framer($rise3, $rise17, boss_rise3, boss_missile1, 0.1,SUB_Null(););
+
+/*
 void() boss_shocka1 =[	$shocka1, boss_shocka2 ] {};
 void() boss_shocka2 =[	$shocka2, boss_shocka3 ] {};
 void() boss_shocka3 =[	$shocka3, boss_shocka4 ] {};
@@ -141,18 +162,28 @@ void() boss_shocka7 =[	$shocka7, boss_shocka8 ] {};
 void() boss_shocka8 =[	$shocka8, boss_shocka9 ] {};
 void() boss_shocka9 =[	$shocka9, boss_shocka10 ] {};
 void() boss_shocka10 =[	$shocka10, boss_missile1 ] {};
+*/
 
+framer($shocka1, $shocka10, boss_shocka1, boss_missile1, 0.1,SUB_Null(););
+
+/*
 void() boss_shockb1 =[	$shockb1, boss_shockb2 ] {};
 void() boss_shockb2 =[	$shockb2, boss_shockb3 ] {};
 void() boss_shockb3 =[	$shockb3, boss_shockb4 ] {};
 void() boss_shockb4 =[	$shockb4, boss_shockb5 ] {};
 void() boss_shockb5 =[	$shockb5, boss_shockb6 ] {};
 void() boss_shockb6 =[	$shockb6, boss_shockb7 ] {};
+
 void() boss_shockb7 =[	$shockb1, boss_shockb8 ] {};
 void() boss_shockb8 =[	$shockb2, boss_shockb9 ] {};
 void() boss_shockb9 =[	$shockb3, boss_shockb10 ] {};
 void() boss_shockb10 =[	$shockb4, boss_missile1 ] {};
+*/
 
+framer($shockb1, $shockb4, boss_shockb7, boss_missile1, 0.1,SUB_Null(););
+framer($shockb1, $shockb6, boss_shockb1, boss_shockb7, 0.1,SUB_Null(););
+
+/*
 void() boss_shockc1 =[	$shockc1, boss_shockc2 ] {};
 void() boss_shockc2 =[	$shockc2, boss_shockc3 ] {};
 void() boss_shockc3 =[	$shockc3, boss_shockc4 ] {};
@@ -163,7 +194,8 @@ void() boss_shockc7 =[	$shockc7, boss_shockc8 ] {};
 void() boss_shockc8 =[	$shockc8, boss_shockc9 ] {};
 void() boss_shockc9 =[	$shockc9, boss_shockc10 ] {};
 void() boss_shockc10 =[	$shockc10, boss_death1 ] {};
-
+*/
+/*
 void() boss_death1 = [$death1, boss_death2] {
 sound (self, CHAN_VOICE, "boss1/death.wav", 1, ATTN_NORM);
 };
@@ -174,6 +206,7 @@ void() boss_death5 = [$death5, boss_death6] {};
 void() boss_death6 = [$death6, boss_death7] {};
 void() boss_death7 = [$death7, boss_death8] {};
 void() boss_death8 = [$death8, boss_death9] {};
+*/
 void() boss_death9 = [$death9, boss_death10]
 {
 	sound (self, CHAN_BODY, "boss1/out1.wav", 1, ATTN_NORM);
@@ -191,6 +224,11 @@ void() boss_death10 = [$death9, boss_death10]
 	SUB_UseTargets ();
 	remove (self);
 };
+
+framer($death1, $death8, boss_death1, boss_death9, 0.1,frame_arb($death1,sound (self, CHAN_VOICE, "boss1/death.wav", 1, ATTN_NORM);););
+
+framer($shockc1, $shockc10, boss_shockc1, boss_death1, 0.1,SUB_Null(););
+
 
 void(vector p) boss_missile =
 {

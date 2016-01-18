@@ -5,6 +5,25 @@ SHAL-RATH
 
 ==============================================================================
 */
+
+ /*
+"the Upgrade"
+
+The larger cousin of the purple traking bomb throwin vore - also know as the "Super-vore".
+
+Super-vore did not join his smaller cousin in support of Shubs, Armagon, or whoever was in charge in Dissolution.
+
+He stayed home.  Thus the player has not seen him.
+
+Not in the original time line anyway.
+
+But since Chaos has involved itself, he has appeared.
+
+He got concerned about his smaller cousin when he heard stories about how easy Shubs was to poink the first time.
+
+*/
+ 
+ 
 $cd id1/models/shalrath
 $origin 0 0 24
 $base base
@@ -295,14 +314,57 @@ void() ShalMissile =
 
 void() ShalHome =
 {
-	local vector	dir, vtemp;
-	vtemp = self.enemy.origin + '0 0 10';
+	local vector	dir;
+	self.dest1 = self.enemy.origin + '0 0 10';
+
+// fix a bug where morph fired trackers are removed instantly, or strangely track to the world ent
+	if (self.morphy) // fired by a morph player
+	if (!self.enemy || self.enemy.health < 1) // fired with no target or target died
+	{
+// look for targets near flight path - idea: forward looking radar with longer range
+		other = findradius(self.origin, 480);
+		while (other)
+		{
+			if (other.solid != SOLID_NOT) // only solids
+			if (other.health > 1) // can take damage && is not dead
+			if (other.takedamage)
+			if (other != self)	// not the bomb
+			if (other != self.owner)	// not the shotter
+			if (other.owner != self.owner)	// not summoned by the owner
+			if (other.charmer != self.owner)	// not summoned by horn
+			{
+				self.lip = vlen(other.origin - self.origin);
+				traceline(self.origin, other.origin, TRUE, self);
+
+				if (trace_fraction >= 1) // can see the ent
+// note - this targets invisible pk*bots
+				if (other.classname != "player" || (!(other.items & IT_INVISIBILITY) && !coop && (other.classname != OBSERVER))) // dont target players / bots in coop
+				{
+					if (self.lip < self.lefty) // closer thing
+					{
+						self.enemy = other;
+						self.lefty = self.lip;
+					}
+// but prioritize player or monster further than the closest thing
+					if (other.classname == "player") self.enemy = other;
+					else if (other.class_select == "class_monster") self.enemy = other;
+
+					if (self.enemy) self.dest1 = self.enemy.origin; // target this
+				}
+			}
+			other = other.chain;
+		}
+		self.nextthink = time + 0.1;
+		self.think = ShalHome;
+		return;
+	}
+
 	if (self.enemy.health < 1)
 	{
 		remove(self);
 		return;
 	}
-	dir = normalize(vtemp - self.origin);
+	dir = normalize(self.dest1 - self.origin);
 	if (skill == 3)
 		self.velocity = dir * 350;
 	else
@@ -320,11 +382,11 @@ void() ShalMissileTouch =
 	if (other == self.owner)
 		return;		// don't explode on owner
 
-#ifdef testset
-// REMOVE THIS
-//	remove(self);
-//	return;
-#endifdef
+	if (self.owner.class_select == "class_monster") // not a morphed player or bot
+	{
+		if (other.owner == self.owner) return; // dont blow on SV summoned monster
+		if (other.model == "progs/shalrath.mdl") return; // dont blow on other monster vore / supervore
+	}
 
 //	ldmg = 40;
 	if (! self.dmg) self.dmg = 40;

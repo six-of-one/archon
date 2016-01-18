@@ -354,11 +354,13 @@ void()	tbaby_die2	=[	$exp,		tbaby_run1	]
 
 void() tbaby_checknew =
 {
+// note: this causes freeze frame death
 	if (!walkmove(0,0))
 	{
 //		remove(self);
+		self.model = null_string; // note - may have fade remove or crumble process later
 		self.think = SUB_Remove;
-		self.nextthink = time + 1 + random() * 2;
+		self.nextthink = time + 1;
 		return;
 	}
 	
@@ -531,16 +533,23 @@ If you want a specific type, select "Blue", "Green", or "Spots".
 "spots" - rogue hellspawn - 100 health
 */
 
-float TB_BLUE			= 2;
-float TB_GREEN			= 4;
-float TB_HELLS			= 8;
-float TB_LAVA			= 16;
-float TB_RANDOM		= 32;
+//float TB_BLUE			= 2;
+//float TB_GREEN			= 4;
+//float TB_HELLS			= 8;
+//float TB_LAVA			= 16;
+//float TB_RANDOM		= 32;
 
 void(float ign) monster_tarbaby =
 {
 //	local float r;
 //	local float skillLevel;
+
+// not sure why this is needed, but the engine EVEN when this flag is true - leaves some of these buggers in when they are map spawned
+if (cvar("nomonsters"))
+{
+	remove(self);
+	return;
+}
 
 if (ign != A_MONSTER)
 {
@@ -563,7 +572,7 @@ if (ign != A_MONSTER)
 // note - for respawning monsters, this is a permanent conversion
 #ifdef enhanced
 	if (random() < 0.25) // MAP_LAVABABY) 
-		self.spawnflags = self.spawnflags | TB_LAVA;
+		self.spawnflags = self.spawnflags | 16; //TB_LAVA;
 #endifdef
 
 // make some more random monsters according to server rules - only do this on map spawned monsters, wont happen with random monsters
@@ -605,7 +614,7 @@ if (ign != A_MONSTER)
 	setmodel (self, "progs/tarbaby.mdl");
 	setsize (self, '-16 -16 -24', '16 16 40');
 
-	self.cnt = (self.spawnflags & TB_LAVA); // mapper | code selected | rnd map convert - lava bomb
+	self.cnt = (self.spawnflags & 16); //TB_LAVA); // mapper | code selected | rnd map convert - lava bomb
 
 #ifdef enhanced
 //	if (ENHANCED)
@@ -615,7 +624,7 @@ if (ign != A_MONSTER)
 			self.spawnflags = self.spawnflags | TB_SUPER;
 
 		if (random() < 0.3) // RND_LAVABABY) 
-			self.cnt = TB_LAVA; // hot tarbaby from random
+			self.cnt = 16; //TB_LAVA; // hot tarbaby from random
 	}
 #endifdef
 
@@ -658,9 +667,9 @@ if (ign != A_MONSTER)
 		return;
 	}
 
-	self.cnt = (self.spawnflags & TB_RANDOM); // mapper | code selected random
+	self.cnt = (self.spawnflags & 32); //TB_RANDOM); // mapper | code selected random
 
-	if (self.spawnflags & TB_HELLS)
+	if (self.spawnflags & 8) //TB_HELLS)
 	{
 		self.th_missile = tbaby_shot;
 		self.th_pain = tbaby_mitosis;
@@ -668,14 +677,14 @@ if (ign != A_MONSTER)
 //		self.health = 100;
 		self.health = self.health + 20;
 	}
-	else if (self.spawnflags & TB_GREEN)
+	else if (self.spawnflags & 4) //TB_GREEN)
 	{
 		self.th_pain = tbaby_mitosis;
 		self.skin = 1;
 //		self.health = 60;
 		self.health = self.health - 20;
 	}
-	else if (self.spawnflags & TB_BLUE)
+	else if (self.spawnflags & 2) //TB_BLUE)
 	{
 		self.skin = 0;
 	}

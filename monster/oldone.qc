@@ -33,7 +33,7 @@ $frame shake9 shake10 shake11 shake12 shakeb12 shake13 shake14
 $frame shake15 shake16 shake17 shake18 shake19 shake20
 
 //void() old_stand     =[      $old1,       old_stand    ] {};
-
+/*
 void() old_idle1        =[      $old1,  old_idle2       ] {};
 void() old_idle2        =[      $old2,  old_idle3       ] {};
 void() old_idle3        =[      $old3,  old_idle4       ] {};
@@ -80,7 +80,9 @@ void() old_idle43       =[      $old43, old_idle44      ] {};
 void() old_idle44       =[      $old44, old_idle45      ] {};
 void() old_idle45       =[      $old45, old_idle46      ] {};
 void() old_idle46       =[      $old46, old_idle1       ] {};
+*/
 
+framer($old1, $old46, old_idle1, old_idle1, 0.1,SUB_Null(););
 
 void() old_thrash1        =[ $shake1,  old_thrash2       ] {lightstyle(0, "m");};
 void() old_thrash2        =[      $shake2,  old_thrash3       ] {lightstyle(0, "k");};
@@ -115,6 +117,8 @@ void() finale_1 =
 	local entity	pos, pl;
 	local entity	timer;
 
+// the only other way to be sure is when a player hits the teleport for the teletrain
+// this does NOT always work - sometimes this is a gib - wut?!
 	shub_killer = damage_attacker; // Cataboligne - 10.2.11 - so we can set the correct player model for shubs killer
 
 	intermission_exittime = time + 10000000;	// never allow exit
@@ -135,6 +139,7 @@ void() finale_1 =
 	pl = find (world, classname, "player");
 	while (pl != world)
 	{
+		if (!coop && !deathmatch) shub_killer = pl; // in SP we know its him
 		pl.mdl = pl.model; // Cataboligne - 10.2.11 - proper model save for shub killer
 		pl.view_ofs = '0 0 0';
 		pl.angles = other.v_angle = pos.mangle;
@@ -238,23 +243,30 @@ void() finale_4 =
 	n = spawn();
 // Cataboligne - 10.2.11 - update for new player models
 	setmodel (n, "progs/player.mdl");
+	n.cnt = TRUE; // make axe
 	if (shub_killer)
 	{
-		setmodel (n, shub_killer.mdl);
+		if (shub_killer.mdl) setmodel (n, shub_killer.mdl);
+		if (shub_killer.morphy != CHAR_Q && (shub_killer.morphy != CHAR_PK)) n.cnt = FALSE;
+		n.frame = shub_killer.frame;
 	}
 	oldo = oldo - '32 264 0';
 	setorigin (n, oldo);
 	n.angles = '0 290 0';
 //	n.frame = 1;
 // more updates
-	n.frame = $axstnd1;
+
 // now - make an axe
-	n = spawn();
-	setmodel (n, "progs/vw_axe.mdl");
-	setorigin (n, oldo);
-	n.angles = '0 290 0';
-	n.frame = $axstnd1;
-	
+	if (n.cnt)
+	{
+		n.frame = $axstnd1;
+		n = spawn();
+		setmodel (n, "progs/vw_axe.mdl");
+		setorigin (n, oldo);
+		n.angles = '0 290 0';
+		n.frame = $axstnd1;
+	}
+
 
 	remove (self);
 

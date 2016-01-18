@@ -106,14 +106,14 @@ $frame soemdeath13 soemdeath14
 
 //=============================================================================
 
-float	OGRE_BAWSE	= 2;
-float	OGRE_NORMAL	= 4;
-float	OGRE_SUPER	= 8;
-float	OGRE_SUPER_MAD	= 16; // got extra mad
+#define	OGRE_BAWSE	2
+#define	OGRE_NORMAL	4
+#define	OGRE_SUPER	8
+#define	OGRE_SUPER_MAD	16 // got extra mad
 
-//float super_ogre_chance = 0.1;
-//float super_ogre_emheal = 80; // how much a super ogre thats extra mad could heal in a pain frame
-//float super_ogre_emheal_chn = 0.4; // chance to heal
+#define super_ogre_chance 0.1
+#define super_ogre_emheal 80 // how much a super ogre thats extra mad could heal in a pain frame
+#define super_ogre_emheal_chn 0.4 // chance to heal
 
 /*
 deprecated - replaced with reg. grenade stuff
@@ -235,8 +235,8 @@ void(float side) chainsaw =
 	self.dmg = (random() + random() + random()) * 4;
 
 // one of those "BIG" ogres
-	if (self.spawnflags & OGRE_SUPER) self.dmg = self.dmg * 1.8;
-	if (self.spawnflags & OGRE_SUPER_MAD) self.dmg = self.dmg * 1.2;
+	if (self.spawnflags & 8) self.dmg = self.dmg * 1.8;
+	if (self.spawnflags & 16) self.dmg = self.dmg * 1.2;
 
 	if ((side) && (side < 2))
 	if (self.spawnflags & OGRE_SUPER)
@@ -256,19 +256,20 @@ void(float side) chainsaw =
 
 void() ogre_walk1;
 
+
 void() ogre_stand1	=[	$stand1,	ogre_stand1	]
 {
-/*
+
 
 // didnt used to have stand frames - this is fixed now
-
+/*
 	if (self.spawnflags & OGRE_SUPER_MAD)
 	{
 		ogre_walk1();
 		return;
 	}
 */
-	
+
 	if ((self.duration < $stand1) || (self.duration > $stand8))
 	{
 		self.duration = $stand1;
@@ -284,6 +285,16 @@ void() ogre_stand1	=[	$stand1,	ogre_stand1	]
 	ai_stand();
 };
 
+
+/*
+framer($stand1 + self.walkframe, $stand8 + self.walkframe, ogre_stand1, ogre_stand1, 0.1,
+{
+	frame_arb($stand5 + self.walkframe,sound (self, CHAN_VOICE, "ogre/ogidle.wav", 1, ATTN_IDLE));
+
+	ai_stand();
+}
+);
+*/
 /*
 void() ogre_stand1	=[	$stand1,	ogre_stand2	] {ai_stand();};
 void() ogre_stand2	=[	$stand2,	ogre_stand3	] {ai_stand();};
@@ -369,6 +380,33 @@ void() ogre_walk14	=[	$walk14,	ogre_walk15	] {ai_walk(3 * self.waitmax);};
 void() ogre_walk15	=[	$walk15,	ogre_walk16	] {ai_walk(3 * self.waitmax);};
 void() ogre_walk16	=[	$walk16,	ogre_walk1	] {ai_walk(4 * self.waitmax);};
 
+/* started putting framer in, but needs to address xframe
+
+framer($walk1 + self.walkframe, $walk16 + self.walkframe, ogre_walk1, ogre_walk1, 0.1,
+{
+	frame_arb($walk3 + self.walkframe, if (random() < 0.2) sound (self, CHAN_VOICE, "ogre/ogidle.wav", 1, ATTN_IDLE));
+
+	frame_arb($walk10,ai_walk(1 * self.waitmax));
+	frameset_arb($walk1,$walk7,$walk9,-1,-1,-1,ai_walk(2 * self.waitmax));
+	frameset_arb($walk2,$walk3,$walk4,$walk5,$walk8,$walk11,ai_walk(3 * self.waitmax));
+	framerange_arb($walk12,$walk15,ai_walk(3 * self.waitmax));
+	frame_arb($walk16,ai_walk(4 * self.waitmax));
+
+	frame_arb($walk6,
+	{
+		ai_walk(5 * self.waitmax);
+		if (random() < 0.1)
+		{
+			if (self.spawnflags & OGRE_SUPER)
+				sound (self, CHAN_VOICE, "ogre/ogidle.wav", 1, ATTN_IDLE);
+			else
+			sound (self, CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE);
+		}
+	});
+
+}
+);
+*/
 
 void() ogre_run1	=[	$run1,		ogre_run2	] {ai_run(9 * self.waitmax);
 if (random() < 0.2)
@@ -387,7 +425,7 @@ void() ogre_run5	=[	$run5,		ogre_run6	]
 	if ((time & SV_CKTIME) == SV_CKTIME)
 	{
 		self.count = 0;
-		if (!self.spawnflags & OGRE_SUPER_MAD) self.count = cnt_ent(world, "owner",  "monster_ogre");
+		if (!self.spawnflags & 16) self.count = cnt_ent(world, "owner",  "monster_ogre");
 		self.count = self.count + cnt_ent(world, "owner",  "monster_dog");
 		self.count = self.count + cnt_ent(world, "owner",  "monster_spider");
 		if (self.count < 4 + skill)
@@ -641,8 +679,8 @@ void()	ogre_pain =
 		}
 // could make this one dangerous brute
 		else
-		if (random() < 0.4) // super_ogre_emheal_chn)
-			self.health = self.health + (80 * random()); // super_ogre_emheal
+		if (random() < super_ogre_emheal_chn)
+			self.health = self.health + (super_ogre_emheal * random());
 
 		if (self.speed > mon_superspeedup_max)
 		if (random() < mon_superspeed_chn)
@@ -654,7 +692,7 @@ void()	ogre_pain =
 		self.cnt = 2;
 		self.pain_finished = time + 1.5; // set a default
 
-		if (self.spawnflags & OGRE_SUPER_MAD) return; // SOEM - no pain frames in model
+		if (self.spawnflags & 16) return; // SOEM - no pain frames in model
 
 		if (r > 0.75) return;
 
@@ -692,14 +730,14 @@ void()	ogre_pain =
 void() ogre_die =
 {
 	self.dmg = -80;
-	if (self.spawnflags & OGRE_SUPER) self.dmg = -300;
+	if (self.spawnflags & 8) self.dmg = -300;
 
 // check for gib
 	if (self.health < self.dmg)
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 		ThrowHead ("progs/h_ogre.mdl", self.health);
-		if (self.spawnflags & OGRE_SUPER) self.scale = 1.4;
+		if (self.spawnflags & 8) self.scale = 1.4;
 		ThrowGib ("progs/gib3.mdl", self.health);
 		ThrowGib ("progs/gib3.mdl", self.health);
 		ThrowGib ("progs/gib3.mdl", self.health);
@@ -826,7 +864,7 @@ if (ign != A_MONSTER) // map monster has no ign
 //	if (ENHANCED)
 	if (ign == A_MONSTER)
 	if (!self.spawnflags & OGRE_NORMAL)
-	if (random() < 0.1) // super_ogre_chance)
+	if (random() < super_ogre_chance)
 		self.spawnflags = self.spawnflags | OGRE_SUPER;
 #endifdef
 

@@ -45,21 +45,21 @@ ENFORCER CODE
 
 // enhanced - more weapons
 
-float ENF_LTN = 2; // lightning
-float ENF_HLASER = 4; // hip laser
-float ENF_RAIL = 8; // rail gun
-float ENF_ROCK = 16; // rockets
-float ENF_SSG = 32; // super shot gun
-float ENF_XWEP = 62; // det all x bits
+#define ENF_LTN 2 // lightning
+#define ENF_HLASER 4 // hip laser
+#define ENF_RAIL 8 // rail gun
+#define ENF_ROCK 16 // rockets
+#define ENF_SSG 32 // super shot gun
+#define ENF_XWEP 62 // det all x bits
 
-//float enf_imprv = 0.4; // total chance for a better map enforcer
-//float enf_rndenh = 0.9; // total chance for a better random enforcer
-float enf_extend = 16; // if set, extend extra weps to include rocket & ssg as bits indicate
-float enf_railslugs = 20; // base rail slug count
-// float enf_fire_grenades = 0.87; // chance to fire 
-// float enf_canhas_grenades = 5; // random to give enhanced enforcers
+//#define enf_imprv 0.4 // total chance for a better map enforcer
+//#define enf_rndenh 0.9 // total chance for a better random enforcer
+#define enf_extend 16 // if set, extend extra weps to include rocket & ssg as bits indicate
+#define enf_railslugs 20 // base rail slug count
+// #define enf_fire_grenades 0.87 // chance to fire 
+// #define enf_canhas_grenades 5 // random to give enhanced enforcers
 
-float ENF_ROCKET_DMG = 45; // dmg from enforcer rockets
+#define ENF_ROCKET_DMG 45 // dmg from enforcer rockets
 
 // end more weapons
 
@@ -502,10 +502,10 @@ if (ign != A_MONSTER)
 		if (self.spawnflags & ENF_RAIL)
 		{
 //			self.th_missile = army_natk1;
-			self.ammo_slug = ceil(enf_railslugs + random() * army_canhas_grenades);
+			self.ammo_slug = ceil(enf_railslugs + random() * 5); //army_canhas_grenades);
 		}
 		if (self.spawnflags & ENF_ROCK)
-			self.ammo_rockets = ceil((enf_railslugs * 2) + random() * army_canhas_grenades);
+			self.ammo_rockets = ceil((enf_railslugs * 2) + random() * 5); //army_canhas_grenades);
 	}
 
 	walkmonster_start();

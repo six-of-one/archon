@@ -215,75 +215,83 @@ $frame sxgrow11 sxgrow12
 float SC_MAX; // max scourge on a level
 float sc_stop_grow; // when to stop growing baby & mini
 float sc_count; // total number on map - also used to slow growth cycle
-float sc_radt_mult = 2; // multiplier for sc_count add in to rad_time - more scourge slows down growth
+#define sc_radt_mult 2 // multiplier for sc_count add in to rad_time - more scourge slows down growth
 
 // no bits 2 - 128				 regular scourge - 2 nail 2x pods
-float SC_MEGA	= 2; // mega scourge - 4 nail 3x pods
-float SC_SUPER	= 4; // super scourge - 2 nail 2x pods
-float SC_SUPER6	= 8; // super scourge - 6 nail 3x pods
-float SC_SUPER6_EXTRA_MAD	= 32; // super scourge - 6 nail 3x pods, extra mad
-float SC_MINI	= 64; // mini scourge
-float SC_BABY	= 128; // baby scourge
-float SC_ULTRA = 1024; // Ultra scourge - buku boss fight
+#define SC_MEGA	2 // mega scourge - 4 nail 3x pods
+#define SC_SUPER	4 // super scourge - 2 nail 2x pods
+#define SC_SUPER6	8 // super scourge - 6 nail 3x pods
+#define SC_SUPER6_EXTRA_MAD	16 // super scourge - 6 nail 3x pods, extra mad
+#define SC_MINI	32 // mini scourge
+#define SC_BABY	64 // baby scourge
+#define SC_ULTRA 512 // Ultra scourge - buku boss fight
+// unused
+// poison - 1024
+// death - 2048
+// wraith - 4096
 
-float SC_WEE = 192; // wee ones
-float SC_SUPERS = 44; // all super scourges
-float SC_SUPER6S = 40; // both super 6 scourges
-float SC_FRAMED = 1262; //238; all of the aboved that run with frame offsets in xscourge
-float SC_HEAL = 46; // for super & mega self heals
-float SC_NEVOL = 0; // set to 1 to stop evolutions
+//#define SC_STUNT 8192 // this scourge will not evolve, if enhanced is on
+
+#define SC_WEE 96 // wee ones
+#define SC_SUPERS 28 // all super scourges
+#define SC_SUPER6S 24 // both super 6 scourges
+#define SC_FRAMED 1022 //238; all of the aboved that run with frame offsets in xscourge
+#define SC_HEAL 30 // for super & mega self heals
+#define SC_NEVOL 0 // set to 1 to stop evolutions - 7.28.14 - map spawned scourge can be blocked with spawnflags & 8192 - stunt growth
+
+/// issue: 256 - 2048 are engine excludes for some difficulty - would cause problems with map loaded scourge
 
 // harder skinned - "hot" scourge
-float SC_CTHON	= 256; // cthon scourge
-float SC_LAVA	= 512; // lava scourge - slightly less than cthon scourge, also not implemented
+#define SC_CTHON	128 // cthon scourge - can still use super flags
+#define SC_LAVA	256 // lava scourge - slightly less than cthon scourge, also not implemented
 
-float SC_HOT = 768; // mask off hot flags
-float SC_TYPE = 2046; //1022; validate scourge type bits
+#define SC_HOT 384 // mask off hot flags
+#define SC_TYPE 9214 //1022; validate scourge type bits - 1022 + 8192 = 9214
 
-float sc_rnd = 0.8; // total chance for a better random scourge
-float sc_imp = 0.2; // total chance for a better map scourge
-float sc_cth = 0.45; // if improving on load, chance we get a cthon scrourge
+#define sc_rnd 0.8 // total chance for a better random scourge
+#define sc_imp 0.2 // total chance for a better map scourge
+#define sc_cth 0.45 // if improving on load, chance we get a cthon scrourge
 
 void()   xscourge_suxpand1;
 void()   xscourge_mgrow1;
 void()   xscourge_msxpand1;
 
-float sc_super_spike = 24; // damage done by super spikes
-float sc_track = 0.4; // chance a super /mega shot will turn on trackers - turned off in walk / run
-float sc_track_dmg = 21; // damage done by tracker
-float sc_laser = 0.2; // chance a super /mega shot will turn on bounce lasers - turned off in walk / run
-float sc_laser_dmg = 27; // damage done by laser
-float SC_FIRE_TRACK = -62346; // fire tracking spikes
-float SC_FIRE_TRIPLE = -63566; // fire triple nail guns per pod
-float SC_FIRE_LASER = -63789; // fire triple refl lasers per pod
+#define sc_super_spike 24 // damage done by super spikes
+#define sc_track 0.4 // chance a super /mega shot will turn on trackers - turned off in walk / run
+#define sc_track_dmg 21 // damage done by tracker
+#define sc_laser 0.2 // chance a super /mega shot will turn on bounce lasers - turned off in walk / run
+#define sc_laser_dmg 27 // damage done by laser
+#define SC_FIRE_TRACK -62346 // fire tracking spikes
+#define SC_FIRE_TRIPLE -63566 // fire triple nail guns per pod
+#define SC_FIRE_LASER -63789 // fire triple refl lasers per pod
 
 // pod constants
-float SC_POD_TIME = 110; // idle time till scourge can make a pod
-float SC_POD2_TIME = 300; // idle time till scourge can make a 2nd pod
-float sc_pod_chn = 0.24; // chance a scourge can make a pod when time is up
-float sc_dead_pod = 0.4; // chance a dead scourge will pod
-float sc_pod_cnt = 4; // base cnt babys from a pod
-float sc_smpod_rnd = 4;
-float sc_mgpod_rnd = 8; // rnd babys mega pod
-float sc_sppod_rnd = 16; // rnd babys super pod
-float sc_empod_rnd = 24; // rnd babys extra mad super pod
-float sc_sppod_min = 4; // minis from super pod + smpod_rnd
+#define SC_POD_TIME 110 // idle time till scourge can make a pod
+#define SC_POD2_TIME 300 // idle time till scourge can make a 2nd pod
+#define sc_pod_chn 0.24 // chance a scourge can make a pod when time is up
+#define sc_dead_pod 0.4 // chance a dead scourge will pod
+#define sc_pod_cnt 4 // base cnt babys from a pod
+#define sc_smpod_rnd 4
+#define sc_mgpod_rnd 8 // rnd babys mega pod
+#define sc_sppod_rnd 16 // rnd babys super pod
+#define sc_empod_rnd 24 // rnd babys extra mad super pod
+#define sc_sppod_min 4 // minis from super pod + smpod_rnd
 
-float sc_emheal = 100; // how much a super scourge thats extra mad could heal in a pain frame
-float sc_emheal_chn = 0.4; // chance to heal
+#define sc_emheal 100 // how much a super scourge thats extra mad could heal in a pain frame
+#define sc_emheal_chn 0.4 // chance to heal
 
-float sc_baby_vol = 0.5;
-float sc_mini_vol = 0.7;
+#define sc_baby_vol 0.5
+#define sc_mini_vol 0.7
 
 // skin codes
-float SKN_CTHON = 1;
-//float SKN_LAVA = 2;
-//float SKN_HEAD = 3;
-//float SKN_BLU = 4;
+#define SKN_CTHON 1
+#define SKN_LAVA 2
+#define SKN_HEAD 3
+#define SKN_BLU 4
 
 // spike.mdl, nail.mdl frames
-float SC_SPIKE_LG = 9;
-float SC_SPIKE_MIN = 8;
+#define SC_SPIKE_LG 9
+#define SC_SPIKE_MIN 8
 
 //============================================================================
 // mega & super - run frames
@@ -292,11 +300,12 @@ float SC_SPIKE_MIN = 8;
 void() sc_run_frames =
 {
 //	if (!self.spawnflags & SC_SUPERS)
-	if (!self.spawnflags & SC_FRAMED) return; // not baby, mini, mega or super - cant run frames --- FIX or remove
+//	if (!self.spawnflags & SC_FRAMED) return; // not baby, mini, mega or super - cant run frames --- FIX or remove
+// can all run frames now - expanded set
 
-	if (self.weaponframe)
-	if (self.frame < self.weaponframe)
-		self.frame = self.frame + self.weaponframe;
+	if (self.walkframe)
+	if (self.frame < self.walkframe)
+		self.frame = self.frame + self.walkframe;
 };
 
 // scourges above regular have a chance to self heal
@@ -325,8 +334,8 @@ void(float per) xscourge_heal =
 
 
 
-local float h2; // TEST
-h2 = self.health;
+//local float h2; // TEST
+//h2 = self.health;
 
 
 
@@ -352,7 +361,7 @@ if (1)
 
 // remove stuck pod scourge
 
-float AS_SPLINCH = -666; // so a splinched monster can be gibbed when th_die is called
+#define AS_SPLINCH -666 // so a splinched monster can be gibbed when th_die is called
 
 // something got permanently stuck and needs to die
 
@@ -706,6 +715,7 @@ float() ScourgeCheckAttack =
 };
 
 vector SC_ZAD; // super boost
+
 void(vector org, vector vec, float light1, string sd) HIP_LaunchLaser;
 
 void(float ox) SCOURGE_FireSpikes =
@@ -719,17 +729,37 @@ void(float ox) SCOURGE_FireSpikes =
 
 	vf = 14;
 	if (self.spawnflags & SC_SUPERS) vf = 34;
-	if (!SC_ZAD) zadj = '0 0 19';
+	if (self.spawnflags & SC_ULTRA)
+	{
+		vf = 110;
+		ox = ox * 4.1;
+	}
+	if (self.spawnflags & SC_MINI) ox = ox / 3;
+	if (!SC_ZAD) zadj = '0 0 17';
 	else zadj = SC_ZAD;
+
+
 	src = self.origin - zadj + v_right*ox + v_forward * vf;
 	vec = (self.enemy.origin + (200*v_forward)) - src;
 	vec = normalize(vec);
 
 	if (self.aflag == SC_FIRE_LASER)
 	{
-		if (random() < 0.3) lns = "weapons/lasercannon/laserg.wav";
-		vf = ceil(random() * 0.7);
-		HIP_LaunchLaser(src, vec, vf, lns);
+		if ((self.spawnflags & SC_CTHON) || (self.spawnflags & 256)) // 256 - Lava scourge
+		{
+			Wiz_Firerep(1, 1, '0 0 0', 0.6 + random() * 0.4);
+			newmis.origin = src;
+			newmis.spawnflags = 2; // use cthon skin code
+			if (self.spawnflags & 528)
+			if (random() < 0.3)
+				newmis.wad = "BIG";
+		}
+		else 
+		{
+			if (random() < 0.3) lns = "weapons/lasercannon/laserg.wav";
+			vf = ceil(random() * 0.7);
+			HIP_LaunchLaser(src, vec, vf, lns);
+		}
 	}
 	else
 	{
@@ -739,7 +769,7 @@ void(float ox) SCOURGE_FireSpikes =
 
 	newmis.netname = "monster_scourge";
 
-	if ((self.spawnflags & SC_CTHON) || (self.spawnflags & SC_LAVA))
+	if ((self.spawnflags & SC_CTHON) || (self.spawnflags & 256)) // 256 - Lava scourge
 		setmodel(newmis, "progs/nail.mdl");
 // IMP: lava nails
 	
@@ -759,8 +789,8 @@ void(float ox) SCOURGE_FireSpikes =
 		Track_Missile(newmis, spike_touch, sc_track_dmg);
 	}
 
-//	newmis.velocity = v0; // TEST
-//	newmis.nextthink =-1; // TEST
+//	newmis.velocity = v0; // TEST - stops missle for position check
+//	newmis.nextthink =-1; // TEST - note: "= -1" does not seem to stop missiles in there tracks
 
 	self.attack_finished = time + 0.2;
 	if (self.speed > 0)
@@ -874,7 +904,7 @@ void() scourge_think =
 	if (SC_NEVOL)
 	{
 //		if (!self.spawnflags & SC_ULTRA) // already have super6 set
-		if (!self.spawnflags & SC_SUPER6S)
+		if (!self.spawnflags & SC_SUPER6S) // even in no evolution, expand to 18 guns can happen
 		if (self.spawnflags & SC_SUPER)
 			xscourge_suxpand1();
 	}
@@ -884,12 +914,13 @@ void() scourge_think =
 	{
 		self.rad_time = 0;
 
+// baby & mini can always grow up - 7.28.14
 		if (self.spawnflags & SC_MINI) // adolescent grows up
 		{
 			if (sc_count > sc_stop_grow) return;
 
 			self.spawnflags = self.spawnflags - (self.spawnflags & SC_MINI);
-			self.weaponframe = 0;
+			self.walkframe = 0;
 
 			if (random() < 0.04)
 				self.spawnflags = self.spawnflags | SC_MEGA;
@@ -904,7 +935,7 @@ void() scourge_think =
 				self.max_health = 600;
 
 				self.netname = "Scourge";
-				self.weaponframe = $msstand1;
+				self.walkframe = $msstand1;
 			}
 
 			self.rad_time = time + 40 + (random() * 20) + (sc_radt_mult * sc_count);
@@ -929,23 +960,26 @@ void() scourge_think =
 			setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 			self.health = 150;
 
-			self.weaponframe = $memstand1;
+			self.walkframe = $memstand1;
 			if (random() < 0.5) self.rad_time = time + 20 + (random() * 10) + (sc_count / 2); // they grow up so fast
 			self.lasttime = 0;
 			scourge_walk1();
 			return;
 		}
 
-//		if (!self.spawnflags & SC_ULTRA) // super6 is set
-		if (!self.spawnflags & SC_SUPER6S)
-//		if (!self.spawnflags & SC_SUPER6_EXTRA_MAD)
-		if (self.spawnflags & SC_SUPER)
-			xscourge_suxpand1();
-		else
-		if (self.spawnflags & SC_MEGA)
-			xscourge_mgrow1();
-		else
-			xscourge_msxpand1();
+		if (!self.spawnflags & 8192) // check if growth is stunted by map flag - 7.28.14
+		{
+//			if (!self.spawnflags & SC_ULTRA) // super6 is set
+			if (!self.spawnflags & SC_SUPER6S)
+//			if (!self.spawnflags & SC_SUPER6_EXTRA_MAD)
+			if (self.spawnflags & SC_SUPER)
+				xscourge_suxpand1();
+			else
+			if (self.spawnflags & SC_MEGA)
+				xscourge_mgrow1();
+			else
+				xscourge_msxpand1();
+		}
 	}
 
 // scourge pods
@@ -1129,8 +1163,8 @@ void()   scourge_atk1 =[ $shoot1,   scourge_atk2 ]
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireSpikes(-48);
-			self.frame = $msshootri1; // note - will adjust with ai_frame
 		}
+		self.frame = self.walkframe + $shootri1; // note - will adjust with ai_frame
 	}
 };
 void()   scourge_atk2 =[ $shoot2,   scourge_atk3 ]
@@ -1152,8 +1186,8 @@ void()   scourge_atk2 =[ $shoot2,   scourge_atk3 ]
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireUDSpikes(-40, 10);
-			self.frame = $msshootri2; // note - will adjust with ai_frame
 		}
+		self.frame = self.walkframe + $shootri2; // note - will adjust with ai_frame
 	}
 };
 void()   scourge_atk3 =[ $shoot1,   scourge_atk4 ]
@@ -1169,8 +1203,8 @@ void()   scourge_atk3 =[ $shoot1,   scourge_atk4 ]
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireSpikes(48);
-			self.frame = $msshootri3; // note - will adjust with ai_frame
 		}
+		self.frame = self.walkframe + $shootri3; // note - will adjust with ai_frame
 	}
 };
 void()   scourge_atk4 =[ $shoot2,   scourge_atk5 ]
@@ -1192,8 +1226,8 @@ void()   scourge_atk4 =[ $shoot2,   scourge_atk5 ]
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireSpikes(-48);
-			self.frame = $msshootri4; // note - will adjust with ai_frame
 		}
+		self.frame = self.walkframe + $shootri4; // note - will adjust with ai_frame
 	}
 };
 void()   scourge_atk5 =[ $shoot1,   scourge_atk6 ]
@@ -1207,8 +1241,8 @@ void()   scourge_atk5 =[ $shoot1,   scourge_atk6 ]
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireUDSpikes(40, 10);
-			self.frame = $msshootri1; // note - will adjust with ai_frame
 		}
+		self.frame = self.walkframe + $shootri1; // note - will adjust with ai_frame
 	}
 };
 void()   scourge_atk6 =[ $shoot2,   scourge_atk7 ]
@@ -1224,8 +1258,8 @@ void()   scourge_atk6 =[ $shoot2,   scourge_atk7 ]
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireSpikes(48);
-			self.frame = $msshootri2; // note - will adjust with ai_frame
 		}
+		self.frame = self.walkframe + $shootri2; // note - will adjust with ai_frame
 	}
 };
 void()   scourge_atk7 =[ $shoot1,   scourge_atk8 ]
@@ -1239,8 +1273,8 @@ void()   scourge_atk7 =[ $shoot1,   scourge_atk8 ]
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireUDSpikes(-40, 10);
-			self.frame = $msshootri3; // note - will adjust with ai_frame
 		}
+		self.frame = self.walkframe + $shootri3; // note - will adjust with ai_frame
 	}
 };
 void()   scourge_atk8 =[ $shoot2,   scourge_run1 ]
@@ -1258,8 +1292,8 @@ void()   scourge_atk8 =[ $shoot2,   scourge_run1 ]
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireUDSpikes(40, 10);
-			self.frame = $msshootri4; // note - will adjust with ai_frame
 		}
+		self.frame = self.walkframe + $shootri4; // note - will adjust with ai_frame
 	}
 	SUB_AttackFinished (4*random());
 };
@@ -1267,10 +1301,10 @@ void()   scourge_atk8 =[ $shoot2,   scourge_run1 ]
 // TEST
 void()   scourge_atk9 =[ $shoot1,   scourge_atk9 ]
 {
-	if (self.spawnflags & SC_MEGA) // note - will adjust with ai_frame
-	{
-		self.frame = $msshoot1;
-	}
+//	if (self.spawnflags & SC_MEGA) // note - will adjust with ai_frame
+//	{
+//		self.frame = $shoot1;
+//	}
 }; 
 
 // super, super6, super6em
@@ -1319,19 +1353,19 @@ bprint(" *** - WARNING: in super scourge missile, & no super flags!\n"); // TEST
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
 	if (self.spawnflags & SC_ULTRA)
-		SC_ZAD = '0 0 120';
+		SC_ZAD = '0 0 -50';
 	else
 	if (self.spawnflags & SC_SUPER6_EXTRA_MAD)
-		SC_ZAD = '0 0 48';
+		SC_ZAD = '0 0 -16';
 	else
 	if (self.spawnflags & SC_SUPER6)
-		SC_ZAD = '0 0 40';
+		SC_ZAD = '0 0 -10';
 	else
-		SC_ZAD = '0 0 20';
+		SC_ZAD = '0 0 4';
 
 	if (self.aflag == SC_FIRE_TRIPLE)
 	{
-		self.frame = $tgexpand1 + self.weaponframe;
+		self.frame = $shootri1 + self.walkframe;
 // main guns
 		SCOURGE_FireSpikes(40);
 		SCOURGE_FireSpikes(56);
@@ -1366,19 +1400,19 @@ void()   xscourge_atk2 =[ $shoot2,   xscourge_atk3 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
 	if (self.spawnflags & SC_ULTRA)
-		SC_ZAD = '0 0 120';
+		SC_ZAD = '0 0 -50';
 	else
 	if (self.spawnflags & SC_SUPER6_EXTRA_MAD)
-		SC_ZAD = '0 0 48';
+		SC_ZAD = '0 0 -16';
 	else
 	if (self.spawnflags & SC_SUPER6)
-		SC_ZAD = '0 0 40';
+		SC_ZAD = '0 0 -10';
 	else
-		SC_ZAD = '0 0 20';
+		SC_ZAD = '0 0 4';
 
 	if (self.aflag == SC_FIRE_TRIPLE)
 	{
-		self.frame = $tgexpand2 + self.weaponframe;
+		self.frame = $shootri2 + self.walkframe;
 // main guns
 		SCOURGE_FireSpikes(-40);
 		SCOURGE_FireSpikes(-56);
@@ -1412,19 +1446,19 @@ void()   xscourge_atk3 =[ $shoot1,   xscourge_atk4 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
 	if (self.spawnflags & SC_ULTRA)
-		SC_ZAD = '0 0 120';
+		SC_ZAD = '0 0 -50';
 	else
 	if (self.spawnflags & SC_SUPER6_EXTRA_MAD)
-		SC_ZAD = '0 0 48';
+		SC_ZAD = '0 0 -16';
 	else
 	if (self.spawnflags & SC_SUPER6)
-		SC_ZAD = '0 0 40';
+		SC_ZAD = '0 0 -10';
 	else
-		SC_ZAD = '0 0 20';
+		SC_ZAD = '0 0 4';
 
 	if (self.aflag == SC_FIRE_TRIPLE)
 	{
-		self.frame = $tgexpand3 + self.weaponframe;
+		self.frame = $shootri3 + self.walkframe;
 // main guns
 		SCOURGE_FireSpikes(40);
 		SCOURGE_FireSpikes(56);
@@ -1460,19 +1494,19 @@ void()   xscourge_atk4 =[ $shoot2,   scourge_run1 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
 	if (self.spawnflags & SC_ULTRA)
-		SC_ZAD = '0 0 120';
+		SC_ZAD = '0 0 -50';
 	else
 	if (self.spawnflags & SC_SUPER6_EXTRA_MAD)
-		SC_ZAD = '0 0 48';
+		SC_ZAD = '0 0 -16';
 	else
 	if (self.spawnflags & SC_SUPER6)
-		SC_ZAD = '0 0 40';
+		SC_ZAD = '0 0 -10';
 	else
-		SC_ZAD = '0 0 20';
+		SC_ZAD = '0 0 4';
 
 	if (self.aflag == SC_FIRE_TRIPLE)
 	{
-		self.frame = $tgexpand4 + self.weaponframe;
+		self.frame = $shootri4 + self.walkframe;
 // main guns
 		SCOURGE_FireSpikes(-40);
 		SCOURGE_FireSpikes(-56);
@@ -1544,7 +1578,6 @@ void()   scourge_pain3  =[ $pain3, scourge_pain4  ] {sc_run_frames();};
 void()   scourge_pain4  =[ $pain4, scourge_pain5  ] {sc_run_frames();};
 void()   scourge_pain5  =[ $pain5, scourge_run1 ] {sc_run_frames();};
 
-
 void()   scourge_die1 =[ $death1, scourge_die2 ] {self.spawnsilent = 0;scourge_think();};
 void()   scourge_die2 =[ $death2, scourge_die3 ] {sc_run_frames();};
 void()   scourge_die3 =[ $death3, scourge_die4 ] {self.solid = SOLID_NOT;sc_run_frames();};
@@ -1552,6 +1585,7 @@ void()   scourge_die4 =[ $death4, scourge_die5 ] {sc_run_frames();};
 void()   scourge_die5 =[ $death5, scourge_die5 ]
 {
 	sc_run_frames();
+
 	if (!SC_NEVOL)
 	if (!self.spawnflags & SC_WEE)
 	if (sc_count < SC_MAX)
@@ -1589,7 +1623,7 @@ void()   xscourge_msxpand5  =[ $tgexpand5, xscourge_msxpand6 ] {};
 void()   xscourge_msxpand6  =[ $tgexpand6, scourge_run1 ]
 {
 	self.spawnflags = self.spawnflags | SC_MEGA;
-	self.weaponframe = $msstand1;
+	self.walkframe = $msstand1;
 //   self.th_missile = scourge_atk1; // uses same attack vector
 
 	self.netname = "Scourge";
@@ -1608,7 +1642,7 @@ void()   xscourge_suxpand5  =[ $sxgexpand5, xscourge_suxpand6 ] {};
 void()   xscourge_suxpand6  =[ $sxgexpand6, scourge_run1 ]
 {
 	self.spawnflags = self.spawnflags | SC_SUPER6;
-	self.weaponframe = $sxstand1;
+	self.walkframe = $sxstand1;
 	self.th_missile = xscourge_atk1;
 
 	if (self.health < 0) // we died & had to expand for these death frames
@@ -1624,7 +1658,11 @@ void()   xscourge_suxpand6  =[ $sxgexpand6, scourge_run1 ]
 
 // scrouge to super - 2 of 2x guns
 
-void()   xscourge_grow1  =[ $scgrow1, xscourge_grow2 ] {};
+void()   xscourge_grow1  =[ $scgrow1, xscourge_grow2 ]
+{
+	setmodel (self, "progs/scor2e.mdl");
+	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+};
 void()   xscourge_grow2  =[ $scgrow2, xscourge_grow3 ] {};
 void()   xscourge_grow3  =[ $scgrow3, xscourge_grow4 ] {};
 void()   xscourge_grow4  =[ $scgrow4, xscourge_grow5 ] {};
@@ -1632,7 +1670,7 @@ void()   xscourge_grow5  =[ $scgrow5, xscourge_grow6 ] {};
 void()   xscourge_grow6  =[ $scgrow6, scourge_run1 ]
 {
 	self.spawnflags = self.spawnflags | SC_SUPER;
-	self.weaponframe = $stand1;
+	self.walkframe = $stand1;
 	self.th_missile = xscourge_atk1;
 
 	self.netname = "Scourge";
@@ -1644,7 +1682,11 @@ void()   xscourge_grow6  =[ $scgrow6, scourge_run1 ]
 
 // mega scrouge to super - 4 of 3x guns to 6 of 3x guns
 
-void()   xscourge_mgrow1  =[ $smgrow1, xscourge_mgrow2 ] {};
+void()   xscourge_mgrow1  =[ $smgrow1, xscourge_mgrow2 ]
+{
+	setmodel (self, "progs/scor2e.mdl");
+	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+};
 void()   xscourge_mgrow2  =[ $smgrow2, xscourge_mgrow3 ] {};
 void()   xscourge_mgrow3  =[ $smgrow3, xscourge_mgrow4 ] {};
 void()   xscourge_mgrow4  =[ $smgrow4, xscourge_mgrow5 ] {};
@@ -1654,7 +1696,7 @@ void()   xscourge_mgrow7  =[ $smgrow7, scourge_run1 ]
 {
 //	self.spawnflags = self.spawnflags - (self.spawnflags & SC_MEGA);
 	self.spawnflags = self.spawnflags | SC_SUPER6;
-	self.weaponframe = $sxstand1;
+	self.walkframe = $sxstand1;
 	self.th_missile = xscourge_atk1;
 
 	self.netname = "Scourge";
@@ -1678,7 +1720,7 @@ void()   xscourge_sugrow9  =[ $sxgrow9, xscourge_sugrow10 ] {};
 void()   xscourge_sugrow10  =[ $sxgrow10, scourge_run1 ]
 {
 	self.spawnflags = self.spawnflags | SC_SUPER6_EXTRA_MAD;
-	self.weaponframe = $memstand1; // note - no stand frames
+	self.walkframe = $memstand1; // note - no stand frames
 	self.th_missile = xscourge_atk1;
 	self.aflag = SC_FIRE_TRIPLE;
 
@@ -1703,7 +1745,7 @@ void(entity attacker, float damage) scourge_pain =
 	if (self.spawnflags & SC_ULTRA) self.dmg = 1000;
 //	if (self.spawnflags & SC_SUPER6_EXTRA_MAD) self.dmg = 300; // extra mad - no pain
 	if (self.spawnflags & SC_CTHON) self.dmg = self.dmg * 1.5;
-//	if (self.spawnflags & SC_LAVA) self.dmg = self.dmg * 1.35;
+//	if (self.spawnflags & 256) self.dmg = self.dmg * 1.35;
 
 
 	if (self.pain_finished > time)
@@ -1767,6 +1809,7 @@ void(entity attacker, float damage) scourge_pain =
 //		if (ENHANCED)
 		if (ENH_Q1_MAP_MONSTERS)
 		if (!SC_NEVOL)
+		if (!self.spawnflags & 8192) // check if growth is stunted by map flag - 7.28.14
 		if (random() < self.cnt)
 		{
 			if (self.spawnflags & SC_MEGA) xscourge_mgrow1();
@@ -1863,10 +1906,10 @@ void() scourge_die =
 	sound (self, CHAN_VOICE, self.noise4, 1, ATTN_NORM);
 /*
 	if (self.spawnflags & SC_BABY) // must get offset for proper death seq.
-	self.weaponframe = $minsting11 - 8;
+	self.walkframe = $minsting11 - 8;
 
 	if (self.spawnflags & SC_SUPER6_EXTRA_MAD) // must get offset for proper death seq.
-		self.weaponframe = $sxstand1;
+		self.walkframe = $sxstand1;
 	if ((self.spawnflags & SC_SUPERS) == SC_SUPER)
 //	if (!self.spawnflags & SC_SUPER6S)
 	{
@@ -1970,7 +2013,7 @@ void() ScourgeTriggerTouch =
 
 //============================================================================
 
-/*QUAKED monster_scourge (1 0 0) (-16 -16 -24) (16 16 40) Ambush Mega Super Super6 XMAD Mini Baby Cthon Lava ULTRA Poison Death Wraith
+/*QUAKED monster_scourge (1 0 0) (-16 -16 -24) (16 16 40) Ambush Mega Super Super6 XMAD Mini Baby Cthon Lava ULTRA Poison Death Wraith stunt
 
 " Mega" - 2 extra 3x nailguns, a bit tougher
 "Super" - double size, double bad
@@ -1981,7 +2024,8 @@ void() ScourgeTriggerTouch =
 "Cthon" - Cthon scourge - toughest
 "Lava" - Lava skin scourge - tougher
 "ULTRA" - ultimate Uber scourge - the "big" mommy
-
+"stunt" - do NOT allow this scourge to "evolve" into more powerful scourge
+				^^^^^
 not implemented:
 "Poison" - has poisoned nails, stinger, green skin
 "Death" - death scourge
@@ -2094,9 +2138,13 @@ if (ign != A_MONSTER) // only map monsters run this code
 	self.movetype = MOVETYPE_STEP;
 	self.walkframe = 0;
 
+
 	setmodel (self, "progs/scor2c.mdl");
 
 	enhance = FALSE;
+
+	self.spawnflags = self.spawnflags | self.height; // code in because of 256+ issues
+	self.height = 0;
 
 #ifdef enhanced
 //	if (ENHANCED)
@@ -2118,13 +2166,13 @@ if (ign != A_MONSTER) // only map monsters run this code
 			if (random() < sc_cth)
 				self.spawnflags = self.spawnflags | SC_CTHON;
 //			else if (r < 0.4)
-//				self.spawnflags = self.spawnflags | SC_LAVA;
+//				self.spawnflags = self.spawnflags | 256;
 		}
 
 // special cfg
 	}
 
-	self.weaponframe = 0;
+	self.walkframe = 0;
 	self.th_missile = scourge_atk1;
 
 // pod time
@@ -2149,9 +2197,9 @@ if (ign != A_MONSTER) // only map monsters run this code
 		self.netname = "Ultra Scourge";
 		self.rad_time = time + 120 + random() * 45 + (sc_radt_mult * sc_count);
 
-		self.weaponframe = $bultstand1;
+		self.walkframe = $bultstand1;
 		setmodel (self, "progs/scor2e.mdl");
-		setsize (self, '-128 -128 -24', '128 128 128');
+		setsize (self, '-128 -128 -24', '128 128 128'); // note: prob. too small
 
 		self.noise = "scourge/idle3u.wav";
 		self.noise1 = "scourge/sight3u.wav";
@@ -2170,19 +2218,20 @@ if (ign != A_MONSTER) // only map monsters run this code
 		self.netname = "Scourge";
 		self.rad_time = time + 60 + random() * 30 + (sc_radt_mult * sc_count);
 
-		self.weaponframe = $stand1;
+		self.walkframe = $stand1;
 		setmodel (self, "progs/scor2e.mdl");
 		setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
 	}
 	else
 	if (self.spawnflags & SC_MEGA)
 	{
-		setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+//		setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+		setsize (self, '-24 -24 -24', '24 24 24');
 		self.health = 450;
 		self.max_health = 600;
 
 		self.netname = "Scourge";
-		self.weaponframe = $msstand1;
+		self.walkframe = $msstand1;
 		if (enhance)
 		if (random() < 0.6) self.rad_time = time + 60 + random() * 40 + (sc_radt_mult * sc_count);
 		if (ign != A_MONSTER) self.rad_time = self.rad_time * 2;
@@ -2190,11 +2239,11 @@ if (ign != A_MONSTER) // only map monsters run this code
 	else
 	if (self.spawnflags & SC_MINI)
 	{
-		setsize (self, VEC_HULL_MIN, '16 16 12');
+		setsize (self, VEC_HULL_MIN, '16 16 0');
 		self.health = 150;
 		self.max_health = 450;
 
-		self.weaponframe = $memstand1;
+		self.walkframe = $memstand1;
 		self.rad_time = time + 50 + (random() * 10) + (sc_radt_mult * sc_count);
 		if (random() < 0.5) self.rad_time = time + 20 + (random() * 10) + sc_count;
 		self.lasttime = 0;
@@ -2208,11 +2257,11 @@ if (ign != A_MONSTER) // only map monsters run this code
 	else
 	if (self.spawnflags & SC_BABY)
 	{
-		setsize (self, '-8 -8 -24', ' 8 8 0');
+		setsize (self, '-8 -8 -24', ' 8 8 -8');
 		self.health = 75;
 		self.max_health = 450;
 
-		self.weaponframe = $bultstand1;
+		self.walkframe = $bultstand1;
 		self.rad_time = time + 40 + (random() * 10) + sc_count;
 		if (random() < 0.5) self.rad_time = time + 10 + (random() * 10) + (sc_count / 2);
 		self.lasttime = 0;
@@ -2225,7 +2274,7 @@ if (ign != A_MONSTER) // only map monsters run this code
 	}
 	else
 	{
-		setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+		setsize (self, '-24 -24 -24', '24 24 24');
 		self.health = 300;
 		self.max_health = 450;
 

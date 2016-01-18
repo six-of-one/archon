@@ -522,6 +522,19 @@ SV_PushMove: entity #3525 has an invalid modelindex 0.000000
 
 */
 
+
+// str ops for engine copy
+
+float(string s) strlen = #114; // returns how many characters are in a string
+string(string s1, string s2, ...) strcat = #115; // concatenates two or more strings (for example "abc", "def" would return "abcdef") and returns as a tempstring
+string(string s, float start, float length) substring = #116; // returns a section of a string as a tempstring - see FTE_STRINGS for enhanced version
+
+// load any entites contained in a file
+
+void(string s) ent_load = #101;
+
+
+
 void() InitTrigger;
 void() func_maphack;
 
@@ -1029,6 +1042,13 @@ void () q100_trigger_push;
 // hacks master ent - the current map hack
 entity mh;
 
+
+// code to do a local copy - the original method
+// big disadvantage - everything being copied MUST be in the main map load
+
+//#define maphack_locopy
+#ifdef maphack_locopy
+
 void(entity es) maphack_copy =
 {
 	local entity ec, sv;
@@ -1448,6 +1468,19 @@ void() func_copymod =
 // place holder for - just wait
 };
 
+#endifdef
+
+// fn(spawn_relocate) - put spawned chunk ents in the proper location
+//			*** add rotate
+// - uses mh ent to get origin offset & rotate
+
+void() spawn_relocate =
+{
+	if (mh)
+	{
+		setorigin(self, self.origin + mh.origin);
+	}
+};
 
 // fn(func_maphack) - quake hack function
 
@@ -1753,6 +1786,28 @@ void() func_maphack =
 	self.button12 = system_hash; // id all parts of a hack
 	system_hash = system_hash + 1 + rint(random() * 3);
 
+// engine builtin ent_load - woo!
+/*
+	note: will not work with *.bsp
+
+Loaded entities maps/qh_0033.bsp
+Host_Error: PRVM_ED_LoadFromFile: server: found < when expecting {
+QuakeC crash report for server:
+s34013: FIELD_S    self (=entity 384), mdl (=.mdl), GLOBAL4
+s34014: CALL1      ent_load (=ent_load())
+  maphack.qc : func_maphack : statement 554
+
+*/
+
+string fr;
+		fr = substring(self.mdl,0,strlen(self.mdl) - 4);
+		fr = strcat(fr, ".ent");
+	
+	ent_load(fr);
+
+// local copy code
+#ifdef maphack_locopy
+
 	if (self.target1)
 	{
 		cnt_ent(self, "targetname", self.target1);
@@ -1848,6 +1903,8 @@ void() func_maphack =
 			self.dropent = self.dropent.chain;
 		}
 	}
+
+#endifdef
 
 	mh = world;
 

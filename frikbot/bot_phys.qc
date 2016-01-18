@@ -78,7 +78,7 @@ void() CL_KeyMove = // CL_BaseMove + CL_AdjustAngles
 		// 200 is the default cl_upspeed
 		self.movevect_z = self.movevect_z - (200 * CL_KeyState(KEY_MOVEDOWN)); 
 		// 200 is the default cl_upspeed
-		if (!self.b_aiflags & AI_PRECISION)
+		if (!(self.b_aiflags & AI_PRECISION))
 			self.movevect = self.movevect * 2; 
 		// 2 is the default cl_movespeedkey & bot always has +speed
 	}
@@ -584,7 +584,7 @@ void() SV_FlyMove =
 {
 	// This is nothing like the Quake function.
 
-	if (!self.flags & FL_CLIENT && self.class_select != "class_bot")
+	if (!(self.flags & FL_CLIENT) && self.class_select != "class_bot")
 	{
 		return;
 	}
@@ -641,6 +641,7 @@ void() SV_Physics_Toss =
 };
 void() SV_Physics_Client =
 {
+// in fact - this may be __bad__
 	if (self.class_select != "class_bot") //return; // why do we need this test?
 {
 		return;

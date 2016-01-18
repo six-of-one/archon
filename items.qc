@@ -1588,3 +1588,17 @@ void () q10-_DropBackpack =
 	bot_BackpackSetup(item); // *bot
 };
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+

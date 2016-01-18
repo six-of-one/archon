@@ -46,6 +46,7 @@ $frame death9 death10
 $frame deathb1 deathb2 deathb3 deathb4 deathb5 deathb6 deathb7 deathb8
 $frame deathb9 deathb10 deathb11
 
+/*
 void()	knight_stand1	=[	$stand1,	knight_stand2	] {ai_stand();};
 void()	knight_stand2	=[	$stand2,	knight_stand3	] {ai_stand();};
 void()	knight_stand3	=[	$stand3,	knight_stand4	] {ai_stand();};
@@ -55,6 +56,9 @@ void()	knight_stand6	=[	$stand6,	knight_stand7	] {ai_stand();};
 void()	knight_stand7	=[	$stand7,	knight_stand8	] {ai_stand();};
 void()	knight_stand8	=[	$stand8,	knight_stand9	] {ai_stand();};
 void()	knight_stand9	=[	$stand9,	knight_stand1	] {ai_stand();};
+*/
+
+framer($stand1, $stand9, knight_stand1, knight_stand1, 0.1,ai_stand(););
 
 void()	knight_walk1	=[	$walk1,		knight_walk2	] {
 if (random() < 0.2)
@@ -170,12 +174,13 @@ void()	knight_pain =
 
 //===========================================================================
 
+/*
 void()	knight_bow1	=[	$kneel1,		knight_bow2	] {ai_turn();};
 void()	knight_bow2	=[	$kneel2,		knight_bow3	] {ai_turn();};
 void()	knight_bow3	=[	$kneel3,		knight_bow4	] {ai_turn();};
 void()	knight_bow4	=[	$kneel4,		knight_bow5	] {ai_turn();};
-
 void()	knight_bow5	=[	$kneel5,		knight_bow5	] {ai_turn();};
+*/
 
 void()	knight_bow6	=[	$kneel4,		knight_bow7	] {ai_turn();};
 void()	knight_bow7	=[	$kneel3,		knight_bow8	] {ai_turn();};
@@ -183,8 +188,9 @@ void()	knight_bow8	=[	$kneel2,		knight_bow9	] {ai_turn();};
 void()	knight_bow9	=[	$kneel1,		knight_bow10	] {ai_turn();};
 void()	knight_bow10	=[	$walk1,		knight_walk1	] {ai_turn();};
 
+framer($kneel1, $kneel5, knight_bow1, knight_bow6, 0.1,ai_turn(););
 
-
+/*
 void()	knight_die1	=[	$death1,	knight_die2	] {};
 void()	knight_die2	=[	$death2,	knight_die3	] {};
 void()	knight_die3	=[	$death3,	knight_die4	] 
@@ -195,9 +201,12 @@ void()	knight_die6	=[	$death6,	knight_die7	] {};
 void()	knight_die7	=[	$death7,	knight_die8	] {};
 void()	knight_die8	=[	$death8,	knight_die9	] {};
 void()	knight_die9	=[	$death9,	knight_die10] {};
+*/
 void()	knight_die10=[	$death10,	knight_die10] {};
 
+framer($death1, $death9, knight_die1, knight_die10, 0.1,frame_arb($death3,self.solid = SOLID_NOT;););
 
+/*
 void()	knight_dieb1	=[	$deathb1,	knight_dieb2	] {};
 void()	knight_dieb2	=[	$deathb2,	knight_dieb3	] {};
 void()	knight_dieb3	=[	$deathb3,	knight_dieb4	] 	
@@ -209,8 +218,10 @@ void()	knight_dieb7	=[	$deathb7,	knight_dieb8	] {};
 void()	knight_dieb8	=[	$deathb8,	knight_dieb9	] {};
 void()	knight_dieb9	=[	$deathb9,	knight_dieb10] {};
 void()	knight_dieb10 = [	$deathb10,	knight_dieb11] {};
+*/
 void()	knight_dieb11 = [	$deathb11,	knight_dieb11] {};
 
+framer($deathb1, $deathb10, knight_dieb1, knight_dieb11, 0.1,frame_arb($deathb3,self.solid = SOLID_NOT;););
 
 void() knight_die =
 {

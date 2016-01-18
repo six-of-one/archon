@@ -36,6 +36,7 @@ $frame pain1 pain2 pain3 pain4 pain5 pain6
 $frame death1 death2 death3 death4 death5 death6 
 $frame death7 death8 death9 death10 death11
 
+/*
 void() sham_stand1	=[	$stand1,	sham_stand2	] {ai_stand();};
 void() sham_stand2	=[	$stand2,	sham_stand3	] {ai_stand();};
 void() sham_stand3	=[	$stand3,	sham_stand4	] {ai_stand();};
@@ -53,6 +54,10 @@ void() sham_stand14	=[	$stand14,	sham_stand15] {ai_stand();};
 void() sham_stand15	=[	$stand15,	sham_stand16] {ai_stand();};
 void() sham_stand16	=[	$stand16,	sham_stand17] {ai_stand();};
 void() sham_stand17	=[	$stand17,	sham_stand1	] {ai_stand();};
+*/
+
+framer($stand1, $stand17, sham_stand1, sham_stand1, 0.1,ai_stand(););
+
 
 void() sham_walk1		=[      $walk1,        sham_walk2 ] {ai_walk(10);};
 void() sham_walk2       =[      $walk2,        sham_walk3 ] {ai_walk(9);};
@@ -256,13 +261,16 @@ if (skill == 3)
 void() sham_magic12    =[      $magic12,      sham_run1	   ] {};
 
 
-
+/*
 void() sham_pain1       =[      $pain1, sham_pain2      ] {};
 void() sham_pain2       =[      $pain2, sham_pain3      ] {};
 void() sham_pain3       =[      $pain3, sham_pain4      ] {};
 void() sham_pain4       =[      $pain4, sham_pain5      ] {};
 void() sham_pain5       =[      $pain5, sham_pain6      ] {};
 void() sham_pain6       =[      $pain6, sham_run1      ] {};
+*/
+
+framer($pain1, $pain6, sham_pain1, sham_run1, 0.1,SUB_Null(););
 
 void(entity attacker, float damage)	sham_pain =
 {
@@ -284,6 +292,7 @@ void(entity attacker, float damage)	sham_pain =
 
 //============================================================================
 
+/*
 void() sham_death1      =[      $death1,       sham_death2     ] {};
 void() sham_death2      =[      $death2,       sham_death3     ] {};
 void() sham_death3      =[      $death3,       sham_death4     ] {self.solid = SOLID_NOT;};
@@ -294,7 +303,10 @@ void() sham_death7      =[      $death7,       sham_death8     ] {};
 void() sham_death8      =[      $death8,       sham_death9     ] {};
 void() sham_death9      =[      $death9,       sham_death10    ] {};
 void() sham_death10     =[      $death10,      sham_death11    ] {};
+*/
 void() sham_death11     =[      $death11,      sham_death11    ] {};
+
+framer($death1, $death10, sham_death1, sham_death11, 0.1,frame_arb($death3,self.solid = SOLID_NOT;););
 
 void() sham_die =
 {

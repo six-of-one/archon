@@ -548,7 +548,7 @@ void() morph_cube_use =
 	}
 
 	self.eweapon = world; // dont put cube ref in pack
-	if (self.mask_x & (CB_HUMAN | CB_ENF || CB_GREMLIN)) // only humans throw packs so far
+	if (self.mask_x & (CB_HUMAN | CB_ENF | CB_GREMLIN)) // only humans throw packs so far
 	{
 		self.eweapon = self.theowner; // set for throwing pack
 

@@ -105,18 +105,18 @@ WIZARD
 ==============================================================================
 */
 
-float W_LAVA = 2; // lava wixard
-float W_POISON = 4; // poison wixard
-float W_2HEAD = 8; // 2 heads
-float W_SPIKE = 16; // xtra spikes
-float W_LGSPIKE = 32; // large with xtra spikes
-float W_3SPIKE = 64; // 3 heads xtra spikes
-float W_SUP3SPIKE = 128; // super size 3 heads xtra spikes
-//float W_UPG = 254; // any upgrade bit
-//float W_UPGM = 240; // all mega upgrade bits - no 2 head, no lava, and no poison
+#define W_LAVA 2 // lava wixard
+#define W_POISON 4 // poison wixard
+#define W_2HEAD 8 // 2 heads
+#define W_SPIKE 16 // xtra spikes
+#define W_LGSPIKE 32 // large with xtra spikes
+#define W_3SPIKE 64 // 3 heads xtra spikes
+#define W_SUP3SPIKE 128 // super size 3 heads xtra spikes
+//#define W_UPG 254 // any upgrade bit
+//#define W_UPGM 240 // all mega upgrade bits - no 2 head, no lava, and no poison
 
-//float wl_track = 0.6; // chance a shot will be tracker
-//float wl_track_dmg = 20;  // damage done by tracker explode
+#define wl_track 0.6 // chance a shot will be tracker
+#define wl_track_dmg 20  // damage done by tracker explode
 
 /*
 =============
@@ -213,7 +213,14 @@ float()	WizardCheckAttack =
 	}
 
 	if (enemy_range == RANGE_MELEE)
+	{
+		if (self.spawnflags & W_LAVA) // lava wizards can "flame ON" with an enemy in melee range
+		{
+			self.attack_state = AS_MELEE;
+			return TRUE;
+		}
 		chance = 0.9;
+	}
 	else if (enemy_range == RANGE_NEAR)
 		chance = 0.6;
 	else if (enemy_range == RANGE_MID)
@@ -747,6 +754,81 @@ void() Wiz_Missile =
 	wiz_fast1();
 };
 
+// flame ON
+
+// notes: added 28 numglobaldefs (of 32768)
+
+// fn(firestrike_flame) - make some fires for strike
+// IDEA - fill a rectang volume
+
+
+// torg - target origin
+// am - amount of fires
+// mds - min distance from center - flames will always be further away
+// tdz - z distance var, +z < -z + (z * 60%)
+// tds - distance of strike sphere
+
+void(vector torg, float am, float mds, float tdz, float tds) firestrike_flame =
+{
+	local float d, c1;
+	local vector v1;
+	
+	d = am;
+	while (d > 0) // flame on!
+	{
+		d = d - 1;
+		v1_x = mds + crandom() * (tds - (mds * 0.5));
+		v1_y = mds + crandom() * (tds - (mds * 0.5));
+		v1_z = crandom() * tdz + (tdz * 0.6); // 60% ratio upwards
+		c1 = pointcontents(torg + v1);
+		if (c1 != CONTENT_WATER && c1 != CONTENT_SOLID && c1 != CONTENT_SKY) // IDEA - sky_touch?
+			SpawnTouchFlame(torg + v1);
+		if (random() < 0.08)
+		sound (newmis, CHAN_BODY, "flm/burning.wav", 1, ATTN_NORM);
+	}
+};
+
+void () wizard_firestrike1  = [ $hover1,  wizard_firestrike2  ] { firestrike_flame(self.origin, 2 + random() * 2, 32, 80 / 1.6, 80); ai_walk(self.waitmax / 2.0); };
+void () wizard_firestrike2  = [ $hover2,  wizard_firestrike3  ]
+{
+	#define MAX_EFFECT_DIST 180 // no effect at all beyond this dist
+	local entity head, f;
+
+	head = findradius(self.origin, MAX_EFFECT_DIST);
+	while (head)
+	{
+		if (head != self)
+//		if (head.takedamage) - for when non slidebox stuff can burn
+		if (head.solid == SOLID_SLIDEBOX)  // this is one for sure that we might want FL_CLIENT, FL_MONSTER so its more inclusive
+		{
+			if (head.takedamage)
+			{
+				if (head.waterlevel < 2)
+				if (random() < 0.9)
+				if (!head.flags & FL_ONFIRE) // set em on fire
+				{
+					head.flags = head.flags | FL_ONFIRE;
+					f = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, ' 0 0 -30000', v0, v0, v0, v0, "", "", SUB_Null, 0.1, BurnThem, SUB_Null, self, world);
+					f.enemy = head;
+				}
+				T_FireDamage (head, self, self, 5 + (random() * 5) - head.waterlevel * 3); // IDEA build up pyro?
+			}
+		}
+		head = head.chain;
+	}
+	 ai_walk(self.waitmax / 2.0);
+};
+void () wizard_firestrike3  = [ $hover3,  wizard_firestrike4  ] { firestrike_flame(self.origin, 2 + random() * 2, 32, 80 / 1.6, 80); ai_walk(self.waitmax / 2.0); };
+void () wizard_firestrike4  = [ $hover4,  wizard_firestrike5  ] { ai_walk(self.waitmax / 2.0); };
+void () wizard_firestrike5  = [ $hover5,  wizard_firestrike6  ] { firestrike_flame(self.origin, 2 + random() * 2, 32, 80 / 1.6, 80); ai_walk(self.waitmax / 2.0); };
+void () wizard_firestrike6  = [ $hover6,  wizard_firestrike7  ] { firestrike_flame(self.origin, 2 + random() * 2, 32, 80 / 1.6, 80); ai_walk(self.waitmax / 2.0); };
+void () wizard_firestrike7  = [ $hover7,  wiz_run1           ] { ai_walk(self.waitmax / 2.0); };
+
+void() Wiz_Flame =
+{
+	wizard_firestrike1();
+};
+
 /*QUAKED monster_wizard (1 0 0) (-16 -16 -24) (16 16 40) Ambush Lava Poison Twohead Spike LargeSpike TripleSpike ExlTripleSpike
 
 "Lava" - lava skin scragg, shoots lava balls, more health, faster, badder
@@ -761,15 +843,15 @@ Note: any of these can be lava or poison
 
 */
 
-float wl_lava = 0.25; // chance of any upgrade going lava
-//float wl_2head = 0.85; // chance of two head upgrade - because upgrade is auto 2 head
-float wl_spike = 0.6; // chance of spike upgrade
-float wl_lgspike = 0.3; // chance of large spike upgrade
-float wl_3spike = 0.2; // chance of 3 head spike upgrade
-float wl_sup3spike = 0.05; // chance of super 3 head spike upgrade
+#define wl_lava 0.25 // chance of any upgrade going lava
+//#define wl_2head 0.85 // chance of two head upgrade - because upgrade is auto 2 head
+#define wl_spike 0.6 // chance of spike upgrade
+#define wl_lgspike 0.3 // chance of large spike upgrade
+#define wl_3spike 0.2 // chance of 3 head spike upgrade
+#define wl_sup3spike 0.05 // chance of super 3 head spike upgrade
 
-//float wl_rnd = 0.8; // total chance for a better random wixard
-//float wl_imp = 0.1; // total chance for a better map wixard
+#define wl_rnd 0.8 // total chance for a better random wixard
+#define wl_imp 0.1 // total chance for a better map wixard
 float rnd_super_spike3; // limited number of these will appear
 
 /*
@@ -870,9 +952,9 @@ if (ign != A_MONSTER)
 
 	if ((enhance) || (self.spawnflags & 254)) // W_UPG))
 	{
-		chance = 0.1; // wl_imp;
-		if (skill == 3) chance = 0.4; // wl_imp + wl_imp;
-		if (ign == A_MONSTER) chance = 0.8; // wl_rnd;
+		chance = wl_imp;
+		if (skill == 3) chance = wl_imp + wl_imp;
+		if (ign == A_MONSTER) chance = wl_rnd;
 
 		if (!self.spawnflags & 254) // W_UPG) // not map specced - enhance him
 		if (random() < chance)
@@ -937,6 +1019,7 @@ if (ign != A_MONSTER)
 				if (random() < 0.25) self.health = 200 + random() * 100;
 			}
 			self.wad = "MEGA";
+			self.th_melee = Wiz_Flame;
 		}
 	}
 
