@@ -159,7 +159,8 @@ bprint("\n");
 		remove(e.dropent);
 		e.dropent = world;
 	}
-
+	e.aflag = 0;
+	
 	crosshair_con(e, -1);
 };
 
@@ -2276,6 +2277,9 @@ void() User_menu =
 	if (self.pk_gravitywellammo > 0)
 		ln1 =
 						"  2: Gravity Well         \n";
+	if (self.pk_gravitywellammo == -1)
+		ln1 =
+						"  2: Super Gravity Well   \n";
 	if (self.pk_turretammo > 0)
 		ln2 =
 						"  3: Auto Sentry          \n";
@@ -2456,7 +2460,7 @@ void() PK_AdminImpulse =
 		}
 		else if (self.impulse == 2)
 		{
-			if (self.pk_gravitywellammo > 0)
+			if (self.pk_gravitywellammo != 0)
 				user_menu_pkitem(PK_IT_GRAVITYWELL, TRUE);
 		}
 		else if (self.impulse == 7)

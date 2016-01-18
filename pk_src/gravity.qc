@@ -8,6 +8,10 @@ $frame cubelf01 cubelf02 cubelf03 cubelf04 cubelf05 cubelf06 cubelf07 cubelf08
 $frame cubelf09 cubelf10 cubelf11 cubelf12 cubelf13 cubelf14 cubelf15 cubelf16
 $frame cubelf17 cubelf18 cubelf19 cubelf20
 
+$frame cube201 cube202 cube203 cube204 cube205 cube206 cube207 cube208
+$frame cube209 cube210 cube211 cube212 cube213 cube214 cube215 cube216
+$frame cube217 cube218 cube219 cube220
+
 
 // check to see if ents are visible to gravity wave
 
@@ -196,12 +200,22 @@ void() gravity_explode =
 		// TODO something funky in the water?
 
 		setmodel(self, "progs/cubel.mdl");
+		self.nextthink = time + 0.1;
+
+		if (self.alpha < 1)
+		{
+			self.alpha = self.alpha + 0.05;
+			self.frame = self.frame + 0.5;
+			if (self.alpha > 0.93)
+			sound (self, CHAN_BODY, "misc/grav/grav_new.wav", 1, ATTN_NORM);
+			return;
+		}
+
 		self.attack_finished = time + PK_GRV_TIME;	// duration of gravity well
 		self.touch = gravity_touch;
 		self.effects = self.effects | EF_BRIGHTLIGHT;
 	  self.pk_currentitem = PK_IT_GRAVITYWELL;
 		self.think = gravity_pulse1;
-		self.nextthink = time + 0.1;
 	//	return;
 	//}
 
@@ -227,7 +241,7 @@ void() drop_gravity =
 	}
 
 	// create a gravity object
-	gravity = spawn();
+	newmis = gravity = spawn();
 	gravity.classname = "gravity";
 	gravity.owner = self;
 	gravity.solid = SOLID_TRIGGER;
@@ -261,3 +275,10 @@ void() drop_gravity =
 	AddToSplash(gravity);
 };
 
+void() drop_gravity_sups =
+{
+	drop_gravity();
+	sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);
+	newmis.frame = 1;
+	newmis.alpha = 0.1;
+};

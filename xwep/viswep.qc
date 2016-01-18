@@ -115,7 +115,7 @@ float(entity e) mk_pkbits =
 	cpkweps = PK_IT_AXE | PK_IT_GRAPGUN | PK_IT_AIRGUN | PK_IT_CLIGHT; // collectable pk weps
 	nbits = e.pk_items & cpkweps;
 
-	if(e.pk_gravitywellammo > 0) nbits = nbits | PK_IT_GRAVITYWELL;
+	if(e.pk_gravitywellammo != 0) nbits = nbits | PK_IT_GRAVITYWELL;
 	if(e.pk_turretammo > 0) nbits = nbits | PK_IT_TURRET;
 	if(e.pk_canpabammo > 0) nbits = nbits | PK_IT_CANPAB;
 	if(e.pk_beartrapammo > 0) nbits = nbits | PK_IT_BEARTRAP;
@@ -345,6 +345,10 @@ void (entity e, float fl) pkvload =
 	tr.mdl = md;
 	if (!VW) md = VW_DEFGUN;
 	setmodel(tr, md);
+
+	if (fl == PK_IT_GRAVITYWELL)
+	if (e.pk_gravitywellammo == -1)
+		tr.skin = 1;
 
 	tr.mcode = wepbit_mcode(fl, "PK2");
 

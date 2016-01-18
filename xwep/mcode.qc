@@ -2079,7 +2079,7 @@ void() painkeep_cube_use =
 		}
 	}
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
-//	if (1) d = MC_PORTAL; // TEST:
+//	if (1) d = MC_GRAVITY; // TEST:
 
 	if (crate)
 	{
@@ -2217,6 +2217,8 @@ bprint(")\n");
 		}
 		if (d) self.event = "dynamic_item"; // just to double check
 
+		item_call(self.wad);
+
 
 
 if (cvar("saved1") == -555)
@@ -2227,7 +2229,12 @@ bprint(self.classname);
 bprint(")\n");
 }
 
-		item_call(self.wad);
+		if (self.classname == "item_painkeep_gwell")
+//		if (random() < 0.333)
+		{
+			self.skin = 1; // super gravity well
+			self.frame = 1;
+		}
 
 		if (!crate)
 			self.punchangle = ' 110 110 280'; // for ejector
@@ -2275,6 +2282,9 @@ bprint(")\n");
 		{
 			chaos_teleport(self.origin, "", world);
 			newmis.origin_z = newmis.origin_z + 20 + random() * 30;
+
+			if (random() < 0.95) // mostly not permanent
+				dyn_remove(newmis, (PK_DYNTO * (2 + random() + random()) + (20 * random())), chaos_tele_expire);
 		}
 		else if (random() < 0.25)
 		{

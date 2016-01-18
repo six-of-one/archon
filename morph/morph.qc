@@ -1475,7 +1475,7 @@ void() random_monster =
 		if (MONSTER_NOWAY) // clear monsters beyond noway bounds for a level
 		if (e.health > 0)
 		if (e.event == "dyn_monster") // dont remove regular or respawn monsters
-		if (e.movetype == MOVETYPE_STEP) // because flyers could get to a noway zone and be legit
+		if (e.movetype != MOVETYPE_FLY) // because flyers could get to a noway zone and be legit
 		{
 			if (noway_below)
 			if (e.origin_z < noway_below) now = TRUE;

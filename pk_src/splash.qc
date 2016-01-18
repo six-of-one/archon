@@ -156,6 +156,7 @@ void() CheckWaterLevels =
 					else if (e.map  == "rune" && e.classname == "item_sigil")
 					{
 						if (RUNES)
+						if (e.think != fade_relocate) // not already moving
 						{
 							e.think = ip_checkForMovement; // note - if for any reason rune isnt in checkfor, this code puts it there
 							e.nextthink = time + random() * 4;
@@ -172,8 +173,13 @@ void() CheckWaterLevels =
 					else if (e.classname == "tomb") // Cataboligne 8.12.9 purify - pk artifacts
 					{
 						e.think = tombdie;
-						if (ENHANCED) e.velocity = v0; // stop on surface
-						e.nextthink = (time + 0.1 + random() );
+						if (ENHANCED) 
+						{
+							e.velocity = v0; // stop on surface
+							e.nextthink = (time + 2 + random() * 5 );
+						}
+						else
+							e.nextthink = (time + 0.1 + random() );
 					}
 				}
 			}
@@ -200,9 +206,12 @@ void() CheckWaterLevels =
 						}
 						if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
 						{
-							e.think = ip_checkForMovement;
-							e.nextthink = time + random() * 4;
-							e.hook = TRUE;
+							if (e.think != fade_relocate) // not already moving
+							{
+								e.think = ip_checkForMovement;
+								e.nextthink = time + random() * 4;
+								e.hook = TRUE;
+							}
 						}
 						else if (e.ip_orgOrigin != v0) // put items back now
 						{
@@ -278,7 +287,9 @@ void() CheckWaterLevels =
 				if (e.origin_z < noway_below) now = TRUE;
 				if (noway_above)
 				if (e.origin_z > noway_above) now = TRUE;
+
 				if (now)
+				if (e.think != fade_relocate) // not already moving
 				{
 					e.think = ip_checkForMovement;
 					e.nextthink = time + random() * 4;

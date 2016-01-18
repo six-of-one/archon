@@ -48,7 +48,7 @@ void() use_pkitem =
 			self.pk_currentitem = PKPLUS_IT_PHONE;
 			PK_Attack();
 		}
-		else if (self.pk_gravitywellammo > 0 && drp > 0.8)
+		else if (self.pk_gravitywellammo != 0 && drp > 0.8)
 		{
 			if (coop)
 			{
@@ -56,7 +56,7 @@ void() use_pkitem =
 				pl = find(world, classname, "player");
 				while (pl != world)
 				{
-					if (pl.ishuman && (vlen(self.origin - pl.origin) < 2000)) return; // dont fire one of these when real player is close by
+					if (pl.class_select == "class_player" && (vlen(self.origin - pl.origin) < 2000)) return; // dont fire one of these when real player is close by
 					pl = find(pl, classname, "player");
 				}
 			}

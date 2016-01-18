@@ -127,7 +127,7 @@ void() SetChangeParms =
 
 // there are 2 more 2 bit sets above phone ammo - v * 1048576, v * 4194304
 
-	parm11 = self.pk_explode_ammo + ((self.pk_turretammo & 3) * 16) + ((self.pk_canpabammo & 3) * 64) + ((self.pk_beartrapammo & 3) * 256) + ((self.pk_gravitywellammo & 3) * 1024)
+	parm11 = self.pk_explode_ammo + ((self.pk_turretammo & 3) * 16) + ((self.pk_canpabammo & 3) * 64) + ((self.pk_beartrapammo & 3) * 256) + ((fabs(self.pk_gravitywellammo) & 3) * 1024) // note: super grav wells become normal
 
 // Cataboligne 8.12.9 purify - pk artifacts
 	 + ((self.pkplus_egoammo & 3) * 4096) + ((self.pkplus_tombammo & 3) * 16384) + ((self.pkplus_actorammo & 3) * 65536) + ((self.pkplus_phoneammo & 3) * 262144);
@@ -1494,9 +1494,12 @@ void () PlayerPostThink =
 	if (vw_bot_frame != framecount)  // run these things once this frame
 	{
 		viswep_pkbot();
+
+		if ((framecount & 31) == 17)
 		if (find(world, classname, LOOPSOUND)) loop_play(); // play on looped sounds
 
 // sphere of annihilation controls
+		if ((framecount & 3) == 1)
 		if (sphere_a) sphere_annihilation_phys_move();
 	}
 

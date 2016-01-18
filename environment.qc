@@ -899,6 +899,25 @@ entity(float fl, string clsn) find_tdest =
 
 // IDEA - nemesis of sphere annihilation | something similar to sphere bomb
 
+
+// to auto remove random teles (ones from cubes)
+
+void() chaos_tele_expire =
+{
+	if (self.enemy)
+	{
+		if (self.button13 == self.enemy.button13)
+		{
+			self.enemy.think = remove_fade;
+			self.enemy.nextthink = time + 0.1;
+			if (self.enemy.aiment) self.enemy.aiment.search_time = 0;
+			self.enemy.aiment = world;
+			remove(self.enemy.trigger_field);
+		}
+	}
+	remove(self);
+}
+
 // self is player, gr is telesphere
 void() teleport_touch;
 
@@ -920,7 +939,7 @@ void() chaos_trigger_teleport =
 {
 	InitTrigger ();
 	self.touch = teleport_touch;
-	self.model = ""; // TEST:ING
+	self.model = "";
 };
 
 void(vector torg, string trgname, entity trgent) chaos_teleport =
@@ -943,6 +962,7 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 
 //	newmis.frame = needs think fn
 	newmis.skin = 1; //animated skin group
+
 // locate target
 	newmis.trigger_field.movetarget = world;
 	if (trgname) newmis.trigger_field.movetarget = find (world, targetname, trgname);

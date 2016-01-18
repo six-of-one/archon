@@ -315,7 +315,7 @@ void () bot_axeb2 = [ $axattb2, bot_axeb3 ]
 
 void () bot_axeb3 = [ $axattb3, bot_axeb4 ]
 {
- 	self.weaponframe = MOVETYPE_PUSH;
+ 	self.weaponframe = 7;
 	W_FireAxe ();
 	ai_botcharge (BOTSPEED);
 	BotPostThink ();
@@ -369,7 +369,7 @@ void () bot_axed2 = [ $axattd2, bot_axed3 ]
 
 void () bot_axed3 = [ $axattd3, bot_axed4 ]
 {
- 	self.weaponframe = MOVETYPE_PUSH;
+ 	self.weaponframe = 7;
 	W_FireAxe ();
 	ai_botcharge (BOTSPEED);
 	BotPostThink ();

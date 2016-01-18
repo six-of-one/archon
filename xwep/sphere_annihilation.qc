@@ -161,7 +161,8 @@ bprint("\n\n\n*** *** *** *** *** chaos teleport model restore\n\n\n\n");
 		{
 			if (self.aiment)
 			{
-				remove(self.aiment); // aiment is audio source
+				self.aiment.search_time = 0;
+//				remove(self.aiment); // aiment is audio source - loop_play does null & remove
 				self.aiment = world;
 				sphere_audio = sphere_audio - 1;
 				if (sphere_audio < 0) sphere_audio = 0;
@@ -411,17 +412,17 @@ void() sphere_annihilation_phys_move =
 	}
 
 	if (sphere_a.owner)
-		if(sphere_a.state & ST_FOLLOW == ST_FOLLOW) // move sphere with controlling player
-		{
-			local float d1;
-			local vector an;
-			d1 = vlen(sphere_a.dest1);
-			an = sphere_a.owner.angles;
-			an_y = an_y + sphere_a.lefty;
-			makevectors(an);
-			normalize(v_forward);
-			setorigin(sphere_a,  sphere_a.owner.origin + sphere_a.dest2 + d1 * v_forward);
-		}
+	if(sphere_a.state & ST_FOLLOW == ST_FOLLOW) // move sphere with controlling player
+	{
+		local float d1;
+		local vector an;
+		d1 = vlen(sphere_a.dest1);
+		an = sphere_a.owner.angles;
+		an_y = an_y + sphere_a.lefty;
+		makevectors(an);
+		normalize(v_forward);
+		setorigin(sphere_a,  sphere_a.owner.origin + sphere_a.dest2 + d1 * v_forward);
+	}
 
 //	sphere_a.weaponframe = framecount;
 	head = findradius(sphere_a.origin, SPHERE_HORIZON); // check for things flying by
@@ -437,7 +438,7 @@ void() sphere_annihilation_phys_move =
 			head = head.chain;
 		}
 
-// TDO: sound effect (maybe from black hole 06 ?) - also swirl things like grav suck
+// TDO: sound effect (maybe from black hole 06 ?)
 		if (random() < 0.06) // sphere pulls particles out of air - IDEA: something else in water - whirl around sphere of water tex
 		{
 			f = FALSE;

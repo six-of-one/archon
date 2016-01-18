@@ -783,10 +783,16 @@ bprint(")\n");
 	if (self.pk_items == PK_IT_GRAVITYWELL)
 	{
 		// check ammo
+		if (other.pk_gravitywellammo == -1) // has a super well
+			return;
+
 		if (other.pk_gravitywellammo >= PK_GRAVITYWELLAMMO_MAX)
 		{
 			return;
 		}
+		if (self.frame == 1) // super cube
+			other.pk_gravitywellammo = -1; // heh - override any cube inventory
+		else
 		other.pk_gravitywellammo = other.pk_gravitywellammo + 1;
 	}
 	else if (self.pk_items == PK_IT_CANPAB)
@@ -1653,6 +1659,7 @@ void() DropBackpack =
 
 	if (DEAD_THROW_PKI != 2)
 	{
+		self.pk_gravitywellammo = fabs(self.pk_gravitywellammo); // knob of supers
 		newmis.pk_gravitywellammo = self.pk_gravitywellammo;
 		newmis.pk_turretammo = self.pk_turretammo;
 		newmis.pk_canpabammo = self.pk_canpabammo;
@@ -1768,6 +1775,8 @@ void(entity e, vector v1) item_eject =
 // called from PlaceItem, starts position think checks
 // chaos mod vector
 
+float cfm_spread; // spread out think times on items
+
 void() pk_item_position_init =
 {
 //	if (WARNING) if (!PK) bprint("*** warning: pk_item_position_init called when not in PK mode.\n");
@@ -1778,7 +1787,10 @@ void() pk_item_position_init =
 	if (self.delay == RE_LOC) self.delay = 0;
 
 	self.think = ip_checkForMovement;
-	self.nextthink = time + CFM_TIME;
+	self.nextthink = time + CFM_TIME + cfm_spread;
+	cfm_spread = cfm_spread + 2;
+	if (cfm_spread > 60) cfm_spread = 1;
+	
 
 // dynamic items should not end up here
 	if (WARNING)  if (self.event == "dynamic_item")

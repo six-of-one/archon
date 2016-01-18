@@ -444,7 +444,10 @@ void() loop_play =
 		p = find(q, classname, LOOPSOUND);
 //		q.weaponframe = framecount;
 		if (q.search_time < time) // done - remove
+		{
+			sound (q, q.cnt,"misc/null.wav",1,ATTN_NORM);
 			remove(q);
+		}
 		else if (q.distance < time) // hit time, replay
 		{
 			q.distance = time + q.delay;

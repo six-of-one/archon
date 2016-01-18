@@ -133,7 +133,12 @@ void(entity attacker, float damage)	young_pain =
 	young_pain1 ();
 };
 
-void()	young_die1		=[	$runatt4,		young_die1	] {self.think = SUB_Remove;self.nextthink = time + 15;self.solid = SOLID_NOT;};
+void()	young_die1		=[	$runatt4,		young_die1	]
+{
+	self.think = SUB_Remove;
+	self.nextthink = time + 15;
+	self.solid = SOLID_NOT;
+};
 
 void() young_die =
 {

@@ -322,9 +322,16 @@ void() PK_SetCurrentAmmo =
 		}
 		else if (self.pk_currentitem == PK_IT_GRAVITYWELL)
 		{
-			self.currentammo = self.pk_gravitywellammo;
+			self.currentammo = fabs(self.pk_gravitywellammo);
 			self.weaponmodel = "progs/v_cube.mdl";
 			self.weaponframe = 0;
+			if (self.pk_gravitywellammo == -1)
+			{
+//				self.weaponframe = 1;
+				if (wchanged)
+					sprint(self, "Super Gravity Well\n");
+			}
+			else
 			if (wchanged)
 				sprint(self, "Gravity Well\n");
 		}
@@ -661,8 +668,10 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		}
 		else if (f.pk_currentitem == PK_IT_GRAVITYWELL)
 		{
-			f.currentammo = f.pk_gravitywellammo;
+			f.currentammo = fabs(f.pk_gravitywellammo);
 			f.weaponframe = 0;
+//			if (self.pk_gravitywellammo == -1)
+//				self.weaponframe = 1;
 		}
 		else if (f.pk_currentitem == PK_IT_TURRET)
 		{
@@ -896,7 +905,7 @@ float(float weaponnum, float pknum) HasAmmo =
 		}
 		else if (pknum == PK_IT_GRAVITYWELL)
 		{
-			if (self.pk_gravitywellammo < 1)
+			if (self.pk_gravitywellammo == 0)
 				return FALSE;
 		}
 		else if (pknum == PK_IT_TURRET)
@@ -1108,7 +1117,7 @@ void() pk_special_impulse =
 	}
 	else if (self.impulse == 33)
 	{
-		if (self.pk_gravitywellammo < 1)
+		if (self.pk_gravitywellammo == 0)
 			return;
 
 	 	self.pk_currentInventory = self.pk_currentitem = PK_IT_GRAVITYWELL;
@@ -1168,7 +1177,7 @@ void() pk_special_impulse =
 		WriteB3(MSG_ONE, 3809395);
 		WriteB3(MSG_ONE, 32);
 
-		WriteBFloat(MSG_ONE, self.pk_gravitywellammo);
+		WriteBFloat(MSG_ONE, fabs(self.pk_gravitywellammo));
 
 		// '										 '
 		WriteB3(MSG_ONE, 2105376);
@@ -1482,8 +1491,16 @@ void() PK_Attack =
 		else if (self.pk_currentitem == PK_IT_GRAVITYWELL)
 		{
 			// drop Gravity Well
-			drop_gravity();
-			self.pk_gravitywellammo = self.pk_gravitywellammo - 1;
+			if (self.pk_gravitywellammo == -1)
+			{
+				self.pk_gravitywellammo = 0;
+				drop_gravity_sups();
+			}
+			else
+			{
+				drop_gravity();
+				self.pk_gravitywellammo = self.pk_gravitywellammo - 1;
+			}
 
 			self.attack_finished = time + 0.5;
 

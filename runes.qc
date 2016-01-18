@@ -1029,9 +1029,10 @@ void() fade_relocate =
 	self.nextthink = time + 0.1;
 
 	if (self.alpha < 0.6) self.touch = SUB_Null;
-	else self.touch = rune_touch;
+	else self.touch = painkeep_touch;
 
 	self.alpha = self.alpha + self.lip;
+
 	if (self.lip < 0)
 	if (self.alpha < 0.05)
 	{
@@ -1045,7 +1046,7 @@ void() fade_relocate =
 	{
 		self.alpha = 1.03;
 		self.lip = 0;
-		self.think = self.th_stand;
+		self.think = self.th_stand; // done - back to the usual
 		self.th_stand = SUB_Null;
 		self.nextthink = self.lefty;
 	}
@@ -1055,6 +1056,8 @@ void() rune_relocate =
 {
 	local entity e, f;
 	local vector v1;
+
+	if (self.think == fade_relocate) return; // dont relocate when relocating
 
 	self.cnt = self.cnt + 1;
 	self.delay = self.delay + 1;

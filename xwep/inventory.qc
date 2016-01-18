@@ -564,12 +564,19 @@ void(entity e, float am, string pr) eweap_am =
 		sprint(self, "\n");
 		pk_pr = "";
 	}
-	else if (am == PK_IT_GRAVITYWELL && e.pk_gravitywellammo > 0)
+	else if (am == PK_IT_GRAVITYWELL && e.pk_gravitywellammo != 0)
 	{
 		if (pr != "") sprint(e, pr);
-		sprint(e, ftos(e.pk_gravitywellammo));
-		sprint(e, " gravity well");
-		if (e.pk_gravitywellammo > 1) sprint(e, "s");
+		if (e.pk_gravitywellammo == -1)
+		{
+			sprint(e, " super gravity well");			
+		}
+		else
+		{
+			sprint(e, ftos(e.pk_gravitywellammo));
+			sprint(e, " gravity well");
+			if (e.pk_gravitywellammo > 1) sprint(e, "s");
+		}
 		sprint(self, "\n");
 		pk_pr = "";
 	}

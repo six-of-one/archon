@@ -29,12 +29,18 @@ void() clinger_idle1 =[ $idle1, clinger_idle1 ]
 {
 	local entity targ;
 	local vector targposition, v;
-	// all children still alive?  don't fall yet
+
+// all children still alive?  don't fall yet
 	if (self.cnt < 1)
 		return;
+
 	targ = checkclient();
-	if (!targ)
-		return;
+	if (!targ) return;
+	if (targ.classname == OBSERVER) return; // dont fall on observers
+	if (ENHANCED)
+   if (targ.invisible_finished) // mostly cant see invisible
+	if (random() < 0.86) return;
+
 	targposition = targ.origin + targ.velocity * 0.3;
 	targposition_z = targ.origin_z;
 
@@ -49,20 +55,22 @@ void() clinger_idle1 =[ $idle1, clinger_idle1 ]
 		}
 	}
 
-	// if target is not below clinger, return
+// if target is not below clinger, return
 	if (targposition_z + targ.maxs_z > self.origin_z + self.mins_z)
 		return;
-	// if target is not in a cylindrical area below the clinger, return
+// if target is not in a cylindrical area below the clinger, return
 	v = targposition - self.origin;
 	v_z = 0;
 	if (vlen(v) > 128)
 		return;
 	// if a fall trace can't see the target, return
 	v = self.origin + self.mins_z * '0 0 1';
+
 	traceline(v, v - '0 0 1000', FALSE, self);
 	v = trace_endpos + self.size_z * '0 0 2';
 	if (v_z > self.origin_z + self.maxs_z)
 		v_z = self.origin_z + self.maxs_z;
+
 	traceline(v, targposition, TRUE, self);
 	if (trace_fraction < 1)
 		return;
@@ -90,34 +98,28 @@ void(entity attacker, float damage) clinger_pain =
 	clinger_shake1();
 };
 
-void() clinger_falltouch;
-void() clinger_fall1 =[ $fall1, clinger_fall2 ]
-{
-	self.th_pain = SUB_Null;
-	self.touch = clinger_falltouch;
-	if (self.angles_x != 180)
-	{
-		self.movetype = MOVETYPE_TOSS;
-		self.flags = self.flags - (self.flags & FL_ONGROUND);
-		self.velocity = '0 0 -400';
-	}
-};
 
-void() clinger_fall2 =[ $fall1, clinger_fall2 ]
+void() clinger_die1  =[ $hit1    , clinger_die2  ]
 {
-	if (self.flags & FL_ONGROUND) self.th_die();
-	if (self.angles_x == 180) self.th_die(); // already there
+	self.touch = SUB_Null;
+	self._die =
+	self.th_die = SUB_Null;
+	self.solid = SOLID_NOT;
+	self.takedamage = DAMAGE_NO;
 };
-
-void() clinger_die1  =[ $hit1    , clinger_die2  ] {self.touch = SUB_Null;self.th_die = SUB_Null;self.solid = SOLID_NOT;self.takedamage = DAMAGE_NO;};
 void() clinger_die2  =[ $hit2    , clinger_die3  ] {};
 void() clinger_die3  =[ $hit3    , clinger_die4  ] {};
 void() clinger_die4  =[ $explode1, clinger_die5  ] {};
 void() clinger_die5  =[ $explode2, clinger_die6  ] {};
 void() clinger_die6  =[ $explode2, clinger_respawn  ]
 {
-	local float c;
+	local float c, ma;
 	local vector v, vel;
+
+	ma = self.lefty;
+	self.lefty = 0;
+	
+
 	sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 	// take into account the clipping hull size used by young and spawn them
 	// either at the top of the box, or the bottom if spawning them at the top
@@ -156,23 +158,52 @@ void() clinger_die6  =[ $explode2, clinger_respawn  ]
 		self.health = 1; // hide from random monster corpse removal
 		self.nextthink = time + self.wait;
 
-		if ((!C_MONSTER_CNT) || ((monster_rnd_cnt + 1) < C_MONSTER_CNT)) // respawn until monsters are not maxed out & making more - add self back in too
+		if ((!C_MONSTER_CNT) || ((monster_rnd_cnt + ma) < C_MONSTER_CNT)) // respawn until monsters are not maxed out & making more - add self back in too
 			self.count = self.count - 1;
 
-		if (self.count < 0) // dont need to update monster count - already subbed this guy out in killed
+		if (self.count < 0)
 		{
-			remove_fade();
-//			remove(self);
+			if (!ma) monster_rnd_cnt = monster_rnd_cnt - 1; // decr if not coming from killed
+
+			remove(self);
 			return;
 		}
 		else
 			self.nextthink = time + 25 + random() * 10;
-		
-		monster_rnd_cnt = monster_rnd_cnt + 1; // add back in - got subbed off when dead
+
+		monster_rnd_cnt = monster_rnd_cnt + ma; // add back in - got subbed off when dead
 	}
 };
 
+void() clinger_falltouch =
+{
+	self._die();
+};
 
+void() clinger_fall1 =[ $fall1, clinger_fall2 ]
+{
+	self.th_pain = SUB_Null;
+	self.touch = clinger_falltouch;
+	if (self.angles_x != 180)
+	{
+		self.movetype = MOVETYPE_TOSS;
+		self.flags = self.flags - (self.flags & FL_ONGROUND);
+		self.velocity = '0 0 -400';
+	}
+};
+
+void() clinger_fall2 =[ $fall1, clinger_fall2 ]
+{
+	if (self.flags & FL_ONGROUND) self._die();
+	if (self.angles_x == 180) self._die(); // already there
+};
+
+
+void() cligner_killed =
+{
+	self.lefty = 1;
+	clinger_die1();
+};
 
 void() clinger_respawn = [ $idle1, clinger_idle1 ]
 {
@@ -187,7 +218,8 @@ void() clinger_respawn = [ $idle1, clinger_idle1 ]
 	self.takedamage = DAMAGE_AIM;
 	self.deadflag = DEAD_NO;
 	self.th_pain = clinger_pain;
-	self.th_die = clinger_die1;
+	self.th_die = cligner_killed; // via killed - restore monster count
+	self._die = clinger_die1; // all internal calls
 	self.enemy = world;
 
 	// count all the young that will drop as monsters - not needed with item_call
@@ -216,11 +248,6 @@ void() clinger_respawn = [ $idle1, clinger_idle1 ]
 };
 
 
-void() clinger_falltouch =
-{
-	self.th_die();
-};
-
 /*QUAKED monster_clinger (1 0 0) (-16 -16 -56) (16 16 0) Ambush
 
 */
@@ -244,6 +271,7 @@ if (ign != A_MONSTER)
 	self.mdl = self.model;
 
 	self.class_select = "class_monster";
+	self.cnt = 2 + cvar("skill") * 2;
 
 	if (self.event == "dyn_monster") // Cat note: dont create a load of respawners when making random monsters
 	{
@@ -252,16 +280,18 @@ if (ign != A_MONSTER)
 		if (!self.count)  self.count = 2 + ceil( random() * 4); // loop respawn a few times, then out
 		if (!self.wait) self.wait = C_MONSTER_WAIT / self.count; // try to be done by next random up
 		if (self.wait < 15) self.wait = 15 + random();
+		if (ENHANCED)
+		if (random() < 0.5) self.cnt = 3 + random() * 10; // 50% random spawns get rnd cnts
 
 		traceline(self.origin + ' 0 0 6', self.origin + ' 0 0 1005', TRUE, self);
-		if (sky_touch("", trace_endpos, world)) trace_fraction = 1; // hit sky brush or surface
+		if (sky_touch("", trace_endpos + ' 0 0 1', world)) trace_fraction = 1; // hit sky brush or surface
 		if (trace_fraction >= 1 || (random() < 0.16)) // no ceiling ? - or occasionally make a floor model
 		{
 			self.angles_x = 180; // try flipping over
 		}
 		else
 		{
-			self.origin = trace_endpos; // TDO: sky check
+			self.origin = trace_endpos;
 		}
 	}
 
@@ -269,6 +299,5 @@ if (ign != A_MONSTER)
 
 // for respawning in deathmatch
 	self.dest1 = self.origin - '0 0 0.125';
-	self.cnt = 2 + cvar("skill") * 2;
 	clinger_respawn();
 };
