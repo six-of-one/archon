@@ -514,6 +514,18 @@ void() player_count =
 	}
 
 	if (cvar("sv_adm")) ply_count = 65536;
+
+// set local scores for HUD
+// note - does NOT set server high score
+	if (high_score > 0)
+	{
+		stuffcmd(self, "seta master_high_score \"");
+		stuffcmd(self, ftos(high_score));
+		stuffcmd(self, "\"\n");
+		stuffcmd(self, "seta master_high_nick \"");
+		stuffcmd(self, high_score_nn);
+		stuffcmd(self, "\"\n");
+	}
 };
 
 // fn(pk_srvcmd_set) - setup new server control vars & load from cfg or alias
@@ -1330,6 +1342,10 @@ void() pk_srvcmd_set =
 	stuffcmd(self, "cl_number \"");
 	stuffcmd(self, ftos(self.b_clientno));
 	stuffcmd(self, "\"\n");
+
+// get master score on server
+	high_score = autocvar_master_high_score;
+	high_score_nn = autocvar_master_high_nick;
 
 // set mcodes - this means they can change and things like func_make that have fixed map codes might go wrong if the code changes in the future - DOH!
 	mcode_load();

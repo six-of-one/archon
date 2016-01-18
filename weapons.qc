@@ -61,6 +61,20 @@ void () W_FireAxe =
 		source = botaim ();
 	}
 	traceline (source, source + v_forward*64, FALSE, self);
+
+#ifdef warning
+							if (WARNING & 32)
+							{
+								bprint("*** warning: fireaxe hit = ");
+								bprint(item_ident(trace_ent));
+								bprint(" - trace frac: ");
+								bprint(ftos(trace_fraction));
+								bprint(" - endp: ");
+								bprint(vtos(trace_endpos));
+								bprint("\n");
+							}
+#endifdef
+
 	if (trace_fraction == 1.0)
 	{
 		if (self.class_select == "class_bot") Bot_Melee();

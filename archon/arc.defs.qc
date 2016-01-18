@@ -336,6 +336,10 @@ float (float lMean, float lStDev) meantime;
 
 float ply_count; // count 'em & weep
 float high_score; // best of the best
+string high_score_nn;
+var float autocvar_master_high_score = 6;
+var string autocvar_master_high_nick = "_-=* [Six]"; // to read server stored name
+
 float score_rel1				= 50;
 float score_rel2				= 100;
 float FL_SCORE1				= 4096;

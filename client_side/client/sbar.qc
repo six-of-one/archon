@@ -382,7 +382,7 @@ float pk_inv, pk_wep;
 
 // flasher codes
 
-float flasher, flashhl, flashawep, sterix_fl, nothuman;
+float flasher, flashhl, flashawep, sterix_fl, nothuman, flashmhc;
 float ALPHA_FULL, ALPHA_MEDIUM, ALPHA_LOW, ALPHA_90, p_alph;
 
 // note setting > 1 will cause numbers of critical stats to flash on hud - health, current wep ammo, armor, etc
@@ -555,14 +555,14 @@ void(vector valor, string pic, float transparencia, float scale) DrawInventoryAm
 float plscore;
 string plname;
 
-float p1, plnum, p3rd, fgl, topscore, rfgl, rhs, fraglimit;
+float p1, plnum, p3rd, pred, plead, fgl, topscore, rfgl, rhs, fraglimit;
 var float autocvar_hud_frags_style = 3;
 
 // print score line for player #pr - 1 at vr
 
 void(float plr, vector vr) score_line =
 {
-	float f;
+	float f, k;
 	vector cl1, cl2;
 
 	cl1 = '1 0.9 1';
@@ -571,19 +571,21 @@ void(float plr, vector vr) score_line =
 	plscore = stof(getplayerkey(plr - 1, "frags"));
 	f = fabs(plscore);
 
-	if (plr == p1) // high score - red
+	if (plr == pred) // high score - red
 	{
 		cl1 = '1 0.4 0.4';
 		cl2 = '1 0.1 0.1';
 	}
 	else
-	if (plr == plnum) // on list, blue style name & score
+	if (plr == plnum) // on list, or forced top / bottom, blue style name & score
 	{
 		cl1 = '0.2 0.2 1';
 		cl2 = '0.1 0.1 1';
 	}
 	plname = getplayerkey(plr - 1, "name");
 	Sbar_DrawString(vr + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
+
+// display player score
 	while (f > 999)
 	{
 		f = floor(f / 10);
@@ -592,8 +594,11 @@ void(float plr, vector vr) score_line =
 	if (plscore < -99) vr_x = vr_x - 7; // compensate (-) sign
 	if (plscore > -10 && plscore < 0) vr_x = vr_x + 7; // compensate wut?
 	if (plscore > p3rd) DrawAmmo(cl2, vr, plscore, ALPHA_FULL);
+
+// display range to fraglimit
 	if (plr == plnum)
 	{
+		rfgl = FALSE;
 		if (fraglimit)
 		{
 			vr_x = vr_x - 24;
@@ -606,19 +611,23 @@ void(float plr, vector vr) score_line =
 			DrawAmmo('0.1 1 0.1', vr, floor(fraglimit - plscore), ALPHA_FULL);
 			rfgl = TRUE;
 		}
-//		if (plr != p1)
+
+// display range to high score, or leader value over 2nd place
+		rhs = FALSE;
 		if (autocvar_hud_frags_style & 16)
 		if (maxclients > 1)
-		if (topscore > plscore)
+		if (topscore > plscore || pred == plnum)
 		{
 			vr_x = vr_x - 24;
 			f = topscore - plscore;
+			if (pred == plnum) f = plscore - plead; // in 1st place - give lead over 2nd place
+			k = f;
 			while (f > 999)
 			{
 				f = floor(f / 10);
 				vr_x = vr_x - 7;
 			}
-			DrawAmmo('0.76 0.12 1', vr, floor(topscore - plscore), ALPHA_FULL);
+			DrawAmmo('0.76 0.12 1', vr, floor(k), ALPHA_FULL);
 			rhs = TRUE;
 		}
 	}
@@ -1046,7 +1055,8 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	var float autocvar_hud_message_dualpr = 0;
 	var float autocvar_hud_rels = 0;
 	vector hudoff;
-	float huds, hudtime, timelimit;
+	float huds, hudtime, timelimit, timeflasher, timeflasher2;
+	vector cl1, cl2;
 
 // for countdowns
 	timelimit = cvar("timelimit"); //GetStat_FLOAT_TRUNCATED(STAT_TIMELIMIT);
@@ -1059,7 +1069,24 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if (!cvar("showtime"))
 		{
 			hudtime = time;
-			if (timelimit > 0) hudtime = timelimit - time;
+			timeflasher = 1;
+			timeflasher2 = 1;
+			cl1 = '1 0.9 1';
+			cl2 = '1 1 1';
+			if (timelimit > 0)
+			{
+				hudtime = timelimit - time;
+				if (hudtime < autocvar_hud_flash_numeral)
+				{
+					cl2 = '1 0.4 0.4';
+					timeflasher = flasher;
+				}
+				if (hudtime < autocvar_hud_flash_icon)
+				{
+					cl2 = cl1 = '1 0.1 0.1';
+					timeflasher2 = flashhl;
+				}
+			}
 			if (autocvar_hud_rels == 1)
 			{
 				v = '0 0 0';
@@ -1070,26 +1097,27 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					k = floor(k / 10);
 					v_x = v_x - 7;
 				}
-				DrawAmmo('1 1 1', '264 26 0' + v, floor(hudtime), ALPHA_FULL);
-				Sbar_DrawString('291 26 0' + woff, "rels", ALPHA_FULL, '7 7 0','1 0.9 1');
+				DrawAmmo(cl2, '264 26 0' + v, floor(hudtime), ALPHA_FULL * timeflasher);
+				Sbar_DrawString('291 26 0' + woff, "rels", ALPHA_FULL * timeflasher2, '7 7 0',cl1);
 			}
 			else
 			{
 				k = floor(hudtime/60);
 				f = floor(hudtime - (k * 60));
-				DrawAmmo('1 1 1', '276 26 0', k, ALPHA_FULL);
-				Sbar_DrawString('298 25 0' + woff, ":", ALPHA_FULL, '7 7 0','1 0.9 1');
+				DrawAmmo(cl2, '276 26 0', k, ALPHA_FULL * timeflasher);
+				Sbar_DrawString('298 25 0' + woff, ":", ALPHA_FULL * timeflasher, '7 7 0',cl1);
 				if (f < 10)
-				Sbar_DrawString('305 26 0' + woff, "0", ALPHA_FULL, '7 7 0','1 0.9 1');
-				DrawAmmo('1 1 1', '299 26 0', f, ALPHA_FULL);
+				Sbar_DrawString('305 26 0' + woff, "0", ALPHA_FULL * timeflasher, '7 7 0',cl2);
+				DrawAmmo(cl2, '299 26 0', f, ALPHA_FULL * timeflasher);
 			}
 		}
 
-float p2, p3, p4, p5, p6, p2nd, style, pself;
-float mons, secs, tmon, tsec;
-vector cl1, cl2;
-var float autocvar_hud_frags_off = 0;
-var float autocvar_hud_frags_negative = 0;
+	float p2, p3, p4, p5, p6, p2nd, style, pself;
+	float mons, secs, tmon, tsec, flashermhc, flasher2mhc;
+	var float autocvar_hud_frags_off = 0;
+	var float autocvar_hud_frags_negative = 0;
+	var float autocvar_master_high_score = 6;
+	var string autocvar_master_high_nick = "_-=* [Six]";
 
 // scores on new HUD
 // singleplayer:
@@ -1105,6 +1133,7 @@ var float autocvar_hud_frags_negative = 0;
 
 			style = autocvar_hud_frags_style & 3; // mask off bit 8
 			plnum = -1;
+
 // ranking slot - set by server qc
 // I can find no other way to get this # here
 			if (style) plnum = cvar("cl_number") + 1;
@@ -1122,19 +1151,35 @@ var float autocvar_hud_frags_negative = 0;
 			}
 			p3rd = p2nd;
 
+			pred = -1; // this player number will be red in score list
 			fgl = 0;
+// get player num with top score on list
 			while (k > 0)
 			{
 				plscore = stof(getplayerkey(k - 1, "frags"));
 //				if (plscore > 32767) plscore = 32767; // this is coming in a signed short
 				if (plscore >= p2nd)
 				{
-					p1 = k;
+					pred = p1 = k;
 					topscore = p2nd = plscore;
 				}
 				k = k - 1;
 			}
+// frag limit countdown message
+			fgl = 0;
+			if (fraglimit)
+			{
+				f = fraglimit - topscore;
+				if (f < 7) fgl = floor(f); // show (< 7) frags left at bottom or score list
+			}
 			if (p1 == plnum && p2nd != p3rd) pself = TRUE;
+
+			if (autocvar_hud_frags_style & 32) // always on top - steals slot one
+			if (p1 != plnum)
+			{
+				pself = TRUE;
+				p1 = plnum;
+			}
 
 // nasty brute force trickle down search
 			if (maxclients > 1)
@@ -1151,7 +1196,7 @@ var float autocvar_hud_frags_negative = 0;
 						if (plscore >= p2nd)
 						{
 							p2 = k;
-							p2nd = plscore;
+							plead = p2nd = plscore;
 						}
 					}
 					k = k - 1;
@@ -1300,16 +1345,11 @@ var float autocvar_hud_frags_negative = 0;
 */
 					v_y = v_y - 10;
 				}
-				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
+//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				plscore = stof(getplayerkey(p1 - 1, "frags"));
 // top score
 				if (plscore > p3rd)
 				{
-					if (fraglimit)
-					{
-						f = fraglimit - plscore;
-						if (f < 4) fgl = floor(f); // show frags left at bottom
-					}
 					score_line(p1, v);
 /*
 						plname = getplayerkey(p1 - 1, "name");
@@ -1339,9 +1379,9 @@ var float autocvar_hud_frags_negative = 0;
 */
 					v_y = v_y - 10;
 				}
-				cl1 = '1 0.9 1';
-				cl2 = '1 1 1';
-				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
+//				cl1 = '1 0.9 1';
+//				cl2 = '1 1 1';
+//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				k = k - 1;
 				if ((k > 0) && p2 > 0)
 				{
@@ -1398,9 +1438,9 @@ var float autocvar_hud_frags_negative = 0;
 					}
 					k = k - 1;
 				}
-				cl1 = '1 0.9 1';
-				cl2 = '1 1 1';
-				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
+//				cl1 = '1 0.9 1';
+//				cl2 = '1 1 1';
+//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p3 > 0)
 				{
 					plscore = stof(getplayerkey(p3 - 1, "frags"));
@@ -1456,9 +1496,9 @@ var float autocvar_hud_frags_negative = 0;
 					}
 					k = k - 1;
 				}
-				cl1 = '1 0.9 1';
-				cl2 = '1 1 1';
-				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
+//				cl1 = '1 0.9 1';
+//				cl2 = '1 1 1';
+//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p4 > 0)
 				{
 					plscore = stof(getplayerkey(p4 - 1, "frags"));
@@ -1514,9 +1554,9 @@ var float autocvar_hud_frags_negative = 0;
 					}
 					k = k - 1;
 				}
-				cl1 = '1 0.9 1';
-				cl2 = '1 1 1';
-				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
+//				cl1 = '1 0.9 1';
+//				cl2 = '1 1 1';
+//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p5 > 0)
 				{
 					f = plscore = stof(getplayerkey(p5 - 1, "frags"));
@@ -1572,9 +1612,9 @@ var float autocvar_hud_frags_negative = 0;
 					}
 					k = k - 1;
 				}
-				cl1 = '1 0.9 1';
-				cl2 = '1 1 1';
-				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
+//				cl1 = '1 0.9 1';
+//				cl2 = '1 1 1';
+//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p6 > 0)
 				{
 					f = plscore = stof(getplayerkey(p6 - 1, "frags"));
@@ -1676,7 +1716,7 @@ var float autocvar_hud_frags_negative = 0;
 					if (fgl)
 					{
 						Sbar_DrawString(v + '28 -12 0', "frags left !", ALPHA_FULL * flashawep, '7 7 0','1 0.2 0.2');
-						DrawAmmo('1 0.2 0.2', v, floor(fgl), ALPHA_FULL * flashawep);
+						DrawAmmo('1 0.2 0.2', v, floor(fgl), ALPHA_FULL * flashhl);
 						v_y = v_y - 10;
 					}
 					if (rfgl)
@@ -1686,10 +1726,41 @@ var float autocvar_hud_frags_negative = 0;
 					}
 					if (rhs)
 					{
-						Sbar_DrawString(v + '28 -12 0', "* to high score", ALPHA_FULL, '7 7 0','0.76 0.12 1');
+						if (pred == plnum)
+							Sbar_DrawString(v + '28 -12 0', "* leading by", ALPHA_FULL, '7 7 0','0.76 0.12 1');
+						else
+							Sbar_DrawString(v + '28 -12 0', "* to high score", ALPHA_FULL, '7 7 0','0.76 0.12 1');
 						v_y = v_y - 10;
 					}
 				}
+// master score
+				if (!autocvar_hud_frags_style & 64)
+				if (autocvar_master_high_score > 0)
+				{
+					flashermhc = 1;
+					flasher2mhc = 1;
+					if (flashmhc < time) // periodic flash mhc title - like in the arcades
+					{
+						flashmhc =  time + 210 + random() * 20;
+						if (random() < 0.1) flashmhc =  time + 410 + random() * 40;
+					}
+					if (flashmhc > (time + 200) && flashmhc < (time + 210)) flashermhc =  flasher; // 10 secs flash
+					if (flashmhc > (time + 180) && flashmhc < (time + 196)) flasher2mhc = flashhl; // 16 secs flash
+
+					f = autocvar_master_high_score;
+					while (f > 999)
+					{
+						f = floor(f / 10);
+						v_x = v_x - 7;
+					}
+					Sbar_DrawString(v + '0 -12 0', "Master high score", ALPHA_FULL * flashermhc, '7 7 0','1 0.5 1.0'); // note: title aligns with score value
+					v_y = v_y - 10;
+					DrawAmmo('1 0.5 1.0', v, autocvar_master_high_score, ALPHA_FULL * flasher2mhc);
+					v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
+					Sbar_DrawString(v + '28 -12 0', autocvar_master_high_nick, ALPHA_FULL * flasher2mhc, '7 7 0','1 0.5 1.0');
+					v_y = v_y - 10;
+				}
+				
 			}
 
 // in single player & coop - display monsters killed & secrets found
@@ -1720,6 +1791,7 @@ var float autocvar_hud_frags_negative = 0;
 				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if (mons > 0)
 				{
+					Sbar_DrawString(v + '28 -12 0', "monsters of ", ALPHA_FULL, '7 7 0',cl1);
 					f = mons;
 					while (f > 999)
 					{
@@ -1727,7 +1799,7 @@ var float autocvar_hud_frags_negative = 0;
 						v_x = v_x - 7;
 					}
 					DrawAmmo('1 0.1 0.1', v, mons, ALPHA_FULL);
-					Sbar_DrawString(v + '28 -12 0', "monsters of ", ALPHA_FULL, '7 7 0',cl1);
+					v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 					f = tmon;
 					if (f < 10) v_x = v_x - 7;
 					if (f > 99) v_x = v_x + 7;

@@ -2154,8 +2154,18 @@ bprint ("\n");
 				if (attacker.frags > high_score)
 				{
 					high_score = attacker.frags; // secretly for bot morph decision making
-					if (high_score > cvar("master_high_score"))
-						cvar_set("master_high_score", ftos(high_score));
+					high_score_nn = attacker.netname;
+					
+					if (high_score > autocvar_master_high_score)
+					{
+						localcmd("seta master_high_score \"");
+						localcmd(ftos(high_score));
+						localcmd("\"\n");
+//						cvar_set("master_high_score", ftos(high_score));
+						localcmd("seta master_high_nick \"");
+						localcmd(high_score_nn);
+						localcmd("\"\n");
+					}
 				}
 
 				if (attacker.class_select == "class_player")

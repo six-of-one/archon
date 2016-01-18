@@ -161,6 +161,8 @@ void() CheckWaterLevels =
 #ifdef warning
 					if (e.inwater != CONTENT_LAVA && pc == CONTENT_LAVA)
 					if (!e.revotemsg)
+					if (e.netname != "Spawn") // can live there
+					if (e.netname != "Bomb") // can live there
 					if (WARNING & 128)
 					{
 						bprint("*** warning: in lava - ");
@@ -214,21 +216,6 @@ void() CheckWaterLevels =
 // note: melt items in lava goes here - non dyn / runes have to be reset after melt
 //				tomb can be melted
 
-/*
- moved below
-					else if (e.map  == "rune" && e.classname == "item_sigil")
-					{
-						if (RUNES)
-						if (e.think != fade_relocate) // not already moving
-						{
-							e.think = ip_checkForMovement; // note - if for any reason rune isnt in checkfor, this code puts it there
-							if ( (e.nextthink > time + 6) || (e.nextthink <= 0) )
-								e.nextthink = time + random() * 4;
-							e.hook = TRUE;
-							if (e.solid == SOLID_NOT) e.solid = SOLID_TRIGGER; // 9.27.12 - make sure think fn() fires relocate
-						}
-					}
-*/
 				}
 				if (pc == CONTENT_SLIME)
 				{
@@ -311,16 +298,6 @@ void() CheckWaterLevels =
 				if (e.origin_z > noway_above) e.revotemsg = 1;
 #endifdef
 
-	/*
-				if (now)
-				if (e.think != fade_relocate) // not already moving
-				{
-					e.think = ip_checkForMovement;
-					e.nextthink = time + random() * 4;
-					e.hook = TRUE;
-					if (e.solid == SOLID_NOT) e.solid = SOLID_TRIGGER; // 9.27.12 - make sure think fn() fires relocate
-				}
-	*/
 
 	// fixed lost nextthink
 				if (!e.nextthink) // was ending up 0, consider < 2 test or so, need more qualifier for that
