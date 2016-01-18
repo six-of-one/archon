@@ -284,7 +284,19 @@ void() x_pwr_touch =
 
 	if (self.netname == "Re-breather")
 	{
-		
+		other.rad_time = 1;
+		if (other.wetsuit_finished < time)
+			other.wetsuit_finished = time + t;
+		else
+			other.wetsuit_finished = other.wetsuit_finished + t;
+	}
+
+	if (self.netname == "Silencer")
+	{
+		if (other.silencer_finished < time)
+			other.silencer_finished = time + t;
+		else
+			other.silencer_finished = other.silencer_finished + t;
 	}
 	
 };

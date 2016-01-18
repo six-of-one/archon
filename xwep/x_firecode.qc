@@ -151,8 +151,14 @@ void() d_weapon_touch =
 		if (e.mdl != self.vwepmdl) ign = TRUE; // not the same vwep - load a vwep
 	}
 
-	if (!e || ign || new == IT_SHOTGUN) // TESTING - shotgun
+	if (!e || ign || new == IT_SHOTGUN) // || new == IT_AXE) // TESTING - axe, shotgun --- melee pickup fails
 	{
+		if (e) // replacing the basics - remove vw ent
+		{
+			remove(e);
+			e = world;
+			vw_chain(other);
+		}
 		e = vload(other, new);
 		e.eweapon = e;
 		e._attack = self._attack;
@@ -1639,8 +1645,8 @@ bprint(", for dmg = ");
 bprint(ftos(f));
 bprint(".\n");
 
-fts.dmg_take = fts.dmg_take + f;
-bdm = bdm + f;
+//fts.dmg_take = fts.dmg_take + f;
+//bdm = bdm + f;
 
 
 
@@ -1797,8 +1803,8 @@ bprint(", for dmg = ");
 bprint(ftos(f));
 bprint(".\n");
 
-fts.dmg_take = fts.dmg_take + f;
-bdm = bdm + f;
+//fts.dmg_take = fts.dmg_take + f;
+//bdm = bdm + f;
 
 
 
@@ -1824,7 +1830,17 @@ bprint(ftos(40 - tr));
 
 	}
 
-
+// fake it for fire rate stats
+if (self.flags == Q2_BFG)
+{
+fts.dmg_take = fts.dmg_take + 40 * 200;
+bdm = bdm + 40 * 200;
+}
+else 	if (self.flags == DOOM_BFG)
+{
+fts.dmg_take = fts.dmg_take + 40 * 128;
+bdm = bdm + 40 * 128;
+}
 
 bprint(", beams dmg = ");
 bprint(ftos(bdm));
@@ -1854,12 +1870,14 @@ NOTES:
 void() player_bfg1   = [$lightfatt1, player_bfg1]
 {
 	local entity e;
-	local float f;
+	local float f, v;
 
 	if (self.weaponframe == 0)
 	{
 		self.tomb_time = time + self.eweapon.endtime;
-		sound (self, CHAN_ITEM, self.eweapon.noise3, 1, ATTN_NORM);
+		v = 1;
+		if (self.silencer_finished > time) v = Q2_SILENCE;
+		sound (self, CHAN_ITEM, self.eweapon.noise3, v, ATTN_NORM);
 	}
 
 	self.weaponframe = self.weaponframe + 1;

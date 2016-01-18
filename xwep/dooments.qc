@@ -76,6 +76,7 @@ void() doom_precache =
 	precache_model ("progs/d_cardkey.mdl");
 	precache_model ("progs/d_armor.mdl");
 	precache_model ("progs/d_map.mdl");
+	precache_model ("progs/d_vis.mdl");
 // ammo
 	precache_model ("progs/d_4shell.mdl");
 	precache_model ("progs/d_ammobox.mdl");
@@ -236,8 +237,8 @@ void() d_item_healthstimpak =
 {
 	q100_item_health();
 	setmodel(self, "progs/heal_medkit.mdl");
-	self.frame = 4;
-	self.skin = 4;
+	self.frame = 3;
+	self.skin = 3;
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Health Stimpak";
@@ -460,6 +461,22 @@ void() d_barrel =
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
+/*
+doom wep inventory slots
+
+slot		weapon
+1				pistol *
+2				shotgun *
+3				boom stick
+4				chainsaw
+5				chain gun
+6				plasma gun
+7				rocket launcher
+8				bfg
+
+* = touch fn will replace other slot 1 & 2 weps with these
+
+*/
 void() d_weapon_bfg =
 {
 	q100_weapon_lightning();
@@ -572,7 +589,7 @@ void() d_weapon_pistol =
 
 // stats
 	self.currentammo = 25;
-	self.items = IT_NAILGUN; // IT_AXE; // testing
+	self.items = IT_AXE;
 	self.lip = AMMO_BULLETS;
 	self.volume = D_MAX_BULLETS;
 	self.attack_finished = 0.4;
@@ -606,7 +623,7 @@ void() d_weapon_saw =
 
 // stats
 	self.currentammo = 0;
-	self.items = IT_NAILGUN; // IT_AXE; // testing
+	self.items = IT_NAILGUN;
 	self.lip = AMMO_NONE;
 	self.attack_finished = 0.12;
 	self.dmg = DOOM_ML_DMG;
@@ -703,7 +720,7 @@ void() d_weapon_plasma =
 	self._fr_attack = player_plasma1;
 
 	self.currentammo = D_DEF_PLASMAG;
-	self.items = IT_LIGHTNING;
+	self.items = IT_GRENADE_LAUNCHER;
 	self.lip = AMMO_CELLS;
 	self.volume = D_MAX_CELLS;
 	self.attack_finished = 0.083;
@@ -755,6 +772,20 @@ void() d_item_automap =
 	self.touch = self.pk_touch = SUB_Null;
 
 	setmodel(self, "progs/d_map.mdl");
+	self.noise = "doom/dsitemup.wav";
+	self.noise4 = "doom/dsitembk.wav";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "doom_item";
+};
+
+void() d_item_nightvis =
+{
+	q100_weapon_shotgun(); // FIX: placeholder only
+	self.netname = "Night Vision Goggles";
+
+	self.touch = self.pk_touch = SUB_Null;
+
+	setmodel(self, "progs/d_vis.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -968,7 +999,20 @@ void() d_key_yellowcard =
 /*
 NOTE: this code assumes the translation of wolf map entites to quake style definitions in the map file by some device or code...
 
-NOTE: there is no entites file for wolf in the style of QUAKED
+wolf wep inventory slots
+
+slot		weapon
+1				knife *
+2				pistol *
+3				--------
+4				machine gun
+5				chain gun
+6				flame thrower
+7				mortar
+8				dual chain gun
+
+* = touch fn will replace other slot 1 & 2 weps with these
+
 */
 
 void() w_weapon_machinegun =
@@ -1126,7 +1170,7 @@ void() w_weapon_pistol =
 
 // stats
 	self.currentammo = 6;
-	self.items = IT_NAILGUN; // IT_AXE; // testing
+	self.items = IT_SHOTGUN;
 	self.lip = AMMO_BULLETS;
 	self.volume = W_MAX_BULLETS;
 	self.attack_finished = 0.465; // 2.15 per
@@ -1161,7 +1205,7 @@ void() w_weapon_knife =
 
 // stats
 	self.currentammo = 0;
-	self.items = IT_NAILGUN; // IT_AXE; // testing
+	self.items = IT_AXE;
 	self.lip = AMMO_NONE;
 	self.attack_finished = 0.465; // 2.15 per
 	self.dmg = 20;
@@ -1220,6 +1264,8 @@ void() w_ammo_gas =
 	self.skin = 4;
 //	self.map = " lbs gas cylinder pressure";
 //	self.volume = MAX_GAS;
+	self.noise = "wolf/pickup_am.wav";
+	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 };

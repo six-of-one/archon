@@ -142,6 +142,7 @@ void() q2_precache =
 	precache_sound ("q2_snd/respawn1.wav");
 	precache_sound ("q2_snd/damage.wav");
 	precache_sound ("q2_snd/protect.wav");
+	precache_sound ("q2_snd/airout.wav");
 
 // heal
 	precache_sound ("q2_snd/s_health.wav");
@@ -298,6 +299,25 @@ void() q2_ammo_grenades =
 	if (self.class_select == "") self.class_select = "q2_item";
 };
 */
+
+/*
+q2 wep inventory slots
+
+slot		weapon
+1				blaster *
+2				shotgun *
+3				doublebarrel
+4				machine gun
+5				chain gun
+6				grenade launcher / hand grenades / railgun #
+7				rocket launcher
+8				bfg / hyperblaster #
+
+* = touch fn will replace other slot 1 & 2 weps with these
+# = items are currently exclusive in touch - you can only get one
+
+*/
+
 void() q2_ammo_grenades =
 {
 	item_rockets();
@@ -387,9 +407,10 @@ void () q2_weapon_railgun =
 	self._fr_attack = player_rocket1;
 
 	self.currentammo = Q2_DEF_SLUGS;
-	self.items = IT_LIGHTNING;
+	self.items = IT_GRENADE_LAUNCHER;
 	self.lip = AMMO_SLUGS;
 	self.volume = Q2_MAX_SLUGS;
+	self.aflag = IGN_INV; // swap with gl
 	self.attack_finished = 1.5;
 	self.dmg = 100;
 	self.dmg_save = 1;
@@ -648,7 +669,7 @@ void () q2_weapon_blaster =
 	self._fr_attack = player_pistol1; // FIX - special
 
 	self.currentammo = 0;
-	self.items = IT_NAILGUN; // IT_AXE; // testing
+	self.items = IT_AXE;
 	self.lip = AMMO_NONE;
 	self.attack_finished = 0.5;
 	self.dmg = 15;
@@ -837,9 +858,10 @@ void() item_power_screen =
 
 void() item_silencer =
 {
-	q100_weapon_shotgun();
+	item_spikes();
 	self.netname = "Silencer";
 
+	self.touch = x_pwr_touch;
 	self.wait = Q2_POWER_WAIT;
 	self.dmgtime = Q2_POWER_TIME;
 
@@ -881,7 +903,9 @@ void() q2_item_enviro =
 
 	setmodel (self, "progs/q2_envirosuit.mdl");
 	self.noise = "q2_snd/pkup.wav";
+	self.noise3 = "q2_snd/airout.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
+//	self.message = "Air supply in Enviro suit expiring\n";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -969,12 +993,16 @@ void() item_breather =
 	item_spikes();
 	self.netname = "Re-breather";
 
+	self.touch = x_pwr_touch;
+	self.delay = POW_TIME;
 	self.wait = Q2_POWER_WAIT;
 	self.dmgtime = Q2_POWER_TIME;
 
 	setmodel(self, "progs/q2_breather.mdl");
 	self.noise = "q2_snd/pkup.wav";
+	self.noise3 = "q2_snd/airout.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
+//	self.message = "Air supply in Re-breather expiring\n";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };

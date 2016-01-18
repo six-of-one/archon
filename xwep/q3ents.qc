@@ -231,7 +231,24 @@ void() q3_suspend =
 	self.movetype = MOVETYPE_NONE;
 };
 
-// some weapons / items are translated into equivs
+/*
+q3 wep inventory slots
+
+slot		weapon
+1				gauntlet / grapple (when done) *
+2				shotgun *
+3				machine gun
+4				plasma gun
+5				railgun
+6				grenade launcher
+7				rocket launcher
+8				bfg / lightning #
+
+* = touch fn will replace other slot 1 & 2 weps with these
+# = items are currently exclusive in touch - you can only get one
+
+*/
+
 
 /*QUAKED weapon_bfg (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -249,6 +266,7 @@ void () q3_weapon_bfg =
 	self.currentammo = 200; // 20 - adj =10 cells per shot -- using cell ammo for now
 	self.lip = AMMO_BFG; // cells
 	self.volume = Q3_MAX_CELLS;
+	self.aflag = IGN_INV; // swap with lg
 	self.attack_finished = 0.2;
 	self.dmg = 100;
 	self.dodmg = 120;
@@ -324,7 +342,7 @@ void() weapon_plasmagun =
 void() q3_mg_base =
 {
 // stats
-	self.items = IT_SUPER_NAILGUN;
+	self.items = IT_SUPER_SHOTGUN;
 	self.currentammo = 100;
 	self.lip = AMMO_BULLETS;
 	self.volume = Q3_MAX_BULLETS;
@@ -381,7 +399,7 @@ void() q3_weapon_shotgun =
 	self._fr_attack = player_shot1;
 
 	self.currentammo = Q3_SHOT_AMMO;
-	self.items = IT_SUPER_SHOTGUN;
+	self.items = IT_SHOTGUN;
 	self.lip = AMMO_SHELLS;
 	self.volume = Q3_MAX_SHELLS;
 	self.attack_finished = 1;
@@ -522,7 +540,7 @@ void () weapon_gauntlet =
 //	self._fr_attack = player_shot1;
 
 	self.currentammo = 0;
-	self.items = IT_NAILGUN; // IT_AXE; // test
+	self.items = IT_AXE;
 	self.lip = 0;
 	self.attack_finished = 0.4;
 	self.dmg = 50;
@@ -555,7 +573,7 @@ void () weapon_grapplinghook =
 	self._fr_attack = player_pistol1; // FIX - special
 
 	self.currentammo = 0;
-	self.items = IT_NAILGUN; // IT_AXE; // test
+	self.items = IT_AXE; // TDO: use pk grapple slot
 	self.lip = 0;
 	self.attack_finished = 0.5;
 	self.dmg = 5;
@@ -630,7 +648,7 @@ void () q3_weapon_railgun =
 	self._fr_attack = player_rocket1;
 
 	self.currentammo = Q3_SLUG_AMMO;
-	self.items = IT_LIGHTNING;
+	self.items = IT_SUPER_NAILGUN;
 	self.lip = AMMO_SLUGS;
 	self.volume = Q3_MAX_SLUGS;
 	self.attack_finished = 1.5;
@@ -1207,12 +1225,20 @@ void () item_quad =
 	}
 };
 
+// code for q3 arts that use rune effects
+
+void() q3_pwr_touch =
+{
+	
+};
+
 void() item_regen =
 {
 	if (self.class_select == "") self.class_select = "q3_item";
 //	self.classname = "item_sigil";
 	self.spawnflags = RUNE_FLG_RG; //rune_bit_code(rune_bit_code(0, RUNE_FLG_RG),0);
 	item_sigil();
+	self.touch = q3_pwr_touch;
 	self.netname = "Regeneration";
 
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
@@ -1243,7 +1269,7 @@ void() item_invis =
 	self.noise4 = "q3_snd/poweruprespawn.wav";
 	self.frame = q3_inv_fsk;
 	self.skin = q3_inv_fsk;
-	self.alpha = 0.6;
+	self.alpha = 0.5;
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -1260,8 +1286,10 @@ void() q3_item_enviro =
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	setmodel(self, "progs/q3_art.mdl");
-	self.noise = "q3_snd/airout.wav";
+	self.noise = "q3_snd/airout.wav"; // CHK: this doesnt make sense
+	self.noise3 = "q3_snd/airout.wav";
 	self.noise4 = "q3_snd/poweruprespawn.wav";
+//	self.message = "Battle Suit expiring\n"; //"Environmental protection expiring\n";
 	self.frame = q3_env_fsk;
 	self.skin = q3_env_fsk;
 	self.alpha = 0.9;
