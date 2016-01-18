@@ -6,7 +6,8 @@
 
 void() rail_precache =
 {
-	precache_model ("progs/pt_beam.mdl");
+	precache_model ("progs/beambit.spr");
+//	precache_model ("progs/pt_beam.mdl");
 	precache_model ("progs/rubble_m.mdl");
 	precache_model ("progs/smoke.mdl");
 };
@@ -104,44 +105,112 @@ void(vector org, vector vel, float livetm, float mtype) SpawnExitWound =
 //========================================================
 
 
-void() railbeam_think =
+void() railsnd_think =
 {
-	setmodel(self, "");
-	self.owner.movetype = self.owner.lefty;
-	self.nextthink = time + 1.2;
-	if (self.cnt)
-		{
-		self.cnt = 0;
-		return;
-		}
-	self.think = SUB_Remove;
-	self = self.owner;
-	self.chaosweptime = 0;
-//	ominous_hum("railgun/rail_relo.wav", 1.2);
-	self = self.enemy;
+	self.owner.chaosweptime = 0;
+	remove(self);
 };
 
 void() X_FireRailgun =
 {
-	local	vector org, destination;
-	local	float	i, j, k, damage;
+	local	vector org, destination, v1, v2, vp;
+	local	float	i, j, k, m, vl, damage, aj,ak, af, al, cn;
 	local	entity startent, impactent;
+	local entity e;
 
-//	self.currentammo = wep_ref(WMOD_ADDA,self.weapon & 255,0 - self.eweapon.dmg_save,self,self.eweapon.weaponframe);
+//	self.lefty = self.movetype; // temp str
+//	move_stop(self, ""); // mostly for beam appearances
+	ominous_hum(EWEAP.noise3, 0);
+	chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, EWEAP.endtime, railsnd_think, SUB_Null, self, world);
 
-	self.lefty = self.movetype; // temp str
-	move_stop(self, ""); // mostly for beam appearances
-	self.chaosweptime = 0;
-	ominous_hum(self.eweapon.noise3, 1.5);
 	self.effects = self.effects | EF_MUZZLEFLASH;
 	self.punchangle_x = -4;
 
 	org = self.origin + v_up * VWZ_RAILGUN + v_right * VWY_RAILGUN + v_forward * VWX_RAILGUN;
 
-	traceline (org, org + v_forward*2048, TRUE, self); //600
+	traceline (org, org + v_forward*2048, TRUE, self);
 
-	fire_missile(1, MOVETYPE_FLY, FL_MSL | FL_USEAMMO | FL_2PUNCH , 0, org, ' 0 0 0', "beam", "progs/pt_beam.mdl", "", SUB_Nop, 0.3, railbeam_think, SUB_Nop);
+	if (EWEAP)
+	if (EWEAP.lip == AMMO_SLUGS)
+		self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(EWEAP.dmg_save, self, ""); // use ammo
 
+
+	makevectors(self.v_angle);
+	v1 = org;
+//	i = vlen(v1 - trace_endpos);
+//	i = 0;
+	i = pointcontents(v1);
+	vl = vlen(trace_endpos - org);
+	af = 1;
+	j =1;
+	cn = k = 0;
+	aj = -0.1;
+	ak = 0.1;
+//	while (i < 2000)//(i > 100) // (i != CONTENT_SOLID)
+//	while (i > 100)
+//	while (i < 500)
+	while (i != CONTENT_SOLID)
+	{
+		if (af < 10) af = af + 0.2;
+		v2 = (v_up * j + v_right * k);
+		vp = normalize(v2) * af;
+//		particle (v1 + vp, vp, 208, 1);
+		if (random() < 0.2) particle (v1, v_forward * 30, 250, 2);
+
+		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, v1 + vp, ' 0 0 0', ' 0 0 0', ' 0 0 0', vp + self.velocity, "", "progs/beambit.spr", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
+		if (e)
+		{
+			cn = cn + 1;
+			e.alpha = 0.4;
+		}
+/*
+bprint("pos v_u = ");
+bprint(vtos(v_up * j));
+bprint(" pos v_r = ");
+bprint(vtos(v_right * k));
+bprint(".\n");
+*/
+
+		j = j + aj;
+		k = k + ak;
+
+		if (fabs(j) < 0.02 || fabs(k) < 0.02)
+		{
+			if (aj == -0.1 && ak == 0.1) // took k to 1, j to 0
+			{
+				ak = -0.1;
+			}
+			else if (aj == -0.1 && ak == -0.1) // took k to 0, j to -1
+			{
+				aj = 0.1;
+			}
+			else if (aj == 0.1 && ak == -0.1) // took k to -1, j to 0 
+			{
+				ak = 0.1;
+			}
+			else if (aj == 0.1 && ak == 0.1) // took k to 0, j to  1
+			{
+				aj = -0.1;
+			}
+		}
+		i = 2 + (1 / af) * 0.5;
+		if (vl > 600) i = i + (vl / 600);
+		if (cn > 200) i = i + (cn / 100);
+		if (cn > 300) i = i + (cn / 150);
+		if (cn > 400) i = i + (cn / 100);
+//		if (af > 8) i = 2;
+		v1 = v1 + v_forward * i;
+//		i = i + 1;
+//		i = vlen(v1 - trace_endpos);
+		i = pointcontents(v1);
+	}
+/*
+bprint(" cn = ");
+bprint(ftos(cn));
+bprint(" len = ");
+bprint(ftos(vlen(trace_endpos - org)));
+bprint(".\n");
+*/
 	newmis.skin = 1;
 	newmis.angles_z = random() * 360;
 	newmis.velocity = ' 0 0 0';
@@ -178,6 +247,7 @@ void() X_FireRailgun =
 		else
 		{
 			SpawnSmoke(trace_endpos, ' 0 0 20');
+/* TDO FIX - restore later
 			k = 2 + random() * 3;
 			while(k > 0)
 			{
@@ -185,6 +255,7 @@ void() X_FireRailgun =
 //				SpawnRubble(trace_endpos, v_forward * -100 + randdir()*50);
 				k = k - 1;
 			}
+*/
 		}
 
 		if(!j || vlen(org - destination) < 5)

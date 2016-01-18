@@ -4,6 +4,169 @@
 	+---------------------------------------+
 */
 
+// x weapon touch fn
+
+void() d_weapon_touch =
+{
+	local	float best, new, oldw, camc;
+	local	entity e;
+	local float leave;
+
+	if (other.classname != "player") // *bot
+	{
+		grap_checkIfGrap();
+		return ;
+	}
+
+// if the player was using his best weapon, change up to the new one if better
+	e = self;
+	self = other;
+	best = W_BestWeapon ();
+	self = e;
+
+	if (deathmatch == 2 || deathmatch == 3 || coop)
+		leave = 1;
+	else
+		leave = 0;
+
+// IDEA - always leave for another rl type
+	if (leave && (other.items & self.items))	return ;
+	new = self.items;
+
+	if (self.classname == "q2_weapon_rocketlauncher" || self.classname == "q3_weapon_rocketlauncher" ||
+		self.classname == "q3_weapon_grenadelauncher" || self.classname == "q2_weapon_grenadelauncher" ||
+		self.classname == "weapon_grenadelauncher" || self.classname == "weapon_rocketlauncher" ||
+		self.classname == "d_weapon_rocketlauncher" || self.classname == "w_weapon_mortar")
+	{
+	other.ammo_rockets = other.ammo_rockets + self.currentammo; // TDO: ammo type fn
+	camc = other.ammo_rockets;
+	}
+	else if (self.classname == "d_weapon_shotgun" || self.classname == "d_weapon_supershotgun" ||
+		self.classname == "q2_weapon_shotgun" || self.classname == "q2_weapon_supershotgun" ||
+		self.classname == "weapon_shotgun" || self.classname == "weapon_supershotgun" ||
+		self.classname == "q3_weapon_shotgun")
+	{
+	other.ammo_shells = other.ammo_shells + self.currentammo;
+	camc = other.ammo_shells;
+	}
+	else if (self.classname == "d_weapon_pistol" || self.classname == "d_weapon_chaingun"
+					|| self.classname == "q3_weapon_machinegun"
+					|| self.classname == "w_weapon_machinegun"
+					|| self.classname == "w_weapon_chaingun"
+					|| self.classname == "w_weapon_pistol")
+	{
+	other.ammo_bullet = other.ammo_bullet + self.currentammo;
+	camc = other.ammo_bullet;
+	}
+	else if (self.classname == "d_weapon_plasma" ||
+		self.classname == "q3_weapon_lightning" || self.classname == "weapon_lightning" ||
+		self.classname == "q3_weapon_bfg" || self.classname == "weapon_hyperblaster" ||
+		self.classname == "weapon_plasmagun")
+	{
+	other.ammo_cells = other.ammo_cells + self.currentammo;
+	camc = other.ammo_cells;
+	}
+	else if (self.classname == "q2_weapon_railgun" ||
+		self.classname == "q3_weapon_railgun" ||
+		self.classname == "weapon_railgun")
+	{
+	other.ammo_slug = other.ammo_slug + self.currentammo;
+	camc = other.ammo_slug;
+	}
+	else
+	{
+		if (PK_100 && PK_100_OBJERR) objerror("d_weapon_touch: unknown classname");
+		else
+		{
+			if (WARNING)
+			{
+			bprint("\n*** warning:\nd_weapon_touch: unknown classname (");
+			bprint(self.classname);
+			bprint(") - ignoring\n\n");
+			}
+			self.touch = SUB_Null;
+			return;
+		}
+	}
+
+	if (!vchk(new, 0, other.vwepent) || new == IT_SHOTGUN)
+	{
+		e = vload(other, new);
+		e.eweapon = e;
+		e._attack = self._attack;
+		e._fr_attack = self._fr_attack;
+//		e.touch = self.touch;
+
+		e.weapon = e.items = self.items;
+		e.currentammo = self.currentammo;
+		e.lip = self.lip;
+		e.attack_finished = self.attack_finished;
+		e.dmg = self.dmg;
+		e.dodmg = self.dodmg;
+		e.dmg_save = self.dmg_save;
+		e.dmg_take = self.dmg_take;
+		e.punchangle = self.punchangle;
+		e.aflag = camc;
+
+		e.netname = self.netname;
+//		e.mdl = self.mdl; - invisible
+		setmodel (e, self.vwepmdl);
+		e.mdl = e.model;
+		e.weaponmodel = self.weaponmodel;
+		e.chaosweptime = self.chaosweptime;
+		e.endtime = self.endtime;
+		e.noise = self.noise;
+		e.noise2 = self.noise2;
+		e.noise3 = self.noise3;
+		e.noise4 = self.noise4;
+		e.target = self.target; // missile strike snd
+		e.target1 = self.target1; // missile models
+	}
+
+	sprint (other,"You got the ");
+	sprint (other,self.netname);
+	sprint (other,"\n");
+// weapon touch sound
+	if (self.noise != "")
+		sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+	else
+		sound (other, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
+	stuffcmd (other, "bf\n");
+
+	bound_other_ammo ();
+
+	oldw = other.items;
+	other.items = other.items | new;
+
+	e = self;
+	self = other;
+
+	if (!Q_100)
+		PK_Deathmatch_Weapon (new, 0); // *pk - new wep switch rule for higher risk weps
+	else
+	if (!deathmatch)
+		self.weapon = new;
+	else
+		Deathmatch_Weapon (oldw, new);
+
+	W_SetCurrentAmmo ();
+
+	self = e;
+
+	if (leave)
+		return;
+
+// remove it in single player, or setup for respawning in deathmatch
+	self.model = string_null;
+	self.solid = SOLID_NOT;
+	if (deathmatch == 1)
+		self.nextthink = time + RSP_TIME;
+	self.think = SUB_regen;
+
+	activator = other;
+	SUB_UseTargets();				// fire all targets / killtargets
+};
+
 // fn(fire_missle) - generic missile (flying projectile object weapon - FPOW) code, because so much stuff hijacked W_FireRocket
 
 // velmul - velocity multiplier
@@ -585,7 +748,7 @@ bprint(EWEAP.netname);
 		dm = EWEAP.dmg;
 		if (dm == DOOM_SHOT_DMG) dm = 5 * ceil(random() * 8);
 		snd = EWEAP.noise3;
-		pls = "progs/d_plasma_sht.mdl";
+		if (EWEAP.target1 != "") pls = EWEAP.target1;
 		if (EWEAP.target != "") expl = EWEAP.target;
 	}
 	if (snd == "") snd = "doom/dsplasma.wav"; // FIX - different generic, chaos will come here
@@ -668,6 +831,7 @@ void() player_plasma1b   = [$lightfatt2, player_plasma1]
 		self.nextthink = time + 0.2;
 
 };	
+
 void() player_plasma1   = [$lightfatt1, player_plasma1b] 
 {
 	if (!self.button0)
@@ -688,7 +852,7 @@ void() player_plasma1   = [$lightfatt1, player_plasma1b]
 		self.weaponframe = 1;
 
 	if (EWEAP)
-		self.nextthink = time + self.eweapon.attack_finished; // every other frame is fire frame
+		self.nextthink = time + EWEAP.attack_finished; // every other frame is fire frame
 	else
 		self.nextthink = time + 0.2;
 
@@ -697,6 +861,102 @@ void() player_plasma1   = [$lightfatt1, player_plasma1b]
 
 	EWEAP = world;
 };
+
+// q2 hyper gun
+
+void() hyper_fire_fr =
+{
+	if (!self.button0)
+	{
+		ominous_hum("q2_snd/hyprbd1a.wav", 1.02);
+		player_run();
+		return;
+	}
+	EWEAP = self.eweapon;
+
+	ominous_hum(EWEAP.noise3, self.chaosweptime);
+
+	self.effects = self.effects | EF_MUZZLEFLASH;
+
+	self.weaponframe = self.weaponframe + 1;
+	if (self.weaponframe >= 6)
+		self.weaponframe = 1;
+
+	if (EWEAP)
+		self.nextthink = time + EWEAP.attack_finished;
+	else
+		self.nextthink = time + 0.2;
+
+	SuperDamageSound();
+	
+	laser_sel = laser_sk = 3;
+	laser_fr = 4;
+	fire_laser1();
+	newmis.effects = EF_DIMLIGHT;
+	sound (self, CHAN_ITEM, "q2_snd/laser2.wav", TRUE, ATTN_NORM);
+
+	EWEAP = world;
+};
+
+void() hyper_inter =
+{
+	if (!self.button0)
+	{
+		ominous_hum("q2_snd/hyprbd1a.wav", 1.02);
+		player_run();
+		return;
+	}
+
+	ominous_hum(self.eweapon.noise3, self.chaosweptime);
+
+	self.weaponframe = self.weaponframe + 1;
+	if (self.weaponframe >= 6)
+		self.weaponframe = 1;
+
+	if (self.eweapon)
+		self.nextthink = time + self.eweapon.attack_finished;
+	else
+		self.nextthink = time + 0.2;
+};
+
+void() player_hyper4   = [$lightfatt1, player_hyper1b] 
+{
+	hyper_inter();
+};
+
+void() player_hyper3   = [$lightfatt4, player_hyper4] 
+{
+	hyper_fire_fr();
+};
+
+void() player_hyper2   = [$lightfatt3, player_hyper3] 
+{
+	hyper_inter();
+};
+
+void() player_hyper1b   = [$lightfatt2, player_hyper2] 
+{
+	hyper_fire_fr();
+};
+
+
+void() player_hyper1   = [$lightfatt1, player_hyper1b] 
+{
+	if (!self.button0)
+	{
+		player_run();
+		return;
+	}
+
+	self.weaponframe = self.weaponframe + 1;
+	if (self.weaponframe >= 6)
+		self.weaponframe = 1;
+
+	ominous_hum("q2_snd/hyprbu1a.wav", 0.373);
+	self.nextthink = time + 0.2;
+};
+
+
 
 // q3 bfg - easy
 
