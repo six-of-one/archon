@@ -468,14 +468,15 @@ Deathmatch weapon change rules for picking up a weapon
 .float		ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
 =============
 */
-void(float old, float new) Deathmatch_Weapon =
+//void(float old, float new) Deathmatch_Weapon =
+void(float new) Deathmatch_Weapon =
 {
-	local float or, nr;
+	local float nr;
 
 // change self.weapon if desired
-	or = RankForWeapon (self.weapon);
+//	or = RankForWeapon (self.weapon);
 	nr = RankForWeapon (new);
-	if (nr < or)
+	if (nr < RankForWeapon (self.weapon))
 		self.weapon = new;
 };
 
@@ -594,7 +595,7 @@ void () weapon_touch =
 	if (!deathmatch)
 		self.weapon = new;
 	else
-		Deathmatch_Weapon (old, new);
+		Deathmatch_Weapon (new);
 
 	W_SetCurrentAmmo ();
 
@@ -1514,7 +1515,7 @@ void () q100_BackpackTouch =
 	if (!deathmatch)
 		self.weapon = new;
 	else
-		Deathmatch_Weapon (old, new);
+		Deathmatch_Weapon (new);
 
 	W_SetCurrentAmmo ();
 };

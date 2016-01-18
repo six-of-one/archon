@@ -253,7 +253,8 @@ void()	player_enf_paind17	=[	$paind17,	player_enf_paind18] {};
 void()	player_enf_paind18	=[	$paind18,	player_enf_paind19] {};
 void()	player_enf_paind19	=[	$paind19,	player_stand1	] {};
 
-void(entity attacker, float damage)	player_enf_pain =
+//void(entity attacker, float damage)	player_enf_pain =
+void()	player_enf_pain =
 {
 	local float r;
 

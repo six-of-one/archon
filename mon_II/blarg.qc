@@ -81,7 +81,8 @@ void()  Blarg_JumpTouch =
 	self.nextthink = time;
 };
 
-void(entity attacker, float damage)  blarg_pain =
+//void(entity attacker, float damage)  blarg_pain =
+void()  blarg_pain =
 {
 	if (self.touch == Blarg_JumpTouch)
 		return;
@@ -295,7 +296,8 @@ float() BlargCheckAttack =
 };
 
 
-string(entity targ, entity attacker) blarg_killmsg =
+//string(entity targ, entity attacker) blarg_killmsg =
+string() blarg_killmsg =
 {
 	if (random() < 0.5 || !ENHANCED)
 		return " was ripped apart by a  ";

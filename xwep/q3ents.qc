@@ -421,7 +421,8 @@ string(entity targ, entity attacker) q3bfg_killmsg2 =
 };
 
 // rail
-string(entity targ, entity attacker) q3rail_killmsg =
+//string(entity targ, entity attacker) q3rail_killmsg =
+string() q3rail_killmsg =
 {
 //	if (targ == attacker) return "should have used a smaller gun.\n";
 		
@@ -431,7 +432,8 @@ string(entity targ, entity attacker) q3rail_killmsg =
 	return " was railed by ";
 };
 
-string(entity targ, entity attacker) q3rail_killmsg2 =
+//string(entity targ, entity attacker) q3rail_killmsg2 =
+string() q3rail_killmsg2 =
 {
 //	if (targ == attacker) return "";
 	return "\n";
@@ -506,7 +508,7 @@ string(entity targ, entity attacker) q3gren_killmsg2 =
 };
 
 // shotgun
-string(entity targ, entity attacker) q3sg_killmsg =
+string() q3sg_killmsg =
 {
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
@@ -516,14 +518,14 @@ string(entity targ, entity attacker) q3sg_killmsg =
 	return " was gunned down by ";
 };
 
-string(entity targ, entity attacker) q3sg_killmsg2 =
+string() q3sg_killmsg2 =
 {
 //	if (targ == attacker) return "";
 	return "\n";
 };
 
 // mg
-string(entity targ, entity attacker) q3mg_killmsg =
+string() q3mg_killmsg =
 {
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
@@ -533,14 +535,14 @@ string(entity targ, entity attacker) q3mg_killmsg =
 	return " was machinegunned by ";
 };
 
-string(entity targ, entity attacker) q3mg_killmsg2 =
+string() q3mg_killmsg2 =
 {
 //	if (targ == attacker) return "";
 	return "\n";
 };
 
 // melee
-string(entity targ, entity attacker) q3g_killmsg =
+string() q3g_killmsg =
 {
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
@@ -550,7 +552,7 @@ string(entity targ, entity attacker) q3g_killmsg =
 	return " was pummeled by ";
 };
 
-string(entity targ, entity attacker) q3g_killmsg2 =
+string() q3g_killmsg2 =
 {
 //	if (targ == attacker) return "";
 	return "\n";

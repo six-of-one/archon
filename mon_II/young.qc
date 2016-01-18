@@ -337,7 +337,8 @@ void()	young_lgpain2	=[	$lgrun1,		young_lgpain3	] {young_slimedamage();};
 void()	young_lgpain3	=[	$lgrun1,		young_lgpain4	] {young_slimedamage();};
 void()	young_lgpain4	=[	$lgrun1,		young_lgrun1	] {young_slimedamage();};
 
-void(entity attacker, float damage)	young_pain =
+//void(entity attacker, float damage)	young_pain =
+void()	young_pain =
 {
 	if (self.aflag == 2) young_mdpain1 ();
 	if (self.aflag == 3) young_lgpain1 ();
@@ -431,12 +432,13 @@ void() young_lg =
 };
 
 
-string(entity targ, entity attacker) young_killmsg =
+//string(entity targ, entity attacker) young_killmsg =
+string() young_killmsg =
 {
 		return " was overrun by ";
 };
 
-string(entity targ, entity attacker) young_killmsg2 =
+string() young_killmsg2 =
 {
 	return ".\n";
 };

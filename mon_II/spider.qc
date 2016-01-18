@@ -305,7 +305,8 @@ void(float offset) SpiderMissile =
 };
 
 
-string(entity targ, entity attacker) spider_killmsg =
+//string(entity targ, entity attacker) spider_killmsg =
+string() spider_killmsg =
 {
 	if (random() < 0.5 || !ENHANCED)
 		return " was dessicated by a ";

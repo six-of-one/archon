@@ -279,12 +279,14 @@ void() bossman_mad =
 };
 
 
-string(entity targ, entity attacker) bossman_killmsg =
+//string(entity targ, entity attacker) bossman_killmsg =
+string() bossman_killmsg =
 {
 		return " got nothing but \"blah blah blah\" from ";
 };
 
-string(entity targ, entity attacker) bossman_killmsg2 =
+//string(entity targ, entity attacker) bossman_killmsg2 =
+string() bossman_killmsg2 =
 {
 	return ".\n";
 };

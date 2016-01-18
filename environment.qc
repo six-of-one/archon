@@ -511,12 +511,13 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 	self = sv;
 };
 
-
+/*
 vector(vector src, float lbper, vector lbvec, float lcnt) lava_shot =
 {
 	return(v0);
 	// IMP: finish - see same cmod code
 };
+*/
 
 void () fire_fly_touch =
 {
@@ -1029,11 +1030,12 @@ void() func_chaos_teleport =
 
 
 // fn(item_throwGib) - for stuff that needs to toss gibs
-
+/*
 void(string gibname, float dm, string cls, float tm, float fr) item_throwGib =
 {
 	
 };
+*/
 
 // goes back in volcano
 

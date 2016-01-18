@@ -516,7 +516,7 @@ void() grap_touch =
 			spawn_touchblood (9);
 			T_Damage(other, self, grapOwner, 9);
 
-			// chance to knock a rune loose
+			// chance to knock a rune loose - Cataboligne
 			rune_pull(other, HARP_PULL);
 			if (newmis)
 			{

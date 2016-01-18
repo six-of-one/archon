@@ -1445,7 +1445,7 @@ float FFW_LIMIT;						// time limit on how long players get frags from fire & fo
 float NOCIDE;							// dont cound suicide frags for idiom of var
 float NOENVCIDE;
 float NOPKCIDE;
-float(entity e) frag_minus_cide;
+float() frag_minus_cide;
 
 // cam vision field settings
 float DCAM_FOV					= 130; // dead cam crow vision
@@ -1816,7 +1816,7 @@ void() grap_releaseHarpoon;
 void() SUB_regen;
 void(entity e) AddToSplashBig;
 float(entity e) frag_plus;
-float(entity e) frag_minus;
+float() frag_minus;
 
 // pk_prethink
 void() WaterMove;

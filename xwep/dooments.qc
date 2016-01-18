@@ -651,7 +651,7 @@ string(entity targ, entity attacker) q3plasma_killmsg;
 string(entity targ, entity attacker) q3plasma_killmsg2;
 
 // super shotgun
-string(entity targ, entity attacker) dssg_killmsg =
+string() dssg_killmsg =
 {
 //	if (ENHANCED)
 //		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
@@ -659,11 +659,11 @@ string(entity targ, entity attacker) dssg_killmsg =
 	return " was blown away by ";
 };
 
-string(entity targ, entity attacker) dssg_killmsg2 =
+string() dssg_killmsg2 =
 {
 	return "'s boomstick\n";
 };
-
+/*
 string(entity targ, entity attacker) q2sg_killmsg;
 string(entity targ, entity attacker) q2sg_killmsg2;
 
@@ -673,8 +673,18 @@ string(entity targ, entity attacker) q2cg_killmsg2;
 string(entity targ, entity attacker) q2mg_killmsg;
 string(entity targ, entity attacker) q2mg_killmsg2;
 
+*/
+string() q2sg_killmsg;
+string() q2sg_killmsg2;
+
+string() q2cg_killmsg;
+string() q2cg_killmsg2;
+
+string() q2mg_killmsg;
+string() q2mg_killmsg2;
+
 // pistol
-string(entity targ, entity attacker) dp_killmsg =
+string() dp_killmsg =
 {
 	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ","",""," was shot by "));
@@ -682,13 +692,13 @@ string(entity targ, entity attacker) dp_killmsg =
 	return " was shot by ";
 };
 
-string(entity targ, entity attacker) dp_killmsg2 =
+string() dp_killmsg2 =
 {
 	return "\n";
 };
 
 // saw
-string(entity targ, entity attacker) dsaw_killmsg =
+string() dsaw_killmsg =
 {
 	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ","",""," was cut to pieces by "));
@@ -696,7 +706,7 @@ string(entity targ, entity attacker) dsaw_killmsg =
 	return " was cut to pieces by ";
 };
 
-string(entity targ, entity attacker) dsaw_killmsg2 =
+string() dsaw_killmsg2 =
 {
 	return "\n";
 };
@@ -1592,7 +1602,7 @@ string(entity targ, entity attacker) wflame_killmsg2 =
 };
 
 // knife
-string(entity targ, entity attacker) wk_killmsg =
+string() wk_killmsg =
 {
 	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ","",""," was cut down by "));
@@ -1600,7 +1610,7 @@ string(entity targ, entity attacker) wk_killmsg =
 	return " was cut down by ";
 };
 
-string(entity targ, entity attacker) wk_killmsg2 =
+string() wk_killmsg2 =
 {
 	return "\n";
 };

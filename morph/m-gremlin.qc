@@ -210,7 +210,8 @@ void()	player_gremlin_meleepain4 =	[	$meleepain4,	player_gremlin_meleepain5	] {}
 void()	player_gremlin_meleepain5 =	[	$meleepain5,	player_gremlin_meleepain6	] {};
 void()	player_gremlin_meleepain6 =	[	$meleepain6,	player_run	] {};
 
-void(entity attacker, float take) player_gremlin_pain =
+//void(entity attacker, float take) player_gremlin_pain =
+void() player_gremlin_pain =
 {
 	local float ml;
 
@@ -268,7 +269,25 @@ void() player_gremlin_die =
 	if ((DEAD_THROW & 16) || !gib)
 		DeadThrowWeps(newmis, self.origin); // newmis is the pack - ammo must be accounted
 
-	if ( GibMorph ("progs/gremlin.mdl", $severedhead, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND | FL_PLAGUE, 0, -95, 8, 0, "") ) return;
+//	if ( GibMorph ("progs/gremlin.mdl", $severedhead, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND | FL_PLAGUE, 0, -95, 8, 0, "") ) return;
+   if (gib)
+   {		
+// note: diff to pk_gibplayer
+		if (random() < 0.45) sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav","","","gremlin/minitheme.wav"), 1, ATTN_NORM);
+		else
+		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
+// integrated head
+      ThrowHead ("progs/gremlin.mdl", self.health);
+		self.frame = $severedhead;
+
+		ThrowGib ("progs/gib_m.mdl", self.health);
+		newmis.frame = rint(random() * 2);
+		ThrowGib ("progs/gib_m.mdl", self.health);
+		newmis.frame = rint(random() * 2);
+		ThrowGib ("progs/gib_m.mdl", self.health);
+		newmis.frame = rint(random() * 2);
+      return;
+   }
 
 	if (random() < 0.65) sound (self, CHAN_VOICE, rnd_string(' 50 25 12', "gremlin/gidle_growl.wav","gremlin/pain2.wav","","","gremlin/minitheme.wav"), 1, ATTN_NORM);
 	if (random() < 0.5)
@@ -474,7 +493,8 @@ string(entity targ, entity attacker) player_gremlin_killmsg =
 		return " got murdered (heh heh) by ";
 };
 
-string(entity targ, entity attacker) player_gremlin_killmsg2 =
+//string(entity targ, entity attacker) player_gremlin_killmsg2 =
+string() player_gremlin_killmsg2 =
 {
 	if (!ENHANCED) return "noname";
 	return ".\n";

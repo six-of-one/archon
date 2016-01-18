@@ -90,7 +90,7 @@ void() chaos_precache =
 //	flamer_precache();
 };
 
-string(entity targ, entity attacker) creg_killmsg =
+string() creg_killmsg =
 {
 	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ","",""," was blown away by "));
@@ -98,7 +98,7 @@ string(entity targ, entity attacker) creg_killmsg =
 	return " was blown away by ";
 };
 
-string(entity targ, entity attacker) creg_killmsg2 =
+string() creg_killmsg2 =
 {
 	if (ENHANCED && random() < 0.23)
 		return "'s Reggie Bannister special\n";
@@ -153,7 +153,7 @@ void() c_weapon_reggun =
 	self.archon = ARCHON_WEP_EXT;
 };
 
-string(entity targ, entity attacker) csh_killmsg =
+string() csh_killmsg =
 {
 	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ","",""," was dug a grave by "));
@@ -161,7 +161,7 @@ string(entity targ, entity attacker) csh_killmsg =
 	return " was dug a grave by ";
 };
 
-string(entity targ, entity attacker) csh_killmsg2 =
+string() csh_killmsg2 =
 {
 	return "'s shovel\n";
 };
@@ -206,7 +206,7 @@ void() c_weapon_shovel =
 	self.archon = ARCHON_WEP_EXT;
 };
 
-string(entity targ, entity attacker) cds_killmsg =
+string() cds_killmsg =
 {
 	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ","",""," stopped running for "));
@@ -214,7 +214,7 @@ string(entity targ, entity attacker) cds_killmsg =
 	return " stopped running for ";
 };
 
-string(entity targ, entity attacker) cds_killmsg2 =
+string() cds_killmsg2 =
 {
 	return "\n";
 };

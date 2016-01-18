@@ -101,7 +101,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 
 void() x_weapon_touch =
 {
-	local	float best, new, oldw, camc, ign;
+	local	float best, new, camc, ign;
 	local	entity e, sv;
 	local float leave;
 	local string cls;
@@ -342,7 +342,7 @@ void() x_weapon_touch =
 
 	bound_other_ammo ();
 
-	oldw = other.items;
+//	oldw = other.items;
 	other.items = other.items | new;
 
 	e = self;
@@ -354,7 +354,7 @@ void() x_weapon_touch =
 	if (!deathmatch)
 		self.weapon = new;
 	else
-		Deathmatch_Weapon (oldw, new);
+		Deathmatch_Weapon (new);
 
 	W_SetCurrentAmmo ();
 

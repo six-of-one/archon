@@ -309,7 +309,8 @@ void()	manga_pain6	=[	$pa6,		manga_run1	] {};
 
 
 
-void(entity attacker, float damage)	manga_pain =
+//void(entity attacker, float damage)	manga_pain =
+void()	manga_pain =
 {
 //	local float	r;
 
@@ -377,7 +378,8 @@ void() manga_melee =
 };
 
 
-string(entity targ, entity attacker) manga_killmsg =
+//string(entity targ, entity attacker) manga_killmsg =
+string() manga_killmsg =
 {
 	if (random() < 0.5)
 		return " felt the powerful Kung-Fu of ";

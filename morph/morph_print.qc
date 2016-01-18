@@ -9,7 +9,10 @@
  * qc - support chaos mod morph ability
  *
  */
-string(entity p1, float sel, string fp) polymorph_id;
+
+// update: 12.19.12 - cleaned up some descriptions - did not match released code
+
+string(float sel) polymorph_id;
 
 
 // fn(morph_print) - display connect message for class selection
@@ -153,8 +156,6 @@ void() morph_print_notify =
 
 void(entity p1) morph_print =
 {
-	local entity e;
-
 stuffcmd(p1,"scr_centertime 240\n"); // incase admin_centertime is not
 stuffcmd(self, "\ncon_notify 4\n"); // for this output
 if (p1.cnt < 0)
@@ -173,10 +174,10 @@ if (p1.cnt < 0)
 						 "\bselect any weapon with 1 - 9 to exit.   \n"
 						 "\b----------------------------------------\n");
 */
-		e = spawn();
-		e.think = morph_print_notify;
-		e.nextthink = time + 0.5;
-		e.enemy = p1;
+		newmis = spawn();
+		newmis.think = morph_print_notify;
+		newmis.nextthink = time + 0.5;
+		newmis.enemy = p1;
 
 		p1.cnt = 0; // clear for classpr
 		return;
@@ -208,9 +209,11 @@ else if (p1.state == IMP_MGREMLIN_F)
 						 "\bA nasty gremlin spawn - You are taunted\n"
 						 "\bby the other beasties because of your  \n"
 						 "\bsize and miserable failure in the movie\n"
+//						 "\bAnd you stink.  Get revenge. You can   \n"
+//						 "\bsteal human weapons. You can also learn\n"
+//						 "\bto set booby traps.  Oh, and try not to\n"
 						 "\bAnd you stink.  Get revenge. You can   \n"
-						 "\bsteal human weapons. You can also learn\n"
-						 "\bto set booby traps.  Oh, and try not to\n"
+						 "\bsteal human weapons. Oh, and try not to\n"
 						 "\bget wet :-) Gremlins are not hurt by   \n"
 						 "\bslime and may even drink some if health\n"
 						 "\bis low.  Good luck shorty. \n");
@@ -265,9 +268,10 @@ else if (p1.state == IMP_MSHALR)
 	centerprint(p1, "\bYou are an elite spell caster from      \n"
 						 "\banother dimension.  And you have no idea\n"
 						 "\bwhy they call you a \"Vore\".  You're     \n"
-						 "\bpissed about it too... Learn some spells\n"
-						 "\bquick as your main \"missle\" spell hurts \n"
-						 "\byou more at close range than they do.   \n");
+						 "\bpissed about it too... Try new spells!  \n");
+//						 "\bpissed about it too... Learn some spells\n"
+//						 "\bquick as your main \"missle\" spell hurts \n"
+//						 "\byou more at close range than they do.   \n");
 	}
 else if (p1.state == IMP_MDEMON)
 	{
@@ -275,8 +279,8 @@ else if (p1.state == IMP_MDEMON)
 	centerprint(p1, "\bYou are a flesh ripping and jumping     \n"
 						 "\bmachine. That is about it. And you stink\n"
 						 "\bbad.  You are one thick skinned beasty. \n"
-						 "\bKeep your health up and no attack can   \n"
-						 "\bgib you!                                \n");
+						 "\bKeep your health up and most attacks    \n"
+						 "\bwont gib you!                           \n");
 	}
 else if (p1.state == IMP_MOGRE)
 	{
@@ -308,9 +312,10 @@ else if (p1.state == IMP_MWIZARD)
 						 "\bhave many redeeming qualities even for \n"
 						 "\ba beasty.  You have one joy in life,   \n"
 						 "\bhowever. You know how humiliating it is\n"
-						 "\bwhen someone is \"Scragged\".  Find a way\n"
-						 "\bof improving your attack quickly, it is\n"
-						 "\bvery weak.                             \n");
+						 "\bwhen someone is \"Scragged\".            \n");
+//						 "\bwhen someone is \"Scragged\".  Find a way\n"
+//						 "\bof improving your attack quickly, it is\n"
+//						 "\bvery weak.                             \n");
 	}
 else if (p1.state == IMP_MCTHON)
 	{
@@ -332,9 +337,10 @@ else if (p1.state == IMP_MHUMAN) // basic grunt desc.
 						 "\btrigger and a business end you can use \n"
 						 "\bit.  You learn new weapons fast...and  \n"
 						 "\byou walk around looking like           \n"
-						 "\bSchwarzenegger.  All the focus on      \n"
-						 "\bweapons has left your defenses a little\n"
-						 "\bweaker, however.                       \n");
+						 "\bSchwarzenegger. Gear up and blast em!  \n");
+//						 "\bSchwarzenegger.  All the focus on      \n"
+//						 "\bweapons has left your defenses a little\n"
+//						 "\bweaker, however.                       \n");
 	}
 else if (p1.state == IMP_MDEMO)
 	{
@@ -453,6 +459,6 @@ else if (p1.state == IMP_MSUPTANK)
 //						 "\n");
 
 sprint(p1,"Your current selection = ");
-sprint(p1,polymorph_id(p1,p1.state,""));
+sprint(p1,polymorph_id(p1.state));
 sprint(p1,".\n");
 };

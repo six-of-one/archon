@@ -442,6 +442,7 @@ string(entity targ, entity attacker) player_demon_killmsg =
 	else if (random () < 0.75) 	return " was eviscerated by ";
 	return " was slashed by "; 
 };
+
 string(entity targ, entity attacker) player_demon_killmsg2 =
 {
 	if (!ENHANCED) return "noname";

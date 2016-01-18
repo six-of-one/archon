@@ -419,7 +419,8 @@ string(entity targ, entity attacker) q2bfg_killmsg2 =
 };
 
 // rail
-string(entity targ, entity attacker) q2rail_killmsg =
+//string(entity targ, entity attacker) q2rail_killmsg =
+string() q2rail_killmsg =
 {
 //	if (ENHANCED)
 //		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
@@ -427,14 +428,15 @@ string(entity targ, entity attacker) q2rail_killmsg =
 	return " was railed by ";
 };
 
-string(entity targ, entity attacker) q2rail_killmsg2 =
+//string(entity targ, entity attacker) q2rail_killmsg2 =
+string() q2rail_killmsg2 =
 {
 	return "\n";
 };
 
 
 // lightning
-string(entity targ, entity attacker) q2hbl_killmsg =
+string() q2hbl_killmsg =
 {
 //	if (ENHANCED)
 //		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
@@ -442,7 +444,7 @@ string(entity targ, entity attacker) q2hbl_killmsg =
 	return " was melted by ";
 };
 
-string(entity targ, entity attacker) q2hbl_killmsg2 =
+string() q2hbl_killmsg2 =
 {
 	return "'s hyperblaster\n";
 };
@@ -499,7 +501,7 @@ string(entity targ, entity attacker) q2hgren_killmsg2 =
 };
 
 // super shotgun
-string(entity targ, entity attacker) q2ssg_killmsg =
+string() q2ssg_killmsg =
 {
 //	if (ENHANCED)
 //		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
@@ -507,13 +509,13 @@ string(entity targ, entity attacker) q2ssg_killmsg =
 	return " was blown away by ";
 };
 
-string(entity targ, entity attacker) q2ssg_killmsg2 =
+string() q2ssg_killmsg2 =
 {
 	return "'s super shotgun\n";
 };
 
 // shotgun
-string(entity targ, entity attacker) q2sg_killmsg =
+string() q2sg_killmsg =
 {
 //	if (ENHANCED)
 //		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
@@ -521,13 +523,14 @@ string(entity targ, entity attacker) q2sg_killmsg =
 	return " was gunned down by ";
 };
 
-string(entity targ, entity attacker) q2sg_killmsg2 =
+string() q2sg_killmsg2 =
 {
 	return "\n";
 };
 
 // mg
-string(entity targ, entity attacker) q2cg_killmsg =
+//string(entity targ, entity attacker) q2cg_killmsg =
+string() q2cg_killmsg =
 {
 //	if (ENHANCED)
 //		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
@@ -535,14 +538,16 @@ string(entity targ, entity attacker) q2cg_killmsg =
 	return " was cut in half by ";
 };
 
-string(entity targ, entity attacker) q2cg_killmsg2 =
+//string(entity targ, entity attacker) q2cg_killmsg2 =
+string() q2cg_killmsg2 =
 {
 	return "'s chaingun\n";
 };
 
 
 // mg
-string(entity targ, entity attacker) q2mg_killmsg =
+//string(entity targ, entity attacker) q2mg_killmsg =
+string() q2mg_killmsg =
 {
 //	if (ENHANCED)
 //		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
@@ -550,13 +555,15 @@ string(entity targ, entity attacker) q2mg_killmsg =
 	return " was machinegunned by ";
 };
 
-string(entity targ, entity attacker) q2mg_killmsg2 =
+//string(entity targ, entity attacker) q2mg_killmsg2 =
+string() q2mg_killmsg2 =
 {
 	return "\n";
 };
 
 // melee
-string(entity targ, entity attacker) q2blst_killmsg =
+//string(entity targ, entity attacker) q2blst_killmsg =
+string() q2blst_killmsg =
 {
 //	if (ENHANCED)
 //		return(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
@@ -564,7 +571,8 @@ string(entity targ, entity attacker) q2blst_killmsg =
 	return " was blasted by ";
 };
 
-string(entity targ, entity attacker) q2blst_killmsg2 =
+//string(entity targ, entity attacker) q2blst_killmsg2 =
+string() q2blst_killmsg2 =
 {
 	return "\n";
 };

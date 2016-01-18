@@ -664,37 +664,38 @@ void()   gremlin_shot6 = [$shotatt6, gremlin_run1   ] {};
 
 
 //============================================================================
-void(float ox) Gremlin_FireNailGun;
+void() Gremlin_FireNailGun;
 
 void() gremlin_nail1   =[$lightfatt1, gremlin_nail2  ]
    {
 	self.effects = self.effects | EF_MUZZLEFLASH;
-   Gremlin_FireNailGun(4);
+//   Gremlin_FireNailGun(4);
+   Gremlin_FireNailGun();
    };
 void() gremlin_nail2   =[$lightfatt2, gremlin_nail3  ]
    {
 	self.effects = self.effects | EF_MUZZLEFLASH;
-   Gremlin_FireNailGun(4);
+   Gremlin_FireNailGun();
    };
 void() gremlin_nail3   =[$lightfatt1, gremlin_nail4  ]
    {
 	self.effects = self.effects | EF_MUZZLEFLASH;
-   Gremlin_FireNailGun(4);
+   Gremlin_FireNailGun();
    };
 void() gremlin_nail4   =[$lightfatt2, gremlin_nail5  ]
    {
 	self.effects = self.effects | EF_MUZZLEFLASH;
-   Gremlin_FireNailGun(4);
+   Gremlin_FireNailGun();
    };
 void() gremlin_nail5   =[$lightfatt1, gremlin_nail6  ]
    {
 	self.effects = self.effects | EF_MUZZLEFLASH;
-   Gremlin_FireNailGun(4);
+   Gremlin_FireNailGun();
    };
 void() gremlin_nail6   =[$lightfatt2, gremlin_nail7  ]
    {
 	self.effects = self.effects | EF_MUZZLEFLASH;
-   Gremlin_FireNailGun(4);
+   Gremlin_FireNailGun();
    };
 void() gremlin_nail7 = [$lightfatt1, gremlin_run1   ] {};
 
@@ -988,8 +989,10 @@ void()   gremlin_die11b    =[ $deathb11,    gremlin_die11b ] { self.classname="d
 void() gremlin_gib=
    {
    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
-   item_throwGib ("progs/gremlin.mdl", self.health, "gib", 10 + random()*10, $severedhead);
-//   ThrowHead ("progs/h_grem.mdl", -35);
+//	ThrowHead ("progs/h_grem.mdl", -35);
+	ThrowHead ("progs/gremlin.mdl", -35);
+	self.frame = $severedhead;
+//	item_throwGib ("progs/gremlin.mdl", self.health, "gib", 10 + random()*10, $severedhead);
    ThrowGib ("progs/gib1.mdl", -35);
    ThrowGib ("progs/gib1.mdl", -35);
    ThrowGib ("progs/gib1.mdl", -35);
@@ -1104,8 +1107,9 @@ void() gremlin_die =
    if (self.health < -35)
       {
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
-//      ThrowHead ("progs/h_grem.mdl", self.health);
-		item_throwGib ("progs/gremlin.mdl", self.health, "gib", 10 + random()*10, $severedhead);
+		ThrowHead ("progs/gremlin.mdl", self.health);
+		self.frame = $severedhead;
+//		item_throwGib ("progs/gremlin.mdl", self.health, "gib", 10 + random()*10, $severedhead);
 
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
@@ -1484,7 +1488,8 @@ Gremlin_FireNailGun
 fire a nailgun
 ============
 */
-void(float ox) Gremlin_FireNailGun =
+//void(float ox) Gremlin_FireNailGun =
+void() Gremlin_FireNailGun =
 {
    local vector dir;
 
@@ -1964,9 +1969,12 @@ void(float dm) Gremlin_ThrowHead =
 Gremlin_Damage
 
 The damage is coming from inflictor, but get mad at attacker
+
+note: ignores - armor, takedamage flag, kill - may only be done to corpse
 ============
 */
-void(entity targ, entity inflictor, entity attacker, float damage) Gremlin_Damage=
+//void(entity targ, entity inflictor, entity attacker, float damage) Gremlin_Damage=
+void(entity targ, entity attacker, float damage) Gremlin_Damage=
 {
 // check for godmode or invincibility
 	if (targ.flags & FL_GODMODE)
@@ -2091,7 +2099,7 @@ void(float side)  Gremlin_Gorge =
     sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
 //    sound (self, CHAN_WEAPON, "grem/attack.wav", 1, ATTN_NORM);
    ldmg = 7+5*random();
-   Gremlin_Damage (self.enemy, self, self, ldmg);
+   Gremlin_Damage (self.enemy, self, ldmg);
 
 	makevectors (self.angles);
 	SpawnMeatSpray (self.origin + v_forward*16, side * v_right);

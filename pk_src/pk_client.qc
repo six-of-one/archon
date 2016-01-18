@@ -302,7 +302,7 @@ void () ClientKill =
 	bprint (" suicides\n");
 	set_suicide_frame();
 	self.modelindex = self.modelindex_morph;
-	self.frags = self.frags - 2 * frag_minus_cide(self);	// extra penalty
+	self.frags = self.frags - 2 * frag_minus_cide();	// extra penalty
 	respawn ();
 };
 
@@ -1832,14 +1832,16 @@ float(entity e) frag_plus =
 
 // test entity e
 
-float(entity e) frag_minus =
+//float(entity e) frag_minus =
+float() frag_minus =
 {
 	return(1); // chaos mod vector!
 };
 
 // suicide frags / enviroment frags
 
-float(entity e) frag_minus_cide =
+//float(entity e) frag_minus_cide =
+float() frag_minus_cide =
 {
 	if (NOCIDE) return(0);
 	return(1);
@@ -1847,7 +1849,8 @@ float(entity e) frag_minus_cide =
 
 float world_frags; // how many env kills world gets
 
-float(entity e) frag_minus_envcide =
+//float(entity e) frag_minus_envcide =
+float() frag_minus_envcide =
 {
 	if (NOENVCIDE) return(0);
 	world_frags = world_frags + 1;
@@ -1917,7 +1920,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			bprint (targ.netname);
 			bprint ("'s telefrag\n");
 
-			targ.frags = targ.frags - frag_minus(targ);
+			targ.frags = targ.frags - frag_minus();
 			return;
 		}
 
@@ -1929,7 +1932,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			if (inflictor.owner == targ)
 			{
 				if (!NOPKCIDE)
-					targ.frags = (targ.frags - frag_minus(targ));
+					targ.frags = (targ.frags - frag_minus());
 //				nocide(targ);
 				if (rnum < 0.250)
 					bprint (" had a mental breakdown!\n");
@@ -1962,7 +1965,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			if (inflictor.owner == targ)
 			{
 				if (!NOPKCIDE)
-					targ.frags = (targ.frags - frag_minus(targ));
+					targ.frags = (targ.frags - frag_minus());
 //				nocide(targ);
 				if (rnum < 0.250)
 					bprint (" was caught robbing the family grave!\n");
@@ -1999,7 +2002,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 				if (sphere_a.owner ==  targ) // whoopsie - got a wee bit too close
 				{
 					if (!NOPKCIDE)
-						targ.frags = (targ.frags - frag_minus(targ));
+						targ.frags = (targ.frags - frag_minus());
 					if (random() < 0.5)
 					{
 						deathstring = rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n","",""," made a really bad mistake\n");
@@ -2036,7 +2039,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					else
 					bprint (" visits another dimension\n");
 					if (!NOPKCIDE)
-						targ.frags = (targ.frags - frag_minus(targ));
+						targ.frags = (targ.frags - frag_minus());
 					return;
 				}
 
@@ -2047,11 +2050,11 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					else
 					bprint (" forget about his beartrap\n");
 					if (!NOPKCIDE)
-						targ.frags = (targ.frags - frag_minus(targ));
+						targ.frags = (targ.frags - frag_minus());
 					return;
 				}
 
-				targ.frags = targ.frags - frag_minus_cide(targ);
+				targ.frags = targ.frags - frag_minus_cide();
 //				nocide(targ);
 
 				if (inflictor.classname == "cluster_bomb")
@@ -2188,7 +2191,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					deathstring = " loses another friend\n";
 				bprint (attacker.netname);
 				bprint (deathstring);
-				attacker.frags = attacker.frags - frag_minus(attacker);
+				attacker.frags = attacker.frags - frag_minus();
 				return;
 			}
 			else
@@ -2798,7 +2801,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			if (attacker.frags)
 			{
 				if (attacker.deadflag & 2) // any custom death msg ent with deadflag & 2 is classed as environmental suicide
-					targ.frags = targ.frags - (attacker.frags * frag_minus_envcide(targ));
+					targ.frags = targ.frags - (attacker.frags * frag_minus_envcide());
 //				if (attacker.deadflag & 2) noenvcide(targ);
 			}
 			return;
@@ -2812,7 +2815,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			if (attacker.owner == targ) {
 					// killed self
 					if (!NOPKCIDE)
-						targ.frags = targ.frags - frag_minus(targ);
+						targ.frags = targ.frags - frag_minus();
 					if (ENHANCED)
 						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
 					else
@@ -2837,7 +2840,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			// killed by a montser?
 			if (attacker.flags & FL_MONSTER)
 			{
-				targ.frags = targ.frags - frag_minus(targ); // getting killed by dm monster losses a frag
+				targ.frags = targ.frags - frag_minus(); // getting killed by dm monster losses a frag
 				if (attacker.classname == "monster_army")
 					bprint (" was shot by a Grunt\n");
 				else
@@ -2923,18 +2926,18 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			// tricks and traps
 			if (attacker.classname == "explo_box")
 			{
-				targ.frags = targ.frags - frag_minus(targ);
+				targ.frags = targ.frags - frag_minus();
 				bprint (" blew up\n");
 				return;
 			}
 			if (attacker.classname == "trigger_changelevel")
 			{
-				targ.frags = targ.frags - frag_minus(targ);
+				targ.frags = targ.frags - frag_minus();
 				bprint (" tried to leave\n");
 				return;
 			}
 // all env after this
-			targ.frags = targ.frags - frag_minus_envcide(targ); 
+			targ.frags = targ.frags - frag_minus_envcide(); 
 			if (attacker.solid == SOLID_BSP && attacker != world)
 			{
 				bprint (" was squished\n");

@@ -188,7 +188,7 @@ void() Wiz_MissileTouch =
 
 	org = v0;
 	v_forward = normalize(self.velocity);
-	org = lava_shot(self.origin, LAVA_SHOT * 2.4, v0, self.dmg / 10);
+//	org = lava_shot(self.origin, LAVA_SHOT * 2.4, v0, self.dmg / 10);
 	if (org != v0)
 	{
 		self.origin = org;

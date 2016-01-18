@@ -492,7 +492,8 @@ void() raptor_MeleeAttackb =
 };
 
 
-string(entity targ, entity attacker) raptor_killmsg =
+//string(entity targ, entity attacker) raptor_killmsg =
+string() raptor_killmsg =
 {
 	if (random() < 0.5 || !ENHANCED)
 		return " was slashed by a ";
