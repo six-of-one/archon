@@ -128,6 +128,14 @@ void() pk_stand_frames =
 void() pk_run_frames =
 {
 	wk_frames($axrun1, $rockrun1, 6, 6);
+// haste run faster
+	if (self.rune_flag & RUNE_FLG_HS)
+	{
+		local float f;
+		f = cvar("sv_maxspeed") * 1.6;
+		if (vlen(self.velocity) < f)
+			self.velocity = self.velocity * (f / vlen(self.velocity));
+	}
 	return;
 //	if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
 	if (self.weapon == IT_AXE && FL_MELEE(self.eweapon, self.weapon, self.pk_currentitem ))

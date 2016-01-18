@@ -646,6 +646,8 @@ void() HasteSound =
 
 // op haste - ret true if att_fin needs set
 
+// returns false if haste rune in effect
+
 float(float atf) rune_haste =
 {
 	if (!self.rune_flag & RUNE_FLG_HS) return(TRUE);

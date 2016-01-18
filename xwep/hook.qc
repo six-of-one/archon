@@ -692,8 +692,18 @@ void () HookBehavior =
 	// applys chain restrainment
 	self.owner.velocity = self.owner.velocity + normalize(chainvec) * f1;
 
+	f1 = HOOK_SPEED;
+	if (self.owner.rune_flag & RUNE_FLG_HS) f1 = HOOK_SPEED * 2;
+// enforce the speed limit - the greatest grievance against the hook since its inception
+	if (f1 > 100)
+	while (vlen(self.owner.velocity) > (f1 + 1))
+		self.owner.velocity = self.owner.velocity * 0.98;
+
+
+
 	if (self.super_time < time) // super time - to run a couple hook effects
 	{
+		f1 = 0;
 		self.super_time = time + 0.2;
 		if (HOOK_DAMP > 0) f1 = HOOK_DAMPING;
 		else if (self.punchangle_x) f1 = self.punchangle_x;
