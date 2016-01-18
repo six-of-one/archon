@@ -14,13 +14,17 @@ void() PK_init =
 
 	chaos = cvar("chaos"); // glquake mod engine
 	DARKPLACES = cvar("pr_checkextension"); // check for dp engine
-	
+
+// info string set by server
+	localcmd("alias version \"echo quake-c: generations alpha 3.0\"\n");
+	localcmd("alias website \"echo http://www.moddb.com/mods/painkeep-source-update/\"\n");
+
 	pk_precache();
+	q1_precache();
 
 	if (!DARKPLACES) // may not use all this - dp auto precaches
 	{
 	doom_precache();
-	q1_precache();
 	q2_precache();
 	q3_precache();
 	chaos_precache();
@@ -428,8 +432,6 @@ void() botmatch =
 	else
 	{
 		bprint("---> Error: bots not loaded, exiting - make sure this is a multiplayer server\n");
-		remove(self);
-		return;
 	}
  }
 
@@ -457,7 +459,10 @@ void() botmatch =
 	else
 	{
 		bprint("---> Error: bots not loaded, exiting - make sure this is a multiplayer server\n");
+		remove(self);
+		return;
 	}
+	if (DARKPLACES || chaos) th_bot_changeParms(5);
 	remove(self);
 };
 

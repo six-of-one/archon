@@ -446,11 +446,12 @@ void() hub_control_use =
 	// error
 	if (highest == world)
 	{
-		if (PK_100)
-		{
-			remove(self);
-			return;
-		}
+// NOTE: found in wrong place - orig code has no remove here!
+//		if (PK_100)
+//		{
+//			remove(self);
+//			return;
+//		}
 		bprint("hub_control_use: highest vote not found\n");
 		return;
 	}
@@ -734,6 +735,13 @@ void() hub_control =
 	// activated or timeout?
 	else 
 	{
+		if (PK_100 && !self.wait)
+		{
+			if (PK_100_OBJERR) objerror("hub_control without targetname OR wait");
+			if (WARNING) bprint("\n*** warning:\nhub_control without targetname OR wait - removing.\n\n");
+			remove(self);
+			return;			
+		}
 		if (!self.wait) self.wait = 120; // Cataboligne - if no self.wait, why not just pick a default?
 		self.think = hub_control_use;
 		// create timer

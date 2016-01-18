@@ -9,8 +9,8 @@
 	        and average of 5
 */
 
-.float mean;
-.float stdev;
+//.float mean;
+//.float stdev;
 
 float (float lMean, float lStDev) meantime =
 {

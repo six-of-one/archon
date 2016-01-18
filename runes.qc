@@ -285,7 +285,7 @@ void () rune_touch =
 	self.cnt = 0;
 	self.count = self.count + 0.13; // increment for each grab - more activity = less chance of rune moving
 
-	if (RUNES == 1 || RUNES == 3)
+	if (RUNES == 1 || RUNES == 3) // NOTE rule 4 will be special here - extra code
 	{
 //	if (deathmatch !=  2) // this is likely a meaningless deal for runes
 		self.nextthink = time + RSP_TIME;

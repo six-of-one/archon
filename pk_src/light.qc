@@ -12,7 +12,7 @@
 	"stdev" "#"		- Variation around the mean time (default 0)
 */
 
-.entity next; // for the linked list of lightning
+//.entity next; // for the linked list of lightning - Cataboligne - 4.29,11 - moved to pk_defs 
 
 void() lightning_think;
 

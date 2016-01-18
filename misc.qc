@@ -547,6 +547,9 @@ This is just a solid wall if not inhibitted
 */
 void () func_wall =
 {
+// Cataboligne - 4.11.11 - walls not in mod maps
+	if (notmod(self)) return;
+
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_PUSH;	// so it doesn't get pushed by anything
 	self.solid = SOLID_BSP;
@@ -561,6 +564,9 @@ A simple entity that looks solid but lets you walk through it.
 void () func_illusionary =
 
 {
+// Cataboligne - 4.11.11 - doors not in mod maps
+	if (notmod(self)) return;
+
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_NOT;

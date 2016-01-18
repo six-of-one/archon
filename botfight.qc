@@ -445,6 +445,11 @@ void () W_BotAttack =
 			}
 		}
 	}
+
+// Cataboligne 4.17.11 - saver fn tie in
+	if (self.aiment)
+	if (self.aiment.classname == "saver")
+		self.aiment.button0 = TRUE;
 };
 
 void () bot_rebound1;

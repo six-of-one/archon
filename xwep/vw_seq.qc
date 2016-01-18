@@ -2,7 +2,7 @@
  *
  * Cataboligne
  *
- * file: v_seq.qc
+ * file: vw_seq.qc
  *
  * date: 3.18.11
  *
@@ -1219,15 +1219,15 @@ void vw_harpoon_pnt(float v_frm) =
 				vv_x_000 = ' 0.0   0.0   0.0';
 			}
 
-			if (v_frm == 6)
+			if (v_frm == 6) // Cataboligne - 4.4.11 - averaging rope origin in stand to calm rope "flutter"
 			{
-				vv_o_000 = '16.9  13.8   8.6';
+				vv_o_000 = '16.7  14.1   8.6';
 				vv_a_000 = ' 0.0   0.0   0.0';
 				vv_x_000 = ' 0.0   0.0   0.0';
 			}
 			if (v_frm == 7)
 			{
-				vv_o_000 = '16.7  14.2   8.6';
+				vv_o_000 = '16.7  14.1   8.6';
 				vv_a_000 = ' 0.0   0.0   0.0';
 				vv_x_000 = ' 0.0   0.0   0.0';
 			}
@@ -1239,19 +1239,19 @@ void vw_harpoon_pnt(float v_frm) =
 		{
 			if (v_frm == 8)
 			{
-				vv_o_000 = '16.5  14.3   8.6';
+				vv_o_000 = '16.7  14.1   8.6';
 				vv_a_000 = ' 0.0   0.0   0.0';
 				vv_x_000 = ' 0.0   0.0   0.0';
 			}
 			if (v_frm == 9)
 			{
-				vv_o_000 = '16.7  14.1   8.7';
+				vv_o_000 = '16.7  14.1   8.6';
 				vv_a_000 = ' 0.0   0.0   0.0';
 				vv_x_000 = ' 0.0   0.0   0.0';
 			}
 			if (v_frm == 10)
 			{
-				vv_o_000 = '17.7  13.3   8.5';
+				vv_o_000 = '16.7  14.1   8.6';
 				vv_a_000 = ' 0.0   0.0   0.0';
 				vv_x_000 = ' 0.0   0.0   0.0';
 			}
@@ -1287,7 +1287,7 @@ void vw_harpoon_pnt(float v_frm) =
 
 	if (vv_o_000 == v0)
 	{
-		bprint("___harp pnt vw - msy not be animated:  ");
+		bprint("___harp pnt vw - may not be animated:  ");
 		bprint(ftos(v_frm));
 		bprint("\n");
 		return;

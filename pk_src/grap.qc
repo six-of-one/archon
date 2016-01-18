@@ -193,6 +193,58 @@ void() grap_releaseHarpoon =
 	}
 };
 
+// fn(grap_maintain_point) - remove any points not attached to a harpoon
+
+// self = player updating harp rope
+
+void() grap_maintain_point =
+{
+	local entity ch, f, corner, e;
+	local vector v1, v2, vp;
+	local float vl;
+
+	f = ch = spawn();
+	corner = ch.chain = world;
+	cnt_ent_next = TRUE;
+	cnt_ent(ch, "classname", "HarpoonRopePoint");
+	ch = ch.next;
+	while (ch)
+	{
+		if (!ch.enemy) remove(ch);
+		else if (ch.enemy.classname != "Harpoon") remove(ch);
+		else if (ch.enemy.enemy != ch) remove(ch);
+		else if (ch.owner.deadflag) remove(ch);
+		else if (ch.owner == self) // valid - update it
+		{
+			vp = grap_vw_adj(ch.owner) + ch.owner.origin; // point of rope start - end of harp gun
+			e = findradius(ch.owner.origin, 255);
+			vl = 256;
+			while (e)
+			{
+				if (e.classname == "HarpoonRope")
+				if (vlen (ch.owner.origin - e.origin) < vl)
+				{
+					corner = e;
+					vl = vlen (ch.owner.origin - e.origin);
+				}
+				e = e.chain;
+			}
+			if (!corner) // crap - have to trust last rope from harpoon chain
+			{
+				corner = ch.enemy.grap_ropechainPrev;
+				while (corner.grap_ropechainPrev)
+					corner = corner.grap_ropechainPrev;
+			}
+
+			v1 = normalize(corner.origin - vp); // dir to move rope piece
+			v2 = ch.owner.origin + vp;
+			setorigin(ch, vp + (v1 * 18));
+			ch.angles = corner.angles; // angles of rope segs - last rope of this harp
+		}
+		ch = ch.next;
+	}
+	remove(f);
+};
 
 float() grap_maintainRope =
 {
@@ -249,6 +301,7 @@ float() grap_maintainRope =
 // TEST - attempt to move closeset seg fwd if backing past start point
   	if (!PK_100)
 	{
+		grap_maintain_point(); // remove unhooked points (due to rope movement)
 		corner = self.grap_cornerchainNext.grap_ropechainPrev;
 		while (corner.grap_ropechainPrev)
 			corner = corner.grap_ropechainPrev;

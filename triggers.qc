@@ -137,6 +137,9 @@ set "message" to text string
 */
 void () trigger_multiple =
 {
+// Cataboligne - 4.21.11 - triggerss not in mod maps
+	if (notmod(self)) return;
+
 	if (self.sounds == 1)
 	{
 		precache_sound ("misc/secret.wav");
@@ -196,6 +199,9 @@ set "message" to text string
 */
 void () trigger_once =
 {
+// Cataboligne - 4.21.11 - triggerss not in mod maps
+	if (notmod(self)) return;
+
 	self.wait = -1;
 	trigger_multiple ();
 };
@@ -207,6 +213,9 @@ This fixed size trigger cannot be touched, it can only be fired by other events.
 */
 void () trigger_relay =
 {
+// Cataboligne - 4.21.11 - triggerss not in mod maps
+	if (notmod(self)) return;
+
 	self.use = SUB_UseTargets;
 };
 

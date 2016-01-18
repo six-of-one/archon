@@ -1460,6 +1460,8 @@ void() AdminCommands =
 				if (self.lefty != 3) AddAnotherBot (f);
 				if (e != NUMBOTS) self.wad = "\nLoaded requested pk*bot(s) on server.";
 			}
+			if (e != NUMBOTS)
+			if (DARKPLACES || chaos) th_bot_changeParms(3);
 			self.lefty = 0;
 		}
 		else if (self.lefty == 11 || self.lefty == 13 || self.lefty == 14)
@@ -1480,6 +1482,8 @@ void() AdminCommands =
 				if (self.lefty != 13) BotConnect(0, 0, f);
 				if (e != bot_count) self.wad = "\nLoaded requested frikbot(s) on server.";
 			}
+			if (e != bot_count)
+			if (DARKPLACES || chaos) th_bot_changeParms(3);
 			self.lefty = 0;
 		}
 		else if (self.lefty == 2)

@@ -73,6 +73,7 @@ string ADMINTIME				= "float3\n"; // load the time out
 string ADMINMAPCMD			= "_mapcmd\n"; // append to mapname for alias cmd
 float BOTFREEZE;							// if true stop bots cold
 void (entity e) bot_froze;
+void(float tm) th_bot_changeParms; // save bot parms to cvar or parm*
 
 string() build_itemmenu;
 void() Admin_itembits;
@@ -89,7 +90,15 @@ void() pk_srvcmd_set;
 void() mcode_load;
 // end main admin
 
+// stats pkg -meantime.qc
 
+.float mean;
+.float stdev;
+float (float lMean, float lStDev) meantime;
+
+// from light.qc
+
+.entity next; // for the linked list of lightning - Cataboligne - 4.29,11 - moved to pk_defs 
 
 // env
 

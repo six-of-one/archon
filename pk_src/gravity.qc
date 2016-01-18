@@ -9,6 +9,44 @@ $frame cubelf09 cubelf10 cubelf11 cubelf12 cubelf13 cubelf14 cubelf15 cubelf16
 $frame cubelf17 cubelf18 cubelf19 cubelf20
 
 
+// check to see if ents are visible to gravity wave
+
+float (entity targ) grav_visible =
+{
+	local vector	spot1, spot2, v2;
+	local float f;
+
+	v2 = v0;
+	if (targ.flags & FL_CLIENT) f = TRUE;
+	else
+	if (IROBOT(targ)) f = TRUE;
+	if (targ.flags & FL_MONSTER) f = TRUE;
+	if (f) v2 = targ.view_ofs;
+
+	spot1 = self.origin;
+	spot2 = targ.origin + v2;
+	traceline (spot1, spot2, TRUE, self);	// see through other monsters
+
+// TDO: pull some liquid with it - full chaos mod env expansion
+//	if (trace_inopen && trace_inwater)
+//		return FALSE;			// sight line crossed contents
+
+	if (trace_fraction == 1)
+		return TRUE;
+
+	if (f) return FALSE;
+
+	spot1 = self.origin + ' 0 0 24';
+	traceline (spot1, spot2, TRUE, self);	
+	if (trace_fraction == 1) return TRUE;
+
+	spot1 = self.origin + ' 0 0 -16';
+	traceline (spot1, spot2, TRUE, self);
+	if (trace_fraction == 1) return TRUE;
+
+	return FALSE;
+};
+
 void() gravity_touch =
 {
 	// try to gib whatever touched the gravity centre
@@ -60,7 +98,32 @@ void() gravity_pull =
 
 	while (e)
 	{
-		if (visible(e))
+
+
+
+// TESTING
+if (WARNING)
+{
+
+if (!grav_visible(e))
+	{
+		bprint("--- failed grav pull: ");
+		bprint(item_ident(e));
+		bprint(", by visible\n");
+	}
+
+if (!pk_art_movshot_ck(e, "grav"))
+	{
+		bprint("--- failed grav pull: ");
+		bprint(item_ident(e));
+		bprint(", by pk_art_movshot\n");
+	}
+
+}
+
+
+
+		if (grav_visible(e))
 		if (e.classname != "gravity") // don't yank on any other gravity wells
 		if (e.classname != "beartrap")
 		if (pk_art_movshot_ck(e, "grav")) // Cataboligne 8.12.9 purify - pk artifacts

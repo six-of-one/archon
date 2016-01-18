@@ -11,7 +11,7 @@
  */
 
 // darkplaces / chaos only
-// thinking - because if we call it straight up it missed the bots
+// thinking - because if we call it straight up (in some cases) it missed the bots
 
 void(float tm) th_bot_changeParms =
 {

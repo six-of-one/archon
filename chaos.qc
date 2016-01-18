@@ -84,6 +84,7 @@ entity(float mvt, float sd, float flg, float ct, vector org, vector smin, vector
 // srch - search for this
 
 // RETURN - count of ents matching search parm
+float cnt_ent_next; // use pk .next to chain up
 
 float(entity hent, string match, string srch) cnt_ent =
 {
@@ -105,7 +106,8 @@ float(entity hent, string match, string srch) cnt_ent =
 			rc = rc + 1;
 			if (hent)
 			{
-				ch.chain = sr;
+				if (cnt_ent_next) ch.next = sr;
+				else ch.chain = sr;
 				ch = sr;
 			}
 			if (match == "classname") sr = find (sr, classname, srch);
@@ -115,7 +117,12 @@ float(entity hent, string match, string srch) cnt_ent =
 			else if (match == "map") sr = find (sr, map, srch);
 //			else if (match == "scode") sr = find (sr, scode, srch);
 		}
-	if (hent) ch.chain = world; // remove other potential chains left around - not even sure if this can happen
+	if (hent) 
+	{
+		if (cnt_ent_next) ch.next = world;
+		else ch.chain = world; // remove other potential chains left around - not even sure if this can happen
+	}
+	cnt_ent_next = FALSE;
 	return(rc);
 }
 
@@ -361,7 +368,7 @@ void() func_model_frames =
 	self.nextthink = time + self.delay;
 };
 
-// testing
+// used for various effects (8 ray star & visage level decor)
 
 void() func_model =
 {
@@ -756,6 +763,40 @@ void(float tm, string l1, string l2, string l3, string l4, string l5, float f1, 
 	info_ttime = t;
 }
 
+// make a bolt between 2 points, play sound at origin vec v1 if passed in snd
+
+// "weapons/lstart.wav"
+
+void(vector v1, vector v2, float typ, string snd) lightning_bolt =
+{
+	local entity e;
+	local float te;
+
+	e = spawn();
+	e.think = SUB_Remove;
+	e.nextthink = time + 0.5;
+	te = typ;
+	if (!te) te = TE_LIGHTNING2;
+	
+	WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, te);
+	WriteEntity (MSG_BROADCAST, e);
+	WriteCoord (MSG_BROADCAST, v1_x);
+	WriteCoord (MSG_BROADCAST, v1_y);
+	WriteCoord (MSG_BROADCAST, v1_z);
+	WriteCoord (MSG_BROADCAST, v2_x);
+	WriteCoord (MSG_BROADCAST, v2_y);
+	WriteCoord (MSG_BROADCAST, v2_z);
+
+	if (snd)
+	{
+		e.origin = v1;
+		sound (e, CHAN_WEAPON, snd, 1, ATTN_NORM);
+//		e.orign = v2;
+//		sound (e, CHAN_VOICE, "weapons/lhit.wav", 1, ATTN_NORM);
+	}
+};
+
 // spawn_infot(1, "", "",  "",  "",  "", 0, 0, 0, 0, v0, 0);
 
 /*QUAKED trigger_hurt_switch (.5 .5 .5) ? START_OFF
@@ -954,5 +995,700 @@ void() func_fallingwater =
 	if (self.use != fallingwater_fire)
 	{
 		self.nextthink = time + 2 * random();
+	}
+};
+
+// fn(notmod) - test to see of entity should be in mod - if not, remove
+// also test dp/c
+
+/*
+	affects (thus far)
+
+	doors
+	func_wall
+	func_illusionary
+	trigger_*
+
+!mod2 - to be added (same as !mod) when visage specials done
+
+*/
+
+float(entity e) notmod =
+{
+
+
+// TESTING
+	if (cvar("saved1") == 17 || cvar("saved1") == -999) return(FALSE); // allow test
+
+
+
+	if (e.wad == "!mod" || e.netname == "!mod")
+	{
+		remove(e);
+		return(TRUE);
+	}
+
+	if (DARKPLACES || chaos)
+	if (e.wad == "!dpc" || e.netname == "!dpc") // cant have it
+	{
+		remove(e);
+		return(TRUE);
+	}
+
+	if (!DARKPLACES && !chaos)
+	if (e.wad == "dpc" || e.netname == "dpc") // required by
+	{
+		remove(e);
+		return(TRUE);
+	}
+
+	if (DARKPLACES)
+	if (e.wad == "!dp" || e.netname == "!dp")
+	{
+		remove(e);
+		return(TRUE);
+	}
+
+	if (!DARKPLACES)
+	if (e.wad == "dp" || e.netname == "dp")
+	{
+		remove(e);
+		return(TRUE);
+	}
+
+	if (chaos)
+	if (e.wad == "!chaos" || e.netname == "!chaos")
+	{
+		remove(e);
+		return(TRUE);
+	}
+
+	if (!chaos)
+	if (e.wad == "chaos" || e.netname == "chaos")
+	{
+		remove(e);
+		return(TRUE);
+	}
+
+	return(FALSE);
+};
+
+// trigger relay with deviation time
+
+
+void() DelayThink;
+
+void() SUB_Stat_UseTargets =
+{
+	local entity t;
+
+//
+// check for a stat delay
+//
+	if (self.mean || self.stdev) // NOTE: a stdev with 0 (or -) mean will fire instantly if rnd value < 0
+	{
+	// create a temp object to fire at a later time
+		t = spawn();
+		t.classname = "DelayedUse";
+		t.nextthink = time + meantime(self.mean, self.stdev);
+		t.think = DelayThink;
+		t.enemy = activator;
+		t.message = self.message;
+		t.killtarget = self.killtarget;
+		t.target = self.target;
+		return;
+	}
+
+// rest of trigger fire code
+	SUB_UseTargets();
+};
+
+/*QUAKED trigger_stat_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)
+This fixed size trigger cannot be touched, it can only be fired by other events.  It can contain killtargets, targets, delays, and messages.
+uses pk stat data .mean & .stdev for delay if present
+*/
+void() trigger_stat_relay =
+{
+// Cataboligne - 4.21.11 - triggerss not in mod maps
+	if (notmod(self)) return;
+
+	self.use = SUB_Stat_UseTargets;
+};
+
+void () func_illusionary;
+
+// mod only func_illusionary - doesnt appear if mod not running
+// - further check of notmod specific code - allow restrict to dp/c even if mod running
+
+void () m_func_illusionary =
+{
+	if (notmod(self)) return;
+
+	func_illusionary();
+};
+
+float() crandom;
+
+void() th_arcarn =
+{
+	local float f;
+	local vector v1;
+
+	self.nextthink = time + self.wait + self.cnt * random();
+
+	if (self.alpha == 0)
+	{
+		v1_x = self.distance * random();
+		v1_y = self.distance * random();
+		if (self.lip)
+		if (random() < self.lip)
+			v1_z = self.oldorigin_z + crandom() * self.height;
+
+		setorigin(self, self.oldorigin + v1);
+		setmodel(self, self.mdl);
+		self.nextthink = time + 0.1 + 0.2 * random();
+		self.aflag = 0.1;
+	}
+	if (self.alpha < 1)
+	{
+		self.alpha = self.alpha + self.aflag;
+		self.nextthink = time + 0.1 + 0.2 * random();
+
+		if (self.alpha > 0.6 && self.aflag == 0.1)
+		{
+			self.solid = SOLID_BSP;
+			if (self.flags)
+			if (random() < 0.33)
+			{
+				self.effects = rnd_bit_mask(self.flags);
+			}
+		}
+		else if (self.alpha < 0.6 && self.aflag == -0.1)
+		{
+			self.solid = SOLID_NOT;
+			self.effects = 0;
+		}
+
+		if (self.alpha > 1)
+		{
+			self.nextthink = time + self.delay + self.count * random();
+			if (random() < self.style) 
+				self.nextthink = time + (self.delay / 0.6) + (self.count / 0.5) * random();
+			self.alpha = 1;
+		}
+		else if (self.alpha < 0.05)
+		{
+			f = 0;
+			if (self.lefty)
+			if (random() < 0.1)
+				f = self.lefty;
+			self.nextthink = time + self.wait + self.cnt * random() + f;
+			self.alpha = 0;
+			self.model = "";
+			self.solid = 0;
+		}
+	}
+	else
+	{
+		self.nextthink = time + 0.1 + 0.2 * random();
+		self.aflag = -0.1;		
+		self.alpha = self.alpha + self.aflag;
+	}
+	
+};
+
+// func_arcarn - archon arena blocks
+
+// mdl = model to use
+// following all have defaults (*)
+// distance (64) - randomizing dist around center
+// height (32) - possible height randomizer
+// lip (0.25) - chance of variable height
+
+// wait (20) - time to appear
+// cnt (30) - randomizer on appear time
+// lefty (rnd) - start time pause, random pauses
+
+// delay (30) - time to hang
+// count (40) - randomizer on hang time
+// style (0) - chance of very short hangs
+
+// flags (12) - bit map of allowed effects - EF_*
+
+void() func_arcarn =
+{
+	local float f;
+
+	if (!DARKPLACES)
+	{
+		precache_model("maps/aarn1.bsp");
+		precache_model("maps/aarn2.bsp");
+		precache_model("maps/aarn3.bsp");
+	}
+
+	f = random();
+	if (self.mdl == "")
+	if (f < 0.33)
+		self.mdl = "maps/aarn1.bsp";
+	else if (f < 0.66)
+		self.mdl = "maps/aarn2.bsp";
+	else
+		self.mdl = "maps/aarn3.bsp";
+
+	if (self.wait < 1) self.wait = 20; // appear time
+	if (self.cnt < 1) self.cnt = 30;
+	if (random() < 0.2)
+	{
+		f = random();
+		if (f < 0.25) self.lefty = 30;
+		else if (f < 0.5) self.lefty = 60;
+		else if (f < 0.6) self.lefty = 80;
+	}
+
+	if (self.delay < 1) self.delay = 30; // hang time
+	if (self.count < 1) self.count = 40;
+
+	self.think = th_arcarn;
+	self.nextthink = time + self.wait + self.cnt * random() + self.lefty;
+
+	if (self.lefty) // small chance of fast starts - TDO: .var
+	if (random() < 0.1)
+		self.nextthink = time + self.wait * random();
+
+	self.oldorigin = self.origin;
+	if (self.distance < 1) self.distance = 64;
+	if (self.height< 1) self.height = 32;
+	if (!self.lip) self.lip = 0.24;
+
+	self.alpha = 0;
+	if (self.flags < 1) self.flags = 12;
+};
+
+// fn(func_saver) - save player from a fall
+// fn(mk_saver) - setup saver
+// fn(th_saver) - think runs saver
+// fn(lt_saver) - extra bolts
+
+void() lt_saver =
+{
+	lightning_bolt( self.origin,  self.enemy.origin, 0, "");
+	self.delay = self.delay - 1;
+	if (self.delay) self.nextthink = time + 0.3;
+	else remove(self);
+};
+
+// stop player fall in targeting trigger and wait a few secs for them to FIRE to avoid fall
+
+entity() PK_SelectSpawnPoint;
+void(entity spot) ClearSpawnPoint;
+void (vector org) spawn_tfog;
+void (vector org, entity death_owner) spawn_tdeath;
+
+void() th_saver =
+{
+	local string c3, c4, c5, c6;
+	local entity spot;
+
+	c3 = c4 = c5 = c6 = "";
+
+	if (self.button0) // player accepted save - it costs .frags
+	{
+// try a target first (hopefully a teleporter dest)
+		if (self.target)
+		{
+			spot = find(world, targetname, self.target);
+		}
+
+// if no target, teleport player to a random spawn
+		if (!spot)
+		{
+			spot = PK_SelectSpawnPoint (); // *pk - get a spawn point, pk style 
+			ClearSpawnPoint(spot); // *pk
+		}
+// TDO: add item location randomizer when chaos teleport done
+
+		if (!spot) // FAILED!
+		{
+			if (WARNING) bprint("func_saver - FAIL: no teleport desitnation available, check map code\n");
+		}
+		else
+		{
+			self.aiment.frags = self.aiment.frags - self.frags;
+
+			self.aiment.origin = spot.origin + '0 0 1';
+			self.aiment.angles = spot.angles;
+			self.aiment.fixangle = TRUE;		// turn this way immediately
+			if (deathmatch || coop)
+			{
+				makevectors (self.aiment.angles);
+				spawn_tfog (self.aiment.origin + v_forward*20);
+			}
+
+			spawn_tdeath (self.aiment.origin,self.aiment);
+		}
+	}
+	if (self.delay < 1 || self.button0)
+	{
+		centerprint(self.aiment, "");
+		self.aiment.movetype = self.lefty;
+		self.aiment.aiment = world;
+		remove(self);
+		return;
+	}
+	
+	c3 = "You have ( ";
+	c4 = " ) seconds to press FIRE\nThe cost = ";
+	c5 = ftos(self.delay);
+	c6 = ftos(self.frags);
+
+	centerprint7(self.aiment, self.message, c3, c5, c4, c6, " frags\n", self.noise4);
+
+	self.nextthink = time + 1;
+
+	if (!self.aiment.ishuman) // NOTE: later exclude non score bots
+	if (self.aiment.movetype != MOVETYPE_NONE)
+	if (random() < 0.5) // 50 / 50 chance a bot will decide to save
+	{
+
+
+
+bprint("saver: \bsaved a bot!\n");
+
+
+
+		self.button0 = TRUE;
+		self.nextthink = time + 1 + 3 * random(); // fake consider time for bot
+	}
+
+	self.delay = self.delay - 1;
+	self.aiment.movetype = MOVETYPE_NONE;
+
+// fire a "catch" bolt (or something) - NOTE: make it "jagged"
+
+	lightning_bolt( self.origin,  self.aiment.origin, 0, "weapons/lstart.wav");
+	spot = spawn();
+	spot.origin = self.origin;
+	spot.aiment = self.aiment;
+	spot.think = lt_saver;
+	spot.nextthink = time + 0.3;
+	spot.delay = 3;
+	
+};
+
+void() mk_saver =
+{
+	local entity e;
+
+	e = spawn();
+	if (!e) return;
+
+	e.origin = self.origin; //activator.origin;
+	e.aiment = activator;
+	e.classname = "saver";
+	activator.aiment = e;
+
+	e.message = self.message;
+	e.noise4 = self.noise4;
+	e.target = self.target;
+
+	if (self.delay) e.delay = self.delay;
+	else e.delay = 5;
+	if (self.frags) e.frags = self.frags;
+	else e.frags = 1;
+	e.lefty = activator.movetype;
+	e.button0 = FALSE;
+
+	e.think = th_saver;
+	e.nextthink = time + 0.1;
+};
+
+void() func_saver =
+{
+	self.use = mk_saver;
+};
+
+
+void () fire_fly_touch =
+{
+	T_Damage (other,self,self,self.dmg);
+	remove (self);
+};
+
+// fn(effect_item_fall) - rain of something
+
+// fn(firefall) - make rain of fire happen
+void() firefall =
+{
+//	setmodel(self, "progs/lavaball.mdl"); --- done in effect_ * map code
+	self.frame = floor(2 + 2.4 * random());
+//	chaos_mdlsize(self);
+//	if (random() < 0.2) sound (self, CHAN_WEAPON, "boss1/throw.wav", 1, ATTN_NORM); --- done in effect_* map code
+	if (random() < 0.08) // act like regular fire fly - sort of
+	{
+		self.solid = SOLID_TRIGGER;
+		self.classname = "fireball";
+		self.touch = fire_fly_touch;
+		self.think = SUB_Remove; //meltthink;
+		self.nextthink = time + 5 + (random() * 4);
+		self.view_ofs = ' 0 0 2';
+		self.dmg = 1 + random(); // stings a bit
+//		self.dest_y = 16;
+//		self.grab_callback = grab_lavaball;
+//		self.th_walk = fire_fly_adj;
+//		self.th_stand = floaterPointer;
+//		if (self.frame == 5) self.th_stand = fire_splitter;
+//		else 
+//		content_cycle(self, RM_SKY | FLT_IMM | FLT_LAVA | MLT_LAVA | PF_LAVA | SF_CHK | PF_WATER | PF_SLIME | PF_EMPTY | CK_EARTHQUAKE, CONTENT_CHKTM);
+	}
+};
+
+/*QUAKED effect_item_fall (.7 0 .7) ?
+--------  CAT  -------
+"th_stand" - function call to create item - MUST return handle in "newmis" pointer!
+(most default iD functions [fire_fly] will need wrapped or re-written...)
+"touch" - touch function (defaults to SUB_Remove if not set)
+
+Fields to set (usually not using th_stand, but can operate in parallel)
+"mdl" - model of item - defaults to "progs/s_rain.spr"
+"noise" - noise to play on fall start
+"noise1" - noise to play on impact
+"noise2" - loop sound played at brush origin - operates in sync
+"pos1" - pos1_x - chance to play noise, pos1_y - chance to play noise1 per event
+- pos1_z - length of noise2
+"frame" - frame of model, negative number randomizes set of frames
+"dmg" - damage to do on touch if coded
+
+"wait" - density - default 2 (2 per second)
+"speed" - initial falling speed (velocity_z) default 20
+"t_width" - horizontal drift (velocity_x)
+"t_length" - horizontal drift (velocity_y)
+"style" - random horizontal drift - any direction - overrides fixed (t_*) above
+"lip" - random spawn distance around origin (horizontal x - y)
+"delay" ("mean", "stdev") - time to run fall, if all 0, toggles by targetname
+
+"targetname" - targeted by any entitiy - starts / toggles fall sequence
+ - if no target effect starts on map load and runs according to delays
+-------- NOTES --------
+cause items to rain down from trigger brush
+items will spawn randomly across space of brush and fall at set velocity
+*/
+
+void() item_fall_toggle =
+{
+	if (time < self.rad_time) return;
+
+	if (self.state)
+	{
+		self.state = FALSE;
+		self.nextthink = MAXFL;
+		if (self.enemy) remove(self.enemy);
+		self.enemy = world;
+	}
+	else
+	{
+		if (self.mean || self.stdev) // expiriy time
+			self.state = time + meantime(self.mean, self.stdev);
+		else if (self.delay) // expiriy time
+			self.state = time + self.delay;
+		else
+			self.state = TRUE;
+
+		self.enemy = world;
+		if (self.noise2)
+			self.enemy = loop_sound(self, CHAN_WEAPON,self.noise2, 1, ATTN_NORM, self.pos1_z, self.origin, 0, LOOPFOREVER);
+
+		self.nextthink = time  + 1;
+	}
+	self.rad_time = time + 5; // debounce
+};
+
+void() item_fall_touch =
+{
+	local float f;
+	// remove rain when it hits ground or any other object
+	// IDEA: make puddles on flat surfaces?
+
+	f = 1;
+	if (self.pos1_y) f = self.pos1_y;
+	if (self.noise1)
+	if (random() < f)
+		sound (self, CHAN_AUTO, self.noise1, 1, ATTN_NORM); // impact noise
+
+	remove(self);
+};
+
+void() item_fall_think =
+{
+	local vector v1;
+	local entity drop;
+	local float f;
+
+	if (self.mean || self.stdev || self.delay) // an expiry time was set
+	if (self.state < time)
+	{
+		item_fall_toggle();
+		return;
+	}
+
+	v1 = self.origin;
+	if (self.lip)
+	{
+		if (random() < 0.5)
+			v1_x = v1_x - self.lip * random();
+		else
+			v1_x = v1_x + self.lip * random();
+		if (random() < 0.5)
+			v1_y = v1_y - self.lip * random();
+		else
+			v1_y = v1_y + self.lip * random();
+		v1_z = v1_z - 8 * random();
+	}
+
+	if (self.maxs)
+	{
+		v1_x = self.mins_x + self.size_x * random();
+		v1_y = self.mins_y + self.size_y * random();
+		v1_z = self.mins_z + self.size_z * random();
+	}
+
+	drop = chaos_spawn(MOVETYPE_TOSS, SOLID_BBOX, 0, 0,  v1 , v0, v0, v0, v0, "itemdrop", self.mdl, item_fall_touch, 5, SUB_Remove, SUB_Null, self, world);
+	drop.velocity_z = 0 - self.speed - (self.speed * 0.1 * crandom());
+
+	if (self.t_width) drop.velocity_x = self.t_width;
+	if (self.t_length) drop.velocity_y = self.t_length;
+
+	if (self.style)
+	{
+		drop.velocity_x = self.style * crandom();
+		drop.velocity_y = self.style * crandom();
+	}
+
+	drop.dmg = self.dmg;
+	drop.frame = self.frame;
+	drop.noise1 = self.noise1;
+	drop.pos1 = self.pos1;
+
+	f = 1;
+	if (self.pos1_x) f = self.pos1_x;
+	if (self.noise)
+	if (random() < f)
+		sound (drop, CHAN_AUTO, self.noise, 1, ATTN_NORM);
+
+	if (self.th_stand != SUB_Null) // callback after create
+	{
+		drop.enemy = self;
+		self = drop;
+		self.enemy.th_stand();
+		self = self.enemy;
+		drop.enemy = world;
+	}
+
+	self.nextthink = time + (1 / self.wait); // more density = shorter time
+};
+
+void() effect_item_fall =
+{
+	self.solid = SOLID_TRIGGER;
+	setmodel (self, self.model);	// set size and link into world
+	self.movetype = MOVETYPE_NONE;
+	self.modelindex = 0;
+	self.model = "";
+
+	if (!self.mdl) self.mdl = "progs/s_rain.spr";
+
+	if (!DARKPLACES)
+	{
+		if (self.mdl) precache_model(self.mdl);
+		precache_sound("ambience/rain.wav");
+		precache_sound("ambience/thunder1.wav");
+		if (self.noise) precache_sound(self.noise);
+		if (self.noise1) precache_sound(self.noise1);
+		if (self.noise2) precache_sound(self.noise2);
+	}
+
+	self.think = item_fall_think;
+	if (!self.targetname)
+	{
+		self.nextthink = time + 1;
+		self.state = FALSE;
+		item_fall_toggle();
+	}
+	else
+	{
+		self.use = item_fall_toggle;
+		self.state = FALSE;
+		if (self.spawnflags & TRUE) item_fall_toggle();
+	}
+
+	if (!self.speed) self.speed = 20;
+	if (self.maxs == v0 && self.mins == v0)
+	if (!self.lip) self.lip = 64;
+	if (!self.wait) self.wait = 2;
+
+	if (self.netname == "firefall") self.th_stand = firefall;
+	else
+//	if (self.th_stand == (void()) 0)
+		self.th_stand = SUB_Null;
+};
+
+/*QUAKED effect_affect (.7 0 .7) (-8 -8 -8) (8 8 8) ALLSAME
+--------  CAT  -------
+"ltime" (60) - frequency of change - happens every this many seconds
+"target" - entity to make modifications to
+"mean", "stdev" - new calculation for aspect of target
+"*" - field to modify - value non zero, first come first changed of
+--- "wait, delay, style, speed, lefty, count, cnt"
+-------- NOTES --------
+change some field (float) in an entity - update value with meantime calculation
+ALLSAME - all targets get same value, otherwise individual targets are randomized
+*/
+
+void() th_effect_affect =
+{
+	local float f;
+	local entity t;
+
+	t = find (world, targetname, self.target);
+	if (self.spawnflags & 1)
+		f = meantime(self.mean, self.stdev);
+	while (t)
+	{
+		if (! self.spawnflags & 1)
+			f = meantime(self.mean, self.stdev);
+		if (self.wait) t.wait = f;
+		else if (self.delay) t.delay = f;
+		else if (self.style) t.style = f;
+		else if (self.speed) t.speed = f;
+		else if (self.lefty) t.lefty = f;
+		else if (self.count) t.count = f;
+		else if (self.cnt) t.cnt = f;
+
+		t = find (t, targetname, self.target);
+	}
+	if (!self.targetname)
+	{
+		if (self.ltime < 1) self.ltime = 60;
+		self.nextthink = time + self.ltime;
+		self.think = th_effect_affect;
+	}
+};
+
+void() effect_affect =
+{
+	if (!self.mean && !self.stdev || !self.target) // no stats or targ, no go
+	{
+		remove(self);
+		return;
+	}
+
+	if (!self.targetname) // not targeted - run loop on think
+	{
+		if (self.ltime < 1) self.ltime = 60;
+		self.nextthink = time + self.ltime;
+		self.think = th_effect_affect;
+	}
+	else
+	{
+		self.use = th_effect_affect;
 	}
 };

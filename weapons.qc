@@ -1504,6 +1504,11 @@ void () W_WeaponFrame =
 		if (inHubMap) if (self.hubstartupmessage > time) self.hubstartupmessage = 0; // *pk - clear hub message
 		SuperDamageSound ();
 		W_Attack ();
+
+// Cataboligne 4.17.11 - saver fn tie in
+		if (self.aiment)
+		if (self.aiment.classname == "saver")
+			self.aiment.button0 = TRUE;
 	}
 };
 

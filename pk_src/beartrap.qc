@@ -119,7 +119,10 @@ void() beartrapTouch =
 
 	if (!deathmatch) // Cataboligne - 5.20.10 - beartrap single player code - turn off player target, allow monster target
 	{
-		if (other.classname == "player" && cvar("sv_sp_bt_noplayer")) return;
+		if (other.classname == "player")
+		{
+			if (cvar("sv_sp_bt_noplayer")) return;
+		}
 		else if (! other.flags & FL_MONSTER) return;
 	}
 	else
