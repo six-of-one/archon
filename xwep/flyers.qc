@@ -10,7 +10,7 @@
 
 // set MOVETYPE_FLY if we can fly
 // so far these can fly - chaos as plasma bolt ball, scragg, deadcam, flying gremlin when launched
-
+// will add: order, shapeshifter in blob form, wraith
 
 void(entity fent, float fl) flyer_check =
 {

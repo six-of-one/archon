@@ -344,7 +344,7 @@ void() player_order_impulse =
 		morph_CycleWeaponCommand(-1);
 	else if (self.impulse == 14) // slot loops
 	{
-		if (self.weapon == IT_AXE) self.impulse = 1;
+		if (self.weapon == IT_AXE) self.impulse = 1; // NOTE: this effectively steals orders shout out
 		if (self.weapon == IT_SHOTGUN) self.impulse = 2;
 		if (self.weapon == IT_SUPER_SHOTGUN) self.impulse = 3;
 		if (self.weapon == IT_NAILGUN) self.impulse = 4;
@@ -353,6 +353,10 @@ void() player_order_impulse =
 	}
 	else if (self.impulse == 16) // aux spell loops
 	{
+		if (self.weapon == IT_SHOTGUN)
+		{
+			if (self.ammo_shells == 13) aux_bits(3);
+		}
 		if (self.weapon == IT_SUPER_SHOTGUN)
 		{
 			if (self.ammo_nails == 5) aux_bits(421887); // monster set
@@ -360,7 +364,7 @@ void() player_order_impulse =
 		}
 		if (self.weapon == IT_NAILGUN)
 		{
-			if (self.rune_flag) self.AIRG_Flags = 4194375;
+			if (self.rune_flag & 71) self.AIRG_Flags = 4194375;
 			else self.AIRG_Flags = 71;
 			if (self.ammo_rockets == 3) aux_bits(self.AIRG_Flags);
 			if (self.ammo_rockets == 7) aux_bits(3);
@@ -372,9 +376,9 @@ void() player_order_impulse =
 		}
 		if (self.weapon == IT_LIGHTNING)
 		{
+			if (self.ammo_cells == 7) { self.bolt_target = world; next_imprisoned(); }
 			if (self.ammo_cells == 3) aux_bits(3);
 //			if (self.ammo_cells == 5) aux_bits(3);
-			if (self.ammo_cells == 7) next_imprisoned();
 			if (self.ammo_cells == 11) aux_bits(421887); // monster set
 			if (self.ammo_cells == 17) aux_bits(7);
 		}
@@ -395,100 +399,158 @@ void() player_order_impulse =
 
 	if (self.weapon == IT_AXE) clear_spell(); // timeout any spell in selection
 
-
-	if (self.impulse == 2) // spell list 1 - teleports
+	if (self.rune_flag & RUNE_VESS) // inv flag for vessel
 	{
-		if (self.weapon == IT_SHOTGUN) // loop thru spell set
-		{
-			if (self.ammo_shells == 3) self.ammo_shells = 5; // tele swap
-			else if (self.ammo_shells == 5) self.ammo_shells = 7;
-			else if (self.ammo_shells == 7) self.ammo_shells = 11;
-			else if (self.ammo_shells == 11) self.ammo_shells = 3;
-		}
-		self.weapon = IT_SHOTGUN;
-	}
-	if (self.impulse == 3) // spell list 2 - polymorph, transmogrify
-	{
-		if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
-		{
-			if (self.ammo_nails == 3) self.ammo_nails = 5;
-			else if (self.ammo_nails == 5) self.ammo_nails = 7;
-			else if (self.ammo_nails == 7) self.ammo_nails = 11;
-			else if (self.ammo_nails == 11) self.ammo_nails = 3; // order form
+// for cycle - make sure we have these if a vessel is created
+		self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_LIGHTNING;
 
-			if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
-		}
-		self.weapon = IT_SUPER_SHOTGUN;
-	}
-	if (self.impulse == 4) // spell list 3
-	{
-		if (self.weapon == IT_NAILGUN) // loop thru spell set
+		if (self.impulse == 2) // spell list 1 - teleports
 		{
-			if (self.ammo_rockets == 3) self.ammo_rockets = 5;
-			else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
-			else if (self.ammo_rockets == 7) self.ammo_rockets = 3;
-
-			if (self.ammo_rockets == 7)
+			if (self.weapon == IT_SHOTGUN) // loop thru spell set
 			{
-				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+				if (self.ammo_shells == 3) self.ammo_shells = 5; // tele swap
+				else if (self.ammo_shells == 5) self.ammo_shells = 7;
+				else if (self.ammo_shells == 7) self.ammo_shells = 11;
+				else if (self.ammo_shells == 11) self.ammo_shells = 3;
+// 13 is blocked here - with no vessel, it activates as create vessel
+
+
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_shells == 5) && self.arcvess.pk_explode_ammo < 2500) self.ammo_shells = 7;
 			}
-			else
-				if (! self.pk_beartrapammo & 71) self.pk_beartrapammo = 1;
+			self.weapon = IT_SHOTGUN;
 		}
-//		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
-		self.weapon = IT_NAILGUN;
-	}
-	if (self.impulse == 5) // spell list 4 - create
-	{
-		if (self.weapon == IT_SUPER_NAILGUN) // loop thru spell set
+		if (self.impulse == 3) // spell list 2 - polymorph, order form
 		{
-			if (self.ammo_bullet == 3) self.ammo_bullet = 7;
-//			else if (self.ammo_bullet == 5) self.ammo_bullet = 7; // order cant make a chaos teleport
-			else if (self.ammo_bullet == 7) self.ammo_bullet = 11;
-			else if (self.ammo_bullet == 11) self.ammo_bullet = 3;
+			if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
+			{
+				if (self.ammo_nails == 3) self.ammo_nails = 5;
+				else if (self.ammo_nails == 5) self.ammo_nails = 7;
+				else if (self.ammo_nails == 7) self.ammo_nails = 11;
+				else if (self.ammo_nails == 11) self.ammo_nails = 3; // order form
 
-			if (self.ammo_bullet == 7)
-			{
-				if (! self.pk_beartrapammo & 6377471) self.pk_beartrapammo = 1;
-			}
-			if (self.ammo_bullet == 11)
-			{
-				if (! self.pk_beartrapammo & 196480) self.pk_beartrapammo = 1;
-			}
-		}
-		self.weapon = IT_SUPER_NAILGUN;
-	}
-	if (self.impulse == 8) // spell list archon legacy
-	{
-		if (self.weapon == IT_LIGHTNING) // loop thru spell set
-		{
-			if (self.ammo_cells == 3) self.ammo_cells = 5;
-			else if (self.ammo_cells == 5) self.ammo_cells = 7;
-			else if (self.ammo_cells == 7) self.ammo_cells = 11;
-			else if (self.ammo_cells == 11) self.ammo_cells = 13;
-			else if (self.ammo_cells == 13) self.ammo_cells = 17;
-			else if (self.ammo_cells == 17) self.ammo_cells = 3;
+				if ((self.ammo_nails == 5) && self.arcvess.pk_explode_ammo < 3000) self.ammo_nails = 7;
+				if ((self.ammo_nails == 7) && self.arcvess.pk_explode_ammo < 3000) self.ammo_nails = 11;
 
-			if (self.ammo_cells == 3)
-			{
-				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
-			}
-			else if (self.ammo_cells == 11)
-			{
 				if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
 			}
-			else if (self.ammo_cells == 17)
-			{
-				if (! self.pk_beartrapammo & 7) self.pk_beartrapammo = 1;
-			}
+			self.weapon = IT_SUPER_SHOTGUN;
 		}
-		self.weapon = IT_LIGHTNING;
+		if (self.impulse == 4) // spell list 3 - grav well, monster speed, rune powers
+		{
+			if (self.weapon == IT_NAILGUN) // loop thru spell set
+			{
+				if (self.ammo_rockets == 3) self.ammo_rockets = 5;
+				else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
+				else if (self.ammo_rockets == 7) self.ammo_rockets = 3;
+
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_rockets == 3) && self.arcvess.pk_explode_ammo < 4000) self.ammo_rockets = 5;
+				if ((self.ammo_rockets == 5) && self.arcvess.pk_explode_ammo < 5000) self.ammo_rockets = 7;
+
+				if (self.ammo_rockets == 7)
+				{
+					if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+				}
+				else
+					if (! self.pk_beartrapammo & 71) self.pk_beartrapammo = 1;
+			}
+	//		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
+			self.weapon = IT_NAILGUN;
+		}
+		if (self.impulse == 5) // spell list 4 - create
+		{
+			if (self.weapon == IT_SUPER_NAILGUN) // loop thru spell set
+			{
+				if (self.ammo_bullet == 3) self.ammo_bullet = 7;
+	//			else if (self.ammo_bullet == 5) self.ammo_bullet = 7; // order cant make a chaos teleport
+				else if (self.ammo_bullet == 7) self.ammo_bullet = 11;
+				else if (self.ammo_bullet == 11) self.ammo_bullet = 13; // remove the soul vessel
+				else if (self.ammo_bullet == 13) self.ammo_bullet = 15; // add 500 pts to soul vessel
+				else if (self.ammo_bullet == 15)
+				{
+					self.ammo_bullet = 17; // move 500 pts from soul vessel back to archon power
+					if (self.arcvess.pk_explode_ammo < 2500) self.ammo_bullet = 7; // skip if remove would take vessel below 2000
+				}
+				else if (self.ammo_bullet == 17) self.ammo_bullet = 3;
+
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_bullet == 3) && self.arcvess.pk_explode_ammo < 6000) self.ammo_bullet = 7;
+//				if ((self.ammo_bullet == 5) && self.arcvess.pk_explode_ammo < 5000) self.ammo_bullet = 7;
+				if ((self.ammo_bullet == 11) && self.arcvess.pk_explode_ammo < 3000) self.ammo_bullet = 13;
+
+				if (self.ammo_bullet == 7)
+				{
+					if (! self.pk_beartrapammo & 6377471) self.pk_beartrapammo = 1;
+				}
+				if (self.ammo_bullet == 11)
+				{
+					if (! self.pk_beartrapammo & 196480) self.pk_beartrapammo = 1;
+				}
+			}
+			self.weapon = IT_SUPER_NAILGUN;
+		}
+		if (self.impulse == 8) // spell list archon legacy - heal, imprison, release, summon, banish, restore time flow
+		{
+			if (self.weapon == IT_LIGHTNING) // loop thru spell set
+			{
+				if (self.ammo_cells == 3) self.ammo_cells = 5;
+				else if (self.ammo_cells == 5) self.ammo_cells = 7;
+				else if (self.ammo_cells == 7) self.ammo_cells = 11;
+				else if (self.ammo_cells == 11) self.ammo_cells = 13;
+				else if (self.ammo_cells == 13) self.ammo_cells = 17;
+				else if (self.ammo_cells == 17) self.ammo_cells = 3;
+
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_cells == 5) && self.arcvess.pk_explode_ammo < 5000) self.ammo_cells = 7;
+				if ((self.ammo_cells == 11) && self.arcvess.pk_explode_ammo < 4500) self.ammo_cells = 3;
+				if ((self.ammo_cells == 13) && self.arcvess.pk_explode_ammo < 6000) self.ammo_cells = 3;
+				if ((self.ammo_cells == 17) && self.arcvess.pk_explode_ammo < 7500) self.ammo_cells = 3;
+
+				if (self.ammo_cells == 3)
+				{
+					if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+				}
+				else if (self.ammo_cells == 11)
+				{
+					if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
+				}
+				else if (self.ammo_cells == 17)
+				{
+					if (! self.pk_beartrapammo & 7) self.pk_beartrapammo = 1;
+				}
+			}
+			self.weapon = IT_LIGHTNING;
+		}
 	}
-	else if (self.impulse == IMP_MSIGHT)
-		morph_sound(2, self.msight, 3);							// let player morphs "talk"
+// no vessel yet
+// there are only 2 spells - teleport self, and create vessel
+	else
+	{
+// for cycle - make sure we remove the vessel spell inventory if the vessel is removed
+		self.builtin = IT_AXE | IT_SHOTGUN;
+
+		if (self.impulse == 2) // spell list 1 - teleport self (def), create vessel
+		{
+			if (self.weapon == IT_SHOTGUN)
+			{
+				if (self.ammo_shells == 7) self.ammo_shells = 13; // create vessel
+				else if (self.ammo_shells == 13) self.ammo_shells = 7; // teleport self 
+
+				if (self.ammo_shells == 13)
+				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+			}
+			self.weapon = IT_SHOTGUN;
+		}
+	}
+
+	self.items = self.builtin; // here because it changes
 
 	if (self.weapon != IT_AXE)
 		spell_target(); // turn on targeter
+	else
+	if (self.impulse == IMP_MSIGHT)
+		morph_sound(2, self.msight, 3);
 };
 
 /*
@@ -538,6 +600,9 @@ void() player_order_become =
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_LIGHTNING;
+	if (!self.rune_flag & RUNE_VESS) // no vessel
+		self.builtin = IT_AXE | IT_SHOTGUN;
+
 	self.items = self.builtin;
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;
@@ -545,9 +610,9 @@ void() player_order_become =
 // spell init
 	self.ammo_shells = 7;
 	self.ammo_nails = 3;
-	self.ammo_rockets = 3;
+	self.ammo_rockets = 7;
 	self.ammo_cells = 3;
-	self.ammo_bullet = 3;
+	self.ammo_bullet = 7;
 	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	self.pk_explode_ammo = 0; // spell cost

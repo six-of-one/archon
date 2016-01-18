@@ -1458,6 +1458,8 @@ void(float cmd, float pls) polymorph_check =
 			if ((cmd == IMP_MCHAOS) || (cmd == IMP_MORDER))
 			{
 				dead_drop(self);
+// restore vessel rune flag
+				if (self.arcvess) self.rune_flag = RUNE_VESS;
 //				dead_artifact(self);
 //				dead_runes(self);
 			}

@@ -464,6 +464,53 @@ void() func_model =
 
 // quake hack section - quake is now a roguelike
 
+/*
+
+OPLST:
+
+hack notes:
+
+8.19.14:
+
+origin probs while dead ?
+
+pond / river
+music / sound areas -- trigger an ent - start music, raise vol, trigger resets think, think expires - lower vol, music off
+
+
+ - gets dark inside bldgs (rains in them too)
+
+- target_speaker fails copy (doesnt make sound anyway)
+
+
+IDEA: rescue - if a player is stuck for X minutes (2 or 3) a rescue impulse will take them to the last set rescue point
+- start spawn 1st time, nearest deathmatch spawn to last rescue op
+- range is radius of 1.4 * biome lefty value
+- blocked in boss fight areas
+
+- only thing for plats now is 4x - and make a rotate angle_y test for copy
+  (maybe same for doors!)
+
+
+
+imp: chains of map_hacks in storage could implement as features - lava pools, hallway mazes, ponds, rivers, etc
+-- is this a map thing, or does code need to be done? (think its just a map thing - the code is done)
+
+fix: delete hack does not remove all buttons and doors
+- nor does hide hack hide them
+- does not hide non-solid (torch copy models)
+ *** warning:   hack hiding ent: maphack_trigger
+
+ *** warning:   hack hiding ent: Archon Altar --- could be a bit of a prob
+(so then runes & altars, etc should relo if in a hiding hack)
+
+firing explode shot at far away hack
+SV_PushMove: entity #3521 has an invalid modelindex 0.000000
+SV_PushMove: entity #3525 has an invalid modelindex 0.000000
+(unending - dropped on space overflow)
+
+*/
+
 void() InitTrigger;
 void() func_maphack;
 

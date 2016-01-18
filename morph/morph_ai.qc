@@ -777,6 +777,8 @@ float() FindTarget =
 		}
 	}
 
+// Cataboligne - monsters will be friendly with certain player morphed forms
+
 	if (morph_clichk(client)) return FALSE; // friends...for now
 //
 // got one

@@ -379,8 +379,8 @@ void() player_lavacthon_become =
 	self._killmsg=player_cthon_killmsg;
 	self._killmsg2=player_cthon_killmsg2;
 
-	self.cam_z = 108 / 100;
-	self.cam_y = 36;
+	self.cam_z = 50 / 100;
+	self.cam_y = -30;
 
 	stuffcmd(self, "exec cfg/morph/m-cthon.cfg\n");
 

@@ -4,6 +4,22 @@ client/main.qc
 
 Code entry points for CSQC
 
+OPLST:
+
+HUD upgrade
+
+W:
+Spell instruction option
+Spell list scalar
+Weapon list scalar
+Super size selection
+Background images
+
+L:
+List fast scrolls
+
+Test with other mods / vanilla - build seperate release
+
 */
 
 

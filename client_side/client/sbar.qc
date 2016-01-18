@@ -2251,8 +2251,10 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			pwr_step_y = pwr_step_y + 14;
 		}
 
-var float autocvar_hud_spell_list = 0;
-vector sploff;
+var float autocvar_hud_spell_list = 1;
+var float autocvar_hud_spell_vessel_limit = 1;
+
+		vector sploff;
 
 		if (currentweap != IT_AXE) // casting spells
 		{
@@ -2260,6 +2262,7 @@ vector sploff;
 
 			sploff = '0 0 0';
 //			if (autocvar_hud_spell_list > 0) sploff_y = autocvar_hud_spell_list * 21;
+			if (autocvar_hud_spell_vessel_limit) sploff_x = -47; // move back enough for limit display
 
 //			if (plevel > 0)
 			if (casting)
@@ -2269,6 +2272,13 @@ vector sploff;
 					if (autocvar_hud_spell_list > 0)
 					if (arcvessel)
 					{
+						if (autocvar_hud_spell_vessel_limit) // display limits if this is on
+						{
+// but we are not going to enumerate the base 2000 - just the ups
+//							Sbar_DrawString('328 40 0' + woff + sploff + '0 42 0', "(2000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 28 0', "(2500)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+//							Sbar_DrawString('328 40 0' + woff + sploff, "(2000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
 						Sbar_DrawString('314 40 0' + woff + sploff + '0 42 0', "Teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('280 40 0' + woff + sploff + '0 28 0', "Teleport swap", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('280 40 0' + woff + sploff + '0 14 0', "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -2276,6 +2286,14 @@ vector sploff;
 					}
 					else
 					{
+						if (autocvar_hud_spell_vessel_limit)
+						{
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 14 0', "(none)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 0 0', "(none)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
+//						Sbar_DrawString('328 40 0' + woff + sploff + '0 28 0', "(2000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+//						Sbar_DrawString('233 40 0' + woff + sploff + '0 28 0', "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+//						Sbar_DrawString('280 40 0' + woff + sploff + '0 14 0', "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('280 40 0' + woff + sploff + '0 14 0', "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('244 40 0' + woff + sploff, "Create SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 					}
@@ -2319,6 +2337,27 @@ vector sploff;
 						if (autocvar_hud_spell_list < 1)
 						Sbar_DrawString('244 40 0' + woff + sploff, "Create SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (target2) instr = "*FIRE - Make target a SOUL vessel";
+
+						if (pk_bt & 3)
+						{
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							cnt_left = pwr_step_y;
+							pwr_step_y = pwr_step_y + 18;
+
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							if (morph == IMP_MCHAOS)
+							{
+								if (pk_bt == 1) Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Nodule", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+								else Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Gravestone", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							}
+							else
+							{
+								if (pk_bt == 1) Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Sphere", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+								else Sbar_DrawString(pwr_step + '60 -5 0' + woff, "Diamond", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							}
+							cnt_left = pwr_step_y;
+							pwr_step_y = pwr_step_y + 18;
+						}
 					}
 //					else Sbar_DrawString('280 40 0', "Unknown Magic", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 				}
@@ -2326,6 +2365,10 @@ vector sploff;
 				{
 					if (autocvar_hud_spell_list > 0)
 					{
+						if (autocvar_hud_spell_vessel_limit)
+						{
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 14 0', "(3000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
 						Sbar_DrawString('271 40 0' + woff + sploff + '0 28 0', "Polymorph self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('264 40 0' + woff + sploff + '0 14 0', "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (morph == IMP_MCHAOS)
@@ -2408,6 +2451,11 @@ vector sploff;
 				{
 					if (autocvar_hud_spell_list > 0)
 					{
+						if (autocvar_hud_spell_vessel_limit)
+						{
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 28 0', "(4000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 14 0', "(5000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
 						Sbar_DrawString('292 40 0' + woff + sploff + '0 28 0', "Rune powers", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('286 40 0' + woff + sploff + '0 14 0', "Gravity well", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (rockets != 7) Sbar_DrawString('279 40 0' + woff + sploff, "Monster speed", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -2465,6 +2513,12 @@ vector sploff;
 				{
 					if (autocvar_hud_spell_list > 0)
 					{
+						if (autocvar_hud_spell_vessel_limit)
+						{
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 84 0', "(6000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 70 0', "(5000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 42 0', "(3000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
 						Sbar_DrawString('244 40 0' + woff + sploff + '0 84 0', "Create power point", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('223 40 0' + woff + sploff + '0 70 0', "Create chaos teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('286 40 0' + woff + sploff + '0 56 0', "Create items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -2499,7 +2553,6 @@ vector sploff;
 						Sbar_DrawString(pwr_step + '60 -5 0' + woff, item_by_clbit(pk_bt, 1), ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 18;
-						
 					}
 					if (bullets == 11)
 					{
@@ -2542,6 +2595,13 @@ vector sploff;
 				{
 					if (autocvar_hud_spell_list > 0)
 					{
+						if (autocvar_hud_spell_vessel_limit)
+						{
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 56 0', "(5000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 28 0', "(4500)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 14 0', "(6000)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('328 40 0' + woff + sploff + '47 0 0', "(7500)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
 						if (cells != 3) Sbar_DrawString('279 40 0' + woff + sploff + '0 70 0', "Heal / weaken", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('272 40 0' + woff + sploff + '0 56 0', "Imprison being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString('280 40 0' + woff + sploff + '0 42 0', "Release being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -2556,7 +2616,7 @@ vector sploff;
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 18;
 
-						if (autocvar_hud_spell_list > 0) sploff = '0 70 0';
+						if (autocvar_hud_spell_list > 0) sploff_y = 70;
 						if (pk_bt == 1)
 							Sbar_DrawString('300 40 0' + woff + sploff, "Heal being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						else
@@ -2616,6 +2676,7 @@ vector sploff;
 						instr = "*FIRE - cast time flow spell";
 					}
 				}
+				sploff_x = 0; // cancel this now - only for showing limits
 				DrawInventoryAmmo('372 50 0' + sploff, rside_icon, ALPHA_FULL, rside_scale);
 			}
 

@@ -20,7 +20,7 @@ Chaos...what came before Order (dont let him hear you say that...)
 A formless mass of pulsating energy, plasma and quantum states.
 Alive?  Intelligent?
 
-What is life?  What is sentience.
+What is life?  What is sentience?
 Your sentient form supplies your intelligence from elctro-chemical signals operating in a biological circuit.
 
 Chaos simply is.
@@ -279,9 +279,15 @@ void(entity e, string md) chaos_flycheck =
 
 // cheat a little bit - this should be down below
 	if (mt == MOVETYPE_FLY)
+	{
 		setsize (e, '-16 -16 -24', '16 16 40'); // flying states
+		e.view_ofs = '0 0 4'; // here because its hard to place anywhere
+	}
 	else
+	{
 		setsize (e, '-16 -16 0', '16 16 56'); // model poly
+		e.view_ofs = '0 0 28';
+	}
 
 	flyer_check(e, (mt == MOVETYPE_FLY));
 };
@@ -2019,6 +2025,8 @@ void() poly_init =
 
 void() transmogrify =
 {
+	self.attack_finished = time + 0.5;
+
 	if (self.height == IMP_MORDER)
 	{
 		if (self.model == "progs/orderform.mdl")
@@ -2041,7 +2049,6 @@ void() transmogrify =
 	{
 		self.pk_explode_ammo = -6; // cancelled - we hope
 		self.ammo_nails = 5; // switch to next allowed poly spell - rotate will skip blocked spells
-		self.attack_finished = time + 0.6;
 		return;
 	}
 	chaos_mdlsel(self.pk_beartrapammo);
@@ -2359,6 +2366,7 @@ void() next_imprisoned =
 		self.pk_explode_ammo = 0;
 		self.bolt_targetTimeout = 0;	
 		self.ammo_cells = 11;
+		if (self.arcvess.pk_explode_ammo < 4500) self.ammo_cells = 3;
 	}
 };
 
@@ -2553,14 +2561,40 @@ void() archon_time_flow =
 
 // soul vessels
 
+// IMP: chaos gets to make stuff, and order adds the diamond
+
 void() make_vessel =
 {
 	self.rune_flag = self.rune_flag | RUNE_VESS;
 
+// order makes an object - either an order sphere or later - a diamond
+	if (self.height == IMP_MORDER)
+	{
+		newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, 0, v0, '-8 -8 -8', '8 8 8', v0, v0, null_string, "progs/sphere_annihilation.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world);
+		setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
+		newmis.scale = 0.4;
+		newmis.skin = 3;
+		newmis.aflag = -6; // a "made" vessel 
+		self.bolt_target = newmis;
+	}
+	else if (self.pk_beartrapammo & 3)
+	{
+		newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, 0, v0, '-8 -8 -8', '8 8 8', v0, v0, null_string, "progs/nodule11.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world);
+		if (self.pk_beartrapammo == 2) setmodel(newmis, "progs/tomb2.mdl");
+		else newmis.skin = 1;
+		setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
+		newmis.scale = 0.8;
+		newmis.aflag = -6; // a "made" vessel 
+		self.bolt_target = newmis;
+	}
+
+// just in case - chaoses mode 2 has a target, other mods make a vessel and point in code above
+	if (!self.bolt_target) return;
+
 	self.arcvess = self.bolt_target;
 	self.bolt_target.pk_explode_ammo = self.pk_explode_ammo;
 	self.bolt_target.arcvess = self; // back ref
-	self.bolt_target.effects = self.bolt_target.effects | EF_DIMLIGHT;
+	self.bolt_target.effects = self.bolt_target.effects | EF_DIMLIGHT; // IMP: other effects
 
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.attack_finished = time + 1; //debounce
@@ -2578,17 +2612,23 @@ void() remove_vessel =
 		self.archon = self.archon + self.arcvess.pk_explode_ammo - self.pk_explode_ammo;
 		self.arcvess.pk_explode_ammo = 0;
 		self.arcvess.effects = self.arcvess.effects - (self.arcvess.effects & EF_DIMLIGHT);
-		self.arcvess.arcvess = world;		
-		self.arcvess = world;		
+		self.arcvess.arcvess = world;
+		if (self.arcvess.aflag == -6) // IMP: if held at altar - op must be cancelled and hold cleared heres
+		{
+			self.arcvess.think = remove_fade;
+			self.arcvess.nextthink = time + 1;
+		}
+		self.arcvess = world;
 	}
 	self.rune_flag = self.rune_flag - (self.rune_flag & RUNE_VESS);
 	self.items = self.builtin = IT_AXE | IT_SHOTGUN;
 
 	self.ammo_shells = 7; // select def spells
-	self.ammo_bullet = 3;
-	self.weapon = IT_AXE;
+	self.ammo_bullet = 7;
+	self.weapon = IT_SHOTGUN;
 	clear_spell();
 	self.pk_explode_ammo = 0;
+	self.attack_finished = time + 0.5; //debounce
 };
 
 void() add_vessel =
@@ -2603,7 +2643,7 @@ void() add_vessel =
 	self.archon = self.archon - self.pk_explode_ammo;
 
 	self.pk_explode_ammo = 500;
-	self.attack_finished = time + 1; //debounce
+	self.attack_finished = time + 0.5; //debounce
 }
 
 // setup spells
@@ -2915,7 +2955,14 @@ void() spell_target =
 			}
 		}
 // NOTE: if vessel exists, this should be blocked
-		else if (self.ammo_shells == 13) { self.pk_explode_ammo = 2000; self.pkplus_actorammo = 19; self.th_melee = make_vessel; if (self.bolt_target == self) self.bolt_target = world; } // create vessel
+		else if (self.ammo_shells == 13) // create vessel
+		{
+			self.pk_explode_ammo = 2000;
+			self.th_melee = make_vessel;
+			if (self.bolt_target == self) self.bolt_target = world;
+			self.pkplus_actorammo = 1;
+			if (self.pk_beartrapammo == 4) self.pkplus_actorammo = 19;
+		}
 	}
 	if (self.weapon == IT_SUPER_SHOTGUN)
 	{
@@ -2948,9 +2995,9 @@ void() spell_target =
 	{
 		if (self.bolt_target == self) self.bolt_target = world;
 		if (!self.ammo_cells) self.ammo_cells = 3;
-		if (self.ammo_cells == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 3; self.th_melee = archon_heal; }
 		if (self.ammo_cells == 5) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 43; self.th_melee = archon_imprison; }
 		if (self.ammo_cells == 7) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 0; self.th_melee = archon_release; self.bolt_target = world; next_imprisoned(); }
+		if (self.ammo_cells == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 3; self.th_melee = archon_heal; }
 		if (self.ammo_cells == 11) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_summon; }
 		if (self.ammo_cells == 13) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 3; self.th_melee = archon_banish; }
 		if (self.ammo_cells == 17) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 0; self.th_melee = archon_time_flow; }
@@ -3219,6 +3266,10 @@ void() player_chaos_impulse =
 	}
 	else if (self.impulse == 16) // aux spell loops
 	{
+		if (self.weapon == IT_SHOTGUN)
+		{
+			if (self.ammo_shells == 13) aux_bits(7);
+		}
 		if (self.weapon == IT_SUPER_SHOTGUN)
 		{
 			if (self.ammo_nails == 5) aux_bits(421887); // monster set
@@ -3239,9 +3290,9 @@ void() player_chaos_impulse =
 		}
 		if (self.weapon == IT_LIGHTNING)
 		{
+			if (self.ammo_cells == 7) { self.bolt_target = world; next_imprisoned(); }
 			if (self.ammo_cells == 3) aux_bits(3);
 //			if (self.ammo_cells == 5) aux_bits(3);
-			if (self.ammo_cells == 7) { self.bolt_target = world; next_imprisoned(); }
 			if (self.ammo_cells == 11) aux_bits(421887); // monster set
 			if (self.ammo_cells == 17) aux_bits(7);
 		}
@@ -3349,7 +3400,7 @@ void() player_chaos_impulse =
 				else if (self.ammo_bullet == 15)
 				{
 					self.ammo_bullet = 17; // move 500 pts from soul vessel back to archon power
-					if (self.arcvess.pk_explode_ammo < 2500) self.ammo_bullet = 3; // skip if remove would take vessel below 2000
+					if (self.arcvess.pk_explode_ammo < 2500) self.ammo_bullet = 7; // skip if remove would take vessel below 2000
 				}
 				else if (self.ammo_bullet == 17) self.ammo_bullet = 3;
 
@@ -3369,7 +3420,7 @@ void() player_chaos_impulse =
 			}
 			self.weapon = IT_SUPER_NAILGUN;
 		}
-		if (self.impulse == 8) // spell list - archon legacy - heal, imprison, summon, banish, restore time flow
+		if (self.impulse == 8) // spell list - archon legacy - heal, imprison, release, summon, banish, restore time flow
 		{
 			if (self.weapon == IT_LIGHTNING) // loop thru spell set
 			{
@@ -3382,8 +3433,8 @@ void() player_chaos_impulse =
 
 // not enough arc vessel power yet for some spells
 				if ((self.ammo_cells == 5) && self.arcvess.pk_explode_ammo < 5000) self.ammo_cells = 7;
-				if ((self.ammo_cells == 11) && self.arcvess.pk_explode_ammo < 4500) self.ammo_cells = 13;
-				if ((self.ammo_cells == 13) && self.arcvess.pk_explode_ammo < 6000) self.ammo_cells = 17;
+				if ((self.ammo_cells == 11) && self.arcvess.pk_explode_ammo < 4500) self.ammo_cells = 3;
+				if ((self.ammo_cells == 13) && self.arcvess.pk_explode_ammo < 6000) self.ammo_cells = 3;
 				if ((self.ammo_cells == 17) && self.arcvess.pk_explode_ammo < 7500) self.ammo_cells = 3;
 
 				if (self.ammo_cells == 3)
@@ -3415,6 +3466,9 @@ void() player_chaos_impulse =
 			{
 				if (self.ammo_shells == 7) self.ammo_shells = 13; // create vessel
 				else if (self.ammo_shells == 13) self.ammo_shells = 7; // teleport self 
+
+				if (self.ammo_shells == 13)
+				if (! self.pk_beartrapammo & 7) self.pk_beartrapammo = 1;
 			}
 			self.weapon = IT_SHOTGUN;
 		}
@@ -3422,11 +3476,11 @@ void() player_chaos_impulse =
 
 	self.items = self.builtin; // here because it changes
 
-	if (self.impulse == IMP_MSIGHT)
-		morph_sound(2, self.msight, 3);							// let player morphs "talk"
-
 	if (self.weapon != IT_AXE)
 		spell_target(); // turn on targeter
+	else
+	if (self.impulse == IMP_MSIGHT)
+		morph_sound(2, self.msight, 3);
 };
 
 /*
