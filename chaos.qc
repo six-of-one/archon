@@ -1788,7 +1788,6 @@ void() info_allow =
 // new body que - builds que on the fly
 
 void() InitBodyQue;
-void(entity ent) q100_CopyToBodyQue;
 entity bodyque_first; // start up pointer
 entity bodyque_head;
 float body_cnt;
@@ -1908,7 +1907,7 @@ float(string mp) rogue_map =
 
 float(entity e) IS_CHAOS =
 {
-	if (e.state == IMP_MCHAOS) return TRUE; // chaos in another from
+	if (e.height == IMP_MCHAOS) return TRUE; // chaos in another from
 	return(e.morphy == IMP_MCHAOS);
 };
 

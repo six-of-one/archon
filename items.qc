@@ -15,15 +15,15 @@
 BE .8 .3 .4 IN COLOR */
 
 void () W_SetCurrentAmmo;
-
-void () q100_SUB_regen =
+/*
+void () q10-_SUB_regen =
 {
 	self.model = self.mdl;		// restore original model
 	self.solid = SOLID_TRIGGER;	// allow it to be touched again
 	sound (self, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);	// play respawn sound
 	setorigin (self, self.origin);
 };
-
+*/
 
 
 /*QUAKED noclass (0 0 0) (-8 -8 -8) (8 8 8)
@@ -45,8 +45,8 @@ PlaceItem
 
 plants the object on the floor
 ============
-*/
-void () q100_PlaceItem =
+*
+void () q10-_PlaceItem =
 {
 	local float oldz;
 
@@ -86,12 +86,12 @@ void () StartItem =
 HEALTH BOX
 
 =========================================================================
-*/
+*
 //
 // T_Heal: add health to an entity, limiting health to max_health
 // "ignore" will ignore max_health limit
 //
-float (entity e, float Thealamount, float ignore) q100_T_Heal =
+float (entity e, float Thealamount, float ignore) q10-_T_Heal =
 {
 	if (e.health <= 0)
 		return 0;
@@ -149,7 +149,7 @@ void () q100_item_health =
 			setmodel (self,"maps/b_bh100.bsp");
 			self.noise = "items/r_item2.wav";
 			self.healamount = 100;
-			self.healtype = HEAL_MEGA; // Cataboligne - 9.8.11 - needed to play nice with q100 / pk100 translate from other genre
+			self.healtype = HEAL_MEGA;
 			self.volume = Q_MEGA_MAX; // Cataboligne - 9.20.11 - for chaos mod code
 			self.archon = ARCHON_ART;
 		}
@@ -204,7 +204,7 @@ void () q100_health_touch =
 	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
-	if (self.healtype == HEAL_MEGA) // Cataboligne - 9.8.11 - needed to play nice with q100 / pk100 translate from other genre
+	if (self.healtype == HEAL_MEGA)
 	{
 		other.items = other.items | IT_SUPERHEALTH;
 		self.nextthink = time + 5;
@@ -291,8 +291,7 @@ void () armor_touch =
 		value = 200;
 		bit = IT_ARMOR3;
 	}
-// IDEA: move this somehow one day in the far future - maintain q100 code
-//       move issues - snd, ck, bit values used by later q100 code
+
 	local string snd;
 	local float ck;
 	ck = TRUE;
@@ -305,7 +304,6 @@ void () armor_touch =
 //		other.target2 = self.model; // for dropinv - moved to touch
 		ck = FALSE;
 		if (self.noise) snd = self.noise; // Cataboligne - 9.23.11 - defaulted a few things if not set
-		bit = IT_ARMOR2;
 		if (self.items) bit = self.items;
 		type = 0.6;
 		if (self.style) type = self.style;
@@ -325,6 +323,7 @@ void () armor_touch =
 		{
 			q3_ha_rot(other, value);
 		}
+		if (!bit) bit = IT_ARMOR2;
 	}
 
 	if (ck)
@@ -1192,9 +1191,9 @@ void () sigil_touch =
 
 /*QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
 End of level sigil, pick up to end episode and return to jrstart.
-*/
+*
 
-void () q100_item_sigil =
+void () q10-_item_sigil =
 {
 	if (!self.spawnflags)
 		objerror ("no spawnflags");
@@ -1411,9 +1410,9 @@ void () item_artifact_super_damage =
 PLAYER BACKPACKS
 
 ===============================================================================
-*/
+*
 
-void () q100_BackpackTouch =
+void () q10-_BackpackTouch =
 {
 	local string s;
 	local	float	best, old, new;
@@ -1515,8 +1514,8 @@ void () q100_BackpackTouch =
 ===============
 DropBackpack
 ===============
-*/
-void () q100_DropBackpack =
+*
+void () q10-_DropBackpack =
 {
 	local entity item;
 
@@ -1560,9 +1559,10 @@ void () q100_DropBackpack =
 	item.movetype = MOVETYPE_TOSS;
 	setmodel (item,"progs/backpack.mdl");
 	setsize (item,'-16 -16 0','16 16 56');
-	item.touch = q100_BackpackTouch;
+	item.touch = q10-_BackpackTouch;
 
 	item.nextthink = time + 120;	// remove after 2 minutes
 	item.think = SUB_Remove;
 	bot_BackpackSetup(item); // *bot
 };
+*/

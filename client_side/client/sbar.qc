@@ -635,12 +635,12 @@ sb_align = SB_BOTTOM;
 
 	if (ibar_flag)
 	{
-		string s;
-		s = strconv(CONV_SAME, CONV_RED, CONV_WHITESPECIAL, "Quake Marine");
 		if (morph == CHAR_Q)
-			Sbar_DrawString(pwr_step + wep_step + woff, s, ALPHA_FULL, '7 7 0','0.5 0.7 1');
+			Sbar_DrawString(pwr_step + wep_step + woff, "Marine", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 		else if (morph == CHAR_D)
-			Sbar_DrawString(pwr_step + wep_step + woff, "Doom Marine", ALPHA_FULL, '7 7 0','0.16 0.2 0.29');
+			Sbar_DrawString(pwr_step + wep_step + woff, "UAC Marine", ALPHA_FULL, '7 7 0','0.16 0.2 0.29');
+		else if (morph == CHAR_Q2)
+			Sbar_DrawString(pwr_step + wep_step + woff, "Space Marine", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 		else if (morph == CHAR_Q3)
 			Sbar_DrawString(pwr_step + wep_step + woff, "Sarge", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 		else if (morph == CHAR_PK)
@@ -1053,10 +1053,18 @@ sb_align = SB_BOTTOM;
 						else
 						{
 							Sbar_DrawString('248 40 0' + woff, "Teleport to beacon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-							instr = "*FIRE - initiate teleport";
+							instr = "*FIRE - cast teleport spell";
 						}
 					}
 //					else Sbar_DrawString('280 40 0', "Unknown Magic", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				}
+				if (currentweap == IT_SUPER_SHOTGUN) // spell list 1 - poly
+				{
+					if (nails == 3)
+					{
+						Sbar_DrawString('260 40 0' + woff, "Polymorph self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						instr = "*FIRE - cast polymorph to creature";
+					}
 				}
 				DrawInventoryAmmo('372 50 0', "gfx/reticle.spr_0", ALPHA_FULL, 0.05);
 			}
@@ -1131,6 +1139,10 @@ sb_align = SB_BOTTOM;
 		}
 		else
 		{
+			Sbar_DrawString(pwr_step + '22 -5 0' + woff, "FIRE - chaos bolt attack", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 14;
+			Sbar_DrawString(pwr_step + '22 -5 0' + woff, "ALT_FIRE - chaos beam", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo('362 50 0', "gfx/inv_chaos_shot", ALPHA_FULL, 0.1);
 		}
 

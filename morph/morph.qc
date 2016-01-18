@@ -384,6 +384,9 @@ void() morphic_impulse =
 		{
 			c.owner = world;
 			c.touch = painkeep_touch;
+			if (c.model == null_string) // polymorph spell - get rid of it
+				remove(c);
+			else
 			centerprint(self, "The item is free...");
 		}
 		if (done == 1) self.impulse = 0;
@@ -452,6 +455,9 @@ void() morphic_impulse =
 				c.theowner = self;
 				c.owner = world;
 				c.touch = painkeep_touch;
+				if (c.model == null_string) // polymorph spell - get rid of it
+					remove(c);
+				else
 				centerprint(self, "The item is free...");
 				self.state = 
 				self.impulse = 0;
@@ -516,13 +522,17 @@ void() morph_cube_use =
 	if (self.state == IMP_MGREMLIN_F)
 	if (random() < 0.65) self.state = IMP_MGREMLIN_L;
 
+	c.height = self.archon;
+	self.archon = self.archon - c.archon; // do now for checks on becoming
+	c.button0 = self.state;
+
+	if (c.netname == "Archon Spirit") self.height = self.morphy; // for Archons - what they were
+
 	polymorph_check(self.state, 0);
 
-	if (!MORPH_FREE)
-	if (self.state == self.morphy) // morphed - take away points, does this ever need any verification?
-		self.archon = self.archon - c.archon;
+	if ((MORPH_FREE) || (c.button0 != self.morphy)) // failed morph - restore points, does this ever need any verification?
+		self.archon = c.height;
 
-	self.volume = 0; // used for powers & such, dont let HUD look bad
 	self.impulse = 0;
 	remove(c);
 	cube_rearm(); // re arm player
@@ -937,7 +947,14 @@ void(entity e, float all) morph_clearparms =
 
 // remove items & ammos
 	e.weapon = e.currentammo = e.ammo_shells = e.ammo_nails = e.ammo_rockets = e.ammo_cells = 0;
-	e.eweapon = world;
+
+// allow evolution after death - powerful magic
+	if (e.eweapon.wad != "morph_cube")
+	{
+		e.eweapon = world;
+		e.volume = 0;
+	}
+
 	e.pkprevweapon = e.pklastweapon = e.prevweapon = e.lastweapon = 0;
 // remove pk items & ammos
 	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
@@ -1294,18 +1311,18 @@ void(float cmd, float pls) polymorph_check =
 
 			if (IS_CHAOS(self))
 			{
-				if (self.aflag & 16) return; // no change during star bursts
-				if (cmd == self.state) // returning to native form
+				if (cmd == self.height) // returning to native form
 				{
-					if (chaos_poly)
+					if (self.goalentity.classname == "chaos_morph")
 					{
-						remove(chaos_poly);
-						chaos_poly = world;
+						remove(self.goalentity);
+						self.goalentity = world;
 					}
 				}
-				else if (!chaos_poly) // going to another form - set random return code
+				else // going to another form - set random return code
 				{
-					chaos_poly = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", null_string, SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
+					if (self.goalentity.classname == "beacon") remove(self.goalentity); // self poly kills beacon spell
+					self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", null_string, SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
 				}
 			}
 
@@ -1367,6 +1384,8 @@ void(float cmd, float pls) polymorph_check =
 		morph_sound_off();
 //		self.eweapon = world;
 		self._summon = SUB_Null;
+
+		if (self.deadflag) return;
 
 		if (cmd == IMP_MCHAOS) player_chaos_become(pls);
 		else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);

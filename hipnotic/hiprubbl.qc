@@ -111,7 +111,11 @@ void(string rubblename, float rubblefr, float rubblesk, vector org, string code)
 	}
 	else if (code == "explosion")
 	{
-		newmis.velocity_x = (self.velocity + random() * (self.velocity * 3)) + v_up * crandom() * 100 + v_right * crandom() * 100;
+// this was a compile warning: "hipnotic/hiprubbl.qc:114: warning: Implicit conversion"
+// we believe the code should be as follows...
+//		newmis.velocity_x = (self.velocity + random() * (self.velocity * 3)) + v_up * crandom() * 100 + v_right * crandom() * 100;
+
+		newmis.velocity = (self.velocity + random() * (self.velocity * 3)) + v_up * crandom() * 100 + v_right * crandom() * 100;
 //		newmis.velocity_y = 5 * crandom();
 //		newmis.velocity_z = -75 + random() * -50;
 		newmis.avelocity_x = random() * 100;

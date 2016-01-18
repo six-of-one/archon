@@ -29,7 +29,7 @@ void (vector org, entity death_owner) spawn_tdeath;
 //float	modelindex_eyes, modelindex_player; // moved to pk_client
 
 
-//float intermission_running; - moved to painkeep.qc - q100 rules
+//float intermission_running; - moved to painkeep.qc
 float intermission_exittime;
 
 /*QUAKED info_intermission (1 0.5 0.5) (-16 -16 -16) (16 16 16)
@@ -41,12 +41,12 @@ void () info_intermission =
 };
 
 
-
-void () q100_SetChangeParms =
+/*
+void () q10-_SetChangeParms =
 {
 	if (self.health <= 0)
 	{
-		q100_SetNewParms ();
+		q10-_SetNewParms ();
 		return ;
 	}
 
@@ -73,7 +73,7 @@ void () q100_SetChangeParms =
 	parm9 = self.armortype * 100;
 };
 
-void () q100_SetNewParms =
+void () q10-_SetNewParms =
 {
 	parm1 = IT_SHOTGUN | IT_AXE;
 	parm2 = 100;
@@ -86,12 +86,12 @@ void () q100_SetNewParms =
 	parm9 = 0;
 };
 
-void () q100_DecodeLevelParms =
+void () q10-_DecodeLevelParms =
 {
 	if (serverflags)
 	{
 		if (world.model == "maps/start.bsp")
-			q100_SetNewParms ();   // take away all stuff on starting new episode
+			q10-_SetNewParms ();   // take away all stuff on starting new episode
 	}
 
 	self.items = parm1;
@@ -340,7 +340,6 @@ void () changelevel_touch =
 
 	nextmap = self.map;
 
-	if (!Q_100 && !Q_99)
 	if (pk_flags & PK_SF_HUB) // *pk - using voting / hub system - nextmap is always hub
 		nextmap = hub_select(); //"start"; // *pk - if we're working with the hub system, then let's override this and go to the hub
 
@@ -410,10 +409,7 @@ void () respawn =
 
 		// set default spawn parms
 
-		if (!Q_100) // Cataboligne - 8.22.9 - pk orig oper
-			SetNewParms_PK();
-		else
-		SetNewParms ();
+		SetNewParms_PK();
 	// respawn
 		parm15 = -1;
 		PutClientInServer ();
@@ -434,8 +430,8 @@ ClientKill
 
 Player entered the suicide command
 ============
-*/
-void () q100_ClientKill =
+*
+void () q10-_ClientKill =
 {
 	bprint (self.netname);
 	bprint (" suicides\n");
@@ -444,7 +440,7 @@ void () q100_ClientKill =
 	self.frags = self.frags - 2;	// extra penalty
 	respawn ();
 };
-
+*/
 //float (vector v) CheckSpawnPoint =
 float () CheckSpawnPoint =
 {
@@ -525,12 +521,12 @@ PutClientInServer
 
 called each time a player is spawned
 ============
-*/
+*
 void() DecodeLevelParms;
 void () PlayerDie;
 
 
-void () q100_PutClientInServer =
+void () q10-_PutClientInServer =
 {
 	local entity spot;
 
@@ -553,7 +549,7 @@ void () q100_PutClientInServer =
 	self.effects = 0;
 	self.invincible_time = 0;
 
-	q100_DecodeLevelParms ();
+	q10-_DecodeLevelParms ();
 
 	W_SetCurrentAmmo ();
 
@@ -703,7 +699,6 @@ void () NextLevel =
 		}
 	}
 
-	if (!Q_100 && !Q_99)
 	if (pk_flags & PK_SF_HUB) // *pk - using voting / hub system - nextmap is always hub
 		o.map = hub_select(); //"start"; // *pk - if we're working with the hub system, then let's override this and go to the hub
 
@@ -843,9 +838,9 @@ void () PlayerJump =
 WaterMove
 
 ============
-*/
+*
 
-void () q100_WaterMove =
+void () q10-_WaterMove =
 {
 //dprint (ftos(self.waterlevel));
 	if (self.movetype == MOVETYPE_NOCLIP)
@@ -870,7 +865,7 @@ void () q100_WaterMove =
 			self.dmg = self.dmg + 2;
 			if (self.dmg > 15)
 				self.dmg = 10;
-			if (!Q_100) ignorearmor = TRUE; // *pk - no armor taken when drowning
+			ignorearmor = TRUE; // *pk - no armor taken when drowning
 			T_Damage (self, world, world, self.dmg);
 			ignorearmor = FALSE;
 			self.pain_finished = time + 1;
@@ -929,7 +924,7 @@ void () q100_WaterMove =
 	if (! (self.flags & FL_WATERJUMP))
 		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
 };
-
+*/
 void () CheckWaterJump =
 {
 	local vector start, end;
@@ -966,8 +961,8 @@ PlayerPreThink
 
 Called every frame before physics are run
 ================
-*/
-void () q100_PlayerPreThink =
+*
+void () q10-_PlayerPreThink =
 {
 //	local	float	mspeed, aspeed;
 //	local float r;
@@ -984,7 +979,7 @@ void () q100_PlayerPreThink =
 	makevectors (self.v_angle);		// is this still used
 
 	CheckRules ();
-	q100_WaterMove ();
+	q10-_WaterMove ();
 
 	if (self.waterlevel == 2)
 		CheckWaterJump ();
@@ -1022,8 +1017,8 @@ CheckPowerups
 
 Check for turning off powerups
 ================
-*/
-void () q100_CheckPowerups =
+*
+void () q10-_CheckPowerups =
 {
 	if (self.health <= 0)
 		return;
@@ -1178,8 +1173,8 @@ PlayerPostThink
 
 Called every frame after physics are run
 ================
-*/
-void () q100_PlayerPostThink =
+*
+void () q10-_PlayerPostThink =
 {
 //	local	float	mspeed, aspeed;
 //	local float r;
@@ -1223,8 +1218,8 @@ ClientConnect
 
 called when a player connects to a server
 ============
-*/
-void () q100_ClientConnect =
+*
+void () q10-_ClientConnect =
 {
 	bprint (self.netname);
 	bprint (" entered the game\n");

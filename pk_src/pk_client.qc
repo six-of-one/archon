@@ -12,24 +12,17 @@
 
 // special parms - for respawn
 
-void() q100_SetChangeParms;
-void() q100_SetNewParms;
-void() q100_DecodeLevelParms;
 float	modelindex_eyes, modelindex_player;
-void () q100_ClientKill;
 void () set_suicide_frame;
 void () respawn;
-void() q100_PutClientInServer;
 void() player_stand1;
 void() player_pain;
 void() PlayerDie;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
-void () q100_ClientConnect;
-void () q100_ClientDisconnect;
 void () ExitIntermission;
 void () IntermissionThink;
-void () q100_CheckPowerups;
+void()	q100_ClientDisconnect;
 
 
 void() SetNewParms_PK =
@@ -48,8 +41,7 @@ void() SetNewParms_PK =
 	}
 
 // Cataboligne 2.18.11 - set defaults code
-	if (!Q_100 && !PK_100)
-		parm6 = -6;
+	parm6 = -6;
 
 	cam_parms(2);
 };
@@ -60,16 +52,16 @@ void() SetChangeParms =
 {
 	if (find(world,classname,"pk*bot")) bot_changeParms();
 
-	if (Q_100)
-	{
-		q100_SetChangeParms();
-		return;
-	}
+//		q10-_SetChangeParms();
+
 // Cataboligne 9.11.3 purify - chase cam - parm14
 	cam_parms(0);
 
 	if (self.class_select == "class_player")
+	{
 		parm15 = self.morphy;
+		if (self.mask_x & MORPH_ARCHON) parm15 = self.height; // true archon form
+	}
 
 	if (self.health <= 0 || self.classname == OBSERVER) // Cataboligne - 5.3.10 - fix level change issue when in dead observer or admin observer
 	{
@@ -100,8 +92,9 @@ void() SetChangeParms =
 		self.health = 50;
 
 	parm1 = self.items;
-	if (self.archon > 65535) self.archon = 65536; // cap - largest amount var will hold
-	parm2 = self.health + ceil(self.archon * 256);
+	if (self.archon > 65535) self.archon = 65535; // cap - largest amount var will hold
+
+	parm2 = self.health + ceil(self.archon) * 256;
 	armorsave_rev(self);
 //	parm3 = self.armorvalue; // put in parm9
 	parm4 = self.ammo_shells;
@@ -142,11 +135,7 @@ void() SetChangeParms =
 
 void() SetNewParms =
 {
-	if (Q_100)
-	{
-		q100_SetNewParms();
-		return;
-	}
+//		q10-_SetNewParms();
 
 	parm1 = 0; // IT_SHOTGUN | IT_AXE;
 	parm2 = 100;
@@ -170,8 +159,7 @@ void() SetNewParms =
 	parm15 = -1;
 
 // Cataboligne 2.18.11 - set defaults code
-	if (!Q_100 && !PK_100)
-		parm6 = -6; // no rockets anyway, so we use this to call default func
+	parm6 = -6; // no rockets anyway, so we use this to call default func
 
 // Cataboligne 9.11.3 purify - chase cam
 	cam_parms(2);
@@ -182,11 +170,7 @@ void() SetNewParms =
 
 void() DecodeLevelParms = 
 {
-	if (Q_100)
-	{
-		q100_DecodeLevelParms();
-		return;
-	}
+//		q10-_DecodeLevelParms();
 
 	if (!deathmatch || !ENHANCED) // Cataboligne - enhanced code - dont do this in DM
 	if (serverflags)
@@ -241,7 +225,7 @@ void() DecodeLevelParms =
 		if (CHAR_CON >= CHAR_W && CHAR_CON  <= CHAR_Q3) self.morphy = CHAR_CON; // forced by server admin
 		else self.morphy = set_char_num(MAP_MODE);
 	}
-	if (PK_100) self.morphy = IMP_MHUMAN;
+//	if (PK-100) self.morphy = IMP_MHUMAN;
 
 	self.mask_x = cb_morph(self.morphy);
 
@@ -266,7 +250,7 @@ void() DecodeLevelParms =
 string nextmap;
 void() PK_GotoNextMap =
 {
-	if (!Q_100 && !Q_99 && !PK_ADMINMAP)
+	if (!PK_ADMINMAP)
 	if (pk_flags & PK_TP_USERMAPON) // *pk - user supplied map loop deal
 	{
 		if (!execed)
@@ -277,7 +261,7 @@ void() PK_GotoNextMap =
 		return;
 	}
 
-	if(!PK_100 && !PK_ADMINMAP) 
+	if(!PK_ADMINMAP) 
 	{
 		if (check_custom_hub()) // *pk --- Cataboligne - 8.16.9 - do custom hub load from any exit here
 			return;
@@ -295,11 +279,8 @@ Player entered the suicide command
 
 void () ClientKill =
 {
-	if (Q_100)
-	{
-		q100_ClientKill();
-		return;
-	}
+//		q10-_ClientKill();
+
 	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
 	bprint (self.netname);
 	bprint (" suicides\n");
@@ -345,7 +326,7 @@ void(entity spot) ClearSpawnPoint =
 // notes: does not include info_player_start - regular q1 dm spawn select does
 //			 if in single player & PK mode set for pk items, spawn is random.
 
-// fixing these if not in PK_100
+// fixing these if not in PK-100
 
 // IDEA: if no spawns, use whatever is available - ammo, teleports, etc. - dont give away goodies
 
@@ -364,16 +345,14 @@ entity() PK_SelectSpawnPoint =
 
 // testinfo_player_start is only found in regioned levels - NOTE: if this ever spawns, this is DUMB code for dm
 	spot = find (world, classname, "testplayerstart");
-	if (PK_100 || (!deathmatch && !coop) || cvar("saved1") == 666) // if a developer wanted this in dm | coop they need to set saved1
+	if ((!deathmatch && !coop) || cvar("saved1") == 666) // if a developer wanted this in dm | coop they need to set saved1
 	if (spot)
 		return spot;
 
 // choose a info_player_deathmatch point
 
-// not PK_100 - support single player & coop - hey this is a request
+// not PK-100 - support single player & coop - hey this is a request
 
- if (!PK_100)
- {
 	if (coop)
 	{
 		lastspawn = find (lastspawn,classname,"info_player_coop");
@@ -399,13 +378,12 @@ entity() PK_SelectSpawnPoint =
 		else
 			return(spot);
 	}
- }
  
 // ok, find all spots that don't have players nearby
 
 	spots = world;
 	spot = find (world, classname, "info_player_deathmatch");
-// IDEA: if there are no dm spawns, and dm is set & !PK_100, make some (cvar control?)
+// IDEA: if there are no dm spawns, and dm is set & !PK-100, make some (cvar control?)
 	while (spot)
 	{
 		totalspots = totalspots + 1;
@@ -438,7 +416,7 @@ entity() PK_SelectSpawnPoint =
 			totalspots = totalspots - 1;
 			spot = find (spot, classname, "info_player_deathmatch");
 		}
-		if (spot || PK_100) return spot;
+		if (spot) return spot;
 	}
 
 // We now have the number of spots available on the map in numspots
@@ -454,7 +432,7 @@ entity() PK_SelectSpawnPoint =
 		spot = spot.goalentity;
 		numspots = numspots - 1;
 	}
-	if (spot || PK_100) return spot;
+	if (spot) return spot;
 	
 	spot = find_tdest(0, null_string);
 	return spot; // this better pretty damn well be somewhere in the level
@@ -484,7 +462,6 @@ void() pk_plcfg =
 			stuffcmd(self, Q3_BOBHOFF);
 //			if (!pk_map) // not a pk map (some hubX maps have no .wad!)
 //			if (world.wad == null_string) // q3 map? - then set bob
-			if (!Q_100 && !PK_100)
 			if (MAP_MODE == "Q3")
 				q3_bob_height();
 		}
@@ -528,7 +505,7 @@ void() PutClientInServer =
 	self.classname = "player";
 	player_count(); // count for map over loading ops
 
-// morphic - needs done prior to q100
+// morphic - needs done prior to q10-
 	self._stand = SUB_Null; // make sure these are safe & detectable
 	self._pain = SUB_Null;
 	self._run = SUB_Null;
@@ -544,16 +521,8 @@ void() PutClientInServer =
 	self._killmsg = SUB_Null;
 	self._killmsg2 = SUB_Null;
 
-	if (Q_100 || Q_99)
-	{
-		if (Q_99)
-		{
-			AddToSplashBig(self);
-		}
-		Chase_cam_level_start(); // Cataboligne 8.9.9 purify - chase cam
-		q100_PutClientInServer(); // always encoding now
-		return;
-	}
+//		Chase_cam_level_start(); // Cataboligne 8.9.9 purify - chase cam
+//		q10-_PutClientInServer(); // always encoding now
 
 	spot = PK_SelectSpawnPoint (); // *pk - get a spawn point, pk style 
 	ClearSpawnPoint(spot); // *pk
@@ -761,11 +730,7 @@ Check for turning off powerups
 
 void () CheckPowerups =
 {
-	if (Q_100)
-	{
-		q100_CheckPowerups();
-		return;
-	}
+//		q10-_CheckPowerups();
 
 	if (time & 15 == 12)
 	{
@@ -1103,7 +1068,6 @@ WaterMove
 
 ============
 */
-void () q100_WaterMove;
 
 void () WaterMove =
 {
@@ -1114,11 +1078,7 @@ void () WaterMove =
 	if (self.classname == OBSERVER) // Cataboligne 8.9.9 purify - chase cam (dead) & observer - no water stuff
 		return;
 
-	if (Q_100 || PK_100)
-	{
-		q100_WaterMove();
-		return;
-	}
+//		q10-_WaterMove();
 
 //dprint (ftos(self.waterlevel));
 
@@ -1202,7 +1162,7 @@ void () WaterMove =
 		if (self.dmg > 15)
 			self.dmg = 10;
 
-		if (!Q_100) ignorearmor = TRUE; // *pk - no armor taken when drowning
+		ignorearmor = TRUE; // *pk - no armor taken when drowning
 			// Cataboligne 9.11.3 purify
 		e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v0, v0, v0, v0, v0, "drowning", null_string, SUB_Null, 0.01, SUB_Remove, SUB_Null, self, world);
 		T_Damage (self, e, world, self.dmg);
@@ -1303,11 +1263,7 @@ void () PlayerPreThink =
 	if (BotPreFrame ())
 		return ;
 
-	if (Q_100)
-	{
-		q100_PlayerPreThink();
-		return;
-	}
+//		q10-_PlayerPreThink();
 
 	if (intermission_running)
 	{
@@ -1381,8 +1337,7 @@ void () PlayerPreThink =
 				CheckWaterJump ();
 		}
 
-//		if (!Q_100 && !PK_100)
-//		if (!Q_100 && !PK_100)
+//		if (!Q-100 && !PK-100)
 		if (self.waterlevel)
 		if (! self.flags & FL_WATERJUMP)
 		if (self.cam_x & CHSCAM_ON)
@@ -1551,11 +1506,7 @@ void () PlayerPostThink =
 	if (self.rune_flag & RUNE_FLG_RG || self.rune_flag & TECH_ADOC) rune_regen();
 	if (self.rune_flag & RUNE_VAMPIRE) rune_vamp();
 
-	if (Q_100 || Q_99) // CHECK: q99-ness effect hereish
-	{
-		q100_PlayerPostThink();
-		return;
-	}
+//		q10-_PlayerPostThink();
 
 	if (self.view_ofs == '0 0 0')
 		return;		// intermission or finale
@@ -1750,11 +1701,8 @@ void () ClientConnect =
 
 	ClientInRankings (); // sets .ishuman & .class_select for humans
 	bot_con(TRUE); // *bot - doesnt depend on active bots, must always happen
-	if (Q_100 || Q_99)
-	{
-		q100_ClientConnect();
-		return;
-	}
+
+//		q10-_ClientConnect();
 
 
 	v = random() * 6;
@@ -1807,38 +1755,36 @@ void () ClientDisconnect =
 
 	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
 
-	if (!Q_100 && !Q_99)
-	{
 // PK - set flag so that we know that it's a disconnected entity.
-		self.disconnectPlayer = 1;
+	self.disconnectPlayer = 1;
 
-		grap_releaseHarpoon();
-		self.beartrap_time = 0;
-		self.voteIntermission = 0;
+	grap_releaseHarpoon();
+	self.beartrap_time = 0;
+	self.voteIntermission = 0;
 
-		self.grap_owner = world;
+	self.grap_owner = world;
 
-		self.bolt_target = world;
-		self.bolt_targetNext = world;
-		self.bolt_targetTimeout = 0;
-		self.bolt_targetNextTimeout = 0;
-		if (self.bolt_targetTimeoutEntity)
-		{
-			remove(self.bolt_targetTimeoutEntity);
-		}
-		self.bolt_targetTimeoutEntity = world;
-		self.bolt_conduitTimeout = 0;
-		self.bolt_changeModelTimeout = 0;
-		if (self.bolt_lightningFire)
-		{
-			remove(self.bolt_lightningFire);
-		}
-		self.bolt_lightningFire = world;
-
-		admin_sv_cfg();
-
-		bprint (self.teamname);
+	self.bolt_target = world;
+	self.bolt_targetNext = world;
+	self.bolt_targetTimeout = 0;
+	self.bolt_targetNextTimeout = 0;
+	if (self.bolt_targetTimeoutEntity)
+	{
+		remove(self.bolt_targetTimeoutEntity);
 	}
+	self.bolt_targetTimeoutEntity = world;
+	self.bolt_conduitTimeout = 0;
+	self.bolt_changeModelTimeout = 0;
+	if (self.bolt_lightningFire)
+	{
+		remove(self.bolt_lightningFire);
+	}
+	self.bolt_lightningFire = world;
+
+	admin_sv_cfg();
+
+	bprint (self.teamname);
+
 // normal disc
 	q100_ClientDisconnect();
 };

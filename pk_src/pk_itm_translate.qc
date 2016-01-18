@@ -2018,7 +2018,7 @@ string(entity e, float TR) map_trans =
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 
-/// hipnotic - for now just removes in case of *100
+/// hipnotic
 	else if (e.scode == MC_HIP_MJOLNIR)
 	{
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -2044,7 +2044,7 @@ string(entity e, float TR) map_trans =
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 
-/// chaos - for now just removes in case of *100
+/// chaos
 	else if (e.scode == MC_REGGUN)
 	{
 		if (TR >= FL_TR_REMOVE) return("RMV");

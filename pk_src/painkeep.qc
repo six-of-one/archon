@@ -1312,11 +1312,6 @@ void() pk_srvcmd_load =
 
 	localcmd("exec cfg/map/pk_7.cfg\n"); // module X - wont exec until after first map load - this should be ok, because first map of server should always be a hub
 	localcmd("exec cfg/map/pk_8.cfg\n");
-
-// removal items
-	PK_100 = 0;
-	Q_99 = 0;
-	Q_100 = 0;
 	
 	pk_liveupd(); // load live now, set all cfg changed vars
 };

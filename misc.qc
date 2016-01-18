@@ -234,8 +234,8 @@ void () fire_touch =
 };
 
 //============================================================================
-
-void () q100_barrel_explode =
+/*
+void () q10-_barrel_explode =
 {
 	self.takedamage = DAMAGE_NO;
 	self.classname = "explo_box";
@@ -252,9 +252,9 @@ void () q100_barrel_explode =
 
 /*QUAKED misc_explobox (0 .5 .8) (0 0 0) (32 32 64)
 TESTING THING
-*/
+*
 
-void () q100_misc_explobox =
+void () q10-_misc_explobox =
 {
 	local float oldz;
 
@@ -264,7 +264,7 @@ void () q100_misc_explobox =
 	setmodel (self,"maps/b_explob.bsp");
 	precache_sound ("weapons/r_exp3.wav");
 	self.health = 20;
-	self.th_die = q100_barrel_explode;
+	self.th_die = q10-_barrel_explode;
 	self.takedamage = DAMAGE_AIM;
 
 	self.origin_z = self.origin_z + 2;
@@ -284,9 +284,9 @@ void () q100_misc_explobox =
 
 /*QUAKED misc_explobox2 (0 .5 .8) (0 0 0) (32 32 64)
 Smaller exploding box, REGISTERED ONLY
-*/
+*
 
-void () q100_misc_explobox2 =
+void () q10-_misc_explobox2 =
 {
 	local float oldz;
 
@@ -296,7 +296,7 @@ void () q100_misc_explobox2 =
 	setmodel (self,"maps/b_exbox2.bsp");
 	precache_sound ("weapons/r_exp3.wav");
 	self.health = 20;
-	self.th_die = q100_barrel_explode;
+	self.th_die = q10-_barrel_explode;
 	self.takedamage = DAMAGE_AIM;
 
 	self.origin_z = self.origin_z + 2;
@@ -310,7 +310,7 @@ void () q100_misc_explobox2 =
 		remove (self);
 	}
 };
-
+*/
 //============================================================================
 
 float SPAWNFLAG_SUPERSPIKE	 = 1;

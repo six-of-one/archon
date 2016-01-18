@@ -1982,6 +1982,8 @@ void () weapon_hook =
 // self MUST BE player
 void() cube_rearm =
 {
+	if (self.deadflag) return;
+
 	self.weapon = W_BestWeapon();
 	self.pk_currentitem = W_BestPKWeapon();
 	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
@@ -2452,6 +2454,7 @@ void() cube_touch =
 		sprint(other, "hit fire to open - you must be in range");
 	else
 	{
+		other.cnt = -1;
 		other.cnt = -1;
 		other.state = other.morphy; // set morph_lock
 		if (other.class_select == "class_player") // not a bot
@@ -3337,7 +3340,7 @@ void () misc_explobox =
 {
 //	local float oldz;
 
-//		q100_misc_explobox();
+//		q10-_misc_explobox();
 
 	misc_explodbox_set(self, "maps/b_explob.bsp", 160, 20, MOVETYPE_NONE);
 	if (self.class_select == null_string) self.class_select = "quake_item";
@@ -3351,7 +3354,7 @@ void () misc_explobox2 =
 {
 //	local float oldz;
 
-//		q100_misc_explobox2();
+//		q10-_misc_explobox2();
 
 	misc_explodbox_set(self, "maps/b_exbox2.bsp", 160, 20, MOVETYPE_NONE);
 	if (self.class_select == null_string) self.class_select = "quake_item";

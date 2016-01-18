@@ -15,8 +15,21 @@ Archon: CHAOS
 
 "the Story"
 
+Chaos...what came before Order (dont let him hear you say that...)
 
+A formless mass of pulsating energy, plasma and quantum states.
+Alive?  Intelligent?
 
+What is life?  What is sentience.
+Your sentient form supplies your intelligence from elctro-chemical signals operating in a biological circuit.
+
+Chaos simply is.
+
+And its here.
+
+Not too happy about the organized state of things either.
+
+Chaos intends to change all of that.
  */
  
 /*
@@ -49,7 +62,6 @@ void() m_precache_chaos =
 	precache_sound ("weapons/lhit.wav");
 	precache_sound ("misc/power.wav");
 	precache_sound ("chaos/lava1.wav");
-//	precache_sound ("chaos/pist1.wav");
 	precache_sound ("chaos/cbeam.1.wav");
 	precache_sound ("chaos/cbeam.2.wav");
 };
@@ -88,9 +100,6 @@ float CI_FLAMEREAL				= 0.2; // % chance chaos item tossed flame2.mdl burns
 
 
 void() chaos_item;
-
-// NOTE: keeping because archon power does not have a build cycle for Archons, yet
-
 
 
 // fn(chaos_level) - set chaos level, maintain health for chaos
@@ -212,7 +221,9 @@ void(entity cent, float pl) chaos_morph_chg =
 	self = sv;
 };
 
-// fn(chaos_morph_chgthk) - think to change morph
+// fn(chaos_morph_chgthk) - think to change morph - restores chaos from other forms
+
+/// chaos_poly = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", "", SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
 
 void() chaos_morph_chgthk =
 {
@@ -1597,6 +1608,7 @@ void() chaos_beam =
 };
 
 // spell code
+/// teleports
 
 void() multi_teleport =
 {
@@ -1724,6 +1736,25 @@ void() set_beacon =
 	spell_target();
 };
 
+/// polymoprh
+
+// for order
+//	self.mask_x = IMP_MHUMAN + CB_ENF + CB_HKNIGHT + CB_OGRE;
+
+
+void() poly_self =
+{
+	other = self;
+	self = spawn();
+	morph_cube();
+	self.mask_x = CB_DEMON + CB_OGRE + CB_SHALR + CB_SCRAG + CB_ZOMBY + CB_CTHON + CB_GREMLIN + CB_SCOURGE;
+	self.model = null_string;
+	self.nextthink = 0;
+	cube_touch();
+	self = other;
+	self.archon = self.archon - self.pk_explode_ammo;
+};
+
 // setup spells
 
 // pkplus_actorammo - targeting for server & HUD
@@ -1764,6 +1795,10 @@ void() spell_target =
 				self.bolt_target = self.goalentity;
 			}
 		}
+	}
+	if (self.weapon == IT_SUPER_SHOTGUN)
+	{
+		if (self.ammo_nails == 3) { self.pk_explode_ammo = 25; self.pkplus_actorammo = 0; self.th_melee = poly_self; }
 	}
 
 	self.bolt_targetTimeout = time + 30;
@@ -2161,6 +2196,13 @@ void() player_chaos_impulse =
 
 //	morph_impulse();
 
+	if (self.aflag & 16) // no morph during star bursts
+	{
+		self.items = self.items - (self.items & IT_SUPER_SHOTGUN);
+	}
+	else
+		self.items = self.items | IT_SUPER_SHOTGUN;	
+
 	if (self.impulse == 1)
 		self.weapon = IT_AXE;
 	else if (self.impulse == 10)
@@ -2190,6 +2232,23 @@ void() player_chaos_impulse =
 			else if (self.ammo_shells == 11) self.ammo_shells = 3;
 		}
 		self.weapon = IT_SHOTGUN;
+	}
+	if (self.impulse == 3) // spell list 2 - polymorph self
+	{
+		if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
+		{
+			if (!self.ammo_nails) self.ammo_nails = 3;
+//			else if (self.ammo_nails == 3) self.ammo_nails = 5; // poly to monster - uses fake cube
+//			else if (self.ammo_nails == 5) self.ammo_nails = 7;
+//			else if (self.ammo_nails == 7) self.ammo_nails = 11;
+//			else if (self.ammo_nails == 11) self.ammo_nails = 13;
+//			else if (self.ammo_nails == 13) self.ammo_nails = 17;
+//			else if (self.ammo_nails == 17) self.ammo_nails = 19;
+//			else if (self.ammo_nails == 19) self.ammo_nails = 23;
+//			else if (self.ammo_nails == 23) self.ammo_nails = 29;
+			else if (self.ammo_nails == 3) self.ammo_nails = 3;
+		}
+		self.weapon = IT_SUPER_SHOTGUN;
 	}
 	else if (self.impulse == IMP_MSIGHT)
 		morph_sound(2, self.msight, 3);							// let player morphs "talk"
@@ -2250,6 +2309,9 @@ void(float silent) player_chaos_become =
 	}
 	else
 		tc = FL_SPIKE;
+
+	if (self.height != IMP_MCHAOS) self.state = self.height; // save previous form for de-archon
+	self.height = IMP_MCHAOS;
 
 	chaos_form(tc);
 	self.dest_y = CB_CHAOS | CB_HUMAN | CB_SHALR | CB_CTHON | CB_SCOURGE | CB_GREMLIN | CB_ENF | CB_SCRAG;

@@ -864,7 +864,6 @@ void() Chase_cam_level_start =
 // opt:
 // 0 = minus
 // 1 = plus
-// 2 = read cvar temp1 for value
 // (player.cam_y holds cam distance)
 void(float opt) Chase_cam_change_dist =
 {
@@ -875,10 +874,8 @@ void(float opt) Chase_cam_change_dist =
 		if (self.cam_y < 10)
 			self.cam_y = 10;
 	}
-	else if (opt == 1)
-		self.cam_y = self.cam_y + 2;
 	else
-		self.cam_y = cvar( "temp1" );
+		self.cam_y = self.cam_y + 2;
 
 	sprint( self, "chasecam distance = " );
 	sprint( self, ftos(self.cam_y) );
@@ -890,7 +887,6 @@ void(float opt) Chase_cam_change_dist =
 // opt:
 // 0 = minus
 // 1 = plus
-// 2 = read cvar temp1 for value
 // (player.cam_z holds zmult)
 void(float opt) Chase_cam_change_zmult =
 {
@@ -902,13 +898,8 @@ void(float opt) Chase_cam_change_zmult =
 		if (self.cam_z < 0)
 			self.cam_z = 0;
 	}
-	else if (opt == 1)
-		self.cam_z = self.cam_z + 0.02;
 	else
-	{
-		f = cvar( "temp1" );
-		self.cam_z = f * 0.01;
-	}
+		self.cam_z = self.cam_z + 0.02;
 
 
 	// convert and strip for display

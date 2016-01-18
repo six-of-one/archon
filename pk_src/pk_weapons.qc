@@ -1432,7 +1432,7 @@ void() pk_cycleObjects;
 
 float(float rot) PK_CheckLivEnt =
 {
-	if (self.weapon != IT_AXE || PK_100) return(TRUE);
+	if (self.weapon != IT_AXE) return(TRUE);
 
 	pk_livent = cnt_ent(world, "classname", "turret") + cnt_ent(world, "classname", "beartrap") + cnt_ent(world, "classname", "gravity") + cnt_ent(world, "classname", "tomb");
 	
@@ -1569,7 +1569,7 @@ void() PK_Attack =
 		else if (self.pk_currentitem == PK_IT_CANPAB)
 		{
 			float smax;
-//			if (PK_100) smax = 299; // 249 + 50 subbed off below
+//			if (PK-100) smax = 299; // 249 + 50 subbed off below
 //			else 
 			smax = morph_healmax(self.health_modifier, Q_MEGA_MAX);
 			if (self.health > (smax - 50) ) // for PK100 this val is 249
@@ -2056,7 +2056,7 @@ void() PK_ImpulseCommands =
 			if (self.eweapon._alt_fire)
 				if (self.eweapon._alt_fire != SUB_Null) self.eweapon._alt_fire(self.eweapon);
 
-			if (self.impulse >= 1 && self.impulse <= 10 || self.impulse == 12) // || self.impulse == 13) // wraith option
+			if (self.impulse >= 1 && self.impulse <= 10 || self.impulse == 12) // || self.impulse == 14) // wraith option
 			{
 				morphic_impulse();
 				if (self.impulse > 9) return; // only 1 - 9 exit cube selector

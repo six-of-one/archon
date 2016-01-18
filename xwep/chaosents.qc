@@ -393,7 +393,7 @@ float (entity e, float healamount6, float ignore) T_Heal =
 {
 	local float heala, f;
 
-//		return(q100_T_Heal(e, healamount6, ignore));
+//		return(q10-_T_Heal(e, healamount6, ignore));
 
 	if (e.mask_x & MORPH_ARCHON)
 		return 0;
@@ -465,7 +465,7 @@ void() health_touch =
 	local	float amount, smax, vmax;
 	local	string	s1;
 
-//		q100_health_touch();
+//		q10-_health_touch();
 
 	vmax = amount = 0;
 

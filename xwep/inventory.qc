@@ -1878,7 +1878,7 @@ void(entity e) dead_drop =
 	if (DEAD_THROW_ARTIFACT)
 		dead_artifact(e);
 
-	if (e.rune_flag) // because you can have runes in q100 for some reason
+	if (e.rune_flag)
 		dead_runes(e);
 
 

@@ -420,7 +420,6 @@ string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n";
 
 void(vector org, float rn, float pr, float col) chaos_particle;
 float(entity e) IS_CHAOS;
-entity chaos_poly;
 void() chaos_morph_chgthk;
 
 // gremlin

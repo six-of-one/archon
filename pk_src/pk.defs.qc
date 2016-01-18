@@ -72,17 +72,6 @@ var float autocvar_pk_runemap = 0;  // if true print rune data to console
 
 // **************************************
 
-// next 3 modes are really only for programming and development - *** SHOULD NOT EVER BE RUN ON A LIVE SERVER *** - mostly because they are untested and likely have severe flaws
-// just to say it twicet - *** THESE ARE NOT PLAY TESTED ***
-float Q_100;								// quake 1 compatability mode - if true run 100% true to quake 1, why? original purpose - facitiltate merge with other mods becuase vanilla quake code would remain unchanged
-float Q_99;									// quake 1 99% compatability mode - if true pk stuff is removed, but admin, item enhancements & env remain - provide an "enhanced" q1 SP experience - may not work well in use
-float PK_100;								// painkeep compatability mode - if true run 100% true to pk v1.11, no extras (has menus) - 
-//
-
-// q100 stuff
-void() q100_PlayerPreThink;
-void() q100_PlayerPostThink;
-
 
 /*
 frame macro expansion
@@ -932,7 +921,7 @@ float HEAL_BOT					= 4; // doom health bottle - ignore normal max, no rot
 float HEAL_SOUL				= 5; // doom health: soul, mega spheres - 200 max, no rot
 float HEALT_CURE				= 3; // healtype needed set to cure plague, etc
 
-float Q_MEGA_MAX				= 250; // max you can ever have in q100
+float Q_MEGA_MAX				= 250; // max from q1
 float Q_NORM_MAX				= 100; // standard max health
 float Q_ARMOR_MAX				= 200; // standard max armor
 float D_ARMOR_MAX;

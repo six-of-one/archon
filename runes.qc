@@ -1743,8 +1743,6 @@ void() rune_precache =
 End of level sigil, pick up to end episode and return to jrstart.
 */
 
-// NOTE: q100 code never used because q100 can run a rune server - think on this
-
 // fix initial server map load runes where random is on
 
 void () item_sigil_set =

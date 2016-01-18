@@ -37,7 +37,7 @@
 
 void () SUB_regen =
 {
-//		q100_SUB_regen();
+//		q10-_SUB_regen();
 
 	if (self.event == "dynamic_item") // just in case catch - cubes prob. come here
 	{
@@ -602,7 +602,8 @@ if (!self.mask_x)
 	if (other.model == "progs/cthon.mdl") f = TRUE; // cthon get nada
 	if (self.wad == "morph_cube")
 	{
-		if (MORPH_NOCUBE & other.mask_x) f = TRUE;
+		if (other.height == IMP_MCHAOS || other.height == IMP_MORDER) f = TRUE; // imp: add shapeshift & wraith
+		else if (MORPH_NOCUBE & other.mask_x) f = TRUE;
 		else f = FALSE; // all others can get cube
 	}
 
@@ -1131,7 +1132,7 @@ void() BackpackTouch =
 	local entity e;
 	local float acount;
 
-//		q100_BackpackTouch();
+//		q10-_BackpackTouch();
 
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
 	{
@@ -1602,7 +1603,7 @@ void() DropBackpack =
 //	local entity e;
 	local float bkt;
 
-//		q100_DropBackpack();
+//		q10-_DropBackpack();
 
 	newmis = world;
 

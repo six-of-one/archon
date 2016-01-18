@@ -342,7 +342,6 @@ void() x_weapon_touch =
 	self = other;
 
 	PK_Deathmatch_Weapon (new, 0); // *pk - new wep switch rule for higher risk weps
-//		Deathmatch_Weapon (new); - q100 deal
 
 	W_SetCurrentAmmo ();
 
@@ -384,6 +383,10 @@ void() x_item_touch =
 		return;
 
 	if (other.x_items & self.x_items) return; // already got one
+
+	sprint (other,"You got the ");
+	sprint (other,self.netname);
+	sprint (other,"\n");
 
 	other.x_items = other.x_items | self.x_items;
 

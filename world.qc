@@ -402,7 +402,8 @@ void () InitBodyQue =
 
 // make a body que entry for the given ent so the ent can be
 // respawned elsewhere
-void (entity ent) q100_CopyToBodyQue =
+/*
+void (entity ent) q10-_CopyToBodyQue =
 {
 	bodyque_head.angles = ent.angles;
 	bodyque_head.model = ent.model;
@@ -416,5 +417,5 @@ void (entity ent) q100_CopyToBodyQue =
 	setsize (bodyque_head,ent.mins,ent.maxs);
 	bodyque_head = bodyque_head.owner;
 };
-
+*/
 

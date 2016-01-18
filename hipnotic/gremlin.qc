@@ -1151,7 +1151,7 @@ float() GremlinAttemptWeaponSteal =
 
 // *** FIX - recode for new inventory
 
-return FALSE;
+	if (1) return FALSE;
 
    if (self.stoleweapon)
       {

@@ -1012,9 +1012,9 @@ void () W_SetCurrentAmmo =
 	PK_SetCurrentAmmoOnly(self);
 /*
 //	if (PK || custom_hub_loaded || (self.cam_x & CHSCAM_ON)) // Cataboligne 8.8.9 purify - cc thru pk code - chase cam
-	if (!Q_100)
+	if (!Q-100)
 	{
-		if (PK_100)// || !VW)
+		if (PK-100)// || !VW)
 			PK_SetCurrentAmmo(); // *pk - handle ammo for all pk items & cam
 		else
 			PK_SetCurrentAmmoOnly(self);
