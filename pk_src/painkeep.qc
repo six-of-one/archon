@@ -1107,16 +1107,7 @@ void() pk_liveupd =
 		bprint("monster_heximp			64\n");
 		bprint("\b--------------------------------\n");
 	}
-/*
-float CB_M_BLARG					= 1;
-float CB_M_RAPTOR					= 2;
-float CB_M_SPIDER					= 4;	// first 3 featured in ultimate mod
-float CB_M_MANGA					= 8;
-float CB_M_BOSSMAN				= 16; // Bossman by Wendigo - from Blahbalicious
-float CB_M_CLING					= 32; // alien infestation by Lord Havoc
-float CB_M_HEXIMP					= 64;	// Hexen2 Imp by Claus Kruuskopf AKA WiCKeD
 
-*/
 // pk cubes
 	PK_CUBE_TIME = cvar("pk_cubes_time"); // TDO: doesnt reset existing makers
 

@@ -76,7 +76,7 @@ void(string g) tbprint =
 	e = spawn();
 	e.netname = g;
 	e.think = thinkpr;
-	e.nextthink = time + 10; // FIX: for actuall use in server runes
+	e.nextthink = time + 10; // FIX: for actual use in server runes
 };
 
 void () PlaceItem =
@@ -87,6 +87,8 @@ void () PlaceItem =
 	{
 		return;
 	}
+
+	if (self.map == "repic") return; // dont set hidden items
 
 	bot_item_linx(self); // *bot - item tie in
 

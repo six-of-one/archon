@@ -520,6 +520,12 @@ void(string cls) item_call =
 
 	self.flags = FL_ITEM;
 	self.movetype = MOVETYPE_TOSS;
+	if (self.map == "repic") // dont set hidden items
+	{
+		self.model = string_null;
+		return;		
+	}
+
 	if (self.event != "dynamic_item") // dont do these for dyn items
 	{
 		if (!NO_PI) pk_placeitem();
@@ -1232,31 +1238,43 @@ bprint(" - tot base rnditems cnt: ");
 bprint(ftos(MC_T_RNDITM));
 bprint("\n");
 bprint("\n");
-bprint(" - last doom item +1: ");
-bprint(ftos(MC_DOOM));
-bprint("\n");
-bprint(" - doom items tot: ");
-bprint(ftos(MC_D_RNDITM));
-bprint("\n");
-bprint(" - last wolf item +1: ");
-bprint(ftos(MC_WOLF));
-bprint("\n");
-bprint(" - wolf items tot: ");
-bprint(ftos(MC_W_RNDITM));
-bprint("\n");
-bprint(" - last q2 item +1: ");
-bprint(ftos(MC_Q2));
-bprint("\n");
-bprint(" - q2 items tot: ");
-bprint(ftos(MC_Q2_RNDITM));
-bprint("\n");
-bprint(" - last q3 item +1: ");
-bprint(ftos(MC_Q3));
-bprint("\n");
-bprint(" - q3 items tot: ");
-bprint(ftos(MC_Q3_RNDITM));
-bprint("\n");
-bprint("\n");
+if (ULOKD)
+{
+	bprint(" - last doom item +1: ");
+	bprint(ftos(MC_DOOM));
+	bprint("\n");
+	bprint(" - doom items tot: ");
+	bprint(ftos(MC_D_RNDITM));
+	bprint("\n");
+}
+if (ULOKW)
+{
+	bprint(" - last wolf item +1: ");
+	bprint(ftos(MC_WOLF));
+	bprint("\n");
+	bprint(" - wolf items tot: ");
+	bprint(ftos(MC_W_RNDITM));
+	bprint("\n");
+}
+if (ULOK2)
+{
+	bprint(" - last q2 item +1: ");
+	bprint(ftos(MC_Q2));
+	bprint("\n");
+	bprint(" - q2 items tot: ");
+	bprint(ftos(MC_Q2_RNDITM));
+	bprint("\n");
+}
+if (ULOK3)
+{
+	bprint(" - last q3 item +1: ");
+	bprint(ftos(MC_Q3));
+	bprint("\n");
+	bprint(" - q3 items tot: ");
+	bprint(ftos(MC_Q3_RNDITM));
+	bprint("\n");
+	bprint("\n");
+}
 bprint(" - total items tot: ");
 bprint(ftos(MC_TOT));
 bprint("\n");

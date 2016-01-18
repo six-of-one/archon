@@ -31,7 +31,7 @@ float() SUB_True				= { return 1; }; // Return a true value
 // **************************************
 
 // version info - at 1.0.5 - KEEP up to date! - note: files = admin.cfg, archon.txt, readme.txt, alias_codes.txt, cvar.txt
-string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.5\"\n";
+string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.5\"\n"; // these are displayed prior to the darkplaces internal cmd, which then runs - very cool
 string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.5\"\n";
 string vmotd					= "\\/ersion \b1\b.\b0\b.\b5a\b\n\n";
 string motd2					= "\n\n[\\/\b1\b.\b0\b.\b5a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";

@@ -13,7 +13,7 @@
 
 
 // TDO: finish translate codes - what is left?
-// IMP: restore wad == "q1" item with doom item deactivate / pk_100 mode on (if ever allowed in map)
+// XXX: restore wad == "q1" item with doom item deactivate / pk_100 mode on (if ever allowed in map)
 
 void() tr_set_touch =
 {
@@ -30,6 +30,8 @@ void(entity e) hide_item =
 	e.th_stand = e.touch;
 	e.touch = SUB_Null;
 	e.path = e.map;
+	if (time < PIC_TO)
+	if(e.map == "") e.map = "repic"; // because this code fires before pic when xmod and wad=q1 items are hidden
 	if (e.map == "pic_item") e.map = "repic"; // hide from pic, allow restore
 };
 
