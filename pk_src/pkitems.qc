@@ -1708,7 +1708,7 @@ void() pk_placeitem =
 	}
 	if (self.th_stand != painkeep_touch) // pk100 mask
 		self.touch = painkeep_touch; // take over - route everything here
-
+	
 // TESTING - see if we can q1 default class select
 	if (self.class_select == "") self.class_select = "quake_item";
 

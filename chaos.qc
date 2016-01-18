@@ -680,7 +680,7 @@ float zz;
 
 void () info_think =
 {
-	if (self.button0) 
+	if (self.button0 || self.lefty) 
 	{
 		bprint(self.noise);
 		bprint(ftos(self.button0));
@@ -688,7 +688,7 @@ void () info_think =
 	}
 	else if (self.noise) bprint(self.noise);
 
-	if (self.button1) 
+	if (self.button1 || self.lefty) 
 	{
 		bprint(self.noise1);
 		bprint(ftos(self.button1));
@@ -696,7 +696,7 @@ void () info_think =
 	}
 	else if (self.noise1) bprint(self.noise1);
 
-	if (self.button2) 
+	if (self.button2 || self.lefty)
 	{
 		bprint(self.noise2);
 		bprint(ftos(self.button2));
@@ -704,7 +704,7 @@ void () info_think =
 	}
 	else if (self.noise2) bprint(self.noise2);
 
-	if (self.items) 
+	if (self.items || self.lefty)
 	{
 		bprint(self.noise3);
 		bprint(ftos(self.items));
@@ -712,14 +712,14 @@ void () info_think =
 	}
 	else if (self.noise3) bprint(self.noise3);
 
-	if (self.weapon)
+	if (self.weapon || self.lefty)
 	{
 		bprint(self.noise4);
 		bit_print(MAXFL, self.weapon);
 		bprint("\n");
 	}
 	else
-	if (self.pos1) 
+	if (self.pos1 != v0 || self.lefty) 
 	{
 		bprint(self.noise4);
 		bprint(vtos(self.pos1));
@@ -743,6 +743,9 @@ void(float tm, string l1, string l2, string l3, string l4, string l5, float f1, 
 
 	if (!WARNING) return;
 
+	if (tm < 0)
+		e.lefty = TRUE; // print zeros
+
 	e = spawn();
 	if (l1) e.noise = l1;
 	if (l2) e.noise1 = l2;
@@ -758,7 +761,7 @@ void(float tm, string l1, string l2, string l3, string l4, string l5, float f1, 
 	if (bp) e.weapon = bp;
 
 	e.think = info_think;
-	t = time + tm;
+	t = time + fabs(tm);
 	if (t <= info_ttime) t = info_ttime + 1;
 	e.nextthink = t;
 	info_ttime = t;

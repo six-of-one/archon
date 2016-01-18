@@ -643,7 +643,7 @@ void() PK_PlayerDie =
 	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.view_ofs = '0 0 -8';
 
-	if (self.health < -40 || (!XENV && pointcontents(self.origin) == CONTENT_LAVA)) gib = TRUE;// TEST - new feature, need full height test
+	if (self.health < -40 || (!XENV && pointcontents(self.origin) == CONTENT_LAVA)) gib = TRUE;// TEST: - new feature, need full height test
 
 	if (deathmatch || coop || (DEAD_GIBPACK & 2))
 	if (!gib || DEAD_GIBPACK)

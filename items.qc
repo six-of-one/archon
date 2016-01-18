@@ -137,7 +137,7 @@ void () q100_item_health =
 		setmodel (self,"maps/b_bh10.bsp");
 		self.noise = "items/r_item1.wav";
 		self.healamount = 15;
-		self.healtype = 0;
+		self.healtype = HEAL_ROT;
 	}
 	else
 	if (self.spawnflags & H_MEGA)
@@ -156,7 +156,7 @@ void () q100_item_health =
 			setmodel (self,"maps/b_bh25.bsp");
 			self.noise = "items/health1.wav";
 			self.healamount = 25;
-			self.healtype = 1;
+			self.healtype = HEAL_NORM;
 		}
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();

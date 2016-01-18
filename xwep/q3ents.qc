@@ -1256,6 +1256,7 @@ void(entity e, float v) q3_ha_rot =
 			newmis = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "q3_rot", "", SUB_Null, 5, q3_ha_rot_thk, SUB_Null, e, world);
 			newmis.super_time = time + Q3_ROT_TMAX;
 			newmis.health = newmis.armorvalue = Q3_HA_MAX;
+			if (!other.items & IT_SUPERHEALTH) // we might already be rotting from another mega heal - if so rot down limit set to normal max
 			if (Q3_HAH_TMP > Q3_HA_MAX) newmis.health = Q3_HAH_TMP;
 			if (Q3_HAA_TMP > Q3_HA_MAX) newmis.armorvalue = Q3_HAA_TMP;
 		}
@@ -1568,6 +1569,7 @@ void() item_regen =
 
 	self.spawnflags = RUNE_FLG_RG;
 	self.duration = 0;
+	self.volume = Q3_MAX_HEAL; // max add
 //	item_sigil();
 	self.netname = "Regeneration";
 

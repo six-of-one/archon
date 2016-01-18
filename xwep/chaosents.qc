@@ -155,14 +155,16 @@ void () c_weapon_deepsleep =
 //...or 1 of these 2... --- what code really does
 // mcd - map code - overrides spf
 // spf - spawn func, in either case this code handles load up
+// islot - inventory slot (weapon bit 1 - 128, 4096)
 
 // ve - viswep ent
 // camct - current ammo cnt
 
-void(entity ve, float camct, float mcd, string spf) xwep_fakeload =
+void(entity ve, float camct, float mcd, string spf, float islot) xwep_fakeload =
 {
 	local string spt; // spawn this temp
 	local entity sv;
+	local float camctp; // value to pass - sending negative as code
 
 	if (!ve) return;
 
@@ -182,9 +184,18 @@ void(entity ve, float camct, float mcd, string spf) xwep_fakeload =
 		self.nextthink = time + 0.1;
 	}
 
+	if (camct < 1) camctp = -0.5;
+	else camctp = 0 - camct;
+
+	x_wep_store(ve, islot, camctp);
+/*
+TEST: more testing before removeal
 		ve.eweapon = ve;
 		ve._attack = self._attack;
 		ve._fr_attack = self._fr_attack;
+		ve.vv_draw = self.vv_draw;
+		ve.vv_holster = self.vv_holster;
+		ve.vwepmdl = self.vwepmdl; // for pack / dthrow weps
 //		ve.touch = self.touch;
 
 		ve.weapon = ve.items = self.items;
@@ -202,11 +213,19 @@ void(entity ve, float camct, float mcd, string spf) xwep_fakeload =
 		ve.style = self.style; // melee flag
 		ve.lefty = self.lefty; // misc data
 //		ve.cnt = self.cnt; // vw skinnage
+		if (self.mcode) ve.mcode = self.mcode; // for pack touch deal
 
 		ve.netname = self.netname;
 //		ve.mdl = self.mdl; - invisible
 		setmodel (ve, self.vwepmdl);
 		ve.mdl = ve.model;
+		if (!VW)
+		{
+			if (!(ve.weapon == IT_AXE && ve.pk_currentitem == PK_IT_AXE)) // any axe replacement
+			if (ve.mdl != "progs/vw_q2_hgr.mdl")
+			if (ve.mdl != "progs/vw_axe.mdl" && ve.mdl != "progs/vw_mjolnir.mdl")
+				setmodel (ve, VW_DEFGUN);
+		}
 		if (self.skin) ve.skin = self.skin;
 		ve.weaponmodel = self.weaponmodel;
 		ve.chaosweptime = self.chaosweptime;
@@ -218,13 +237,19 @@ void(entity ve, float camct, float mcd, string spf) xwep_fakeload =
 		ve.noise4 = self.noise4;
 		ve.target = self.target; // missile strike snd
 		ve.target1 = self.target1; // missile models
-	
+// hooks
+		ve.target2 = self.target2;
+		ve.targetname = self.targetname;
+		ve.killtarget = self.killtarget;
+*/
 	self = sv;
 }
 
 // from chaos mod
 
 float Q_MEGA_MAX = 250;
+
+// Cataboligne - 9.9.11 - tweak to prevent multiple health rots on 1 avatar
 
 //float() health_touch =
 void() health_touch =
@@ -296,7 +321,7 @@ void() health_touch =
 	{
 		q3_ha_rot(other, other.health);
 	}
-	else if (self.healtype > HEAL_NORM)
+	else if (self.healtype > HEAL_MEGA) // above mega because q3 rot handles other megas rot too
 	{
 		Q3_HAH_TMP = self.healamount;
 		Q3_HAA_TMP = 0;
@@ -327,7 +352,13 @@ void() health_touch =
 	// Megahealth = rot down the player's super health
 	if (self.healtype == HEAL_MEGA)
 	{
-		other.items = other.items | IT_SUPERHEALTH;
+		if (!other.items & IT_SUPERHEALTH) // not already rotting - start it up
+		{
+			self.nextthink = time + 5;
+			self.think = item_megahealth_rot;
+			self.owner = other;
+		}
+		other.items = other.items | IT_SUPERHEALTH; // shows rot
 
 		if (self.noise4 == Q3_DET)
 		{
@@ -340,12 +371,10 @@ void() health_touch =
 			return;
 		}
 		
-		self.nextthink = time + 5;
-		self.think = item_megahealth_rot;
-		self.owner = other;
-		return; //(-1); // dont respawn this yet - need to rot down health
+//		return; //(-1); // dont respawn this yet - need to rot down health
 	}
-	else
+	
+	if (self.think != item_megahealth_rot)
 	{
 //	set_respawn();
 
@@ -757,25 +786,25 @@ void(entity e, float smc) set_xweap =
 
 	if (!e) return;
 	wbt = valid_wep_mcode(smc); // make sure this is a valid weapon & get inv. bit
-	if (!wbt || wbt & e.items) return; // no bit or already got one - IDEA: code an axe swap ??
-
-	if ((smc >= MC_AXE && smc <= MC_THUNDER) || smc == MC_HIP_MJOLNIR) // NOTE: q1 weapon map codes MUST be sequential for condition here
-	{
-		e.items = e.items | wbt;
-		set_q1w_defammo(wbt, e);
 
 
 // TESTING
 spawn_infot(2, "set bits = ", "",  "",  "",  " -- items: ", wbt, 0, 0, 0, v0, e.items);
 
 
+	if (!wbt || wbt & e.items) return; // no bit or already got one - IDEA: code an axe swap ??
+
+	if ((smc >= MC_AXE && smc <= MC_THUNDER) || smc == MC_HIP_MJOLNIR) // NOTE: q1 weapon map codes MUST be sequential for condition here
+	{
+		e.items = e.items | wbt;
+		set_q1w_defammo(wbt, e);
 		return;
 	}
 	ssc = item_by_mcode(smc);
 	if (ssc) tr = vload(e, wbt);
 	if (tr)
 	{
-		xwep_fakeload (tr, 0, 0, ssc);
+		xwep_fakeload (tr, 0, 0, ssc, wbt);
 		e.items = e.items | tr.items;
 		set_xw_defammo(tr, e); // make sure we have ammo
 
@@ -834,6 +863,7 @@ void(entity e, float bl) xw_bit_loop =
 	{
 		b = bl & f;
 		mc = wepbit_mcode(b, MAP_MODE);
+//spawn_infot(-2, "xwbitloop bit call = ", "mask  = ",  " -- map code: ",  "",  "bits sent = ", b, f, mc, 0, v0, bl);
 		if (mc)
 			set_xweap(e, mc);
 		f = f * 2;
@@ -1018,7 +1048,7 @@ void(entity e) set_defaults =
 			e.weapon = 1;
 			e.items = e.items | 1;
 			set_q1w_defammo(IT_SHOTGUN, e);
-			if (!(INIT_CON & 15)) // no genre controls, pick a shotgun at random
+			if (!(INIT_CON & 15)) // no genre controls, pick a shotgun at random - TEST: effects of ULOK* on this code set
 			{
 				if (random() < 0.3) set_xweap(e, MC_D_SHOTGUN);
 				else if (random() < 0.2) set_xweap(e, MC_Q2_SHOTGUN);
@@ -1026,6 +1056,7 @@ void(entity e) set_defaults =
 			}
 		}
 	}
+	e.eweapon = vchk(e.weapon, e.pk_currentitem, e.vwepent);
 
 };
 

@@ -330,6 +330,7 @@ float MC_Q3_RNDITM; // # of total items
 /// chaos
 
 float MC_REGGUN;
+float MC_DEEPSLEEP;
 
 float MC_C_FLAMER;
 float MC_C_AGAS;
@@ -649,6 +650,7 @@ void() mcode_load =
 	MC_Q3_RNDITM = f - MC_Q3_GAUNTLET; // # of total items
 
 	MC_REGGUN = f = (f + 1);
+	MC_DEEPSLEEP = f = (f + 1);
 	MC_C_FLAMER = f = (f + 1);
 	MC_C_AGAS = f = (f + 1);
 	MC_C_AGAS_LG = (f + 1);
@@ -902,6 +904,7 @@ float(float mcv, entity e) bit_mcode =
 /// chaos
 	
 	if (mc == MC_REGGUN)													return(IT_SUPER_SHOTGUN);
+	if (mc == MC_DEEPSLEEP)												return(IT_AXE);
 	if (mc == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
 	if (mc == MC_C_AGAS)													return(0);
 	if (mc == MC_C_AGAS_LG)												return(0);
@@ -1198,6 +1201,7 @@ float(string sc, entity e) pk_mcode =
 /// chaos
 	
 	if (tsc == "c_weapon_reggun")										return(MC_REGGUN);
+	if (tsc == "c_weapon_deepsleep")									return(MC_DEEPSLEEP);
 	if (tsc == "weapon_flamer")										return(MC_C_FLAMER);
 	if (tsc == "ammo_gas")												return(MC_C_AGAS);
 	if (tsc == "ammo_gas_lg")											return(MC_C_AGAS_LG);
@@ -1480,6 +1484,7 @@ string (float mc) item_by_mcode =
 /// chaos
 	
 	if (mc == MC_REGGUN)													return("c_weapon_reggun");
+	if (mc == MC_DEEPSLEEP)												return("c_weapon_deepsleep");
 	if (mc == MC_C_FLAMER)												return("weapon_flamer");
 	if (mc == MC_C_AGAS)													return("ammo_gas");
 	if (mc == MC_C_AGAS_LG)												return("ammo_gas_lg");
@@ -1553,7 +1558,7 @@ float(float mcv) valid_wep_mcode =
 
 /// q3
 
-//	if (mcv == MC_Q3_GAUNTLET)											return(IT_AXE);
+	if (mcv == MC_Q3_GAUNTLET)											return(IT_AXE);
 	if (mcv == MC_Q3_GRAPPLE)											return(IT_AXE); // needs to be grap gun -> special
 	if (mcv == MC_Q3_MACHINEGUN)										return(IT_NAILGUN);
 	if (mcv == MC_Q3_SHOTGUN)											return(IT_SUPER_SHOTGUN);
@@ -1567,6 +1572,7 @@ float(float mcv) valid_wep_mcode =
 /// chaos
 
 	if (mcv == MC_REGGUN)												return(IT_SUPER_SHOTGUN);
+	if (mcv == MC_DEEPSLEEP)											return(IT_AXE);
 	if (mcv == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
 
 	return(0); // not a valid x weapon
@@ -1865,6 +1871,7 @@ void() painkeep_cube_use =
 {
 	local vector v1;
 	local entity c;
+	local float f, d;
 
 	c = self.eweapon;
 
@@ -1888,12 +1895,85 @@ void() painkeep_cube_use =
 	c.think = SUB_Null;
 	c.owner = world;
 
-	c.wad = "item_painkeep_gwell";
+// make something random
+
+	f = MC_PK_RNDITM - 1;
+	if (PK_ART) f = MC_PKP_RNDITM - 2;
+	d = MC_CHTHUNDR + rint(random() * f);
+	if (random() < 0.36)
+	{
+		d = 0;
+		f = rint(random() * 10);
+		if (f < 4) d = MC_HIP_LASERCAN;
+		if (f < 6 && ULOK2) d = MC_Q2_BFG;
+		if (d) self.ammo_cells = -1;
+		else
+		{
+			if (f < 6) { d = MC_REGGUN; self.ammo_shells = -1; }
+			else if (f < 8) d = MC_DEEPSLEEP;
+			else
+			{
+				f = rint(random() * 6);
+				if (f == 1) d = MC_HEALTHMEGA;
+				else if (f == 2) d = MC_ARMOR3;
+				else if (f == 3) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; }
+				else if (f == 4) d = MC_HOOK;
+				else if (f == 5)
+				{
+					d = MC_HIP_MJOLNIR;
+					if (ULOK2)
+					{
+						d = MC_Q2_ARM_PSHIELD;
+						self.ammo_cells = -1;
+					}
+					if (ULOK3) d = MC_Q3_HASTE; 
+				}
+				else
+				{
+					d = MC_PENT;
+					f = MC_TOT - 2;
+					if (random() < 0.2 && GENERATIONS) d = MC_SUPER_SHOTGUN + rint(random() * f);
+				}
+			}
+		}
+	}
+
+	c.wad = item_by_mcode(d);
 	self = c;
 	self.pk_touch = painkeep_touch;
-	item_translate(self, FL_TR_RANDOM);
-//	item_call(self.wad);
-	self.punchangle = ' 110 110 180'; // for ejector
+//	item_translate(self, FL_TR_RANDOM);
+	if (random() > 0.15)
+	{
+		item_call(self.wad);
+		if (self.ammo_cells < 0) self.currentammo = self.ammo_cells = self.currentammo + 30 + 50 * random();
+		if (self.ammo_shells < 0) self.currentammo = self.ammo_shells = self.currentammo + 30 + 30 * random();
+		self.punchangle = ' 110 110 180'; // for ejector
+
+// pk cube fix - spawned something and fns are reversed
+		if (self.pk_touch == painkeep_touch)
+		if (self.touch != painkeep_touch)
+		{
+			self.pk_touch = self.touch;
+		}
+		self.touch = painkeep_touch;
+		self.solid = SOLID_TRIGGER;	// allow it to be touched again - needed on x weaps
+	}
+	else
+	{
+		f = 4 + random() * 4;
+		while (f > 0)
+		{
+			W_FireGrenade(); // uses ammo, but we dont care here
+			item_eject(newmis, ' 400 400 400');
+			f = f - 1;
+		}
+		remove(self);
+	}
+// IDEA: tele-sphere, portal, explosive regular item, nail bomb, chaos effect
+	self.eweapon = world;
+	self.weapon = W_BestWeapon();
+	self.pk_currentitem = W_BestPKWeapon();
+	W_SetCurrentAmmo();
 };
 
 //:-( cube owner didnt open it
@@ -1916,8 +1996,6 @@ void() abandoned_cube =
 		W_SetCurrentAmmo();
 	}
 };
-
-// TDO: can only own one cube
 
 void() painkeep_cube_touch =
 {

@@ -3267,6 +3267,46 @@ void() d_pool_flesh_blood =
 
 // wolf decor
 
+void() w_flag =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/flag.mdl");
+	setmodel(self,"progs/flag.mdl");
+	self.frame = 1;
+	self.skin = 2;
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_armorsuit =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/knight.mdl");
+	setmodel(self,"progs/knight.mdl");
+	self.skin = 1;
+	self.frame = 73;
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
 void() wdecor_woodbarrel =
 {
 	if (!ULOKW)
@@ -3315,7 +3355,7 @@ void() wdecor_floorlamp =
 	setmodel(self,"progs/w_dcr_floorlmp.mdl");
 
 	self.solid = SOLID_BSP;
-//	if (self.spawnflags & NOBLOCK) // TEST - restore later
+//	if (self.spawnflags & NOBLOCK) // TEST: - restore later
 		self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_NONE;	
 	sv_decor(self);

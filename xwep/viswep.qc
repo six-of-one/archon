@@ -220,7 +220,7 @@ entity(entity e, float fl) vload =
 	{
 		md = "progs/vw_mjolnir.mdl";
 		if (self.vwepmdl != md)
-			xwep_fakeload (tr.vwepent, 0, 0, "weapon_mjolnir");
+			xwep_fakeload (tr.vwepent, 0, 0, "weapon_mjolnir", IT_MJOLNIR);
 	}
 	else if (fl == IT_ARMOR1) md = "progs/vw_armor.mdl";
 	if (md == "") md = VW_DEFGUN;
@@ -230,7 +230,7 @@ entity(entity e, float fl) vload =
 
 	tr.vwepent.mcode = wepbit_mcode(fl, "Q");
 /*
-	if (DARKPLACES) // TEST - trying movement deal - movetype 12
+	if (DARKPLACES) // TEST: - trying movement deal - movetype 12
 	{
 		tr.vwepent.movetype = MOVETYPE_FOLLOW; // make the tr.vwepent follow
 		tr.vwepent.solid = SOLID_NOT; // MOVETYPE_FOLLOW is always non-solid

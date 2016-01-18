@@ -335,7 +335,7 @@ float CON_CYC					= 2097152; // cycle selected bits in thier group
 float CON_CHAOS				= 2490368; // item chaos it all 3 control bits set
 // excluding inf_ammo from run bits
 float CON_RUN					= 3014656; //4063232; // any control bit CON_* entries above - used by autorun
-float CYC_TIME					= 60; // TEST - 240; // seconds for cycle base - 4 mins +|- 2 mins
+float CYC_TIME					= 60; // TEST: - 240; // seconds for cycle base - 4 mins +|- 2 mins
 
 void() item_loop;
 void() item_control_menu;
@@ -380,7 +380,7 @@ float NO_PI;					// dont let item_call call place_item
 // end translations
 
 
-// TEST remove
+// TEST: remove
 entity fts; // fire test
 
 
@@ -564,7 +564,7 @@ float PK_GASAMMO_MAX;
 
 .float x_items; // extra weapon item control - pwr armors / extended keys / etc
 void() x_item_touch;
-void(entity e, float camct, float mcd, string spf) xwep_fakeload;
+void(entity e, float camct, float mcd, string spf, float islot) xwep_fakeload;
 void(entity e, float smc) set_xweap;
 void(entity e) xw_parm;
 float X_CHGLVL;

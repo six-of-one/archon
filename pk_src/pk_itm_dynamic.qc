@@ -22,6 +22,8 @@
 // cls - new classname
 // op - save original classname in .wad so we can restore if mode is turned off
 
+// NO_PI - global, if non zero and not a dyn_item, pk_placeitem will not be called for this ent
+
 string (float bt) item_by_bit =
 {
 	if (bt == WEP_SSHOT) return("weapon_supershotgun");
@@ -421,6 +423,7 @@ void(string cls) item_call =
 	}
 // chaos
 	else if (cls == "c_weapon_reggun") c_weapon_reggun();
+	else if (cls == "c_weapon_deepsleep") c_weapon_deepsleep();
 	else if (cls == "weapon_flamer") weapon_flamer();
 	else if (cls == "ammo_gas") ammo_gas();
 	else if (cls == "ammo_gas_lg") ammo_gas_lg();
@@ -849,6 +852,7 @@ void() dyn_spawn =
 		sv = findradius(self.origin, PK_DYNRAD);
   }
 // give players notice
+	if (self.wad == "pk_cube") bprint("\n\n"); // space cubes so the notes are easier to see
 	bprint("*** Dynamic item spawned: ");
 	bprint(self.wad);
 	if (sv)
@@ -858,6 +862,7 @@ void() dyn_spawn =
 	}
 	else
 		bprint(" on the map");
+	if (self.wad == "pk_cube") bprint("\n\n");
 	bprint("\n");
 
 	item_call(self.wad);
@@ -888,7 +893,7 @@ void() dyn_item =
 	if (self.classname != "dyn_spawner")
 	{
 		self.classname = "dyn_spawner";
-		self.nextthink = time + 7;// TEST 40 + 20 * crandom(); // PIC_TO
+		self.nextthink = time + 7;// TEST: 40 + 20 * crandom(); // PIC_TO
 		self.count = 4 + 4 * random();
 		if (DYN_FORCE || DYN_ARTFR_ONLY) self.count = pk_ditems + DYN_FORCE_CNT;
 		if (!DYN_FORCE && !DYN_ARTFR && pk_ditems > 6)

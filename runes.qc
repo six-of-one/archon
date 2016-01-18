@@ -593,7 +593,7 @@ void() RegenerationSound =
 
 void() rune_regen =
 {
-	local float f;
+	local float f, h;
 
 	if (self.deadflag)
 		return;
@@ -605,12 +605,17 @@ void() rune_regen =
 		return;
 
 	f = 5;
+	h = 100;
+	if (self.target2 == "progs/q3_art.mdl") // q3 regen takes health to 200
+	{
+		h = 200; // dont have access to q3 ent here cant use = self.volume;
+	}
 
-	if (self.health < 100)
+	if (self.health < h)
 	{
 		self.health = self.health + f; // NOTE: violates T_Heal rule (implied from t_dmg rule) of only fn to add health - relates to morphs & needs morph tweak here
-		if (self.health > 100)
-			self.health = 100;
+		if (self.health > h)
+			self.health = h;
 		RegenerationSound();
 	}
 	armorsave_rev(self);

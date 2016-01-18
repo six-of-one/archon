@@ -89,7 +89,7 @@ float HIP_DEF_MJOLNIR			= 30;
 float HIP_DEF_GRENADE			= 6;
 
 float HIP_MAX_CELLS			= 200;
-float HIP_MAX_GRENADES		= 50; // TDO: check for hp_100?
+float HIP_MAX_GRENADES		= 50; // may not match hp100
 
 float LASERCAN_VEL		= 1000;
 

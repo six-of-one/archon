@@ -16,13 +16,17 @@
 
 entity(entity e, float nw, float camcc) x_wep_store =
 {
-	if (e) // replacing the basics - remove vw ent
+	if (camcc >= 0) // code from xwep_fakeload so it can use loader
 	{
-		remove(e);
-		e = world;
-		vw_chain(other);
+		if (e) // replacing the basics - remove vw ent
+		{
+			remove(e);
+			e = world;
+			vw_chain(other);
+		}
+		e = vload(other, nw);
 	}
-	e = vload(other, nw);
+
 	e.eweapon = e;
 	e._attack = self._attack;
 	e._fr_attack = self._fr_attack;
@@ -42,7 +46,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.dmg_save = self.dmg_save;
 	e.dmg_take = self.dmg_take;
 	e.punchangle = self.punchangle;
-	e.aflag = camcc;
+	if (fabs(camcc) >= 1) e.aflag = fabs(camcc);
 	e.style = self.style; // melee flag
 	e.lefty = self.lefty; // misc data
 	if (self.mcode) e.mcode = self.mcode; // for pack touch deal
@@ -87,6 +91,7 @@ void() x_weapon_touch =
 	local	float best, new, oldw, camc, ign;
 	local	entity e;
 	local float leave;
+	local string cls;
 
 	if (other.classname != "player") // *bot - done in master touch fn
 	{
@@ -102,11 +107,6 @@ void() x_weapon_touch =
 			weapon_touch();
 		return;
 	}
-// if the player was using his best weapon, change up to the new one if better
-	e = self;
-	self = other;
-	best = W_BestWeapon ();
-	self = e;
 
 	if (deathmatch == 2 || deathmatch == 3 || coop)
 		leave = 1;
@@ -117,12 +117,24 @@ void() x_weapon_touch =
 	if (leave && (other.items & self.items))	return;
 	new = self.items;
 
-	if (self.classname == "q2_weapon_rocketlauncher" || self.classname == "q3_weapon_rocketlauncher" ||
-		self.classname == "q3_weapon_grenadelauncher" || self.classname == "q2_weapon_grenadelauncher" ||
-		self.classname == "q2_ammo_grenades" ||
-		self.classname == "weapon_grenadelauncher" || self.classname == "weapon_rocketlauncher" ||
-		self.classname == "d_weapon_rocketlauncher" || self.classname == "w_weapon_mortar" ||
-		self.classname == "weapon_proximity_gun")
+// if the player was using his best weapon, change up to the new one if better
+	e = self;
+	self = other;
+	best = W_BestWeapon ();
+	self = e;
+
+	cls = self.classname;
+	if (cls == "dyn_item")
+		cls = self.wad;
+//	if (self.mcode)
+//		cls = item_by_mcode(self.mcode);
+
+	if (cls == "q2_weapon_rocketlauncher" || cls == "q3_weapon_rocketlauncher" ||
+		cls == "q3_weapon_grenadelauncher" || cls == "q2_weapon_grenadelauncher" ||
+		cls == "q2_ammo_grenades" ||
+		cls == "weapon_grenadelauncher" || cls == "weapon_rocketlauncher" ||
+		cls == "d_weapon_rocketlauncher" || cls == "w_weapon_mortar" ||
+		cls == "weapon_proximity_gun")
 	{
 	if (self.noise4 == Q3_DET)
 	{
@@ -135,11 +147,11 @@ void() x_weapon_touch =
 	other.ammo_rockets = other.ammo_rockets + self.currentammo;
 	camc = other.ammo_rockets;
 	}
-	else if (self.classname == "d_weapon_shotgun" || self.classname == "d_weapon_supershotgun" ||
-		self.classname == "q2_weapon_shotgun" || self.classname == "q2_weapon_supershotgun" ||
-		self.classname == "weapon_shotgun" || self.classname == "weapon_supershotgun" ||
-		self.classname == "c_weapon_reggun" ||
-		self.classname == "q3_weapon_shotgun")
+	else if (cls == "d_weapon_shotgun" || cls == "d_weapon_supershotgun" ||
+		cls == "q2_weapon_shotgun" || cls == "q2_weapon_supershotgun" ||
+		cls == "weapon_shotgun" || cls == "weapon_supershotgun" ||
+		cls == "c_weapon_reggun" ||
+		cls == "q3_weapon_shotgun")
 	{
 	if (self.noise4 == Q3_DET)
 	{
@@ -152,11 +164,11 @@ void() x_weapon_touch =
 	other.ammo_shells = other.ammo_shells + self.currentammo;
 	camc = other.ammo_shells;
 	}
-	else if (self.classname == "d_weapon_pistol" || self.classname == "d_weapon_chaingun"
-					|| self.classname == "q3_weapon_machinegun" || self.classname == "q2_weapon_machinegun"
-					|| self.classname == "w_weapon_machinegun" || self.classname == "w_weapon_chaingun"
-					|| self.classname == "weapon_chaingun" || self.classname == "weapon_machinegun"
-					|| self.classname == "w_weapon_pistol")
+	else if (cls == "d_weapon_pistol" || cls == "d_weapon_chaingun"
+					|| cls == "q3_weapon_machinegun" || cls == "q2_weapon_machinegun"
+					|| cls == "w_weapon_machinegun" || cls == "w_weapon_chaingun"
+					|| cls == "weapon_chaingun" || cls == "weapon_machinegun"
+					|| cls == "w_weapon_pistol")
 	{
 	if (self.noise4 == Q3_DET)
 	{
@@ -169,13 +181,13 @@ void() x_weapon_touch =
 	other.ammo_bullet = other.ammo_bullet + self.currentammo;
 	camc = other.ammo_bullet;
 	}
-	else if (self.classname == "d_weapon_plasma" ||
-		self.classname == "q3_weapon_lightning" || self.classname == "weapon_lightning" ||
-		self.classname == "q3_weapon_bfg" || self.classname == "weapon_hyperblaster" ||
-		self.classname == "d_weapon_bfg" || self.classname == "q2_weapon_bfg" ||
-		self.classname == "weapon_bfg" || 
-		self.classname == "weapon_plasmagun" ||
-		self.classname == "weapon_mjolnir" || self.classname == "weapon_laser_gun")
+	else if (cls == "d_weapon_plasma" ||
+		cls == "q3_weapon_lightning" || cls == "weapon_lightning" ||
+		cls == "q3_weapon_bfg" || cls == "weapon_hyperblaster" ||
+		cls == "d_weapon_bfg" || cls == "q2_weapon_bfg" ||
+		cls == "weapon_bfg" || 
+		cls == "weapon_plasmagun" ||
+		cls == "weapon_mjolnir" || cls == "weapon_laser_gun")
 	{
 	if (self.noise4 == Q3_DET)
 	{
@@ -188,8 +200,8 @@ void() x_weapon_touch =
 	other.ammo_cells = other.ammo_cells + self.currentammo;
 	camc = other.ammo_cells;
 	}
-	else if (self.classname == "q2_weapon_railgun" || self.classname == "q3_weapon_railgun" ||
-		self.classname == "weapon_railgun")
+	else if (cls == "q2_weapon_railgun" || cls == "q3_weapon_railgun" ||
+		cls == "weapon_railgun")
 	{
 	if (self.noise4 == Q3_DET)
 	{
@@ -202,21 +214,21 @@ void() x_weapon_touch =
 	other.ammo_slug = other.ammo_slug + self.currentammo;
 	camc = other.ammo_slug;
 	}
-	else if (self.classname == "weapon_flamer" || 
-		self.classname == "w_weapon_flamer")
+	else if (cls == "weapon_flamer" || 
+		cls == "w_weapon_flamer")
 	{
 	other.ammo_gaspr = other.ammo_gaspr + self.currentammo;
 	camc = other.ammo_gaspr;
 	}
-	else if (self.classname == "d_weapon_saw" ||
-		self.classname == "c_weapon_shovel" ||
-		self.classname == "q2_weapon_blaster" ||
-		self.classname == "c_weapon_deepsleep" ||
-		self.classname == "weapon_gauntlet" ||
-		self.classname == "weapon_grapplinghook" ||
-		self.classname == "q2_weapon_grapple" ||
-		self.classname == "weapon_hook" ||
-		self.classname == "w_weapon_knife")
+	else if (cls == "d_weapon_saw" ||
+		cls == "c_weapon_shovel" ||
+		cls == "q2_weapon_blaster" ||
+		cls == "c_weapon_deepsleep" ||
+		cls == "weapon_gauntlet" ||
+		cls == "weapon_grapplinghook" ||
+		cls == "q2_weapon_grapple" ||
+		cls == "weapon_hook" ||
+		cls == "w_weapon_knife")
 	{
 	camc = 1;
 	}
@@ -229,6 +241,11 @@ void() x_weapon_touch =
 			{
 			bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
 			bprint(self.classname);
+			if (self.classname == "dyn_item")
+			{
+				bprint(" - ");
+				bprint(self.wad);
+			}
 			bprint(") - ignoring\n\n");
 			}
 			self.touch = SUB_Null;
@@ -236,7 +253,7 @@ void() x_weapon_touch =
 		}
 	}
 
-	if (self.classname == "weapon_hook" || self.classname == "q2_weapon_grapple" || self.classname == "weapon_grapplinghook")
+	if (cls == "weapon_hook" || cls == "q2_weapon_grapple" || cls == "weapon_grapplinghook")
 	{
 		if (! other.pk_items & self.pk_currentitem)
 			other.pk_items = other.pk_items | self.pk_currentitem; // NOTE: could set multiple bits

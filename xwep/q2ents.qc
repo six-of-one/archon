@@ -1666,6 +1666,8 @@ void() key_commander_head =
 
 /*QUAKED q2_ctf_haste (0 .5 .8) (-16 -16 -16) (16 16 16)
 */
+
+// NOTE: glow shell is gone for now...remove this code if it is not ever restored
 float CTF_TECH_SHELL = 0; // set to 5 for a glow shell around techs
 
 void() q2_ctf_haste =
