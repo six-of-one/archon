@@ -114,7 +114,7 @@ void() x_weapon_touch =
 	else
 		leave = 0;
 
-// IDEA: always leave for another rl type
+// IDEA: always leave if we have this - this borks replacables!
 	if (leave && (other.items & self.items))	return;
 	new = self.items;
 
@@ -300,9 +300,6 @@ void() x_weapon_touch =
 // remove it in single player, or setup for respawning in deathmatch
 	self.model = string_null;
 	self.solid = SOLID_NOT;
-	if (self.wad == "deadtwep") // dont respawn these
-		remove(self);
-	else
 	if (deathmatch == 1)
 	{
 		self.nextthink = time + RSP_TIME;

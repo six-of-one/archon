@@ -1285,7 +1285,7 @@ void() inventory =
 			else
 				if (self.items & f) q1_inv_print(f);
 
-			if (f == IT_MJOLNIR) 
+			if (f == IT_MJOLNIR) // skip bits 256 - 2048
 				f = IT_AXE;
 			else
 				f = f * 2;

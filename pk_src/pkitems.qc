@@ -37,6 +37,12 @@
 
 void () SUB_regen =
 {
+	if (self.wad == "deadtwep") // dont respawn these
+	{
+		remove(self);
+		return;
+	}
+
 	if (Q_100)
 	{
 		q100_SUB_regen();
@@ -564,18 +570,20 @@ void() painkeep_touch =
 //		}
 	}
 
+	if (other.classname != "player") // pk - this is where the grap can grab stuff
+	{
+		grap_checkIfGrap();
+		return;
+	}
+	if (other.health <= 0)
+		return;
+
 	if (other.classname == "player") // *bot
 //	if (self.pk_touch != painkeep_touch)
 	if (self.state == CACHE_ROUTE_TOUCH || self.state == BOT_TOUCHED_CACHE_ROUTE_TOUCH) // *bot code - patch in cacheRoute for bot code - routes here because this is PK master touch fn()
 	{
 		if (other.movetarget.movetarget)
 			cacheRoute (other.movetarget,other.movetarget.movetarget,0,self);
-	}
-
-	if (other.classname != "player") // pk - this is where the grap can grab stuff
-	{
-		grap_checkIfGrap();
-		return;
 	}
 
 	if (self.pk_touch == SUB_Null) // deactivated
@@ -705,9 +713,6 @@ bprint(")\n");
 	// remove object until it is time to respawn
 	self.solid = SOLID_NOT;
 	self.model = string_null;
-	if (self.wad == "deadtwep") // dont respawn these
-		remove(self);
-	else
 	if (deathmatch)
 	if (deathmatch == 1 || deathmatch == 3)
 	{
@@ -1457,6 +1462,7 @@ void() DropBackpack =
 		else if (self.pk_currentitem == PKPLUS_IT_PHONE)
 			newmis.netname = "Cell Phone";
 // end pk_art
+		newmis.pk_items = self.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
 	}
 	else if (newmis.items == IT_SHOTGUN)
 		newmis.netname = "Shotgun";
