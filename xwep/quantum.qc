@@ -1,3 +1,15 @@
+/* ::-::
+ *
+ * Cataboligne
+ *
+ * file: quantum.qc
+ *
+ * date: 9/1/11
+ *
+ * Howard Roy portal gun updated to CMmkII
+ *
+ */
+
 //.float portal_busy; // moved to defs - fell out deal
 .entity master;
 .entity portal_entrance; // used by player ent for mode 2 portals to store entry (blue) portal for exit (red) portal

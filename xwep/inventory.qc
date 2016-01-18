@@ -1402,18 +1402,6 @@ if (ic == "Haste ")
 						if (stack_search(p, "item_regen"))
 							ic = "Regeneration ";
 
-
-
-
-if (1)
-if (ic == "Regeneration ")
-{
-	bprint("***     warning: q3 regen item detected!");
-	bprint("\n");
-}
-
-
-
 						if (ic != "") drop_string(ic, d, world);
 					}
 
@@ -1448,18 +1436,6 @@ if (ic == "Haste ")
 					if (d & RUNE_FLG_RG)
 					if (stack_search(p, "item_regen"))
 						ic = "Regeneration ";
-
-
-
-
-if (1)
-if (ic == "Regeneration ")
-{
-	bprint("***     warning: q3 regen item detected!");
-	bprint("\n");
-}
-
-
 
 					drop_string(ic, d, world);
 				}

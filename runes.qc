@@ -342,18 +342,6 @@ void(entity e) dead_runes =
 		return;
 	}
 
-
-if (1)
-{
-	bprint("***     warning: dead_rune() - ");
-	if (!e.rune_flag) 
-		bprint("                 no runes");
-	else
-		bit_print(RUNE_MASK_ALL, e.rune_flag);
-
-	bprint("\n");
-}
-
 	f = 1;
 	while (f < RUNE_MASK_ALL)
 	{
@@ -788,17 +776,6 @@ if (stack_search(other, "item_haste"))
 	bprint("\n");
 }
 
-if (self.spawnflags == RUNE_FLG_RG)
-if (self.model != "progs/q3_art.mdl")
-if (stack_search(other, "item_regen"))
-{
-	stack_delete(other, "item_regen");
-	stack_compress(other);
-	bprint("***     warning: rune touch - q3 regen item detected / removed from stack!");
-	bprint("\n");
-}
-
-
 
 
 
@@ -1136,13 +1113,6 @@ void() rune_relocate =
 			bprint(self.netname);
 			bprint(" near: ");
 			bprint(item_ident(e));
-
-							if (1)
-							{
-								bprint("          *** warning: relocate - model = ");
-								bprint(self.model);
-//								bprint("\n");
-							}
 			bprint("\n\n");
 
 		}

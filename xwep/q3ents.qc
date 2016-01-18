@@ -1811,7 +1811,10 @@ void() q3_pwr_touch =
 		return ;
 
 	if (other.rune_flag & self.spawnflags) // already using this rune power - just go back
+	{
+		stack_delete(other, self.classname); // failed - remove classname from stack - Cataboligne - 10.16.12 - clear up issue where haste rune was getting lost from server
 		return;
+	}
 
 	if (self.spawnflags & RUNE_FLG_FLY)
 	if (other.mdl == "progs/gremlin-fly.mdl") // in case he's also invisible

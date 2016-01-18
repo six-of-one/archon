@@ -1,19 +1,40 @@
+/* ::-::
+ *
+ * Cataboligne
+ *
+ * file: progs.src
+ *
+ * date: 3.25.8
+ *
+ * qcc - compile Chaos Mod MK II
+ *
+ */
+ 
 ./progs.dat
 
+// master define - a good chunk of this MUST match the engine define and CAN NOT be changed!
 defs.qc
-// painkeep artifacts
+
+// painkeep artifacts define
 pk_src/pk_art.defs.qc
 
-// painkeep code
+// painkeep define
 pk_src/pk.defs.qc
+
+// pk*bot define
 bot.defs.qc
 bot_tally.qc
 
 // morphic define
 morph/morph.defs.qc
+
+// hipnotic define
 hipnotic/hipdefs.qc
 
+// hook define
 xwep/hook.defs.qc
+
+// frikbot code
 
 frikbot/map_dm1.qc
 frikbot/map_dm2.qc
@@ -35,6 +56,9 @@ precache.qc
 // chaos code
 chaos.qc
 environment.qc
+
+// demo messages - uncomment to use and update: pk_client,qc, pk_weapons.qc
+demo.qc
 
 pk_src/painkeep.qc
 pk_src/pk_client.qc
@@ -88,9 +112,12 @@ mon_II/bossman.qc
 mon_II/young.qc
 mon_II/clinger.qc
 
+// cam and hook
 
 chasecam.qc  //Cataboligne MOD 9.11.3
 xwep/hook.qc
+
+// extra weapons I - visible weapons +
 
 xwep/vw_seq.qc
 xwep/viswep.qc
@@ -99,6 +126,7 @@ xwep/flyers.qc
 xwep/sphere_annihilation.qc
 
 // hipnotic
+// - water level change effect requires "-hipnotic" switch when engine is launched!
 
 hipnotic/hiprubbl.qc
 hipnotic/rotate.qc
@@ -112,12 +140,13 @@ hipnotic/gremlin.qc
 hipnotic/hipspawn.qc
 
 // runes
+
 runes.qc
 
 // support for doom maps ! 
 xwep/dooments.qc
 
-// extra weapons
+// extra weapons II
 
 xwep/railgun.qc
 xwep/lasers.qc
@@ -131,6 +160,7 @@ xwep/q2ents.qc
 xwep/q3ents.qc
 // support for half life maps in darkplaces
 xwep/hlents.qc
+
 xwep/chaosents.qc
 xwep/inventory.qc
 xwep/mc_disambig.qc
@@ -163,10 +193,6 @@ pk_src/hub.qc
 pk_src/motd.qc
 pk_src/admin.qc
 
-// TEST - remove
-
-xwep/qrt_turret.qc
-
 // pk_src/frames.qc - not in original progs.src
 
 // painkeep artifacts
@@ -193,6 +219,8 @@ morph/m-hknigh.qc
 morph/m-ogre.qc
 morph/m-shambl.qc
 morph/m-gremlin.qc
+
+// pk*bot code
 
 bot.qc
 bot_func.qc
