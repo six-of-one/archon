@@ -149,8 +149,12 @@ void () door_fire =
 			return;
 	}
 
-	if (self.owner != self)
-		objerror ("door_fire: self.owner != self");
+	if (self.owner != self) // just get rid of defective doors
+//		objerror ("door_fire: self.owner != self");
+	{
+		remove(self);
+		return;
+	}
 
 // play use key sound
 
@@ -455,8 +459,12 @@ void () LinkDoors =
 
 		if (EntitiesTouching (self,t))
 		{
-			if (t.enemy)
-				objerror ("cross connected doors");
+			if (t.enemy) // remove defective doors
+//				objerror ("cross connected doors");
+			{
+				remove(self);
+				return;
+			}
 
 			self.enemy = t;
 			self = t;

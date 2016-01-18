@@ -42,9 +42,15 @@ void () plat_spawn_inside_trigger =
 
 // maphack conv
 	if (self.aiment)
+	if (!self.aiment.angles_y)
 	{
 		self.mins = self.absmin;
 		self.maxs = self.absmax;
+	}
+	else
+	{
+		self.mins = self.mins + self.origin; // fails rotate translate
+		self.maxs = self.maxs + self.origin;		
 	}
 	tmin = self.mins + '25 25 0';
 	tmax = self.maxs - '25 25 -8';

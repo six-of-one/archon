@@ -624,7 +624,7 @@ void() chaos_maphack_fire =
 	
 	self.dest1_x = self.dest1_x + self.lefty;
 	chaos_maphack_probe(self.dest1);
-
+/*
 //	self.dest1 = self.owner.origin + '512 512 0';
 	self.dest1_y = self.dest1_y + self.lefty;
 	chaos_maphack_probe(self.dest1);
@@ -655,13 +655,13 @@ void() chaos_maphack_fire =
 //	self.dest1 = self.owner.origin + '512 -512 0';
 	self.dest1_x = self.dest1_x + self.lefty;
 	chaos_maphack_probe(self.dest1);
-
+*/
 // turn off one shot self replicator
 	if (biome.group == "start2")
 	{
 		biome.rad_time = biome.rad_time - 6;
 		if (biome.rad_time < 1)
-			biome.group = ""; // turn off
+			biome.group = null_string; // turn off
 	}
 };
 
@@ -824,12 +824,14 @@ void () plat_spawn_inside_trigger;
 
 void() maphack_copy =
 {
+/// ******* - add 2 local ents, one for copy, and one for recursive sub ent run (target1, target2)
+
 //	if (self.dropent.rad_time < fabs(self.dropent.lefty))
 
 // got a live one
 	if (self.dropent)
 	{
-// only make one
+// only make one - really intended for buildings, altars, etc.  may have other uses
 		if (self.dropent.lefty < 0)
 		{
 			self.dropent.targetname = "misc/null.wav";
@@ -839,11 +841,19 @@ void() maphack_copy =
 		self.aiment = spawn();
 		copyentity(self.dropent, self.aiment);
 
-		self.aiment.dest1 = self.aiment.dest = self.dropent.origin;
+		self.aiment.finaldest = self.aiment.dest = self.dropent.origin;
+
+		self.aiment.dest1 = self.aiment.dest2 = v0;
+		if ((self.aiment.classname == "func_button") ||
+			(self.aiment.classname == "door") && (self.aiment.touch != secret_touch))
+			self.aiment.dest1 = self.aiment.dest2 = self.dropent.pos2; // door / button only
 
 		if (self.classname == "func_maphack")
 		if ((self.angles_y == 90) || (self.angles_y == 180) || (self.angles_y == 270))
 		{
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
 																				bprint(" *** warning:   attempting turn: ");
 																				bprint(item_ident(self.aiment));
 																				bprint(", mdl: ");
@@ -853,34 +863,53 @@ void() maphack_copy =
 																					bprint(self.aiment.mdl);
 																				bprint(", at: ");
 																				bprint(vtos(self.aiment.dest));
-//			self.aiment.dest1 = v0;
-//			self.aiment.dest1_z = self.aiment.dest_z;
-//			self.aiment.dest2 = self.aiment.dest1 - self.aiment.dest; // his vector from 0, 0
+																			}
+#endifdef
+//			self.aiment.finaldest = v0;
+//			self.aiment.finaldest_z = self.aiment.dest_z;
+//			self.aiment.dest2 = self.aiment.finaldest - self.aiment.dest; // his vector from 0, 0
 			makevectors(self.angles); // this only works with multiples of 90 degrees! - need true vector calc
 			if (v_forward_y == 1) // 90 deg
 			{
-				self.aiment.dest1_x = 0 - self.aiment.dest_y;
-				self.aiment.dest1_y = self.aiment.dest_x;
+				self.aiment.finaldest_x = 0 - self.aiment.dest_y;
+				self.aiment.finaldest_y = self.aiment.dest_x;
+// doors & buttons if set
+				self.aiment.dest2_x = 0 - self.aiment.dest1_y;
+				self.aiment.dest2_y = self.aiment.dest1_x;
 			}
 			if (v_forward_y == -1) // 270 deg
 			{
-				self.aiment.dest1_x = self.aiment.dest_y;
-				self.aiment.dest1_y = 0 - self.aiment.dest_x;
+				self.aiment.finaldest_x = self.aiment.dest_y;
+				self.aiment.finaldest_y = 0 - self.aiment.dest_x;
+// doors & buttons if set
+				self.aiment.dest2_x = self.aiment.dest1_y;
+				self.aiment.dest2_y = 0 - self.aiment.dest1_x;
 			}
 			if (v_forward_x == -1) // 180 deg
 			{
-				self.aiment.dest1_x = 0 - self.aiment.dest_x;
-				self.aiment.dest1_y = 0 - self.aiment.dest_y;
+				self.aiment.finaldest_x = 0 - self.aiment.dest_x;
+				self.aiment.finaldest_y = 0 - self.aiment.dest_y;
+// doors & buttons if set
+				self.aiment.dest2_x = 0 - self.aiment.dest1_x;
+				self.aiment.dest2_y = 0 - self.aiment.dest1_y;
 			}
 //			self.aiment.dest = self.aiment.dest * v_forward_y; // attemp rotate to correct pos
 			self.aiment.angles_y = self.angles_y; // face dir
+#ifdef warning
+																			if (WARNING & 131072)
+																			{
 																				bprint(", to: ");
-																				bprint(vtos(self.aiment.dest1));
+																				bprint(vtos(self.aiment.finaldest));
 																				bprint(", add vec: ");
 																				bprint(vtos(v_forward));
 																				bprint(", angle: ");
 																				bprint(ftos(self.angles_y));
 																				bprint("\n");
+																			}
+#endifdef
+
+/*
+ *** removed for new method of adjusting pos2 ***
 
 			if (self.aiment.classname == "door") // try to fix doors, once rotated, all will be up / down
 			if (self.aiment.movedir != '0 0 -1')
@@ -890,27 +919,26 @@ void() maphack_copy =
 				self.aiment.dest2_z = 0 - self.aiment.absmax_z - self.aiment.absmin_z; // convert to move down
 				self.aiment.movedir = '0 0 -1';
 			}
+*/
 		}
-		else
-			if (self.aiment.classname == "door")
-			self.aiment.dest2 = self.dropent.pos2; // door only
 
 // dont make sub-copies of this!
 		if (self.aiment.weaponmodel) self.aiment.weaponmodel = "misc/null.wav"; // 2nd random copy from biome chunk lists
-		if (self.aiment.deathtype)
-			self.aiment.deathtype = "misc/null.wav"; // can not be null_string - any door that fires will erase all null deathtypes!
-		else
-			self.aiment.targetname = "misc/null.wav";
+		if (self.aiment.deathtype) self.aiment.deathtype = "misc/null.wav"; // can not be null_string - any door that fires will erase all null deathtypes!
+// must have been copied via target1 or target2 with a targetname test
+		if (!self.aiment.weaponmodel && !self.aiment.deathtype) self.aiment.targetname = "misc/null.wav";
 
 // set new thing origin from - hack (or model) org, copied ent org about '0 0 0' + offset org stored in hack or model
 // offset from stored copies can be in: biome or func_model (or any other master item) or in individual copies
 // --- make sure not to double offset this way
-		setorigin(self.aiment, self.origin + self.aiment.dest1 + self.v_angle + self.aiment.v_angle);
+		setorigin(self.aiment, self.origin + self.aiment.finaldest + self.v_angle + self.aiment.v_angle);
+/// FAILS ---=v
+		if (self.aiment.model != null_string) setmodel(self.aiment, self.aiment.model); // really only for play / door triggers 
 
 #ifdef warning
 																			if (WARNING & 65536)
 																			{
-																				bprint(" *** warning:   made a target2: ");
+																				bprint(" *** warning:   made a copy: ");
 																				bprint(item_ident(self.aiment));
 																				bprint(", mdl: ");
 																				if (self.aiment.model)
@@ -941,16 +969,37 @@ void() maphack_copy =
 
 // so we get restored when slipping back into view range - original will not
 			self.aiment.wad = null_string;
+		}
+// previously func_model test included below - had to change for sub items
 
 // Ph'nglui - recursive code again
 // copy all target1 items to the model - relative origin of item to '0 0 0' added to chunk origin
+/// sub items (2 part doors, etc.) should be copied with target1 - the sub parts have ONLY the target1 id !!
 			if (self.aiment.target1 || self.aiment.target2)
 			{
+																							bprint(" *** warning:   detect target1 in: ");
+																							bprint(item_ident(self.aiment));
+																							bprint(", at: ");
+																							bprint(vtos(self.aiment.origin));
+																							bprint(", search: ");
+																							bprint(self.aiment.target1);
+																							bprint("\n");
 				self.aiment.aiment = self; // back link
 				self = self.aiment;
 				if (self.target1)
 				{
+					self.grap_state =  // test  remove
 					cnt_ent(self, "deathtype", self.target1);
+// remove:
+																							bprint(" *** warning:   found target1: ");
+																							bprint(item_ident(self));
+																							bprint(", at: ");
+																							bprint(vtos(self.origin));
+																							bprint(", search: ");
+																							bprint(self.target1);
+																							bprint(", found: ");
+																							bprint(ftos(self.grap_state));
+																							bprint("\n");
 					self.dropent = self.chain;
 					while (self.dropent)
 					{
@@ -988,7 +1037,6 @@ void() maphack_copy =
 				}
 				self = self.aiment;
 			}
-		}
 /*
 		if (self.aiment.class_select == "quake_item")
 		{
@@ -1018,15 +1066,21 @@ void() maphack_copy =
 		}
 		if (self.aiment.classname == "door")
 		{
-			self.aiment.pos1 = self.aiment.origin; // so door moves correctly
-			self.aiment.pos2 = self.aiment.origin + self.aiment.dest2; //self.dropent.pos2; // so door moves correctly - dest1 for rotates
-			self.aiment.owner = self.aiment;
-			self.aiment.enemy = self.aiment; // so trigger can fire proper door
-//			if (!self.aiment.targetname) // triggers still dont copy right
 			if (self.aiment.touch != secret_touch)
 			{
+				self.aiment.pos1 = self.aiment.origin; // so door moves correctly
+				self.aiment.pos2 = self.aiment.origin + self.aiment.dest2; //self.dropent.pos2; // so door moves correctly - dest2 for rotates
+				self.aiment.owner = self.aiment;
+				self.aiment.enemy = self.aiment; // so trigger can fire proper door
+
+//				if (!self.aiment.targetname) // triggers still dont copy right
 				self.aiment.trigger_field = spawn_field (self.aiment.absmin + '30 30 0',self.aiment.absmax - '30 30 0'); // make a new trigger field around door
 				self.aiment.trigger_field.owner = self.aiment; // tell trigger to fire this door - it will initially point at the source door that was copied
+			}
+			else
+			{
+				self.aiment.mins = self.aiment.absmin;
+				self.aiment.maxs = self.aiment.absmax;	
 			}
 		}
 		if (self.aiment.classname == "plat")
@@ -1043,7 +1097,7 @@ void() maphack_copy =
 		if (self.aiment.classname == "func_button")
 		{
 			self.aiment.pos1 = self.aiment.origin; // so button moves correctly
-			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so button moves correctly
+			self.aiment.pos2 = self.aiment.origin + self.aiment.dest2; //self.dropent.pos2; // so button moves correctly - dest2 for rotates
 //			self.aiment.owner = self.aiment;
 //			self.aiment.enemy = self.aiment; // so trigger can fire proper door
 //			self.aiment.trigger_field = spawn_field (self.aiment.absmin,self.aiment.absmax); // make a new trigger field around door
@@ -1367,7 +1421,7 @@ void() func_maphack =
 
 // copy all target1 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
 
-	if (self.mdl && self.mdl != "") // or maphack_copy goes nuts & makes 32767 ents & overloads server
+	if (self.mdl && self.mdl != null_string) // or maphack_copy goes nuts & makes 32767 ents & overloads server
 	{
 		if (!self.target1)
 		{
