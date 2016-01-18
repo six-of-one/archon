@@ -1297,6 +1297,8 @@ float(entity e) shotgun_check =
 
 // fn(morph_armor_check) - drop armor when morphing
 
+// mpy - morph CB_ code for intended from
+
 void(float mpy) morph_armor_check =
 {
 	if ((self.mask_x & MORPH_SARMOR) || self.armortype == ARM_SCRG) // builtin type armor is not thrown
@@ -1305,8 +1307,7 @@ void(float mpy) morph_armor_check =
 		return;
 	}
  
-	if (self.armorvalue * self.armortype)
-//	if (self.items & (IT_ARMOR1|IT_ARMOR1|IT_ARMOR3)) // dont really care what item it is if any
+	if ((self.armorvalue * self.armortype) > 0)
 	{	
 		drop_one(self, "Armor", 0, world, null_string, MED_BOUNCE_NOW, 1);
 
@@ -1440,7 +1441,7 @@ void(float cmd, float pls) polymorph_check =
 				}
 			}
 
-			viswep_ld(self, -1); // unloads weps - NOTE: threw option
+			viswep_ld(self, -1); // unloads weps - NOTE: threw option - currently does NOT throw
 
 
 			if (self.mask_x & CB_ENF)
@@ -1455,7 +1456,7 @@ void(float cmd, float pls) polymorph_check =
 				if (newmis)
 				{
 					newmis.touch = SUB_Null;
-					newmis.think = morph_pack_rethink;
+					newmis.think = morph_pack_rethink; // idea - cant get your own pack from morph changes -- e.g. the ammo factory idea
 					newmis.nextthink = time + 6;
 				}
 			}
@@ -1463,8 +1464,9 @@ void(float cmd, float pls) polymorph_check =
 
 			if ((cmd == IMP_MCHAOS) || (cmd == IMP_MORDER))
 			{
-				dead_artifact(self);
-				dead_runes(self);
+				dead_drop(self);
+//				dead_artifact(self);
+//				dead_runes(self);
 			}
 	//		morph_powerup_check(cmd);
 			morph_clearparms(self, FALSE);
@@ -2105,7 +2107,8 @@ float(entity e) IS_LAVA =
 //	else if (e.model == "progs/boss.mdl") f = TRUE;
 //	else if (e.model == "progs/tarbaby.mdl") f = TRUE;
 //	else if (e.model == "progs/lavabomb.mdl") f = TRUE;
-	else if ((e.model == "progs/scor2.mdl") && (e.skin == 1 || e.skin == 2)) f = TRUE;
+	else if ((e.model == "progs/scor2c.mdl") && (e.skin == 1 || e.skin == 2)) f = TRUE;
+	else if ((e.model == "progs/scor2e.mdl") && (e.skin == 1 || e.skin == 2)) f = TRUE;
 	else if ((e.model == "progs/wizard.mdl") && (e.skin == 1)) f = TRUE;
 
 	return(f);

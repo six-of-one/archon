@@ -119,14 +119,14 @@ void() HIP_DiversionLightningThink =
 //void(entity prev, entity owner, float dst) HIP_SpawnMjolnirLightning;
 void() HIP_LightningThink =
 {
-	local vector org, end, dst, vec;
+//	local vector org, end, dst, vec; // ip_orgOrigin, pos1, dest, dest2
 	local entity head;
-	local entity selected;
+//	local entity selected; // goalentity
 	local float cur_dist;
 	local float head_dist;
 	local float dot;
 	local float oldstate;
-	local float dam;
+//	local float dam;
 
 
 	if (time > self.delay)
@@ -141,46 +141,46 @@ void() HIP_LightningThink =
 		{
 		// look in our immediate vicinity
 		self.enemy = world;
-		selected = world;
+		self.goalentity = world;
 		cur_dist = self.distance;
 		head = findradius(self.owner.origin, self.distance);
 		while(head)
 			{
-			if(!(head.flags & FL_NOTARGET) && ((head.flags & FL_MONSTER) || (head.flags & FL_CLIENT))) // CHECK: pk*bot no cli flg deal?
+			if(! (head.flags & FL_NOTARGET) && ((head.flags & FL_MONSTER) || (head.flags & FL_CLIENT))) // CHECK: pk*bot no cli flg deal?
 				{
 				if ((visible(head)) && (head!=self.owner.owner) && (head.health>0))
 					{
 					head_dist = vlen(head.origin - self.lastvictim.origin);
 					if ((head_dist<cur_dist) && (head.struck_by_mjolnir==0))
 						{
-						selected = head;
+						self.goalentity = head;
 						cur_dist = head_dist;
 						}
 					}
 				}
 			head = head.chain;
 			}
-		if (selected != world)
+		if (self.goalentity != world)
 			{
 			self.state = 1;
-			self.enemy = selected;
+			self.enemy = self.goalentity;
 			self.enemy.struck_by_mjolnir = 1;
 			}
 		else
 			{
 			makevectors(self.v_angle);
-			org = self.owner.origin;
-			end = org + v_forward*200;
-			end = end + (((400*random()) - 200) * v_right);
+			self.ip_orgOrigin = self.owner.origin;
+			self.pos1 = self.ip_orgOrigin + v_forward*200;
+			self.pos1 = self.pos1 + (((400*random()) - 200) * v_right);
 
-			traceline (org, end, TRUE, self);
+			traceline (self.ip_orgOrigin, self.pos1, TRUE, self);
 
 			WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 			WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
 			WriteEntity (MSG_BROADCAST, self);
-			WriteCoord (MSG_BROADCAST, org_x);
-			WriteCoord (MSG_BROADCAST, org_y);
-			WriteCoord (MSG_BROADCAST, org_z);
+			WriteCoord (MSG_BROADCAST, self.ip_orgOrigin_x);
+			WriteCoord (MSG_BROADCAST, self.ip_orgOrigin_y);
+			WriteCoord (MSG_BROADCAST, self.ip_orgOrigin_z);
 			WriteCoord (MSG_BROADCAST, trace_endpos_x);
 			WriteCoord (MSG_BROADCAST, trace_endpos_y);
 			WriteCoord (MSG_BROADCAST, trace_endpos_z);
@@ -194,10 +194,10 @@ void() HIP_LightningThink =
 			return;
 			}
 		}
-	org = self.lastvictim.origin;
-	dst = self.enemy.absmin + 0.25*(self.enemy.absmax-self.enemy.absmin);
-	dst = dst + (random()*0.5*(self.enemy.absmax-self.enemy.absmin));
-	traceline (org, dst, TRUE, self.owner.owner);
+	self.ip_orgOrigin = self.lastvictim.origin;
+	self.dest = self.enemy.absmin + 0.25*(self.enemy.absmax-self.enemy.absmin);
+	self.dest = self.dest + (random()*0.5*(self.enemy.absmax-self.enemy.absmin));
+	traceline (self.ip_orgOrigin, self.dest, TRUE, self.owner.owner);
 
 	if (trace_fraction != 1.0 || self.enemy.health<=0)
 		{
@@ -209,26 +209,26 @@ void() HIP_LightningThink =
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
 	WriteEntity (MSG_BROADCAST, self);
-	WriteCoord (MSG_BROADCAST, org_x);
-	WriteCoord (MSG_BROADCAST, org_y);
-	WriteCoord (MSG_BROADCAST, org_z);
+	WriteCoord (MSG_BROADCAST, self.ip_orgOrigin_x);
+	WriteCoord (MSG_BROADCAST, self.ip_orgOrigin_y);
+	WriteCoord (MSG_BROADCAST, self.ip_orgOrigin_z);
 	WriteCoord (MSG_BROADCAST, trace_endpos_x);
 	WriteCoord (MSG_BROADCAST, trace_endpos_y);
 	WriteCoord (MSG_BROADCAST, trace_endpos_z);
-	vec = normalize(self.enemy.origin - self.owner.origin);
-	dot = vec * self.owner.movedir;
+	self.dest2 = normalize(self.enemy.origin - self.owner.origin);
+	dot = self.dest2 * self.owner.movedir;
 	head = self;
 	self = self.owner.owner;
 	if (oldstate==0)
-		dam = 80;
+		self.dodmg = 80;
 	else
-		dam = 30;
+		self.dodmg = 30;
 	if (dot>0.3)
-		HIP_HammerDamage (org, trace_endpos, self, dam);
-//		LightningDamage(FALSE, org, trace_endpos, self, dam);
+		HIP_HammerDamage (self.ip_orgOrigin, trace_endpos, self, self.dodmg);
+//		LightningDamage(FALSE, self.ip_orgOrigin, trace_endpos, self, self.dodmg);
 	else
-		HIP_HammerDamage (org, trace_endpos, self, dam*0.5);
-//		LightningDamage(FALSE, org, trace_endpos, self, dam*0.5);
+		HIP_HammerDamage (self.ip_orgOrigin, trace_endpos, self, self.dodmg*0.5);
+//		LightningDamage(FALSE, self.ip_orgOrigin, trace_endpos, self, self.dodmg*0.5);
 	self = head;
 
 	self.nextthink = time + 0.2;
@@ -310,19 +310,19 @@ void() HIP_FireMjolnir =
 {
 	local vector	org;
 	local	float		cells;
-	local float	 damage;
-	local vector	source;
+//	local float	 damage;
+//	local vector	source;
 	local vector	ang;
 
 
 	self.attack_finished = time + self.eweapon.attack_finished;
-	source = self.origin + '0 0 16';
+	self.dest = self.origin + '0 0 16';
 	makevectors(self.v_angle);
-	traceline (source, source + v_forward*32, FALSE, self); // strike range?
+	traceline (self.dest, self.dest + v_forward*32, FALSE, self); // strike range?
 	if (trace_fraction == 1.0 && (self.ammo_cells >= ammo_con(self.eweapon.dmg_save, self, null_string)))
 		{
-		source = source + v_forward*32;
-		traceline (source , source - v_up*50, FALSE, self);
+		self.dest = self.dest + v_forward*32;
+		traceline (self.dest , self.dest - v_up*50, FALSE, self);
 		if (trace_fraction > 0.3 && trace_fraction< 1.0)
 			{
 			HIP_FireMjolnirLightning();
@@ -334,16 +334,16 @@ void() HIP_FireMjolnir =
 
    if (trace_ent.takedamage)
 	{
-      damage = 50;
+      self.dodmg = 50;
       if (trace_ent.classname == "monster_zombie")
-         damage = 70;
+         self.dodmg = 70;
 //	melee_damage(self.origin + '0 0 16', self.origin + '0 0 16' + v_forward*64, damage, 50, 0, TE_GUNSHOT, self.eweapon.noise1, self.eweapon.noise3, self.eweapon.noise4); // was chaos mod code
 //			self.noise1 = "hknight/slash1.wav"; // missed
 //			self.noise3 = "thors_hammer/mjoltink.wav"; // hit wall &| solid
 //			self.noise4 = "zombie/z_hit.wav"; // hit flesh
 		trace_ent.axhitme = 1;
-		SpawnBlood (trace_ent, org, v_forward, damage);
-		T_Damage (trace_ent, self, self, damage);
+		SpawnBlood (trace_ent, org, v_forward, self.dodmg);
+		T_Damage (trace_ent, self, self, self.dodmg);
 	}
    else
 	{  // hit wall

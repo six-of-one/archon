@@ -103,7 +103,15 @@ void() T_Vomistouch =
 	}
 
 	if (self.classname == "vomisexplod") T_MissileTouch(); // idea: tweak damage
-	if (self.classname == "vomisss") superspike_touch();
+	if (self.classname == "vomisss")
+#ifdef enhanced
+		{
+			self.dmg = 18;
+			spike_touch();
+		}
+#else
+		superspike_touch();
+#endifdef
 	else
 		spike_touch();
 

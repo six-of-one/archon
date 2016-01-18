@@ -828,7 +828,10 @@ void () W_FireGrenade =
 //=============================================================================
 
 void () spike_touch;
+
+#ifndef enhanced
 void () superspike_touch;
+#endifdef
 
 /*
 ===============
@@ -888,7 +891,7 @@ void () W_FireSuperSpikes =
 	newmis.weapon = IT_SUPER_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 	newmis.dmg = 18;
 	setmodel (newmis,"progs/s_spike.mdl");
-	setsize (newmis,VEC_ORIGIN,VEC_ORIGIN);
+	setsize (newmis, v0, v0);
 	self.punchangle_x = -2;
 	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 };
@@ -986,6 +989,7 @@ void () spike_touch =
 };
 */
 
+#ifndef enhanced
 void () superspike_touch =
 {
 //	local float rand;
@@ -1019,6 +1023,7 @@ void () superspike_touch =
 	remove (self);
 
 };
+#endifdef
 
 
 /*

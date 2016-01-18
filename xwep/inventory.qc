@@ -1888,14 +1888,13 @@ void(entity e) dead_drop =
 	if (e.rune_flag)
 		dead_runes(e);
 
-
-/*
-if (1)
+#ifdef warning
+if (WARNING & 64)
+{
 bprint("***     warning: haste check - ");
 rune_map_print(4);
-//	bprint("\n");
-*/
-
+}
+#endifdef
 
 };
 

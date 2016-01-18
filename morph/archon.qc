@@ -58,7 +58,9 @@ void() de_archon_thk =
 
 void(entity e) de_archon =
 {
-	newmis = self;
+	local entity f;
+
+	f = self;
 	self = e;
 
 	if (self.state == 0) self.state = IMP_MHUMAN;
@@ -66,8 +68,11 @@ void(entity e) de_archon =
 	else if (self.state == IMP_MORDER) self.state = IMP_MHUMAN;
 	polymorph_check(self.state, 0);
 
+	if (self.state == self.morphy) self.rune_flag = 0; // clear rune powers spells
+// idea - clear reticles
+
 	self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10, de_archon_thk, SUB_Null, self, world);
-	self = newmis;
+	self = f;
 };
 
 // archon_ppp_thk - portable power point think

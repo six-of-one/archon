@@ -331,7 +331,16 @@ void () spikeshooter_use =
 		launch_spike (self.origin,self.movedir);
 		newmis.velocity = self.movedir * 500;
 		if (self.spawnflags & SPAWNFLAG_SUPERSPIKE)
+#ifdef enhanced
+		{
+			setmodel (newmis,"progs/s_spike.mdl");					// superspike_tch replace code
+			setsize (newmis, v0, v0);
+			newmis.touch = spike_touch;
+			newmis.dmg = 18;
+		}
+#else
 			newmis.touch = superspike_touch;
+#endifdef
 	}
 };
 

@@ -57,7 +57,7 @@ $frame death1 death2 death3 death4 death5 death6 death7
 void() m_precache_scourge =
 {
 // Scourge morph - if it looks like a scourge...
-	precache_model ("progs/scor2.mdl");
+	precache_model ("progs/scor2c.mdl");
 	precache_model ("progs/h_scourg.mdl");
 	precache_model ("progs/proxbomb.mdl");
 
@@ -548,7 +548,7 @@ void(float silent) player_scourge_become =
 
 	stuffcmd(self, "exec cfg/morph/m-scourge.cfg\n");
 
-	setmodel(self,"progs/scor2.mdl");
+	setmodel(self,"progs/scor2c.mdl");
 
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_LIGHTNING | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
 	self.items = self.items | IT_AXE | IT_SHOTGUN;

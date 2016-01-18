@@ -2380,6 +2380,9 @@ void() archon_banish =
 			self.bolt_target.owner.nextthink = time + 1;
 			self.bolt_target.owner.think = remove_fade;			
 		}
+		if (self.bolt_target.classname == "chaos_teleport_icon")
+			remove(self.bolt_target.trigger_field);
+
 		self.bolt_target.solid = SOLID_NOT; // no touch
 		self.bolt_target.nextthink = time + 1;
 		self.bolt_target.think = remove_fade;

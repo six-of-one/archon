@@ -160,6 +160,7 @@ void() pulse_rebound =
 	self.owner = world;
 };
 
+#ifndef enhanced
 void() pulse_touch =
 {
 	local float rand;
@@ -211,6 +212,7 @@ void() pulse_touch =
 
 	remove(self);
 };
+#endifdef
 
 // called from W_FireSpikes	- fire a pulse spike
 

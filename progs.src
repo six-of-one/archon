@@ -6,6 +6,7 @@
 //
 // date: 3.25.8
 // date: 8.7.13 - moved qcc to "fteqcc" see notes in "archon/source code/fteqcc"
+// date: 10.27.13 - init archon folder for specific code
 //
 //
 // qcc - compile Chaos Mod MK II
@@ -20,10 +21,11 @@
 // master define - a good chunk of this MUST match the engine define and CAN NOT be changed!
 defs.qc
 
-// painkeep artefacts define
-pk_src/pk_art.defs.qc
+// archon server define
+archon/arc.defs.qc
 
-// painkeep define
+// painkeep & artefacts define
+pk_src/pk_art.defs.qc
 pk_src/pk.defs.qc
 
 // pk*bot define

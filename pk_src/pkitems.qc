@@ -812,7 +812,7 @@ bprint(")\n");
 
 		}
 
-		if (e)
+		if (e) // pk*bot classname = player - change back
 		{
 			e.classname = e.wad;
 			if (e.think == player_run) e.think = e.th_run;
