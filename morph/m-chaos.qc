@@ -278,9 +278,9 @@ void(entity e, string md) chaos_flycheck =
 
 // cheat a little bit - this should be down below
 	if (mt == MOVETYPE_FLY)
-		setsize (e, '-16 -16 -24', ' 16 16 40'); // flying states
+		setsize (e, '-16 -16 -24', '16 16 40'); // flying states
 	else
-		setsize (e, '-16 -16 0', ' 16 16 56'); // model poly
+		setsize (e, '-16 -16 0', '16 16 56'); // model poly
 
 	flyer_check(e, (mt == MOVETYPE_FLY));
 };
@@ -320,30 +320,30 @@ void(entity e) chaos_mdlsize =
 	if (!e) return;
 
 	vmin = vmax = v0;
-	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -16'; vmax = ' 16 16 16'; }
+	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -16'; vmax = '16 16 16'; }
 	else if (e.model == "progs/lavaball.mdl" || e.model == "progs/snowball.mdl")
 	{
 		if (e.frame == 0 || e.frame == 5)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
 		if (e.frame == 1 || e.frame == 6)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
 		if (e.frame == 2 || e.frame == 3 ||
-			  e.frame == 7 || e.frame == 8)			{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
-		if (e.frame == 4 || e.frame == 9)			{ vmin = '-1 -1 -1'; vmax = ' 1 1 1'; }
+			  e.frame == 7 || e.frame == 8)			{ vmin = '-2 -2 -2'; vmax = '2 2 2'; }
+		if (e.frame == 4 || e.frame == 9)			{ vmin = '-1 -1 -1'; vmax = '1 1 1'; }
 	}
 	else if (e.model == "progs/grenade.mdl")
 	{
-		if (e.frame == 0)								{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; } // reg grenade
+		if (e.frame == 0)								{ vmin = '-2 -2 -2'; vmax = '2 2 2'; } // reg grenade
 		if (e.frame == 1 || e.frame == 6)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; } // telespheres
 		if (e.frame == 2 || e.frame == 7)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
 		if (e.frame == 3 || e.frame == 4 ||
-			  e.frame == 8 || e.frame == 9)			{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
-		if (e.frame == 5 || e.frame == 10)		{ vmin = '-1 -1 -1'; vmax = ' 1 1 1'; }
+			  e.frame == 8 || e.frame == 9)			{ vmin = '-2 -2 -2'; vmax = '2 2 2'; }
+		if (e.frame == 5 || e.frame == 10)		{ vmin = '-1 -1 -1'; vmax = '1 1 1'; }
 	}
-	else if (e.model == "progs/proxbomb.mdl")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+	else if (e.model == "progs/proxbomb.mdl")	{ vmin = '-2 -2 -2'; vmax = '2 2 2'; }
 	else if (e.model == "progs/hook.mdl")			{ vmin = '-5 -5 -5'; vmax = ' 5 5 5'; }
 	else if (e.model == "progs/v_spike.mdl")		{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
-//	else if (e.model == "progs/ejbatt.mdl")		{ vmin = '-2 -2 -6'; vmax = ' 2 2 4'; }
-	else if (e.model == "progs/s_bubble.spr")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
-	else if (e.model == "progs/chaos_b2.mdl")	{ vmin = '-16 -16 -24'; vmax = ' 16 16 40'; }
+//	else if (e.model == "progs/ejbatt.mdl")		{ vmin = '-2 -2 -6'; vmax = '2 2 4'; }
+	else if (e.model == "progs/s_bubble.spr")	{ vmin = '-2 -2 -2'; vmax = '2 2 2'; }
+	else if (e.model == "progs/chaos_b2.mdl")	{ vmin = '-16 -16 -24'; vmax = '16 16 40'; }
 	if (vmin != v0 && vmax != v0) setsize(e, vmin, vmax);
 };
 */
@@ -453,7 +453,7 @@ void() chaos_teleport_restore_think =
 		t = t - 1;
 		e = find_tdest(FL_RSALL, null_string); //SelectSpawnPoint ();
 	}
-	if (e.flags & FL_ITEM) org = ' 0 0 32';
+	if (e.flags & FL_ITEM) org = '0 0 32';
 	setorigin(self.owner, e.origin + org);
 	self.owner.angles = e.angles;
 	self.owner.fixangle = TRUE;
@@ -543,7 +543,7 @@ float() chaos_move_effect =
 		if (chaos_mdlchk(self.model)) chaos_form(FL_SPIKE);
 		if (self.wait > time) return FALSE;
 		self.wait = time + random() / 2.0;
-		fire_burst (chaos_item, self.origin, 0, 100, null_string, null_string, 0, 1, 0, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world);
+		fire_burst (chaos_item, self.origin, 0, 100, null_string, null_string, 0, 1, 0, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world);
 //		if (self.health < (self.max_health * self.health_modifier * 0.30)) self.health = self.health + random() * 10;
 //		else 
 		if (self.health < (self.max_health * self.health_modifier * 0.70)) self.health = self.health + random() * 3;
@@ -574,7 +574,7 @@ float() chaos_move_effect =
 
 	if (random() < 0.05)
 		{
-		chaos_fire_fly(rnd_string(' 95.0 85.0 40.0',"progs/v_spike.mdl","progs/teleport.mdl","progs/lavaball.mdl","progs/snowball.mdl","progs/snowball.mdl"));
+		chaos_fire_fly(rnd_string('95.0 85.0 40.0',"progs/v_spike.mdl","progs/teleport.mdl","progs/lavaball.mdl","progs/snowball.mdl","progs/snowball.mdl"));
 		if (newmis) 
 			{
 			if (random() < 0.24) newmis.think = chaos_bomb;
@@ -612,7 +612,7 @@ float() chaos_move_effect =
 		}
 	else if (random() < 0.02)
 		{
-		fire_burst (chaos_item, self.origin, 0, 150, null_string, null_string, 0, 1, 0, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world); // IDEA overall chaos affect cnt on this
+		fire_burst (chaos_item, self.origin, 0, 150, null_string, null_string, 0, 1, 0, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND /* | FL_OWNOWN */, world); // IDEA overall chaos affect cnt on this
 		if (self.health < (self.max_health * self.health_modifier * 0.70)) self.health = self.health + random() * 3;
 		}
 
@@ -788,7 +788,7 @@ void() fire_cbolt =
 {
 	float f1;
 
-	fire_missile(700, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, ' 0 0 0', "chaosbolt", "progs/spike.mdl", null_string, cbolt_touch, 6 + random() * 6, SUB_Remove, SUB_Nop); // SUB_FadeRemove, SUB_Nop);
+	fire_missile(700, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, '0 0 0', "chaosbolt", "progs/spike.mdl", null_string, cbolt_touch, 6 + random() * 6, SUB_Remove, SUB_Nop); // SUB_FadeRemove, SUB_Nop);
 	newmis.frame = CHAOS_FIREBOLT_FRAME_ADJ + floor(random() * 6);
 	newmis.dmg = 30 + random() * 100; // hot plasma is very dangerous
 
@@ -824,7 +824,7 @@ void(float flg) chaos_form =
 		{
 		setmodel(self,"progs/chaos_b3.1col.mdl");
 		self.modelindex_morph=self.modelindex;
-		setsize (self, '-16 -16 -24', ' 16 16 40');
+		setsize (self, '-16 -16 -24', '16 16 40');
 		self._stand=player_chaos_ball;
 		self._run=player_chaos_ballr;
 		self.wait = time + 5;
@@ -858,7 +858,7 @@ void()   player_chaos_explode9  =[ $chaos16,  player_chaos_explode10 ]
 {
 	chaos_dynlit = 0; // tenebrae stuff - use cvar
 	if (random() < C_FBPER)
-		fire_burst (fire_cbolt, self.origin, 0, 0, null_string, null_string, 0, 8, 28, ' 0 0 0', ' 360 360 360', SUB_Null, FL_VELRND2 /* | FL_OWNOWN */, world);
+		fire_burst (fire_cbolt, self.origin, 0, 0, null_string, null_string, 0, 8, 28, '0 0 0', ' 360 360 360', SUB_Null, FL_VELRND2 /* | FL_OWNOWN */, world);
 };
 void()   player_chaos_explode10 =[ $chaos17,  player_chaos_explode11 ] { };
 void()   player_chaos_explode11 =[ $chaos18,  player_chaos_explode12 ] { };
@@ -1049,7 +1049,7 @@ void() chaos_bomb =
 	RND_maxdmg = CBOMB_DEF_MAX;
 	
 // really just a fancy bouncing betty
-	fire_burst (wfire, self.origin + ' 0 0 30', 0, 0, null_string, null_string, 0, 3, 8, ' 120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
+	fire_burst (wfire, self.origin + '0 0 30', 0, 0, null_string, null_string, 0, 3, 8, '120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
 	RND_maxdmg = 0; // reset
 	remove(self);
 };
@@ -1207,7 +1207,7 @@ void() chaos_item =
 						newmis.content_flag = (newmis.content_flag | FLT_IMM) - (newmis.content_flag & MLT_LAVA);
 						newmis.effects = newmis.effects | EF_DIMLIGHT;
 						newmis.mins_z = newmis.mins_z - 12; // move flame up out of floor
-						newmis.view_ofs = ' 0 0 -12';
+						newmis.view_ofs = '0 0 -12';
 						setsize(newmis, newmis.mins, newmis.maxs);
 						if (random() < CI_FLAMEREAL)
 							newmis.touch = FlameTouch;
@@ -1292,7 +1292,7 @@ void(vector org, float flg) chaos_burst =
 	c1 = 3;// + floor(random() * c2);
 //	if (random() < 0.2) c2 = random() * 30;
 
-	fire_burst (chaos_item, org, 0, 75, null_string, null_string, 0, c1, c2, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND2 | FL_FRCORG | FL_NEWSELF /* | FL_OWNOWN */, world);
+	fire_burst (chaos_item, org, 0, 75, null_string, null_string, 0, c1, c2, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND2 | FL_FRCORG | FL_NEWSELF /* | FL_OWNOWN */, world);
 	ci_last = ci_fr = ci_flg = 0;
 };
 
@@ -1507,7 +1507,7 @@ void() chaos_beam =
 	self.wait = time + random() * random();
 	self.attack_finished = time + 0.1;
 
-	org = self.origin + ' 0 0 4';
+	org = self.origin + '0 0 4';
 	traceline (org, org + v_forward*900, FALSE, self);
 	ep = trace_endpos;
 
@@ -1610,7 +1610,7 @@ void() chaos_beam =
 //			spawn_tdeath(org, rent);
 //			rent.velocity = v_forward * 30 * random();
 //			}
-		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  rent.origin , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  rent.origin , '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 		f.movetarget = e;
 		force_retouch = 2;
 
@@ -1665,12 +1665,12 @@ void() chaos_beam =
 
 		org = e.origin;
 		org_z = rent.origin_z;
-		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		f = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 		f.enemy = e;
 
 		org = rent.origin;
 		org_z = e.origin_z;
-		e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+		e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  org , '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 		e.enemy = rent;
 
 		f.spawnflags = e.spawnflags = 48 + 128; // NONDIR, nodeath code
@@ -1720,11 +1720,11 @@ void() multi_teleport =
 {
 	gsf = 0;
 	v1 = self.bolt_target.origin;
-	newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  v1 , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+	newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  v1 , '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 	newmis.enemy = self.bolt_target;
 
 	v1 = self.enemy.origin;
-	trace_ent = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  v1 , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+	trace_ent = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0,  v1 , '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 	trace_ent.enemy = self.enemy;
 
 // compensate for different relative origin heights from ground
@@ -1798,7 +1798,7 @@ void() uni_teleport =
 // teleport to this
 	trace_ent = chaos_spawn(MOVETYPE_NONE, 0, 0, 0, v1, v0, v0, v0, v0, "chaos_teleport_dst_temp", null_string, SUB_Null, 0.3, SUB_Remove, SUB_Null, world, world);
 
-	newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, self.bolt_target.origin, '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
+	newmis = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, self.bolt_target.origin, '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", null_string, teleport_touch, 0.1, SUB_Remove, SUB_Null, world, world);
 	newmis.enemy = self.bolt_target;
 //	if (newmis.enemy.movetype == MOVETYPE_NONE) - find out why some stuff doesnt port
 
@@ -2560,7 +2560,7 @@ void() player_chaos_attack =
 			self.t_width = time + 7;//0.6;
 			self.delay = self.delay + 1;
 		}
-		org = self.origin + ' 0 0 4';
+		org = self.origin + '0 0 4';
 		traceline (org, org + v_forward*600, TRUE, self);
 
 		self.attack_finished = time + 0.1;
@@ -2590,11 +2590,11 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 		else  // lava ball
 */
 		{
-			if (self.chaosattnoise) sd ="boss1/throw.wav";//rnd_string(' 95.0 66.6 66.6',"weapons/grenade.wav","weapons/sgun1.wav",null_string,null_string,"boss1/throw.wav");
-			fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA | PF_LAVA | CK_EARTHQUAKE, self.origin, ' 0 0 0', "fireballwep", "progs/lavaball.mdl", sd, fire_fly_touch, 5 + (random() * 4), meltthink, fire_fly_adj);
+			if (self.chaosattnoise) sd ="boss1/throw.wav";//rnd_string('95.0 66.6 66.6',"weapons/grenade.wav","weapons/sgun1.wav",null_string,null_string,"boss1/throw.wav");
+			fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA | PF_LAVA | CK_EARTHQUAKE, self.origin, '0 0 0', "fireballwep", "progs/lavaball.mdl", sd, fire_fly_touch, 5 + (random() * 4), meltthink, fire_fly_adj);
 
 			newmis.frame = floor(random() * 3);
-			newmis.avelocity = ' 200 100 300';
+			newmis.avelocity = '200 100 300';
 			newmis.dmgtime = time + 0.2;  // release time?
 			newmis.rad_time = time + 2; // content check timer
 			newmis.dmg = rint(10 + (random() * 20));
@@ -2608,15 +2608,15 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 	else if (self.lastweapon & IT_NAILGUN) // fire some spikes
 	{
 //		md = rnd_string(' 66.6 66.6 66.6',"progs/s_spike.mdl",null_string,null_string,null_string,"progs/spike.mdl"); 
-		if (self.chaosattnoise) sd = rnd_string(' 95.0 66.6 66.6',"weapons/spike2.wav","chaos/pist1.wav",null_string,null_string,"weapons/rocket1i.wav");
+		if (self.chaosattnoise) sd = rnd_string('95.0 66.6 66.6',"weapons/spike2.wav","chaos/pist1.wav",null_string,null_string,"weapons/rocket1i.wav");
 		if (self.lastweapon & IT_LIGHTNING)
 		{
 			if (sd != null_string && random() < 0.7) sd = "pulse/pulse_1.wav";
-			fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "pulse_spike", "progs/spike.mdl", sd, spike_touch, 2 + random() * 4, SUB_Remove, spike_touch);
+			fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + '0 0 4', '0 0 0', "pulse_spike", "progs/spike.mdl", sd, spike_touch, 2 + random() * 4, SUB_Remove, spike_touch);
 			if (random() < 0.5) newmis.dmg = 16 + random() * 4;
 		}
 		else
-			fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "chaosspike", "progs/spike.mdl", sd, spike_touch, 6, SUB_Remove, spike_touch);
+			fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + '0 0 4', '0 0 0', "chaosspike", "progs/spike.mdl", sd, spike_touch, 6, SUB_Remove, spike_touch);
 		RND_frame = random() * 7.4;
 		RND_skin = random() * 3.4;
 		if (random() < 0.6) RND_Spike();
@@ -2626,14 +2626,14 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 	}
 	else if (self.lastweapon & IT_SUPER_NAILGUN)
 	{
-		if (self.chaosattnoise) sd = rnd_string(' 90.0 90.0 90.0',"misc/r_tele3.wav",null_string,null_string,null_string,"enforcer/enfire.wav");
+		if (self.chaosattnoise) sd = rnd_string('90.0 90.0 90.0',"misc/r_tele3.wav",null_string,null_string,null_string,"enforcer/enfire.wav");
 		if (self.lastweapon & IT_LIGHTNING)
 		{
 			if (random() < 0.5) sd = "lasercannon/laserg.wav";
-			HIP_LaunchLaser(self.origin + ' 0 0 4', v_forward, rint(random()), sd); //gun_aim(self, v0), rint(random()), sd);
+			HIP_LaunchLaser(self.origin + '0 0 4', v_forward, rint(random()), sd); //gun_aim(self, v0), rint(random()), sd);
 		}
 		else
-			fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "laser", "progs/laser_m.mdl", sd, Laser_Blast, 6, SUB_Remove, Laser_Blast);
+			fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + '0 0 4', '0 0 0', "laser", "progs/laser_m.mdl", sd, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 		newmis.skin = random() * 10.4;
 		newmis.frame = random() * 10.4;
 		newmis.effects = newmis.effects | EF_FULLBRIGHT;
@@ -3262,7 +3262,7 @@ void() player_chaos_become =
 	self.noise3 = null_string;
 	self.movetype = MOVETYPE_FLY;
 	self.aflag = 0; // chaos form states
-	self.view_ofs = ' 0 0 4';
+	self.view_ofs = '0 0 4';
 
 	self.health = 100 * MCHAOS_HEALMOD + 10 * crandom() * 3.14159265;
 	self.health_modifier = MCHAOS_HEALMOD;

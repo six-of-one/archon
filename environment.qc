@@ -24,7 +24,7 @@ void() meltthink =
 
 void (entity e, string ns) move_stop =
 {
-	e.velocity = ' 0 0 0';
+	e.velocity = '0 0 0';
 	e.movetype = MOVETYPE_NONE; // fails blast_move - removing fails shell casings in lava
 	if (ns != null_string) sound(e, CHAN_WEAPON, ns, 1, ATTN_NORM);
 };
@@ -340,7 +340,7 @@ void(vector org, float ofs, vector vp, vector vr, float dur, float amt, float rm
 		{
 		dr = dur;
 		if (flg & FL_RNDUR) dr = dr + (random() * 10);
-		of = pr = ' 0 0 0';
+		of = pr = '0 0 0';
 
 		pr_x = vp_x + (random() * vr_x) - (vr_x / 2.0); // dir + velo
 		pr_y = vp_y + (random() * vr_y) - (vr_y / 2.0);
@@ -463,7 +463,7 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 				}
 			}
 		else if (md != null_string)
-			fire_missile(v, mvt, 0, ct, self.origin, ' 0 0 0', cln, md, null_string, SUB_Null, 5 + (random() * 10), meltthink, SUB_Null);
+			fire_missile(v, mvt, 0, ct, self.origin, '0 0 0', cln, md, null_string, SUB_Null, 5 + (random() * 10), meltthink, SUB_Null);
 		else
 		{
 #ifdef warning
@@ -535,7 +535,7 @@ void() firefall =
 		self.touch = fire_fly_touch;
 		self.think = meltthink;
 		self.nextthink = time + 5 + (random() * 4);
-		self.view_ofs = ' 0 0 2';
+		self.view_ofs = '0 0 2';
 		self.dmg = 1 + random(); // stings a bit
 //		self.dest_y = 16;
 //		self.grab_callback = grab_lavaball;
@@ -955,7 +955,7 @@ void() chaos_trigger_teleport =
 	InitTrigger ();
 	self.touch = teleport_touch;
 	self.model = null_string;
-	setsize(self, '-16 -16 -16', ' 16 16 16'); // getting bonked somehow
+	setsize(self, '-16 -16 -16', '16 16 16'); // getting bonked somehow
 };
 
 void(vector torg, string trgname, entity trgent) chaos_teleport =
@@ -967,14 +967,14 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 
 // IDEA - get trigger field size from model sizes
 	// physical ent - because trigger has no mdl
-	newmis = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0,  torg, '-12 -12 -12', ' 12 12 12', v0, v0, "chaos_teleport_icon", "progs/sphere_annihilation.mdl", SUB_Null, 2, sphere_annihilation_move, SUB_Null, s, world);
+	newmis = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0,  torg, '-12 -12 -12', '12 12 12', v0, v0, "chaos_teleport_icon", "progs/sphere_annihilation.mdl", SUB_Null, 2, sphere_annihilation_move, SUB_Null, s, world);
 	newmis.oldorigin = torg;
 	newmis.aflag = -1; //stable
 	newmis.mdl = newmis.model;
 //	newmis.grab_callback = chaos_teleport_grab;
 
 // trigger
-	newmis.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  torg , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "progs/sphere_annihilation.mdl", SUB_Null, 4, chaos_trigger_teleport, SUB_Null, s, world);
+	newmis.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  torg , '-16 -16 -16', '16 16 16', v0, v0, "chaos_teleport", "progs/sphere_annihilation.mdl", SUB_Null, 4, chaos_trigger_teleport, SUB_Null, s, world);
 
 //	newmis.frame = needs think fn
 	newmis.skin = 1; //animated skin group
@@ -1174,8 +1174,8 @@ void(entity lb, float mvt, vector avl, vector vel, string snd) lavaball_large =
 
 	newmis.frame = LAVA_LGFRAME;
 	newmis.skin = LAVA_LGSKIN;
-	newmis.view_ofs = ' 0 0 -4';
-	setsize(newmis, '-16 -16 -16', ' 16 16 16');
+	newmis.view_ofs = '0 0 -4';
+	setsize(newmis, '-16 -16 -16', '16 16 16');
 	newmis.dest_y = 32;
 	newmis.dmg = 100;
 	newmis.wait = NOFLY; // these wont make launchers
@@ -1213,7 +1213,7 @@ void(float pr, float ts, float super, string sd) rnd_size =
 		{
 		newmis.frame = rint(random() * 3.2);
 		if (random() < 0.13 && newmis.frame < 5) newmis.frame = newmis.frame + 5;
-		if (random() < super) lavaball_large(newmis, 0, ' 200 0 0', newmis.velocity, sd);
+		if (random() < super) lavaball_large(newmis, 0, '200 0 0', newmis.velocity, sd);
 		}
 };
 
@@ -1237,7 +1237,7 @@ void() lavapud_ground =
 	if (!self.aflag) self.aflag = 100;
 	if (content(world,CKO) != CONTENT_SOLID && content(world,CKO) != CONTENT_LAVA && self.aflag > 0) // try to ground puddles
 		{
-//		setorigin(self, self.origin + ' 0 0 -2');
+//		setorigin(self, self.origin + '0 0 -2');
 		if (self.velocity_z > -75) self.velocity_z = self.velocity_z - 10;
 		self._stand = self.think = lavapud_ground;
 		self.aflag = self.aflag - 1;
@@ -1248,9 +1248,9 @@ void() lavapud_ground =
 //		while ((content(world,CKO) == CONTENT_SOLID || content(world,CKO) == CONTENT_LAVA) && sf > 0)
 //		{
 //			sf = sf - 1;
-//			setorigin(self, self.origin + ' 0 0 2');
+//			setorigin(self, self.origin + '0 0 2');
 //		}
-		setorigin(self, self.origin + ' 0 0 1');
+		setorigin(self, self.origin + '0 0 1');
 		self._stand = self.think = self.th_run;
 //		content_clear(world);
 //		self.velocity_z = 0;
@@ -1327,8 +1327,8 @@ void() lavapud_live =
 {
 	local float pco, pcf;
 
-	pco = pointcontents(self.origin + ' 0 0 1'); // for actual lavapud contain
-	pcf = pointcontents(self.origin + ' 0 0 -4'); // for lavapud floating on lava
+	pco = pointcontents(self.origin + '0 0 1'); // for actual lavapud contain
+	pcf = pointcontents(self.origin + '0 0 -4'); // for lavapud floating on lava
 
 
 #ifdef warning
@@ -1357,9 +1357,9 @@ newline(world);
 		self.style = NO_FLOAT; // dont float these
 		self.lefty = 2 + (random() * 5.1) + (random() * 5.1) + (random() * 5.1); // load up launcher
 		self.dmg = 5 * self.lefty;
-		self.avelocity = ' 0 0 0';
+		self.avelocity = '0 0 0';
 		self.angles_y = 360 * random();
-		self.view_ofs = ' 0 0 -2';
+		self.view_ofs = '0 0 -2';
 		self.aflag = self.walkframe = 0;
 		self.viswframe = $lavasm1;
 		if (random() < 0.3)

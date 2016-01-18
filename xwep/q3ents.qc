@@ -77,7 +77,7 @@ float Q3_HEALM_A				= 100;
 float Q3_BARREL_BLAST		= 120;
 
 
-vector Q3_LIFT					= ' 0 0 10'; // q3 models sit too "low" - lift them by this on spawn
+vector Q3_LIFT					= '0 0 10'; // q3 models sit too "low" - lift them by this on spawn
 
 //string Q3_BOBHOFF				= "cl_itembobheight 0\n"; // q3 item bob height off setting
 //string Q3_BOBH					= "cl_itembobheight 8\n"; // q3 item bob height default - compile as 0 to disable (server cfg parm?)
@@ -337,7 +337,7 @@ void() player_gauntlet1 =
 			self.tomb_time = 0;
 			self.weaponframe = 0;
 //			if (self.eweapon)
-//				setorigin(self.eweapon, self.eweapon.origin + ' 0 0 1.33');  // kicked gun up - not using for now
+//				setorigin(self.eweapon, self.eweapon.origin + '0 0 1.33');  // kicked gun up - not using for now
 		}
 	}
 
@@ -397,7 +397,7 @@ string(entity targ, entity attacker) q3bfg_killmsg =
 	if (targ == attacker) return " should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was blasted by ";
 };
@@ -415,7 +415,7 @@ string() q3rail_killmsg =
 //	if (targ == attacker) return "should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was railed by ";
 };
@@ -433,7 +433,7 @@ string(entity targ, entity attacker) q3plasma_killmsg =
 	if (targ == attacker) return " melted himself.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was melted by ";
 };
@@ -450,7 +450,7 @@ string(entity targ, entity attacker) q3ltn_killmsg =
 	if (targ == attacker) return " blew himself up.\n"; // note: q3 lg doestn blow under water
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was electrocuted by ";
 };
@@ -467,7 +467,7 @@ string(entity targ, entity attacker) q3rock_killmsg =
 	if (targ == attacker) return " blew himself up.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " ate ";
 };
@@ -484,7 +484,7 @@ string(entity targ, entity attacker) q3gren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " ate ";
 };
@@ -501,7 +501,7 @@ string() q3sg_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was gunned down by ";
 };
@@ -518,7 +518,7 @@ string() q3mg_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was machinegunned by ";
 };
@@ -535,7 +535,7 @@ string() q3g_killmsg =
 //	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was pummeled by ";
 };
@@ -691,7 +691,7 @@ void() q3_mg_base =
 	self.dmg = 7;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.bulletspread = ' 0.025 0.025 0';
+	self.bulletspread = '0.025 0.025 0';
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 
 	self.netname = "Machine Gun";
@@ -765,7 +765,7 @@ void() q3_weapon_shotgun =
 	self.dmg = 10;
 	self.dmg_save = 2;
 	self.dmg_take = 11; // shot cnt
-	self.bulletspread = ' 0.14 0.08 0'; // bullet spread out -- TDO: get q3 value, this is q1
+	self.bulletspread = '0.14 0.08 0'; // bullet spread out -- TDO: get q3 value, this is q1
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 
 	setmodel (self, "progs/q3_shot.mdl");
@@ -2413,7 +2413,7 @@ void () q3_trigger_push =
 	if (!self.target)
 	{
 		self.wait = 15; // just a guess - this objects 15 mins of faim
-		self.movedir = ' 0 -1 0'; // didnt have a target - default to up
+		self.movedir = '0 -1 0'; // didnt have a target - default to up
 	}
 };
 
@@ -2460,7 +2460,7 @@ void() misc_teleporter =
 	if (world.wad == "q2.wad")
 	{
 		chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, null_string, null_string, SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
-		ambientsound (self.origin + ' 0 0 32', "q2_snd/telehum.wav", 1, ATTN_STATIC);
+		ambientsound (self.origin + '0 0 32', "q2_snd/telehum.wav", 1, ATTN_STATIC);
 	}
 };
 

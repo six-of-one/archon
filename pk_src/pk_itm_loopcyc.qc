@@ -338,9 +338,9 @@ void(entity e) init_loopcyc =
 					remove(e);
 					return; // no location - fail!
 				}
-				v1 = s2.origin + ' 0 0 8';
+				v1 = s2.origin + '0 0 8';
 				if (s2.flags & FL_ITEM)
-					v1 = stdv_rndloc(s2.origin + ' 0 0 8', 50, 100);
+					v1 = stdv_rndloc(s2.origin + '0 0 8', 50, 100);
 				setorigin(sr, v1);
 				sr.wad = cl;
 				item_call_save(sr, cl); // make first one

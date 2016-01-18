@@ -186,7 +186,7 @@ string(entity targ, entity attacker) mjolnir_killmsg =
 			return (" checks if his weapon is loaded\n");
 #else
 //	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got creative with Mjolnir\n"," angered the Gods\n",null_string,null_string," swung too hard\n"));
+		return(rnd_string('90.0 60.0 60.0'," got creative with Mjolnir\n"," angered the Gods\n",null_string,null_string," swung too hard\n"));
 //	else 
 #endifdef
 	}

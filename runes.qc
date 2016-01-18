@@ -1039,9 +1039,9 @@ void() rune_maker =
 				remove(self);
 				return; // crap - no location
 			}
-			v1 = e.origin + ' 0 0 8';
+			v1 = e.origin + '0 0 8';
 //			if (e.flags & FL_ITEM) // randomize away from other map items - 
-//				v1 = stdv_rndloc(e.origin + ' 0 0 8', 50, 100); // uses ejector
+//				v1 = stdv_rndloc(e.origin + '0 0 8', 50, 100); // uses ejector
 			setorigin(self, v1);
 
 			item_call(self.wad);
@@ -1149,7 +1149,7 @@ void() rune_relocate =
 
 		if (e)
 		{
-			self.ip_orgOrigin = e.origin + ' 0 0 4'; // something found - move rune here
+			self.ip_orgOrigin = e.origin + '0 0 4'; // something found - move rune here
 		  if (DYN_SHOW || !RUNE_SHOW)
 		  {
 				bprint(RUNE_MSG_ISO);

@@ -157,7 +157,7 @@ void() clinger_die6  =[ $explode2, clinger_respawn  ]
 		v = trace_endpos + '0 0 24';
 	}
 	else
-		v = self.origin + ' 0 0 30';
+		v = self.origin + '0 0 30';
 
 	while (self.cnt > 0)
 	{
@@ -262,7 +262,7 @@ void() clinger_respawn = [ $idle1, clinger_idle1 ]
 			if (!respawning)
 			{
 				setsize (self, '-16 -16 0', '16 16 40');
-				self.origin = self.origin + ' 0 0 20';
+				self.origin = self.origin + '0 0 20';
 				self.velocity = '0 0 -20';
 				self.movetype = MOVETYPE_TOSS;
 			}
@@ -321,8 +321,8 @@ if (ign != A_MONSTER)
 		if (random() < 0.5) self.cnt = 3 + random() * 10; // 50% random spawns get rnd cnts
 #endifdef
 
-		traceline(self.origin + ' 0 0 6', self.origin + ' 0 0 1005', TRUE, self);
-		if (sky_touch(null_string, trace_endpos + ' 0 0 1', world)) trace_fraction = 1; // hit sky brush or surface
+		traceline(self.origin + '0 0 6', self.origin + '0 0 1005', TRUE, self);
+		if (sky_touch(null_string, trace_endpos + '0 0 1', world)) trace_fraction = 1; // hit sky brush or surface
 		if (trace_fraction >= 1 || (random() < 0.16)) // no ceiling ? - or occasionally make a floor model
 		{
 			self.angles_x = 180; // try flipping over

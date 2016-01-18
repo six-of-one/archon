@@ -115,7 +115,7 @@ void () cam_deathmove =
 		self.think = SUB_Remove;
 
 		setorigin(self.owner, self.oldorigin);
-		self.owner.velocity = ' 0 0 0';
+		self.owner.velocity = '0 0 0';
 		if (!intermission_running) 
 		{
 			self.owner.think = respawn;
@@ -409,12 +409,15 @@ void () dead_cam_set =
 // fn(cam_punch) - zero punchangle_x if cam active when firing weps
 
 // self is player ent
+/*
+
+deprecate - dp cam does not use this
 
 void() cam_punch =
 {
 	if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
 };
-
+*/
 
 void () ccb_impulse_check =
 {
@@ -476,15 +479,15 @@ void() cam_waterjump =
 	if (self.class_select == "class_bot") return; // no bots
 
 //	if (! self.flags & FL_WATERJUMP)
-	cam_CheckWaterJump (' 0 0 -8');
+	cam_CheckWaterJump ('0 0 -8');
 	if (! self.flags & FL_WATERJUMP)
-		cam_CheckWaterJump (' 0 0 -4');
+		cam_CheckWaterJump ('0 0 -4');
 	if (! self.flags & FL_WATERJUMP)
-		cam_CheckWaterJump (' 0 0 4');
+		cam_CheckWaterJump ('0 0 4');
 	if (! self.flags & FL_WATERJUMP)
-		cam_CheckWaterJump (' 0 0 8');
+		cam_CheckWaterJump ('0 0 8');
 //		if (! self.flags & FL_WATERJUMP)
-//			cam_CheckWaterJump (' 0 0 10');
+//			cam_CheckWaterJump ('0 0 10');
 //		if (! self.flags & FL_WATERJUMP)
-//			cam_CheckWaterJump (' 0 0 12');
+//			cam_CheckWaterJump ('0 0 12');
 };

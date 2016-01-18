@@ -50,10 +50,15 @@ void() explodeAttack =
 	while(i > 0)
 	{
 		dir_x = -50 + (random() * 100);
-	  dir_y = -50 + (random() * 100);
-	  dir_z = -25 + (random() * 50);
-		particle(self.origin, dir, 225, 3);
-	  i = i - 1;
+		dir_y = -50 + (random() * 100);
+		dir_z = -25 + (random() * 50);
+//		particle(self.origin, dir, 225, 3);
+		spawn_particle = 225;
+#ifdef enhanced
+		if (!self.enemy) spawn_particle = 248; // dont "bleed" world - this uses fire color
+#endifdef
+		SpawnBlood (self.enemy, self.origin, dir * 10, 1.5);
+		i = i - 1;
 	}
 
 	BecomeShellExplosion ();
@@ -229,7 +234,7 @@ void(float ox) W_FirePulseSpikes =
 	else
 	dir = aim (self, 1000);
 	if (autocvar_sv_centerwep)
-		launch_spike (self.origin + ' 0 0 16' + v_right*ox, dir);
+		launch_spike (self.origin + '0 0 16' + v_right*ox, dir);
 	else
 		launch_spike (self.origin + v_up * VWZ_PNAILG + v_right * (ox / 2.5) + v_right * VWY_PNAILG + v_forward * VWX_PNAILG, dir);
 #ifdef enhanced
@@ -248,9 +253,9 @@ void(float ox) W_FirePulseSpikes =
 	newmis.angles = vectoangles(dir);
 	newmis.weapon = IT_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 
-	setsize (newmis, ' 0 0 0', ' 0 0 0');
+	setsize (newmis, '0 0 0', '0 0 0');
 	self.punchangle_x = -2;
-	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 
 	// time limit
 	newmis.think = SUB_Remove;
@@ -299,7 +304,7 @@ void() PK_SetCurrentAmmo =
 	}
 
 //	wchanged = wchanged & ((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) || cvar("chase_active"));
-	if (!((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) || (self.cam_x & CHSCAM_ON))) wchanged = FALSE;
+	if (!((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) )) wchanged = FALSE;
 
 	if (wchanged)
 		sprint(self, "You have selected the ");
@@ -660,7 +665,8 @@ void() PK_SetCurrentAmmo =
 
 // Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
-		if ( (self.cam_x & CHSCAM_ON) || self.classname == OBSERVER)
+//		if ( (self.cam_x & CHSCAM_ON) || self.classname == OBSERVER)
+		if (self.classname == OBSERVER)
 		{
 			self.weaponmodel = null_string;
 		}
@@ -917,7 +923,8 @@ void(entity e) PK_SetCurrentAmmoOnly =
 
 // Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
-		if ( (f.cam_x & CHSCAM_ON) || f.classname == OBSERVER)
+//		if ( (f.cam_x & CHSCAM_ON) || f.classname == OBSERVER)
+		if (f.classname == OBSERVER)
 		{
 			f.weaponmodel = null_string;
 		}
@@ -1487,7 +1494,7 @@ void() PK_Attack =
 // BOLT_START
 	// Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
-		if ( !(self.cam_x & CHSCAM_ON) )
+//		if ( !(self.cam_x & CHSCAM_ON) )
 			self.weaponmodel = "progs/v_cl_on.mdl"; // change to fire model...
 			player_bolt1();
 			self.attack_finished = time + 0.1;
@@ -1607,7 +1614,7 @@ void() PK_Attack =
 		sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
 	}
 
-	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 };
 
 // called below

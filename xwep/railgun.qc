@@ -25,8 +25,8 @@ vector() randdir =
 void() rubble_touch =
 {
 //	self.nextthink = time + RUBBLE_TIME + crandom()* RUBBLE_DEV;
-	if(self.velocity == ' 0 0 0')
-		self.avelocity = ' 0 0 0';
+	if(self.velocity == '0 0 0')
+		self.avelocity = '0 0 0';
 	else
 		self.velocity = self.velocity * 0.8;
 };
@@ -44,7 +44,7 @@ void()	smoke_s2		=	[2,		SUB_Remove] {};
 	deprecated for rubble_debris
 void(vector org, vector vel) SpawnRubble =
 {
-//	chaos_spawn(0, 0, 0, 0, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "temp_ent", null_string, SUB_Null, 0.01, EffectSpawnRubble, SUB_Null, self, world);
+//	chaos_spawn(0, 0, 0, 0, org, '0 0 0', '0 0 0', '0 0 0', vel, "temp_ent", null_string, SUB_Null, 0.01, EffectSpawnRubble, SUB_Null, self, world);
 
 	local string md;
 	local float rand;
@@ -53,7 +53,7 @@ void(vector org, vector vel) SpawnRubble =
 	if (sky_touch(null_string, org, world)) return;
 
 	
-	e = chaos_spawn(MOVETYPE_BOUNCE, SOLID_BBOX, 0, FLT_LAVA | MLT_LAVA | CK_EARTHQUAKE | PF_SOLID | PF_WATER | PF_SLIME | FL_NOPART, org, ' 0 0 0', ' 0 0 0', ' 0 0 0',
+	e = chaos_spawn(MOVETYPE_BOUNCE, SOLID_BBOX, 0, FLT_LAVA | MLT_LAVA | CK_EARTHQUAKE | PF_SOLID | PF_WATER | PF_SLIME | FL_NOPART, org, '0 0 0', '0 0 0', '0 0 0',
 					vel, "rubble", "progs/rubble_m.mdl", rubble_touch, RUBBLE_TIME + crandom()* RUBBLE_TDEV, meltthink, SUB_Null, self, world);
 
 	rand = ceil(random()*3);
@@ -84,8 +84,8 @@ void(vector org, vector vel) SpawnSmoke =
 {
 	if (sky_touch(null_string, org, world)) return;
 
-//	chaos_spawn(0, 0, 0, 0, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "smoke", null_string, SUB_Null, 0.01, EffectSpawnRubble, SUB_Null, self, world);
-	chaos_spawn(MOVETYPE_NOCLIP, SOLID_NOT, 0, 0, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, "smoke", "progs/smoke.mdl", SUB_Null, 0, smoke1, SUB_Null, self, world);
+//	chaos_spawn(0, 0, 0, 0, org, '0 0 0', '0 0 0', '0 0 0', vel, "smoke", null_string, SUB_Null, 0.01, EffectSpawnRubble, SUB_Null, self, world);
+	chaos_spawn(MOVETYPE_NOCLIP, SOLID_NOT, 0, 0, org, '0 0 0', '0 0 0', '0 0 0', vel, "smoke", "progs/smoke.mdl", SUB_Null, 0, smoke1, SUB_Null, self, world);
 };
 
 //========================================================
@@ -93,7 +93,7 @@ void(vector org, vector vel) SpawnSmoke =
 
 void(vector org, vector vel, float livetm, float mtype) SpawnExitWound =
 {
-	newmis = chaos_spawn(mtype, SOLID_NOT, 0, RM_SKY, org, ' 0 0 0', ' 0 0 0', ' 0 0 0', vel, null_string, "progs/gib1.mdl", SUB_Remove, livetm, SUB_Remove, SUB_Null, self, world);
+	newmis = chaos_spawn(mtype, SOLID_NOT, 0, RM_SKY, org, '0 0 0', '0 0 0', '0 0 0', vel, null_string, "progs/gib1.mdl", SUB_Remove, livetm, SUB_Remove, SUB_Null, self, world);
 
 // *** this code has not been tested in game yet
 
@@ -255,7 +255,7 @@ bprint(".\n");
 	
 	newmis.skin = 1;
 	newmis.angles_z = random() * 360;
-	newmis.velocity = ' 0 0 0';
+	newmis.velocity = '0 0 0';
 	newmis.cnt = 1;
 */
 
@@ -291,7 +291,7 @@ bprint(".\n");
 		}
 		else
 		{
-			SpawnSmoke(trace_endpos, ' 0 0 20');
+			SpawnSmoke(trace_endpos, '0 0 20');
 /* CHECK: blocked, no rubble fn yet - restore later
 			k = 2 + random() * 3;
 			while(k > 0)

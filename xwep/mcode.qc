@@ -1989,15 +1989,20 @@ void() cube_rearm =
 {
 	if (self.deadflag) return;
 
+	self.eweapon = world;
 	if (self.morphy == IMP_MCHAOS) self.mcode = -666;
 	else if (self.morphy == IMP_MORDER) self.mcode = -667;
-	else self.mcode = 0; // clear HUD
-	self.weapon = W_BestWeapon();
-	self.pk_currentitem = W_BestPKWeapon();
-	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
-	W_SetCurrentAmmo();
+	else
+	{
+		self.mcode = 0; // clear HUD
+		self.weapon = W_BestWeapon();
+		self.pk_currentitem = W_BestPKWeapon();
+		self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
+		W_SetCurrentAmmo();
+//	if (!self.mask_x & MORPH_ARCHON) 
+		self.volume = 0; // clear HUD
+	}
 	admin_clear(self); // for morphic cube
-	if (!self.mask_x & MORPH_ARCHON) self.volume = 0; // clear HUD
 };
 
 
@@ -2170,7 +2175,7 @@ void() painkeep_cube_use =
 			}
 		}
 		y = c = spawn(); // crates make a new thing
-		setorigin(c, crate.origin + ' 0 0 8');
+		setorigin(c, crate.origin + '0 0 8');
 		c.event = "dynamic_item"; // dont respawn
 		c.ammo_cells = crate.ammo_cells; // was set above
 
@@ -2207,7 +2212,7 @@ void() painkeep_cube_use =
 //			if (deathmatch == 1 || deathmatch == 3)
 			c.think = SUB_regen;
 			c.nextthink = time + PK_CUBE_TIME + crandom() * PK_CUBE_DV;
-			v = c.origin + ' 0 0 4';
+			v = c.origin + '0 0 4';
 			y = c = spawn();
 			c.origin = v;
 			c.event = "dynamic_item"; // dont respawn
@@ -2259,7 +2264,7 @@ void() painkeep_cube_use =
 		}
 
 		if (!crate)
-			self.punchangle = ' 110 110 280'; // for ejector
+			self.punchangle = '110 110 280'; // for ejector
 		else
 		{
 			self.punchangle = anti_bounce;
@@ -2588,8 +2593,8 @@ void() pk_cube =
 	self.attack_finished = 3;
 	self.mask_x = MORPH_ALL;
 
-	self.punchangle = ' 210 210 240'; // for ejector
-//	item_eject(self, ' 210 210 240'); // done by pk_place_item with punchangle set
+	self.punchangle = '210 210 240'; // for ejector
+//	item_eject(self, '210 210 240'); // done by pk_place_item with punchangle set
 
 	setsize (self,'-16 -16 0','16 16 32');
 	StartItem ();
@@ -2683,7 +2688,7 @@ void() pk_crate =
 	self.netname = "Crate";
 //	self.noise = "chaos/crate1.wav";
 
-	item_eject(self, ' 180 180 210');
+	item_eject(self, '180 180 210');
 
 	self.touch = crate_touch;
 	self.th_stand = SUB_Remove;
@@ -2962,9 +2967,9 @@ void(float mc, vector vo, string wd) fn_make =
 #endifdef
 				return; // crap - no location
 			}
-			v1 = e.origin + ' 0 0 16';
+			v1 = e.origin + '0 0 16';
 			if (e.flags & FL_ITEM) // randomize away from other map items
-				v1 = stdv_rndloc(e.origin + ' 0 0 16', 50, 100);
+				v1 = stdv_rndloc(e.origin + '0 0 16', 50, 100);
 		}
 
 		newmis = self = spawn();

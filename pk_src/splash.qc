@@ -91,7 +91,7 @@ float(entity e) inWater =
 
 	if (e.flags & FL_ITEM)
 	if (pc == CONTENT_SOLID)
-		pcc = pc = pointcontents(e.origin + ' 0 0 4'); // extra check because some items have origin at 0 z in model - sitting on floor can be in solid
+		pcc = pc = pointcontents(e.origin + '0 0 4'); // extra check because some items have origin at 0 z in model - sitting on floor can be in solid
 
 	if (!(pc == CONTENT_WATER || pc == CONTENT_SLIME || pc == CONTENT_LAVA))
 		pc = NOT_IN_WATER;
@@ -118,7 +118,7 @@ void() CheckWaterLevels =
 	while (e != world)
 	{
 // bit of fn above - delooped
-		pcc = pc = pointcontents(e.origin + ' 0 0 2'); // special for item test - see InWater fn code
+		pcc = pc = pointcontents(e.origin + '0 0 2'); // special for item test - see InWater fn code
 
 		if (!(pc == CONTENT_WATER || pc == CONTENT_SLIME || pc == CONTENT_LAVA))
 			pc = NOT_IN_WATER;

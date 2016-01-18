@@ -45,7 +45,7 @@ void() PortalSaver =
 	if (self.cnt > 10)
 	{
 		centerprint (self.owner, "QUANTUM TUNNEL failure: xFF2C1b7A - researcher trapped in dimensional flux\nretrieving!\n");
-		setorigin(self.owner, self.origin + ' 0 0 16');
+		setorigin(self.owner, self.origin + '0 0 16');
 		self.owner.velocity = v0;
 		remove(self);
 		return;
@@ -146,13 +146,13 @@ void () PortalTouch =
 			other.velocity = v_forward * v;
 			return;
 		}
-		if (self.portal_exit.mangle == ' 0 0 1')
+		if (self.portal_exit.mangle == '0 0 1')
 		{
-//			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back
+//			item_eject(other, '210 210 300'); // up from floor - need some velo so we dont fall back
 			if (!m)
 				other.velocity_z = 150 + random() * 150;
 		}
-		else if (self.portal_exit.mangle != ' 0 0 -1') // not out of ceiling
+		else if (self.portal_exit.mangle != '0 0 -1') // not out of ceiling
 		{
 			other.fixangle = 1;		// turn this way immediately
 			other.angles = vectoangles(self.portal_exit.mangle);
@@ -191,13 +191,13 @@ void () PortalTouch =
 				}					
 			}
 		}
-		else if (self.portal_entrance.mangle == ' 0 0 1')
+		else if (self.portal_entrance.mangle == '0 0 1')
 		{
-//			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back
+//			item_eject(other, '210 210 300'); // up from floor - need some velo so we dont fall back
 			if (!m)
 				other.velocity_z = 150 + random() * 150;
 		}
-		else if (self.portal_entrance.mangle != ' 0 0 -1')
+		else if (self.portal_entrance.mangle != '0 0 -1')
 		{
 			other.fixangle = 1;		// turn this way immediately
 			other.angles = vectoangles(self.portal_entrance.mangle);
@@ -302,7 +302,7 @@ entity (vector pos, entity entrance) OpenPortalExit =
 	portal.think = PortalThink;
 	setmodel (portal, "progs/quantum.mdl");
 	setsize (portal, '0 0 0', '0 0 0');
-//	setsize (portal, '-2 -2 -2', ' 2 2 2');
+//	setsize (portal, '-2 -2 -2', '2 2 2');
 	setorigin (portal, pos);
 	return (portal);
 };
@@ -512,7 +512,7 @@ float (vector dir, float md2) PreparePortalEntrance =
 		portal.touch = PortalTouch;
 		setmodel (portal, "progs/quantum.mdl");
 		setsize (portal, '0 0 0', '0 0 0');
-//		setsize (portal, '-2 -2 -2', ' 2 2 2');
+//		setsize (portal, '-2 -2 -2', '2 2 2');
 		setorigin (portal, org);
 	}
 	else

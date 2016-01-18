@@ -394,11 +394,11 @@ void() player_enforcer_become =
 	self.msight = "enforcer/sight1.wav";
 	self.noise2 = "enforcer/pain1.wav";
 	self.noise3 = null_string;
-	self.view_ofs = ' 0 0 24';
+	self.view_ofs = '0 0 24';
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
-//	setsize (self, '-16 -16 -24', ' 16 16 40');
+//	setsize (self, '-16 -16 -24', '16 16 40');
 	self.health = self.health * MENF_HEALMOD / self.health_modifier;
 	self.health_modifier = MENF_HEALMOD;
 	makevectors(self.v_angle);

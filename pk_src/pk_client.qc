@@ -461,12 +461,12 @@ void() pk_plcfg =
 		}
 		stuffcmd(self, "nofog\n"); // NOFOGALIAS); // run this alias - lets players individually turn on or off fog for all levels
 		
-//y q3 map cfg
+// q3 map cfg
 		if (DARKPLACES)
 		{
 //			if (!pk_map) // not a pk map (some hubX maps have no .wad!)
 //			if (world.wad == null_string) // q3 map? - then set bob
-			if (MAP_MODE == "Q3")
+//			if (MAP_MODE == "Q3")
 				q3_bob_height();
 		}
 // version & web sites segment
@@ -577,7 +577,7 @@ void() PutClientInServer =
 
 	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
 
-	self.view_ofs = ' 0 0 22';
+	self.view_ofs = '0 0 22';
 
 	if (self.health_modifier <= 0) self.health_modifier = MHUMAN_HEALMOD;
 
@@ -1873,7 +1873,7 @@ bprint ("\n");
 		{
 			local string sa;
 			bprint (targ.netname);
-			deathstring = rnd_string(' 90.0 60.0 60.0'," has his ass crushed by  "," finds out where the black hole goes for ",null_string,null_string," goes beyond the event horizion of ");
+			deathstring = rnd_string('90.0 60.0 60.0'," has his ass crushed by  "," finds out where the black hole goes for ",null_string,null_string," goes beyond the event horizion of ");
 			if (sphere_a.owner)
 			{
 				if (sphere_a.owner ==  targ) // whoopsie - got a wee bit too close
@@ -1882,7 +1882,7 @@ bprint ("\n");
 						targ.frags = (targ.frags - frag_minus());
 					if (rnum < 0.5)
 					{
-						deathstring = rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n",null_string,null_string," made a really bad mistake\n");
+						deathstring = rnd_string('90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n",null_string,null_string," made a really bad mistake\n");
 						bprint (deathstring);
 					}
 					else
@@ -1914,7 +1914,7 @@ bprint ("\n");
 						targ.frags = targ.frags - frag_minus();
 #ifdef enhanced
 //					if (ENHANCED)
-					bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n",null_string,null_string," forgot to hide from his autosentry\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n",null_string,null_string," forgot to hide from his autosentry\n"));
 //					else
 #else
 					bprint(" forgot to hide from his own AutoSentry!\n");
@@ -1944,7 +1944,7 @@ bprint ("\n");
 				{
 #ifdef enhanced
 //					if (ENHANCED)
-					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n",null_string,null_string," visits another dimension\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n",null_string,null_string," visits another dimension\n"));
 //					else
 #else
 					bprint (" visits another dimension\n");
@@ -1958,7 +1958,7 @@ bprint ("\n");
 				{
 #ifdef enhanced
 //					if (ENHANCED)
-					bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n",null_string,null_string," forgot about his beartrap\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n",null_string,null_string," forgot about his beartrap\n"));
 //					else
 #else
 					bprint (" forgot about his beartrap\n");
@@ -1984,7 +1984,7 @@ bprint ("\n");
 				{
 #ifdef enhanced
 //					if (ENHANCED)
-					bprint(rnd_string(' 90.0 60.0 60.0'," checks his cluster bomb spread\n"," went to collect the cluster bombs\n",null_string,null_string," checked to see if the cluster bombs were duds\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," checks his cluster bomb spread\n"," went to collect the cluster bombs\n",null_string,null_string," checked to see if the cluster bombs were duds\n"));
 //					else
 #else
 					bprint (" becomes bored with life\n");
@@ -1994,7 +1994,7 @@ bprint ("\n");
 				{
 #ifdef enhanced
 //					if (ENHANCED)
-					bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n",null_string,null_string," tries to put the pin back in\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n",null_string,null_string," tries to put the pin back in\n"));
 //					else
 #else
 					bprint (" tries to put the pin back in\n");
@@ -2004,7 +2004,7 @@ bprint ("\n");
 				{
 #ifdef enhanced
 //					if (ENHANCED)
-					bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n",null_string,null_string," becomes bored with life\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n",null_string,null_string," becomes bored with life\n"));
 //					else
 #else
 					bprint (" becomes bored with life\n");
@@ -2014,7 +2014,7 @@ bprint ("\n");
 				{
 #ifdef enhanced
 //					if (ENHANCED)
-					bprint(rnd_string(' 90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n",null_string,null_string," self cremated\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n",null_string,null_string," self cremated\n"));
 //					else 
 #else
 					if (rnum > 0.4 )
@@ -2026,27 +2026,27 @@ bprint ("\n");
 
 //				if (curwep_mapcode(targ, 0) == MC_GRAVITY)
 //				else if (inflictor.classname == "gravity_armed")
-//					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n",null_string,null_string," visits another dimension\n"));
+//					bprint(rnd_string('90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n",null_string,null_string," visits another dimension\n"));
 
 //				if (curwep_mapcode(targ, 0) == MC_BEARTRAP)
 //				else if (inflictor.classname == "beartrap_armed")
-//					bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n",null_string,null_string," forgot about his beartrap\n"));
+//					bprint(rnd_string('90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n",null_string,null_string," forgot about his beartrap\n"));
 
 //				else if (inflictor.classname == "turret")
-//					bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n",null_string,null_string," forgot to hide from his autosentry\n"));
+//					bprint(rnd_string('90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n",null_string,null_string," forgot to hide from his autosentry\n"));
 
 //				if (curwep_mapcode(targ, 0) == MC_BOMB)
 				else if (inflictor.classname == "bomb")
-					bprint(rnd_string(' 90.0 60.0 60.0'," parties with Wile E. Coyote\n"," finds his bomb in the dark\n",null_string,null_string," was too late to snuff the fuse\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," parties with Wile E. Coyote\n"," finds his bomb in the dark\n",null_string,null_string," was too late to snuff the fuse\n"));
 
 				else if (inflictor.classname == "democharge")
-					bprint(rnd_string(' 90.0 60.0 60.0'," blew his own ass to hell\n"," forgot to check the safety\n",null_string,null_string," didnt run fast enough\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," blew his own ass to hell\n"," forgot to check the safety\n",null_string,null_string," didnt run fast enough\n"));
 
 				else if (inflictor.classname == "proximity_grenade")
 				{
 #ifdef enhanced
 //					if (ENHANCED)
-					bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n",null_string,null_string," tested the prox grenades motion sensor\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n",null_string,null_string," tested the prox grenades motion sensor\n"));
 //					else
 #else
 					bprint (" becomes bored with life\n");
@@ -2054,10 +2054,10 @@ bprint ("\n");
 				}
 
 				else if (inflictor.classname == "ball_lightning")
-					bprint(rnd_string(' 90.0 60.0 60.0'," felt the shaft of the ball lightning\n"," didnt respect the power of the dynamo\n",null_string,null_string," hung around to watch\n"));
+					bprint(rnd_string('90.0 60.0 60.0'," felt the shaft of the ball lightning\n"," didnt respect the power of the dynamo\n",null_string,null_string," hung around to watch\n"));
 
 //				else if (inflictor.classname == "sphere_annihilation")
-//					bprint(rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n",null_string,null_string," made a really bad mistake\n"));
+//					bprint(rnd_string('90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n",null_string,null_string," made a really bad mistake\n"));
 				else
 				{
 					if (attacker._killmsg)
@@ -2083,7 +2083,7 @@ bprint ("\n");
 					{
 #ifdef enhanced
 //						if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n",null_string,null_string," discharges into the water\n"));
+						bprint(rnd_string('90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n",null_string,null_string," discharges into the water\n"));
 //						else
 #else
 						bprint (" discharges into the water\n");

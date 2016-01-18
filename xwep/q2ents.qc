@@ -390,7 +390,7 @@ string(entity targ, entity attacker) q2bfg_killmsg =
 	if (targ == attacker) return " should have used a smaller gun.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was disintegrated by ";
 };
@@ -406,7 +406,7 @@ string(entity targ, entity attacker) q2bfg_killmsg2 =
 string() q2rail_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was railed by ";
 };
@@ -422,7 +422,7 @@ string() q2rail_killmsg2 =
 string() q2hbl_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was melted by ";
 };
@@ -438,7 +438,7 @@ string(entity targ, entity attacker) q2rock_killmsg =
 	if (targ == attacker) return " blew himself up.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " ate ";
 };
@@ -455,7 +455,7 @@ string(entity targ, entity attacker) q2gren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was popped by ";
 };
@@ -472,7 +472,7 @@ string(entity targ, entity attacker) q2hgren_killmsg =
 	if (targ == attacker) return " tripped on his own grenade.\n";
 		
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " caught ";
 };
@@ -487,7 +487,7 @@ string(entity targ, entity attacker) q2hgren_killmsg2 =
 string() q2ssg_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was blown away by ";
 };
@@ -501,7 +501,7 @@ string() q2ssg_killmsg2 =
 string() q2sg_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was gunned down by ";
 };
@@ -516,7 +516,7 @@ string() q2sg_killmsg2 =
 string() q2cg_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was cut in half by ";
 };
@@ -533,7 +533,7 @@ string() q2cg_killmsg2 =
 string() q2mg_killmsg =
 {
 //	if (ENHANCED)
-//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		bprint(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was machinegunned by ";
 };
@@ -549,7 +549,7 @@ string() q2mg_killmsg2 =
 string() q2blst_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was blasted by ";
 };
@@ -911,7 +911,7 @@ void () weapon_chaingun =
 	self.dmg = 6;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.bulletspread = ' 0.03 0.03 0';
+	self.bulletspread = '0.03 0.03 0';
 	self.wait = RSP_TIME;
  
 	setmodel (self, "progs/q2_chain.mdl");
@@ -946,7 +946,7 @@ void() q2_mg_base =
 	self.dmg = 8;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.bulletspread = ' 0.025 0.025 0';
+	self.bulletspread = '0.025 0.025 0';
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_mgun.mdl");
@@ -1014,7 +1014,7 @@ void () q2_weapon_supershotgun =
 	self.dmg = 6;
 	self.dmg_save = 2;
 	self.dmg_take = 20; // shot cnt
-	self.bulletspread = ' 0.10 0.05 0'; // bullet spread out -- guestimate from q2 code below
+	self.bulletspread = '0.10 0.05 0'; // bullet spread out -- guestimate from q2 code below
 /*
 	r = crandom()*hspread; 1000 (500 for shotgun)
    u = crandom()*vspread; 500
@@ -1069,7 +1069,7 @@ void () q2_weapon_shotgun =
 	self.dmg = 4;
 	self.dmg_save = 1;
 	self.dmg_take = 12; // shot cnt
-	self.bulletspread = ' 0.05 0.05 0'; // bullet spread out -- guestimate from q2 code
+	self.bulletspread = '0.05 0.05 0'; // bullet spread out -- guestimate from q2 code
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_shotgun.mdl");
@@ -2139,7 +2139,7 @@ void() X_FireHandGrenade =
 // more throw power the longer held
 		f = 6 / (self.enemy.endtime - time) * HGREN_VEL * 2;
 		if (f > 800) f = 800;
-		fire_missile(f, MOVETYPE_BOUNCE, FL_GRN | FL_PUNCH | FL_USEAMMO | FL_RUNEHST, RM_SKY | PF_LAVA, self.origin, ' 0 0 0', "grenade", "progs/vw_q2_hgr.mdl", snd, GrenadeTouch, 10 + 60 * random(),  GrenadeExplode, GrenadeExplode);
+		fire_missile(f, MOVETYPE_BOUNCE, FL_GRN | FL_PUNCH | FL_USEAMMO | FL_RUNEHST, RM_SKY | PF_LAVA, self.origin, '0 0 0', "grenade", "progs/vw_q2_hgr.mdl", snd, GrenadeTouch, 10 + 60 * random(),  GrenadeExplode, GrenadeExplode);
 		self.enemy.owner = newmis;
 		newmis.frame = 107; //169 + floor(random() * 5.3);
 		newmis.dodmg = EWEAP.dodmg;
@@ -2221,7 +2221,7 @@ void() q2_teleport_particles =
 void() func_q2_telepart =
 {
 	chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, null_string, null_string, SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
-	ambientsound (self.origin + ' 0 0 32', "q2_snd/telehum.wav", 1, ATTN_STATIC);
+	ambientsound (self.origin + '0 0 32', "q2_snd/telehum.wav", 1, ATTN_STATIC);
 	remove(self); // IDEA: when chaos mod, leave this for changes?
 };
 

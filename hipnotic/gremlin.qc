@@ -1844,7 +1844,7 @@ if (ign != A_MONSTER)
    setmodel (self, "progs/gremlin.mdl");
 
 //   setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
-	setsize (self, '-16 -16 -14',  ' 16 16 32');
+	setsize (self, '-16 -16 -14',  '16 16 32');
 
    self.health = 100;
    self.max_health = 101;

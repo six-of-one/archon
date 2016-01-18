@@ -134,10 +134,10 @@ void() Lavablob_JumpTouch;
 	if (self.walkframe == 0) self.lip = 1;
 
 	if (self.walkframe == 2)
-		{
+	{
 		morph_sound (0.08, "chaos/lavabidle.wav", 2);
 		if (random() < 0.1) { chaos_fire_fly(null_string); 	rnd_size(0.5, -1.0, -1.0, null_string); }
-		}
+	}
 	if (self.walkframe == 4) if (random() < 0.25) lavablob_slimeflare();
 	self.frame = $walk1 + self.walkframe;
 	self.walkframe = self.walkframe + self.lip;
@@ -165,43 +165,43 @@ void() player_lavablob_run = [ $run1, player_run ]
 	walk = (vlen(sp) < 250);
 
 	if (self.lefty < time) // check for puddles, same freq as jump stop, heh heh
-		{
+	{
 		self.lefty = time + 5;
 		frm = self.health - twothr;
 		if (frm < 0) frm = 0;
 		if (random() < (0.2 + (frm / 500)))
-			{
+		{
 			self.trigger_field = spawn();
 			if (self.trigger_field)
-				{
+			{
 				setorigin( self.trigger_field, self.origin);
 				self.trigger_field.owner = self; // dont heal self!
 				self.trigger_field._stand = self.trigger_field.think = lavapud_live;
 				self.trigger_field.nextthink = time + 0.1;
 				self.trigger_field.dmg = 5 + (frm / 20);
 				self.trigger_field.wait = time + 20 + (random() * frm);
-				}
 			}
 		}
+	}
 	else // check for slime flare!
 		if (random() < 0.5) lavablob_slimeflare();
 
 	if (walk)
-		{
+	{
 		frm = $walk1;
 		if (self.walkframe >= 25) self.walkframe = 0;
-		}
+	}
 	else
-		{
+	{
 		frm = $run1;
 		if (self.walkframe >= 25) self.walkframe = 0;
-		}
+	}
 
 	if (self.walkframe == 2 || self.walkframe == 20)
-		{
+	{
 		morph_sound (0.2, "chaos/lavabidle.wav", 2);
 		if (random() < 0.20) { chaos_fire_fly(null_string); 	rnd_size(0.3, -1.0, -1.0, null_string); }
-		}
+	}
 	self.frame = frm + self.walkframe;
 	self.walkframe = self.walkframe + 1;
 
@@ -258,12 +258,12 @@ void() lavablob_eject_particles =
 {
 	rnd_size(0.3, 0.1, -1.0, null_string); // randomly size ejecta
 	if (random() > 0.7)
-		particle_burst(self.origin, 30, ' 0 0 0', ' 360 360 360', 3, 2, 3, FL_RNDUR | FL_COL1 | FL_COL2 | FL_PERC, ' 85 64 0 ', ' 10 15 0 ', ' 0.33 1.0 1.0');
+		particle_burst(self.origin, 30, '0 0 0', ' 360 360 360', 3, 2, 3, FL_RNDUR | FL_COL1 | FL_COL2 | FL_PERC, ' 85 64 0 ', '10 15 0 ', '0.33 1.0 1.0');
 };
 
 void() lavablob_eject =
 {
-	fire_burst (lavaball_shot, self.origin, 0, 0, null_string, null_string, 0, 6, 8, ' 120 0 0', ' 300 360 360', lavablob_eject_particles, FL_ANGADR | FL_VELRND, world);
+	fire_burst (lavaball_shot, self.origin, 0, 0, null_string, null_string, 0, 6, 8, '120 0 0', ' 300 360 360', lavablob_eject_particles, FL_ANGADR | FL_VELRND, world);
 };
 
 void() lavablob_die_explode1;
@@ -535,7 +535,7 @@ void() player_lavablob_attack =
 		if (rune_haste(0.125))
 		self.attack_finished=time+0.25;
 
-		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, ' 0 0 0', "lavaspike", "progs/nail.mdl", "chaos/lava-shot.wav", spike_touch, 6, SUB_Remove, SUB_Nop);
+		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, '0 0 0', "lavaspike", "progs/spike.mdl", "chaos/lava-shot.wav", spike_touch, 6, SUB_Remove, SUB_Nop);
 		newmis.skin = 1;
 		newmis.morphy = self.morphy;
 	}
@@ -653,7 +653,7 @@ void(float silent) player_lavablob_become =
 	self.msight = "blob/sight1.wav";
 //	self.noise2 = "enforcer/pain1.wav";
 	self.noise3 = null_string;
-	self.view_ofs = ' 0 0 4';
+	self.view_ofs = '0 0 4';
 
 	setsize (self, '-16 -16 -24', '16 16 20');
 	self.health = self.health * MLAVAB_HEALMOD / self.health_modifier;

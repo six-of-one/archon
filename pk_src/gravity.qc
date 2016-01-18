@@ -47,11 +47,11 @@ float (entity targ) grav_visible =
 
 	if (f) return FALSE;
 /*
-	spot1 = self.origin + ' 0 0 24';
+	spot1 = self.origin + '0 0 24';
 	traceline (spot1, spot2, TRUE, self);	
 	if (trace_fraction == 1) return TRUE;
 
-	spot1 = self.origin + ' 0 0 -16';
+	spot1 = self.origin + '0 0 -16';
 	traceline (spot1, spot2, TRUE, self);
 	if (trace_fraction == 1) return TRUE;
 */

@@ -5,7 +5,7 @@
 
 // base values
 //float z0 = 0;
-vector v0						= ' 0 0 0'; // zero vector | dimension
+vector v0						= '0 0 0'; // zero vector | dimension
 string null_string			= ""; // saves many globals
 
 float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
@@ -735,7 +735,7 @@ float DEAD_GIBPACK;
 float DEAD_BODYCOUNT			= 28; // test: 48; // number of bodies (+1) in bodyque loop, if 0 bodies spawn (no que) and use timeout below
 float DEAD_BODYTIME			= 120; // how long non que corpse hang around
 
-vector MED_BOUNCE				= ' 210 210 320'; // medium bounce for dead thrown stuff - idea: factor in dead body velo
+vector MED_BOUNCE				= '210 210 320'; // medium bounce for dead thrown stuff - idea: factor in dead body velo
 vector MED_BOUNCE_NOW		= '-210 -210 -320'; // medium bounce for dead thrown stuff - idea: factor in dead body velo
 
 // here because deathrew needs to detect them before mcode
@@ -860,7 +860,7 @@ float FIRE_FLY_VELXY			= 50; // fire fly x & y velocity
 float FIRE_FLY_VELBW			= 400; // fire fly velocity when fireball wep hits world
 float FIRE_FLY_VELMIRV		= 100; // fire fly velocity when a mirv occurs
 float FIRE_FLY_DMG			= 20; // base dmg - Q1 default
-vector FIREB_MSL_AVEL		= ' 200 100 300'; // default fireball missile avelocity
+vector FIREB_MSL_AVEL		= '200 100 300'; // default fireball missile avelocity
 
 
 // skin sequence in volcano.mdl
@@ -1056,6 +1056,8 @@ string DEF_WEP_DEATH1		= " was just plain killed with ";
 string DEF_WEP_DEATH2		= "'s random weapon of choice\n";
 
 .vector bulletspread; // weapon fire spread - used to be punchangle
+
+float spawn_particle; // for SpawnBlood particle takeover
 
 float ALT_FIRE_IMP			= 13; // impulse for alt fire
 .void(entity ew) _alt_fire;
@@ -1610,7 +1612,7 @@ float LASERTARG_ON			= 4;
 float LASERTARG_LIT			= 32;
 
 .vector cam; // all chase cam data
-void() cam_punch;						// return punchangle if passed parm - otherwise set self. var
+//void() cam_punch;						// return punchangle if passed parm - otherwise set self. var
 void() dead_cam_set;					// Cataboligne 9.11.3 purify proto - chase cam
 float DCAMTO;							// timeout for death cam 2 mins
 float DCAMTOACT;						// action after timeout 0 = respawn, 1 = disconnect

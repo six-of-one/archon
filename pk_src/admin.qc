@@ -523,7 +523,7 @@ float() MapDM =
 				{
 					if (e.model == "progs/hub_port.mdl" || e.model == null_model)
 					{
-						if (v1 != ' 0 0 0' && mm < 2)
+						if (v1 != '0 0 0' && mm < 2)
 						{
 							bprint("\nmixed mode --- custom hub + regular hub!\n\n");
 							mm = 2;

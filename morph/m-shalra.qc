@@ -109,7 +109,7 @@ void() player_ShalMissile =
 {
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
-	fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, FL_RUNEHST, RM_SKY | FLT_LAVA | MLT_LAVA | FL_NOPART, self.origin + '0 0 10', ' 0 0 0', "missile", "progs/v_spike.mdl", "shalrath/attack2.wav", ShalMissileTouch, 0.4, ShalHome, SUB_Null);
+	fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, FL_RUNEHST, RM_SKY | FLT_LAVA | MLT_LAVA | FL_NOPART, self.origin + '0 0 10', '0 0 0', "missile", "progs/v_spike.mdl", "shalrath/attack2.wav", ShalMissileTouch, 0.4, ShalHome, SUB_Null);
 
 	if(self.enemy.classname == "worldspawn")
 	{
@@ -196,27 +196,39 @@ void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 	if (self.flags & FL_MONSTER) // super vore comes here
 	{
 		makevectors(self.angles);
-		v1 = self.origin + ' 0 0 20' + v_forward * 16 + v_right * 32;				// right half y split
-		traceline (v1, self.origin + v_forward* B_SPLIT, TRUE, self);
-		if (self.weapon == IT_LIGHTNING) multi_beam(v1, trace_endpos,  0);
 
-		norm = self.origin + ' 0 0 20' + v_forward * 16 + v_right * -29;			// left half y split
-		traceline (norm, self.origin + v_forward* B_SPLIT, TRUE, self);
-		if (self.weapon == IT_LIGHTNING) multi_beam(norm, trace_endpos,  0);
+		if (self.enemy)
+		{
+			self.dest = self.enemy.origin - (self.origin + '0 0 14');
+			makevectors(self.dest);
+			v_forward = normalize(self.dest);
+		}
 
-		org = self.origin + ' 0 0 20' + v_forward *  B_SPLIT * 0.8;									// main strike beam
+		org = self.origin + '0 0 22' + v_forward *  24;
+
+/*
+
+note - for unknown reasons, this hand locator (that works well for the player) is very erratic
+for now we are using the org above
+at least the beam hits its target
+
+		if (random() < 0.5)
+			org = self.origin + '0 0 22' + v_forward * 12 + v_right * 18;				// right half y split
+		else
+			org = self.origin + '0 0 22' + v_forward * 12 + v_right * -16;			// left half y split
+*/
 	}
 	else
 	{
-		v1 = self.origin + ' 0 0 14' + v_forward * 11 + v_right * 22;				// right half y split
+		v1 = self.origin + '0 0 14' + v_forward * 11 + v_right * 22;				// right half y split
 		traceline (v1, self.origin + v_forward* B_SPLIT, TRUE, self);
 		if (self.weapon == IT_LIGHTNING) multi_beam(v1, trace_endpos,  0);
 
-		norm = self.origin + ' 0 0 14' + v_forward * 11 + v_right * -19;			// left half y split
+		norm = self.origin + '0 0 14' + v_forward * 11 + v_right * -19;			// left half y split
 		traceline (norm, self.origin + v_forward* B_SPLIT, TRUE, self);
 		if (self.weapon == IT_LIGHTNING) multi_beam(norm, trace_endpos,  0);
 
-		org = self.origin + ' 0 0 14' + v_forward *  B_SPLIT * 0.6;									// main strike beam
+		org = self.origin + '0 0 14' + v_forward *  B_SPLIT * 0.6;									// main strike beam
 	}
 
 	traceline (org, self.origin + v_forward*600, TRUE, self);
@@ -231,6 +243,10 @@ void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 
 	if (self.weapon == IT_SUPER_NAILGUN)
 	{
+		if (self.flags & FL_MONSTER) // cheat a bit for the monster
+		if (self.enemy)
+			trace_endpos = self.enemy.origin;
+
 		shal_spike(v1);
 		shal_spike(norm);
 		shal_spike(v1);
@@ -265,6 +281,7 @@ void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 		ai_frame(self.walkframe);
 	}
 };
+
 void() player_shalrath_lightning3 = [ $attack11, player_stand1 ]
 {
 	if (self.flags & FL_MONSTER) // super vore exit

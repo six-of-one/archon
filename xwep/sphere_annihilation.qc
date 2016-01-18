@@ -123,7 +123,7 @@ void() sphere_annihilation_move =
 	if (self.frame > $live6) self.frame = $live1;
 	if (self.frame < $live1) self.frame = $live6;
 
-	if (random() > 0.6) self.avelocity = ' 0 0 0';
+	if (random() > 0.6) self.avelocity = '0 0 0';
 	else
 	{
 		r1 = random();
@@ -275,11 +275,13 @@ if (WARNING & 32)
 }
 #endifdef
 
+ // dont re-annihilate
 		self.nextthink = -1;
+		self.think = SUB_Null; // just in case some deaths dont set think fn
+
 		self.rad_time = 0;
 		if ((self.flags & FL_MONSTER) && ! self.flags & FL_ANNIHILATED)
 		{
-			self.think = SUB_Null; // just in case some deaths dont set think fn
 			T_Damage (self, world, world, self.health * 3);
 			self.flags = self.flags | FL_ANNIHILATED; // allow head to be sucked
 			return;
@@ -291,7 +293,6 @@ if (WARNING & 32)
 					self.think = respawnBot;
 					self.nextthink = time + 10 + random() * 45;
 				}
-				else self.think = SUB_Null; // just in case some deaths dont set think fn
 				self.invincible_finished = time - 1; // not invincible enough
 				CheckPowerups();
 				T_Damage (self, world, world, self.health * 5 + 100); // this shit can kill anybody
@@ -309,6 +310,8 @@ if (WARNING & 32)
 					newmis.wait = 0.1;
 					newmis.archon = 50 + random() * 50;
 					newmis.count = 5 * newmis.archon * ceil(0.4 + (3 * random()));
+					self.nextthink = time + 2;
+					self.think = player_run;
 				}
 				return;
 		}
@@ -402,7 +405,7 @@ if (WARNING & 32)
 //	if (g.flags & FL_HELD) {drop_held(g, v0); if (WARNING & 32) bprint("sphere annihilate - item drop\n");} // item_held()
 	g.cnt = 2;
 	g.velocity = v0;
-	g.dest1 = g.origin - sphere_a.origin + ' 0 0 12';
+	g.dest1 = g.origin - sphere_a.origin + '0 0 12';
 };
 
 void() sphere_annihilation_touch =
@@ -446,7 +449,7 @@ if (WARNING & 32)
 
 void() sphere_annihilation_spawn =
 {
-	sphere_a = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, self.origin + ' 0 0 24' + v_forward * 60, '-7 -7 -7', ' 7 7 7', ' 0 0 0', ' 0 0 0', "sphere_annihilation", "progs/sphere_annihilation.mdl", sphere_annihilation_touch, 0.1, sphere_annihilation_move, sphere_annihilation_death, self, world); // here we divide by zero...
+	sphere_a = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, self.origin + '0 0 24' + v_forward * 60, '-7 -7 -7', ' 7 7 7', '0 0 0', '0 0 0', "sphere_annihilation", "progs/sphere_annihilation.mdl", sphere_annihilation_touch, 0.1, sphere_annihilation_move, sphere_annihilation_death, self, world); // here we divide by zero...
 	sphere_a.wait = time + 3;// TEST120; // cant kill off for this long
 	sphere_a.dest1 = sphere_a.origin - sphere_a.owner.origin; // position from holder
 	sphere_a.dest2_z = sphere_a.lefty = 0; // location controls

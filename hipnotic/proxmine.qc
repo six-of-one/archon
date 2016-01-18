@@ -155,7 +155,7 @@ void() W_Fire_Proxmine =
 	if (EWEAP) org = self.origin + v_up * VWZ_PROXMINE+ v_forward * VWX_PROXMINE + v_right * VWY_PROXMINE;
 	NumProximityGrenades = NumProximityGrenades + 1;
 
-	fire_missile(GRENADE_VEL, MOVETYPE_TOSS, FL_GRN | FL_USEAMMO | FL_PUNCH , RM_SKY | PF_LAVA, org, ' 0 0 0', "proximity_grenade", "progs/proxbomb.mdl", self.eweapon.noise3, ProximityGrenadeTouch, 2.0, ProximityBomb, ProximityGrenadeExplode);
+	fire_missile(GRENADE_VEL, MOVETYPE_TOSS, FL_GRN | FL_USEAMMO | FL_PUNCH , RM_SKY | PF_LAVA, org, '0 0 0', "proximity_grenade", "progs/proxbomb.mdl", self.eweapon.noise3, ProximityGrenadeTouch, 2.0, ProximityBomb, ProximityGrenadeExplode);
 
 // prox specific stuff
 //	newmis.mode_x = IV_PROX; // for det
@@ -165,8 +165,8 @@ void() W_Fire_Proxmine =
 	newmis.takedamage = DAMAGE_NO;
 	newmis.health = 5;
 	newmis.state = 0;
-	newmis.avelocity = ' 100 600 100';
+	newmis.avelocity = '100 600 100';
 	newmis.delay = time + PROX_TIMER + (PROX_TIMER*random());  // time fuse - orig = time + 15 + (10*random());
-	setsize (newmis, '-1 -1 -1', ' 1 1 1');
+	setsize (newmis, '-1 -1 -1', '1 1 1');
 
 };

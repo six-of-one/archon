@@ -355,7 +355,7 @@ void() player_ogre_become =
 	self.msight = "ogre/ogwake.wav";
 	self.noise2 = "ogre/ogpain1.wav";
 	self.noise3 = null_string; //gasp
-	self.view_ofs = ' 0 0 34'; // raised by 2
+	self.view_ofs = '0 0 34'; // raised by 2
 
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);

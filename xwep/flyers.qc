@@ -57,7 +57,7 @@ void(entity fent) flyer_mode =
 
 	if (fent.movetype == MOVETYPE_FLY) // landing - best be close to ground
 	{
-		traceline (fent.origin, fent.origin + ' 0 0 -8000', TRUE, fent);
+		traceline (fent.origin, fent.origin + '0 0 -8000', TRUE, fent);
 		if (fent.wad == "flyerfreefall")
 			flyer_check(fent, FALSE);
 		else

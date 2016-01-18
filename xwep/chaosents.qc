@@ -103,7 +103,7 @@ string() creg_killmsg =
 {
 #ifdef enhanced
 //	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ",null_string,null_string," was blown away by "));
+		return(rnd_string('90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ",null_string,null_string," was blown away by "));
 #endifdef
 
 	return " was blown away by ";
@@ -138,7 +138,7 @@ void() c_weapon_reggun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 4;
 	self.dmg_take = 42; // shot cnt
-	self.bulletspread = ' 0.20 0.06 0'; // bullet spread out
+	self.bulletspread = '0.20 0.06 0'; // bullet spread out
 
 	setmodel (self, "progs/m_reggun.mdl");
 	self.weaponmodel = "progs/v_reggun.mdl";
@@ -171,7 +171,7 @@ string() csh_killmsg =
 {
 #ifdef enhanced
 //	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ",null_string,null_string," was dug a grave by "));
+		return(rnd_string('90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ",null_string,null_string," was dug a grave by "));
 #endifdef
 
 	return " was dug a grave by ";
@@ -226,7 +226,7 @@ string() cds_killmsg =
 {
 #ifdef enhanced
 //	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ",null_string,null_string," stopped running for "));
+		return(rnd_string('90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ",null_string,null_string," stopped running for "));
 #endifdef
 
 	return " stopped running for ";
@@ -315,7 +315,7 @@ void () c_weapon_deepsleep =
 	self.dmg = 30;
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
-	self.bulletspread = ' 0.03 0.03 0';
+	self.bulletspread = '0.03 0.03 0';
 	self.style = FL_MELEE_WEP;
 	self.wait = RSP_TIME;
 
@@ -342,7 +342,7 @@ string() tsphere_killmsg =
 {
 #ifdef enhanced
 //	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," joined the Tall Man because of "," was given a mind altering experience by ",null_string,null_string," was drilled by "));
+		return(rnd_string('90.0 60.0 60.0'," joined the Tall Man because of "," was given a mind altering experience by ",null_string,null_string," was drilled by "));
 #endifdef
 
 	return " joined the Tall Man because of ";
@@ -780,7 +780,7 @@ void() x_pwr_touch =
 		else
 		{
 			if (!self.movetarget) self.movetarget = spawn(); // make a maker
-			setorigin (self.movetarget, self.origin + ' 0 0 20'); // appears where horn is - adjusted up 9.22.13, some monsters still bury feet in ground
+			setorigin (self.movetarget, self.origin + '0 0 20'); // appears where horn is - adjusted up 9.22.13, some monsters still bury feet in ground
 			self.movetarget.classname = "func_make";
 			self.movetarget.think = func_make;
 			self.movetarget.spawnflags = 0;

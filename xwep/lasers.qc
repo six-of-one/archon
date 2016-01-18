@@ -124,7 +124,7 @@ void(float fl) fire_laser1 =
 		org = self.origin + v_right * (VWY_LASER + fy) + v_forward * VWX_LASER + v_up * (VWZ_LASER + fz);
 	}
 
-	fire_missile(lv, MOVETYPE_FLYMISSILE, fl, RM_SKY | PF_LAVA, org, ' 0 0 0', "laser", "progs/laser_m.mdl", snd, Laser_Blast, 6, SUB_Remove, Laser_Blast);
+	fire_missile(lv, MOVETYPE_FLYMISSILE, fl, RM_SKY | PF_LAVA, org, '0 0 0', "laser", "progs/laser_m.mdl", snd, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 	newmis.skin = laser_sk;
 	newmis.frame = laser_fr;
 	newmis.effects = newmis.effects | EF_FULLBRIGHT;

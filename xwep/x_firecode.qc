@@ -487,7 +487,7 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 			{
 	//			if (!(self.cam_x & CHSCAM_ON))
 				self.punchangle_x = 0 - (flg & FL_MPUNCH); // weapon kick in 1pv
-				cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//				cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 			}
 			if (flg & FL_RUNEHST)
 				if (e)
@@ -544,7 +544,7 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 		}
 	else
 		{
-		newmis.velocity = normalize(vfw); // default velocity - fired in look dir v_forward or vdr if not ' 0 0 0'
+		newmis.velocity = normalize(vfw); // default velocity - fired in look dir v_forward or vdr if not '0 0 0'
 		}
 
 	newmis.velocity = newmis.velocity * vmul * rvel;
@@ -933,7 +933,7 @@ void () X_FireHitscan =
 	local float f, d, t;
 
 	self.punchangle_x = -2 * EWEAP.dmg_save;
-	cam_punch(); // Cataboligne - 6.26.10 - because of fire from frames call
+//	cam_punch(); // Cataboligne - 6.26.10 - because of fire from frames call
 
 	if (EWEAP.lip == AMMO_SHELLS)
 		f = self.ammo_shells;
@@ -977,7 +977,7 @@ void () X_FireHitscan =
 	X_FireBullets (t, EWEAP.dmg, dir, EWEAP.bulletspread);
 
 // deepsleep hack - NOTE: uses v_up & v_right set by previous call
-	if (EWEAP.mdl == "progs/vw_deepsleep.mdl") X_DeepSleepBlst(dir, trace_endpos, ' 0.2 0.2 0', EWEAP.target);
+	if (EWEAP.mdl == "progs/vw_deepsleep.mdl") X_DeepSleepBlst(dir, trace_endpos, '0.2 0.2 0', EWEAP.target);
 };
 
 
@@ -1165,7 +1165,7 @@ void() player_pistol1 =
 			self.tomb_time = 0;
 			self.weaponframe = 0;
 			if (self.eweapon)
-				setorigin(self.eweapon, self.eweapon.origin + ' 0 0 1.33'); 
+				setorigin(self.eweapon, self.eweapon.origin + '0 0 1.33'); 
 		}
 	}
 
@@ -1429,7 +1429,7 @@ void () X_FireOnePlasma =
 		org = self.origin + v_forward * VWX_PLASMA + v_right * VWY_PLASMA + v_up * VWZ_PLASMA; // Cataboligne - 9.30.9 - true position fire point
 	}
 
-	fire_missile(PLASMA_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH | FL_USEAMMO | FL_AIM1K | FL_RUNEHST, RM_SKY | PF_LAVA, org, ' 0 0 0', "plasma", pls, snd, Plasma_MissileTouch, ROCKET_FUSE * 3,  Plasma_MissileFuseOut, plasmaexplode1);
+	fire_missile(PLASMA_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH | FL_USEAMMO | FL_AIM1K | FL_RUNEHST, RM_SKY | PF_LAVA, org, '0 0 0', "plasma", pls, snd, Plasma_MissileTouch, ROCKET_FUSE * 3,  Plasma_MissileFuseOut, plasmaexplode1);
 
 	if (newmis)
 	{
@@ -2191,7 +2191,7 @@ void() e_weap_Attack =
 
 	EWEAP = world;
 
-	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 };
 
 

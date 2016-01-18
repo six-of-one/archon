@@ -677,7 +677,7 @@ float(float rng, vector sp1) gremlin_check_spot =
 		e = e.chain;
 	}
 	if (pointcontents(sp1) == CONTENT_SOLID) return(TRUE);
-	if (pointcontents(sp1 + ' 0 0 -24') == CONTENT_SOLID) return(TRUE);
+	if (pointcontents(sp1 + '0 0 -24') == CONTENT_SOLID) return(TRUE);
 	return(FALSE);
 };
 
@@ -740,7 +740,7 @@ if (WARNING & 4) bprint("made a gremlin\n");
 
 			self.show_hostile = time + 1;
 			sv1 = self;
-			self = chaos_spawn(MOVETYPE_STEP, SOLID_SLIDEBOX, 0, 0, spot, ' 0 0 0', ' 0 0 0', ' 0 0 0', ' 0 0 0', "monster_gremlin", null_string, SUB_Null, 0, SUB_Null, SUB_Null, sv1, world);
+			self = chaos_spawn(MOVETYPE_STEP, SOLID_SLIDEBOX, 0, 0, spot, '0 0 0', '0 0 0', '0 0 0', '0 0 0', "monster_gremlin", null_string, SUB_Null, 0, SUB_Null, SUB_Null, sv1, world);
 
 			monster_gremlin(A_MONSTER);
 			if (self.model == "progs/gremlin-fly.mdl")
@@ -805,9 +805,9 @@ void() player_gremlin_become =
 	self.msight = "gremlinsight";
 	self.noise2 = "gremlin/pain2.wav";
 	self.noise3 = null_string;
-	self.view_ofs = ' 0 0 22';
+	self.view_ofs = '0 0 22';
 
-	setsize (self, '-16 -16 -14',  ' 16 16 32');
+	setsize (self, '-16 -16 -14',  '16 16 32');
 	self.health = self.health * MGREMLIN_HEALMOD / self.health_modifier;
 	self.health_modifier = MGREMLIN_HEALMOD;
 	makevectors(self.v_angle);

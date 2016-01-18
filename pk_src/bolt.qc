@@ -11,10 +11,16 @@ void() bolt_timeoutNextEntity;
 void(entity boltTarget) bolt_removeTarget;
 float(entity targetEntity) bolt_infront;
 
+// Cataboligne - 11.4.13 - retool for con_ammo and infinite...finally
 
 void() bolt_fire =
 {
-	if (self.ammo_cells < 2)
+	local float cells;
+
+	cells = self.ammo_cells;
+	if (ammo_con(2, self, null_string) == 0) cells = Q1_CELLAMMO_MAX;
+
+	if (cells < 2)
 	{
 		bolt_removeTarget(self.bolt_target);
 
@@ -27,9 +33,8 @@ void() bolt_fire =
 // explode if under water
 	if (self.waterlevel > 1)
 	{
-		local float cells;
-
-		cells = self.ammo_cells;
+// already set cells val above
+// note - on inifinte ammo setting this val is MAX !!!
 		self.ammo_cells = 0;
 
 		bolt_removeTarget(self.bolt_target);
@@ -48,21 +53,21 @@ void() bolt_fire =
 		self.t_width = time + 1;
 	}
 	self.punchangle_x = -2;
-	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 
 //	org = self.origin + '0 0 16';
 
 	bolt_findNextTarget();
 
-	if (self.bolt_target == world && self.ammo_cells >= 2)
+	if (self.bolt_target == world && cells >= 2)
 	{ // Can't find any targets at all.
-	  // fire as normal..
+	  // fire as normal...
 	  local vector org, endpos;
 
 		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(2, self, null_string);
 
 		self.punchangle_x = -2;
-		cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//		cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 
 /* not needed with lg
 	if (autocvar_sv_centerwep)
@@ -260,6 +265,7 @@ void() bolt_findNextTarget =
 	  maxTargets = maxTargets - 1;
 
 	  // check to see if we have run out of ammo
+	  if (ammo_con(2, self, null_string) != 0) // not infinite
 	  if (self.ammo_cells < 2)
 	  {
 	    // remove the FL_GIBCONDUIT if on
@@ -304,7 +310,7 @@ void() bolt_findNextTarget =
 		return;
 	}
 
-	// find the closest target within the current view of the turret.
+// find the closest target within the current view of the target
 
 	// max distance that the lighting can "jump"
 	dist = 600;
@@ -382,14 +388,16 @@ void(vector org, entity boltTarget, entity boltOwner, vector endPos, float first
 	local entity lightEntity;
 	local vector vangle;
 
-	// use uyp ammo
-	self.currentammo = self.ammo_cells = self.ammo_cells - dam;
+	// use uyp ammo - note - ammo_con is being given loop blow cell cnts
+	self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(dam, self, null_string);
 
 	dam = ((dam / 2) * 15);
 	dam = floor(dam);
 
 	// display & do damage
-	particle(endPos, '0 0 100', 225, dam * 4);
+//	particle(endPos, '0 0 100', 225, dam * 4);
+	spawn_particle = 225;
+	SpawnBlood (boltTarget, endPos, '0 0 100' * 10, dam * 2);
 
 	// only do damage if the target is not dead...
 	if (boltTarget.health > 0)

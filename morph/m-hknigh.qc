@@ -134,7 +134,7 @@ void() player_hknight_pain =
 
 void(vector or1) hk_fire_spike =
 {
-	fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, or1, ' 0 0 0', "knightspike", "progs/k_spike.mdl", "hknight/attack1.wav", spike_touch, 6,  SUB_Remove, spike_touch);
+	fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, or1, '0 0 0', "knightspike", "progs/k_spike.mdl", "hknight/attack1.wav", spike_touch, 6,  SUB_Remove, spike_touch);
 	newmis.morphy = self.morphy;
 };
 
@@ -161,8 +161,8 @@ void(float offset) player_hknight_shot =
 
 	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
-		fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", "progs/k_spike.mdl", "hknight/attack1.wav", Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
-//		fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", "progs/k_spike.mdl", "hknight/attack1.wav", SUB_Remove, ROCKET_FUSE,  SUB_Remove, SUB_Remove);
+		fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, org, '0 0 0', "missile", "progs/k_spike.mdl", "hknight/attack1.wav", Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
+//		fire_missile(SHALRATH_SHT_VEL, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, org, '0 0 0', "missile", "progs/k_spike.mdl", "hknight/attack1.wav", SUB_Remove, ROCKET_FUSE,  SUB_Remove, SUB_Remove);
 		newmis.avelocity_z = (crandom () * 300);
 		newmis.frame = 1;
 		newmis.dmg = 80;
@@ -176,7 +176,7 @@ void(float offset) player_hknight_shot =
 
 	hk_fire_spike(org);
 	newmis.velocity = vec*300;
-//	fire_missile(300, MOVETYPE_FLYMISSILE, FL_MSL , RM_SKY | PF_LAVA, org, ' 0 0 0', "knightspike", "progs/k_spike.mdl", "hknight/attack1.wav", spike_touch, 6,  SUB_Remove, SUB_Remove);
+//	fire_missile(300, MOVETYPE_FLYMISSILE, FL_MSL , RM_SKY | PF_LAVA, org, '0 0 0', "knightspike", "progs/k_spike.mdl", "hknight/attack1.wav", spike_touch, 6,  SUB_Remove, SUB_Remove);
 
 };
 
@@ -389,7 +389,7 @@ void() player_hknight_become =
 	self.msight = "hknight/sight1.wav";
 	self.noise2 = "hknight/pain1.wav";
 	self.noise3 = null_string;
-	self.view_ofs = ' 0 0 34'; // raised 12
+	self.view_ofs = '0 0 34'; // raised 12
 
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);

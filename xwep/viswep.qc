@@ -200,14 +200,14 @@ vector(entity e, entity l /*, float flg */) viswep_ofs =
 {
 	local vector v;
 
-	v = ' 0 0 0';
+	v = '0 0 0';
 
 	if (l.mask_x & CB_GREMLIN)
 		{
 /*
 		if (flg == SET_ARMED)
 			{
-			v = ' 0 0 0';
+			v = '0 0 0';
 			}
 		else
 			{ */
@@ -1053,7 +1053,7 @@ void(entity e, string md, entity p) DeadThrew =
 	newmis.touch = painkeep_touch;
 	newmis.pk_touch = BackpackTouch;
 
-	item_eject(newmis, ' 210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
+	item_eject(newmis, '210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
 	newmis.think = remove_fade; //SUB_Remove; // dont just blink, fade or melt out of level
 	if (DEAD_THROW_TIME)
 	{

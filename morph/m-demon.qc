@@ -103,7 +103,7 @@ void()  player_demon_spike1 = [$attacka1, player_demon_spike2 ] {};
 void()  player_demon_spike2 = [$pain1, player_demon_spike3 ] {};
 void()  player_demon_spike3 = [$pain2, player_demon_spike4 ]
 {
-	fire_missile(DEF_VEL, MOVETYPE_FLYMISSILE, 0, PF_LAVA | RM_SKY, self.origin + ' 0 0 16', ' 0 0 0', "spike", "progs/spike.mdl", "gatling/ric1.wav", spike_touch, 6, SUB_Remove, SUB_Nop);
+	fire_missile(DEF_VEL, MOVETYPE_FLYMISSILE, 0, PF_LAVA | RM_SKY, self.origin + '0 0 16', '0 0 0', "spike", "progs/spike.mdl", "gatling/ric1.wav", spike_touch, 6, SUB_Remove, SUB_Nop);
 	newmis.dmg = 40 + random() * 40; // owwie
 	newmis.frame = 1;
 	newmis.morphy = self.morphy;
@@ -153,7 +153,7 @@ void() demon_explode_plague =
 //void() demon_explode_gibs =
 //{
 //	self = self.owner;
-//	fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, 0, null_string, null_string, 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
+//	fire_burst (player_ZombieFireGrenade, self.origin + '0 0 20', 0, 0, null_string, null_string, 0, 6, 8, '120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
 //};
 
 // fn(player_demon_explode) - enraged demon on overload...go BOOM!
@@ -198,7 +198,7 @@ void() player_demon_explode =
 		self.classname = "demonboom";
 		self.owner = sv;
 		sv.deathtype = self.deathtype = "rage";
-		self.origin = sv.origin + ' 0 0 20';
+		self.origin = sv.origin + '0 0 20';
 
 //		Explode(0, random() * 100 + sv.health, world, TE_TAREXPLOSION, 0, BecomeExplosion);
 		if (sv.health < 50)
@@ -267,7 +267,7 @@ void() player_demon_explode =
 		damage_inflictor = world;
 
 // note: wonky obit possible here
-		fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, ZOMBIE_FLSH_VEL, null_string, null_string, 0, 8, 12, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
+		fire_burst (player_ZombieFireGrenade, self.origin + '0 0 20', 0, ZOMBIE_FLSH_VEL, null_string, null_string, 0, 8, 12, '120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
 //		if (self.class_select == "dead_body") SUB_Remove(); // already dead, remove corpse
 		self.nextthink = -1;
 		return;

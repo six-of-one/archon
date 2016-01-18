@@ -239,7 +239,7 @@ void() hub_custom =
 		self.skin = self.wait;
 	}
 	if (self.style) self.effects = EF_DIMLIGHT; // lite er up
-//	if (self.frame) setorigin(self, self.origin + ' 0 0 -20'); // adjust on bprint
+//	if (self.frame) setorigin(self, self.origin + '0 0 -20'); // adjust on bprint
 
 // trigger for message
 	e = self;
@@ -531,7 +531,7 @@ void(float maxplayers, float votecast, float timemins, float timesec) playerVote
 
 	if (timemins < 10)
 	{
-		// ' 0'
+		// '0'
 		WriteB3(MSG_ONE, 12320);
 	}
 	else
@@ -945,7 +945,7 @@ void(string mapName) findAndPrintMapName =
 	}
 	else if (e.model == "progs/hub_port.mdl")
 	{
-		if (e.mangle != ' 0 0 0')
+		if (e.mangle != '0 0 0')
 		{
 			WriteB3(MSG_ONE, e.mangle_x); // vector stored float for 9 char of map name
 			WriteB3(MSG_ONE, e.mangle_y);
@@ -1118,7 +1118,7 @@ void(float maxplayers, float votecast, float timemins, float timesec) playerInte
 
 	if (timemins < 10)
 	{
-		// ' 0'
+		// '0'
 		WriteB3(MSG_ONE, 12320);
 	}
 	else

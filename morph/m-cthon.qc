@@ -61,7 +61,7 @@ void() level_cthon =
 {
 	if (!LEVEL_CTHON) return;
 
-	v1 = ' 0 0 0';
+	v1 = '0 0 0';
 	v1_z = hoc_level;
 
 	if (pointcontents(self.origin + v1) == CONTENT_LAVA)
@@ -69,7 +69,7 @@ void() level_cthon =
 		self.mins_z = self.mins_z - 1;
 		setsize(self, self.mins, self.maxs);
 		}
-//		setorigin(self, self.origin + ' 0 0 1');
+//		setorigin(self, self.origin + '0 0 1');
 };
 
 void() player_lavacthon_stand = [ $walk1, player_stand1 ]
@@ -284,13 +284,13 @@ void(vector p) lavacthon_fire =
 {
 	local vector  org, vec;
 
-	org = self.origin + ' 0 0 80'; // + v_forward * 10;
+	org = self.origin + '0 0 80'; // + v_forward * 10;
 	traceline( org,  org + v_forward * 2048, FALSE, self);
 	org = self.origin + p_x*v_forward + p_y*v_right + p_z*'0 0 1';
 // FIX - targeting sometimes wrong - has to do with cam on
 	fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, FL_CTHONF, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA, org, trace_endpos - org, "fireballmissle", "progs/lavaball.mdl", "boss1/throw.wav", T_MissileTouch, 5 + (random() * 4), meltthink, fire_fly_adj);
 
-	newmis.avelocity = ' 200 100 300';
+	newmis.avelocity = '200 100 300';
 	newmis.dest_y = 16;
 	newmis.morphy = self.morphy;
 };
@@ -394,7 +394,7 @@ void() player_lavacthon_become =
 	self.msight = "boss1/sight1.wav";
 //	self.noise2 = "enforcer/pain1.wav";
 	self.noise3 = null_string;
-	self.view_ofs = ' 0 0 120';
+	self.view_ofs = '0 0 120';
 	setsize (self, '-64 -64 -24', ' 64 64 128');
 
 	stuffcmd(self, "hud_message \"You are emergent...CTHON!\"\n");

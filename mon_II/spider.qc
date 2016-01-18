@@ -358,6 +358,9 @@ if (ign != A_MONSTER)
 	precache_sound ("shalrath/idle.wav");
 	precache_sound ("shalrath/pain.wav");
 	precache_sound ("shalrath/sight.wav");
+
+	self.think = walkmonster_start; // ok for map monsters
+	self.nextthink = time + 0.1 + random ()*0.1;    
 }
 
 // Cataboligne - 11.14.12 - fast / slow code
@@ -386,7 +389,6 @@ if (ign != A_MONSTER)
 	self.th_melee = spid_melee1;
 	self._killmsg = spider_killmsg;
 
-	self.think = walkmonster_start;
-	self.nextthink = time + 0.1 + random ()*0.1;    
+	if (ign == A_MONSTER) walkmonster_start(); // dyns have to call this
 };
 

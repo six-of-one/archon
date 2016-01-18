@@ -382,7 +382,7 @@ float pk_inv, pk_wep;
 
 // flasher codes
 
-float flasher, flashhl, flashawep, sterix_fl;
+float flasher, flashhl, flashawep, sterix_fl, nothuman;
 float ALPHA_FULL, ALPHA_MEDIUM, ALPHA_LOW, ALPHA_90, p_alph;
 
 // note setting > 1 will cause numbers of critical stats to flash on hud - health, current wep ammo, armor, etc
@@ -407,6 +407,8 @@ float(float mc) inf_ammo_wep =
 	if (mc == MC_Q2_GRAPPLE) return(TRUE);
 	if (mc == MC_Q3_GAUNTLET) return(TRUE);
 	if (mc == MC_Q3_GRAPPLE) return(TRUE);
+	if (mc == MC_QUANTUM) return(TRUE);
+	if (nothuman && (cammo ==1)) return(TRUE); // a morph with ammo 1 wep - assume builtin
 	return(FALSE);
 };
 
@@ -580,7 +582,7 @@ float(float pow) bar_scale =
 
 // has_* - once a mapcode item is detected, this allows holstered view
 float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left, explflg;
-float inv, quad, ring, suit, xplast, xpltime, deadtime;
+float inv, quad, ring, suit, xplast, xpltime, deadtime, conrate;
 
 // hud special messaging system for cfg scripts
 float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
@@ -596,7 +598,7 @@ void() Sbar_DrawInventory =
 	ALPHA_LOW = ibar_alpha * 0.4;
 
 	float casting, converting, f, k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
-	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag, conrate;
+	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag;
 	vector pwr_step, wep_step, pk_wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v, clr;
 
 	float healflash, hicof, armorflash, armicof, flashclv;
@@ -639,6 +641,7 @@ void() Sbar_DrawInventory =
 // Archon data
 	archon = GetStat_FLOAT_TRUNCATED(STAT_ARCHON);
 	morph = GetStat_FLOAT_TRUNCATED(STAT_MORPH);
+	nothuman = TRUE;
 	mcode = GetStat_FLOAT_TRUNCATED(STAT_MCODE);
 	rune_flag = GetStat_FLOAT_TRUNCATED(STAT_RUNEFLAG);
 
@@ -837,6 +840,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 		if (xp > xplast) xplast = xp;
 
+/* not time based anymore
 		if (time > 240) conrate = 64;
 		else if (time > 180) conrate = 32;
 		else if (time > 120) conrate = 16;
@@ -844,17 +848,25 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		else if (time > 30) conrate = 4;
 		else if (time > 10) conrate = 2;
 		else conrate = 1;
-
+*/
 		if ((xp < xplast) || (xpltime > time))
 		if (xp > 0)
 		{
 			converting = TRUE; // was to move runes over before we handled (-) pts
 			v = '36 14 0';
-			if (xp != xplast) xpltime = time + 4;
+
+			if (xp != xplast)
+			{
+				xpltime = time + 4;
+				if (xp < xplast) conrate = xplast - xp; // get altars current rate by this guestimate
+			}
 			xplast = xp;
 // display conversion rate above XP pts
-			Sbar_DrawString(arc_level + '28 24 0', "cr", ALPHA_FULL, '7 7 0','1 0.5 1');
-			DrawAmmo('0 0 0', arc_level + '38 24 0' - woff, fabs(conrate), ALPHA_FULL * flashhl);
+			if (conrate)
+			{
+				Sbar_DrawString(arc_level + '28 24 0', "cr", ALPHA_FULL, '7 7 0','1 0.5 1');
+				DrawAmmo('0 0 0', arc_level + '38 24 0' - woff, fabs(conrate), ALPHA_FULL * flashhl);
+			}
 
 // display XP as they decrement during conversion
 			Sbar_DrawString(arc_level + '20 14 0', "(", ALPHA_FULL, '7 7 0','1 0.5 1');
@@ -1085,6 +1097,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/face1", ALPHA_FULL * k, 0.85);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Marine", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 			huds = 4;
+			nothuman = FALSE; // he's a human
 		}
 		else if (morph == CHAR_D)
 		{
@@ -1092,10 +1105,12 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/dm_face", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "UAC Marine", ALPHA_FULL, '7 7 0','0.16 0.2 0.29');
 			huds = 4;
+			nothuman = FALSE;
 		}
 		else if (morph == CHAR_Q2)
 		{
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Space Marine", ALPHA_FULL, '7 7 0','0.5 0.7 1');
+			nothuman = FALSE;
 		}
 		else if (morph == CHAR_Q3)
 		{
@@ -1103,6 +1118,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/sg_face", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Sarge", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 			huds = 4;
+			nothuman = FALSE;
 		}
 		else if (morph == CHAR_PK)
 		{
@@ -1110,6 +1126,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/pk_face", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Pain Killer", ALPHA_FULL, '7 7 0','0.2 0.2 1');
 			huds = 4;
+			nothuman = FALSE;
 		}
 		else if (morph == CHAR_W)
 		{
@@ -1117,6 +1134,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/bw_face", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Blaskowitz", ALPHA_FULL, '7 7 0','0.7 0.7 0.7');
 			huds = 4;
+			nothuman = FALSE;
 		}
 		else if (morph == IMP_MENF)
 		{

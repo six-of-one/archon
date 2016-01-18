@@ -507,7 +507,7 @@ void() player_ZombieFireGrenade =
 {
 	if (self.weapon == IT_NAILGUN) // shoot gib fountain chunk
 	{
-		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', ' 0 0 0', "gib_tracer", "progs/gib_m.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 0.1, GibTracer, GibTDie);
+		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', '0 0 0', "gib_tracer", "progs/gib_m.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 0.1, GibTracer, GibTDie);
 		newmis.frame = 7;
 		newmis.takedamage = DAMAGE_YES;
 		newmis.health = 300;
@@ -517,7 +517,7 @@ void() player_ZombieFireGrenade =
 		return;
 	}
 	else
-		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', ' 0 0 0', "grenade", "progs/zom_gib.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 2.5, SUB_Remove, SUB_Null);
+		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', '0 0 0', "grenade", "progs/zom_gib.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 2.5, SUB_Remove, SUB_Null);
 
 	newmis.dmg = 10 + random() * 15;  // player stinks a little bit more, thus more dmg
 	newmis.avelocity = '3000 1000 2000';
@@ -728,7 +728,7 @@ void() cloudkill =
 				if (!morph_ffchk(self.owner,head))
 				{
 					if (self.dmg > 4)
-						SpawnBlood (head.origin, ' 0 0 0', head.cnt * (FULL_EFFECT_DIST / dist));
+						SpawnBlood (head.origin, '0 0 0', head.cnt * (FULL_EFFECT_DIST / dist));
 				}
 */
 #ifdef warning

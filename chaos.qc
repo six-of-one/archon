@@ -72,7 +72,7 @@ entity(float mvt, float sd, float flg, float ct, vector org, vector smin, vector
 
 //	if (ct) content_cycle(chaos_e, ct, CONTENT_CHKTM);
 
-	if (org != ' 0 0 0') setorigin (chaos_e, org);
+	if (org != '0 0 0') setorigin (chaos_e, org);
 	else setorigin (chaos_e, self.origin);
 	setmodel (chaos_e, md);
 	setsize (chaos_e, smin, smax);
@@ -680,7 +680,7 @@ string(vector wt, string rs1, string rs2, string rs3, string rs4, string rs5) rn
 	sl = null_string;
 	cv = 1;
 
-	if (wt == ' 0 0 0') wt = ' 80.0 60.0 40.0';
+	if (wt == '0 0 0') wt = ' 80.0 60.0 40.0';
 	w1 = wt_x;
 	w2 = wt_y;
 	w3 = wt_z;
@@ -1500,17 +1500,17 @@ void(vector org, float rn, float pr, float col) chaos_particle =
 	if (cl < 0) cl = random() * 255;
 
 	if (self.morphy == IMP_MORDER)
-		particle (org + p1, ' 0 0 0', 194 + random() * 5, random() * 25); // 237 - fire orange range
+		particle (org + p1, '0 0 0', 194 + random() * 5, random() * 25); // 237 - fire orange range
 	else
 	if (self.morphy == IMP_MWRAITH)
 	{
 		if (col == 12 || col == 251)
-			particle (org + p1, ' 0 0 0', cl, 3);
+			particle (org + p1, '0 0 0', cl, 3);
 		else
-			particle (org + p1, ' 0 0 0', cl, 15);
+			particle (org + p1, '0 0 0', cl, 15);
 	}
 	else
-		if (random() < pr) particle (org + p1, ' 0 0 0', cl, random() * 25); // IDEA - restrict colors?
+		if (random() < pr) particle (org + p1, '0 0 0', cl, random() * 25); // IDEA - restrict colors?
 };
 
 
@@ -1622,30 +1622,30 @@ void(entity e) chaos_mdlsize =
 	if (!e) return;
 
 	vmin = vmax = v0;
-	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -16'; vmax = ' 16 16 16'; }
+	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -16'; vmax = '16 16 16'; }
 	else if (e.model == "progs/lavaball.mdl" || e.model == "progs/snowball.mdl")
 	{
 		if (e.frame == 0 || e.frame == 5)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
 		if (e.frame == 1 || e.frame == 6)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
 		if (e.frame == 2 || e.frame == 3 ||
-			  e.frame == 7 || e.frame == 8)			{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
-		if (e.frame == 4 || e.frame == 9)			{ vmin = '-1 -1 -1'; vmax = ' 1 1 1'; }
+			  e.frame == 7 || e.frame == 8)			{ vmin = '-2 -2 -2'; vmax = '2 2 2'; }
+		if (e.frame == 4 || e.frame == 9)			{ vmin = '-1 -1 -1'; vmax = '1 1 1'; }
 	}
 	else if (e.model == "progs/grenade.mdl")
 	{
-		if (e.frame == 0)								{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; } // reg grenade
+		if (e.frame == 0)								{ vmin = '-2 -2 -2'; vmax = '2 2 2'; } // reg grenade
 		if (e.frame == 1 || e.frame == 6)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; } // telespheres
 		if (e.frame == 2 || e.frame == 7)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
 		if (e.frame == 3 || e.frame == 4 ||
-			  e.frame == 8 || e.frame == 9)			{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
-		if (e.frame == 5 || e.frame == 10)		{ vmin = '-1 -1 -1'; vmax = ' 1 1 1'; }
+			  e.frame == 8 || e.frame == 9)			{ vmin = '-2 -2 -2'; vmax = '2 2 2'; }
+		if (e.frame == 5 || e.frame == 10)		{ vmin = '-1 -1 -1'; vmax = '1 1 1'; }
 	}
-	else if (e.model == "progs/proxbomb.mdl")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+	else if (e.model == "progs/proxbomb.mdl")	{ vmin = '-2 -2 -2'; vmax = '2 2 2'; }
 	else if (e.model == "progs/hook.mdl")			{ vmin = '-5 -5 -5'; vmax = ' 5 5 5'; }
 	else if (e.model == "progs/v_spike.mdl")		{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
-//	else if (e.model == "progs/ejbatt.mdl")		{ vmin = '-2 -2 -6'; vmax = ' 2 2 4'; }
-	else if (e.model == "progs/s_bubble.spr")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
-	else if (e.model == "progs/chaos_b2.mdl")	{ vmin = '-16 -16 -24'; vmax = ' 16 16 40'; }
+//	else if (e.model == "progs/ejbatt.mdl")		{ vmin = '-2 -2 -6'; vmax = '2 2 4'; }
+	else if (e.model == "progs/s_bubble.spr")	{ vmin = '-2 -2 -2'; vmax = '2 2 2'; }
+	else if (e.model == "progs/chaos_b2.mdl")	{ vmin = '-16 -16 -24'; vmax = '16 16 40'; }
 	if (vmin != v0 && vmax != v0) setsize(e, vmin, vmax);
 };
 
@@ -1761,7 +1761,7 @@ void() chaos_bomb =
 	RND_maxdmg = CBOMB_DEF_MAX;
 	
 // really just a fancy bouncing betty
-	fire_burst (wfire, self.origin + ' 0 0 30', 0, 0, null_string, null_string, 0, 3, 8, ' 120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
+	fire_burst (wfire, self.origin + '0 0 30', 0, 0, null_string, null_string, 0, 3, 8, '120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
 	RND_maxdmg = 0; // reset
 	remove(self);
 };

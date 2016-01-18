@@ -257,7 +257,7 @@ void() player_order_attack =
 	{
 		self.stack5 = "enforcer/enfire.wav";
 		if (self.pk_beartrapammo == 2) self.stack5 = "weapons/sgun1.wav";
-		fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "laser", "progs/laser_m.mdl", self.stack5, Laser_Blast, 6, SUB_Remove, Laser_Blast);
+		fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + '0 0 4', '0 0 0', "laser", "progs/laser_m.mdl", self.stack5, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 		newmis.skin = 13;
 		newmis.frame = 6;
 		newmis.effects = newmis.effects | EF_FULLBRIGHT;
@@ -548,7 +548,7 @@ void() player_order_become =
 	self.noise2 = "boss2/idle.wav";
 	self.noise3 = null_string;
 	self.movetype = MOVETYPE_FLY;
-	self.view_ofs = ' 0 0 4';
+	self.view_ofs = '0 0 4';
 
 	self.health = 100 * MCHAOS_HEALMOD;
 	self.health_modifier = MCHAOS_HEALMOD;

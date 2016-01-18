@@ -476,6 +476,7 @@ void(string cls) item_call =
 	else if (cls == "monster_ogre") monster_ogre(A_MONSTER);
 	else if (cls == "monster_oldone") monster_oldone(A_MONSTER);
 #ifdef testset
+// REMOVE THIS
 	else if (cls == "monster_shalrath") monster_supervore(A_MONSTER); // supervore for a reg vore in test
 #else
 	else if (cls == "monster_shalrath") monster_shalrath(A_MONSTER);
@@ -767,39 +768,41 @@ float(float cn, entity e, string op) ammo_con =
 
 	if (op == null_string) // operation not specced - assume 0 cn if inf or ...
 	{
+		if (e.pk_currentitem != PK_IT_CLIGHT) // gremlin clg deal - this should not affect any other morph
 		if (e.weapon & e.builtin) // ins never use ammo
 			return(0);
 
 		if (pk_itemovr & CON_INF)
 		{
-		if (e.weapon == IT_AXE && e.pk_currentitem == PK_IT_CLIGHT)
-		if (pk_itemovr & WEP_THUNDER) return(0);
+			if (e.weapon == IT_AXE && e.pk_currentitem == PK_IT_CLIGHT)
+			if (pk_itemovr & WEP_THUNDER) return(0);
 
-		if (e.weapon == IT_LIGHTNING)
-		if (pk_itemovr & WEP_THUNDER) return(0);
+			if (e.weapon == IT_LIGHTNING)
+			if (pk_itemovr & WEP_THUNDER) return(0);
 
-		if (e.weapon == IT_ROCKET_LAUNCHER)
-		if (pk_itemovr & WEP_ROCKET) return(0);
+			if (e.weapon == IT_ROCKET_LAUNCHER)
+			if (pk_itemovr & WEP_ROCKET) return(0);
 
-		if (e.weapon == IT_GRENADE_LAUNCHER)
-		if (pk_itemovr & WEP_GREN) return(0);
+			if (e.weapon == IT_GRENADE_LAUNCHER)
+			if (pk_itemovr & WEP_GREN) return(0);
 
-		if (e.weapon == IT_SUPER_NAILGUN)
-		if (pk_itemovr & WEP_PERF) return(0);
+			if (e.weapon == IT_SUPER_NAILGUN)
+			if (pk_itemovr & WEP_PERF) return(0);
 
-		if (e.weapon == IT_NAILGUN)
-		if (pk_itemovr & WEP_NAILGUN) return(0);
+			if (e.weapon == IT_NAILGUN)
+			if (pk_itemovr & WEP_NAILGUN) return(0);
 
-		if (e.weapon == IT_SUPER_SHOTGUN)
-		if (pk_itemovr & WEP_SSHOT) return(0);
+			if (e.weapon == IT_SUPER_SHOTGUN)
+			if (pk_itemovr & WEP_SSHOT) return(0);
 
-		if (e.weapon == IT_MJOLNIR) // Cataboligne - 2.14.11 - hipnotic support special wep
-		if (pk_itemovr & WEP_THUNDER) return(0);
+			if (e.weapon == IT_MJOLNIR) // Cataboligne - 2.14.11 - hipnotic support special wep
+			if (pk_itemovr & WEP_THUNDER) return(0);
 		}
 	}
 	else if (op == "wpck") // wep check - allow auto sw to inf ammo wep
 	{
 		f = 0;
+
 		if (cn & e.builtin) return(1); // can always select morph builtins
 	
 		if (cn == IT_MJOLNIR)
@@ -1119,7 +1122,7 @@ void() dyn_spawn =
 		sv = dyn_rndloc();
 		if (!sv) sv = findradius(world.origin, 256000);
 		if (!sv) return; // nothing found!
-		setorigin(self, sv.origin + ' 0 0 16');
+		setorigin(self, sv.origin + '0 0 16');
   }
   else
   {

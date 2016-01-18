@@ -162,7 +162,9 @@ void (entity e, vector org, vector vel, float damage) SpawnBlood =
 	if (e.solid == SOLID_SLIDEBOX || !e) // BLOODCHECK
 	if (e.netname != "Crate")
 	if (!e.mask_x & MORPH_ARCHON) // dont let them see you bleed
-		particle (org, vel*0.1, 73, damage*2);
+		particle (org, vel*0.1, spawn_particle, damage*2);
+
+	spawn_particle = 73; // always default - dp makes this blood
 };
 
 /*
@@ -563,7 +565,11 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	if (trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
 		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK - 7.29.13 - because dp makes this blood
-			particle (trace_endpos, '0 0 100', 225, damage*4);
+//			particle (trace_endpos, '0 0 100', 225, damage*4);
+		{
+			spawn_particle = 225;
+			SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
+		}
 		else
 		{
 			WriteByte (MSG_BROADCAST,SVC_TEMPENTITY); // sparks - but we might want better (see what HD does)
@@ -585,7 +591,11 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	if (trace_ent != e1 && trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
 		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK - 7.29.13
-			particle (trace_endpos, '0 0 100', 225, damage*4);
+//			particle (trace_endpos, '0 0 100', 225, damage*4);
+		{
+			spawn_particle = 225;
+			SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
+		}
 		else
 		{
 			WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
@@ -602,8 +612,12 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
 		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK - 7.29.13
-			particle (trace_endpos, '0 0 100', 225, damage*4);
-		else
+//			particle (trace_endpos, '0 0 100', 225, damage*4);
+			{
+				spawn_particle = 225;
+				SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
+			}
+	else
 		{
 			WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
 			WriteByte (MSG_BROADCAST,TE_GUNSHOT);
@@ -675,7 +689,7 @@ void () W_FireLightning =
 	if (self.class_select != "class_monster")
 	{
 		self.punchangle_x = -2;
-		cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//		cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 
 		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(1, self, null_string);
 	}
@@ -893,7 +907,7 @@ void () W_FireSuperSpikes =
 	setmodel (newmis,"progs/s_spike.mdl");
 	setsize (newmis, v0, v0);
 	self.punchangle_x = -2;
-	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 };
 
 void(float ox) W_FireSpikes =
@@ -942,7 +956,7 @@ void(float ox) W_FireSpikes =
 
 	newmis.weapon = IT_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 	self.punchangle_x = -2;
-	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 };
 
 
@@ -1243,7 +1257,7 @@ void () W_Attack =
 		sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
 	}
 
-	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
+//	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 */
 };
 
@@ -1667,9 +1681,9 @@ void () W_WeaponFrame =
 	if (self.eweapon.vwepmdl == "progs/vw_d_pistol.mdl")
 	{
 		if (!self.button0)
-			self.eweapon.bulletspread = ' 0.0 0.0 0';	
+			self.eweapon.bulletspread = '0.0 0.0 0';	
 		else
-			self.eweapon.bulletspread = ' 0.02 0.02 0'; // button held down - accuracy level
+			self.eweapon.bulletspread = '0.02 0.02 0'; // button held down - accuracy level
 	}
 
 };

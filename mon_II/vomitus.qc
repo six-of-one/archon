@@ -192,7 +192,7 @@ void(float offset) vom_shot3 =
 	vec = normalize (v_forward);
 	vec_z = 0 - vec_z + (random() - 0.5)*0.1;
 	
-	spawn_tarbaby(self.origin + ' 0 0 6' + v_forward * 10);
+	spawn_tarbaby(self.origin + '0 0 6' + v_forward * 10);
 	newmis.velocity = vec*3;
 };
 

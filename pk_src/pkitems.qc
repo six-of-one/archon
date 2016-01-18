@@ -1946,9 +1946,9 @@ void() dtf_handle =
 		remove(self);
 		return;
 	}
-	v1 = e.origin + ' 0 0 8';
+	v1 = e.origin + '0 0 8';
 	if (e.flags & FL_ITEM) // randomize away from other map items
-		v1 = stdv_rndloc(e.origin + ' 0 0 8', 50, 100);
+		v1 = stdv_rndloc(e.origin + '0 0 8', 50, 100);
 	setorigin(self, v1);
 };
 

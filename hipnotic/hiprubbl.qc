@@ -44,7 +44,7 @@ void() hipRubbleTouch =
 	if ( self.ltime < self.pausetime )
 	   return;
 	
-	if (self.velocity != ' 0 0 0') // still moving
+	if (self.velocity != '0 0 0') // still moving
 	if (self.velocity_x != 0 && self.velocity_y != 0 && self.quakeset != EARTHQUAKE)
 	if (other.takedamage)
 		{
@@ -255,10 +255,10 @@ void() menhir_break =
 	self.solid = SOLID_NOT;
 	while (self.distance > 0)
 	{
-		self.origin = self.origin - ' 0 0 15';
+		self.origin = self.origin - '0 0 15';
 		sz = sz + 2;
-		rubble_debris(self.origin, ' 0 0 50', 1 + sz, self.skin);
-		rubble_debris(self.origin, ' 0 0 50', 2 + sz, self.skin);
+		rubble_debris(self.origin, '0 0 50', 1 + sz, self.skin);
+		rubble_debris(self.origin, '0 0 50', 2 + sz, self.skin);
 		self.distance = self.distance - MENHIR_BLAST;
 	}
 // use loop to play this once (remove turns off all sounds for an ent) - remove after 4 rels, but play only every 60
@@ -310,7 +310,7 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 	v = 2 + random() * 2;
 	if (self.classname != "shaker") v = vibe / 2 + crandom() * 2;
 
-//	if (pointcontents(rorg + ' 0 0 -6') == CONTENT_EMPTY || self.classname == "explode_debris")
+//	if (pointcontents(rorg + '0 0 -6') == CONTENT_EMPTY || self.classname == "explode_debris")
 	for (fr = 0; fr < v; fr = fr + 1)
 	{
 			mflg = 0;
@@ -390,7 +390,7 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 					{
 						mr = $menhirm3 + menhr;
 						menhsz = menhir3_LEN;
-						menhv = ' 22 22 0';
+						menhv = '22 22 0';
 						if (random() < 0.85) msnd = "chaos/menhir.wav";
 					}
 					if (vibe > 6 && random() < 0.25) // size - rnd for now
@@ -400,7 +400,7 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 						{
 							mr = $menhirm2 + menhr;
 							menhsz = menhir2_LEN;
-							menhv = ' 11 11 0';
+							menhv = '11 11 0';
 							if (random() < 0.65) msnd = "chaos/menhir.wav";
 						}
 						if (rb == 0) rb = $bevelrubl2; // lg rubbles
@@ -445,8 +445,8 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 						if (mr > 0)
 						{
 							m = 70;
-							traceline (rorg + org, rorg + org - ' 0 0 2400', TRUE, self);
-							vel2 = ' 0 0 4';
+							traceline (rorg + org, rorg + org - '0 0 2400', TRUE, self);
+							vel2 = '0 0 4';
 							while (vel2_z < (menhsz * 0.9) && m > 0) // run a solid check along menhir path seeking open space.
 							{
 								if (pointcontents(trace_endpos - vel2) != CONTENT_SOLID)
@@ -454,18 +454,18 @@ void(vector rorg, vector vel, float vibe, float rskn) rubble_debris =
 #ifdef warning
 if (WARNING & 16) bprint("menhir ck found open\n");
 #endifdef
-									traceline (trace_endpos - vel2, trace_endpos - vel2 - ' 0 0 2400', TRUE, self);
-									vel2 = ' 0 0 4';
+									traceline (trace_endpos - vel2, trace_endpos - vel2 - '0 0 2400', TRUE, self);
+									vel2 = '0 0 4';
 								}
 								vel2_z = vel2_z + 6;
 								m = m - 1;
 							}
-							if (sky_touch(null_string, trace_endpos - ' 0 0 2', world)) m = 0;
+							if (sky_touch(null_string, trace_endpos - '0 0 2', world)) m = 0;
 							else
 							if (m > 0) // sky check for q3 maps that may have sky below
 							{
 								dm = (menhsz * 0.5); // 20, 40, 85
-								hipThrowRubble( "progs/rubble_m.mdl", mr, menhsk, trace_endpos - ' 0 0 2', rubblemode );
+								hipThrowRubble( "progs/rubble_m.mdl", mr, menhsk, trace_endpos - '0 0 2', rubblemode );
 								if (!newmis) return;
 								vel2_x = vel2_y = 0 - menhv_x;
 								vel2_z = 0 - menhsz;

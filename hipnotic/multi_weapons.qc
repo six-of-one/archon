@@ -372,7 +372,9 @@ void(vector p1, vector p2, entity from, float damage) PlasmaDamage =
 	traceline (p1, p2, FALSE, self);
 	if (trace_ent.takedamage)
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+//		particle (trace_endpos, '0 0 100', 225, damage*4);
+		spawn_particle = 225;
+		SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
 		T_Damage (trace_ent, from, from.owner, damage);
 		if (self.classname == "player")
 		{
@@ -385,7 +387,9 @@ void(vector p1, vector p2, entity from, float damage) PlasmaDamage =
 	traceline (p1 + f, p2 + f, FALSE, self);
 	if (trace_ent != e1 && trace_ent.takedamage)
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+//		particle (trace_endpos, '0 0 100', 225, damage*4);
+		spawn_particle = 225;
+		SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
 		T_Damage (trace_ent, from, from.owner, damage);
 	}
 	e2 = trace_ent;
@@ -393,7 +397,9 @@ void(vector p1, vector p2, entity from, float damage) PlasmaDamage =
 	traceline (p1 - f, p2 - f, FALSE, self);
 	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+//		particle (trace_endpos, '0 0 100', 225, damage*4);
+		spawn_particle = 225;
+		SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
 		T_Damage (trace_ent, from, from.owner, damage);
 	}
 };

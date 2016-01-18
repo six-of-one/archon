@@ -674,8 +674,8 @@ void() morph_cube =
 	self._fr_attack = SUB_Null;
 	self.attack_finished = 2;
 
-	self.punchangle = ' 210 210 240'; // for ejector
-//	item_eject(self, ' 210 210 240'); // done by pk_place_item with punchangle set
+	self.punchangle = '210 210 240'; // for ejector
+//	item_eject(self, '210 210 240'); // done by pk_place_item with punchangle set
 
 	setsize (self,'-16 -16 0','16 16 32');
 	StartItem ();
@@ -1373,7 +1373,7 @@ void() player_human_become =
 
 //	self.msight = "chaos/hsight1.wav";
 
-	self.view_ofs = ' 0 0 22';
+	self.view_ofs = '0 0 22';
 
 	self.health = self.health * MHUMAN_HEALMOD / self.health_modifier;
 	self.health_modifier = MHUMAN_HEALMOD;
@@ -2039,7 +2039,7 @@ void() monster_respawn_fire =
 {
 	local float t;
 	t = total_monsters; // preserve count - not adding a monster here
-	setorigin(self, self. origin + ' 0 0 8');
+	setorigin(self, self. origin + '0 0 8');
 	item_call(self.classname); // back to life
 	spawn_tfog (self.origin);
 	spawn_tdeath(self.origin, self);

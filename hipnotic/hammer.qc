@@ -53,7 +53,9 @@ void(vector p1, vector p2, entity from, entity e0, float damage) HIP_HammerDamag
 #ifdef enhanced
 // damage target ent first
 	T_Damage (e0, from, from, damage);
-	particle (e0.origin, '0 0 100', 225, damage*4); // note - not exactly correct
+//	particle (e0.origin, '0 0 100', 225, damage*4); // note - not exactly correct
+	spawn_particle = 225;
+	SpawnBlood (e0, e0.origin, '0 0 100' * 10, damage * 2);
 #ifdef warning
 if (WARNING & 1024)
 {
@@ -70,7 +72,9 @@ if (WARNING & 1024)
 //JIM
 	if (trace_ent != e0 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+//		particle (trace_endpos, '0 0 100', 225, damage*4);
+		spawn_particle = 225;
+		SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
 		T_Damage (trace_ent, from, from, damage);
 //		T_LightningDamage(TRUE, trace_ent, from, from, damage); // chaos mod code
 		if (self.classname == "player")
@@ -85,7 +89,9 @@ if (WARNING & 1024)
 //JIM
 	if (trace_ent != e0 && trace_ent != e1 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+//		particle (trace_endpos, '0 0 100', 225, damage*4);
+		spawn_particle = 225;
+		SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
 		T_Damage (trace_ent, from, from, damage);
 //		T_LightningDamage(TRUE, trace_ent, from, from, damage);
 	}
@@ -95,7 +101,9 @@ if (WARNING & 1024)
 //JIM
 	if (trace_ent != e0 && trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+//		particle (trace_endpos, '0 0 100', 225, damage*4);
+		spawn_particle = 225;
+		SpawnBlood (trace_ent, trace_endpos, '0 0 100' * 10, damage * 2);
 		T_Damage (trace_ent, from, from, damage);
 //		T_LightningDamage(TRUE, trace_ent, from, from, damage);
 	}

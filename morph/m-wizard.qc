@@ -156,7 +156,7 @@ void() lava_burstblast =
 // IMP: put in imp code when done
 void() imp_firePlasma =
 {
-	fire_missile(PLASMA_VEL + 200, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH , RM_SKY | PF_LAVA, self.origin + v_forward* 16.0 + v_right * 16  + ' 0 0 18', ' 0 0 0', "missile", "progs/d_plasma_sht.mdl", "imp/fire.wav", Plasma_MissileTouch, ROCKET_FUSE,  plasmaexplode1, Plasma_MissileTouch);
+	fire_missile(PLASMA_VEL + 200, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH , RM_SKY | PF_LAVA, self.origin + v_forward* 16.0 + v_right * 16  + '0 0 18', '0 0 0', "missile", "progs/d_plasma_sht.mdl", "imp/fire.wav", Plasma_MissileTouch, ROCKET_FUSE,  plasmaexplode1, Plasma_MissileTouch);
 	newmis.skin = 2; // imp plasma ball red skin
 	newmis.frame = 2;
 	newmis.dmg = 15;
@@ -167,7 +167,7 @@ void() imp_firePlasma =
 
 void() imp_fireBomb =
 {
-	fire_missile(ROCKET_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH , RM_SKY | PF_LAVA, self.origin + v_forward* 16.0 + v_right * 16  + ' 0 0 18', ' 0 0 0', "missile", "progs/d_plasma_sht.mdl", "imp/fire.wav", Wiz_MissileTouch, ROCKET_FUSE,  plasmaexplode1, Wiz_MissileTouch);
+	fire_missile(ROCKET_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH , RM_SKY | PF_LAVA, self.origin + v_forward* 16.0 + v_right * 16  + '0 0 18', '0 0 0', "missile", "progs/d_plasma_sht.mdl", "imp/fire.wav", Wiz_MissileTouch, ROCKET_FUSE,  plasmaexplode1, Wiz_MissileTouch);
 	newmis.skin = 2; // imp plasma ball red skin
 	newmis.frame = 1;
 	newmis.dmg = 85;
@@ -247,20 +247,20 @@ if (WARNING & 4) bprint("wiz missle touch set def damage\n");
 	if (mon == "monster_wizard") // note: can detect morphy now
 	{
 		if (random() > 0.05)
-			fire_burst (pointer_Wiz_fireBolt, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (pointer_Wiz_fireBolt, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
 		else
-			fire_burst (Wiz_fireBomb, self.origin + org, 0, 0, null_string, null_string, 0, 2, 1, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (Wiz_fireBomb, self.origin + org, 0, 0, null_string, null_string, 0, 2, 1, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_OWNOWN, world);
 	}
 	else if (mon == "monster_hell_knight")
-			fire_burst (pointer_hk_fire_spike, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (pointer_hk_fire_spike, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
 	else if (mon == "monster_lavabomb")
-			fire_burst (lava_burstblast, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (lava_burstblast, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
 	else if (mon == "monster_imp" && random() < 0.4)
 	{
 		if (random() > 0.1)
-			fire_burst (imp_firePlasma, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (imp_firePlasma, self.origin + org, 0, 0, null_string, null_string, 0, 6, 8, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_FRCORG | FL_OWNOWN, world);
 		else
-			fire_burst (imp_fireBomb, self.origin + org, 0, 0, null_string, null_string, 0, 3, 1, ' 0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_OWNOWN, world);
+			fire_burst (imp_fireBomb, self.origin + org, 0, 0, null_string, null_string, 0, 3, 1, '0 0 0', ' 360 360 360', SUB_Null, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_OWNOWN, world);
 	}
 
 	if (random() < 0.05) wdmg = random() * 50;
@@ -370,7 +370,7 @@ void() player_wizard_painleech3 = [ $pain2,   player_wizard_painleech4 ]
 				if (!morph_ffchk(self,head))
 				{
 					if (head.cnt * (FULL_EFFECT_DIST / dist) > 8)
-						SpawnBlood (head, head.origin, ' 0 0 0', head.cnt * (FULL_EFFECT_DIST / dist));
+						SpawnBlood (head, head.origin, '0 0 0', head.cnt * (FULL_EFFECT_DIST / dist));
 					if (self.health < self.max_health * self.health_modifier) T_Heal(self, head.cnt * 0.8 * (FULL_EFFECT_DIST / dist), FALSE);	// 50% heal from damage if < max health
 					else if (random() < 0.35) T_Heal(self, head.cnt * 0.05 * (FULL_EFFECT_DIST / dist), TRUE);																			// 5% heal, ignore max
 				}

@@ -74,7 +74,7 @@ void(float num_bubbles, vector bub_origin) NewBubbles =
 {
 	local entity  bubble_spawner;
 	
-	bubble_spawner = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, bub_origin, ' 0 0 0', ' 0 0 0', ' 0 0 0', ' 0 0 0', "bubblespawn", null_string, SUB_Null, 0.1, DeathBubblesSpawn, SUB_Null, self, world);
+	bubble_spawner = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, bub_origin, '0 0 0', '0 0 0', '0 0 0', '0 0 0', "bubblespawn", null_string, SUB_Null, 0.1, DeathBubblesSpawn, SUB_Null, self, world);
 
 	bubble_spawner.bubble_count = num_bubbles;
 	return;
@@ -108,7 +108,7 @@ float(entity e) grab_fire =
 
 void (vector fireorg) SpawnTouchFlame =
 {
-	newmis = chaos_spawn(MOVETYPE_FLYMISSILE, SOLID_NOT, 0, 0, fireorg, ' 0 0 0', ' 0 0 0', ' 0 0 0', ' 0 0 75', "fire", "progs/s_explod.spr", SUB_Null, 0, s_explode1, SUB_Null, self, world);
+	newmis = chaos_spawn(MOVETYPE_FLYMISSILE, SOLID_NOT, 0, 0, fireorg, '0 0 0', '0 0 0', '0 0 0', '0 0 75', "fire", "progs/s_explod.spr", SUB_Null, 0, s_explode1, SUB_Null, self, world);
 
 //	newmis.grab_callback = grab_fire;
 };
@@ -269,7 +269,7 @@ void () FlameTouch =
 		else
 		if (!(self.flags & (FL_FLARE | FL_SUBFLARE)))
 			{
-				if (pointcontents(self.origin + ' 0 0 4') == CONTENT_SLIME) // because so many seem to slip by the content check if moving fast
+				if (pointcontents(self.origin + '0 0 4') == CONTENT_SLIME) // because so many seem to slip by the content check if moving fast
 				{
 					self.watertype = CONTENT_SLIME;
 					flame_check();
@@ -323,7 +323,7 @@ entity(vector org) spawn_napalm =
 {
 
 	fire_missile(GRENADE_VEL * 0.833335, MOVETYPE_BOUNCE, FL_MSL | FL_USEAMMO , RM_SKY | PF_WATER | FLT_IMM | FLT_LAVA | PF_LAVA | PF_SLIME,// | FLT_SLIME,
-					 org, ' 0 0 0', "fire", "progs/s_explod.spr", null_string, FlameTouch, 0.15, s_flameburn1, flame_check);
+					 org, '0 0 0', "fire", "progs/s_explod.spr", null_string, FlameTouch, 0.15, s_flameburn1, flame_check);
 
 	if (!newmis) return(world); // what happened here?
 	newmis.solid = SOLID_TRIGGER;

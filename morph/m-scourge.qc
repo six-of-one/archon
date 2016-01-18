@@ -197,7 +197,7 @@ void(float ox) player_scourge_FireSpikes =
 //			if (self.currentammo > 0)
 //				am = FL_USEAMMO;
 
-		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, am, RM_SKY | PF_LAVA, src, ' 0 0 0', "laser", "progs/laser_m.mdl", s1, Laser_Blast, 6, SUB_Remove, Laser_Blast);
+		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, am, RM_SKY | PF_LAVA, src, '0 0 0', "laser", "progs/laser_m.mdl", s1, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 
 		if (s1 == "enforcer/enfire.wav") // if no sound, no ammo use
 		if (self.currentammo > 0)
@@ -212,7 +212,7 @@ void(float ox) player_scourge_FireSpikes =
 	}
 	else
 	{
-		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, src, ' 0 0 0', "spike", "progs/spike.mdl", s2, spike_touch, 6, SUB_Remove, spike_touch);
+		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, src, '0 0 0', "spike", "progs/spike.mdl", s2, spike_touch, 6, SUB_Remove, spike_touch);
 // dmg default is 9 - idea super spikes with sng touch
 		newmis.frame = 5;
 		newmis.skin = 2;
@@ -556,11 +556,11 @@ void() player_scourge_become =
 	self.msight = "scrg/sight.wav";
 	self.noise2 = "scrg/pain2.wav";
 	self.noise3 = null_string;
-	self.view_ofs = ' 0 0 5'; // lowered to 12 first then 7 more
+	self.view_ofs = '0 0 5'; // lowered to 12 first then 7 more
 //	if(!deathmatch)
 //		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
-		setsize (self, '-16 -16 -24', ' 16 16 16'); //scourge height correct, XY dim cant be set bigger
+		setsize (self, '-16 -16 -24', '16 16 16'); //scourge height correct, XY dim cant be set bigger
 
 	self.health = self.health * MSCOURGE_HEALMOD / self.health_modifier;
 	self.health_modifier = MSCOURGE_HEALMOD;

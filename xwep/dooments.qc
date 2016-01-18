@@ -659,7 +659,7 @@ string(entity targ, entity attacker) q3plasma_killmsg2;
 string() dssg_killmsg =
 {
 //	if (ENHANCED)
-//		return(rnd_string(' 90.0 60.0 60.0'," "," ",null_string,null_string," "));
+//		return(rnd_string('90.0 60.0 60.0'," "," ",null_string,null_string," "));
 
 	return " was blown away by ";
 };
@@ -693,7 +693,7 @@ string() dp_killmsg =
 {
 #ifdef enhanced
 //	if (ENHANCED)
-	return(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ",null_string,null_string," was shot by "));
+	return(rnd_string('90.0 60.0 60.0'," got plinked by "," got picked off by ",null_string,null_string," was shot by "));
 #endifdef
 
 	return " was shot by ";
@@ -709,7 +709,7 @@ string() dsaw_killmsg =
 {
 #ifdef enhanced
 //	if (ENHANCED)
-	return(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ",null_string,null_string," was cut to pieces by "));
+	return(rnd_string('90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ",null_string,null_string," was cut to pieces by "));
 #endifdef
 
 	return " was cut to pieces by ";
@@ -767,7 +767,7 @@ void() d_weapon_bfg =
 	self.dmg = DOOM_BFG_DMG;
 //	self.dodmg = 128; // splash
 	self.dmg_save = 40;
-	self.bulletspread = ' 0.6 0.3 0'; // for traces ?
+	self.bulletspread = '0.6 0.3 0'; // for traces ?
 	self.wait = RSP_TIME;
 
 // appearances
@@ -868,7 +868,7 @@ void() d_weapon_chaingun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.bulletspread = ' 0.065 0.065 0';
+	self.bulletspread = '0.065 0.065 0';
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/d_chaingun.mdl");
@@ -898,9 +898,9 @@ void(float cn) doom_pistol_spread =
 	if (self.eweapon.vwepmdl == "progs/vw_d_pistol.mdl")
 	{
 		if (!cn)
-			self.eweapon.bulletspread = ' 0.0 0.0 0';	
+			self.eweapon.bulletspread = '0.0 0.0 0';	
 		else
-			self.eweapon.bulletspread = ' 0.02 0.02 0'; // button held down - accuracy level
+			self.eweapon.bulletspread = '0.02 0.02 0'; // button held down - accuracy level
 	}
 }
 */
@@ -937,7 +937,7 @@ void() d_weapon_pistol =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.bulletspread = ' 0.02 0.02 0';
+	self.bulletspread = '0.02 0.02 0';
 	self.style = FL_MELEE_WEP;
 	self.wait = RSP_TIME;
 
@@ -1039,7 +1039,7 @@ void() d_weapon_shotgun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_take = 7; // shot cnt
 	self.dmg_save = 1;
-	self.bulletspread = ' 0.04 0.02 0'; // bullet spread out
+	self.bulletspread = '0.04 0.02 0'; // bullet spread out
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/d_shotgun.mdl");
@@ -1086,7 +1086,7 @@ void() d_weapon_supershotgun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 2;
 	self.dmg_take = 21; // shot cnt
-	self.bulletspread = ' 0.14 0.08 0'; // bullet spread out -- TDO: get doom value, this is q1
+	self.bulletspread = '0.14 0.08 0'; // bullet spread out -- TDO: get doom value, this is q1
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/d_dblshot.mdl");
@@ -1579,7 +1579,7 @@ string(entity targ, entity attacker) wrock_killmsg =
 		
 #ifdef enhanced
 //	if (ENHANCED)
-	return(rnd_string(' 90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ",null_string,null_string," ate "));
+	return(rnd_string('90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ",null_string,null_string," ate "));
 #endifdef
 
 	return " ate ";
@@ -1598,7 +1598,7 @@ string(entity targ, entity attacker) wflame_killmsg =
 		
 #ifdef enhanced
 //	if (ENHANCED)
-	return(rnd_string(' 90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ",null_string,null_string," got burnt by "));
+	return(rnd_string('90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ",null_string,null_string," got burnt by "));
 #endifdef
 
 	return " got burnt by ";
@@ -1615,7 +1615,7 @@ string() wk_killmsg =
 {
 #ifdef enhanced
 //	if (ENHANCED)
-	return(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ",null_string,null_string," was cut down by "));
+	return(rnd_string('90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ",null_string,null_string," was cut down by "));
 #endifdef
 
 	return " was cut down by ";
@@ -1672,7 +1672,7 @@ void() w_weapon_machinegun =
 	self.dmg = 10;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.bulletspread = ' 0.02 0.02 0';
+	self.bulletspread = '0.02 0.02 0';
 	self.wait = RSP_TIME;
 
 	self.netname = "Machine Gun";
@@ -1703,7 +1703,7 @@ void() w_chg_base =
 	self.dmg = 10;
 	self.dmg_save = 1;
 	self.dmg_take = 2;
-	self.bulletspread = ' 0.05 0.05 0';
+	self.bulletspread = '0.05 0.05 0';
 	self.wait = RSP_TIME;
 
 	self.netname = "Chain Gun";
@@ -1880,7 +1880,7 @@ void() w_weapon_pistol =
 	self.dmg = 10;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.bulletspread = ' 0.01 0.01 0';
+	self.bulletspread = '0.01 0.01 0';
 	self.style = FL_MELEE_WEP;
 	self.wait = RSP_TIME;
 
@@ -2440,7 +2440,7 @@ void() wchg2_weapon_touch =
 			self.items = IT_LIGHTNING;
 			self.dmg_save = 2;
 			self.dmg_take = 4;
-			self.bulletspread = ' 0.07 0.07 0';
+			self.bulletspread = '0.07 0.07 0';
 
 			self.netname = "Dual Chain Gun";
 
@@ -3482,7 +3482,7 @@ void() ddecor_pool_blood =
 	}
 	precache_model("progs/md2/blood.md2");
 	setmodel(self,"progs/md2/blood.md2");
-//	setorigin(self, self.origin + ' 0 0 -8');
+//	setorigin(self, self.origin + '0 0 -8');
 	self.frame = 9;
 	self.movetype = MOVETYPE_TOSS;
 
@@ -3508,7 +3508,7 @@ void() ddecor_pool_blood_2 =
 	}
 	precache_model("progs/md2/bigblood.md2");
 	setmodel(self,"progs/md2/bigblood.md2");
-//	setorigin(self, self.origin + ' 0 0 -8');
+//	setorigin(self, self.origin + '0 0 -8');
 	self.frame = 9;
 	self.movetype = MOVETYPE_TOSS;
 
@@ -3534,7 +3534,7 @@ void() ddecor_pool_brains =
 	}
 	precache_model("progs/md2/brainpool.md2");
 	setmodel(self,"progs/md2/brainpool.md2");
-//	setorigin(self, self.origin + ' 0 0 -8');
+//	setorigin(self, self.origin + '0 0 -8');
 	self.frame = 9;
 	self.movetype = MOVETYPE_TOSS;
 
@@ -3561,7 +3561,7 @@ void() ddecor_bloody_mess =
 	}
 	precache_model("progs/md2/marine_squished.md2");
 	setmodel(self,"progs/md2/marine_squished.md2");
-//	setorigin(self, self.origin + ' 0 0 -8');
+//	setorigin(self, self.origin + '0 0 -8');
 	self.frame = 9;
 	self.movetype = MOVETYPE_TOSS;
 
@@ -3595,7 +3595,7 @@ void() ddecor_dead_player =
 	}
 	precache_model("progs/md2/marine.md2");
 	setmodel(self,"progs/md2/marine.md2");
-//	setorigin(self, self.origin + ' 0 0 -8');
+//	setorigin(self, self.origin + '0 0 -8');
 	self.frame = 146;
 	self.movetype = MOVETYPE_TOSS;
 
