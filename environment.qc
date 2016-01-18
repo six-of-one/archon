@@ -173,6 +173,8 @@ vector(entity e, float s, vector p) getsurfaceclippedpoint =
 
 
 /*QUAKED func_fallingwater (0 .5 .8) ?
+now just a fancy door
+
 moving water illusion - only vertical for now
 appx moving liquid from q2
 Toggle - if targetname set, wait at each end for trigger
@@ -188,6 +190,8 @@ normal - cycle is to move distance then move back in speed time each way
 "target" - if set gets fired at end of travel
 "killtarget" - hurt trigger will be moved with fallingwater model
 */
+
+/*
 void() fallingwater_fire;
 
 void() fallingwater_think =
@@ -232,9 +236,40 @@ void() fallingwater_fire =
 	else
  		fallingwater_think();
 };
+*/
+
+void() func_door;
 
 void() func_fallingwater =
 {
+	self.spawnflags = self.spawnflags - (self.spawnflags & 24); // strip key door codes
+	
+	func_door();
+	self.solid = SOLID_BSP;
+	setmodel(self, self.model);
+	self.solid = SOLID_TRIGGER;
+
+// deadflag & 2 makes this envcide & env damage ent
+// this default saves setting all this on map ents
+	if (self.deadflag & 2)
+	{
+		if (!self.dmg)
+			self.dmg = 5;
+
+		if (!self.frags)
+			self.frags = 1;
+	}
+
+	if (!self.delay)
+		self.delay = 1;
+
+	if (self.dmg)
+	{
+		self.touch = hurt_touch;
+		self.aflag = -666; // so hurt_touch handles this
+	}
+
+/*
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_NOT;
@@ -262,6 +297,7 @@ void() func_fallingwater =
 	{
 		self.nextthink = time + 2 * random();
 	}
+*/
 };
 
 

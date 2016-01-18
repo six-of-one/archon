@@ -815,14 +815,23 @@ void () hurt_touch =
 {
 	if (other.takedamage)
 	{
-		self.solid = SOLID_NOT;
+// falling water test
+		if (self.aflag == -666)
+		{
+			if (self.attack_finished < time) self.attack_finished = time + self.delay;
+			else return;
+		}
+		else
+		{
+			self.think = hurt_on;
+			self.nextthink = time + 1;
+			self.solid = SOLID_NOT;
+		}
 		if (self.deathtype) other.deathtype = self.deathtype; // Cataboligne - 10.19.12 - obit message special
 		if (self.deathtype == "lavadead")  // Cataboligne - 10.28.12 - handle lava beings when trigger damage is lava
 			T_FireDamage (other,self,self,self.dmg);
 		else
 		T_Damage (other,self,self,self.dmg);
-		self.think = hurt_on;
-		self.nextthink = time + 1;
 	}
 
 	return ;

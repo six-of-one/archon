@@ -4,6 +4,8 @@
 	+---------------------------------------+
 */
 
+// 11.5.14 - q3 mode hack for autosw to gaunt from mg
+
 // x weapon inventory store fn
 
 // used from touch functions
@@ -153,8 +155,10 @@ void() x_weapon_touch =
 
 	ign = FALSE;
 	e = vchk(new, self.pk_currentitem, other.vwepent); // see if we have this item / slot filled
+
 	if (self.aflag == IGN_INV) // flag says we can ignore existing weps - this will replace current weapon held in indicated slot - NOTE: check if any ammo can differ here ***
 	{
+		if (self.items & other.builtin) return; // dont override morph builtin
 		if (e)
 		if (e.mdl != self.vwepmdl)
 		{
@@ -979,6 +983,11 @@ void () X_FireHitscan =
 		if (d < 1) // NOTE: can this ever happen?
 		{
 			self.weapon = W_BestWeapon ();
+// hack for q3 mode - needs perm fix, which is to upgrade w_bestweapon
+			if (self.mcode == MC_Q3_MACHINEGUN)
+			if (self.ammo_bullet < 1)
+				self.weapon = IT_AXE;
+
 			self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
 			W_SetCurrentAmmo ();
 			if (self.classname == "pk*bot")

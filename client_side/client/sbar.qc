@@ -3061,7 +3061,29 @@ sb_align = SB_BOTTOM_RIGHT;
 		v_b_y = 10; // main icon adjust up + flare
 	}
 
-	if (pk_phone > 0 || mcode == MC_Q3_HOLDTELE)
+	if (x_items & X_Q3_HTEL)
+	{
+		if (mcode == MC_Q3_HOLDTELE)
+		{
+			if (autocvar_hud_bigwep) // holdab tele has special adust - bottom of screen deal
+			{
+				v_bl = '0 0 0';
+				v_b_y = 12;
+			}
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + v_a + v_b + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15 * bscale);
+			else if (!autocvar_hud_bigwep) Sbar_DrawPic(pk_wep_step + v_a + v_bl + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5 * bscale);
+			DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/hld_tel", ALPHA_FULL, 0.125 * bscale);
+			DrawAmmo('0 0 0', pk_wep_step + v_a + '-22 -5 0', 1, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/hld_tel", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', 1, ALPHA_MEDIUM);
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_phone > 0) // || mcode == MC_Q3_HOLDTELE)
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PKPLUS_IT_PHONE))
 		{
@@ -3072,8 +3094,9 @@ sb_align = SB_BOTTOM_RIGHT;
 			}
 			if (dmg_flare) Sbar_DrawPic(pk_wep_step + v_a + v_b + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15 * bscale);
 			else if (!autocvar_hud_bigwep) Sbar_DrawPic(pk_wep_step + v_a + v_bl + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5 * bscale);
-			if (mcode == MC_Q3_HOLDTELE) DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/hld_tel", ALPHA_FULL, 0.125 * bscale);
-			else DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/inv_phn", ALPHA_FULL, 0.125 * bscale);
+//			if (mcode == MC_Q3_HOLDTELE) DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/hld_tel", ALPHA_FULL, 0.125 * bscale);
+//			else 
+			DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/inv_phn", ALPHA_FULL, 0.125 * bscale);
 			DrawAmmo('0 0 0', pk_wep_step + v_a + '-22 -5 0', pk_phone, ALPHA_FULL);
 		}
 		else
@@ -3135,14 +3158,32 @@ sb_align = SB_BOTTOM_RIGHT;
 		pk_wep_step = pk_wep_step + '0 20 0';
 	}
 
-	if (pk_copb > 0 || mcode == MC_Q3_HOLDMEDKIT)
+	if (x_items & X_Q3_HMED)
+	{
+		if (mcode == MC_Q3_HOLDMEDKIT)
+		{
+			if (dmg_flare) Sbar_DrawPic(pk_wep_step + v_a + v_b + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15 * bscale);
+			else if (!autocvar_hud_bigwep) Sbar_DrawPic(pk_wep_step + v_a + v_bl + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5 * bscale);
+			DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/hld_med", ALPHA_FULL, 0.125 * bscale);
+			DrawAmmo('0 0 0', pk_wep_step + v_a + '-22 -5 0', 1, ALPHA_FULL);
+		}
+		else
+		{
+			DrawInventoryAmmo(pk_wep_step, "gfx/hld_med", ALPHA_FULL * inv_alm, 0.125);
+			DrawAmmo('0 0 0', pk_wep_step + '-22 -5 0', 1, ALPHA_MEDIUM);
+		}
+		pk_wep_step = pk_wep_step + '0 20 0';
+	}
+
+	if (pk_copb > 0) // || mcode == MC_Q3_HOLDMEDKIT)
 	{
 		if ((currentweap == IT_AXE) && (pk_wep == PK_IT_CANPAB))
 		{
 			if (dmg_flare) Sbar_DrawPic(pk_wep_step + v_a + v_b + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15 * bscale);
 			else if (!autocvar_hud_bigwep) Sbar_DrawPic(pk_wep_step + v_a + v_bl + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5 * bscale);
-			if (mcode == MC_Q3_HOLDMEDKIT) DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/hld_med", ALPHA_FULL, 0.125 * bscale);
-			else DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/inv_copb", ALPHA_FULL, 0.125 * bscale);
+//			if (mcode == MC_Q3_HOLDMEDKIT) DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/hld_med", ALPHA_FULL, 0.125 * bscale);
+//			else 
+			DrawInventoryAmmo(pk_wep_step + v_a + v_b, "gfx/inv_copb", ALPHA_FULL, 0.125 * bscale);
 			DrawAmmo('0 0 0', pk_wep_step + v_a + '-22 -5 0', pk_copb, ALPHA_FULL);
 		}
 		else

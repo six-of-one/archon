@@ -2584,6 +2584,7 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 			painkeep_cube_use();
 		else if (self.eweapon.wad == "morph_cube")
 		{
+bprint("------------------- ** WARNING - bot in morph cubical\n");
 			local float sf;
 			sf = 17;
 			while ((self.state == self.morphy) && (sf > 0))
@@ -2671,6 +2672,12 @@ void() crate_touch =
 // idea - open a crate in 2 harpoon hits
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
 	{
+		if (other.classname == "sphere_annihilation") // reverse touching this deadly ent - somehow this is blocking the spheres touch so we handle this case here
+		{
+			sphere_annihilation_reverse_touch();
+			return;
+		}
+
 		if (self.touch != painkeep_touch)
 		if (other.classname == "Harpoon")
 			grap_checkIfGrap();

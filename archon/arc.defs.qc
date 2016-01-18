@@ -1121,6 +1121,7 @@ float DEF_X_ITEMS; // x bit flags
 
 entity sphere_a; // only one of these ever
 void() sphere_annihilation_phys_move;
+void() sphere_annihilation_reverse_touch;
 
 // laser weps
 
@@ -1252,8 +1253,8 @@ float X_INV						= 122867; ///  11101111111110011
 
 // q3 goodies
 
-//float X_Q3_HTEL				= 65536;
-//float X_Q3_HMED				= 131072;
+//float X_Q3_HTEL				= 131072;
+//float X_Q3_HMED				= 262144;
 
 //float X_INV						= 253939; ///  111101111111110011    --- 57331; //  1101111111110011
 

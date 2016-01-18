@@ -1043,8 +1043,8 @@ void(entity e, float tm, void() rmv) dyn_remove =
 		f.wait = MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
 	else if (e.wad == "pk_cube")
 		f.wait = PK_CUBE_TIME + crandom() * PK_CUBE_DV;
-
-	if (f.wait < 6) f.wait = PK_DYNTO + crandom() * 55; // REMOVE_DV_DEF = 55 - less than 6 rels - default it
+	else
+		if (f.wait < 6) f.wait = PK_DYNTO + crandom() * 55; // REMOVE_DV_DEF = 55 - less than 6 rels and nothing else set - default it
 
 	f.nextthink = time + f.wait;
 

@@ -411,6 +411,7 @@ void () BecomeExplosion =
 	self.touch = SUB_Null;
 	setmodel (self,"progs/s_explod.spr");
 	self.solid = SOLID_NOT;
+	self.class_select = null_string; // stop ops on this
 	s_explode1 ();
 };
 

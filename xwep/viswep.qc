@@ -1345,6 +1345,71 @@ void(entity pack, vector pv1) DeadThrowWeps =
 	}
 };
 
+// take care of morphs dieing with pk items
+
+void() DropPKI =
+{
+	newmis = world;
+
+	if (DEAD_THROW_NOWAY)
+	if (noway_below)
+	if (self.origin_z < noway_below) return;
+	if (noway_above)
+	if (self.origin_z > noway_above) return;
+
+#ifdef enhanced
+// none tossed in lava
+	if (pointcontents(self.origin) == CONTENT_LAVA) return;
+#endifdef
+
+	if (!self.flags & FL_MONSTER) // monsters always get to throw down
+	if (DEAD_XPACK == 3) return; // code for no packs at all
+
+	if (DEAD_THROW_PKI == 2) return;
+
+	if (!(self.pk_gravitywellammo + self.pk_turretammo + self.pk_canpabammo + self.pk_beartrapammo + self.pk_explode_ammo + self.pkplus_egoammo + self.pkplus_tombammo + self.pkplus_actorammo + self.pkplus_phoneammo))
+		return;
+
+	newmis = spawn();
+	newmis.origin = self.origin - '0 0 24';
+	newmis.classname = "backpack";
+	newmis.ltime = BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
+	newmis.netname = "Painkeep items";
+	newmis.items = IT_AXE;
+	newmis.pk_items = self.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
+
+	self.pk_gravitywellammo = fabs(self.pk_gravitywellammo); // knob of supers
+	newmis.pk_gravitywellammo = self.pk_gravitywellammo;
+	newmis.pk_turretammo = self.pk_turretammo;
+	newmis.pk_canpabammo = self.pk_canpabammo;
+	newmis.pk_beartrapammo = self.pk_beartrapammo;
+	newmis.pk_explode_ammo = self.pk_explode_ammo;
+
+	newmis.pkplus_egoammo = self.pkplus_egoammo;
+	newmis.pkplus_tombammo = self.pkplus_tombammo;
+	newmis.pkplus_actorammo = self.pkplus_actorammo;
+	newmis.pkplus_phoneammo = self.pkplus_phoneammo;
+
+	newmis.velocity_z = 300;
+	newmis.velocity_x = -100 + (random() * 200);
+	newmis.velocity_y = -100 + (random() * 200);
+
+	newmis.flags = FL_ITEM;
+	newmis.solid = SOLID_TRIGGER;
+	newmis.movetype = MOVETYPE_TOSS;
+	setmodel (newmis, "progs/pk_cube.bsp");
+	setsize (newmis, '-12 -12 0', '12 12 32');
+	newmis.scale = 0.55;
+	newmis.touch = BackpackTouch;
+
+	newmis.nextthink = time + newmis.ltime;
+	newmis.think = SUB_Remove; // poss. chaos vector
+	AddToSplash(newmis); // *pk - splash tossed items
+
+	bot_BackpackSetup(newmis); // *bot
+	newmis.mask_x = MORPH_ALL;
+	newmis.noise = "misc/pickup/tone2.wav";
+};
 
 
 

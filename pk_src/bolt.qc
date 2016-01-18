@@ -3,6 +3,9 @@
  *
  */
 
+// 11.6.14 - different cells to use up when target is a monster
+
+
 void() bolt_findNextTarget;
 void(vector org, entity target, entity boltOwner, vector endPos, float first1, float dam) bolt_doDamage;
 float(entity check, entity checkFor) bolt_checkForLoops;
@@ -325,7 +328,7 @@ void() bolt_findNextTarget =
 	  if (head != self)  // not the shotter
 	  if (head != boltorg) // and not the origin
 	  //if (head.classname != "beartrap")  // JON Don't target beartraps
-	  if (head.classname == "player" || head.classname == "turret" || head.classname == "turret_base")
+	  if (head.classname == "player" || head.classname == "turret" || head.class_select == "class_monster")
 	  if (bolt_checkForLoops(head,  boltorg)) // not already in a this fire chain...
 	  {
 	    tempDist = vlen(head.origin - self.origin);
@@ -381,13 +384,17 @@ float(entity check, entity checkFor) bolt_checkForLoops =
 	return TRUE;
 };
 
-
+// how many cells to use when target is a monster
+var float autocvar_sv_pk_chainlt_ptspermonster = 0.5;
 
 void(vector org, entity boltTarget, entity boltOwner, vector endPos, float first1, float dam) bolt_doDamage =
 {
 	local entity lightEntity;
 	local vector vangle;
 
+	if (boltTarget.class_select == "class_monster")
+		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(autocvar_sv_pk_chainlt_ptspermonster, self, null_string);
+	else
 	// use uyp ammo - note - ammo_con is being given loop blow cell cnts
 	self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(dam, self, null_string);
 

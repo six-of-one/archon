@@ -8,7 +8,7 @@
 // 10.23.14 - added: sphere go wild, random entity suck in, teleport wild sphere to new location
 // 10.22.14 - added: occasionally teleport instead of destroy, try to use ai_walk to move a wild sphere - does not seem to work in game
 // 10.29.14 - reality bomb expands as it runs
-
+// 11.5.14 - hack fix for improperly lit item models after annihilation
 
 // sphere special flags
 float FL_ANNIHILATED			= 8192; // something has already been annihilated once - like monsters
@@ -96,13 +96,13 @@ void() sphere_gravity_pulse20 = [ $grvbomb9, sphere_gravity_pulse1 ]
 void() sphere_become_gravbomb =
 {
 	sphere_a = world;
-	self.owner = world; // kill owner now
+	self.owner = world;
 	if (self.count)
 		self.attack_finished = self.count;
 	else
 		self.attack_finished = time + 4.0 + random() * 4;
 	self.aflag = 0.2;
-	self.touch = gravity_touch;
+//	self.touch = gravity_touch;
 	self.effects = self.effects | EF_BRIGHTLIGHT;
 	self.think = sphere_gravity_pulse1;
 	self.nextthink = time + 0.1;
@@ -322,6 +322,7 @@ void() annihilate =
 		self.solid = SOLID_NOT;
 		if (deathmatch == 1)
 		{
+			self.effects = self.effects | EF_FULLBRIGHT; // hack fix for improperly lit item models after annihilation
 			self.nextthink = time + RSP_TIME;
 			self.think = SUB_regen;
 		}
@@ -335,6 +336,7 @@ void() annihilate =
 
 #ifdef warning
 if (WARNING & 32)
+if (self.classname != "whirl")	
 {
 		bprint("		----> Destroying ");
 		bprint(self.classname);
@@ -351,6 +353,10 @@ if (WARNING & 32)
 		{
 			T_Damage (self, world, world, self.health * 3);
 			self.flags = self.flags | FL_ANNIHILATED; // allow head to be sucked
+
+// TEMP
+//			if (self. classname == "monster_silhouette") remove(self);
+
 			return;
 		}
 		else if (self.flags & FL_CLIENT) // gib players - gibs should be sucked
@@ -417,8 +423,8 @@ float(entity g) annihilation_check =
 	else if (g.flags & FL_CLIENT && g.health <= 0) t = FALSE;
 	else if (g.flags & FL_CLIENT && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_CLI) t = FALSE;
 	else if (g.classname == "viswep" && g.owner != world) t = FALSE; // viswep held by player
-	else if (! f && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
-	else if (vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON) t = FALSE;
+	else if ((sphere_a.scale == 1) && ! f && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
+	else if ((sphere_a.scale == 1) && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON) t = FALSE;
 	else if (g.model == null_model) t = FALSE; // note - not the same as null_string
 	else if (g.solid == SOLID_TRIGGER && g.movetype == MOVETYPE_NONE) t = FALSE;
 	else if (g.solid == SOLID_BSP) t = FALSE;
@@ -443,6 +449,7 @@ void(entity g) set_annihilate =
 		if (t < 0) t = 2 + random() * 4;
 		remove(g);
 		sphere_a.think = sphere_become_gravbomb; // self might not be sphere
+		sphere_a.nextthink = time + 0.1; // this was clobbered at one point testing on  11.3.14 - ?
 		sphere_a.count = time + (t * 48) + random() * 100;
 		bprint("\nSome idiots just put a sphere of annihilation and a gravity well together!\nSmooth move on making a \bReality Bomb\b genius!\n");
 		return;
@@ -458,6 +465,7 @@ void(entity g) set_annihilate =
 
 #ifdef warning
 if (WARNING & 32)
+if (g.classname != "whirl")	
 {
 		bprint("*** dev: set_annihilate on - ");
 		bprint(item_ident(g));
@@ -486,6 +494,7 @@ void() sphere_annihilation_touch =
 #ifdef warning
 if (WARNING & 32)
 if (other)
+if (other.classname != "whirl")	
 if (other.think != annihilate)
 if (other.deathtype != "SOA")
 {
@@ -503,9 +512,8 @@ if (other.deathtype != "SOA")
 }
 #endifdef
 
-
-
-	if (random() < 0.02) // its other's lucky rel - teleport this one thing
+	if (annihilation_check(other))
+	if ((other.button11 < time) && random() < 0.02) // its other's lucky rel - teleport this one thing
 	{
 
 
@@ -524,11 +532,10 @@ if (WARNING & 32)
 		archon_bouncer(other);
 	}
 	else
-
-	if (annihilation_check(other))
 	{
 		self.dmg = self.dmg + 1;
 		set_annihilate(other);
+		other.button11 = time + 20; // annihilation testing indicator for bouncer
 	}
 };
 
@@ -542,6 +549,7 @@ void() sphere_annihilation_reverse_touch =
 
 #ifdef warning
 if (WARNING & 32)
+if (self.classname != "whirl")	
 if (self.think != annihilate)
 if (self.deathtype != "SOA")
 {
@@ -561,7 +569,8 @@ if (self.deathtype != "SOA")
 
 
 
-	if (random() < 0.02) // its other's lucky rel - teleport this one thing
+	if (annihilation_check(self))
+	if ((self.button11 < time) && random() < 0.04) // its other's lucky rel - teleport this one thing
 	{
 		archon_bouncer(self);
 
@@ -580,11 +589,10 @@ if (WARNING & 32)
 
 	}
 	else
-
-	if (annihilation_check(self))
 	{
 		other.dmg = other.dmg + 1;
 		set_annihilate(self);
+		self.button11 = time + 20; // annihilation testing indicator for bouncer
 	}
 };
 
@@ -729,32 +737,35 @@ void() sphere_annihilation_phys_move =
 // IMP: sound effect (maybe from black hole 06 ?)
 		if (random() < 0.06) // sphere pulls particles out of air - IDEA: something else in water - whirl around sphere of water tex
 		{
-			f = FALSE;
+			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_BBOX, 0, RM_SKY,  sphere_a.origin , v0, v0, v0, v0, "whirl", "progs/steam.mdl", SUB_Null, 5 + random() * 4, SUB_Remove, SUB_Null, sphere_a, world);
+			newmis.cnt = FALSE;
 			v1 = v0;
 			if (random() < 0.75)
-			while ( (v1_z > -48) && (!f) )
+			while ( (v1_z > -100) && (!newmis.cnt) )
 			{
-				if (pointcontents(sphere_a.origin + v1) == CONTENT_LAVA) f = TRUE;
+				if (pointcontents(sphere_a.origin + v1) == CONTENT_LAVA) newmis.cnt = TRUE;
 				v1_z = v1_z - 1;
 			}
-			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_BBOX, 0, RM_SKY,  sphere_a.origin , v0, v0, v0, v0, "whirl", "progs/steam.mdl", SUB_Null, 5 + random() * 4, SUB_Remove, SUB_Null, sphere_a, world);
-			newmis.origin_x = newmis.origin_x + crandom() * 80;
-			newmis.origin_y = newmis.origin_y + crandom() * 80;
-			newmis.origin_z = newmis.origin_z + random() * 32;
+			newmis.origin_x = newmis.origin_x + crandom() * 80 * sphere_a.scale * sphere_a.scale;
+			newmis.origin_y = newmis.origin_y + crandom() * 80 * sphere_a.scale * sphere_a.scale;
+			newmis.origin_z = newmis.origin_z + random() * 32 * sphere_a.scale * sphere_a.scale;
 			newmis.think = sphere_whirl;
 			newmis.nextthink = time + 0.1;
 			newmis.attack_finished = time + 3 + random() * 4;
-			if (random() < 0.1 || f)
+			if (random() < 0.1 || newmis.cnt)
 			{
 				setmodel(newmis, "progs/lavaball.mdl");
-				if (!f)
+				if (!newmis.cnt)
 				if (random() < 0.5)
 					newmis.effects = EF_NOMODELFLAGS;
 				setsize(newmis, v0, v0);
 				newmis.skin = 8 + rint(random() * 4);
 				newmis.frame = 18 + rint(random());
 			}
-			if (f) // suck lava
+			else
+				if (random() < 0.5)													// this would be more impressive under the HD pack
+					newmis.modelflags = rnd_bit_mask(208); // random trail of		MF_TRACER |	MF_TRACER2 | MF_TRACER3
+			if (newmis.cnt) // suck lava
 			{
 				newmis.skin = 0;
 				newmis.frame = 2 + rint(random() * 2);

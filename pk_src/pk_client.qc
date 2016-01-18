@@ -191,7 +191,7 @@ void() DecodeLevelParms =
 	if (parm3) set_xweap(self, parm3); // .items must be set after this - gets checked to see if we have one already
 	self.mcode = parm3;
 
-	self.items = self.items | parm1; // set_xweap if called set items bits
+	self.items = self.items | parm1; // set_xweap if called can set items bits
 	self.health = parm2 & 255;
 	if (!self.archon) self.archon = ceil((parm2 &  16776960 ) / 256);
 	self.ammo_shells = parm4;

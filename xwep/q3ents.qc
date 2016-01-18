@@ -10,6 +10,8 @@
  *
  */
 
+// 11.4.14 - added x_items flags to q3 holdables for HUD detect
+
 // q3 values
 
 float Q3_DEFW					= 123;
@@ -2089,6 +2091,7 @@ void() player_q3held =
 		if (self.eweapon.noise3)
 			sound (self, CHAN_AUTO, self.eweapon.noise3, 1, ATTN_NORM);
 		f = TRUE;
+		self.x_items = self.x_items - (self.x_items & 262144);
 	}
 
 	if (self.eweapon.pk_currentitem == PKPLUS_IT_PHONE)
@@ -2102,6 +2105,7 @@ void() player_q3held =
 		e.pk_currentitem = -1;
 
 		f = TRUE;
+		self.x_items = self.x_items - (self.x_items & 131072);
 	}
 
 	if (f) // fired this weap
@@ -2138,6 +2142,7 @@ void() holdable_medkit =
 	self.touch = x_pwr_touch;
 	self.pk_currentitem = PK_IT_CANPAB;
 	self.items = IT_AXE;
+	self.x_items = 262144; // X_Q3_HMED
 	self.stack1 = "q3_hold";
 
 	self._attack = player_q3held;
@@ -2187,6 +2192,7 @@ void() holdable_teleporter =
 	self.touch = x_pwr_touch;
 	self.pk_currentitem = PKPLUS_IT_PHONE;
 	self.items = IT_AXE;
+	self.x_items = 131072; // X_Q3_HTEL
 	self.stack1 = "q3_hold";
 	
 	self._attack = player_q3held;

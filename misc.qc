@@ -10,6 +10,8 @@
  *
  */
 
+// 11.7.14 - removed ambient sound ents and some lights via #ifdef enhanced
+
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for spotlights, etc.
 */
@@ -90,6 +92,10 @@ void () light_fluoro =
 
 	precache_sound ("ambience/fl_hum1.wav");
 	ambientsound (self.origin,"ambience/fl_hum1.wav",0.5,ATTN_STATIC);
+
+#ifdef enhanced
+	if (!self.targetname) remove(self); // not targeted, so dump it
+#endifdef
 };
 
 /*QUAKED light_fluorospark (0 1 0) (-8 -8 -8) (8 8 8)
@@ -106,6 +112,10 @@ void () light_fluorospark =
 
 	precache_sound ("ambience/buzz1.wav");
 	ambientsound (self.origin,"ambience/buzz1.wav",0.5,ATTN_STATIC);
+
+#ifdef enhanced
+	if (!self.targetname) remove(self); // not targeted, so dump it
+#endifdef
 };
 
 /*QUAKED light_globe (0 1 0) (-8 -8 -8) (8 8 8)
@@ -625,6 +635,11 @@ void () ambient_suck_wind =
 {
 	precache_sound ("ambience/suck1.wav");
 	ambientsound (self.origin, "ambience/suck1.wav", 1, ATTN_STATIC);
+
+#ifdef enhanced
+// 11.7.14 - these should be safely removed - once ambientsound is called the sound is a static ent looping the sound on the map
+	remove(self);
+#endifdef
 };
 
 /*QUAKED ambient_drone (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
@@ -633,6 +648,10 @@ void () ambient_drone =
 {
 	precache_sound ("ambience/drone6.wav");
 	ambientsound (self.origin,"ambience/drone6.wav",0.5,ATTN_STATIC);
+
+#ifdef enhanced
+	remove(self);
+#endifdef
 };
 
 /*QUAKED ambient_flouro_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
@@ -641,6 +660,10 @@ void () ambient_flouro_buzz =
 {
 	precache_sound ("ambience/buzz1.wav");
 	ambientsound (self.origin, "ambience/buzz1.wav", 1, ATTN_STATIC);
+
+#ifdef enhanced
+	remove(self);
+#endifdef
 };
 /*QUAKED ambient_drip (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
@@ -648,6 +671,10 @@ void () ambient_drip =
 {
 	precache_sound ("ambience/drip1.wav");
 	ambientsound (self.origin,"ambience/drip1.wav",0.5,ATTN_STATIC);
+
+#ifdef enhanced
+	remove(self);
+#endifdef
 };
 /*QUAKED ambient_comp_hum (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
@@ -655,6 +682,10 @@ void () ambient_comp_hum =
 {
 	precache_sound ("ambience/comp1.wav");
 	ambientsound (self.origin, "ambience/comp1.wav", 1, ATTN_STATIC);
+
+#ifdef enhanced
+	remove(self);
+#endifdef
 };
 /*QUAKED ambient_thunder (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
@@ -662,6 +693,10 @@ void () ambient_thunder =
 {
 	precache_sound ("ambience/thunder1.wav");
 	ambientsound (self.origin,"ambience/thunder1.wav",0.5,ATTN_STATIC);
+
+#ifdef enhanced
+	remove(self);
+#endifdef
 };
 /*QUAKED ambient_light_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
@@ -669,6 +704,10 @@ void () ambient_light_buzz =
 {
 	precache_sound ("ambience/fl_hum1.wav");
 	ambientsound (self.origin,"ambience/fl_hum1.wav",0.5,ATTN_STATIC);
+
+#ifdef enhanced
+	remove(self);
+#endifdef
 };
 /*QUAKED ambient_swamp1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
@@ -676,6 +715,10 @@ void () ambient_swamp1 =
 {
 	precache_sound ("ambience/swamp1.wav");
 	ambientsound (self.origin,"ambience/swamp1.wav",0.5,ATTN_STATIC);
+
+#ifdef enhanced
+	remove(self);
+#endifdef
 };
 /*QUAKED ambient_swamp2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
@@ -683,6 +726,10 @@ void () ambient_swamp2 =
 {
 	precache_sound ("ambience/swamp2.wav");
 	ambientsound (self.origin,"ambience/swamp2.wav",0.5,ATTN_STATIC);
+
+#ifdef enhanced
+	remove(self);
+#endifdef
 };
 
 //============================================================================

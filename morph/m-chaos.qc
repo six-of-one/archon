@@ -284,16 +284,23 @@ void(entity e, string md) chaos_flycheck =
 	if (md == "progs/chaos_b3.3rsm.mdl") mt = MOVETYPE_FLY;
 
 // cheat a little bit - this should be down below
+
+// new mode of alt forms
+	setsize (e, '-16 -16 -24', '16 16 24'); // flying states
+	e.view_ofs = '0 0 4'; // here because its hard to place anywhere
+
+/*
 	if (mt == MOVETYPE_FLY)
 	{
-		setsize (e, '-16 -16 -24', '16 16 40'); // flying states
+		setsize (e, '-16 -16 -24', '16 16 24'); // flying states
 		e.view_ofs = '0 0 4'; // here because its hard to place anywhere
 	}
 	else
 	{
-		setsize (e, '-16 -16 0', '16 16 56'); // model poly
+		setsize (e, '-16 -16 0', '16 16 40'); // model poly - the ENTIRE reason for this is the transmogrify forms that are this way
 		e.view_ofs = '0 0 28';
 	}
+*/
 
 	flyer_check(e, (mt == MOVETYPE_FLY));
 };
@@ -322,6 +329,12 @@ void(entity e, string md) chaos_base_mdl =
 	}
 	e.modelindex_morph=e.modelindex;
 	chaos_flycheck(e, e.model);
+
+	if (e.goalentity.classname == "archon_morph")
+	{
+		remove(e.goalentity); // get rid of form changer
+		e.goalentity = world;
+	}
 };
 
 // fn(chaos_mdlsize) - set sizes for certain models
@@ -388,7 +401,8 @@ string(float mb) chaos_mdlsel =
 
 float(string md) chaos_mdlchk =
 {
-	if (md == null_model) return FALSE; // dead state
+// there is no dead state anymore - and new mode allows for null model string
+//	if (md == null_model) return FALSE; // dead state
 	if (md == "progs/chaos_b2.mdl") return FALSE;
 	if (md == "progs/chaos_b3.1col.mdl") return FALSE;
 	if (md == "progs/chaos_b3.2rot.mdl") return FALSE;
@@ -400,20 +414,35 @@ float(string md) chaos_mdlchk =
 
 void() chaos_mdlchg =
 {
+	if (self.owner.goalentity == self) self.owner.goalentity = world;
 	if (self.owner.morphy == IMP_MCHAOS)
 	if (chaos_mdlchk(self.owner.model))
 	{
 		if (random() < 0.2) 	chaos_base_mdl(self.owner, null_string);
 		else
 			{
-				self.alpha = 1;
-				self.skin = 0;
+				self.owner.alpha = 1;
+				self.owner.skin = 0;
 				chaos_mdlsel(rnd_bit_mask(1023));
-				setmodel(self.owner,ci_md);
-				chaos_flycheck(self.owner, self.owner.model);
-				self.owner.modelindex_morph=self.owner.modelindex;
+//				if (ci_md != "progs/chaos_b2.mdl")
+//					chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
 				if (ci_md != "progs/chaos_b2.mdl")
-					chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
+				{
+					setmodel(self.owner,null_string);
+					self.owner.goalentity = 
+						chaos_spawn(12, 0, 0, 0, self.owner.origin, v0, v0, self.owner.angles, v0, "archon_morph", ci_md, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
+						
+						self.owner.goalentity.aiment = self.owner;
+						self.owner.goalentity.movedir = '0 0 24';
+						if (ci_md == "progs/teleport.mdl") self.owner.goalentity.movedir = v0;
+						self.owner.goalentity.punchangle = self.owner.angles; // the original angles of bmodel
+						self.owner.goalentity.view_ofs = self.owner.goalentity.origin - self.owner.origin - self.owner.goalentity.movedir; // relative origin
+						self.owner.goalentity.v_angle = self.owner.goalentity.angles - self.owner.angles; // relative angles
+				}
+				else
+				setmodel(self.owner,ci_md);
+				self.owner.modelindex_morph=self.owner.modelindex;
+				chaos_flycheck(self.owner, ci_md);
 			}
 	}
 	remove(self);
@@ -660,7 +689,7 @@ float() chaos_move_effect =
 	}
 
 	if (self.walkframe & 2) self.alpha = random() + 0.4; // FIX gradual delta
-	if (self.walkframe == 2) morph_sound (0.1, rnd_string(' 80.0 60.0 40.0',"enforcer/enfstop.wav","misc/power.wav","ambience/comp1.wav","ambience/buzz1.wav","ambience/thunder1.wav"), 2);
+	if (self.walkframe == 2) morph_sound (0.1, rnd_string(' 80.0 60.0 40.0',"enforcer/enfstop.wav","misc/power.wav","alt_ambience/comp1.wav","alt_ambience/buzz1.wav","ambience/thunder1.wav"), 2);
 	else if (self.walkframe == 3) player_chaos_sight();
 	else if (self.walkframe == 6 && self.wait < time) // if move_effect ever called from frameset with frame 6 these need to be valid!
 		{
@@ -865,9 +894,7 @@ void(float flg) chaos_form =
 
 	if (flg & FL_CBALL)
 		{
-		setmodel(self,"progs/chaos_b3.1col.mdl");
-		self.modelindex_morph=self.modelindex;
-		setsize (self, '-16 -16 -24', '16 16 40');
+		chaos_base_mdl(self,"progs/chaos_b3.1col.mdl");
 		self._stand=player_chaos_ball;
 		self._run=player_chaos_ballr;
 		self.wait = time + 5;
@@ -1884,7 +1911,7 @@ void() uni_teleport =
 		if (self.bolt_targetNext.angles_x == 90)
 		{
 			v1_z = v1_z - gsf - self.bolt_target.mins_z;
-			if (self.bolt_target.class_select == "class_monster") v1_z = v1_z + 16; // because they are chronic floor slippers
+			if (self.bolt_target.class_select == "class_monster") self.bolt_target.velocity_z = 50; //v1_z = v1_z + 16; // because they are chronic floor slippers
 		}
 	}
 	else
@@ -2103,11 +2130,29 @@ void() transmogrify =
 	{
 		self.alpha = 1;
 		self.skin = 0;
-		setmodel(self,ci_md);
-		chaos_flycheck(self, self.model);
-		self.modelindex_morph = self.modelindex;
+		if (self.goalentity.classname == "archon_morph")
+		{
+			remove(self.goalentity); // get rid of old form changer
+			self.goalentity = world;
+		}
 		if (ci_md != "progs/chaos_b2.mdl")
-			chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self, world);
+		{
+			setmodel(self,null_string);
+// could actually code a pre-think to nullify angles, pitch, yaw for this
+// do NOT want to use setattach - that needs more care in tracking this
+			self.goalentity = 
+				chaos_spawn(12, 0, 0, 0, self.origin, v0, v0, self.angles, v0, "archon_morph", ci_md, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self, world);
+				self.goalentity.aiment = self;
+				self.goalentity.movedir = '0 0 24'; // offset for mins_z = 0 items (all but the spike ball)
+				if (ci_md == "progs/teleport.mdl") self.goalentity.movedir = v0;
+				self.goalentity.punchangle = self.angles; // the original angles of bmodel
+				self.goalentity.view_ofs = self.goalentity.origin - self.origin - self.goalentity.movedir; // relative origin
+				self.goalentity.v_angle = self.goalentity.angles - self.angles; // relative angles
+		}
+		else
+		setmodel(self,ci_md);
+		self.modelindex_morph=self.modelindex;
+		chaos_flycheck(self, ci_md);
 		self.archon = self.archon - self.pk_explode_ammo;
 	}
 };

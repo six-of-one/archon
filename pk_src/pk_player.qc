@@ -660,7 +660,7 @@ void() PK_GibPlayer =
 };
 
 // clear up a bug where deadflag is not upgraded
-// ugh - hack
+// hackity hack hack...hacking as we go
 
 void() d_flag =
 {

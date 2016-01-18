@@ -10,6 +10,9 @@
  *
  */
 
+// 11.6.14 - removed random monster wakey remove code for instantly dead monsters
+//					 - note: generators will need that random monster remove code now, always
+
 // flag masks - how cube knows what to offer
 
 float MORPH_MARINE;
@@ -1581,6 +1584,11 @@ void(float cmd, float pls) polymorph_check =
 // note: first 3 morphs counted must be from human form - makes it hard for 1 or 2 players to become an archon without disconnect
 		if (self.cnt != self.morphy)
 		{
+			if (self.goalentity.classname == "archon_morph") // chaos only really
+			{
+				remove(self.goalentity); // get rid of form changer
+				self.goalentity = world;
+			}
 // this counts forced polymorphs - but those cant happen until there is an archon
 // code to detect a forced poly spell
 //			if (trace_ent.eweapon.mcode == -666)
@@ -1703,6 +1711,10 @@ void() morph_die =
 	self.solid = SOLID_NOT;
 	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.view_ofs = '0 0 -8';
+
+// throw pki
+// & (CB_DEMON + CB_HKNIGHT + CB_SHALR + CB_SHAMBL + CB_SCRAG + CB_ZOMBY + CB_CTHON + CB_SCOURGE)
+	if (self.mask_x & 781304) DropPKI();
 };
 
 
@@ -1763,7 +1775,15 @@ void() random_monster_wakey =
 	self.think = SUB_Remove;
 	self.nextthink = time + 2;
 
-	if (!self.owner ||
+	if (!self.owner) return;
+
+// already killed - hope th_die got called, or he will be framestuck till random removes him
+	if (self.owner.health < 1) return;
+
+/*
+	- deprecating, caused problems with spawn / tarbaby
+	- random code below will remove them anyway
+		||
 		(self.owner.health < 1) || // got killed - likely a monsta_frag --- note: chaos vector
 //		(self.owner.think == (void ()) 0))
 		(!self.owner.think))
@@ -1772,7 +1792,9 @@ void() random_monster_wakey =
 		self.owner.nextthink = time + 15 + random() * 2;
 		return;
 	}
+*/
 
+// note: the lead in code that sets this condition now does not happen...
 	if (self.owner.think == SUB_Remove) return; // some failure is removing the monster
 
 // could be a biome monster - try a drop
@@ -1872,7 +1894,7 @@ void() random_monster =
 	if (self.classname != "random_mspawn")
 	{
 // turned off
-		if ((!C_MONSTER)  && (!C_MONSTER_II))
+		if ((!C_MONSTER)  && (!C_MONSTER_II)) // note: generators could have override flag here-ish
 		{
 // IDEA: get rid of all random monsters here?
 			if (random_monster_spawn)
@@ -2126,12 +2148,15 @@ void() monster_respawn_fire =
 {
 	local float t;
 	t = total_monsters; // preserve count - not adding a monster here
-	if (self.oldorigin) setorigin(self, self.oldorigin);
-	else setorigin(self, self.origin + '0 0 8');
-	self.oldorigin = v0;
+
+// trying velocity
+//	if (self.oldorigin) setorigin(self, self.oldorigin);
+//	else setorigin(self, self.origin + '0 0 8');
+//	self.oldorigin = v0;
 	item_call(self.classname); // back to life
 	spawn_tfog (self.origin);
 	spawn_tdeath(self.origin, self);
+	self.velocity_z = 50;
 	total_monsters = t;
 };
 

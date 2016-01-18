@@ -670,6 +670,7 @@ void() x_pwr_touch =
 		if (other.pk_canpabammo && self.pk_currentitem == PK_IT_CANPAB) return;
 		if (other.pkplus_phoneammo && self.pk_currentitem == PKPLUS_IT_PHONE) return;
 		e2 = vchk(self.items, self.pk_currentitem, other.vwepent);
+		other.x_items = other.x_items | self.x_items;
 
 		if (!e2)
 			e2 = x_wep_store(world, self.items, 1);
@@ -1023,9 +1024,16 @@ float(float am) bound_ammo_pack =
 // target practice dummy
 
 // ideas - think fn to always face player, model &| skin with appr. appearance
+// REMOVE from gold / beta
+var float autocvar_sv_c_silnores = 0; // turn off respawn
 
 void() silhouette_respawn =
 {
+	if (autocvar_sv_c_silnores)
+	{
+		remove(self);
+		return;
+	}
 	setmodel(self, self.mdl);
 	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
 	self.health = self.max_health;
@@ -1057,6 +1065,7 @@ Takes damage, gets killed - default model is monster_army
 
 // note - on making monsters - engine takes one of .th_* and assigns it to think when things (like damage) happen to monster
 
+// REMOVE from gold / beta
 // block these for testing
 //var float autocvar_sv_c_nosil = 0;
 

@@ -228,6 +228,10 @@ float X_PP							= 65536; // portable power point
 
 float X_INV							= 122867; ///  11101111111110011
 
+// holdable - indicate only
+float X_Q3_HTEL				= 131072;
+float X_Q3_HMED				= 262144;
+
 // player flags, calculated in 
 float PFL_DEAD     				= 4;
 float PFL_GIBBED   				= 8;

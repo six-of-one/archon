@@ -154,6 +154,8 @@ void() gravity_pull =
 // idea: sgw -  phantom zone effect with 6 sides flying off, catching vars ents, & sweeping from level - players watch this - time out & allow respawn / return
 	if (time > self.attack_finished)
 	{
+		// turn of rb sound
+		sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);
 		// turn off bright light
 		if (self.effects & EF_BRIGHTLIGHT)
 			self.effects = self.effects - EF_BRIGHTLIGHT;
