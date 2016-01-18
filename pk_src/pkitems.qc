@@ -161,7 +161,19 @@ bprint("placeitem barrel return\n");
 
 	if (!self.archon)
 	{
-		self.alpha = 0.25; // TEST
+//		self.alpha = 0.25; // TEST - was test for items with no archon pts
+
+
+
+if (WARNING)
+{
+	bprint(" *** WARNING: item with no archon pts: ");
+	bprint(item_ident(self));
+	bprint("\n");	
+}
+
+
+//
 		self.archon = ARCHON_GEN + (random() * 0.1);
 	}
 };
@@ -1772,7 +1784,7 @@ void() DropBackpack =
 	AddToSplash(newmis); // *pk - splash tossed items
 
 	bot_BackpackSetup(newmis); // *bot
-	newmis.mask_x = CB_HUMAN + CB_GREMLIN; // IMP: rest of morph bp touch
+	newmis.mask_x = CB_HUMAN + CB_GREMLIN; // IMP: rest of morph bp touch -- NOTE: this is IGNORED!
 };
 
 

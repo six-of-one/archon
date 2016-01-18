@@ -1413,6 +1413,12 @@ void() q2_item_armor_shard =
 //	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
+		self.classname = "item_armor1";
+		self.wad = "armor_toss"; // for alt value
+		self.noise = "items/armor1.wav";
+		self.items = IT_ARMOR1;
+		self.volume = 200; // max add
+		self.currentammo = Q2_ARM_SHRD; // 2 units
 		return;
 	}
 

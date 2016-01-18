@@ -291,6 +291,58 @@ string(float mb, float mode) monster_id =
 
 // handle morph selection impulses
 
+/*
+basic morph cube values (after touch):
+pre point use code
+
+server EDICT 406:
+modelindex       464.0000
+absmin         '-1151.0000  -383.0000     7.0312'
+absmax         '-1089.0000  -321.0000    41.0312'
+movetype           6.0000
+solid              1.0000
+origin         '-1120.0000  -352.0000     8.0312'
+angles         '    0.0000    22.0000     0.0000'
+punchangle     '  210.0000   210.0000   240.0000'
+classname      morph_cube
+model          progs/morph_cube.bsp
+effects            8.0000
+mins           '  -16.0000   -16.0000     0.0000'
+maxs           '   16.0000    16.0000    32.0000'
+size           '   32.0000    32.0000    32.0000'
+touch          SUB_Null()
+think          abandoned_cube()
+nextthink         65.5324
+chain          entity 470
+netname        Morphic Cube
+flags            768.0000
+owner          entity 1
+noise          items/r_item2.wav
+wad            morph_cube
+map            pic_item
+style          66601.0000
+lefty           8192.0000
+attack_finished     3.0000
+mdl            progs/morph_cube.bsp
+aflag             92.0000
+count             86.6559
+archon             0.1775
+class_select   quake_item
+sscode         v_pk_art 1
+
+_alt_fire      morph_cube_use()
+eweapon        entity 406
+_attack        SUB_Null()
+_fr_attack     SUB_Null()
+ip_orgOrigin   '-1120.0000  -352.0000     8.0312'
+pk_touch       cube_touch()
+alpha              0.2500
+mask           '1048064.0000     0.0000     0.0000'
+water_notify   yes
+splash_func    do_large_splash1()
+
+*/
+
 // loop value at ends
 float(float v) morph_selinc =
 {
@@ -306,7 +358,7 @@ float(float v) morph_selinc =
 
 void() morphic_impulse =
 {
-	local float dx, done, f, sv;
+	local float dx, done, f, sv, k;
 	local entity c;
 
 	c = self.eweapon;
@@ -330,38 +382,73 @@ void() morphic_impulse =
 		return;
 	}
 
-	dx = 1; // incase by some weird chance we have no valid impulse
+	if (MORPH_FREE)
+	if (!self.archon) self.archon = 1; // 0 test case below
+
+	dx = 2; // incase by some weird chance we have no valid impulse
 	if (self.impulse == 10) dx = 2;
 	else if (self.impulse == 12) dx = 0.5;
 
 	c.lefty = c.lefty * dx;
 	c.lefty = morph_selinc(c.lefty);
 
-	sv = 30; // only 24 bits to test in one float
-	f = 0;
-	while (!f && sv > 0)
-	{
-		f = c.mask_x & c.lefty;
-		if (!f) c.lefty = c.lefty * dx;
-		c.lefty = morph_selinc(c.lefty);
-		sv = sv - 1;
-	}
+	sv = 64; // only 24 bits to test in one float, but he must complete 1 loop
 
-	if (!f)
+	while (sv > 0)
 	{
-		if (WARNING) bprint("*** Warning - morphic cube with no selection options! - removed\n");
-		done = TRUE;
-	}
-	else
-	{
-		dx = cb_morph(f);
-		if (dx)
+		f = 0;
+		while (!f && sv > 0)
 		{
-			self.state = dx;
-			c.aflag = dx; // save in case we have fail
+			f = c.mask_x & c.lefty;
+			if (!f) c.lefty = c.lefty * dx;
+			c.lefty = morph_selinc(c.lefty);
+			sv = sv - 1;
 		}
-		else self.state = c.aflag;
-		morph_print(self);
+
+		if (!f)
+		{
+			if (WARNING) bprint("*** Warning - morphic cube with no selection options! - removed\n");
+			done = TRUE;
+			sv = 0;
+		}
+		else
+		{
+			k = cb_morph(f);
+			if (k)
+			{
+				self.state = k;
+				c.aflag = k; // save in case we have fail
+			}
+			else self.state = c.aflag;
+			morph_print(self);
+			if (c.archon > 0)		// track this so we know player has options
+			{
+				if (!c.volume) c.volume = c.archon;
+				else
+				if (c.archon < c.volume) c.volume = c.archon;
+			}
+		}
+		if (MORPH_FREE) sv = 0;
+		else if (self.archon > c.archon) sv = 0;
+		else
+		{				// doesnt have power for this morph - try next
+			c.lefty = c.lefty * dx;
+			c.lefty = morph_selinc(c.lefty);
+			if (self.archon < c.volume)
+			if (sv < 1) // ran out
+			{
+				if (c.theowner != self) // debounce
+					sprint(self, "You need more power to use this Evolution Cube.\n");
+				c.theowner = self;
+				c.owner = world;
+				c.touch = painkeep_touch;
+				centerprint(self, "The cube is free...");
+				self.state = 
+				self.impulse = 0;
+				cube_rearm(); // re arm player
+				return;
+			}
+		}
 	}
 
 	if (done)
@@ -419,6 +506,10 @@ void() morph_cube_use =
 	if (random() < 0.65) self.state = IMP_MGREMLIN_L;
 
 	polymorph_check(self.state, 0);
+
+	if (!MORPH_FREE)
+	if (self.state == self.morphy) // morphed - take away points, does this ever need any verification?
+		self.archon = self.archon - c.archon;
 
 	self.impulse = 0;
 	remove(c);
@@ -490,7 +581,6 @@ void() morph_cube =
 // IDEA: if ULOK* true, use xnre on maps i.e. MORPH_HELLION on doom levels
 
 	self.mask_x = MORPH_MONSTER;
-
 
 	setmodel(self, "progs/morph_cube.bsp");
 	self.netname = "Morphic Cube";
@@ -1930,7 +2020,7 @@ void(entity e) chaos_mdlsize =
 	else if (e.model == "progs/proxbomb.mdl")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
 	else if (e.model == "progs/hook.mdl")			{ vmin = '-5 -5 -5'; vmax = ' 5 5 5'; }
 	else if (e.model == "progs/v_spike.mdl")		{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
-	else if (e.model == "progs/ejbatt.mdl")		{ vmin = '-2 -2 -6'; vmax = ' 2 2 4'; }
+//	else if (e.model == "progs/ejbatt.mdl")		{ vmin = '-2 -2 -6'; vmax = ' 2 2 4'; }
 	else if (e.model == "progs/s_bubble.spr")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
 	else if (e.model == "progs/chaos_b2.mdl")	{ vmin = '-16 -16 -24'; vmax = ' 16 16 40'; }
 	if (vmin != v0 && vmax != v0) setsize(e, vmin, vmax);
@@ -1950,7 +2040,7 @@ string(entity e) chaos_bomb_rndmdl =
 	else if (r1 > 13) s1 = "progs/grenade.mdl";
 	else if (r1 > 10) s1 = "maps/b_exbox2.bsp";
 	else if (r1 > 8) s1 = "maps/b_rock0.bsp";
-	else if (r1 > 7) s1 = "progs/ejbatt.mdl";
+//	else if (r1 > 7) s1 = "progs/ejbatt.mdl";
 	else if (r1 > 5) s1 = "progs/proxbomb.mdl";
 	else if (r1 > 3) s1 = "progs/hook.mdl";
 	else if (r1 > 2) s1 = "progs/v_spike.mdl";

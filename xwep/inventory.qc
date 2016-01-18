@@ -836,16 +836,11 @@ void() inventory =
 		}
 		if (self.rune_flag & RUNE_MASK_ALL) sprint(self, "-\nRunes of power\n");
 
-		if (self.archon)
-		{
-			sprint(self, "-\n\bArchon power\b: ");
-			sprint(self, ftos(self.archon));
-			sprint(self, "\n");
-		}
+		if (self.archon) archon_pprint(self);
 	}
 
 	am_type = 0;
-}
+};
 
 // for tossed items
 

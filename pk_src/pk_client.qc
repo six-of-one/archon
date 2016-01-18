@@ -100,6 +100,7 @@ void() SetChangeParms =
 		self.health = 50;
 
 	parm1 = self.items;
+	if (self.archon > 65535) self.archon = 65536; // cap - largest amount var will hold
 	parm2 = self.health + ceil(self.archon * 256);
 	armorsave_rev(self);
 //	parm3 = self.armorvalue; // put in parm9
@@ -262,6 +263,7 @@ void() DecodeLevelParms =
 	cam_parms(1);
 };
 
+string nextmap;
 void() PK_GotoNextMap =
 {
 	if (!Q_100 && !Q_99 && !PK_ADMINMAP)
@@ -280,6 +282,7 @@ void() PK_GotoNextMap =
 		if (check_custom_hub()) // *pk --- Cataboligne - 8.16.9 - do custom hub load from any exit here
 			return;
 	}
+	changelevel (nextmap); // 7.26.13 - moved here to fix archon server bug
 };
 
 /*
@@ -1420,6 +1423,8 @@ void () PlayerPreThink =
 	if ((framecount & 3) == 2)
 	if (self.classname == OBSERVER)
 		flyer_move(); // Cataboligne - 7.26.10 - flyer mouse-fly right code from chaos mod flight
+	else if (self.archon > 0) // 7.26.13 - experimental power bar
+		archon_power_bar(self);
 
 	if (self.deadflag >= DEAD_DEAD)
 	{
@@ -2877,8 +2882,12 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					bprint (" was exploded by a Vore\n");
 				else
 				if (attacker.classname == "monster_supervore")
-					bprint (" was eviscerated by a Hierophant Vaareziel\n");
-//					bprint (" was eviscerated by a Hierophant Vorerel\n");
+				{
+					if (random() < 0.2)
+						bprint (" was eviscerated by a Hierophant Vore\n");
+					else
+						bprint (" was eviscerated by a Vaareziel\n"); // from Rothrin
+				}
 				else
 				if (attacker.classname == "monster_shambler")
 					bprint (" was smashed by a Shambler\n");

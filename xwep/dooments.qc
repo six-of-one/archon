@@ -166,7 +166,7 @@ void() wolf_precache =
 	precache_model ("progs/vw_w_mgun.mdl");
 	precache_model ("progs/vw_w_mortar.mdl");
 	precache_model ("progs/vw_w_pistol.mdl");
-	precache_model ("progs/w_armor.mdl");
+//	precache_model ("progs/w_armor.mdl");
 	precache_model ("progs/w_chaing.mdl");
 	precache_model ("progs/w_clip.mdl");
 	precache_sound ("sound/wolf/w_mortars.wav");
@@ -306,9 +306,12 @@ void() d_item_spiritarmor =
 //	if (!XMOD)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
-		self.touch = painkeep_touch;
-		self.pk_touch = armor_touch;
-		self.armorvalue = ARM_SPIRIT;
+		self.classname = "item_armor1";
+		self.wad = "armor_toss"; // for alt value
+		self.noise = "items/armor1.wav";
+		self.items = IT_ARMOR1;
+		self.volume = 200; // max add
+		self.currentammo = ARM_SPIRIT; // 2 units
 		return;
 	}
 

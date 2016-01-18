@@ -2275,13 +2275,16 @@ void() painkeep_cube_use =
 			self.touch = painkeep_touch;
 			self.solid = SOLID_TRIGGER;	// allow it to be touched again - needed on x weaps
 		}
-		else if (damage_attacker)
+		else 				{if (damage_attacker)
 		if (random() < 0.92)
 		if (damage_attacker.flags & FL_CLIENT)
 		{
 			self.charmer = damage_attacker;
 			self.charmed = 1;
 		}
+									self.netname = "I came from a cube / crate"; // TEST - remove
+//
+									}
 	}
 	else
 	{
@@ -2360,6 +2363,10 @@ void() cube_touch =
 		return;
 	}
 
+// clear power required for morph - morph cubes do not give archon points
+
+	if (self.wad == "morph_cube") self.archon = 0;
+ 
 // initial control for bots using evolution cubes
 	if (self.wad == "morph_cube")
 	if (other.class_select == "class_bot")
@@ -2378,6 +2385,9 @@ void() cube_touch =
 			if (other.frags < (high_score * 0.11)) return;
 			if (other.frags < 0) return;
 		}
+		if (!MORPH_FREE)
+		if (other.archon < 500) // make bots wait till they can morph to any - need a separate test for bot archon case
+			return;
 	}
 
 	if (self.owner) // shouldnt happen
@@ -2413,6 +2423,16 @@ void() cube_touch =
 			sprint(other, "You already merged with an Evolution Cube - you must use it or change weapons.\n");
 			return;
 		}
+	}
+
+	if (self.wad == "morph_cube")
+	if (!MORPH_FREE)
+	if (other.archon < ARCHON_MORPH_MIN) //not enough power yet
+	{
+		if (self.theowner != other) // debounce
+			sprint(other, "You need more power to use an Evolution Cube.\n");
+		self.theowner = other;
+		return;
 	}
 
 	if (self.duration < time) // dont let bots hit cube too much
@@ -2488,10 +2508,12 @@ void() cube_touch =
 				sf = sf - 1;
 			}
 			polymorph_check(self.state, 0);
-//			remove(e); // no can - dyn_rem issue
-			e.model = "";
-			e.touch = SUB_Null;
 
+			if (!MORPH_FREE)
+			if (self.state == self.morphy)
+				self.archon = self.archon - e.archon;
+
+			remove(e);
 			cube_rearm();
 		}
 		self = e;

@@ -2,6 +2,7 @@
 
 adaptive painkeep code main file
 (i.e. - adaptive - its easy to add to other mods)
+	-- in theory anyway
 
 Cataboligne 
 
@@ -57,7 +58,7 @@ Painkeep 2.1 - 19 Apr 2011 - Cataboligne
 - gold version for 2.x, bug fixes - final release
 
 Painkeep 3.0 - 27 Oct 2012 - Cataboligne
-- bundled with Archon [!] Moddb.com - not a separate release (yet)
+- bundled with Archon [!] - not a separate release (yet)
 - painkeep item stat control, modified pk items, other improvements
 
 ==================================================
@@ -539,8 +540,22 @@ void() botmatch =
 
 	cvar_set("saved1", "0"); // clear possible impulse entry
 
-	if (bot_count > 0 || NUMBOTS > 0)
+	if (self.cnt < 0 || bot_count > 0 || NUMBOTS > 0)
 	{
+		if (self.cnt < 0)
+		{
+			b = bot_count + NUMBOTS + 1;
+			if (b > 1)
+			bprint("All Bots removed!\n");
+			while (b > 0)
+			{
+				removeBot(world); // pk
+				KickABot(); // frik
+				b = b - 1;
+				if ((bot_count + NUMBOTS) == 0) b = 0;
+			}
+			return;
+		}
 		bprint("Bots already running - botmatch exiting\n");
 		remove(self);
 		return;
@@ -607,7 +622,7 @@ void() botmatch =
 	remove(self);
 };
 
-// fn (b_launch) - launch botspawn call
+// fn (\ch) - launch botspawn call
 
 // b - true if done by impulse
 
@@ -624,6 +639,7 @@ void(float b) b_launch =
 
 	if (b) bcnt = b;
 
+	if (bcnt != -666)
 	if (bot_count > 0 || NUMBOTS > 0) return; // have bots, go back
 
 	e = spawn();
@@ -633,6 +649,7 @@ void(float b) b_launch =
 		e.nextthink = time + 3 + 4 * random(); // make em wait a few secs, build suspense
 		e.cnt = bcnt;
 		if (e.cnt == 1) e.cnt = 6; // default load = 6 bots
+		if (bcnt != -666)
 		if (e.cnt < 0) e.cnt = 0 - e.cnt; // -{number} runs {number} bots
 		if (coop && fabs(e.cnt) > 3) e.cnt = 3;
 	}
@@ -1016,6 +1033,7 @@ void() pk_liveupd =
 	MORPH_CUBE_TIME = cvar("sv_morph_time");
 	MORPH_CUBE_DV = cvar("sv_morph_dv");
 	MORPH_BOT = cvar("sv_morph_bot");
+	MORPH_FREE = cvar("sv_morph_free");
 	if (MORPHIC  != cvar("sv_morph")) 
 	{
 		cube_handle("sv_morph");
@@ -1541,6 +1559,8 @@ void() pk_srvcmd_set =
 	MORPH_CUBE_TIME = 120;
 	MORPH_CUBE_DV = 40;
 	MORPHIC = 0; // def: 2 ?
+	MORPH_BOT = 1; // frik bot only
+	MORPH_FREE = 0;
 	morph_setup();
 
 // monsters
@@ -1861,6 +1881,7 @@ current max is 312, move lines out of comment as needed
 		registercvar("sv_morph_time", "60");
 		registercvar("sv_morph_dv", "10");
 		registercvar("sv_morph_bot", "1"); // if false bots will not morph
+		registercvar("sv_morph_free", "0"); // if true,  no archon points to morph
 //		registercvar("cl_morph", "12"); // client ident
 
 // dm monsters

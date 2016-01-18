@@ -2112,8 +2112,8 @@ void() PK_ImpulseCommands =
 //		PK_CheatCommand ();
 	else if (self.impulse == 10)
 		CycleWeaponCommand ();
-	else if (self.impulse == 11)
-		ServerflagsCommand ();
+//	else if (self.impulse == 11)
+//		ServerflagsCommand ();
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
 

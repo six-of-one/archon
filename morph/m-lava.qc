@@ -609,17 +609,19 @@ void(float silent) player_lavablob_become =
 	setsize (self, '-16 -16 -24', '16 16 20');
 	self.health = self.health * MLAVAB_HEALMOD / self.health_modifier;
 	self.health_modifier = MLAVAB_HEALMOD;
-	if (silent != NO_TFOG) // coming from cthon form
-		{
+	if (silent != NO_TFOG) // not coming from cthon form
+	{
 		makevectors(self.v_angle);
 		spawn_tfog(self.origin + 20 * v_forward);
-		}
+	}
+	else
+		player_run(); // fix the back in blob, but firing cthon issue
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
 		bprint(" has become an Lava Bomb.\n"); // owwieee! it burnsies...
-		}
+	}
 //		player_stand1(); // in case we came from cthon fire frames
 };
 

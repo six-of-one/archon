@@ -288,7 +288,7 @@ void(vector p) lavacthon_fire =
 	org = self.origin + ' 0 0 80'; // + v_forward * 10;
 	traceline( org,  org + v_forward * 2048, FALSE, self);
 	org = self.origin + p_x*v_forward + p_y*v_right + p_z*'0 0 1';
-// FIX - targeting sometimes wrong
+// FIX - targeting sometimes wrong - has to do with cam on
 	fire_missile(FIREBALL_WEP_VEL, MOVETYPE_FLYMISSILE, FL_CTHONF, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA, org, trace_endpos - org, "fireballmissle", "progs/lavaball.mdl", "boss1/throw.wav", T_MissileTouch, 5 + (random() * 4), meltthink, fire_fly_adj);
 
 	newmis.avelocity = ' 200 100 300';
@@ -394,6 +394,16 @@ void() player_lavacthon_become =
 
 	self.builtin = self.items = self.items | IT_SHOTGUN;
 	self.weapon = IT_SHOTGUN;
+
+// remove all
+	if (self.dropent)
+	{
+		remove(self.dropent);
+		self.dropent = world;
+	}
+
+	dead_artifact(self);
+	if (self.rune_flag) dead_runes(self);
 
 	lavacthon_rise1();
 };

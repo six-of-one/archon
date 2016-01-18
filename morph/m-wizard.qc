@@ -320,8 +320,11 @@ void() player_wizard_painleech3 = [ $pain2,   player_wizard_painleech4 ]
 		if (head != self)
 		if (head.solid == SOLID_SLIDEBOX)  // BLOODCHECK - this is one for sure that we might want FL_CLIENT, FL_MONSTER so its more inclusive
 		{
+			// doh - no life here
 			ext = !IS_ZOMBIE(head); // exclusion test
-			if (ext) // doh - no life here
+			if (ext) ext = !IS_SPAWN(head); // spawns too - includes player morph
+
+			if (ext) // we found a live one
 			if (head.takedamage)
 			{
 				dist = vlen(head.origin - self.origin);

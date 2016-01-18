@@ -22,6 +22,7 @@ float MORPH_HOOK; // morphs that have built in hook - mostly for jump & get stuc
 float MORPH_CHAIN_LEN			= 320; // built in hook is for escape - shorter length
 float MORPH_SARMOR; // morphs with healable (scourge) armor built in
 float MORPH_BOT; // allow bots to morph -- 0 = no bots, 1 = frik bots, 2 = pk bots, 3 = all bots
+float MORPH_FREE; // if true, no points to morph - all morph cube allows can be taken at will
 
 .float morphy; // morphic code number from list below
 .vector mask; // inventory a player can pickup by class - mask for item, class for player
@@ -307,6 +308,9 @@ float CHAR_Q3						= 15;
 float IMP_MDEMO					= 61;	// string STI_MDEMO			= "impulse 61";
 float IMP_MSPECIAL				= 62;	// string STI_MSPECIAL		= "impulse 62";
 float IMP_MTECH					= 63;	// string STI_MTECH			= "impulse 63";
+
+// NOTE: 64 can NOT be used here - it matches the bit value 64
+
 float IMP_MENG						= 65;	// string STI_MENG			= "impulse 65";
 //Medieval:
 float IMP_MWRAITH					= 70;	// string STI_MWRAITH		= "impulse 70";

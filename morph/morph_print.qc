@@ -49,7 +49,7 @@ float(entity ck, float cl) morph_classpr =
 						 "\bShubbers. Now that she is gone, you are\n"
 						 "\brestless and bored.  Whats an ogre to  \n"
 						 "\bdo?, Grrr.                             \n\n"
-						 "\bSubclasses:                            \n"
+						 "\bSelections:                            \n"
 						 "\bFiend:  snarl                          \n"
 						 "\bEnforcer:  you there, halt!            \n"
 						 "\bHell Knight:  Shubs elite commanders   \n"
@@ -72,7 +72,7 @@ float(entity ck, float cl) morph_classpr =
 						 "\byour training grounds, but they sure as\n"
 						 "\bhell better not expect you to take it  \n"
 						 "\bsitting down.                          \n\n"
-						 "\bSubclasses:                            \n"
+						 "\bSelections:                            \n"
 						 "\bMarine:  basic grunt                   \n"
 						 "\bDemolitions:  your stuff goes BOOM!    \n"
 //						 "\bSpecialist:  focus is being better with\n"
@@ -136,17 +136,18 @@ void() morph_print_notify =
 	if (self.enemy.solid)
 	if (self.enemy.classname == "player")
 	{
-		centerprint(self.enemy, "\b           Welcome to Archon.           \n"
-						 "\b----------------------------------------\n"
+		centerprint3(self.enemy, "\b           Welcome to Archon.           \n"
+						 "----------------------------------------\n"
 						 "\bYou can now evolve - please select an   \n"
 						 "\bevolution with these controls:          \n"
-						 "\b----------------------------------------\n"
+						 "----------------------------------------\n"
 						 "\bUse cycle weapon+ to go forward -       \n"
 						 "\bUse cycle weapon- to go backward.       \n"
-						 "\bPress fire to finish your selection     \n"
+						 "\bPress alt-fire to finish your selection \n"
 						 "\band Evolve!                             \n"
 						 "\bselect any weapon with 1 - 9 to exit.   \n"
-						 "\b----------------------------------------\n");
+						 "\b----------------------------------------\n"
+						 "you have: ", ftos(self.enemy.archon), " points.");
 	}
 	remove(self);
 };
@@ -158,11 +159,13 @@ void(entity p1) morph_print =
 {
 stuffcmd(p1,"scr_centertime 240\n"); // incase admin_centertime is not
 stuffcmd(self, "\ncon_notify 4\n"); // for this output
+p1.eweapon.archon = 0;
 if (p1.cnt < 0)
 	{
 	//						 1234567890123456789012345678901234567890
 /*
-	centerprint(p1, "\b           Welcome to Archon.           \n"
+	centerprint3(p1,
+						 "\b           Welcome to Archon.           \n"
 						 "\b----------------------------------------\n"
 						 "\bYou can now evolve - please select an   \n"
 						 "\bevolution with these controls:          \n"
@@ -183,7 +186,13 @@ if (p1.cnt < 0)
 		return;
 	}
 else if (p1.state == IMP_MCHAOS)
-	centerprint(p1, "\bA sentient formless mass of energy and \n"
+	{
+	if (!MORPH_FREE) p1.eweapon.archon = 5000;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Archon of Chaos:\n"
+						 "----------------------------------------\n"
+						 "\bA sentient formless mass of energy and \n"
 						 "\bplasma floating in a dark void with    \n"
 						 "\bother energy and plasma.  You came to  \n"
 						 "\bthese worlds on a whim.  You are chaos \n"
@@ -192,20 +201,36 @@ else if (p1.state == IMP_MCHAOS)
 						 "\bYou can use any weapons or spells that \n"
 						 "\bform can.  Sounds great right?  Just   \n"
 						 "\bdont count on any \"consistency\" when   \n"
-						 "\byou take on this class...              \n");
+						 "\byou take on this class...              \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
+	}
 else if (p1.state == IMP_MORDER)
-	centerprint(p1, "\bOrder incarnate - you are the reason   \n"
+	{
+	if (!MORPH_FREE) p1.eweapon.archon = 5000;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Archon of Order:\n"
+						 "----------------------------------------\n"
+						 "\bOrder incarnate - you are the reason   \n"
 						 "\bfor the seaons, why things fall down   \n"
 						 "\band every action has a reaction. Your  \n"
 						 "\bancient enemy Chaos is back, disturbing\n"
 						 "\byour realm.                            \n"
 						 "\bThis WILL NOT be tolerated at all. Use \n"
 						 "\ball your might, cleanse your realm of  \n"
-						 "\bthe pervasive Chaotic influence now.   \n");
+						 "\bthe pervasive Chaotic influence now.   \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
+	}
 else if (p1.state == IMP_MGREMLIN_F)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, 
+	if (!MORPH_FREE) p1.eweapon.archon = 200;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1, 
+						 "Gremlin:\n"
+						 "----------------------------------------\n"
 						 "\bA nasty gremlin spawn - You are taunted\n"
 						 "\bby the other beasties because of your  \n"
 						 "\bsize and miserable failure in the movie\n"
@@ -216,21 +241,35 @@ else if (p1.state == IMP_MGREMLIN_F)
 						 "\bsteal human weapons. Oh, and try not to\n"
 						 "\bget wet :-) Gremlins are not hurt by   \n"
 						 "\bslime and may even drink some if health\n"
-						 "\bis low.  Good luck shorty. \n");
+						 "\bis low.  Good luck shorty. \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MENF)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bAn elite former marine hard wired for  \n"
+	if (!MORPH_FREE) p1.eweapon.archon = 100;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Enforcer:\n"
+						 "----------------------------------------\n"
+						 "\bAn elite former marine hard wired for  \n"
 						 "\bcombat.  Your laser rifle has a self   \n"
 						 "\bcharging battery, and you still know   \n"
 						 "\bhow to use human weapons and armor.    \n"
-						 "\bWreak havok, soldier.                  \n");
+						 "\bWreak havok, soldier.                  \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MSCOURGE)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bYou have a mechanical scorpian body with\n"
+	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Scourge:\n"
+						 "----------------------------------------\n"
+						 "\bYou have a mechanical scorpian body with\n"
 						 "\ba poison stinger and built in nailguns  \n"
 						 "\bwith replicating ammo.  Life has never  \n"
 						 "\bbeen better.  It was boring working for \n"
@@ -240,107 +279,168 @@ else if (p1.state == IMP_MSCOURGE)
 						 "\bimprove your built in weapons (you are a\n"
 						 "\bbeasty tech!) to use their ammo.  And   \n"
 						 "\byour built in armor is healable, but    \n"
-						 "\byour health must be near max.           \n");
+						 "\byour health must be near max.           \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MSHAMBLR)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bYou are the loved and feared shambler.  \n"
+	if (!MORPH_FREE) p1.eweapon.archon = 450;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Shambler:\n"
+						 "----------------------------------------\n"
+						 "\bYou are the loved and feared shambler.  \n"
 						 "\bShoot lightning bolts and rip flesh like\n"
 						 "\bthere is no tommorow.  Smash every      \n"
 						 "\bliving thing you find...why?  You just  \n"
 						 "\bwant to hibernate and dream about giant \n"
-						 "\bhoney bee hives...                      \n");
+						 "\bhoney bee hives...                      \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MHKNIGHT)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bBeing a former general among Shubs     \n"
+	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Hell Knight:\n"
+						 "----------------------------------------\n"
+						 "\bBeing a former general among Shubs     \n"
 						 "\bminions has taught you some new tricks.\n"
 						 "\bYou know how to fire a concentrated    \n"
 						 "\bburst of magic spikes from your sword. \n"
 						 "\bAnd you can use armor.  Urrr, kill the \n"
-						 "\bhumans.                                \n");
+						 "\bhumans.                                \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MSHALR)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bYou are an elite spell caster from      \n"
+	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Shalrath:\n"
+						 "----------------------------------------\n"
+						 "\bYou are an elite spell caster from      \n"
 						 "\banother dimension.  And you have no idea\n"
 						 "\bwhy they call you a \"Vore\".  You're     \n"
-						 "\bpissed about it too... Try new spells!  \n");
+						 "\bpissed about it too... Try new spells!  \n"
 //						 "\bpissed about it too... Learn some spells\n"
 //						 "\bquick as your main \"missle\" spell hurts \n"
-//						 "\byou more at close range than they do.   \n");
+//						 "\byou more at close range than they do.   \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MDEMON)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bYou are a flesh ripping and jumping     \n"
+	if (!MORPH_FREE) p1.eweapon.archon = 500;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Fiend:\n"
+						 "----------------------------------------\n"
+						 "\bYou are a flesh ripping and jumping     \n"
 						 "\bmachine. That is about it. And you stink\n"
 						 "\bbad.  You are one thick skinned beasty. \n"
 						 "\bKeep your health up and most attacks    \n"
-						 "\bwont gib you!                           \n");
+						 "\bwont gib you!                           \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MOGRE)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bGrrr, get Grank and Grud.  All you know\n"
+	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Ogre:\n"
+						 "----------------------------------------\n"
+						 "\bGrrr, get Grank and Grud.  All you know\n"
 						 "\bis chainsaws and grenades.  Can an ogre\n"
 						 "\blearn more?  And does he need to?      \n"
-						 "\b \n"
-						 "\b \n"
-						 "\b \n"
-						 "\b \n");
+//						 "\b \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MZOMBIE)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bYou are dead.  And slow. And you stink!\n"
+	if (!MORPH_FREE) p1.eweapon.archon = 100;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Zomby:\n"
+						 "----------------------------------------\n"
+						 "\bYou are dead.  And slow. And you stink!\n"
 						 "\bAs the living dead, however you do have\n"
 						 "\bone advantage: regeneration. Reanimated\n"
 						 "\bflesh just cant be killed unless its   \n"
 						 "\bblasted apart into stinking little     \n"
 						 "\bgibblets.  Go pelt all the living with \n"
-						 "\byour dead and diseased flesh.          \n");
+						 "\byour dead and diseased flesh.          \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MWIZARD)
 	{
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bYou fly and you stink.  And you have   \n"
+	if (!MORPH_FREE) p1.eweapon.archon = 200;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Scrag:\n"
+						 "----------------------------------------\n"
+						 "\bYou fly and you stink.  And you have   \n"
 						 "\bspikes for arms.  Lets face it you dont\n"
 						 "\bhave many redeeming qualities even for \n"
 						 "\ba beasty.  You have one joy in life,   \n"
 						 "\bhowever. You know how humiliating it is\n"
-						 "\bwhen someone is \"Scragged\".            \n");
+						 "\bwhen someone is \"Scragged\".            \n"
 //						 "\bwhen someone is \"Scragged\".  Find a way\n"
 //						 "\bof improving your attack quickly, it is\n"
-//						 "\bvery weak.                             \n");
+//						 "\bvery weak.                             \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MCTHON)
 	{
+	if (!MORPH_FREE) p1.eweapon.archon = 300;
 	if (morph_classpr(p1, SC_BEASTY)) return;
-	centerprint(p1, "\bYou are the sentient offspring\n"
-						 "\bof Cthon. You are very hot under the   \n"
-						 "\bcollar at your fathers betrayers. You  \n"
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Lava Bomb:\n"
+						 "----------------------------------------\n"
+						 "\bYou are the sentient offspring          \n"
+						 "\bof Cthon. You are very hot under the    \n"
+						 "\bcollar at your fathers betrayers. You   \n"
 						 "\bonly exist as a lava bomb blobbng around\n"
-						 "\buntil you find a pool of lava. Then you\n"
-						 "\bcan grow into a small Cthon. Just dont \n"
+						 "\buntil you find a pool of lava. Then you \n"
+						 "\bcan grow into a small Cthon. Just dont  \n"
 						 "\bleave the lava without returning to blob\n"
-						 "\bform.  You are a very hard kill as Cthon\n");
+						 "\bform.  You are a very hard kill as Cthon\n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MHUMAN) // basic grunt desc.
 	{
 	if (morph_classpr(p1, SC_MARINE)) return;
-		centerprint(p1,
+	if (!MORPH_FREE) p1.eweapon.archon = 150;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1,
+						 "Marine:\n"
+						 "----------------------------------------\n"
 						 "\bYou are _the_ weapons guy.  If it has a\n"
 						 "\btrigger and a business end you can use \n"
 						 "\bit.  You learn new weapons fast...and  \n"
 						 "\byou walk around looking like           \n"
-						 "\bSchwarzenegger. Gear up and blast em!  \n");
+						 "\bSchwarzenegger. Gear up and blast em!  \n"
 //						 "\bSchwarzenegger.  All the focus on      \n"
 //						 "\bweapons has left your defenses a little\n"
-//						 "\bweaker, however.                       \n");
+//						 "\bweaker, however.                       \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MDEMO)
 	{
@@ -394,71 +494,120 @@ else if (p1.state == IMP_MENG)
 else if (p1.state == IMP_MIMP)
 	{
 	if (morph_classpr(p1, SC_DOOM)) return;
-		centerprint(p1, 
+	if (!MORPH_FREE) p1.eweapon.archon = 200;
+	if (p1.archon > p1.eweapon.archon)
+		centerprint3(p1, 
+						 "Imp:\n"
+						 "----------------------------------------\n"
 						 "\bDoom Imp - you are a spiny fire tossing\n"
 						 "\bfreak nobody wants to run into in some \n"
 						 "\bdark corridor.  That pretty much says  \n"
-						 "\bit all...go slay something hideously!  \n");
+						 "\bit all...go slay something hideously!  \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MARACHN)
 	{
 	if (morph_classpr(p1, SC_DOOM)) return;
-		centerprint(p1, 
+	if (!MORPH_FREE) p1.eweapon.archon = 400;
+	if (p1.archon > p1.eweapon.archon)
+		centerprint3(p1, 
+						 "Arachnotron:\n"
+						 "----------------------------------------\n"
 						 "\bScary monster brain on top of a spider \n"
 						 "\bmechanical body - EEK.  Oh wait, thats \n"
 						 "\byou.  You are one bizzare beastie from \n"
 						 "\bthe Doom realm - with a built in plasma\n"
-						 "\bcannon.  Go melt everything!           \n");
+						 "\bcannon.  Go melt everything!           \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MCYBER)
 	{
 	if (morph_classpr(p1, SC_DOOM)) return;
-	centerprint(p1, 
+	if (!MORPH_FREE) p1.eweapon.archon = 800;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1, 
+						 "Cyberdemon:\n"
+						 "----------------------------------------\n"
 						 "\bThe original bad ass beastie from the  \n"
 						 "\bDoom realm. Before the Shambler was big\n"
 						 "\byou were there.  Tall as a 2 story with\n"
 						 "\ba rocket launcher for a right hand. Go \n"
 						 "\bkick ass? You gotta be kiddin - go     \n"
-						 "\bblast them to kibbles and bits!        \n");
+						 "\bblast them to kibbles and bits!        \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MGUNNEY)
 	{
 	if (morph_classpr(p1, SC_Q2)) return;
-	centerprint(p1, 
+	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1, 
+						 "Gunney:\n"
+						 "----------------------------------------\n"
 						 "\bGunney, you are the pride of all front \n"
 						 "\bline soldiers. No enemy has known fear \n"
 						 "\buntil your weapons are aimed at them...\n"
-						 "\bGo clear the field - you own it!       \n");
+						 "\bGo clear the field - you own it!       \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MTANK)
 	{
 	if (morph_classpr(p1, SC_Q2)) return;
-	centerprint(p1, 
+	if (!MORPH_FREE) p1.eweapon.archon = 750;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1, 
+						 "Tank:\n"
+						 "----------------------------------------\n"
 						 "\bThe Man...the Machine...the Menace!    \n"
 						 "\byou are a TANK - go bust some ass now! \n"
 						 "\bYour precision engineering has one goal\n"
 						 "\b- years of trouble free mayhem and     \n"
 						 "\bdestruction. Your builtin self reload  \n"
-						 "\bweapons are ready to clear the field...\n");
+						 "\bweapons are ready to clear the field...\n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 else if (p1.state == IMP_MSUPTANK)
 	{
 	if (morph_classpr(p1, SC_Q2)) return;
-	centerprint(p1, 
+	if (!MORPH_FREE) p1.eweapon.archon = 2000;
+	if (p1.archon > p1.eweapon.archon)
+	centerprint3(p1, 
+						 "Super Tank:\n"
+						 "----------------------------------------\n"
 						 "\bThe Super Man...the Super Machine...the\n"
 						 "\bSuper Menace! you are one mean machine.\n"
 						 "\bYour precision engineering has one goal\n"
 						 "\bthe destruction of every opponent on   \n"
-						 "\bthe field of honor - go Soldier, go!   \n");
+						 "\bthe field of honor - go Soldier, go!   \n"
+						 "----------------------------------------\n"
+						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
 
 //else if (p1.state == IMP_M)
-//	centerprint(p1, "\n"
+//	centerprint3(p1,
 //						 "\n"
 //						 "\n"
-//						 "\n");
+//						 "\n"
+//						 "\n"
 
-sprint(p1,"Your current selection = ");
-sprint(p1,polymorph_id(p1.state));
-sprint(p1,".\n");
+if (MORPH_FREE)
+	{
+	sprint(p1,"Your current selection = ");
+	sprint(p1,polymorph_id(p1.state));
+	sprint(p1,".\n");
+	}
+else
+	if (p1.archon > p1.eweapon.archon)
+	{
+	sprint(p1,"Your current selection = ");
+	sprint(p1,polymorph_id(p1.state));
+	sprint(p1,", ");
+	sprint(p1,ftos(p1.eweapon.archon));
+	sprint(p1," points.\n");
+	}
 };

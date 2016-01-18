@@ -146,7 +146,7 @@ entity () FindIntermission =
 };
 
 
-string nextmap;
+//string nextmap;
 void () GotoNextMap =
 {
 	NoExit_save(); // Cataboligne - 9.9.11 - protect against exitless levels in dm - restore setting
@@ -155,7 +155,7 @@ void () GotoNextMap =
 		changelevel (mapname);
 	else
 	{
-		changelevel (nextmap);
+//		changelevel (nextmap); // 7.26.13 - moved into next fn to fix archon server bug
 		PK_GotoNextMap();
 	}
 };

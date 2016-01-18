@@ -121,6 +121,8 @@ float ARCHON_POINT;						// points added per touch on power point if power_act d
 float ARCHON_UNCOL = 0;					// if true allow uncollectable items (touching health box when you are at 100) to add archon pts
 //												// value is factor 1 = full pts, 0.5 = 1/2 pts, etc.
 
+float ARCHON_MORPH_MIN = 100;			// minimum archon points to morph
+
 // **************************************
 // ADMIN section
 

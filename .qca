@@ -5,7 +5,7 @@
 # frikqcc compiler, rename to your flavor
 # -warn [1-4] to set warning level, 3 is good for discovering things
 
-fqcc /O2
+fqcc /O2 "$@"
 
 # move to prog dir
 # mprg painkeep

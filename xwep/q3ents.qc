@@ -1580,6 +1580,12 @@ void() q3_item_armor_shard =
 //	if (!XMOD)
 	if (noxtr_item_control(self, FALSE, ""))
 	{
+		self.classname = "item_armor1";
+		self.wad = "armor_toss"; // for alt value
+		self.noise = "items/armor1.wav";
+		self.items = IT_ARMOR1;
+		self.volume = 200; // max add
+		self.currentammo = Q3_ARM_SHARD;
 		return;
 	}
 
@@ -1589,7 +1595,7 @@ void() q3_item_armor_shard =
 	self.volume = 200; // max add
 	self.style = 0.3;
 	self.items = IT_ARMOR1;
-	self.currentammo = Q3_ARM_SHARD; // 2 units
+	self.currentammo = Q3_ARM_SHARD; // 5 units
 	if (!self.wait) self.wait = RSP_TIME * 0.8333;
 
 	self.noise = "q3_snd/ar1_pkup.wav";
@@ -2230,7 +2236,7 @@ void() q3_misc_explobox =
 	local float r;
 	self.netname = "Barrel";
 	if (self.class_select == "") self.class_select = "q3_item";
-	misc_explodbox_set(self, "progs/d_barrel.mdl", Q3_BARREL_BLAST, 80, MOVETYPE_NONE);
+	misc_explodbox_set(self, "progs/barrel.mdl", Q3_BARREL_BLAST, 80, MOVETYPE_NONE);
 
 	r = rint(3 * random());
 	if (r == 1)

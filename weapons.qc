@@ -1479,11 +1479,13 @@ ServerflagsCommand
 
 Just for development
 ============
-*/
 void () ServerflagsCommand =
 {
 	if (SERVERFLAGS) serverflags = serverflags * 2 + 1;
 };
+*/
+
+// left in to run botmatch from non dp servers, if any non dp engine can run this
 
 void () QuadCheat =
 {
@@ -1493,12 +1495,14 @@ void () QuadCheat =
 		else bprint("*** warning: botmatch attempted in single player!\n");
 	}
 
+/*
 	if (deathmatch || coop)
 		return ;
 	self.super_time = 1;
 	self.super_damage_finished = time + 30;
 	self.items = self.items | IT_QUAD;
 	dprint ("quad cheat\n");
+*/
 };
 
 /*
@@ -1548,8 +1552,8 @@ void () ImpulseCommands =
 		CheatCommand ();
 	if (self.impulse == 10)
 		CycleWeaponCommand ();
-	if (self.impulse == 11)
-		ServerflagsCommand ();
+//	if (self.impulse == 11)
+//		ServerflagsCommand ();
 	if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
 

@@ -893,9 +893,10 @@ void() dyn_rem =
 		}
 		else
 		{
-			if ((MONSTER_TRANSPARENT) && (self.enemy.class_select == "class_monster"))
+			if ((MONSTER_TRANSPARENT) && (self.enemy.class_select == "class_monster")) // NOTE: these might have issues!
 			{
 				self.enemy.alpha = 0.6 + (random() * 0.42);
+				self.enemy.netname = "I might have issues!"; // TEST - remove
 			}
 			else
 			if (WARNING)

@@ -389,7 +389,7 @@ void(entity e) dead_runes =
 	while (f < RUNE_MASK_ALL)
 	{
 		newmis = world;
-		rune_drop(e);
+		rune_drop(e); // ???: qualify with rune_flag test?
 		if (newmis) item_eject(newmis, GEN_BOUNCE);
 		f = f  * 2;
 	}
@@ -431,6 +431,7 @@ void() server_rune_follow =
 		bprint("\n***   \bRunes\b of power are following and have spawned on the map\n\n");
 }
 
+// died, or special morph - eject artifacts
 
 void(entity e) dead_artifact =
 {
@@ -675,6 +676,7 @@ void(entity e, entity p) rune_id =
 	if (k)
 		sprint(p, "Ammo Pack\n");
 
+	if (self.archon) archon_pprint(self);
 };
 
 // rune 1 rules - runes expire in pow time
