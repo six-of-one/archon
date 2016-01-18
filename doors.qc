@@ -462,7 +462,7 @@ void () LinkDoors =
 			if (t.enemy) // remove defective doors
 //				objerror ("cross connected doors");
 			{
-				remove(self);
+				remove(t);
 				return;
 			}
 

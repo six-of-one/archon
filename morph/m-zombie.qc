@@ -169,6 +169,8 @@ void() player_zombie_paina12 = [ $paina12, player_stand1 ] {self.attack_finished
 // 28 frames of painb for player_zombie, going to stand
 ////////////////////////////////////////////
 
+// NOTE: this set has non mover issue that firing gas cloud has
+
 void() player_zombie_painb1 = [ $painb1, player_zombie_painb2 ] {self.attack_finished=time+10;};
 void() player_zombie_painb2 = [ $painb2, player_zombie_painb3 ] { };
 void() player_zombie_painb3 = [ $painb3, player_zombie_painb4 ] { self.movetype=MOVETYPE_NONE; };
@@ -247,29 +249,32 @@ void() player_zombie_paine1 = [ $paine1, player_zombie_paine2 ] {self.attack_fin
 void() player_zombie_paine2 = [ $paine2, player_zombie_paine3 ] { };
 void() player_zombie_paine3 = [ $paine3, player_zombie_paine4 ]
 {
-	self.enemy = spawn();
-	BodyQueAsset(self, self.enemy, FALSE); // copy us
-	self.enemy.movetype = self.movetype;
-	self.enemy.velocity = v0;
-	self.model = null_string; // hide and observe
+	if (self.ishuman) // bots seem to break this
+	{
+		self.enemy = spawn();
+		BodyQueAsset(self, self.enemy, FALSE); // copy us
+		self.enemy.movetype = self.movetype;
+		self.enemy.velocity = v0;
+		self.model = null_string; // hide and observe
+	}
 
 	self.movetype=MOVETYPE_NONE; // dont go anywhere - you fell down
 };
-void() player_zombie_paine4 = [ $paine4, player_zombie_paine5 ] { self.enemy.frame  = self.frame;};
-void() player_zombie_paine5 = [ $paine5, player_zombie_paine6 ] { zombie_regen(); self.enemy.frame  = self.frame; };
-void() player_zombie_paine6 = [ $paine6, player_zombie_paine7 ] { zombie_regen(); self.enemy.frame  = self.frame; };
-void() player_zombie_paine7 = [ $paine7, player_zombie_paine8 ] { self.enemy.frame  = self.frame; };
-void() player_zombie_paine8 = [ $paine8, player_zombie_paine9 ] { self.enemy.frame  = self.frame; };
-void() player_zombie_paine9 = [ $paine9, player_zombie_paine10 ] { self.enemy.frame  = self.frame; };
+void() player_zombie_paine4 = [ $paine4, player_zombie_paine5 ] { if (self.ishuman) self.enemy.frame  = self.frame;};
+void() player_zombie_paine5 = [ $paine5, player_zombie_paine6 ] { zombie_regen(); if (self.ishuman) self.enemy.frame  = self.frame; };
+void() player_zombie_paine6 = [ $paine6, player_zombie_paine7 ] { zombie_regen(); if (self.ishuman) self.enemy.frame  = self.frame; };
+void() player_zombie_paine7 = [ $paine7, player_zombie_paine8 ] { if (self.ishuman) self.enemy.frame  = self.frame; };
+void() player_zombie_paine8 = [ $paine8, player_zombie_paine9 ] { if (self.ishuman) self.enemy.frame  = self.frame; };
+void() player_zombie_paine9 = [ $paine9, player_zombie_paine10 ] { if (self.ishuman) self.enemy.frame  = self.frame; };
 void() player_zombie_paine10 = [ $paine10, player_zombie_paine11 ] 
 {
 	sound (self, CHAN_BODY, "zombie/z_fall.wav", 1, ATTN_NORM);
 	self.solid = SOLID_NOT; // this a good idea?
 	self.lefty = CB_ZOMBY; // keep cam unless killed
 	self.takedamage = DAMAGE_NO; // take no damage while down - makes morph zombie too vulnerable
-	self.enemy.frame  = self.frame;
+	if (self.ishuman) self.enemy.frame  = self.frame;
 };
-void() player_zombie_paine11 = [ $paine11, player_zombie_paine111 ] { self.nextthink = self.nextthink + 2.5; self.enemy.frame  = self.frame;};
+void() player_zombie_paine11 = [ $paine11, player_zombie_paine111 ] { self.nextthink = self.nextthink + 2.5; if (self.ishuman) self.enemy.frame  = self.frame;};
 void() player_zombie_paine111 = [ $paine11, player_zombie_paine12 ] { self.nextthink = self.nextthink + 2.5; };
 void() player_zombie_paine12 = [ $paine12, player_zombie_paine13 ]
 {
@@ -292,8 +297,10 @@ void() player_zombie_paine12 = [ $paine12, player_zombie_paine13 ]
 
 	self.solid = SOLID_SLIDEBOX;
 	self.lefty = 0;
-	self.enemy.frame  = self.frame;
+	if (self.ishuman) 
+		self.enemy.frame  = self.frame;
 };
+/*
 void() player_zombie_paine13 = [ $paine13, player_zombie_paine14 ] { self.enemy.frame  = self.frame; };
 void() player_zombie_paine14 = [ $paine14, player_zombie_paine15 ] { self.enemy.frame  = self.frame; };
 void() player_zombie_paine15 = [ $paine15, player_zombie_paine16 ] { self.enemy.frame  = self.frame; };
@@ -303,18 +310,26 @@ void() player_zombie_paine18 = [ $paine18, player_zombie_paine19 ] { self.enemy.
 void() player_zombie_paine19 = [ $paine19, player_zombie_paine20 ] { self.enemy.frame  = self.frame; };
 void() player_zombie_paine20 = [ $paine20, player_zombie_paine21 ] { self.enemy.frame  = self.frame; };
 void() player_zombie_paine21 = [ $paine21, player_zombie_paine22 ] { self.enemy.frame  = self.frame; };
+*/
+
 void() player_zombie_paine22 = [ $paine22, player_zombie_paine23 ]
 {
 	zombie_regen();
 	self.movetype=MOVETYPE_WALK;
 // make pseudo us go away - back to ourselves
-	setorigin(self, self.enemy.origin);
-	self.angles = self.enemy.angles;
-	self.fixangle = 1;
-	remove(self.enemy);
-	setmodel(self,"progs/zombie.mdl");
-	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+	if (self.ishuman) // bots = no
+	{
+		setorigin(self, self.enemy.origin);
+		self.angles = self.enemy.angles;
+		self.fixangle = 1;
+		remove(self.enemy);
+		setmodel(self,"progs/zombie.mdl");
+		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+	}
 };
+
+framer($paine13, $paine21, player_zombie_paine13, player_zombie_paine22, 0.1,if (self.ishuman) self.enemy.frame  = self.frame);
+
 void() player_zombie_paine23 = [ $paine23, player_zombie_paine24 ] { zombie_regen(); };
 void() player_zombie_paine24 = [ $paine24, player_zombie_paine25 ] { };
 void() player_zombie_paine25 = [ $paine25, player_zombie_paine26 ] { };

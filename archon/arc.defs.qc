@@ -14,62 +14,16 @@ string null_string			= ""; // saves many globals
 
 
 
-// **************************************
-// code weaver section
-//
-// **************************************
+// test - frame check - REMOVE
 
-// dont list unused vars warning when compiling
-//#pragma warning disable Q302
-
-// note - defines MUST be commented out - you cannot define null or 0 to clear them
-// control whether warning code is compiled in
-
-#define warning
-
-#ifdef warning
-float WARNING;								// display warnings - dev work mainly - now uses the following bit flags for specific warning sets
-float pkvl; // for indicator
-#endifdef
-												// & 1 - server ops
-												// & 2 - items
-												// & 4 - monsters / morphs
-												// & 8 - bot warnings
-												// & 16 - hipnotic warnings
-												// & 32 - weapons
-												// & 64 - runes / artifact enh
-												// & 128 - environment
-												// & 255 - 1 - 128 inclusive + non masked
-												// & 256 - non masked elements - excludes 1 - 128 ++
-// specials
-												// & 1024 - hammer
-												// & 2048 - hub ops
-												// & 4096 - archon ops
-												// & 8192 - looped ops
-												// & 16384 - dead threw / viswep
-												// & 32768 - vw_load
-												// & 65536 - maphack
-												// & 131072 - maphack biome spec
-												// & 262144 - block some repeating warnings
-//
-// control over test code
-
-//#define testset
-
-#ifdef testset
-#else
-#endifdef
-
-// basic code has been enhanced - mostly monsters, but some other things as well
-
-#define enhanced
-
-#ifdef enhanced
-#else
-#endifdef
-
-// replaces - 
-//							float ENHANCED					= 1; // adds features that werent originally there in the sub mods (like runes)
+void() pr1 =
+{
+	/*
+	bprint(" --- frame: ");
+	bprint(ftos(self.frame));
+	bprint("\n");
+	//*/
+};
 
 
 // **************************************
@@ -155,113 +109,6 @@ var float autocvar_it_runemap = 0;  // if true print rune data to console
 // WORLD_
 
 
-/*
-frame macro expansion
-
-void() framename = [$framenum, nextthink] { ...code...};
-
-void() framename =
-{
-	self.frame= $framenum;  // the model frame to displayed
-	self.nextthink = time + 0.1;   // next frame happens in 1/10 of rel
-	self.think = nextthink; // the function to call at the next frame
-	...code...
-};
-
--- removes - 5 search replace sets
- =[ 
-= \r{\r\tself.frame = 
-
-, 
-;\r\tself.nextthink = time + 0.1;\r\tself.think = 
-
- ] {
-;\r\t
-
- ;
-;
-
-;};
-;\r};
-
--- spaces
-  
- 
-
-qr heximp_hover|cut -b 18-38|sed -e 's/$/;/
-
-
-
-*/
-
-// **************************************
-// Code section
-//
-// **************************************
-
-// test - frame check
-
-void() pr1 =
-{
-	//*
-	bprint(" --- frame: ");
-	bprint(ftos(self.frame));
-	bprint("\n");
-	//*/
-};
-
-// replaced old built-in frame macro
-
-/*
-
-// matches frames in quake model
-
-$frame fr1 fr2 fr3 fr4
-
-void()   player_frame1 =[ $fr1,   player_frame2 ] { arbitrary_code(); };
-void()   player_frame2 =[ $fr2,   player_run ] { };
-
-// expands to
-
-void()   player_frame1 =
-{
-	self.frame = $fr1;
-	self.think = player_frame2;
-	self.nextthink = time + 0.1;
-	{
-		arbitrary_code();
-	};
-};
-
-*/
-
-// implement a frame seqeunce where anything might happen in the frames
-
-#define framer(initframe,endframe,thinkon,thinkto,thinktime,excode) void() thinkon { if (self.think != thinkon) self.frame = initframe - 1; self.think = thinkon; self.nextthink = time + thinktime; self.frame = self.frame + 1; if (self.frame == endframe) self.think = thinkto; pr1(); excode; }
-/*
-
-// code layout
-
-void() thinkon 
-{
-	if (self.think != thinkon) self.frame = initframe - 1;
-	self.think = thinkon;
-	self.nextthink = time + thinktime;
-	self.frame = self.frame + 1;
-	if (self.frame == endframe) self.think = thinkto;
-	pr1(); // TEST - remove
-	excode; // run any arbitrary code - SUB_Null() for nothing, you can NOT leave this blank!
-}
-
-*/
-
-// run arbitrary code in a specific frame, range of frames or set of frames
-
-#define frame_arb(thisframe,arbcode) if (self.frame == thisframe) arbcode;
-
-#define framerange_arb(thisframe,thatframe,arbcode) if (self.frame >= thisframe && self.frame <= thatframe) arbcode;
-
-#define frameset_arb(thisframe,twoframe,threeframe,fourframe,fiveframe,sixframe,arbcode) if (self.frame == thisframe || self.frame == twoframe || self.frame == threeframe || self.frame == fourframe || self.frame == fiveframe || self.frame == sixframe) arbcode;
 
 // **************************************
 // Archon section

@@ -127,14 +127,14 @@ for all variable in the bot...
 .float	priority, ai_time, b_sound, missile_speed;
 .float	portal_time, b_skill, switch_wallhug;
 .float	b_aiflags, b_num, b_chattime;
-.float	b_menu, b_menu_time, b_menu_value;
+//.float	b_menu, b_menu_time, b_menu_value;
 .float route_failed, dyn_flags, dyn_time;
 .float dyn_plat;
 .entity	temp_way, last_way, phys_obj;
 .entity	target1_, target2_, target3, target4;
 .entity	_next, _last;
 .entity	current_way;
-.vector	b_angle, b_dest, mouse_emu, obs_dir;
+.vector	b_angle, mouse_emu, obs_dir;
 .vector	movevect, b_dir;
 .vector dyn_dest;
 

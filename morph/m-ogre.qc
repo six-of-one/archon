@@ -180,10 +180,10 @@ framer($swing1, $swing14, player_ogre_swing1, player_stand1, 0.1,
 {
 	frame_arb($swing1,sound (self, CHAN_AUTO, "ogre/ogsawatk.wav", 1, ATTN_NORM));
 
-	frame_arb($swing6,{player_chainsaw(200);self.angles_y = self.angles_y + random()* 25;});
-	frame_arb($swing10,{player_chainsaw(-200);self.angles_y = self.angles_y + random()* 25;});
+	frame_arb($swing6,player_chainsaw(200);self.angles_y = self.angles_y + random()* 25;);
+	frame_arb($swing10,player_chainsaw(-200);self.angles_y = self.angles_y + random()* 25;);
 
-	frameset_arb($swing5,$swing7,$swing8,$swing9,$swing11,-1,{player_chainsaw(0);self.angles_y = self.angles_y + random()* 25;});
+	frameset_arb($swing5,$swing7,$swing8,$swing9,$swing11,-1,player_chainsaw(0);self.angles_y = self.angles_y + random()* 25;);
 }
 );
 

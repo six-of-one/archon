@@ -219,9 +219,8 @@ void() player_shambler_smash12    =[      $smash12,      player_run	   ] {};
 
 framer($smash1, $smash12, player_shambler_smash1, player_run, 0.1,
 {
-	if (self.frame == $smash1) 
-		sound (self, CHAN_VOICE, "shambler/melee1.wav", 1, ATTN_NORM);
-	if (self.frame >= $smash9 && self.frame <= $smash11) player_ShamClaw(150);
+	frame_arb($smash1,sound (self, CHAN_VOICE, "shambler/melee1.wav", 1, ATTN_NORM););
+	framerange_arb($smash9,$smash11,player_ShamClaw(150););
 }
 );
 
@@ -241,9 +240,8 @@ void() player_shambler_swingl9 =[      $swingl9,      player_run  ] {};
 
 framer($swingl1, $swingl9, player_shambler_swingl1, player_run, 0.1,
 {
-	if (self.frame == $swingl1) 
-		sound (self, CHAN_VOICE, "shambler/melee2.wav", 1, ATTN_NORM);
-	if (self.frame == $swingl7) player_ShamClaw(250);
+	frame_arb($swingl1,sound (self, CHAN_VOICE, "shambler/melee2.wav", 1, ATTN_NORM););
+	frame_arb($swingl7,player_ShamClaw(250););
 }
 );
 

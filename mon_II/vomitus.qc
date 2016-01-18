@@ -149,6 +149,7 @@ void(float offset) vom_shot =
 // Exploding Missiles
 void(float offset) vom_shot2 =
 {
+/*
 	local	vector	offang;
 	local	vector	org, vec;
 	
@@ -165,14 +166,15 @@ void(float offset) vom_shot2 =
 	vec_z = 0 - vec_z + (random() - 0.5)*0.1;
 	
 	launch_spike (org, vec);
+*/
+	vom_shot(offset);
 	newmis.classname = "vomisexplod";
-	setmodel (newmis, "progs/vomis.mdl");
-	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);		
+//	setmodel (newmis, "progs/vomis.mdl");
+//	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);		
 	newmis.frame = 2;
 	newmis.skin = 1;
-	newmis.velocity = vec*300;
-	newmis.touch = T_Vomistouch;
-
+//	newmis.velocity = vec*300;
+//	newmis.touch = T_Vomistouch;
 };
 
 // Creture spawners
@@ -518,84 +520,89 @@ void() vom_idle_sound =
 
 void(entity attacker, float damage)	vom_pain =
 {
-	
   local float r;
 
-	r = random ();
-	
-//pain c
-	if (r < 0.2)
-	{
 	if (self.pain_finished > time)
 		return;
 
-	sound (self, CHAN_VOICE, "vomitus/painc.wav", 1, ATTN_NORM);
+	r = random ();
 
-	if (time - self.pain_finished > 5)
-	{	// allways go into pain frame if it has been a while
-		   vom_painc1 ();
-		self.pain_finished = time + 1;
-		return;
-	}
-	
-	if ((random()*30 > damage) )
-		return;		// didn't flinch
+//pain c
+	if (r < 0.2)
+	{
+		self.noise2 = "vomitus/painc.wav";
+		self.blocked = vom_painc1;
 
-	self.pain_finished = time + 1;
-	         vom_painc1 ();
+/*
+		sound (self, CHAN_VOICE, "vomitus/painc.wav", 1, ATTN_NORM);
 
+		if (time - self.pain_finished < 5)
+		if ((random() * 30) > damage)
+			return;		// didn't flinch
+
+		vom_painc1 ();
+*/
 	}
 
 //pain b
 	else if (r < 0.4)
 	{
-		if (self.pain_finished > time)
-		return;
+		self.noise2 = "vomitus/painb.wav";
+		self.blocked = vom_painb1;
 
-	sound (self, CHAN_VOICE, "vomitus/painb.wav", 1, ATTN_NORM);
+/*
+		sound (self, CHAN_VOICE, "vomitus/painb.wav", 1, ATTN_NORM);
 
-	if (time - self.pain_finished > 5)
-	{	// allways go into pain frame if it has been a while
-		   vom_painb1 ();
-		self.pain_finished = time + 1;
-		return;
-	}
-	
-	if ((random()*30 > damage) )
-		return;		// didn't flinch
+		if (time - self.pain_finished > 5)
+		{	// allways go into pain frame if it has been a while
+				vom_painb1 ();
+			self.pain_finished = time + 1;
+			return;
+		}
+		
+		if ((random()*30 > damage) )
+			return;		// didn't flinch
 
-	self.pain_finished = time + 1;
-	         vom_painb1 ();
-
+		vom_painb1 ();
+*/
 	}
 
 //pain a
 	else
 
 	{
-	if (self.pain_finished > time)
-		return;
+		self.noise2 = "vomitus/paina.wav";
+		self.blocked = vom_paina1;
+/*
+		sound (self, CHAN_VOICE, "vomitus/paina.wav", 1, ATTN_NORM);
 
-	sound (self, CHAN_VOICE, "vomitus/paina.wav", 1, ATTN_NORM);
+		if (time - self.pain_finished > 5)
+		{	// allways go into pain frame if it has been a while
+				vom_paina1 ();
+			self.pain_finished = time + 1;
+			return;
+		}
+		
+		if ((random()*30 > damage) )
+			return;		// didn't flinch
 
-	if (time - self.pain_finished > 5)
-	{	// allways go into pain frame if it has been a while
-		   vom_paina1 ();
-		self.pain_finished = time + 1;
-		return;
+		vom_paina1 ();
+*/
 	}
-	
-	if ((random()*30 > damage) )
+
+	sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
+
+	if (time - self.pain_finished < 5)
+	if ((random() * 30) > damage)
 		return;		// didn't flinch
 
-	self.pain_finished = time + 1;
-	         vom_paina1 ();
+	self.blocked();
 
-	}
+	self.pain_finished = time + 1;
 
 };
 
-float	vom_type;
+//float	vom_type;
 
 /*QUAKED monster_vomit (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */

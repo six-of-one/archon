@@ -22,7 +22,7 @@ if [[  "$1" != "-?" && "$1" != "-h" && "$1" != "-help" && -f "./progs.dat" ]]; t
 # see if we got a new file
 
 
-if [[ "$1" != "-?" && "$1" != "-h" && "$1" != "-help" && ! -f "./progs.dat" ]]; then echo;echo "           *** WARNING ***";echo;echo "           progs.dat not created, possible compile failure!";echo;echo;fi
+if [[ "$1" != "-?" && "$1" != "-h" && "$1" != "--help" && ! -f "./progs.dat" ]]; then echo;echo "           *** WARNING ***";echo;echo "           progs.dat not created, possible compile failure!";echo;echo;fi
 
 # move to prog dir
 # mprg painkeep

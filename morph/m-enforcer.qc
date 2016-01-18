@@ -215,6 +215,7 @@ void()	player_enf_atk7	=[	$attack7,	player_enf_atk8	]
 		self.think = player_enf_atk12; // only shoot these weps once
 };
 void()	player_enf_atk8	=[	$attack8,	player_enf_atk9	] {};
+
 void()	player_enf_atk9	=[	$attack5,	player_enf_atk10	] {};
 void()	player_enf_atk10	=[	$attack6,	player_enf_atk11	] {player_enforcer_fire(3);};
 void()	player_enf_atk11	=[	$attack7,	player_enf_atk12	] {};
@@ -222,22 +223,49 @@ void()	player_enf_atk12	=[	$attack8,	player_enf_atk13	] {};
 void()	player_enf_atk13	=[	$attack9,	player_enf_atk14	] {};
 void()	player_enf_atk14	=[	$attack10,	player_stand1	] {};
 
+/* - 4 & 7 have internal calls
+framer($attack1, $attack8, player_enf_atk1, player_enf_atk9, 0.1,
+
+	frame_arb($attack1, if (rune_haste(0.15)) self.attack_finished = 0.3;);	
+	frame_arb($attack6, player_enforcer_fire(2););	
+	frame_arb($attack7, 
+
+		if (self.weapon) 
+		if (self.weapon == IT_LIGHTNING
+			|| self.weapon == IT_ROCKET_LAUNCHER
+			|| self.weapon == IT_GRENADE_LAUNCHER
+			|| self.weapon == IT_SUPER_SHOTGUN || self.weapon == IT_SHOTGUN
+			)
+			self.think = player_enf_atk12; // only shoot these weps once
+	);	
+);
+*/
+
 void() player_enf_atk =
 {
 	if ((self.frame < $attack1) || (self.frame > $attack10)) player_enf_atk1();
 }
 
+/*
 void()	player_enf_paina1	=[	$paina1,	player_enf_paina2	] {};
 void()	player_enf_paina2	=[	$paina2,	player_enf_paina3	] {};
 void()	player_enf_paina3	=[	$paina3,	player_enf_paina4	] {};
 void()	player_enf_paina4	=[	$paina4,	player_stand1	] {};
+*/
 
+framer($paina1, $paina4, player_enf_paina1, player_stand1, 0.1,SUB_Null());
+
+/*
 void()	player_enf_painb1	=[	$painb1,	player_enf_painb2	] {};
 void()	player_enf_painb2	=[	$painb2,	player_enf_painb3	] {};
 void()	player_enf_painb3	=[	$painb3,	player_enf_painb4	] {};
 void()	player_enf_painb4	=[	$painb4,	player_enf_painb5	] {};
 void()	player_enf_painb5	=[	$painb5,	player_stand1	] {};
+*/
 
+framer($painb1, $painb5, player_enf_painb1, player_stand1, 0.1,SUB_Null());
+
+/*
 void()	player_enf_painc1	=[	$painc1,	player_enf_painc2	] {};
 void()	player_enf_painc2	=[	$painc2,	player_enf_painc3	] {};
 void()	player_enf_painc3	=[	$painc3,	player_enf_painc4	] {};
@@ -246,7 +274,11 @@ void()	player_enf_painc5	=[	$painc5,	player_enf_painc6	] {};
 void()	player_enf_painc6	=[	$painc6,	player_enf_painc7	] {};
 void()	player_enf_painc7	=[	$painc7,	player_enf_painc8	] {};
 void()	player_enf_painc8	=[	$painc8,	player_stand1	] {};
+*/
 
+framer($painc1, $painc8, player_enf_painc1, player_stand1, 0.1,SUB_Null());
+
+/*
 void()	player_enf_paind1		=[	$paind1,		player_enf_paind2	] {};
 void()	player_enf_paind2		=[	$paind2,		player_enf_paind3	] {};
 void()	player_enf_paind3		=[	$paind3,		player_enf_paind4	] {};
@@ -266,6 +298,9 @@ void()	player_enf_paind16	=[	$paind16,	player_enf_paind17] {};
 void()	player_enf_paind17	=[	$paind17,	player_enf_paind18] {};
 void()	player_enf_paind18	=[	$paind18,	player_enf_paind19] {};
 void()	player_enf_paind19	=[	$paind19,	player_stand1	] {};
+*/
+
+framer($paind1, $paind19, player_enf_paind1, player_stand1, 0.1,SUB_Null());
 
 //void(entity attacker, float damage)	player_enf_pain =
 void()	player_enf_pain =

@@ -13,9 +13,9 @@
 //.float portal_busy; // moved to defs - fell out deal
 .entity master;
 .entity portal_entrance; // used by player ent for mode 2 portals to store entry (blue) portal for exit (red) portal
-.vector portal_entrance_pos;
+//.vector portal_entrance_pos;
 .entity portal_exit;
-.vector portal_exit_pos;
+//.vector portal_exit_pos;
 .float portal_failed;
 .float portal_opened;
 

@@ -48,10 +48,11 @@ $frame heximpwat7 heximpwat8 heximpwat9 heximpwat10 heximpwat11 heximpwat12
 $frame heximpwat13 heximpwat14 heximpwat15 heximpwat16 heximpwat17 heximpwat18
 $frame heximpwat19 heximpwat20 heximpwat21 heximpwat22 heximpwat23 heximpwat24
 
-float SPAWN_STONE = 1;
-float SPAWN_SITTING = 2;
-float SPAWN_AMBUSH = 3;
+#define SPAWN_STONE		1
+#define SPAWN_SITTING	2
+#define SPAWN_AMBUSH	3
 
+/*
 void() heximp_sit1 = [	$heximpwat1, heximp_sit1 ]
 {
 	if ((self.duration < $heximpwat1) || (self.duration > $heximpwat23))
@@ -67,7 +68,7 @@ void() heximp_sit1 = [	$heximpwat1, heximp_sit1 ]
 
 	ai_stand();
 };
-/*
+
 void() heximp_sit2 =[	$heximpwat2, heximp_sit3 ] {ai_stand();};
 void() heximp_sit3 =[	$heximpwat3, heximp_sit4 ] {ai_stand();};
 void() heximp_sit4 =[	$heximpwat4, heximp_sit5 ] {ai_stand();};
@@ -93,6 +94,13 @@ void() heximp_sit23 =[	$heximpwat23, heximp_sit24 ] {ai_stand();};
 void() heximp_sit24 =[	$heximpwat24, heximp_sit1 ] {ai_stand();};
 */
 
+framerloop($heximpwat1, $heximpwat24, heximp_sit1, 0.1,
+
+	frame_arb($heximpwat1,if (random() < 0.5) sound (self, CHAN_VOICE, "heximp/up.wav", 1, ATTN_IDLE));
+	ai_stand();
+);
+
+/*
 void() heximp_stand1 = [	$heximpfly1, heximp_stand1 ]
 {
 	if ((self.duration < $heximpfly1) || (self.duration > $heximpfly19))
@@ -106,7 +114,7 @@ void() heximp_stand1 = [	$heximpfly1, heximp_stand1 ]
 	ai_stand();
 };
 
-/*
+
 void() heximp_stand1 =[	$heximpfly1, heximp_stand2 ] {ai_stand();};
 void() heximp_stand2 =[	$heximpfly2, heximp_stand3 ] {ai_stand();};
 void() heximp_stand3 =[	$heximpfly3, heximp_stand4 ] {ai_stand();};
@@ -129,6 +137,9 @@ void() heximp_stand19 =[	$heximpfly19, heximp_stand20 ] {ai_stand();};
 void() heximp_stand20 =[	$heximpfly20, heximp_stand1 ] {ai_stand();};
 */
 
+framerloop($heximpfly1, $heximpfly20, heximp_stand1, 0.1,ai_stand());
+
+/*
 void() heximp_hover1 =[	$heximpfly1, heximp_hover1 ]
 {
 	if ((self.duration < $heximpfly1) || (self.duration > $heximpfly19))
@@ -142,7 +153,6 @@ void() heximp_hover1 =[	$heximpfly1, heximp_hover1 ]
 	ai_walk(14);
 };
 
-/*
 void() heximp_hover1 =[	$heximpfly1, heximp_hover2 ] {ai_walk(14);};
 void() heximp_hover2 =[	$heximpfly2, heximp_hover3 ] {ai_walk(14);};
 void() heximp_hover3 =[	$heximpfly3, heximp_hover4 ] {ai_walk(14);};
@@ -165,6 +175,9 @@ void() heximp_hover19 =[	$heximpfly19, heximp_hover20 ] {ai_walk(14);};
 void() heximp_hover20 =[	$heximpfly20, heximp_hover1 ] {ai_walk(14);};
 */
 
+framerloop($heximpfly1, $heximpfly20, heximp_hover1, 0.1,ai_walk(14));
+
+/*
 void() heximp_fly1 =[	$heximpfly1, heximp_fly1 ]
 {
 	if ((self.duration < $heximpfly1) || (self.duration > $heximpfly19))
@@ -178,7 +191,7 @@ void() heximp_fly1 =[	$heximpfly1, heximp_fly1 ]
 	ai_run(24);
 };
 
-/*
+
 void() heximp_fly1 =[	$heximpfly1, heximp_fly2 ] {ai_run(24);};
 void() heximp_fly2 =[	$heximpfly2, heximp_fly3 ] {ai_run(24);};
 void() heximp_fly3 =[	$heximpfly3, heximp_fly4 ] {ai_run(24);};
@@ -201,6 +214,8 @@ void() heximp_fly19 =[	$heximpfly19, heximp_fly20 ] {ai_run(24);};
 void() heximp_fly20 =[	$heximpfly20, heximp_fly1 ] {ai_run(24);};
 */
 
+framerloop($heximpfly1, $heximpfly20, heximp_fly1, 0.1,ai_run(24));
+
 /*
 ===============
 Imp Attack Code
@@ -222,6 +237,7 @@ void() ImpClaw =
 	T_Damage (self.enemy, self, self, self.dmg);
 };
 
+/*
 void() heximp_ball14;
 
 void() heximp_hit1 =[	$heximpfir1, heximp_hitball2 ] {ai_charge(1);self.aflag = 1;};
@@ -245,7 +261,7 @@ void() heximp_hitball13 =[	$heximpfir13, heximp_hit14 ]
 void() heximp_hit14 =[	$heximpfir14, heximp_hit15 ] {ai_charge(7);};
 void() heximp_hit15 =[	$heximpfir15, heximp_hit16 ]
 {
-sound (self, CHAN_VOICE, "heximp/fist.wav", 1, ATTN_NORM);
+sound(self, CHAN_VOICE, "heximp/fist.wav", 1, ATTN_NORM);
 ImpClaw();
 };
 void() heximp_hit16 =[	$heximpfir16, heximp_hit17 ] {ImpClaw();};
@@ -254,6 +270,18 @@ void() heximp_hit18 =[	$heximpfir18, heximp_hit19 ] {ImpClaw();};
 void() heximp_hit19 =[	$heximpfir19, heximp_hit20 ] {ImpClaw();};
 void() heximp_hit20 =[	$heximpfir20, heximp_hit21 ] {ai_charge(-1);};
 void() heximp_hit21 =[	$heximpfir21, heximp_fly1 ] {ai_charge(-4);};
+*/
+
+framer($heximpfir1, $heximpfir21, heximp_hit1, heximp_fly1, 0.1,
+
+	frame_arb($heximpfir15,sound(self, CHAN_VOICE, "heximp/fist.wav", 1, ATTN_NORM));
+
+	ai_rep($heximpfir1, ai_charge, 1, 1, 2, 2, 3, 3, 4, 4);
+	ai_rep($heximpfir9, ai_charge, 5, 5, 6, 6, 7, 7, -6, -6);
+	frame_arb($heximpfir20,ai_charge(-1));
+	frame_arb($heximpfir21,ai_charge(-4));
+	framerange_arb($heximpfir15, $heximpfir19, ImpClaw());
+);
 
 void() ImpBallExplode =
 {
@@ -299,9 +327,9 @@ void() ImpThrowBall =
 	setorigin (missile, self.origin);
 };
 
+/*
 void() heximp_ball1 =[	$heximpfir1, heximp_hitball2 ] {ai_charge(1);self.aflag = 2;};
 
-/*
 multiplex with *_hitball2 above
 
 void() heximp_ball2 =[	$heximpfir2, heximp_ball3 ] {ai_charge(1);};
@@ -316,7 +344,6 @@ void() heximp_ball10 =[	$heximpfir10, heximp_ball11 ] {ai_charge(5);};
 void() heximp_ball11 =[	$heximpfir11, heximp_ball12 ] {ai_charge(6);};
 void() heximp_ball12 =[	$heximpfir12, heximp_ball13 ] {ai_charge(6);};
 void() heximp_ball13 =[	$heximpfir13, heximp_ball14 ] {ai_charge(7);};
-*/
 
 void() heximp_ball14 =[	$heximpfir14, heximp_ball15 ] {ai_charge(4);};
 void() heximp_ball15 =[	$heximpfir15, heximp_ball16 ]
@@ -330,7 +357,23 @@ void() heximp_ball18 =[	$heximpfir18, heximp_ball19 ] {ai_charge(-4);};
 void() heximp_ball19 =[	$heximpfir19, heximp_ball20 ] {ai_charge(-4);};
 void() heximp_ball20 =[	$heximpfir20, heximp_ball21 ] {ai_charge(-8);};
 void() heximp_ball21 =[	$heximpfir21, heximp_fly1 ] {ai_charge(-16);};
+*/
 
+framer($heximpfir1, $heximpfir21, heximp_ball1, heximp_fly1, 0.1,
+
+	frame_arb($heximpfir15,
+
+		sound(self, CHAN_VOICE, "heximp/fist.wav", 1, ATTN_NORM);
+		ImpThrowBall();
+	);
+
+	ai_rep($heximpfir1, ai_charge, 1, 1, 2, 2, 3, 3, 4, 4);
+	ai_rep($heximpfir9, ai_charge, 5, 5, 6, 6, 7, 4, -6, -2);
+	ai_rep($heximpfir17, ai_charge, -2, -4, -4, -8, -16, -6, -6, -6);
+);
+
+
+/*
 void() heximp_death1 =[	$death1, heximp_death2 ]
 {
 	self.velocity_x = -200 + 400*random();
@@ -352,7 +395,13 @@ void() heximp_death11 =[	$death11, heximp_death12 ] {};
 void() heximp_death12 =[	$death12, heximp_death13 ] {self.solid = SOLID_NOT;};
 void() heximp_death13 =[	$death13, heximp_death14 ] {};
 void() heximp_death14 =[	$death14, heximp_death14 ] {};
+*/
 
+framer($death1, $death14, heximp_death1, SUB_Null, 0.1,
+
+	frame_arb($death12,self.solid = SOLID_NOT);
+);
+	
 void() heximp_death =
 {
 	if (self.health < -35)
@@ -367,7 +416,13 @@ void() heximp_death =
 		return;
 	}
 
-	heximp_death1 ();
+	self.velocity_x = -200 + 400*random();
+	self.velocity_y = -200 + 400*random();
+	self.velocity_z = 100 + 100*random();
+	self.flags = self.flags - (self.flags & FL_ONGROUND);
+	sound (self, CHAN_VOICE, "heximp/death.wav", 1, ATTN_NORM);
+
+	heximp_death1();
 };
 void() heximp_pain =
 {
@@ -375,6 +430,7 @@ void() heximp_pain =
 	ai_pain(6);
 };
 
+/*
 void() heximp_up1 = [	$heximpup1, heximp_up2 ] {sound (self, CHAN_VOICE, "heximp/up.wav", 1, ATTN_IDLE);};
 
 void() heximp_up2 = [	$heximpup2, heximp_up2 ]
@@ -417,6 +473,11 @@ void() heximp_up21 =[	$heximpup21, heximp_up22 ] {};
 void() heximp_up22 =[	$heximpup22, heximp_up23 ] {};
 void() heximp_up23 =[	$heximpup23, heximp_fly1 ] {};
 */
+
+framer($heximpup1, $heximpup23, heximp_up1, heximp_fly1, 0.1,
+
+	frame_arb($heximpup1,sound(self, CHAN_VOICE, "heximp/up.wav", 1, ATTN_IDLE));
+);
 	
 void() heximp_wake =
 {

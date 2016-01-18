@@ -1400,3 +1400,29 @@ if (WARNING & 4) bprint("monster move check\n");
 	movetogoal (ddist);		// done in C code...
 	}
 };
+
+
+
+/*
+=============
+ai_rep
+
+handle repetitve calls from framer
+
+adds 11 global vars, but way simplifies the recode replacement of the old frame macro
+
+d* = -6 is the nop control
+=============
+*/
+void(float frm, void(float d) ai_call, float d1, float d2, float d3, float d4, float d5, float d6, float d7, float d8) ai_rep =
+{
+	if (self.frame < frm || self.frame > frm + 7) return;
+	if((d1 != -6) && self.frame == frm) ai_call(d1);
+	else if((d5 != -6) && self.frame == frm + 4) ai_call(d5);
+	else if((d2 != -6) && self.frame == frm + 1) ai_call(d2);
+	else if((d6 != -6) && self.frame == frm + 5) ai_call(d6);
+	else if((d3 != -6) && self.frame == frm + 2) ai_call(d3);
+	else if((d7 != -6) && self.frame == frm + 6) ai_call(d7);
+	else if((d4 != -6) && self.frame == frm + 3) ai_call(d4);
+	else if((d8 != -6) && self.frame == frm + 7) ai_call(d8);
+};

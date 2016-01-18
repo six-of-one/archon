@@ -18,6 +18,10 @@
 
 ./progs.dat
 
+// pre-compiler code set
+
+compiler.qc
+
 // master define - a good chunk of this MUST match the engine define and CAN NOT be changed!
 defs.qc
 

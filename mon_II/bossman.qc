@@ -52,10 +52,15 @@ $frame fall1
 
 // talking - stand frames
 
+/*
 void()	bossman_talk1	=[	$stand1,	bossman_talk2	] {ai_stand();};
 void()	bossman_talk2	=[	$stand2,	bossman_talk3	] {ai_stand();};
 void()	bossman_talk3	=[	$stand3,	bossman_talk4	] {ai_stand();};
 void()	bossman_talk4	=[	$stand4,	bossman_talk1	] {ai_stand();};
+*/
+
+framerloop($talk1, $talk4, bossman_talk1, 0.1,ai_stand());
+
 
 //===========================================================================
 
@@ -66,6 +71,7 @@ void(string sd) bossman_idle_sound =
 };
 
 
+/*
 void()	bossman_walk1	=[	$walk1,		bossman_walk2	] {
 bossman_idle_sound("mon_II/bossman/bosshi.wav");
 ai_walk(2);};
@@ -79,14 +85,24 @@ void()	bossman_walk8	=[	$walk8,		bossman_walk9	] {ai_walk(3);};
 void()	bossman_walk9	=[	$walk9,		bossman_walk10	] {ai_walk(3);};
 void()	bossman_walk10	=[	$walk10,	bossman_walk11	] {ai_walk(4);};
 void()	bossman_walk11	=[	$walk11,	bossman_walk1	] {ai_walk(3);};
+*/
 
+framerloop($walk1, $walk11, bossman_walk1, 0.1,
+
+	frame_arb($walk1,bossman_idle_sound("mon_II/bossman/bosshi.wav"));
+
+	if (self.frame < $walk9)
+		ai_rep($walk1, ai_walk, 2, 5, 5, 4, 4, 2, 2, 3);
+	else
+		ai_rep($walk9, ai_walk, 3, 4, 3, -6, -6, -6, -6, -6);
+);
 
 //===========================================================================
 
 // mad - area attack "blah blah blah blah blah"
 
-float BOSS_BLAH_DIST = 800;
-float BOSS_BLAH_DMG = 1;
+#define BOSS_BLAH_DIST 	800
+#define BOSS_BLAH_DMG 	1
 
 void() boss_blahblah =
 {
@@ -145,17 +161,25 @@ bprint("\n");
 	}
 }
 
+/*
 void()	bossman_mad1	=[	$stand1,	bossman_mad2	] {ai_face();};
 void()	bossman_mad2	=[	$stand2,	bossman_mad3	] {boss_blahblah();};
 void()	bossman_mad3	=[	$stand3,	bossman_mad4	] {ai_face();};
 void()	bossman_mad4	=[	$stand4,	bossman_mad5	] {ai_face();};
 void()	bossman_mad5	=[	$stand5,	bossman_mad6	] {boss_blahblah();};
 void()	bossman_mad6	=[	$stand6,	bossman_mad1	] {ai_face();};
+*/
 
+framerloop($mad1, $mad6, bossman_mad1, 0.1,
 
+	frame_arb($mad2,boss_blahblah());
+	frame_arb($mad5,boss_blahblah());
+	ai_face();
+);
 
 //===========================================================================
 
+/*
 void()	bossman_run1	=[	$walk1,		bossman_run2	]
 {
 bossman_idle_sound("mon_II/bossman/bossback.wav");
@@ -171,18 +195,38 @@ void()	bossman_run8		=[	$walk8,		bossman_run9		] {ai_run(13);};
 void()	bossman_run9		=[	$walk9,		bossman_run10	] {ai_run(18);};
 void()	bossman_run10	=[	$walk10,	bossman_run11	] {ai_run(17);};
 void()	bossman_run11	=[	$walk11,	bossman_run1		] {ai_run(15);};
+*/
+
+framerloop($walk1, $walk11, bossman_run1, 0.1,
+
+	frame_arb($walk1,bossman_idle_sound("mon_II/bossman/bosshi.wav"));
+
+	if (self.frame < $walk9)
+		ai_rep($walk1, ai_run, 20, 25, 18, 16, 14, 25, 21, 13);
+	else
+		ai_rep($walk9, ai_run, 18, 17, 15, -6, -6, -6, -6, -6);
+
+);
 
 //============================================================================
 
+/*
 void()	bossman_pain1	=[	$train1,		bossman_pain2	] {sound (self, CHAN_VOICE, "mon_II/bossman/bossgard.wav", 1, ATTN_NORM);};
 void()	bossman_pain2	=[	$train2,		bossman_pain3	] {};
 void()	bossman_pain3	=[	$train3,		bossman_pain4	] {};
 void()	bossman_pain4	=[	$train4,		bossman_pain5	] {};
 void()	bossman_pain5	=[	$train5,		bossman_pain6	] {};
 void()	bossman_pain6	=[	$train6,		bossman_run1	] {};
+*/
+	
+framer($train1, $train6, bossman_pain1, bossman_run1, 0.1,
+
+	frame_arb($train1,sound(self, CHAN_VOICE, "mon_II/bossman/bossgard.wav", 1, ATTN_NORM));
+);
 
 //============================================================================
 
+/*
 void()	bossman_die1	=[	$death1,	bossman_die2	] {ai_forward(-10);};
 void()	bossman_die2	=[	$death2,	bossman_die3	] {ai_forward(-8);};
 void()	bossman_die3	=[	$death3,	bossman_die4	]
@@ -197,6 +241,16 @@ void()	bossman_die10	=[	$death10,	bossman_die11	] {};
 void()	bossman_die11	=[	$death11,	bossman_die12	] {};
 void()	bossman_die12	=[	$death12,	bossman_die13	] {};
 void()	bossman_die13	=[	$death13,	bossman_die13	] {};
+*/
+
+framer($death1, $death13, bossman_die1, SUB_Null, 0.1,
+
+	frame_arb($death3,self.solid = SOLID_NOT);
+
+	ai_rep($death1, ai_forward, -10, -8, -7, -6, -6, -6, -6, -10);
+	frame_arb($death9,ai_forward(-11));
+);
+
 
 void() bossman_die =
 {
@@ -222,6 +276,7 @@ void() bossman_die =
 
 // IMP: perhaps a chance of going into mad for multiple enemies?
 
+/*
 void()	bossman_dance1 =[	$dance1,	bossman_dance2	] {ai_face();};
 void()	bossman_dance2 =[	$dance2,	bossman_dance3	]
 {
@@ -238,6 +293,22 @@ void()	bossman_dance6 =[	$dance6,	bossman_dance7	] {ai_face();};
 void()	bossman_dance7 =[	$dance7,	bossman_dance8	] {ai_face();};
 void()	bossman_dance8 =[	$dance8,	bossman_dance9	] {ai_face();};
 void()	bossman_dance9 =[	$dance9,	bossman_run1	] {ai_face();};
+*/
+
+
+framer($dance1, $dance9, bossman_dance1, bossman_run1, 0.1,
+
+	frame_arb($dance2,
+		if (random() < 0.2)
+				sound (self, CHAN_VOICE, "mon_II/bossman/bossfall1.wav", 1, ATTN_NORM);
+		else if (random() < 0.2)
+			sound (self, CHAN_VOICE, "mon_II/bossman/bossfall2.wav", 1, ATTN_NORM);
+	);
+	frame_arb($dance4,ai_melee());
+	frame_arb($dance5,ai_melee());
+	ai_face();
+);
+
 
 
 //============================================================================

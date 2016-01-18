@@ -120,6 +120,8 @@ void() lavacthon_rise1  = [ $rise1, lavacthon_rise2 ]
 void() lavacthon_rise2  = [ $rise2, lavacthon_rise3 ] {
 sound (self, CHAN_VOICE, "boss1/sight1.wav", 1, ATTN_NORM);
 };
+
+/*
 void() lavacthon_rise3  = [ $rise3, lavacthon_rise4 ] {};
 void() lavacthon_rise4  = [ $rise4, lavacthon_rise5 ] {};
 void() lavacthon_rise5  = [ $rise5, lavacthon_rise6 ] {};
@@ -135,6 +137,13 @@ void() lavacthon_rise14 = [ $rise14, lavacthon_rise15 ] {};
 void() lavacthon_rise15 = [ $rise15, lavacthon_rise16 ] {};
 void() lavacthon_rise16 = [ $rise16, lavacthon_rise17 ] {};
 void() lavacthon_rise17 = [ $rise17, player_stand1 ] { self.view_ofs_z = 90; };
+*/
+
+framer($rise3, $rise17, lavacthon_rise3, player_stand1, 0.1,
+{
+	frame_arb($rise17,self.view_ofs_z = 90;);
+}
+);
 
 // return to blob form
 void() reblob =
@@ -197,6 +206,8 @@ void() lavacthon_missile1  = [ $attack1, lavacthon_missile2 ]
 	if (rune_haste(0.45))
 	self.attack_finished = time + 0.9;
 };
+
+/*
 void() lavacthon_missile2  = [ $attack2, lavacthon_missile3 ] {};
 void() lavacthon_missile3  = [ $attack3, lavacthon_missile4 ] {};
 void() lavacthon_missile4  = [ $attack4, lavacthon_missile5 ] {};
@@ -210,6 +221,14 @@ void() lavacthon_missile11 = [ $attack11, player_stand1 ]
 {
 self._attack = lavacthon_missile12;
 };
+*/
+
+framer($attack2, $attack11, lavacthon_missile2, player_stand1, 0.1,
+{
+	frame_arb($attack9,lavacthon_fire(' 66 66 160'););
+	frame_arb($attack11,self._attack = lavacthon_missile12;);
+}
+);
 
 void() lavacthon_missile12 = [ $attack12, lavacthon_missile13 ]
 {
@@ -222,6 +241,8 @@ void() lavacthon_missile12 = [ $attack12, lavacthon_missile13 ]
 	if (rune_haste(0.45))
 	self.attack_finished = time + 0.9;
 };
+
+/*
 void() lavacthon_missile13 = [ $attack13, lavacthon_missile14 ] {};
 void() lavacthon_missile14 = [ $attack14, lavacthon_missile15 ] {};
 void() lavacthon_missile15 = [ $attack15, lavacthon_missile16 ] {};
@@ -236,6 +257,14 @@ void() lavacthon_missile23 = [ $attack23, player_stand1 ]
 {
 self._attack = lavacthon_missile1;
 };
+*/
+
+framer($attack13, $attack23, lavacthon_missile13, player_stand1, 0.1,
+{
+	frame_arb($attack9,lavacthon_fire(' 66 -66 160'););
+	frame_arb($attack23,self._attack = lavacthon_missile1;);
+}
+);
 
 // death frames, as unlikely as it is
 
