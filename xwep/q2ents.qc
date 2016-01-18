@@ -1254,10 +1254,23 @@ void() q2_teleport_particles =
 
 	v1_x = crandom() * 18;
 	v1_y = crandom() * 18;
-	v1_z = crandom() * 8;
-	self.velocity_z = 300 + crandom() * 50;
-	particle (self.origin + v1, self.velocity, 234, 22);
-	self.nextthink = time + 0.1;
+	v1_z = crandom() * 6;
+	self.velocity_z = 200 + crandom() * 50;
+	particle (self.origin + v1, self.velocity, 192, 4);
+
+	v1_x = crandom() * 18;
+	v1_y = crandom() * 18;
+	v1_z = 16 + crandom() * 6;
+	self.velocity_z = 200 + crandom() * 50;
+	particle (self.origin + v1, self.velocity, 192, 4);
+
+	v1_x = crandom() * 18;
+	v1_y = crandom() * 18;
+	v1_z = 32 + crandom() * 6;
+	self.velocity_z = 200 + crandom() * 50;
+	particle (self.origin + v1, self.velocity, 192, 4);
+
+	self.nextthink = time + 0.05;
 };
 
 // return damage saved based on power armor settings and damage done
@@ -1268,6 +1281,12 @@ float(entity e, entity f, float dm) power_armor =
 
 	pdmg = dm;
 	pwr = e.ammo_cells;
+
+	if (e.armorsave)
+	{
+		e.armorvalue = e.armorsave; // restore real val for combat
+		e.armorsave = 0;
+	}
 
 	if (e.health < 0) return 0;
 	if (pwr < 1) return 0;

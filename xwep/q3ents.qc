@@ -1318,7 +1318,7 @@ void() misc_teleporter =
 	trigger_teleport();
 	if (world.wad == "q2.wad")
 	{
-		chaos_spawn(0, 0, 0, 0,  self.origin + ' 0 0 8', v0, v0, v0, v0, "", "", SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
+		chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "", "", SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
 		ambientsound (self.origin + ' 0 0 32', "q2_snd/telehum.wav", 1, ATTN_STATIC);
 	}
 };
