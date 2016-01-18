@@ -599,10 +599,12 @@ void() cloudkill =
 	dist = (self.cnt + random() * self.lip) * mult;
 
 
+if (cvar("saved1") == -555)
+{
 bprint("cloud loop: ");
 bprint(ftos(dist));
 bprint("\n");
-
+}
 
 
 	while (dist > 0) // particle effects cloud
@@ -834,15 +836,19 @@ void() player_zombie_impulse =
 };
 
 
-string() player_zombie_killmsg = {
-	if (random() < 0.8)
-		return " was splatted to death by ";
-	else
-		return " caught leprosy from ";
+string() player_zombie_killmsg =
+{
+	if (!ENHANCED) return " joins the Zombies\n";
+
+	if (random() < 0.3) return " joins the Zombies with ";
+	if (random() < 0.8) return " was splatted to death by ";
+	return " caught leprosy from ";
 };
 
-string() player_zombie_killmsg2 = {
-	return ", and rotted away.\n";
+string() player_zombie_killmsg2 =
+{
+	if (!ENHANCED) return  "noname";
+	return ", and rots away.\n";
 };
 
 void(float silent) player_zombie_become = 

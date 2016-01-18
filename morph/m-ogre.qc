@@ -277,14 +277,22 @@ void() player_ogre_impulse =
 
 
 
-string(entity targ, entity attacker) player_ogre_killmsg = {
-	if(attacker.weapon == IT_AXE) return " was sawed to death by "; // FIX: doesnt give correct msgs
-	else return " eats ";
+string(entity targ, entity attacker) player_ogre_killmsg =
+{
+	if (!ENHANCED) return " was destroyed by an Ogre\n";
+
+	if(attacker.weapon == IT_AXE) return " was sawed to death by ";
+
+	return " was destroyed by ";
+//	else return " eats ";
 };
 	
-string(entity targ, entity attacker) player_ogre_killmsg2 = {
-	if(attacker.weapon == IT_AXE) return "\n";
-	else return "'s pineapple\n";
+string(entity targ, entity attacker) player_ogre_killmsg2 =
+{
+	if (!ENHANCED) return "noname";
+
+	return "\n";
+//	else return "'s pineapple\n";
 };
 
 void(float silent) player_ogre_become =

@@ -40,6 +40,8 @@ void() PK_init =
 		GENERATIONS = 1;
 	}
 
+	if (Q_100 || PK_100) GENERATIONS = FALSE;
+
 	if (GENERATIONS) // possible to run qc w/o paks
 	{
 		ULOKW = ULOKD = ULOK2 = ULOK3 = TRUE;
@@ -62,7 +64,7 @@ void() PK_init =
 
 	PK_ADMIN = 6; // code sets allow admin here - can be disabled by admin menu, 3 is base menu set
 
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake compatability mode starts here
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake compatability mode starts here
 	{
 		if (!Q_99) PK_ADMIN = 0;
 		PK_ART = PK_100 = 0;
@@ -107,7 +109,8 @@ void() PK_init =
 
 // genre for init stuff
 
-	if (pk_map) MAP_MODE = "PK";
+	if (Q_100)  MAP_MODE = "Q";
+	else if (pk_map || PK_100) MAP_MODE = "PK";
 	else if (world.wad == "wolftex.wad" && ULOKW) MAP_MODE = "W";
 	else if (world.wad == "doomtex.wad" && ULOKD) MAP_MODE = "D";
 	else if (world.wad == "doom2tex.wad" && ULOKD) MAP_MODE = "D";
@@ -183,7 +186,19 @@ void() PK_init =
 		}
 	}
 	rune_new_map = FALSE;
-	
+
+// fix major altarbeta clipping problem on some rocks
+
+	if (world.model == "maps/altarbeta.bsp")
+	{
+		e = spawn();
+		setmodel(e, "progs/abclip.bsp");
+//		setorigin(e, v0);
+		e.origin = v0;
+		e.solid = SOLID_BSP;
+//		e.alpha = 0;
+	}
+
 // extra sounds by...are apparently not supplied, except gib_?.wav
 
 	pk_xsound = (pk_flags & PK_XSOUND);

@@ -144,7 +144,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	damage_attacker = attacker;
 
 // check for quad damage powerup on the attacker
-	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & T_AMP) ) ) || RUNE_QUAD_COMB) // rune overpowers quad on higher rule sets 
+	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & T_AMP) ) ) || ( RUNE_QUAD_COMB || !ENHANCED ) ) // rune overpowers quad on higher rule sets 
 	if (attacker.super_damage_finished > time)
 	if (attacker.pkplus_actortype != PKPLUS_ACTORQUAD) // pk art code here
 		damage = damage * 4;
@@ -154,7 +154,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		damage = damage * 2;
 
 		if (attacker.rune_flag & T_AMP) // combind with dmg tech!
-		if (RUNE_TECH_DMG_COMB)
+		if (RUNE_TECH_DMG_COMB || !ENHANCED)
 			damage = damage * 2;
 	}
 	else
@@ -195,7 +195,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	{
 		take = floor(take / 2);
 		save = floor(save / 2);
-		if (RUNE_TECH_RS_COMB && (targ.rune_flag & RUNE_FLG_RS) && (targ.rune_flag & T_DSH))
+		if (( RUNE_TECH_RS_COMB || !ENHANCED ) && (targ.rune_flag & RUNE_FLG_RS) && (targ.rune_flag & T_DSH))
 		{
 			take = floor(take / 2);
 			save = floor(save / 2);			
@@ -268,9 +268,9 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 // we have a suck head
    if (attacker.rune_flag & RUNE_VAMPIRE) // a bit of vampire action
    if (!targ.empathy_finished)
-   if (!targ.rune_flag & RUNE_VAMPIRE)
-   if (!targ.rune_flag & RUNE_FLG_RG) // regen immune to feeders
-   if (!targ.rune_flag & TECH_ADOC)
+   if ((!targ.rune_flag & RUNE_VAMPIRE) || ! ENHANCED)
+   if ((!targ.rune_flag & RUNE_FLG_RG) || ! ENHANCED) // regen immune to feeders
+   if ((!targ.rune_flag & TECH_ADOC) || ! ENHANCED)
    if (targ.flags & (FL_CLIENT | FL_MONSTER)) // only these for now
 	{
 		if (targ.health < take) attacker.health = attacker.health + RUNE_VAMPIRE_PER * targ.health; // only get RUNE_VAMPIRE_PER% of actual damage, excludes armor & other saves

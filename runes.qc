@@ -735,8 +735,8 @@ void () rune_touch =
 			return;
 		}
 
-		if (self.rune_flag & RUNE_VAMPIRE)
-		if (other.spawnflags & RUNE_FLG_RG || other.spawnflags & TECH_ADOC)
+		if (self.spawnflags & RUNE_VAMPIRE)
+		if (other.rune_flag & RUNE_FLG_RG || other.rune_flag & TECH_ADOC)
 		{
 			if (other.duration < time)
 			sprint(other,"You have Regeneration - you cant become a Suck head\n");
@@ -816,22 +816,26 @@ void() rune_bounce =
 
 float rune_map; // runes on level
 
-float Test;
-
 
 void() rune_maker =
 {
 	local entity e;
-	local float sf, f;
+	local float sf, f, rm, tm;
 	local vector v1;
+
+// periodic check once all runes made
+	tm = 120 + random() * 60;
+	self.nextthink = time + tm;
 
 	if (rune_count < RUNE_CNT)
 	{
 		f = RUNE_CNT / 2;
 		if (rune_count < f) // make at least 1/2 sort of quicker
-			self.nextthink = time + random() * 10;
+			tm = random() * 10;
 		else
-			self.nextthink = time + 5 + random() * 43;
+			tm = 5 + random() * 43;
+
+		self.nextthink = time + tm;
 
 // make a rune
 		e = spawn();
@@ -840,7 +844,7 @@ void() rune_maker =
 			sf = 111;
 			while (sf > 0)
 			{
-				Test = f = rnd_bit_mask(RUNE_MASK);
+				f = rnd_bit_mask(RUNE_MASK);
 				if (!(f & rune_map)) sf = 0;
 				else f = 0;
 				sf = sf - 1;
@@ -947,6 +951,62 @@ void() rune_maker =
 			bprint("\n\n");
 
 			rune_count = rune_count + 1;
+		}
+	}
+
+// fix leak - be better to stop leak
+	if (RUNES == 2) // && 4
+	{
+		f = 0;
+		e = find(world, map, "rune");
+		while (e)
+		{
+			if (e.spawnflags & RUNE_MASK)
+			{
+				rm = rm | e.spawnflags;
+				f = f + 1;
+			}
+			e = find(e, map, "rune");
+		}
+		e = find(world, classname, "player");
+		while (e)
+		{
+			if (e.rune_flag & RUNE_MASK)
+			{
+				rm = rm | e.rune_flag;
+				f = f + 1;
+			}
+			e = find(e, classname, "player");
+		}
+		e = find(world, class_select, "class_bot");
+		while (e)
+		{
+			if (e.rune_flag & RUNE_MASK)
+			{
+				rm = rm | e.rune_flag;
+				f = f + 1;
+			}
+			e = find(e, class_select, "class_bot");
+		}
+		if (f != rune_count)
+		{
+			self.cnt = self.cnt + 1;
+			if (rune_count >= RUNE_CNT || self.cnt > 4 || tm > 60)
+			if (f < rune_count)
+			{
+
+
+bprint(" --------- rune count total not matched:  ");
+bprint(ftos(f));
+bprint(" != master: ");
+bprint(ftos(rune_count));
+bprint("\n");
+
+
+				self.cnt = 0;
+				rune_count = f;
+				rune_map = rm; // need rebuilt rune map too
+			}
 		}
 	}
 };

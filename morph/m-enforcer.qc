@@ -326,8 +326,16 @@ void() player_enf_sight =
 		}
 };
 
-string() player_enf_killmsg = { return rnd_string(' 60.0 50.0 40.0'," was blasted by an Enforcer ","",""," got pulled over - permanently by "," was arrested by an Enforcer "); };
-string() player_enf_killmsg2 = { return "\n"; };
+string() player_enf_killmsg =
+{
+	if (!ENHANCED) return " was blasted by an Enforcer\n";
+	return rnd_string(' 60.0 50.0 40.0'," was blasted by Enforcer ","",""," got pulled over - permanently by "," was arrested by Enforcer ");
+};
+string() player_enf_killmsg2 =
+{
+	if (!ENHANCED) return "noname";
+	return "\n";
+};
 
 /*
 		+---------------------------------------+

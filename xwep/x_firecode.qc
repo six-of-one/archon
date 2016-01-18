@@ -594,6 +594,117 @@ fts.cnt = fts.cnt + 1;
 	}
 };
 
+// new touch - does things
+
+void() pulse_rebound;
+
+void() spike_touch =
+{
+	local vector off;
+
+	if (other)
+	if (other == self.owner)
+		return;
+
+	if (Q_100 || PK_100)
+	{
+		if (pointcontents(self.origin) == CONTENT_SKY) { SUB_Remove(); return; }
+	}
+	else
+
+	if (sky_touch("", v0, self))
+	{
+		SUB_Remove();
+		return;
+	}
+
+	if (other.solid == SOLID_TRIGGER)
+		return;	// trigger field, do nothing
+
+	if (!self.dmg) self.dmg = 9;
+	
+	off = v0;
+
+// hit something that bleeds
+	if (other.takedamage)
+	{
+		if (other.solid == SOLID_SLIDEBOX || !ENHANCED)  // BLOODCHECK - in case some other bit of gib / dead body can make blood
+			spawn_touchblood (self.dmg);
+		T_Damage (other, self, self.owner, self.dmg);
+		if (self.model == "progs/pnail.mdl") self.model = "progs/nail.mdl"; // reflective gets removed
+	}
+	if (!other.takedamage || (other.solid != SOLID_SLIDEBOX && ENHANCED))
+	{
+		local float rn;
+		if (self.frame != 5) rn = 0.07;
+
+		makevectors(self.angles);
+
+		if (self.model == "progs/pnail.mdl") // pulse spikes reflect off solids
+		{
+			if (!(Q_100 || PK_100))
+			{
+				v_forward = normalize(self.velocity);
+//				off = lava_shot(self.origin, LAVA_SHOT, v0, self.dmg / 9);
+				if (off != v0 && random() > SPIKE_STICK)
+				{
+					SUB_Remove();
+					return;
+				}
+ 			}
+		// play ricochet sound
+			rn = random() * 100;
+			if (rn < 33)		sound (self, CHAN_AUTO, "pulse/ric_1.wav", 1, ATTN_NORM);
+			else if (rn < 66)	sound (self, CHAN_AUTO, "pulse/ric_2.wav", 1, ATTN_NORM);
+			else					sound (self, CHAN_AUTO, "pulse/ric_3.wav", 1, ATTN_NORM);
+
+		// rebound
+			self.movetype = MOVETYPE_BOUNCE;
+			self.think = pulse_rebound; //spike_pulse_rebound;
+			self.ltime = self.nextthink;
+//		self.upgrade_time = self.nextthink;
+			self.nextthink = time + 0.1;
+		}
+// code sticks spikes in solids
+		else
+		if (!(Q_100 || PK_100))
+		{
+			v_forward = normalize(self.velocity);
+//			off = lava_shot(self.origin, LAVA_SHOT, v0, self.dmg / 9);
+			if (off != v0)
+				self.origin = off;
+			else
+			if (self.model == "progs/spike.mdl")// && self.frame == 5) // any spike for now
+			if (pointcontents (self.origin + v_forward * 16) == CONTENT_SOLID)
+			if (random() < SPIKE_STICK)
+			{
+				move_stop(self, "");
+				setorigin(self, self.origin + v_forward * -1 * (2 + 8 * random()));  // backup abit
+				self.nextthink = time + 20 + random() * 100; // max 2 mins - less?
+				self.think = SUB_Remove; //SUB_FadeRemove;
+				self.dmg = 0; // get rid of nail on touch - dont do dmg
+				return;
+			}
+		}
+
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		
+		if (self.classname == "wizspike")
+			WriteByte (MSG_BROADCAST, TE_WIZSPIKE);
+		else if (self.classname == "knightspike")
+			WriteByte (MSG_BROADCAST, TE_KNIGHTSPIKE);
+		else if (self.model == "progs/s_spike.mdl" || self.classname == "pulse_spike")
+			WriteByte (MSG_BROADCAST, TE_SUPERSPIKE);
+		else
+			WriteByte (MSG_BROADCAST, TE_SPIKE);
+		WriteCoord (MSG_BROADCAST, self.origin_x);
+		WriteCoord (MSG_BROADCAST, self.origin_y);
+		WriteCoord (MSG_BROADCAST, self.origin_z);
+	}
+
+	if (self.model != "progs/pnail.mdl") SUB_Remove();
+};
+
 
 // moved from viswep.qc - belongs here, its home now - YAY
 
@@ -1159,7 +1270,12 @@ void () Plasma_MissileTouch =
 		return;
 	}
 
-	if (sky_touch("", org, world)) return;
+	if (sky_touch("", org, world))
+	{
+		if (self.enemy) remove (self.enemy);
+		remove(self);
+		return;
+	}
 
 	if (self.noise3 == "") self.noise3 = "doom/dsfirxpl.wav";
 
@@ -1214,14 +1330,14 @@ void () Plasma_MissileTouch =
 	if (bdm)
 		T_RadiusDamage (self, self.owner, bdm, other);
 
-	if (self.enemy)
+	if (self.enemy) // bfg shot - handle trace damages
 	{
 		if (self.delay == DOOM_BFG) // activate trace dmg
 			self.enemy.nextthink = time + 0.2;
 		else if (self.delay == Q2_BFG)
 		{
 			self.enemy.nextthink = time + 0.01;
-			self.enemy.flags = Q2_BFG;
+			self.enemy.flags = Q2_BFG; // stop lasers & do blast rays
 		}
 	}
 
@@ -1237,9 +1353,13 @@ void() bfg_trace_thk;
 
 void() Plasma_MissileFuseOut =
 {
+
+// dont want q2 bfg blast rays if ball fuses out, because something went wrong, or it died after a long flight
+// fxnote - get rid of q2 bfg trace think on fuse out - otherwise it hangs around doing wierd shit - NOTE: chaos mod vector?
 	if (self.enemy)
-	if (self.enemy.think == bfg_trace_thk) // get rid of q2 bfg trace think on fuse out - otherwise it hangs around doing wierd shit - NOTE: chaos mod vector?
+	if (self.enemy.think == bfg_trace_thk)
 		remove(self.enemy);
+	self.enemy = world;
 
 	Plasma_MissileTouch();
 };
@@ -1866,7 +1986,7 @@ bdm = 0;
 chtt = bdm = 0;
 	}
 
-	if (self.flags == Q2_BFG)
+	if (self.flags == Q2_BFG) // ball struck, do ray damage at end of travel
 	{
 
 
@@ -1967,6 +2087,14 @@ bprint(ftos( tr));
 	}
 	if (self.flags == Q2_BFG_LASER)
 	{
+		if (!self.enemy) self.flags = 0;
+		else if (self.enemy.classname != "bfg_ball") self.flags = 0;
+		if (!self.flags) // something has gone wrong - bfg ball is gone, need to remove laser shot think
+		{
+			remove(self);
+			return;
+		}
+	
 		self.cnt = self.cnt + 1;
 		e = findradius(self.enemy.origin, Q2_BFG_LASER); // find things to laser dmg in fire radius
 		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM;

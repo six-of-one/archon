@@ -301,7 +301,7 @@ float MC_Q3_SHOTGUN;
 float MC_Q3_GRENADEL;
 float MC_Q3_ROCKETL;
 float MC_Q3_PLASMA;
-float MC_Q3_LIGHTNING;
+//float MC_Q3_LIGHTNING;
 float MC_Q3_RAILGUN;
 float MC_Q3_BFG;
 
@@ -2081,7 +2081,7 @@ void() painkeep_cube_use =
 
 	if (crate)
 	{
-		if (c.classname != "info_notnull")
+		if (c.classname != "info_notnull") // crate is now open
 		{
 			if (c.model == "progs/crate_lg.bsp")
 				setmodel(c, "progs/crate_lg_o1.bsp");
@@ -2312,6 +2312,7 @@ void() abandoned_cube =
 		self = c.owner;
 		c.owner = world;
 		cube_rearm(); // re arm player
+		self = c;
 		return;
 	}
 
@@ -2351,7 +2352,7 @@ void() cube_touch =
 		if (other.ishuman) return;
 		else if (random() > 0.08) return;
 	}
-	other.state = other.morphy;
+
 
 	if (other.eweapon) // other has a cube and is touching different one
 	{
@@ -2393,7 +2394,7 @@ void() cube_touch =
 	else
 	{
 		other.cnt = -1;
-		other.state = 0;
+		other.state = other.morphy;
 		other.impulse = 10; // display first item
 		self.lefty = 8388608; // start bit will be 1
 		stuffcmd(other, "usergamma\n");
@@ -2416,6 +2417,10 @@ void() cube_touch =
 	self.effects = self.effects | EF_DIMLIGHT;
 	self.touch = SUB_Null;
 
+	self.think = abandoned_cube;
+	self.count = time + 60 + random() * 10; // abandoned then
+	self.nextthink = time + 3 + random();
+
 	if (!other.ishuman)
 	{
 		self = other;
@@ -2433,14 +2438,12 @@ void() cube_touch =
 			}
 			polymorph_check(self.state, 0);
 			remove(e); // chaos vector - was not removing a cube
+			e = world;
 			cube_rearm();
 		}
+		if (e) self = e;
 		return;
 	}
-
-	self.think = abandoned_cube;
-	self.count = time + 60 + random() * 10; // abandoned then
-	self.nextthink = time + 3 + random();
 };
 
 /*QUAKED pk_cube  (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -2802,9 +2805,9 @@ void(float mc, vector vo, string wd) fn_make =
 
 	newmis = world;
 	sv = self;
-	if (wd) sc = wd;
-	else
-	sc = item_by_mcode(mc);
+	sc = wd;
+	if (sc == "")
+		sc = item_by_mcode(mc);
 
 	if (sc != "")
 	{

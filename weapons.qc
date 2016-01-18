@@ -543,31 +543,24 @@ void () W_FireLightning =
 	}
 
 // explode if under water
+	cells = self.ammo_cells;
 	if (self.classname == "pk*bot")
-	{
 		wlevel = CheckWaterLevel ();
-		if (wlevel > 1)
-		{
-			discharged = 1;
-			T_RadiusDamage (self,self,(35* self.ammo_cells),world);
-			discharged = 0;
-			self.ammo_cells = 0;
-			W_SetCurrentAmmo ();
-			return ;
-		}
-	}
 	else
+		wlevel = self.waterlevel;
+
+	if (self.eweapon)
+	if (self.eweapon.mcode == MC_Q3_LIGHTNING) // cause q3 lg doesnt blow under water
+		wlevel = 0;
+
+	if (wlevel > 1)
 	{
-		if (self.waterlevel > 1)
-		{
-			cells = self.ammo_cells;
-			self.ammo_cells = 0;
-			W_SetCurrentAmmo ();
-			discharged = 1;
-			T_RadiusDamage (self, self, 35*cells, world);
-			discharged = 0;
-			return;
-		}
+		self.ammo_cells = 0;
+		W_SetCurrentAmmo ();
+		discharged = 1;
+		T_RadiusDamage (self, self, (35 * cells), world);
+		discharged = 0;
+		return;
 	}
 
 	if (self.t_width < time)
@@ -765,8 +758,12 @@ void () W_FireSuperSpikes =
 		launch_spike (self.origin + '0 0 16', dir);
 	else
 		launch_spike (self.origin + v_up * VWZ_SNAILG + v_right * VWY_SNAILG + v_forward * VWX_SNAILG, dir);
+	if (ENHANCED)
+		newmis.touch = spike_touch;
+	else
 	newmis.touch = superspike_touch;
 	newmis.weapon = IT_SUPER_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
+	newmis.dmg = 18;
 	setmodel (newmis,"progs/s_spike.mdl");
 	setsize (newmis,VEC_ORIGIN,VEC_ORIGIN);
 	self.punchangle_x = -2;
@@ -823,7 +820,7 @@ void(float ox) W_FireSpikes =
 };
 
 
-
+/*
 .float hit_z;
 void () spike_touch =
 {
@@ -864,6 +861,7 @@ void () spike_touch =
 	remove (self);
 
 };
+*/
 
 void () superspike_touch =
 {

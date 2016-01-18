@@ -74,9 +74,6 @@ void() m_precache_scourge =
 	precache_sound ("chaos/proxwarn.wav");
 };
 
-float SEL_SCRGNAIL;
-float SEL_SCRGTAIL;
-
 /*
 		+---------------------------------------+
 		|  Frame operation code                 | SEC-HEAD
@@ -226,6 +223,7 @@ void()   player_scourge_atk1 =[ $shoot1,   player_scourge_atk2 ]
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(40);
 
+	if (ENHANCED)
 	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-45);
 //   player_scourge_FireSpikes(-40);
@@ -236,6 +234,7 @@ void()   player_scourge_atk2 =[ $shoot2,   player_scourge_atk3 ]
 //   player_scourge_FireSpikes(56);
    player_scourge_FireSpikes(-52);  // moving outside shots in 4 units
 
+	if (ENHANCED)
 	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(47);
 };
@@ -245,19 +244,23 @@ void()   player_scourge_atk3 =[ $shoot1,   player_scourge_atk4 ]
 //   player_scourge_FireSpikes(40);
    player_scourge_FireSpikes(-40);
 
-	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
-		player_scourge_FireSpikes(45);
+	if (ENHANCED)
+	{
+		if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
+			player_scourge_FireSpikes(45);
 
-	if ((self.rune_flag & T_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - more extra nails
-		player_scourge_FireSpikes(-47);
+		if ((self.rune_flag & T_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - more extra nails
+			player_scourge_FireSpikes(-47);
+	}
 
-	};
+};
 void()   player_scourge_atk4 =[ $shoot2,   player_scourge_atk5 ]
 {
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(52);
 //   player_scourge_FireSpikes(-56);
 
+	if (ENHANCED)
 	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
 };
@@ -266,6 +269,7 @@ void()   player_scourge_atk5 =[ $shoot1,   player_scourge_atk6 ]
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(40);
 
+	if (ENHANCED)
 	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-45);
 //   player_scourge_FireSpikes(-40);
@@ -276,11 +280,14 @@ void()   player_scourge_atk6 =[ $shoot2,   player_scourge_atk7 ]
 //   player_scourge_FireSpikes(56);
    player_scourge_FireSpikes(-52);
 
-	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
-		player_scourge_FireSpikes(-47);
+	if (ENHANCED)
+	{
+		if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
+			player_scourge_FireSpikes(-47);
 
-	if ((self.rune_flag & T_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - extra nails
-		player_scourge_FireSpikes(45);
+		if ((self.rune_flag & T_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - extra nails
+			player_scourge_FireSpikes(45);
+	}
 };
 void()   player_scourge_atk7 =[ $shoot1,   player_scourge_atk8 ]
 {
@@ -288,6 +295,7 @@ void()   player_scourge_atk7 =[ $shoot1,   player_scourge_atk8 ]
 //   player_scourge_FireSpikes(40);
    player_scourge_FireSpikes(-40);
 
+	if (ENHANCED)
 	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
 		player_scourge_FireSpikes(45);
 
@@ -298,14 +306,15 @@ void()   player_scourge_atk8 =[ $shoot2,   player_stand1 ]
    player_scourge_FireSpikes(52);
 //   player_scourge_FireSpikes(-56);
 //   SUB_AttackFinished (4*random());
+	if (ENHANCED)
 	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
 
-	if (self.currentammo < 1 )  // firing lasers, out of ammo - // FIX
+	if (self.currentammo < 1 )  // firing lasers, out of ammo
 	{
 //		bprint("switch from lasers\n");
-//		W_SetWeapon(SEL_SCRGNAIL); // best wep cant select internals!
-		self.weapon = SEL_SCRGNAIL;
+//		W_SetWeapon(IT_SHOTGUN); // best wep cant select internals!
+		self.weapon = IT_SHOTGUN;
 		self.currentammo = 1;
 	}
 
@@ -348,7 +357,7 @@ void() player_scourge_attack =
 {
 	if (random() < 0.07) morph_sound(2, self.msight, 3);
 
-	if ( self.weapon == SEL_SCRGTAIL || (self.weapon == IT_GRENADE_LAUNCHER))
+	if ( self.weapon == IT_AXE || (self.weapon == IT_GRENADE_LAUNCHER))
 	{
 		if (rune_haste(0.5))
 		self.attack_finished = time + 1.0;
@@ -391,14 +400,14 @@ void() player_scourge_impulse =
 		self.weaponmodel = "";
 		self.forcewchange = 0;
 	}
-	if (self.weapon == SEL_SCRGNAIL)
+	if (self.weapon == IT_SHOTGUN)
 	{
 		if (self.eweapon.pk_touch != cube_touch)
 		self.eweapon = world;
 		self.items = self.items | IT_NAILS;
 		sprint(self, "Scourge firing ( perforator )\n"); 
 	}
-	if (self.weapon == SEL_SCRGTAIL)
+	if (self.weapon == IT_AXE)
 	{
 		if (self.eweapon.pk_touch != cube_touch)
 		self.eweapon = world;		
@@ -457,8 +466,11 @@ float (entity p, float heala, float ign) player_scourge_armor =
 };
 
 
-string(entity targ, entity attacker) player_scourge_killmsg = {
-	if (attacker.weapon == SEL_SCRGTAIL)
+string(entity targ, entity attacker) player_scourge_killmsg =
+{
+	if (!ENHANCED) return " was stung by a Centroid\n";
+
+	if (attacker.weapon == IT_AXE)
 		return " was stung by ";
 	else if  (attacker.weapon & IT_GRENADE_LAUNCHER) // FIX: no worky
 		{
@@ -478,7 +490,9 @@ string(entity targ, entity attacker) player_scourge_killmsg = {
 		return " was perforated by ";
 };
 
-string(entity targ, entity attacker) player_scourge_killmsg2 = {
+string(entity targ, entity attacker) player_scourge_killmsg2 =
+{
+	if (!ENHANCED) return "noname";
 	return ".\n";
 };
 
@@ -515,9 +529,7 @@ void(float silent) player_scourge_become =
 
 	self.items = self.items | IT_AXE | IT_SHOTGUN;
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_LIGHTNING | IT_GRENADE_LAUNCHER;
-	SEL_SCRGNAIL = IT_SHOTGUN;
-	SEL_SCRGTAIL = IT_AXE;
-	self.weapon = SEL_SCRGNAIL;
+	self.weapon = IT_SHOTGUN;
 	
 	self.msight = "scrg/sight.wav";
 	self.noise2 = "scrg/pain2.wav";

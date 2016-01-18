@@ -152,6 +152,14 @@ void()	demon1_die9		=[	$death9,		demon1_die9 ] {};
 
 void() demon_die =
 {
+	if (!Q_100)
+	if (self.flags & FL_DEMONBOOM) // heh heh - little enhancement, mostly for player morph
+	{
+		self.attack_finished = 0; // make sure we boom
+		player_demon_explode();
+		return;
+	}
+
 // check for gib
 	if (self.health < -80)
 	{

@@ -365,6 +365,7 @@ float ARM_SCRG						= 0.35; // scourge morph built in def armor
 // fiends
 
 float FL_DEMONBOOM				= 65536; // demon on overload!
+void() player_demon_explode;
 
 // wratihs
 

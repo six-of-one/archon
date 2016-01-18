@@ -684,7 +684,10 @@ void() viswep_post =
 
 	if (vhead)
 		{
-		vhead.owner.viswframe = -1; // NOTE: remove to use visframe code anywhere - ? what does this mean ?
+		if (vhead.owner) // Cataboligne - 10.10.11 - REMOVE: interim - world is getting viswframe set to this val
+			vhead.owner.viswframe = -1; // NOTE: remove to use visframe code anywhere - ? what does this mean ?
+		else
+			bprint(" ---------- NOTE: vhead.owner == world\n"); // REMOVE:
 		vang = v_forward;
 		vang_z = 0;
 //		makevectors(vang);
@@ -1101,7 +1104,7 @@ void(entity pack, vector v1) DeadThrowWeps =
 
 	if (!e || !DEAD_THROW) return;
 
-	if (!DEAD_THROW_PKI || DEAD_THROW_PKI == 2)
+	if (!DEAD_THROW_PKI || DEAD_THROW_PKI == 2) // not throwning or just gone - set mask
 		pkid = PKID;
 
 //	pkw = PK_IT_GRAPGUN + PK_IT_AIRGUN + PK_IT_CLIGHT;
@@ -1129,9 +1132,15 @@ void(entity pack, vector v1) DeadThrowWeps =
 		}
 		else
 			pd = TRUE;
-		
+
 		if (e.pk_currentitem <= PK_IT_AXE)
 		if (e.weapon & self.builtin) pd = FALSE; // in case morphs come here - dont throw builtin
+
+		if (DEAD_THROW_NOWAY)
+		if (noway_below)
+		if (e.origin_z < noway_below) pd = FALSE;
+		if (noway_above)
+		if (e.origin_z > noway_above) pd = FALSE;
 
 
 

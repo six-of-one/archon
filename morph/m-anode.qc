@@ -214,7 +214,7 @@ void() player_anode_attack =
 		sphere_attack();
 	else
 	 {
-		if (self.weapon == SEL_SHAL_LTN)
+		if (self.weapon == IT_LIGHTNING)
 		{
 			if (rune_haste(0.3))
 			self.attack_finished = time + 0.6;
@@ -251,11 +251,13 @@ void() player_anode_impulse =
 		}
 };
 
-string() player_anode_killmsg = {
-	return " was exploded by ";
+string() player_anode_killmsg =
+{
+	return " was de-rezzed by ";
 };
 
-string() player_anode_killmsg2 = {
+string() player_anode_killmsg2 =
+{
 	return ".\n";
 };
 
@@ -310,6 +312,6 @@ local entity e;
 	if (!silent) // silent for starting new level as this beasty
 		{
 		bprint(self.netname);
-		bprint(" has become Anode X.\n");
+		bprint(" has become an Anode.\n");
 		}
 };

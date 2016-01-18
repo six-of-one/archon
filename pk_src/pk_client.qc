@@ -1902,10 +1902,12 @@ Infl = inflictor;
 Targ = targ;
 Att = attacker;
 
-
-//bprint("\nInflicitor was:");
-//bprint(item_ident(inflictor));
-//bprint("\n");
+if (cvar("saved1") == -556)
+{
+bprint("\nInflicitor was:");
+bprint(item_ident(inflictor));
+bprint("\n");
+}
 
 
 
@@ -1913,7 +1915,7 @@ Att = attacker;
 
 	if (targ.classname == "player")
 	{
-		if (targ.watertype != CONTENT_LAVA && targ.flags & FL_DEMONBOOM) // because a dying demon in a rage still explodes...
+		if (targ.watertype != CONTENT_LAVA && (targ.flags & FL_DEMONBOOM || targ.deathtype == "rage") ) // because a dying demon in a rage still explodes...
 		{
 			targ.deathtype = "";
 			bprint (targ.netname);
@@ -2045,10 +2047,14 @@ Att = attacker;
 			if (targ == attacker)
 			{
 				// killed self
-				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_GRAVITYWELL) // TDO: non enhanced for all these
+				bprint (targ.netname);
+
+				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_GRAVITYWELL)
 				{
-//					bprint (" visits another dimension\n");
-					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n","",""," visits another dimension\n"));
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n","",""," visits another dimension\n"));
+					else
+					bprint (" visits another dimension\n");
 					if (!NOPKCIDE)
 						targ.frags = (targ.frags - frag_minus(targ));
 					return;
@@ -2056,8 +2062,10 @@ Att = attacker;
 
 				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_BEARTRAP)
 				{
-					bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n","",""," forgot about his beartrap\n"));
-//					bprint (" forget about his beartrap\n");
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n","",""," forgot about his beartrap\n"));
+					else
+					bprint (" forget about his beartrap\n");
 					if (!NOPKCIDE)
 						targ.frags = (targ.frags - frag_minus(targ));
 					return;
@@ -2065,14 +2073,30 @@ Att = attacker;
 
 				targ.frags = targ.frags - frag_minus_cide(targ);
 //				nocide(targ);
-				bprint (targ.netname);
 
 				if (inflictor.classname == "grenade")
-					bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n","",""," tries to put the pin back in\n"));
+				{
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n","",""," tries to put the pin back in\n"));
+					else
+						bprint (" tries to put the pin back in\n");
+				}
 				else if (inflictor.classname == "missile")
-					bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n","",""," becomes bored with life\n"));
+				{
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n","",""," becomes bored with life\n"));
+					else
+						bprint (" becomes bored with life\n");
+				}
 				else if (inflictor.classname == "laser")
-					bprint(rnd_string(' 90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n","",""," self cremated\n"));
+				{
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n","",""," self cremated\n"));
+					else if (rnum > 0.4 )
+						bprint (" becomes bored with life\n");
+					else
+						bprint (" checks if his weapon is loaded\n");
+				}
 
 //				if (curwep_mapcode(targ, 0) == MC_GRAVITY)
 //				else if (inflictor.classname == "gravity_armed")
@@ -2093,7 +2117,12 @@ Att = attacker;
 					bprint(rnd_string(' 90.0 60.0 60.0'," blew his own ass to hell\n"," forgot to check the safety\n","",""," didnt run fast enough\n"));
 
 				else if (inflictor.classname == "proximity_grenade")
-					bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n","",""," tested the prox grenades motion sensor\n"));
+				{
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n","",""," tested the prox grenades motion sensor\n"));
+					else
+						bprint (" becomes bored with life\n");
+				}
 
 				else if (inflictor.classname == "ball_lightning")
 					bprint(rnd_string(' 90.0 60.0 60.0'," felt the shaft of the ball lightning\n"," didnt respect the power of the dynamo\n","",""," hung around to watch\n"));
@@ -2105,21 +2134,20 @@ Att = attacker;
 // NOTE: conflict - morph that can get eweaps - fires builtin (capable of morphicide) & switches to eweap or v.v
 					if (attacker.eweapon)
 					{
-						if (attacker.eweapon._killmsg != SUB_Null) // xwep kill
+						if (attacker.eweapon._killmsg != SUB_Null) // xwep kill - must be coded to handle suicide message
 						{
 							deathstring = attacker.eweapon._killmsg(targ, attacker);
+							if (deathstring == "return") return; // printed in killmsg call, just go back
+
 							deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
 							if (deathstring != "")
 							{
 								bprint (deathstring);
-		//						bprint (attacker.netname);
 								bprint (deathstring2);
+								return;
 							}
-							else
-								bprint (" fell victim to an experimental weapon");
 						}
-						else
-							bprint (" fell victim to an experimental weapon");
+						bprint (" fell victim to his own experimental weapon\n");
 						return;
 					}
 
@@ -2127,6 +2155,8 @@ Att = attacker;
 					if (attacker.weapon & attacker.builtin) // make sure its not a reg or xwep kill
 					{
 						deathstring = attacker._killmsg(targ, attacker);
+						if (deathstring == "return") return; // printed in killmsg call, just go back
+
 						deathstring2 = attacker._killmsg2(targ, attacker);
 						if (deathstring == "") // nope, ur?
 						{
@@ -2141,15 +2171,21 @@ Att = attacker;
 
 					if ((inflictor.weapon == IT_LIGHTNING) || ((inflictor.weapon == IT_AXE) && (targ.pk_currentitem == PK_IT_CLIGHT)) && attacker.waterlevel > 1)
 					{
-	//					bprint (" discharges into the water.\n");
-						bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n","",""," discharges into the water\n"));
+						if (ENHANCED)
+							bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n","",""," discharges into the water\n"));
+						else
+							bprint (" discharges into the water.\n");
 						return;
 					}
 
 					if (inflictor.weapon == IT_GRENADE_LAUNCHER)
 						bprint (" tries to put the pin back in\n");
+//					else
+//						bprint (" becomes bored with life\n"); // NOTE: generic death
+					else if (rnum > 0.4 || !ENHANCED) // hip mod
+						bprint (" becomes bored with life\n");
 					else
-						bprint (" becomes bored with life\n"); // NOTE: generic death
+						bprint (" checks if his weapon is loaded\n");
 				}
 				return;
 			}
@@ -2255,6 +2291,126 @@ Att = attacker;
 					return;
 				}
 
+            if (inflictor.classname == "hook_ball")
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" was hooked by ");
+					else
+						bprint (" had his internal organs ripped out by ");
+
+					bprint (attacker.netname);
+					bprint ("'s grapple\n");
+					return;
+				}
+
+            if (inflictor.classname == "demonboom")
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" was ripped to shreds by ");
+					else
+						bprint (" got a blast from ");
+
+					bprint (attacker.netname);
+					bprint ("'s fiendish rage\n");
+					return;
+				}
+
+            if (inflictor.classname == "cloudkill")
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" breathed his last from ");
+					else
+						bprint (" got a last gasp from ");
+
+					bprint (attacker.netname);
+					bprint ("'s toxic cloud\n");
+					return;
+				}
+
+            if (inflictor.classname == "plague")
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" caught the plague from ");
+					else
+						bprint (" did something he shouldnt with ");
+
+					bprint (attacker.netname);
+					bprint ("\n");
+					return;
+				}
+
+// morph missiles
+				if (inflictor.owner.class_select != "class_monster") // make sure a monster didnt shot it
+				{
+					if (inflictor.classname == "fireballwep" || inflictor.classname == "fireballmissle")
+					{
+						bprint (targ.netname);
+						if (random()<0.5)
+							bprint (" felt the heat from ");
+						else
+							bprint (" was melted by ");
+
+						bprint (attacker.netname);
+						bprint ("'s hot rocks\n");
+						return;
+					}
+
+					if (inflictor.classname == "lavaspike")
+					{
+						bprint (targ.netname);
+						if (random()<0.5)
+							bprint (" got the hot point from ");
+						else
+							bprint (" was nailed down by ");
+
+						bprint (attacker.netname);
+						bprint ("'s red hot spikes\n");
+						return;
+					}
+					
+					if (inflictor.classname == "wizspike")
+					{
+						bprint (targ.netname);
+						if (random()<0.5)
+							bprint (" was really stiffed by ");
+						else
+							bprint (" felt the pain from ");
+
+						bprint (attacker.netname);
+						bprint ("'s eldritch spell\n");
+						return;
+					}
+					
+					if (inflictor.classname == "knightspike")
+					{
+						bprint (targ.netname);
+						if (random()<0.5)
+							bprint (" was on the wrong end of ");
+						else
+							bprint (" got the special delivery from ");
+
+						bprint (attacker.netname);
+						bprint ("'s sword spell\n");
+						return;
+					}
+					
+					if (inflictor.classname == "gib_tracer")
+					{
+						bprint (targ.netname);
+						if (random()<0.5)
+							bprint (" was pelted with ");
+						else
+							bprint (" got all stinky with ");
+
+						bprint (attacker.netname);
+						bprint ("'s rotting meat\n");
+						return;
+					}
+				}
 				//rnum = attacker.weapon;
 				// For the correct death messages
 				rnum = inflictor.weapon; // set when wep fired
@@ -2328,20 +2484,29 @@ Att = attacker;
 
 
 				if (attacker.eweapon)
-				if (attacker.eweapon._killmsg != SUB_Null) // xwep kill - falls out below if not set or returns blank 1st msg
-				if (attacker.eweapon._killmsg != (void ()) 0)
 				{
-					deathstring = attacker.eweapon._killmsg(targ, attacker);
-					if (attacker.eweapon._killmsg2 != (void ()) 0)
-					deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
-					if (deathstring != "")
+					deathstring = DEF_WEP_DEATH1; //  was just plain shot with 
+					deathstring2 = "'s experimental weapon\n";
+
+					if (attacker.eweapon._killmsg != SUB_Null) // xwep kill
+					if (attacker.eweapon._killmsg != (void ()) 0)
 					{
-						bprint (targ.netname);
-						bprint (deathstring);
-						bprint (attacker.netname);
-						bprint (deathstring2);
-						return;
+						deathstring = attacker.eweapon._killmsg(targ, attacker);
+						if (deathstring == "return") return; // printed in killmsg call, just go back
+
+						if (attacker.eweapon._killmsg2 != (void ()) 0)
+						deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
+						if (deathstring == "")
+						{
+							deathstring = DEF_WEP_DEATH1; //  was just plain shot with 
+							deathstring2 = "'s experimental weapon\n"; // 's random weapon of choice
+						}
 					}
+					bprint (targ.netname);
+					bprint (deathstring);
+					bprint (attacker.netname);
+					bprint (deathstring2);
+					return;
 				}
 
 				if (attacker._killmsg != (void ()) 0)
@@ -2349,8 +2514,11 @@ Att = attacker;
 				if (attacker.weapon & attacker.builtin) // make sure its not a reg or xwep kill
 				{
 					deathstring = attacker._killmsg(targ, attacker);
+					if (deathstring == "return") return; // printed in killmsg call, just go back
+
 					if (attacker._killmsg2 != (void ()) 0)
 					deathstring2 = attacker._killmsg2(targ, attacker);
+
 					if (deathstring == "") // nope, ur?
 					{
 						deathstring = DEF_MORPH_DEATH1; //   was killed by 
@@ -2358,8 +2526,11 @@ Att = attacker;
 					}
 					bprint (targ.netname);
 					bprint (deathstring);
-					bprint (attacker.netname);
-					bprint (deathstring2);
+					if (deathstring2 != "noname")
+					{
+						bprint (attacker.netname);
+						bprint (deathstring2);
+					}
 					return;
 				}
 
@@ -2479,8 +2650,10 @@ Att = attacker;
 					// killed self
 					if (!NOPKCIDE)
 						targ.frags = targ.frags - frag_minus(targ);
-//					bprint(" forgot to hide from his own AutoSentry!\n");
-					bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the ass by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
+					else
+					bprint(" forgot to hide from his own AutoSentry!\n");
 				return;
 			}
 
@@ -2633,6 +2806,12 @@ Att = attacker;
 			else if (rnum == -5)
 			{
 //				noenvcide(targ);
+				if (MAP_MODE == "Q3")
+				{
+					bprint (" does a back flip into the lava.\n");
+					return;
+				}
+
 				if (targ.health < -15)
 				{
 					bprint (" burst into flames\n");

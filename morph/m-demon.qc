@@ -170,6 +170,7 @@ void() player_demon_explode =
 		self.weapon = IT_AXE;
 		sv = self;
 		self = spawn(); // cant blow a client ent
+		self.classname = "demonboom";
 		self.owner = sv;
 		self.origin = sv.origin + ' 0 0 20';
 //		Explode(0, random() * 100 + sv.health, world, TE_TAREXPLOSION, 0, BecomeExplosion);
@@ -188,8 +189,10 @@ void() player_demon_explode =
 		self = sv;
 		self.deathtype = "rage";
 		T_Damage(self, self, world, self.health + 2 );
+// note: wonky obit possible here
 		fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, ZOMBIE_FLSH_VEL, "", "", 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
-		if (self.class_select == "dead_body") SUB_Remove(); // already dead, remove corpse
+//		if (self.class_select == "dead_body") SUB_Remove(); // already dead, remove corpse
+		self.nextthink = -1;
 		return;
 	}
 
@@ -281,7 +284,7 @@ void() player_demon_attack =
 		self.attack_finished = time + 1.2;
 		player_demon_spike1();
 	}
-	else if (self.weapon == IT_SUPER_SHOTGUN)
+	else if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
 		local float tmo;
 		tmo = 5 + random() * 10;
@@ -321,8 +324,17 @@ void() player_demon_impulse =
 	}
 };
 
-string() player_demon_killmsg = { return " was slashed by "; };
-string() player_demon_killmsg2 = { return "\n"; };
+string() player_demon_killmsg =
+{
+	if (!ENHANCED) return " was eviscerated by a Fiend\n";
+	else if (random () < 0.75) 	return " was eviscerated by ";
+	return " was slashed by "; 
+};
+string() player_demon_killmsg2 =
+{
+	if (!ENHANCED) return "noname";
+	return "\n";
+};
 
 void(float silent) player_demon_become = 
 {

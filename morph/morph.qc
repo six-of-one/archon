@@ -1419,18 +1419,78 @@ void() random_monster =
 		return;
 	}
 
-	local float f, mc;
+	local float f, mc, now;
 	local entity e,c;
 	f = 1;
+	mc = 0;
 	if (random() < 0.4) f = random();
 	self.nextthink = time + C_MONSTER_WAIT * f + C_MONSTER_DEV * crandom();
-/*
-	if (!C_MONSTER)
+
+// make some checks every time around
+
+	e = find(world,class_select,"class_monster"); // corpse will only be random monster corpse - respawned monsters use body que assets
+	while(e)
 	{
-		remove(self);
-		random_monster_spawn = world;
-		return;
-	}	*/
+		f = DEAD_BODYTIME + random() * 45;
+		if (!deathmatch)
+		{
+			f = f + DEAD_BODYTIME * 4; // hang around much longer in sp / coop
+			if (e.event != "dyn_monster") f = 0; // respawnable monsters are seen by this if dead - dont remove them
+		}
+
+// call the hearse
+
+		if (f)
+		if (e.health <= 0)
+		if (e.think != SUB_Remove)
+		{
+			e.think = SUB_Remove;
+			e.nextthink = f + time;
+		}
+
+		now = FALSE;
+		if (MONSTER_NOWAY) // clear monsters beyond noway bounds for a level
+		if (e.health > 0)
+		if (e.event == "dyn_monster") // dont remove regular or respawn monsters
+		if (e.movetype == MOVETYPE_STEP) // because flyers could get to a noway zone and be legit
+		{
+			if (noway_below)
+			if (e.origin_z < noway_below) now = TRUE;
+			if (noway_above)
+			if (e.origin_z > noway_above) now = TRUE;
+			if (now)
+			{
+				T_Damage (e,world,world,e.health + 10);
+				remove(e);
+			}
+		}
+		
+		if (!now)
+		if (e.health > 0)
+			mc = mc + 1; // build a live monster count
+
+		e = find(e, class_select, "class_monster");
+	}
+
+	if (C_MONSTER_CNT > 0)
+	if (mc != monster_rnd_cnt)
+	{
+		if (monster_rnd_cnt >= C_MONSTER_CNT)
+		if (mc < monster_rnd_cnt)
+		{
+			monster_rnd_cnt = mc;
+
+
+bprint(" --------- monster count total fail:  ");
+bprint(ftos(mc));
+bprint(" != master: ");
+bprint(ftos(monster_rnd_cnt));
+bprint("\n");
+
+
+		}
+	}
+
 	if ((!C_MONSTER) && (!C_MONSTER_II)) return; // whoops - nothing to do - this shouldnt happen...of course
 
 	if (C_MONSTER_CNT > 0)
@@ -1483,6 +1543,7 @@ void() random_monster =
 				bprint(ftos(M));
 				bprint("\n");
 			}
+			self = c;
 			return;
 		}
 
@@ -1539,48 +1600,7 @@ bprint("\n");
 			bprint(" on the map");
 		bprint("\n");
 	}
-
-// call the hearse
-
-	e = find(world,class_select,"class_monster"); // these will only be random monster corpse - respawned monsters use body que assets
-	while(e)
-	{
-		f = DEAD_BODYTIME + random() * 45;
-		if (!deathmatch)
-		{
-			f = f + DEAD_BODYTIME * 4; // hang around much longer in sp / coop
-			if (e.event != "dyn_monster") f = 0; // respawnable monsters are seen by this if dead - dont remove
-		}
-
-		if (f)
-		if (e.health <= 0)
-		{
-			e.think = SUB_Remove;
-			e.nextthink = f + time;
-		}
-
-	local float now;
-
-		now = FALSE;
-		if (MONSTER_NOWAY) // clear monsters beyond noway bounds for a level
-		if (e.health > 0)
-		if (e.event == "dyn_monster") // dont remove regular or respawn monsters
-		if (e.movetype == MOVETYPE_STEP)
-		{
-			if (noway_below)
-			if (e.origin_z < noway_below) now = TRUE;
-			if (noway_above)
-			if (e.origin_z > noway_above) now = TRUE;
-			if (now)
-			{
-				T_Damage (e,world,world,e.health + 10);
-				remove(e);
-			}
-		}
-		
-		if (!now) mc = mc + 1;
-		e = find(e, class_select, "class_monster");
-	}
+	self = c;
 };
 
 // IDEA: upgrades

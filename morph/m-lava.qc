@@ -285,7 +285,7 @@ void()	Lavablob_JumpTouch =
 {
 	local	float	ldmg;
 
-	if (other.takedamage && other.morphy != self.morphy && other.classname != "monster_tarbaby")
+	if (other.takedamage && other.morphy != self.morphy && other.classname != "monster_tarbaby" && other.classname != "monster_vomit")
 	{
 		if ( vlen(self.velocity) > 400 )
 		{
@@ -388,7 +388,7 @@ void() player_lavablob_attack =
 		if (rune_haste(0.125))
 		self.attack_finished=time+0.25;
 
-		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, ' 0 0 0', "lavaspike", "progs/spike.mdl", "chaos/lava-shot.wav", spike_touch, 6, SUB_Remove, SUB_Nop);
+		fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY, self.origin, ' 0 0 0', "lavaspike", "progs/nail.mdl", "chaos/lava-shot.wav", spike_touch, 6, SUB_Remove, SUB_Nop);
 		newmis.skin = 1;
 	}
 };
@@ -435,8 +435,14 @@ void() player_lavablob_impulse =
 		+---------------------------------------+
 */
 
-string() player_lavablob_killmsg = { return rnd_string(' 60.0 50.0 40.0'," got melted by a Lava Bomb ","",""," was blasted by a Lava Bomb "," was fired! "); };
-string() player_lavablob_killmsg2 = { return "\n"; };
+string() player_lavablob_killmsg =
+{
+	return rnd_string(' 60.0 50.0 40.0'," got melted by Lava Bomb ","",""," was blasted by Lava Bomb "," was fired by ");
+};
+string() player_lavablob_killmsg2 =
+{
+	return "\n";
+};
 
 /*
 		+---------------------------------------+

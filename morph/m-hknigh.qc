@@ -302,17 +302,23 @@ void() player_hknight_impulse =
 
 string(entity targ, entity attacker) player_hknight_killmsg =
 {
-	if (targ == attacker)
+	if (targ == attacker) // doesnt happen - suicide by missile
 		return " goes back home to hell";
-	else
+
+	if (!ENHANCED) return " was slain by a Death Knight\n";
+
 	if(attacker.weapon & IT_AXE)
 		return " was slashed by ";
+	else
+	if (random () < 0.7)
+		return " felt the red hot magic of ";		
 	else
 		return " was fried by ";
 };
 
 string(entity targ, entity attacker) player_hknight_killmsg2 =
 {
+	if (!ENHANCED) return "noname";
 	return ".\n";
 };
 

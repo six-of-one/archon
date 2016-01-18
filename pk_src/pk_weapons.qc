@@ -228,7 +228,11 @@ void(float ox) W_FirePulseSpikes =
 		launch_spike (self.origin + ' 0 0 16' + v_right*ox, dir);
 	else
 		launch_spike (self.origin + v_up * VWZ_PNAILG + v_right * (ox / 2.5) + v_right * VWY_PNAILG + v_forward * VWX_PNAILG, dir);
+	if (ENHANCED)
+	newmis.touch = spike_touch; //pulse_touch;
+	else
 	newmis.touch = pulse_touch;
+	newmis.dmg = 27;
 	newmis.theowner = self;
 	setmodel (newmis, "progs/pnail.mdl");
 	newmis.angles = vectoangles(dir);

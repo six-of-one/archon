@@ -459,21 +459,24 @@ void() player_gremlin_impulse =
 
 string(entity targ, entity attacker) player_gremlin_killmsg =
 {
+	if (!ENHANCED) return " was outsmarted by a Gremlin\n";
+
 	if (attacker.weapon == IT_AXE)
 		return " was bit to death by ";
 	else if  (attacker.weapon == IT_SHOTGUN)
-		{
+	{
 		if (random() < 0.3)
 			return " was clawed to pieces by ";
 		else
 			return "was mauled by ";
-		}
+	}
 	else
-		return " got murdered (LOL) by ";
+		return " got murdered (heh heh) by ";
 };
 
 string(entity targ, entity attacker) player_gremlin_killmsg2 =
 {
+	if (!ENHANCED) return "noname";
 	return ".\n";
 };
 
@@ -775,14 +778,15 @@ void(float silent) player_gremlin_become =
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
 
-	if (0)
-	if (random() < 0.3) // this is code to give gremlin default weps.  has to be re-implemented
+/*
+// this is code to give gremlin default weps.  has to be re-implemented
+	if (random() < 0.3)
 	{
 	//	base_weps();
 		self.viswframe = -1; // must start -1
 	}
+*/
 
-	
 	if (self.armortype == 0) //gremlin has some base armor on create
 		{
 		player_scourge_armor(self, 80, GIVEARMOR); 

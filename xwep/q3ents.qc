@@ -89,6 +89,29 @@ float q3_bob_on; // server cfg this to 1 for total disable
 // = 1, q3 bob is activated
 // = -1 q3 bob is waiting activation by player stuff - items cant stuff
 
+/*
+{name} entered the game
+
+known obits
+
+{name} was pummeled by {name}
+{name} was machinegunned by {name}
+{name} was gunned down by {name}
+{name} ate {name}'s grenade
+{name} ate {name}'s rocket
+{name} was electrocuted by {name}
+{name} was railed by {name}
+{name} was melted by {name}'s plasmagun
+{name} was blasted by {name}'s BFG
+
+{name} tripped on her own grenade.
+{name} blew herself up.
+{name} melted herself.
+{name} should have used a smaller gun.
+
+
+{name} does a back flip into the lava.
+*/
 void() q3_precache =
 {
 // all ammo
@@ -377,6 +400,162 @@ void() player_q3grap =
 	hook_impulse_check();
 };
 
+
+// kill messages
+
+// bfg
+string(entity targ, entity attacker) q3bfg_killmsg =
+{
+	if (targ == attacker) return " should have used a smaller gun.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was blasted by ";
+};
+
+string(entity targ, entity attacker) q3bfg_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s BFG\n";
+};
+
+// rail
+string(entity targ, entity attacker) q3rail_killmsg =
+{
+//	if (targ == attacker) return "should have used a smaller gun.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was railed by ";
+};
+
+string(entity targ, entity attacker) q3rail_killmsg2 =
+{
+//	if (targ == attacker) return "";
+	return "\n";
+};
+
+// plasma
+string(entity targ, entity attacker) q3plasma_killmsg =
+{
+	if (targ == attacker) return " melted himself.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was melted by ";
+};
+
+string(entity targ, entity attacker) q3plasma_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s plasmagun\n";
+};
+
+// lightning
+string(entity targ, entity attacker) q3ltn_killmsg =
+{
+	if (targ == attacker) return " blew himself up.\n"; // note: q3 lg doestn blow under water
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was electrocuted by ";
+};
+
+string(entity targ, entity attacker) q3ltn_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "\n";
+};
+
+// rocket
+string(entity targ, entity attacker) q3rock_killmsg =
+{
+	if (targ == attacker) return " blew himself up.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " ate ";
+};
+
+string(entity targ, entity attacker) q3rock_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s rocket\n";
+};
+
+// grenade
+string(entity targ, entity attacker) q3gren_killmsg =
+{
+	if (targ == attacker) return " tripped on his own grenade.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " ate ";
+};
+
+string(entity targ, entity attacker) q3gren_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s grenade\n";
+};
+
+// shotgun
+string(entity targ, entity attacker) q3sg_killmsg =
+{
+//	if (targ == attacker) return " tripped on his own grenade.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was gunned down by ";
+};
+
+string(entity targ, entity attacker) q3sg_killmsg2 =
+{
+//	if (targ == attacker) return "";
+	return "\n";
+};
+
+// mg
+string(entity targ, entity attacker) q3mg_killmsg =
+{
+//	if (targ == attacker) return " tripped on his own grenade.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was machinegunned by ";
+};
+
+string(entity targ, entity attacker) q3mg_killmsg2 =
+{
+//	if (targ == attacker) return "";
+	return "\n";
+};
+
+// melee
+string(entity targ, entity attacker) q3g_killmsg =
+{
+//	if (targ == attacker) return " tripped on his own grenade.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was pummeled by ";
+};
+
+string(entity targ, entity attacker) q3g_killmsg2 =
+{
+//	if (targ == attacker) return "";
+	return "\n";
+};
+
 /*
 q3 wep inventory slots
 
@@ -448,6 +627,9 @@ void () q3_weapon_bfg =
 	self.chaosweptime = 0.93;
 	self.duration = SND_OVER;
 
+	self._killmsg = q3bfg_killmsg;
+	self._killmsg2 = q3bfg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -496,6 +678,11 @@ void() weapon_plasmagun =
 	self.noise3 = "q3_snd/hyprbf1a.wav";
 	self.target = "q3_snd/plasmx1a.wav";
 	self.duration = SND_OVER;
+	self._killmsg = q3g_killmsg;
+	self._killmsg2 = q3g_killmsg2;
+
+	self._killmsg = q3plasma_killmsg;
+	self._killmsg2 = q3plasma_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -551,6 +738,9 @@ void() q3_weapon_machinegun =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.noise3 = "q3_snd/machgf1b.wav";
 
+	self._killmsg = q3mg_killmsg;
+	self._killmsg2 = q3mg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -599,6 +789,10 @@ void() q3_weapon_shotgun =
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.noise3 = "q3_snd/sshotf1b.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q3sg_killmsg;
+	self._killmsg2 = q3sg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -645,6 +839,10 @@ void() q3_weapon_rocketlauncher =
 	self.noise3 = "q3_snd/rocklf1a.wav";
 	self.target = "q3_snd/rocklx1a.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q3rock_killmsg;
+	self._killmsg2 = q3rock_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -691,6 +889,10 @@ void () q3_weapon_grenadelauncher =
 	self.noise3 = "q3_snd/grenlf1a.wav";
 	self.target = "q3_snd/hgrenb1a.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q3gren_killmsg;
+	self._killmsg2 = q3gren_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -740,6 +942,10 @@ void () weapon_gauntlet =
 	self.noise3 = "q3_snd/gauntrun.wav";
 	self.noise2 = "q3_snd/gaunthum.wav"; // gun hum
 	self.chaosweptime = 1.99;
+
+	self._killmsg = q3g_killmsg;
+	self._killmsg2 = q3g_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
@@ -848,6 +1054,10 @@ void () q3_weapon_lightning =
 	self.noise3 = "q3_snd/lg_fire.wav";
 //	self.noise2 = "q3_snd/lg_hum.wav"; // ? - could have been 1 lg used to use - CHECK
 	self.chaosweptime = 0.964;
+
+	self._killmsg = q3ltn_killmsg;
+	self._killmsg2 = q3ltn_killmsg2;
+
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -902,6 +1112,10 @@ void () q3_weapon_railgun =
 	self.noise2 = "q3_snd/rg_hum.wav"; // gun hum
 	self.chaosweptime = 1.16;
 	self.endtime = 1.55;
+
+	self._killmsg = q3rail_killmsg;
+	self._killmsg2 = q3rail_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();

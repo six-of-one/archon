@@ -287,7 +287,7 @@ new QUAKED weapon_airfist (0 .5 .8) (-15 -9 25) (17 9 43)
 
 void () weapon_airfist =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		remove(self);
 		return;
@@ -325,7 +325,7 @@ void () weapon_rmine =
 
 void () weapon_chainlg =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		if (Q_100) remove(self);
 		else
@@ -352,7 +352,7 @@ void () weapon_chainlg =
 
 void () weapon_grapgun =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		remove(self);
 		return;
@@ -839,7 +839,7 @@ bprint(")\n");
 */
 void () item_painkeep_gwell =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		remove(self);
 		return;
@@ -862,7 +862,7 @@ void () item_painkeep_gwell =
 */
 void () item_painkeep_turret =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		remove(self);
 		return;
@@ -892,7 +892,7 @@ void () item_painkeep_lantern =
 */
 void () item_painkeep_can =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		remove(self);
 		return;
@@ -913,7 +913,7 @@ void () item_painkeep_can =
 */
 void () item_painkeep_beartrap =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		remove(self);
 		return;
@@ -937,7 +937,7 @@ Currently exactly the same as a small wall torch
 */
 void () light_painkeep_candle =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		remove(self);
 		return;
@@ -955,7 +955,7 @@ void () light_painkeep_candle =
 
 void () item_painkeep_expshells =
 {
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
 		remove(self);
 		return;
@@ -1571,6 +1571,14 @@ void() DropBackpack =
 		q100_DropBackpack();
 		return;
 	}
+
+	newmis = world;
+
+	if (DEAD_THROW_NOWAY)
+	if (noway_below)
+	if (self.origin_z < noway_below) return;
+	if (noway_above)
+	if (self.origin_z > noway_above) return;
 
 	if (!self.flags & FL_MONSTER) // monsters always get to throw down
 	if (DEAD_XPACK == 3) return; // code for no packs at all

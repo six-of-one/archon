@@ -686,7 +686,17 @@ void() SV_Physics_Client =
 		BotAI();
 	}
 	else
+	{
+		if (Q_100 && Q_100_OBJERR)
 		error ("SV_Physics_Client: Bad Movetype (BOT)");
+		else
+		{
+//			if (WARNING)
+			bprint("--- WARNING: SV_Physics_Client: Bad Movetype (BOT) = ");
+			bprint(item_ident(self));
+			bprint("\n");
+		}
+	}
 
 };
 

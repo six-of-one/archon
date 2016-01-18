@@ -2389,7 +2389,7 @@ void() PK_AdminImpulse =
 
 	if (self.admin == USER_MENU) // process user menu (impulse 39) here + impulse 53, drop menu
 	{
-		if (Q_100 | Q_99) return; // Cataboligne - 8.16.9 - quake compatability mode
+		if (Q_100 || Q_99) return; // Cataboligne - 8.16.9 - quake compatability mode
 
 		if (cvar("chase_active") > 0) stuffcmd(self, "chase_active 0\n");
 

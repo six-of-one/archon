@@ -60,7 +60,7 @@ string (float bt) ammo_by_bit =
 	if (bt == WEP_THUNDER) return("item_cells");
 	if (bt == WEP_PKI) return("pki");
 
-	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
+	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 		return("");
 	
 // pk item subs by special bits
@@ -462,6 +462,7 @@ void(string cls) item_call =
 	else if (cls == "monster_demon1") monster_demon1(A_MONSTER);
 	else if (cls == "monster_dog") monster_dog(A_MONSTER);
 	else if (cls == "monster_enforcer") monster_enforcer(A_MONSTER);
+	else if (cls == "monster_fish") monster_fish(A_MONSTER);
 	else if (cls == "monster_fish") monster_fish(A_MONSTER);
 	else if (cls == "monster_hell_knight") monster_hell_knight(A_MONSTER);
 	else if (cls == "monster_knight") monster_knight(A_MONSTER);

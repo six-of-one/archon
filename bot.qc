@@ -941,6 +941,7 @@ bprint("\n");
 }
 
 		self.owner.button16 = self.owner.frags;
+		self.owner.button15 = self.owner.health;
 		if (self.owner.classname == "pk*bot")
 		{
 			self.owner.nextthink = time + random();
@@ -950,8 +951,32 @@ bprint("\n");
 		{
 			self.owner.nextthink = time + random();
 			self.owner.think = respawn;
-			self.owner.button0 = 1; // try to force a respawn - this may not work
+			self.owner.button0 = 1;
 		}
+	}
+	remove(self);
+}
+
+void() bot_fixed =
+{
+	if (!self.owner.ishuman)
+	if (self.frags == self.owner.frags) // hasnt changed
+	{
+		bot_fix.frags = bot_fix.frags + 1;
+		self.owner.armorvalue = 0;
+		self.owner.invincible_finished = 0;
+		T_Damage (self.owner,world,bot_fix,self.owner.health + 10);
+
+
+if (cvar("saved1") == -555)
+{
+bprint("------------------- ** bot fixed  ");
+//bprint(item_ident(e));
+bprint(self.owner.netname);
+bprint("\n");
+}
+
+
 	}
 	remove(self);
 }
@@ -981,13 +1006,6 @@ bprint("bot fix removed\n");
 
 	if (!bot_fix && e) //|| self.classname != "bot_fix")
 	{
-
-
-
-bprint("bot fix started\n");
-
-
-
 		bot_fix = spawn();
 		bot_fix.classname = "bot_fix";
 		bot_fix.think = bot_fixer;
@@ -997,6 +1015,7 @@ bprint("bot fix started\n");
 		while (e)
 		{
 			e.button16 = e.frags;
+			e.button15 = e.health;
 			e = find(e,class_select,"class_bot");
 		}
 
@@ -1010,18 +1029,20 @@ bprint("bot fix started\n");
 		{
 			if (BOT_FIXED)
 			if (e.button16 == e.frags)
+//			if (e.button15 == e.health)
 			{
 				if (!(inHubMap && e.map != "")) // do nothing on hub maps
 				{
 					if (e.deadflag)
 					{
 						f = spawn();
+						f.classname = "bot_waker";
 						f.think = bot_wakey;
 						f.nextthink = time + 2 + random() * 5;
 						f.owner = e;
 						e.button16 = -666000;
 
-if (cvar("saved1") == -555)
+if (cvar("saved1") == -556)
 {
 bprint("------------------- ** bot waking  ");
 //bprint(item_ident(e));
@@ -1035,7 +1056,7 @@ bprint("\n");
 					{
 
 
-if (cvar("saved1") == -555)
+if (cvar("saved1") == -556)
 {
 bprint("------------------- ** bot fixing  ");
 bprint(e.netname);
@@ -1043,16 +1064,21 @@ bprint(e.netname);
 bprint("\n");
 }
 
-					bot_fix.frags = bot_fix.frags + 1;
-					e.armorvalue = 0;
-					e.invincible_finished = 0;
-					T_Damage (e,world,bot_fix,e.health + 10);
+					f = spawn();
+					f.classname = "bot_fixer";
+					f.think = bot_fixed;
+					f.nextthink = time + 3 + random() * 10;
+					f.owner = e;
+					f.frags = e.frags;
 					}
 				}
 			}
 			else
 			if (e.button16 != -666000)
+			{
 				e.button16 = e.frags;
+				e.button15 = e.health;
+			}
 			e = find(e,class_select,"class_bot");
 		}
 

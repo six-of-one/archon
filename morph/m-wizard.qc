@@ -127,7 +127,6 @@ void() pointer_hk_fire_spike =
 
 void() Wiz_fireBomb =
 {
-bprint("fired bomb\n");
 	fire_missile(SCRAGG_SHT_VEL * 0.8, MOVETYPE_FLYMISSILE, 0 , RM_SKY | PF_LAVA, self.origin, v0, "missile", "progs/w_spike.mdl", "", Wiz_MissileTouch, ROCKET_FUSE,  Wiz_MissileTouch, Wiz_MissileTouch);
 	newmis.frame = 1;
 	newmis.dmg = 75;
@@ -432,11 +431,16 @@ void() player_wizard_impulse =
 
 
 
-string() player_wizard_killmsg = {
+string() player_wizard_killmsg =
+{
+	if (!ENHANCED) return " was scragged by a Scrag\n";
+
 	return " was scragged by ";
 };
 
-string() player_wizard_killmsg2 = {
+string() player_wizard_killmsg2 =
+{
+	if (!ENHANCED) return "noname";
 	return ".\n";
 };
 

@@ -184,18 +184,13 @@ void() player_shalrath_lightning2 = [ $attack2, player_shalrath_lightning3 ]
 void() player_shalrath_lightning3 = [ $attack11, player_stand1 ] {};
 
 
-float SEL_SHAL_ANH;
-float SEL_SHAL_BOMB;
-float SEL_SHAL_LTN;
-float SEL_SHAL_SPIKE;
-
 void() player_shalrath_attack =
 {
 	if (sphere_a.owner == self && sphere_a.state != ST_FREEZE)
 		sphere_attack();
 	else
 	 {
-		if(self.weapon == SEL_SHAL_ANH)
+		if(self.weapon == IT_AXE)
 		{
 			if (sphere_a != world)
 			{
@@ -209,7 +204,7 @@ void() player_shalrath_attack =
 			self.attack_finished = time + 1;
 			sphere_annihilation_spawn();
 		}
-		else if (self.weapon == SEL_SHAL_LTN)
+		else if (self.weapon == IT_LIGHTNING)
 		{
 			if (rune_haste(0.4))
 				self.attack_finished = time + 0.75;
@@ -238,37 +233,43 @@ void() player_shalrath_impulse =
 
 	morph_impulse();
 
-	if (self.weapon == SEL_SHAL_ANH)
+	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
 		self.items = self.items | IT_CELLS;
 		sprint(self, "Press fire to summon / dismiss Sphere of annihilation\n"); 
 	}
-	if (self.weapon == SEL_SHAL_BOMB)
+	if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
 		self.items = self.items | IT_ROCKETS;
 		sprint(self, "Shalrath firing ( Spiked bomb )\n"); 
 	}
 
-	if (self.weapon == SEL_SHAL_LTN)
+	if (self.weapon == IT_LIGHTNING)
 		{
 		sprint(self, "Shalrath using ( Lightning )\n");
 		self.items = self.items | IT_CELLS;
 		}
 
-		if (self.weapon == SEL_SHAL_SPIKE)
+		if (self.weapon == IT_SUPER_NAILGUN)
 		{
 		sprint(self, "Shalrath using ( Spikes )\n");
 		self.items = self.items | IT_NAILS;
 		}
 };
 
-string() player_shalrath_killmsg = {
+string() player_shalrath_killmsg =
+{
+	if (!ENHANCED) return " was exploded by a Vore\n";
+	if (random() < 0.5) return " felt the deep existential magic of ";
 	return " was exploded by ";
 };
 
-string() player_shalrath_killmsg2 = {
-	return ".\n";
+string() player_shalrath_killmsg2 =
+{
+	if (!ENHANCED) return "noname";
+
+	return "\n";
 };
 
 void(float silent) player_shalrath_become =
@@ -296,11 +297,7 @@ void(float silent) player_shalrath_become =
 
 	self.builtin = IT_AXE | IT_SUPER_NAILGUN | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
 	self.items = self.items | self.builtin;
-	SEL_SHAL_BOMB = IT_ROCKET_LAUNCHER;
-	SEL_SHAL_LTN = IT_LIGHTNING;
-	SEL_SHAL_SPIKE = IT_SUPER_NAILGUN;
-	SEL_SHAL_ANH = IT_AXE;
-	self.weapon = SEL_SHAL_BOMB;
+	self.weapon = IT_ROCKET_LAUNCHER;
 
 	self.msight = "shalrath/sight.wav";
 	self.noise2 = "shalrath/pain.wav";

@@ -16,6 +16,106 @@
 		+---------------------------------------+
 */
 
+// fn(xwep_fakeload) - extra weapon fake load - carried something between levels and it doesnt exist on new level
+
+// self - map weapon ent (fake loaded) NOTE: code does not load for self! 
+//...or 1 of these 2... --- what code really does
+// mcd - map code - overrides spf
+// spf - spawn func, in either case this code handles load up
+// islot - inventory slot (weapon bit 1 - 128, 4096)
+
+// ve - viswep ent
+// camct - current ammo cnt
+
+void(entity ve, float camct, float mcd, string spf, float islot) xwep_fakeload =
+{
+	local string spt; // spawn this temp
+	local entity sv;
+	local float camctp; // value to pass - sending negative as code
+
+	if (!ve) return;
+
+	sv = self;
+	spt = spf;
+
+	if (mcd)
+	{
+		spt = item_by_mcode(mcd);
+	}
+	if (spt) // spawn this
+	{
+		self = spawn();
+		self.event = "dynamic_item"; // stop item_call from doing a bunch of stuff - if not removed this will spawn the item somewhere
+		item_call(spt);
+		self.think = SUB_Remove;
+		self.nextthink = time + 10;
+		self.event = ""; // so pk_mcode will give us valid mcode
+		self.mcode = pk_mcode(spt, self); // put map code on ent
+
+		if (camct < 1) camctp = -0.5;
+		else camctp = 0 - camct;
+
+		x_wep_store(ve, islot, camctp);
+		remove(self);
+	}
+
+/*
+TEST: more testing before removeal
+		ve.eweapon = ve;
+		ve._attack = self._attack;
+		ve._fr_attack = self._fr_attack;
+		ve.vv_draw = self.vv_draw;
+		ve.vv_holster = self.vv_holster;
+		ve.vwepmdl = self.vwepmdl; // for pack / dthrow weps
+//		ve.touch = self.touch;
+
+		ve.weapon = ve.items = self.items;
+		if (self.items == IT_AXE) ve.pk_currentitem = self.pk_currentitem; // replacing the axe
+		ve.x_items = self.x_items;
+		ve.currentammo = self.currentammo;
+		ve.lip = self.lip;
+		ve.attack_finished = self.attack_finished;
+		ve.dmg = self.dmg;
+		ve.dodmg = self.dodmg;
+		ve.dmg_save = self.dmg_save;
+		ve.dmg_take = self.dmg_take;
+		ve.bulletspread = self.bulletspread;
+		ve.aflag = camct;
+		ve.style = self.style; // melee flag
+		ve.lefty = self.lefty; // misc data
+//		ve.cnt = self.cnt; // vw skinnage
+		if (self.mcode) ve.mcode = self.mcode; // for pack touch deal
+
+		ve.netname = self.netname;
+//		ve.mdl = self.mdl; - invisible
+		setmodel (ve, self.vwepmdl);
+		ve.mdl = ve.model;
+		if (!VW)
+		{
+			if (!(ve.weapon == IT_AXE && ve.pk_currentitem == PK_IT_AXE)) // any axe replacement
+			if (ve.mdl != "progs/vw_q2_hgr.mdl")
+			if (ve.mdl != "progs/vw_axe.mdl" && ve.mdl != "progs/vw_mjolnir.mdl")
+				setmodel (ve, VW_DEFGUN);
+		}
+		if (self.skin) ve.skin = self.skin;
+		ve.weaponmodel = self.weaponmodel;
+		ve.chaosweptime = self.chaosweptime;
+		ve.endtime = self.endtime;
+		ve.duration = self.duration;
+		ve.noise = self.noise;
+		ve.noise2 = self.noise2;
+		ve.noise3 = self.noise3;
+		ve.noise4 = self.noise4;
+		ve.target = self.target; // missile strike snd
+		ve.target1 = self.target1; // missile models
+// hooks
+		ve.target2 = self.target2;
+		ve.targetname = self.targetname;
+		ve.killtarget = self.killtarget;
+*/
+	self = sv;
+}
+
 // fn(set_q1w_defammo) if new q1 defs are set by bit and no ammo is added for that wep, set base amount
 
 void(float wb, entity e) set_q1w_defammo =

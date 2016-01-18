@@ -359,6 +359,9 @@ void () cam_deathview =
 {
 	self.nextthink = time + 0.1;
 
+// wait for fry model to end before cam tests
+	if (self.owner.model == "progs/fryguy.mdl") return;
+
 	if (self.owner.solid != SOLID_NOT) // hit respawn already
 	{
 

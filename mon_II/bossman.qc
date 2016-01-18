@@ -324,7 +324,8 @@ if (ign != A_MONSTER)
 	setmodel (self, "progs/bossman.mdl");
 	self.skin = floor(6 * random());
 
-	setsize (self, '-16 -16 -24', '16 16 60');
+//	setsize (self, '-16 -16 -24', '16 16 60');
+	setsize (self, '-32 -32 -24', '32 32 60');
 	self.health = 800;
 
 	self.th_stand = bossman_talk1;

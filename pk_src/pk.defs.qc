@@ -461,6 +461,7 @@ float corpse_solid;
 float SOLID_CORPSE			= 5;
 
 float DEAD_THROW;
+float DEAD_THROW_NOWAY		= 1; // if true dont dead throw beyond noway, applies to packs - note thrown stuff in bounds could still get there
 float DEAD_THROW_ARMOR;
 float DEAD_THROW_PKI;
 float DEAD_THROW_LIVERND	= 0.5; // chance a dead threw wep is touchable under rule 2
@@ -798,6 +799,8 @@ float DEF_X_ITEMS; // x bit flags
 entity sphere_a; // only one of these ever
 void() sphere_annihilation_phys_move;
 
+// for q3 lg udern water
+float MC_Q3_LIGHTNING;
 
 .float crosshair_sv; // save crosshair so it can be turned off during menus & such
 float IMP_CROSSHAIR			= 49; // impulse controls crosshair
@@ -949,6 +952,8 @@ void() player_pistol1;
 float SPIKE_VEL					= 1000; // TDO: cvar? port to other code
 float DEF_VEL						= 600;
 float ROCKET_VEL					= 1000;
+
+float SPIKE_STICK					= 0.2; // chance a spike sticks in solid
 
 float LASERCAN_VEL;
 float LASER_VEL;

@@ -779,7 +779,7 @@ void(entity e) InitiateHook =
 
 	hk = "progs/v_spike.mdl";
 
-	newhook = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, e.origin + (v_forward*16) + '0 0 16', ' 0 0 0', ' 0 0 0', vectoangles(v_forward), v_forward*2000, "", hk, HookTouch, 0.01, LaunchHook, SUB_Null, e, world);
+	newhook = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, e.origin + (v_forward*16) + '0 0 16', ' 0 0 0', ' 0 0 0', vectoangles(v_forward), v_forward*2000, "hook_ball", hk, HookTouch, 0.01, LaunchHook, SUB_Null, e, world);
 
 	newhook.armortype = MAX_CHAIN_LEN;
 	newhook.morphy = 0;
