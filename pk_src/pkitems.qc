@@ -643,6 +643,7 @@ if (!self.mask_x)
 // testing touch select for morphs, etc
 #ifdef warning
 if (WARNING & 2)
+if (!self.rune_flag & RUNE_VESS)
 if (self.theowner != other) // debounce
 //if (self.classname == "Backpack")
 {

@@ -102,7 +102,7 @@ float FL_FJUMP						= 4; // move field by setorg
 float FL_FLIT						= 32768; // light field
 float FL_FPART						= 65536; // particle field
 float LT_CHAOS						= 7;  // chaos beam -- IMP: replace with some other effects system
-float USE_PULSE_SPIKES			= -257368;
+float USE_PULSE_SPIKES			= -250;
 float C_FBPER						= 0.7; // % for chaos explode to fire bolts
 float CFCBALL						= 207;
 float CI_EXPLBOX					= 0.1; // % chance chaos item capable will become explode box
@@ -2045,14 +2045,15 @@ void() rune_powers =
 {
 	if (self.pk_beartrapammo == 4194304)
 	{
-		if (self.rune_flag) self.archon = self.archon - self.pk_explode_ammo;
-		self.rune_flag = 0;
+		if (self.rune_flag & 71) self.archon = self.archon - self.pk_explode_ammo;
+		if (self.rune_flag & RUNE_VESS) self.rune_flag = RUNE_VESS; // dont expulse the vessel flag
+		else self.rune_flag = 0;
 		self.pk_beartrapammo = 1;
 		self.pk_explode_ammo = 0;
 		self.bolt_targetTimeout = 0;	
 	}
 	else
-	if (!self.rune_flag)
+	if (!self.rune_flag & 71)
 	if (self.archon > 1500)
 	{
 		self.rune_flag = self.rune_flag | self.pk_beartrapammo;
@@ -2531,6 +2532,54 @@ void() archon_time_flow =
 	self.attack_finished = time + 1; //debounce
 };
 
+// soul vessels
+
+
+
+void() make_vessel =
+{
+	self.rune_flag = self.rune_flag | RUNE_VESS;
+	self.bolt_target.archon = self.pk_explode_ammo;
+	self.bolt_target.theowner = self;
+	self.bolt_target.effects = self.bolt_target.effects | EF_DIMLIGHT;
+	self.bolt_target.killtarget = "vessel"; // dont assign any targetnames the value 'vessel' now
+
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
+
+	self.ammo_shells = 7; // select def spell
+	self.weapon = IT_AXE;
+	clear_spell();
+};
+
+void() remove_vessel =
+{
+	self.rune_flag = self.rune_flag - (self.rune_flag & RUNE_VESS);
+	self.attack_finished = time + 1; //debounce
+
+	self.enemy = find(world, killtarget,"vessel"); // find all vessels - may allow more than one later
+	while (self.enemy)
+	{
+		if (self.enemy.theowner = self)
+		{
+			self.bolt_target = self.enemy;
+			self.archon = self.archon + self.bolt_target.archon;
+			self.bolt_target.archon = 2 + random() * 50;
+			self.bolt_target.theowner = world;
+			self.bolt_target.effects = self.bolt_target.effects - (self.bolt_target.effects & EF_DIMLIGHT);
+			self.bolt_target.killtarget = null_string;
+		}
+		self.enemy = find(self.enemy, killtarget,"vessel");
+	}
+
+	if (self.bolt_target) self.archon = self.archon - self.pk_explode_ammo;
+
+	self.ammo_shells = 7; // select def spells
+	self.ammo_bullet = 3;
+	self.weapon = IT_AXE;
+	clear_spell();
+};
+
 
 // setup spells
 
@@ -2566,7 +2615,7 @@ void() player_chaos_attack =
 	{
 		if (self.weapon != IT_AXE) // in spell casting mode
 		{
-			if (self.pkplus_actorammo & 2) // swap able targets - alt fire main fn in spell mode
+			if (self.pkplus_actorammo & 2) // swapable targets - alt fire main fn in spell mode
 			if (self.bolt_target)
 			if (self.enemy)
 			{
@@ -2816,7 +2865,7 @@ void() spell_target =
 	self.cnt = self.pkplus_actorammo & 2; // reticle controls
 	if (self.weapon == IT_SHOTGUN)
 	{
-		if (!self.ammo_shells) self.ammo_shells = 3; // teleport
+		if (!self.ammo_shells) self.ammo_shells = 7; // teleport - default self
 		if (self.ammo_shells == 3) { self.pk_explode_ammo = 15; self.pkplus_actorammo = 3; self.th_melee = uni_teleport; }
 		else if (self.ammo_shells == 5) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 7; self.th_melee = multi_teleport; }
 		else if (self.ammo_shells == 7)
@@ -2840,6 +2889,8 @@ void() spell_target =
 				self.bolt_target = self.goalentity;
 			}
 		}
+// NOTE: if vessel exists, this should be blocked
+		else if (self.ammo_shells == 13) { self.pk_explode_ammo = 2000; self.pkplus_actorammo = 19; self.th_melee = make_vessel; if (self.bolt_target == self) self.bolt_target = world; } // create vessel
 	}
 	if (self.weapon == IT_SUPER_SHOTGUN)
 	{
@@ -2863,6 +2914,7 @@ void() spell_target =
 		if (self.ammo_bullet == 5) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_maketele; }
 		if (self.ammo_bullet == 7) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
 		if (self.ammo_bullet == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
+		if (self.ammo_bullet == 13) { self.pk_explode_ammo = 200; self.pkplus_actorammo = 0; self.th_melee = remove_vessel; }
 	}
 	if (self.weapon == IT_LIGHTNING)
 	{
@@ -2890,7 +2942,7 @@ void() spell_target =
 //				- if bit 2 is set, normal targeting will occur - this will always show potential alternates
 //			4 - spell uses 2 targets - for HUD to display both
 //			8 - spell target must be a player / bot
-//		 16 - spell can NOT be a client / bot
+//		 16 - spell target can NOT be a client / bot
 //		 32 - spell target must be a monster
 
 // self is archon, sets .bolt_target if world, if not sets potential new target in .enemy
@@ -2982,6 +3034,8 @@ void() archon_target =
 		if (trace_ent.movetype == MOVETYPE_PUSH) return;
 		if (trace_ent.movetype == MOVETYPE_NOCLIP) return;
 	}
+
+	if (trace_ent == god_particle) return; // dont allow spells on god particle -- TEST
 
 	if (self.pkplus_actorammo & 16)
 	if (trace_ent.flags & FL_CLIENT) return;
@@ -3125,6 +3179,7 @@ void() player_chaos_impulse =
 		self.items = self.items - (self.items & IT_SUPER_SHOTGUN);
 	}
 	else
+	if (self.rune_flag & RUNE_VESS) // inv flag for vessel
 		self.items = self.items | IT_SUPER_SHOTGUN;	
 
 	if (self.impulse == 1)
@@ -3151,7 +3206,7 @@ void() player_chaos_impulse =
 		}
 		if (self.weapon == IT_NAILGUN)
 		{
-			if (self.rune_flag) self.AIRG_Flags = 4194375;
+			if (self.rune_flag & 71) self.AIRG_Flags = 4194375;
 			else self.AIRG_Flags = 71;
 			if (self.ammo_rockets == 3) aux_bits(self.AIRG_Flags);
 			if (self.ammo_rockets == 7) aux_bits(3);
@@ -3177,106 +3232,134 @@ void() player_chaos_impulse =
 		clear_spell(); // timeout any spell in selection
 	}
 
+// vessel enabled spells
 
-	if (self.impulse == 2) // spell list 1 - teleports
+	if (self.rune_flag & RUNE_VESS) // inv flag for vessel
 	{
-		if (self.weapon == IT_SHOTGUN) // loop thru spell set
-		{
-			if (self.ammo_shells == 3) self.ammo_shells = 5; // tele swap
-			else if (self.ammo_shells == 5) self.ammo_shells = 7;
-			else if (self.ammo_shells == 7) self.ammo_shells = 11;
-			else if (self.ammo_shells == 11) self.ammo_shells = 3;
-		}
-		self.weapon = IT_SHOTGUN;
-	}
-	if (self.impulse == 3) // spell list 2 - polymorph, transmogrify
-	{
-		if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
-		{
-			if (self.ammo_nails == 3) self.ammo_nails = 5;
-			else if (self.ammo_nails == 5) self.ammo_nails = 7;
-			else if (self.ammo_nails == 7) self.ammo_nails = 11;
-//			else if (self.ammo_nails == 11) self.ammo_nails = 13;
-//			else if (self.ammo_nails == 13) self.ammo_nails = 17;
-//			else if (self.ammo_nails == 17) self.ammo_nails = 19;
-//			else if (self.ammo_nails == 19) self.ammo_nails = 23;
-//			else if (self.ammo_nails == 23) self.ammo_nails = 29;
-			else if (self.ammo_nails == 11) self.ammo_nails = 3;
+// for cycle - make sure we have these if a vessel is created
+		self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_LIGHTNING;
 
-			if (self.ammo_nails == 11)
-			{
-				if (! self.pk_beartrapammo & 1023) self.pk_beartrapammo = 1;
-			}
-			else
-				if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
-		}
-		self.weapon = IT_SUPER_SHOTGUN;
-	}
-	if (self.impulse == 4) // spell list 3
-	{
-		if (self.weapon == IT_NAILGUN) // loop thru spell set
+		if (self.impulse == 2) // spell list 1 - teleports
 		{
-			if (self.ammo_rockets == 3) self.ammo_rockets = 5;
-			else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
-			else if (self.ammo_rockets == 7) self.ammo_rockets = 3;
-
-			if (self.ammo_rockets == 7)
+			if (self.weapon == IT_SHOTGUN) // loop thru spell set
 			{
-				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+				if (self.ammo_shells == 3) self.ammo_shells = 5; // tele swap
+				else if (self.ammo_shells == 5) self.ammo_shells = 7;
+				else if (self.ammo_shells == 7) self.ammo_shells = 11;
+				else if (self.ammo_shells == 11) self.ammo_shells = 3;
+// 13 is blocked here - with no vessel, it activates as create vessel
 			}
-			else
-				if (! self.pk_beartrapammo & 71) self.pk_beartrapammo = 1;
+			self.weapon = IT_SHOTGUN;
 		}
-//		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
-		self.weapon = IT_NAILGUN;
-	}
-	if (self.impulse == 5) // spell list 4 - create
-	{
-		if (self.weapon == IT_SUPER_NAILGUN) // loop thru spell set
+		if (self.impulse == 3) // spell list 2 - polymorph, transmogrify
 		{
-			if (self.ammo_bullet == 3) self.ammo_bullet = 5;
-			else if (self.ammo_bullet == 5) self.ammo_bullet = 7;
-			else if (self.ammo_bullet == 7) self.ammo_bullet = 11;
-			else if (self.ammo_bullet == 11) self.ammo_bullet = 3;
+			if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
+			{
+				if (self.ammo_nails == 3) self.ammo_nails = 5;
+				else if (self.ammo_nails == 5) self.ammo_nails = 7;
+				else if (self.ammo_nails == 7) self.ammo_nails = 11;
+	//			else if (self.ammo_nails == 11) self.ammo_nails = 13;
+	//			else if (self.ammo_nails == 13) self.ammo_nails = 17;
+	//			else if (self.ammo_nails == 17) self.ammo_nails = 19;
+	//			else if (self.ammo_nails == 19) self.ammo_nails = 23;
+	//			else if (self.ammo_nails == 23) self.ammo_nails = 29;
+				else if (self.ammo_nails == 11) self.ammo_nails = 3;
 
-			if (self.ammo_bullet == 7)
-			{
-				if (! self.pk_beartrapammo & 6377471) self.pk_beartrapammo = 1;
+				if (self.ammo_nails == 11)
+				{
+					if (! self.pk_beartrapammo & 1023) self.pk_beartrapammo = 1;
+				}
+				else
+					if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
 			}
-			if (self.ammo_bullet == 11)
-			{
-				if (! self.pk_beartrapammo & 196480) self.pk_beartrapammo = 1;
-			}
+			self.weapon = IT_SUPER_SHOTGUN;
 		}
-		self.weapon = IT_SUPER_NAILGUN;
-	}
-	if (self.impulse == 8) // spell list - archon legacy
-	{
-		if (self.weapon == IT_LIGHTNING) // loop thru spell set
+		if (self.impulse == 4) // spell list 3 - grav well, monster speed, rune powers
 		{
-			if (self.ammo_cells == 3) self.ammo_cells = 5;
-			else if (self.ammo_cells == 5) self.ammo_cells = 7;
-			else if (self.ammo_cells == 7) self.ammo_cells = 11;
-			else if (self.ammo_cells == 11) self.ammo_cells = 13;
-			else if (self.ammo_cells == 13) self.ammo_cells = 17;
-			else if (self.ammo_cells == 17) self.ammo_cells = 3;
+			if (self.weapon == IT_NAILGUN) // loop thru spell set
+			{
+				if (self.ammo_rockets == 3) self.ammo_rockets = 5;
+				else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
+				else if (self.ammo_rockets == 7) self.ammo_rockets = 3;
 
-			if (self.ammo_cells == 3)
-			{
-				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+				if (self.ammo_rockets == 7)
+				{
+					if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+				}
+				else
+					if (! self.pk_beartrapammo & 71) self.pk_beartrapammo = 1;
 			}
-			else if (self.ammo_cells == 11)
-			{
-				if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
-			}
-			else if (self.ammo_cells == 17)
-			{
-				if (! self.pk_beartrapammo & 7) self.pk_beartrapammo = 1;
-			}
+	//		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
+			self.weapon = IT_NAILGUN;
 		}
-		self.weapon = IT_LIGHTNING;
+		if (self.impulse == 5) // spell list 4 - create set, and modify / remove vessel
+		{
+			if (self.weapon == IT_SUPER_NAILGUN) // loop thru spell set
+			{
+				if (self.ammo_bullet == 3) self.ammo_bullet = 5;
+				else if (self.ammo_bullet == 5) self.ammo_bullet = 7;
+				else if (self.ammo_bullet == 7) self.ammo_bullet = 11;
+				else if (self.ammo_bullet == 11) self.ammo_bullet = 13; // remove the soul vessel
+//				else if (self.ammo_bullet == 13) self.ammo_bullet = 15;
+				else if (self.ammo_bullet == 13) self.ammo_bullet = 3;
+
+				if (self.ammo_bullet == 7)
+				{
+					if (! self.pk_beartrapammo & 6377471) self.pk_beartrapammo = 1;
+				}
+				if (self.ammo_bullet == 11)
+				{
+					if (! self.pk_beartrapammo & 196480) self.pk_beartrapammo = 1;
+				}
+			}
+			self.weapon = IT_SUPER_NAILGUN;
+		}
+		if (self.impulse == 8) // spell list - archon legacy - heal, imprison, summon, banish, restore time flow
+		{
+			if (self.weapon == IT_LIGHTNING) // loop thru spell set
+			{
+				if (self.ammo_cells == 3) self.ammo_cells = 5;
+				else if (self.ammo_cells == 5) self.ammo_cells = 7;
+				else if (self.ammo_cells == 7) self.ammo_cells = 11;
+				else if (self.ammo_cells == 11) self.ammo_cells = 13;
+				else if (self.ammo_cells == 13) self.ammo_cells = 17;
+				else if (self.ammo_cells == 17) self.ammo_cells = 3;
+
+				if (self.ammo_cells == 3)
+				{
+					if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+				}
+				else if (self.ammo_cells == 11)
+				{
+					if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
+				}
+				else if (self.ammo_cells == 17)
+				{
+					if (! self.pk_beartrapammo & 7) self.pk_beartrapammo = 1;
+				}
+			}
+			self.weapon = IT_LIGHTNING;
+		}
 	}
-	else if (self.impulse == IMP_MSIGHT)
+// no vessel yet
+// there are only 2 spells - teleport self, and create vessel
+	else
+	{
+// for cycle - make sure we remove the vessel spell inventory if the vessel is removed
+		self.builtin = IT_AXE | IT_SHOTGUN;
+
+		if (self.impulse == 2) // spell list 1 - teleport self (def), create vessel
+		{
+			if (self.weapon == IT_SHOTGUN)
+			{
+				if (self.ammo_shells == 7) self.ammo_shells = 13; // create vessel
+				else if (self.ammo_shells == 13) self.ammo_shells = 7; // teleport self 
+			}
+			self.weapon = IT_SHOTGUN;
+		}
+	}
+
+	if (self.impulse == IMP_MSIGHT)
 		morph_sound(2, self.msight, 3);							// let player morphs "talk"
 
 	if (self.weapon != IT_AXE)
@@ -3347,6 +3430,8 @@ void() player_chaos_become =
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_LIGHTNING;
+	if (!self.rune_flag & RUNE_VESS) // no vessel
+		self.builtin = IT_AXE | IT_SHOTGUN;
 	self.items = self.builtin; // Archons shouldnt have any other items
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;

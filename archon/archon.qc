@@ -914,6 +914,9 @@ void() archon_power =
 
 // touching ent does not have a healtype - set one at random
 
+// ISSUE: seen mega health rot down to 80 for a human several times
+/// - could this be why ?? FIX
+
 void(entity e) archon_point_heal =
 {
 // heal level

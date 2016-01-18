@@ -174,6 +174,10 @@ float TECH_AMP						= 262144;
 float TECH_TEIM					= 524288;
 float TECH_ADOC					= 1048576;
 
+// archon vessel
+
+float RUNE_VESS						= 65536; // archon has made a soul vessel, now read as a rune
+
 // x items
 
 float X_PWR_ARMOR					= 1;

@@ -440,6 +440,7 @@ string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n";
 // archon
 
 float CHAOS_BEAM_MIN;//		= 1000;
+float RUNE_VESS						= 65536; // archon has made a soul vessel, now read as a rune
 
 void(entity e) de_archon;
 void() de_archon_thk;

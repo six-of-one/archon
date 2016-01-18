@@ -673,6 +673,9 @@ float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
 // scores
 var float autocvar_hud_frags = 6;
 
+// so we can use the new HUD with other mods / vanilla - set this cvar to one in a cfgs
+var float autocvar_hud_nomod = 0;
+
 void() Sbar_DrawInventory =
 {
 
@@ -684,7 +687,7 @@ void() Sbar_DrawInventory =
 	ALPHA_LOW = ibar_alpha * 0.4;
 
 	float casting, converting, f, k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
-	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag, silence;
+	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag, silence, arcvessel;
 	vector pwr_step, wep_step, pk_wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v, clr;
 
 	float healflash, hicof, armorflash, armicof, flashclv;
@@ -730,6 +733,8 @@ void() Sbar_DrawInventory =
 	nothuman = TRUE;
 	mcode = GetStat_FLOAT_TRUNCATED(STAT_MCODE);
 	rune_flag = GetStat_FLOAT_TRUNCATED(STAT_RUNEFLAG);
+
+	arcvessel = (rune_flag & RUNE_VESS);
 
 	volspec = GetStat_FLOAT_TRUNCATED(STAT_VOL);
 
@@ -1599,7 +1604,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		{
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/sb_xbones", ALPHA_FULL, 0.19);
 		}
-		if (morph == CHAR_Q)
+		if (morph == CHAR_Q || autocvar_hud_nomod)
 		{
 			if (!deadflag)
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/face1", ALPHA_FULL * k, 0.85);
@@ -2111,6 +2116,15 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 //		DrawInventory('60 48 0', "gfx/sb_invuln", IT_INVULNERABILITY, 0, ALPHA_MEDIUM, 1.5);
 	}
 
+// archon vessels
+
+	if (arcvessel) // show that archon has a vessel
+	{
+		DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/arcvess", ALPHA_FULL, 0.11);
+		cnt_left = pwr_step_y;
+		pwr_step_y = pwr_step_y + 27;
+	}
+
 // ammo pack deal
 	if (rune_flag & RUNE_AMMO)
 	{
@@ -2272,6 +2286,11 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 							instr = "*FIRE - cast teleport spell";
 						}
 					}
+					else if (shells == 13)
+					{
+						Sbar_DrawString('280 40 0' + woff, "Create SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (target2) instr = "*FIRE - Make target a SOUL vessel";
+					}
 //					else Sbar_DrawString('280 40 0', "Unknown Magic", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 				}
 				if (currentweap == IT_SUPER_SHOTGUN) // spell list 1 - poly
@@ -2413,6 +2432,11 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						
 					}
 					instr = "*FIRE - cast create spell";
+					if (bullets == 13)
+					{
+						Sbar_DrawString('220 40 0' + woff, "Remove SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						instr = "*FIRE - recover power from SOUL vessel";
+					}
 				}
 				if (currentweap == IT_LIGHTNING) // spell list 1 - poly
 				{
