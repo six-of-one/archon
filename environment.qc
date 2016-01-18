@@ -269,6 +269,30 @@ void() func_fallingwater =
 		self.aflag = -666; // so hurt_touch handles this
 	}
 
+// custom message handle from hurt_switch
+// setup msg - done in map ent
+// this selects amongst the possible messages when first loading on map
+	if (self.stack2 != null_string && self.stack3 != null_string)
+	{
+		if (self.button1 <= 0) self.button1 = 0.5;
+		if (self.button2 <= 0) self.button2 = 0.1;
+		if (random() < self.button1)
+			self.stack16 = self.stack2; //" turned into hot slag";
+		else
+			self.stack16 = self.stack3; // " visits the Volcano God";
+		if (self.stack4 != null_string)
+		if (random() < self.button2)
+			self.stack16 = self.stack4; // " is playing geologist again";
+	}
+	else
+	if (self.stack16 == null_string && self.stack2 != null_string || self.stack3 != null_string)
+	{
+		if (self.stack2 != null_string) self.stack16 = self.stack2;
+		if (self.stack3 != null_string) self.stack16 = self.stack3;
+	}
+	if (self.stack16 != null_string)
+		self.class_select = "CDM"; // custom death msg
+
 /*
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;

@@ -2397,8 +2397,8 @@ void() abandoned_cube =
 
 
 // used by pk & morphic cubes
-float BOT_NOUSE_PKCUBE = 0.3;
-float BOT_NOUSE_MCUBE = 0.8;
+float BOT_NOUSE_PKCUBE = 0.2;
+float BOT_NOUSE_MCUBE = 0.1; // 0.6; TEST - restore
 
 void() cube_touch =
 {
@@ -2425,8 +2425,8 @@ void() cube_touch =
 
 		if (other.mask_x & CB_HUMAN) // if bot score is low, stay human for now
 		{
-			if (other.frags < (high_score * 0.11)) return;
-			if (other.frags < 0) return;
+//			if (other.frags < (high_score * 0.11)) return; // was blocking bot morphs - needs a metric
+			if (other.frags < 1) return;
 		}
 		if (!MORPH_FREE)
 		if (other.archon < 1000) // make bots wait till they can morph to any - need a separate test for bot archon case
@@ -2509,6 +2509,7 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 		if (random() < BOT_NOUSE_MCUBE) return;
 	}
 
+// moved to HUD
 //	if ((self.wad == "morph_cube") && (self.mcode != -666))
 //	{
 //		sprint(other, "you merged with this ");
@@ -2523,10 +2524,10 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 //	else
 	if (self.wad == "morph_cube")
 	{
-		other.cnt = -1;
 		other.state = other.morphy; // set morph_lock
 		if (other.class_select == "class_player") // not a bot
 		{
+			other.cnt = -1; // display intro text
  // you wont see this sequence because of morph menu display
 
 //			if (self.mcode != -666) // poly spell - no cube instruction
@@ -2601,15 +2602,15 @@ bprint("------------------- ** WARNING - bot in morph cubical\n");
 			if (self.state == self.morphy)
 			{
 				morph_print(self); // get archon pts
-				self.archon = self.archon - e.archon;
+				self.archon = self.archon - self.eweapon.archon;
 
 
 #ifdef morph_pwr
-				morphs = morphs + e.archon;
+				morphs = morphs + self.eweapon.archon;
 
 
 bprint("------------------- ** WARNING - bot morphed apts = ");
-bprint(ftos(e.archon));
+bprint(ftos(self.eweapon.archon));
 bprint(" state = ");
 bprint(ftos(self.state));
 bprint("\n");

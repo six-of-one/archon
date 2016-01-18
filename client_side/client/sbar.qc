@@ -556,12 +556,15 @@ void(vector valor, string pic, float transparencia, float scale) DrawInventoryAm
 }; 
 
 
-// print score line for player #pr - 1 at vr
+// print score line for player #plr - 1 at vr
+float use_lead, leader; // using leader score, dont print following catch up - its already printed as "leading by score"
+
+float p2, p3, p4, p5, p6;
 
 void(float plr, vector vr) score_line =
 {
 	float f, k;
-	vector cl1, cl2;
+	vector cl1, cl2, cl3;
 
 	cl1 = '1 0.9 1';
 	cl2 = '1 1 1';
@@ -593,8 +596,8 @@ void(float plr, vector vr) score_line =
 	if (plscore > -10 && plscore < 0) vr_x = vr_x + 7; // compensate wut?
 	if (plscore > p3rd) DrawAmmo(cl2, vr, plscore, ALPHA_FULL);
 
-// display range to fraglimit
-	if (plr == plnum)
+// display range to fraglimit / high frag score
+	if ((plr == plnum) || (autocvar_hud_frags_style & 128))
 	{
 		rfgl = FALSE;
 		if (fraglimit)
@@ -606,27 +609,41 @@ void(float plr, vector vr) score_line =
 				f = floor(f / 10);
 				vr_x = vr_x - 7;
 			}
-			DrawAmmo('0.1 1 0.1', vr, floor(fraglimit - plscore), ALPHA_FULL);
+			DrawAmmo('0.1 1 0.1', vr, floor(fraglimit - plscore), ALPHA_FULL); // fraglimit in green
 			rfgl = TRUE;
 		}
 
-// display range to high score, or leader value over 2nd place
+// display range (s) to high score, or leader value over 2nd place
 		rhs = FALSE;
-		if (autocvar_hud_frags_style & 16)
+		if (use_lead && (autocvar_hud_frags_style & 128))
+		{
+			use_lead = FALSE;
+			leader = TRUE; // because loop clears it and fudges the display
+		}
+		else
+		if ((autocvar_hud_frags_style & 16) || (autocvar_hud_frags_style & 128))
 		if (maxclients > 1)
+		if (topscore > 0)
 		if (topscore > plscore || pred == plnum)
 		{
+			cl3 = '0.76 0.12 1'; // score track clr - pts to high score
 			vr_x = vr_x - 24;
 			f = topscore - plscore;
-			if (pred == plnum) f = plscore - plead; // in 1st place - give lead over 2nd place
+			if ((pred == plnum) && (plr == pred))
+			{
+				leader = use_lead = TRUE;
+ 				if (plscore > plead) f = plscore - plead; // in 1st place - see if we outrank #2
+				else leader = use_lead = FALSE;
+				cl3 = '0.79 0.89 0.2'; // leading by score cce737
+			}
+			else rhs = 1;
 			k = f;
 			while (f > 999)
 			{
 				f = floor(f / 10);
 				vr_x = vr_x - 7;
 			}
-			DrawAmmo('0.76 0.12 1', vr, floor(k), ALPHA_FULL);
-			rhs = TRUE;
+			if (rhs || leader) DrawAmmo(cl3, vr, floor(k), ALPHA_FULL);
 		}
 	}
 };
@@ -1106,7 +1123,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			}
 		}
 
-	float p2, p3, p4, p5, p6, p2nd, style, pself;
+	float p2nd, style, pself;
 	float mons, secs, tmon, tsec, flashermhc, flasher2mhc;
 	var float autocvar_hud_frags_off = 0;
 	var float autocvar_hud_frags_negative = 0;
@@ -1128,13 +1145,13 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			style = autocvar_hud_frags_style & 3; // mask off bit 8
 			plnum = -1;
 
-// ranking slot - set by server qc
+// score board ranking slot - set by server qc
 // I can find no other way to get this # here
 			if (style) plnum = cvar("cl_number") + 1;
 			pself = 0;
 
 			k = maxclients;
-			p2 = p3 = p4 = p5 = p6 = 0;
+			plead = p2 = p3 = p4 = p5 = p6 = 0;
 
 // idic - logic for display of scores
 			p2nd = 0;
@@ -1175,7 +1192,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				p1 = plnum;
 			}
 
-// nasty brute force trickle down search
+// nasty brute force trickle down sort
 			if (maxclients > 1)
 			{
 				k = maxclients;
@@ -1295,6 +1312,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 			if (cvar("deathmatch"))
 			{
+				leader = FALSE;
 				if (!pself && (style == 3))
 				{
 					score_line(plnum, v);
@@ -1375,12 +1393,15 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						Sbar_DrawString(v + '28 -12 0', "* to fraglimit", ALPHA_FULL, '7 7 0','0.1 1 0.1');
 						v_y = v_y - 10;
 					}
+					if (leader)
+					{
+//							Sbar_DrawString(v + '28 -12 0', "* leading by", ALPHA_FULL, '7 7 0','0.76 0.12 1');
+						Sbar_DrawString(v + '28 -12 0', "* leading by", ALPHA_FULL, '7 7 0','0.79 0.89 0.2');
+						v_y = v_y - 10;
+					}
 					if (rhs)
 					{
-						if (pred == plnum)
-							Sbar_DrawString(v + '28 -12 0', "* leading by", ALPHA_FULL, '7 7 0','0.76 0.12 1');
-						else
-							Sbar_DrawString(v + '28 -12 0', "* to high score", ALPHA_FULL, '7 7 0','0.76 0.12 1');
+						Sbar_DrawString(v + '28 -12 0', "* to high score", ALPHA_FULL, '7 7 0','0.76 0.12 1');
 						v_y = v_y - 10;
 					}
 				}

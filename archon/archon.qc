@@ -36,8 +36,8 @@ The mathematically twisted power access device transferes that power to living b
 
 void() de_archon_thk =
 {
-	self.lefty = 2000;
-	if (self.owner.height == IMP_MCHAOS) self.lefty = CHAOS_BEAM_MIN;
+	self.lefty = 2000; // order or other archons
+	if (self.owner.height == IMP_MCHAOS) self.lefty = CHAOS_BEAM_MIN; // chaos only
 	if (self.owner.archon > self.lefty)
 	{
 		newmis = self;

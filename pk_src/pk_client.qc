@@ -2803,10 +2803,10 @@ bprint ("\n");
 		}
 		else if (attacker.classname == "CDM" || attacker.class_select == "CDM") // Cataboligne - 2.20.11 - customized death messages
 		{
-			if (attacker.noise1) bprint(attacker.noise1); // pre strings
+			if (attacker.stack1) bprint(attacker.stack1); // pre strings
 			if (attacker.deadflag & 1) bprint(targ.netname); // use targ name
 			if (attacker.netname) bprint(attacker.netname); // main message
-			if (attacker.noise) bprint(attacker.noise); // other strings
+			if (attacker.stack16) bprint(attacker.stack16); // other strings - rnd choice from group .stack[2-4]
 			bprint("\n");
 			if (attacker.frags)
 			{

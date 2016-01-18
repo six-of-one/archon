@@ -320,6 +320,12 @@ void() Toggle_chase_cam =
 	stuffcmd(self, ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
 	stuffcmd(self, "\n");
 
+// make chaos alt model not visible in 1pv
+	if (self.goalentity.classname == "archon_morph")
+	{
+		if (self.cam_x & CHSCAM_ON) self.goalentity.exteriormodeltoclient = world;
+		else self.goalentity.exteriormodeltoclient = self;
+	}
 };
 
 

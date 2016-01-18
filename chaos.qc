@@ -2255,27 +2255,36 @@ void() hurt_switch =
 
 	if (self.attack_finished > time) return; // cant toggle right now
 
+// convert from old method - REMOVE - hurt_switch is not on any maps
+/*
+	if (self.noise) self.stack4 = self.noise;
+	if (self.noise1) self.stack1 = self.noise1;
+	if (self.noise2) self.stack2 = self.noise2;
+	if (self.noise3) self.stack3 = self.noise3;
+*/
+
 // setup msg - done in map ent
+// this selects amongst the possible messages when first loading on map
 //	self.deadflag = self.deadflag | 1;
-	if (self.noise2 != null_string && self.noise3 != null_string)
+	if (self.stack2 != null_string && self.stack3 != null_string)
 	{
-		if (self.cnt <= 0) self.cnt = 0.5;
-		if (self.style <= 0) self.style = 0.1;
-		if (random() < self.cnt)
-			self.noise = self.noise2; //" turned into hot slag";
+		if (self.button1 <= 0) self.button1 = 0.5;
+		if (self.button2 <= 0) self.button2 = 0.1;
+		if (random() < self.button1)
+			self.stack16 = self.stack2; //" turned into hot slag";
 		else
-			self.noise = self.noise3; // " visits the Volcano God";
-		if (self.noise4 != null_string)
-		if (random() < self.style)
-			self.noise = self.noise4; // " is playing geologist again";
+			self.stack16 = self.stack3; // " visits the Volcano God";
+		if (self.stack4 != null_string)
+		if (random() < self.button2)
+			self.stack16 = self.stack4; // " is playing geologist again";
 	}
 	else
-	if (self.noise == null_string && self.noise2 != null_string || self.noise3 != null_string)
+	if (self.stack16 == null_string && self.stack2 != null_string || self.stack3 != null_string)
 	{
-		if (self.noise2 != null_string) self.noise = self.noise2;
-		if (self.noise3 != null_string) self.noise = self.noise3;
+		if (self.stack2 != null_string) self.stack16 = self.stack2;
+		if (self.stack3 != null_string) self.stack16 = self.stack3;
 	}
-	if (self.noise != null_string)
+	if (self.stack16 != null_string)
 		self.class_select = "CDM"; // custom death msg
 
 	if (self.wait)

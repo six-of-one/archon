@@ -1510,6 +1510,8 @@ float EXPLOSIVE				= 114688; // for things that explode - chaos mod
 
 .float vw_frame; // only run once per frame per ent
 
+.entity exteriormodeltoclient; // dp var -- viswep deal - good solution (only) for dp
+
 // attaches e to a tag on tagentity (note: use "" to attach to entity origin/angles instead of a tag)
 //description:
 //allows entities to be visually attached to model tags (which follow animations perfectly) on other entities, for example attaching a weapon to a player's hand, 

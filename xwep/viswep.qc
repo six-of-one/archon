@@ -6,7 +6,6 @@ Cataboligne 9.26.9
 */
 
 //.float viswframe; // special framing - drop / pull [not used yet]
-.entity exteriormodeltoclient; // dp var -- viswep deal - good solution (only) for dp
 
 
 string VW_DEFGUN = "progs/vw_qgun.mdl";

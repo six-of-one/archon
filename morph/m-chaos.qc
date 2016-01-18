@@ -25,7 +25,7 @@ Your sentient form supplies your intelligence from elctro-chemical signals opera
 
 Chaos simply is.
 
-And its here.
+And it is here.
 
 Not too happy about the organized state of things either.
 
@@ -438,6 +438,8 @@ void() chaos_mdlchg =
 						self.owner.goalentity.punchangle = self.owner.angles; // the original angles of bmodel
 						self.owner.goalentity.view_ofs = self.owner.goalentity.origin - self.owner.origin - self.owner.goalentity.movedir; // relative origin
 						self.owner.goalentity.v_angle = self.owner.goalentity.angles - self.owner.angles; // relative angles
+						if (self.owner.cam_x & CHSCAM_ON) self.owner.goalentity.exteriormodeltoclient = world;
+						else self.owner.goalentity.exteriormodeltoclient = self.owner;
 				}
 				else
 				setmodel(self.owner,ci_md);
@@ -2148,6 +2150,8 @@ void() transmogrify =
 				self.goalentity.punchangle = self.angles; // the original angles of bmodel
 				self.goalentity.view_ofs = self.goalentity.origin - self.origin - self.goalentity.movedir; // relative origin
 				self.goalentity.v_angle = self.goalentity.angles - self.angles; // relative angles
+				if (self.cam_x & CHSCAM_ON) self.goalentity.exteriormodeltoclient = world;
+				else self.goalentity.exteriormodeltoclient = self;
 		}
 		else
 		setmodel(self,ci_md);
