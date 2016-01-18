@@ -17,19 +17,13 @@ void() PK_init =
 
 // info string set by server
 	localcmd("alias version \"echo quake-c: generations alpha 3.0\"\n");
-	localcmd("alias website \"echo http://www.moddb.com/mods/painkeep-source-update/\"\n");
+	localcmd("alias website \"echo http://www.moddb.com/mods/chaos-archon\"\n");
+	localcmd("alias codesite \"echo http://www.moddb.com/members/invadercat\"\n");
+	localcmd("alias qcsite \"echo http://www.moddb.com/groups/qc\"\n");
+	localcmd("alias sites \"echo website http://www.moddb.com/mods/chaos-archon\ncodesite http://www.moddb.com/members/invadercat\nqcsite http://www.moddb.com/groups/qc\"\n");
 
 	pk_precache();
 	q1_precache();
-
-	if (!DARKPLACES) // may not use all this - dp auto precaches
-	{
-	doom_precache();
-	q2_precache();
-	q3_precache();
-	chaos_precache();
-	hip_precache();
-	}
 
 	viswep_pre();
 
@@ -38,6 +32,28 @@ void() PK_init =
 							 | PKPLUS_IT_EGO | PKPLUS_IT_TOMB | PKPLUS_IT_ACTOR | PKPLUS_IT_PHONE; // pk plus weps
 
 	pk_srvcmd_set(); 	// set server controls for qc code
+
+	if (cvar("saved1") == XTR_SAVED1)
+	{
+		cvar_set("saved1", "0"); // clear temp code
+		cvar_set("sv_generations", "1");
+		GENERATIONS = 1;
+	}
+
+	if (GENERATIONS) // possible to run qc extras w/o paks
+	{
+		ULOKW = ULOKD = ULOK2 = ULOK3 = TRUE;
+	}
+
+	if (!DARKPLACES) // may not use all this - dp auto precaches
+	{
+	if (ULOKW) wolf_precache();
+	if (ULOKD) doom_precache();
+	if (ULOK2) q2_precache();
+	if (ULOK3) q3_precache();
+	chaos_precache();
+	hip_precache();
+	}
 
 	pk_art_precache(); // Cataboligne 8.12.9 purify - pk artifacts
 
@@ -91,6 +107,7 @@ void() PK_init =
 	if (pk_map) MAP_MODE = "PK";
 	else if (world.wad == "wolftex.wad") MAP_MODE = "W";
 	else if (world.wad == "doomtex.wad") MAP_MODE = "D";
+	else if (world.wad == "doom2tex.wad") MAP_MODE = "D";
 	else if (world.wad == "q2.wad") MAP_MODE = "Q2";
 	else if (world.wad == "" && !pk_map) MAP_MODE = "Q3";
 	else  MAP_MODE = "Q";
@@ -582,6 +599,8 @@ void() pk_liveupd =
 
 	if (BOTFREEZE != cvar("sv_c_botfreeze")) bot_froze(world);
 
+	NODECOR = cvar("sv_c_nodecor");
+
 // runes
 	run_runes();
  
@@ -934,6 +953,9 @@ void() pk_srvcmd_load =
 	if (st_pk_cmap != cvar("sv_pk_cmap")) pk_bas_flags(PK_TP_USERMAPON, st_pk_cmap);
 
 // these all req. map reload for full effectiveness
+
+	GENERATIONS = cvar("sv_generations");
+
 	PK_100 = cvar("sv_pk100");
 
 // q1
@@ -955,6 +977,9 @@ void() pk_srvcmd_set =
 
 /// this section assigns vars to default values - they will rule any engine not dp registercvar able or not customized as the glquake build we release
 //				- it would be trivial to take the custom cvar section from the glquake build and add to _any_ engine...
+
+	GENERATIONS = 0; // this bad code - non dp enabled engines (or eng w/o glq mod) cant run gens!  (see hack below...)
+	ULOKW = ULOKD = ULOK2 = ULOK3 = FALSE;
 
 // pk control
 	PK_100 = FALSE; // if true run 100% true to pk v1.11 - i n theory, dev purposes only
@@ -1160,7 +1185,11 @@ POW_TIME = 30;
 
 // not an enabled / wise engine - we must return now, no live server controls are possible and we are running on defaults
 
-	if (!DARKPLACES && !chaos) return;
+	if (!DARKPLACES && !chaos) 
+	{
+		GENERATIONS = 1; // for now - "assume the sale" only way to handle non-enabled engines, once we go to chaos-mod this is an issue because the paks may not be installed
+		return;
+	}
 
 // new server controls
 // NOTE: chaos eng mod contains all these
@@ -1168,6 +1197,7 @@ POW_TIME = 30;
 	if (DARKPLACES) // reg under darkplaces - chaos engine has pre-reg
 	{
 // server controls
+		registercvar("sv_generations", "0"); // set true when xtra
 		registercvar("sv_dmstart", "0");
 		registercvar("sv_c_mapcmd", "1");
 		registercvar("sv_c_mapcfg", "1");
@@ -1179,6 +1209,8 @@ POW_TIME = 30;
 		registercvar("sv_c_ammo_max", "0"); // if true server values for max ammo override all genre limits
 																						  // if false genre limits apply
 																						  // if 2 override all limit settings and use server values - this stops rune & pack increases
+		registercvar("sv_c_nodecor", "0"); // decor control - 0: all on, 1: no blocking decor in dm, 2:no decor in dm, 3: no decor ever
+													  // decor also includes shell casins, chaos effects, debris
 
 // pk*bot server control - spawns bots on level changes
 		registercvar("sv_bot_pk", "0"); // bot count . skills non team - replaces parm12
@@ -1477,6 +1509,10 @@ POW_TIME = 30;
 		ADMINLOCK = cvar("sv_c_adminlock"); // so server admin can lock out remote admins in case of abuse - local console commands will still work
 
 // NOTE: chaos eng doesnt need to store defaults this way - they will save in config.cfg
+
+// done in another cfg
+//		localcmd("exec ");
+//		localcmd("gen.cfg\n");
 
 		if (!deathmatch)
 		{

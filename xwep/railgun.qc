@@ -211,10 +211,20 @@ bprint(" len = ");
 bprint(ftos(vlen(trace_endpos - org)));
 bprint(".\n");
 */
+
+
+/*
+											---- Ah crikey - orphan code, has no purpose, not sure what the original purp was...
+	
+	heh heh - was the old beam code.  might be needed by q3 rail effect
+	
 	newmis.skin = 1;
 	newmis.angles_z = random() * 360;
 	newmis.velocity = ' 0 0 0';
 	newmis.cnt = 1;
+*/
+
+
 
 	self.enemy = startent;
 

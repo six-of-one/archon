@@ -587,6 +587,7 @@ float(string surf, vector v, entity e) sky_touch =
 	string last_texture;
 
 	if (XENV) return(FALSE);
+	if (!DARKPLACES) return(FALSE); // Cat - 8.14.11 - fix fteqw bug
 
 	if (surf == "") // note - no q1 mode qual on surface string
 	{
@@ -1692,3 +1693,25 @@ void() effect_affect =
 		self.use = th_effect_affect;
 	}
 };
+
+// fn(sv_decor) - test decor for server control
+
+// e - ent to test
+// returns:
+//		1 - ent deleted, no further action
+//		0 - ent not deleted, process init
+
+float (entity e) sv_decor =
+{
+	local float f;
+
+	f = 0;
+	if (!NODECOR) return(0);
+	else if (NODECOR == 3) f = 1;
+	else if (NODECOR == 2 && deathmatch) f = 1;
+	else if (NODECOR == 1 && deathmatch && e.solid == SOLID_BSP) f = 1;
+
+	if (f == 1) remove(e);
+	return(f);
+};
+

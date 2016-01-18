@@ -90,39 +90,37 @@ float q3_bob_on; // server cfg this to 1 for total disable
 
 void() q3_precache =
 {
-	precache_model ("progs/q3_health.mdl");
+// all ammo
+// weps
+// 1pv
+// carry
+	precache_model ("progs/q3_ammobox.mdl");
 	precache_model ("progs/q3_arm.mdl");
 	precache_model ("progs/q3_arm_shard.mdl");
 	precache_model ("progs/q3_art.mdl");
+	precache_model ("progs/q3_bfg.mdl");
+	precache_model ("progs/q3_gauntlet.mdl");
+	precache_model ("progs/q3_gl.mdl");
+	precache_model ("progs/q3_grapple.mdl");
+	precache_model ("progs/q3_health.mdl");
 	precache_model ("progs/q3_hld_med.mdl");
 	precache_model ("progs/q3_hld_tel.mdl");
-// all ammo
-	precache_model ("progs/q3_ammobox.mdl");
-// weps
-	precache_model ("progs/q3_shot.mdl");
-	precache_model ("progs/q3_rl.mdl");
-	precache_model ("progs/q3_rail.mdl");
-	precache_model ("progs/q3_bfg.mdl");
-	precache_model ("progs/q3_gl.mdl");
-	precache_model ("progs/q3_plg.mdl");
 	precache_model ("progs/q3_lg.mdl");
 	precache_model ("progs/q3_mgun.mdl");
-	precache_model ("progs/q3_gauntlet.mdl");
-	precache_model ("progs/q3_grapple.mdl");
-
-// 1pv
-	precache_model ("progs/v_q3_shot.mdl");
+	precache_model ("progs/q3_plg.mdl");
+	precache_model ("progs/q3_rail.mdl");
+	precache_model ("progs/q3_rl.mdl");
+	precache_model ("progs/q3_shot.mdl");
 	precache_model ("progs/v_q3_bfg.mdl");
 	precache_model ("progs/v_q3_gl.mdl");
-//	precache_model ("progs/v_q3_hawk.mdl");
+	precache_model ("progs/v_q3_hawk.mdl");
+	precache_model ("progs/v_q3_lg.mdl");
 	precache_model ("progs/v_q3_mgun.mdl");
-//	precache_model ("progs/v_q3_mini.mdl");
+	precache_model ("progs/v_q3_mini.mdl");
 	precache_model ("progs/v_q3_plg.mdl");
 	precache_model ("progs/v_q3_rail.mdl");
 	precache_model ("progs/v_q3_rl.mdl");
-	precache_model ("progs/v_q3_lg.mdl");
-// carry
-	precache_model ("progs/vw_q3_ssg.mdl");
+	precache_model ("progs/v_q3_shot.mdl");
 	precache_model ("progs/vw_q3_bfg.mdl");
 	precache_model ("progs/vw_q3_gl.mdl");
 	precache_model ("progs/vw_q3_lg.mdl");
@@ -130,46 +128,52 @@ void() q3_precache =
 	precache_model ("progs/vw_q3_plg.mdl");
 	precache_model ("progs/vw_q3_rail.mdl");
 	precache_model ("progs/vw_q3_rl.mdl");
+	precache_model ("progs/vw_q3_ssg.mdl");
 
 
 // hear it
-	precache_sound ("q3_snd/am_pkup.wav");
-	precache_sound ("q3_snd/w_pkup.wav");
-	precache_sound ("q3_snd/respawn1.wav");
-	precache_sound ("q3_snd/s_health.wav");
-	precache_sound ("q3_snd/n_health.wav");
-	precache_sound ("q3_snd/l_health.wav");
-	precache_sound ("q3_snd/m_health.wav");
-	precache_sound ("q3_snd/ar1_pkup.wav");
-	precache_sound ("q3_snd/ar2_pkup.wav");
-	precache_sound ("q3_snd/ar3_pkup.wav");
 // art
-	precache_sound ("q3_snd/airout.wav");
-	precache_sound ("q3_snd/flight.wav");
-	precache_sound ("q3_snd/haste.wav");
-	precache_sound ("q3_snd/holdable.wav");
-	precache_sound ("q3_snd/invisibility.wav");
-	precache_sound ("q3_snd/poweruprespawn.wav");
-	precache_sound ("q3_snd/quaddamage.wav");
-	precache_sound ("q3_snd/regeneration.wav");
-	precache_sound ("q3_snd/regen.wav");
-	precache_sound ("q3_snd/use_medkit.wav");
-
 // fire
-	precache_sound ("q3_snd/rocklf1a.wav");
-	precache_sound ("q3_snd/rocklx1a.wav");
-	precache_sound ("q3_snd/grenlf1a.wav");
-	precache_sound ("q3_snd/hgrenb1a.wav");
-	precache_sound ("q3_snd/sshotf1b.wav");
-	precache_sound ("q3_snd/machgf1b.wav");
-	precache_sound ("q3_snd/plasmx1a.wav");
-	precache_sound ("q3_snd/hyprbf1a.wav");
-	precache_sound ("q3_snd/railgf1a.wav");
-	precache_sound ("q3_snd/rg_hum.wav");
-	precache_sound ("q3_snd/lg_fire.wav");
-	precache_sound ("q3_snd/lg_hum.wav");
-	precache_sound ("q3_snd/bfg_fire.wav");
-	precache_sound ("q3_snd/bfg_hum.wav");
+	precache_sound ("sound/q3_snd/plasmx1a.wav");
+	precache_sound ("sound/q3_snd/hyprbf1a.wav");
+	precache_sound ("sound/q3_snd/ar3_pkup.wav");
+	precache_sound ("sound/q3_snd/ar2_pkup.wav");
+	precache_sound ("sound/q3_snd/ar1_pkup.wav");
+	precache_sound ("sound/q3_snd/airout.wav");
+	precache_sound ("sound/q3_snd/use_medkit.wav");
+	precache_sound ("sound/q3_snd/regeneration.wav");
+	precache_sound ("sound/q3_snd/regen.wav");
+	precache_sound ("sound/q3_snd/quaddamage.wav");
+	precache_sound ("sound/q3_snd/poweruprespawn.wav");
+	precache_sound ("sound/q3_snd/invisibility.wav");
+	precache_sound ("sound/q3_snd/holdable.wav");
+	precache_sound ("sound/q3_snd/haste.wav");
+	precache_sound ("sound/q3_snd/flight.wav");
+	precache_sound ("sound/q3_snd/s_health.wav");
+	precache_sound ("sound/q3_snd/n_health.wav");
+	precache_sound ("sound/q3_snd/m_health.wav");
+	precache_sound ("sound/q3_snd/l_health.wav");
+	precache_sound ("sound/q3_snd/hgrenb1a.wav");
+	precache_sound ("sound/q3_snd/rocklx1a.wav");
+	precache_sound ("sound/q3_snd/lg_hum.wav");
+	precache_sound ("sound/q3_snd/bfg_hum.wav");
+	precache_sound ("sound/q3_snd/rg_hum.wav");
+	precache_sound ("sound/q3_snd/lg_fire.wav");
+	precache_sound ("sound/q3_snd/railgf1a.wav");
+	precache_sound ("sound/q3_snd/bfg_fire.wav");
+	precache_sound ("sound/q3_snd/grenlf1a.wav");
+	precache_sound ("sound/q3_snd/machgf1b.wav");
+	precache_sound ("sound/q3_snd/rocklf1a.wav");
+	precache_sound ("sound/q3_snd/sshotf1b.wav");
+	precache_sound ("sound/q3_snd/w_pkup.wav");
+	precache_sound ("sound/q3_snd/am_pkup.wav");
+	precache_sound ("sound/q3_snd/respawn1.wav");
+	precache_sound ("sound/q3_snd/dr1_end.wav");
+	precache_sound ("sound/q3_snd/dr1_strt.wav");
+	precache_sound ("sound/q3_snd/pt1_end.wav");
+	precache_sound ("sound/q3_snd/pt1_mid.wav");
+	precache_sound ("sound/q3_snd/pt1_strt.wav");
+
 };
 
 // bob em - needs called from client capable of stuff cmd
@@ -243,6 +247,23 @@ slot		weapon
 void () q3_weapon_bfg =
 {
 	q100_weapon_lightning();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		if (!Q_100 & !Q_99)
+		{
+			weapon_chainlg();
+			self.pk_touch = painkeep_weapon_touch;
+			self.classname = "weapon_chainlg";
+		}
+		return;
+	}
+
 	self.netname = "BFG";
 
 	self.touch = x_weapon_touch;
@@ -283,6 +304,17 @@ void () q3_weapon_bfg =
 void() weapon_plasmagun =
 {
 	q100_weapon_lightning();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		return;
+	}
+
 	self.netname = "Plasma Gun";
 
 	self.touch = x_weapon_touch;
@@ -341,7 +373,17 @@ void() q3_mg_base =
 
 void() q3_weapon_machinegun =
 {
-	weapon_nailgun();
+	weapon_supernailgun();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_supernailgun";
+		return;
+	}
 
 	q3_mg_base();
 	self.touch = x_weapon_touch;//wchg2_weapon_touch;
@@ -363,6 +405,17 @@ void() q3_weapon_machinegun =
 void() q3_weapon_shotgun =
 {
 	q100_weapon_supershotgun();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_supershotgun";
+		return;
+	}
+
 	self.netname = "Shotgun";
 
 	self.touch = x_weapon_touch;
@@ -395,6 +448,17 @@ void() q3_weapon_shotgun =
 void() q3_weapon_rocketlauncher =
 {
 	q100_weapon_rocketlauncher();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_rocketlauncher";
+		return;
+	}
+
 	self.netname = "Rocket Launcher";
 
 // fn
@@ -429,6 +493,17 @@ void() q3_weapon_rocketlauncher =
 void () q3_weapon_grenadelauncher =
 {
 	q100_weapon_grenadelauncher();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_grenadelauncher";
+		return;
+	}
+
 	self.netname = "Grenade Launcher";
 
 // fn
@@ -463,6 +538,17 @@ void () q3_weapon_grenadelauncher =
 void () weapon_gauntlet =
 {
 	weapon_axe();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = x_weapon_touch;
+		self.classname = "weapon_axe";
+		return;
+	}
+
 	self.netname = "Gauntlet";
 
 	self.touch = x_weapon_touch;
@@ -499,6 +585,17 @@ void () weapon_grapgun;
 void () weapon_grapplinghook =
 {
 	weapon_grapgun();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = painkeep_weapon_touch;
+		self.classname = "weapon_grapgun";
+		return;
+	}
+
 	self.netname = "Grappling hook";
 
 /*
@@ -530,6 +627,17 @@ void () weapon_grapplinghook =
 void () q3_weapon_lightning =
 {
 	q100_weapon_lightning();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		return;
+	}
+
 	self.netname = "Lightning Gun";
 
 	self.touch = x_weapon_touch;
@@ -563,6 +671,23 @@ void () q3_weapon_lightning =
 void () q3_weapon_railgun =
 {
 	q100_weapon_lightning();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		if (!Q_100 & !Q_99)
+		{
+			weapon_chainlg();
+			self.pk_touch = painkeep_weapon_touch;
+			self.classname = "weapon_chainlg";
+		}
+		return;
+	}
+
 	self.netname = "Rail Gun";
 
 	self.touch = x_weapon_touch;
@@ -600,6 +725,15 @@ void() q3_ammo_bullets =
 
 	item_spikes();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q3_BULLET_AMMO;
+		return;
+	}
+
 	self.netname = "Bullets";
 
 	self.lip = AMMO_BULLETS;
@@ -619,8 +753,17 @@ void() q3_ammo_grenades =
 {
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 
-	item_spikes();
+	item_rockets();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q3_GREN_AMMO;
+		return;
+	}
+
 	self.netname = "Grenades";
 
 	self.lip = AMMO_GRENADES;
@@ -640,8 +783,17 @@ void() ammo_lightning =
 {
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 
-	item_shells();
+	item_cells();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q3_ELEX_AMMO;
+		return;
+	}
+
 	self.netname = "Cells";
 
 	self.lip = AMMO_LIGHTNING; // cells
@@ -661,8 +813,17 @@ void() ammo_bfg =
 {
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 
-	item_shells();
+	item_cells();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q3_ELEX_AMMO;
+		return;
+	}
+
 	self.netname = "Cells";
 
 	self.lip = AMMO_BFG; // cells - amount adjusted to fire proper count of bfg shots
@@ -691,6 +852,15 @@ void() q3_ammo_shells =
 
 	item_shells();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q3_SHOT_AMMO;
+		return;
+	}
+
 	self.netname = "Shells";
 
 	self.lip = AMMO_SHELLS;
@@ -710,8 +880,17 @@ void() q3_ammo_rockets =
 {
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 
-	item_shells();
+	item_rockets();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q3_ROCK_AMMO;
+		return;
+	}
+
 	self.netname = "Rockets";
 
 	self.lip = AMMO_ROCKETS;
@@ -731,8 +910,17 @@ void() q3_ammo_cells =
 {
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 
-	item_shells();
+	item_cells();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q3_ELEX_AMMO;
+		return;
+	}
+
 	self.netname = "Cells";
 
 	self.lip = AMMO_CELLS;
@@ -754,8 +942,17 @@ void() q3_ammo_slugs =
 {
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 
-	item_shells();
+	item_cells();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q3_ELEX_AMMO;
+		return;
+	}
+
 	self.netname = "Slugs";
 
 	self.lip = AMMO_SLUGS;
@@ -822,6 +1019,17 @@ void(entity e, float v) q3_ha_rot =
 void() q3_item_armor_combat =
 {
 	item_armor2();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armor1";
+		return;
+	}
+
 	self.netname = "Armor";
 
 	self.volume = 200; // max add
@@ -841,6 +1049,17 @@ void() q3_item_armor_combat =
 void() q3_item_armor_body =
 {
 	item_armorInv();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armorInv";
+		return;
+	}
+
 	self.netname = "Heavy Armor";
 
 	self.volume = 200; // max add
@@ -860,6 +1079,14 @@ void() q3_item_armor_body =
 void() q3_item_armor_shard =
 {
 	item_armor1();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Armor shard";
 
 	setmodel (self, "progs/q3_arm_shard.mdl");
@@ -880,6 +1107,15 @@ void() q3_item_armor_shard =
 void() q3_item_health_small =
 {
 	q100_item_health();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = Q3_HEAL5_A;
+		return;
+	}
+
 	self.netname = "5 health";
 
 	self.healamount = Q3_HEAL5_A;
@@ -900,6 +1136,12 @@ void() q3_item_health_small =
 void() q3_item_health =
 {
 	q100_item_health();
+	
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+		return;
+
 	self.netname = "25 health";
 
 	self.healamount = Q3_HEALMD_A;
@@ -920,6 +1162,15 @@ void() q3_item_health =
 void() q3_item_health_large =
 {
 	q100_item_health();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = Q3_HEALLG_A;
+		return;
+	}
+
 	self.netname = "50 health";
 
 	self.healamount = Q3_HEALLG_A;
@@ -941,6 +1192,14 @@ void() q3_item_health_mega =
 {
 	self.spawnflags = self.spawnflags | 2;
 	q100_item_health();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_health_mega"))
+	{
+		return;
+	}
+
 	self.netname = "Mega health";
 
 	self.healamount = Q3_HEALM_A;
@@ -962,6 +1221,14 @@ void() q3_item_health_mega =
 void() q3_item_quad =
 {
 	item_artifact_super_damage();
+	
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Quad Damage";
 
 	self.touch = x_pwr_touch;
@@ -1044,6 +1311,13 @@ void() item_regen =
 {
 	if (self.class_select == "") self.class_select = "q3_item";
 
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_artifact_invulnerability")) // IDEA: random possibilities via str func
+	{
+		return;
+	}
+
 	self.spawnflags = RUNE_FLG_RG;
 	self.duration = 0;
 //	item_sigil();
@@ -1069,6 +1343,14 @@ void() item_regen =
 void() item_invis =
 {
 	item_artifact_invisibility();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Invisibility";
 
 	self.touch = x_pwr_touch;
@@ -1090,6 +1372,14 @@ void() item_invis =
 void() q3_item_enviro =
 {
 	item_artifact_envirosuit();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Battle Suit";
 
 	self.touch = x_pwr_touch;
@@ -1114,6 +1404,13 @@ void() item_haste =
 {
 	if (self.class_select == "") self.class_select = "q3_item";
 
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_artifact_invulnerability"))
+	{
+		return;
+	}
+
 	self.spawnflags = RUNE_FLG_HS;
 	self.duration = 0;
 //	item_sigil();
@@ -1137,6 +1434,13 @@ void() item_haste =
 
 void() item_flight =
 {
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_artifact_super_damage"))
+	{
+		return;
+	}
+
 	item_spikes();
 	self.netname = "Flight";
 
@@ -1163,6 +1467,14 @@ void() item_pkplus_phone;
 void() holdable_medkit =
 {
 	item_painkeep_can();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	if (PK_100) return;
 
 	self.netname = "Holdable Medkit";
@@ -1181,6 +1493,14 @@ void() holdable_medkit =
 void() holdable_teleporter =
 {
 	item_pkplus_phone();
+
+	if (!ULOK3)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	if (PK_100) return;
 
 	self.netname = "Holdable Teleport";

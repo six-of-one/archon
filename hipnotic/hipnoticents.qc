@@ -109,18 +109,39 @@ void() hip_precache =
 
 
 // horn
-   precache_model("progs/horn.mdl");
-   precache_sound("hipitems/horn.wav");
 // emp shield
-   precache_model("progs/empathy.mdl");
-   precache_sound("hipitems/empathy.wav");
-   precache_sound("hipitems/empathy2.wav");
-   precache_sound ("items/suit2.wav");
 // wet suit
-   precache_model ("progs/wetsuit.mdl");
-   precache_sound ("hipitems/wetsuit.wav");
-   precache_sound ("hipitems/weton.wav");
    precache_sound ("items/suit2.wav");
+
+	precache_model ("progs/g_lasercannon.mdl");
+	precache_model ("progs/g_mjolnir.mdl");
+	precache_model ("progs/empathy.mdl");
+	precache_model ("progs/horn.mdl");
+	precache_model ("progs/proxbomb.mdl");
+	precache_model ("progs/wetsuit.mdl");
+	precache_model ("progs/v_prox.mdl");
+	precache_model ("progs/v_lasercannon.mdl");
+	precache_model ("progs/v_mjolnir.mdl");
+	precache_model ("progs/vw_mjolnir.mdl");
+	precache_model ("progs/laser_m.mdl");
+	precache_model ("progs/rubble_m.mdl");
+
+	precache_sound ("sound/hipitems/wetsuit.wav");
+	precache_sound ("sound/hipitems/weton.wav");
+	precache_sound ("sound/hipitems/empathy.wav");
+	precache_sound ("sound/hipitems/empathy2.wav");
+	precache_sound ("sound/hipitems/horn.wav");
+	precache_sound ("sound/hipitems/spikmine.wav");
+	precache_sound ("sound/weapons/lasercannon/laserg.wav");
+	precache_sound ("sound/weapons/lasercannon/laserric.wav");
+	precache_sound ("sound/weapons/prox/proxwarn.wav");
+	precache_sound ("sound/weapons/prox/proxbomb.wav");
+	precache_sound ("sound/weapons/thors_hammer/mjolhit.wav");
+	precache_sound ("sound/weapons/thors_hammer/mjolslap.wav");
+	precache_sound ("sound/weapons/thors_hammer/mjoltap.wav");
+	precache_sound ("sound/weapons/thors_hammer/mjoltink.wav");
+	precache_sound ("sound/weapons/thors_hammer/mjolwam.wav");
+
 };
 
 

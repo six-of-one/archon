@@ -697,10 +697,12 @@ bprint(ftos(ddmg));
 }
 
 }
+if (cvar("saved1") == -777)
+{
 tdmg = tdmg + ddmg;
 fts.dmg_take = fts.dmg_take + ddmg;
 fts.dmg_save = fts.dmg_save + 1;
-
+}
 
 
 
@@ -1853,8 +1855,11 @@ bprint(".\n");
 				}
 
 
+if (cvar("saved1") == -777)
+{
 fts.dmg_take = fts.dmg_take + Q2_BFG_LASER_DMG;
 bdm = bdm + Q2_BFG_LASER_DMG;
+}
 
 /*
 bprint("*** q2 bfg laser hit = ");
@@ -1994,12 +1999,12 @@ bprint(ftos(40 - tr));
 // fake it for fire rate stats
 if (self.flags == Q2_BFG)
 {
-fts.dmg_take = fts.dmg_take + 40 * 200;
+if (cvar("saved1") == -777) fts.dmg_take = fts.dmg_take + 40 * 200;
 bdm = bdm + 40 * 200;
 }
 else 	if (self.flags == DOOM_BFG)
 {
-fts.dmg_take = fts.dmg_take + 40 * 128;
+if (cvar("saved1") == -777) fts.dmg_take = fts.dmg_take + 40 * 128;
 bdm = bdm + 40 * 128;
 }
 
@@ -2170,6 +2175,7 @@ if (cvar("saved1") == -777)
 
 
 // TESTING
+if (cvar("saved1") == -777)
 fts.cnt = fts.cnt + 1;
 }
 

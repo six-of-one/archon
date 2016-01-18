@@ -1946,7 +1946,7 @@ void() vw_config =
 //				setmodel(vv.vwepent, "progs/vw_shovel.mdl");
 //				setmodel(vv.vwepent, "progs/vw_q2_rock2.mdl");
 //				setmodel(vv.vwepent, "progs/vw_airgun2b.mdl");
-				setmodel(vv.vwepent, "maps/vs_vent_main_.bsp");
+//				setmodel(vv.vwepent, "maps/vs_vent_main_.bsp");
 //				vv.vwepent.skin = 2;
 //				setmodel(vv.vwepent, "progs/bit.mdl");
 				setorigin(vv.vwepent, self.origin);

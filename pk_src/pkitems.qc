@@ -80,20 +80,18 @@ void () PlaceItem =
 	self.sscode = sid_code[(int)(self.mcode - 100) * %4];
 	if (!self.scode) self.scode = self.mcode;
 
-	if (Q_100 || PK_100) // TDO: include hip_item & x_item when xlates are available
+	if (Q_100 || PK_100) // || !GENERATIONS) // TDO: include hip_item & x_item when xlates are available
 	{
-tbprint("*** - q100 mode in place item...\n");
 		f = 0;
 		if (TR_Q1QRY > 0)
 		{
 			TR_Q1QRY = 0;
-			if (find(world,wad,"q1")) {TR_Q1QRY = -1; // map was designed for dual items - remove only
-
-
-tbprint("*** - wad q1 item found in q100 translate code...\n");
-}
-
-
+			if (world.worldtype == IT0_WQ1) TR_Q1QRY = -1;
+			else if (world.worldtype == IT1_WQ1) TR_Q1QRY = -1; // map was designed for dual items - remove only
+			else if (world.worldtype == IT3_WQ1) TR_Q1QRY = -1;
+			else if (world.worldtype == IT4_WQ1) TR_Q1QRY = -1;
+			else
+			if (find(world,wad,"q1")) TR_Q1QRY = -1; // map was designed for dual items - remove only
 		}
 		if (TR_Q1DEF && (TR_Q1QRY == 0)) f = FL_TR_QUAKE;
 		if (self.class_select == "wolf_item") master_item_control(self, f);
@@ -313,7 +311,12 @@ void () weapon_chainlg =
 {
 	if (Q_100 | Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 	{
-		remove(self);
+		if (Q_100) remove(self);
+		else
+		{
+			q100_weapon_lightning();
+			self.classname = "weapon_lightning";
+		}
 		return;
 	}
 
@@ -1491,6 +1494,7 @@ void() pk_placeitem =
 // TESTING - see if we can q1 default class select
 	if (self.class_select == "") self.class_select = "quake_item";
 
+//	if (GENERATIONS)
 	if (!PK_100 && !Q_100)
 	{
 		if (self.wad == "q1") master_item_control(self, 0); // TEST: comment for q1 item comparison

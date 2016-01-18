@@ -2,7 +2,7 @@
    By Jim Dose'  10/17/96
    Copyright (c)1996 Hipnotic Interactive, Inc.
    All rights reserved.
-   Do not distribute.
+   Distributed (unsupported) on 3.12.97
 */
 
 //============================================================================

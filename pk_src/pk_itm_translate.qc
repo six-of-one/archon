@@ -926,7 +926,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_redskull");
 		if (TR == FL_TR_QUAKE) return("item_key2_0");
 		if (TR == FL_TR_Q2) return("key_red_key");
-		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_Q3) return("");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -937,7 +937,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_blueskull");
 		if (TR == FL_TR_QUAKE) return("item_key1_0");
 		if (TR == FL_TR_Q2) return("key_blue_key");
-		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_Q3) return("");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -948,7 +948,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_redcard");
 		if (TR == FL_TR_QUAKE) return("item_key2_2");
 		if (TR == FL_TR_Q2) return("key_pyramid");
-		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_Q3) return("");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -959,7 +959,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_bluecard");
 		if (TR == FL_TR_QUAKE) return("item_key1_2");
 		if (TR == FL_TR_Q2) return("key_power_cube");
-		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_Q3) return("");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -970,7 +970,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_yellowskull");
 		if (TR == FL_TR_QUAKE) return("item_key2_1");
 		if (TR == FL_TR_Q2) return("key_data_cd");
-		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_Q3) return("");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -981,7 +981,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_DOOM) return("d_key_yellowcard");
 		if (TR == FL_TR_QUAKE) return("item_key1_1");
 		if (TR == FL_TR_Q2) return("key_data_spinner");
-		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_Q3) return("");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -2201,6 +2201,7 @@ void(entity e, float trv) master_item_control =
 {
 	if (e.classname == "func_make") return; // override
 
+	if (GENERATIONS)
 	if (!PK_100 && !Q_100) // turned back on - come here from loop
 	{
 		if (cvar("pk_place_item") == 1) return;
@@ -2265,6 +2266,51 @@ void(string tri, float trv) master_item_control_loop =
 	}
 };
 
+// fn(noxtr_item_control) - check to see if we are running without extra and take right action
+
+// e - item to check
+// q1ck - check for wad = q1 & worldtype rules
+// itm - item to make if tests fail
+// returns false if item is ok
+// returns true if item is changed / hidden / removed
+
+float(entity e, float q1ck, string itm) noxtr_item_control =
+{
+	float T;
+
+	if (!GENERATIONS)
+	{
+		if (q1ck) // test to see if its a dual item map - if so, hide this item
+		{
+			T = FALSE;
+			if (world.worldtype == IT0_WQ1) T = TRUE;
+			else if (world.worldtype == IT1_WQ1) T = TRUE;
+			else if (world.worldtype == IT3_WQ1) T = TRUE;
+			else if (world.worldtype == IT4_WQ1) T = TRUE;
+			else
+			if (find(world,wad,"q1")) T = TRUE;
+		
+//			if (e.wad != "q1") // no wad q1 items should ever be tested - just for gens stuff
+			if (T)  hide_item (e);
+			return(TRUE);
+		}
+
+		if (itm != "")
+			{
+				NO_PI = 3.1415; // no place item - no mcode set, no subcontrols
+				if(e.map == "repic") e.map = "pic_item";
+				item_call_save(e, itm);
+				e.mcode = pk_mcode("", e);
+				e.sscode = sid_code[(int)(e.mcode - 100) * %4]; // just for doom_alpha code
+			}
+		else
+			hide_item (e);
+
+		return(TRUE);
+	}
+
+	return(FALSE);
+};
 
 void() set_translate =
 {

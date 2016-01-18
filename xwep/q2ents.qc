@@ -52,17 +52,74 @@ float Q2_BARREL_BLAST		= 150;
 void() q2_precache =
 {
 // weps
+// view models
+// viswep
+// ammo
+// heal
+// armor
+// items
+// keys
+	precache_model ("progs/q2_adrenaline.mdl");
+	precache_model ("progs/q2_armorbody.mdl");
+	precache_model ("progs/q2_armorcombat.mdl");
+	precache_model ("progs/q2_armorjacket.mdl");
+	precache_model ("progs/q2_armorpower.mdl");
+	precache_model ("progs/q2_armorscreen.mdl");
+	precache_model ("progs/q2_armorshard.mdl");
+	precache_model ("progs/q2_bando.mdl");
+	precache_model ("progs/q2_barrel.mdl");
 	precache_model ("progs/q2_bfg.mdl");
+	precache_model ("progs/q2_blaster.mdl");
+	precache_model ("progs/q2_breather.mdl");
+	precache_model ("progs/q2_bullets.mdl");
+	precache_model ("progs/q2_cellbox.mdl");
 	precache_model ("progs/q2_chain.mdl");
 	precache_model ("progs/q2_dblshot.mdl");
+	precache_model ("progs/q2_envirosuit.mdl");
 	precache_model ("progs/q2_gl.mdl");
+	precache_model ("progs/q2_grenades.mdl");
+	precache_model ("progs/q2_heal_large.mdl");
+	precache_model ("progs/q2_heal_medium.mdl");
+	precache_model ("progs/q2_heal_mega.mdl");
+	precache_model ("progs/q2_heal_stimpak.mdl");
 	precache_model ("progs/q2_hyperb.mdl");
+	precache_model ("progs/q2_inv.mdl");
+	precache_model ("progs/q2_keycd.mdl");
+	precache_model ("progs/q2_key_cmd_head.mdl");
+	precache_model ("progs/q2_keypass.mdl");
+	precache_model ("progs/q2_keypower.mdl");
+	precache_model ("progs/q2_keypyramid.mdl");
+	precache_model ("progs/q2_keyrb.mdl");
+	precache_model ("progs/q2_keyspinner.mdl");
+	precache_model ("progs/q2_keytarget.mdl");
+	precache_model ("progs/q2_m_berserk.mdl");
+	precache_model ("progs/q2_m_boss2_flyer.mdl");
+	precache_model ("progs/q2_m_brain.mdl");
+	precache_model ("progs/q2_m_flipper.mdl");
+	precache_model ("progs/q2_m_float.mdl");
+	precache_model ("progs/q2_m_flyer.mdl");
+	precache_model ("progs/q2_m_glad.mdl");
 	precache_model ("progs/q2_mgun.mdl");
+	precache_model ("progs/q2_m_gunner.mdl");
+	precache_model ("progs/q2_m_hover.mdl");
+	precache_model ("progs/q2_m_infantry.mdl");
+	precache_model ("progs/q2_m_jorg.mdl");
+	precache_model ("progs/q2_m_jorg_rider.mdl");
+	precache_model ("progs/q2_m_medic.mdl");
+	precache_model ("progs/q2_m_mutant.mdl");
+	precache_model ("progs/q2_m_paras.mdl");
+	precache_model ("progs/q2_m_rbtch.mdl");
+	precache_model ("progs/q2_m_soldier.mdl");
+	precache_model ("progs/q2_m_tank.mdl");
+	precache_model ("progs/q2_pack.mdl");
+	precache_model ("progs/q2_quad.mdl");
 	precache_model ("progs/q2_rail.mdl");
 	precache_model ("progs/q2_rocketl.mdl");
+	precache_model ("progs/q2_rockets.mdl");
+	precache_model ("progs/q2_shells.mdl");
 	precache_model ("progs/q2_shotgun.mdl");
-	precache_model ("progs/q2_blaster.mdl");
-// view models
+	precache_model ("progs/q2_silencer.mdl");
+	precache_model ("progs/q2_slugs.mdl");
 	precache_model ("progs/v_q2_bfg.mdl");
 	precache_model ("progs/v_q2_blst.mdl");
 	precache_model ("progs/v_q2_chg.mdl");
@@ -71,113 +128,83 @@ void() q2_precache =
 	precache_model ("progs/v_q2_mg.mdl");
 	precache_model ("progs/v_q2_rail.mdl");
 	precache_model ("progs/v_q2_rl.mdl");
-	precache_model ("progs/v_q2_shot.mdl");
 	precache_model ("progs/v_q2_shot2.mdl");
-// viswep
+	precache_model ("progs/v_q2_shot.mdl");
 	precache_model ("progs/vw_q2_bfg.mdl");
 	precache_model ("progs/vw_q2_blst.mdl");
 	precache_model ("progs/vw_q2_chg.mdl");
 	precache_model ("progs/vw_q2_dblshot.mdl");
 	precache_model ("progs/vw_q2_gl.mdl");
 	precache_model ("progs/vw_q2_hbl.mdl");
+	precache_model ("progs/vw_q2_hgr.mdl");
 	precache_model ("progs/vw_q2_mg.mdl");
 	precache_model ("progs/vw_q2_rail.mdl");
+	precache_model ("progs/vw_q2_rock2.mdl");
 	precache_model ("progs/vw_q2_rock.mdl");
 	precache_model ("progs/vw_q2_shot.mdl");
-	precache_model ("progs/vw_q2_hgr.mdl");
-// ammo
-	precache_model ("progs/q2_cellbox.mdl");
-	precache_model ("progs/q2_bullets.mdl");
-	precache_model ("progs/q2_shells.mdl");
-	precache_model ("progs/q2_rockets.mdl");
-	precache_model ("progs/q2_slugs.mdl");
-	precache_model ("progs/q2_grenades.mdl");
-// heal
-	precache_model ("progs/q2_heal_stimpak.mdl");
-	precache_model ("progs/q2_heal_large.mdl");
-	precache_model ("progs/q2_heal_medium.mdl");
-	precache_model ("progs/q2_heal_mega.mdl");
-//armor
-	precache_model ("progs/q2_armorbody.mdl");
-	precache_model ("progs/q2_armorcombat.mdl");
-	precache_model ("progs/q2_armorjacket.mdl");
-	precache_model ("progs/q2_armorshard.mdl");
-	precache_model ("progs/q2_armorpower.mdl");
-	precache_model ("progs/q2_armorscreen.mdl");
-// items
-	precache_model ("progs/q2_silencer.mdl");
-	precache_model ("progs/q2_adrenaline.mdl");
-	precache_model ("progs/q2_envirosuit.mdl");
-	precache_model ("progs/q2_quad.mdl");
-	precache_model ("progs/q2_inv.mdl");
-	precache_model ("progs/q2_bando.mdl");
-	precache_model ("progs/q2_pack.mdl");
-	precache_model ("progs/q2_breather.mdl");
-// keys
-	precache_model ("progs/q2_keypyramid.mdl");
-	precache_model ("progs/q2_keypower.mdl");
-	precache_model ("progs/q2_keypass.mdl");
-	precache_model ("progs/q2_keycd.mdl");
-	precache_model ("progs/q2_keyspinner.mdl");
-	precache_model ("progs/q2_keytarget.mdl");
-	precache_model ("progs/q2_keyrb.mdl");
-	precache_model ("progs/q2_key_cmd_head.mdl");
 
-	precache_model ("progs/q2_barrel.mdl");
 
 // sounds
-	precache_sound ("q2_snd/pkup.wav");
-	precache_sound ("q2_snd/w_pkup.wav");
-	precache_sound ("q2_snd/am_pkup.wav");
-	precache_sound ("q2_snd/respawn1.wav");
-	precache_sound ("q2_snd/damage.wav");
-	precache_sound ("q2_snd/protect.wav");
-	precache_sound ("q2_snd/airout.wav");
-	precache_sound ("q2_snd/telep1.wav");
-	precache_sound ("q2_snd/telehum.wav");
-
 // heal
-	precache_sound ("q2_snd/s_health.wav");
-	precache_sound ("q2_snd/n_health.wav");
-	precache_sound ("q2_snd/l_health.wav");
-	precache_sound ("q2_snd/m_health.wav");
 // arm
-	precache_sound ("q2_snd/ar2_pkup.wav");
-	precache_sound ("q2_snd/ar1_pkup.wav");
-	precache_sound ("q2_snd/ar3_pkup.wav");
-	precache_sound ("q2_snd/pwr_arm_on.wav");
-	precache_sound ("q2_snd/pwr_arm_off.wav");
 // weps
-	precache_sound ("q2_snd/bfg_hum.wav");
-	precache_sound ("q2_snd/bfg_f1y.wav");
-	precache_sound ("q2_snd/bfg_l1a.wav");
-	precache_sound ("q2_snd/bfg_x1b.wav");
-	precache_sound ("q2_snd/grnf_mx.wav");
-	precache_sound ("q2_snd/grenlb1b.wav");
-	precache_sound ("q2_snd/hgrena1b.wav");
-	precache_sound ("q2_snd/hgrenc1b.wav");
-	precache_sound ("q2_snd/hgrenb1a.wav"); // noise
-	precache_sound ("q2_snd/hgrent1a.wav"); // toss
-	precache_sound ("q2_snd/rktf_mx.wav");
-	precache_sound ("q2_snd/rocklx1a.wav");
-	precache_sound ("q2_snd/railf_mx.wav");
-	precache_sound ("q2_snd/shtf_mx.wav");
-	precache_sound ("q2_snd/sshotf1b.wav");
-	precache_sound ("q2_snd/machgf1b.wav");
-	precache_sound ("q2_snd/machgf2b.wav");
-	precache_sound ("q2_snd/machgf3b.wav");
-	precache_sound ("q2_snd/machgf4b.wav");
-	precache_sound ("q2_snd/machgf5b.wav");
-	precache_sound ("q2_snd/blastf1a.wav");
-	precache_sound ("q2_snd/chngnl1a.wav");
-	precache_sound ("q2_snd/chngnu1a.wav");
-	precache_sound ("q2_snd/chngnd1a.wav");
-	precache_sound ("q2_snd/hyprbl1a.wav");
-	precache_sound ("q2_snd/hyprbu1a.wav");
-	precache_sound ("q2_snd/hyprbd1a.wav");
-	precache_sound ("q2_snd/hyprbf1a.wav");
-	precache_sound ("q2_snd/laser2.wav");
-	precache_sound ("q2_snd/lashit.wav");
+	precache_sound ("sound/q2_snd/telehum.wav");
+	precache_sound ("sound/q2_snd/telep1.wav");
+	precache_sound ("sound/q2_snd/rg_hum.wav");
+	precache_sound ("sound/q2_snd/pwr_arm_off.wav");
+	precache_sound ("sound/q2_snd/pwr_arm_on.wav");
+	precache_sound ("sound/q2_snd/airout.wav");
+	precache_sound ("sound/q2_snd/protect.wav");
+	precache_sound ("sound/q2_snd/damage.wav");
+	precache_sound ("sound/q2_snd/pkup.wav");
+	precache_sound ("sound/q2_snd/bfg_x1b.wav");
+	precache_sound ("sound/q2_snd/bfg_l1a.wav");
+	precache_sound ("sound/q2_snd/bfg_f1y.wav");
+	precache_sound ("sound/q2_snd/bfg_hum.wav");
+	precache_sound ("sound/q2_snd/machgf5b.wav");
+	precache_sound ("sound/q2_snd/machgf4b.wav");
+	precache_sound ("sound/q2_snd/machgf3b.wav");
+	precache_sound ("sound/q2_snd/machgf2b.wav");
+	precache_sound ("sound/q2_snd/chngnu1a.wav");
+	precache_sound ("sound/q2_snd/chngnl1a.wav");
+	precache_sound ("sound/q2_snd/chngnd1a.wav");
+	precache_sound ("sound/q2_snd/ar3_pkup.wav");
+	precache_sound ("sound/q2_snd/ar2_pkup.wav");
+	precache_sound ("sound/q2_snd/ar1_pkup.wav");
+	precache_sound ("sound/q2_snd/hgrent1a.wav");
+	precache_sound ("sound/q2_snd/hgrenc1b.wav");
+	precache_sound ("sound/q2_snd/hgrena1b.wav");
+	precache_sound ("sound/q2_snd/hgrenb1a.wav");
+	precache_sound ("sound/q2_snd/grenlb1b.wav");
+	precache_sound ("sound/q2_snd/hyprbf1a.wav");
+	precache_sound ("sound/q2_snd/machgf1b.wav");
+	precache_sound ("sound/q2_snd/hyprbu1a.wav");
+	precache_sound ("sound/q2_snd/hyprbd1a.wav");
+	precache_sound ("sound/q2_snd/lashit.wav");
+	precache_sound ("sound/q2_snd/laser2.wav");
+	precache_sound ("sound/q2_snd/hyprbl1a.wav");
+	precache_sound ("sound/q2_snd/blastf1a.wav");
+	precache_sound ("sound/q2_snd/s_health.wav");
+	precache_sound ("sound/q2_snd/n_health.wav");
+	precache_sound ("sound/q2_snd/m_health.wav");
+	precache_sound ("sound/q2_snd/l_health.wav");
+	precache_sound ("sound/q2_snd/rocklx1a.wav");
+	precache_sound ("sound/q2_snd/railf_mx.wav");
+	precache_sound ("sound/q2_snd/shtf_mx.wav");
+	precache_sound ("sound/q2_snd/sshotf1b.wav");
+	precache_sound ("sound/q2_snd/grnf_mx.wav");
+	precache_sound ("sound/q2_snd/rktf_mx.wav");
+	precache_sound ("sound/q2_snd/respawn1.wav");
+	precache_sound ("sound/q2_snd/w_pkup.wav");
+	precache_sound ("sound/q2_snd/am_pkup.wav");
+	precache_sound ("sound/q2_snd/q2_chg_fire.wav");
+	precache_sound ("sound/q2_snd/dr1_end.wav");
+	precache_sound ("sound/q2_snd/dr1_mid.wav");
+	precache_sound ("sound/q2_snd/dr1_strt.wav");
+	precache_sound ("sound/q2_snd/pt1_end.wav");
+	precache_sound ("sound/q2_snd/pt1_mid.wav");
+	precache_sound ("sound/q2_snd/pt1_strt.wav");
+	precache_sound ("sound/q2_snd/butn2.wav");
 
 //	precache_sound ("q2_snd/.wav");
 	rail_precache();
@@ -187,6 +214,15 @@ void() q2_precache =
 void() q2_ammo_bullets =
 {
 	item_spikes();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q2_DEF_BULLETS_BOX;
+		return;
+	}
+
 	self.netname = "Bullets";
 	self.touch = pk_ammo_touch;
 
@@ -205,6 +241,15 @@ void() q2_ammo_bullets =
 void() q2_ammo_rockets =
 {
 	item_rockets();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q2_DEF_ROCKETS_LG;
+		return;
+	}
+
 	self.netname = "Rockets";
 	self.touch = pk_ammo_touch;
 
@@ -224,6 +269,15 @@ void() q2_ammo_rockets =
 void() q2_ammo_shells =
 {
 	item_shells();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q2_DEF_SHELLS;
+		return;
+	}
+
 	self.netname = "Shells";
 	self.touch = pk_ammo_touch;
 
@@ -242,6 +296,15 @@ void() q2_ammo_shells =
 void() q2_ammo_cells =
 {
 	item_cells();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q2_DEF_CELLPAK;
+		return;
+	}
+
 	self.netname = "Cells";
 	self.touch = pk_ammo_touch;
 
@@ -260,6 +323,15 @@ void() q2_ammo_cells =
 void() q2_ammo_slugs =
 {
 	item_cells();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q2_DEF_CELLPAK;
+		return;
+	}
+
 	self.netname = "Slugs";
 	self.touch = pk_ammo_touch;
 
@@ -314,6 +386,15 @@ slot		weapon
 void() q2_ammo_grenades =
 {
 	item_rockets();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = Q2_DEF_BLAST;
+		return;
+	}
+
 	self.netname = "Hand Grenades";
 
 // fn
@@ -355,6 +436,23 @@ void() q2_ammo_grenades =
 void () q2_weapon_bfg =
 {
 	q100_weapon_lightning();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		if (!Q_100 & !Q_99)
+		{
+			weapon_chainlg();
+			self.pk_touch = painkeep_weapon_touch;
+			self.classname = "weapon_chainlg";
+		}
+		return;
+	}
+
 	self.netname = "BFG 10000";
 
 // fn
@@ -392,6 +490,17 @@ void () q2_weapon_bfg =
 void () q2_weapon_railgun =
 {
 	q100_weapon_lightning();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		return;
+	}
+
 	self.netname = "Rail Gun";
 
 	self.touch = x_weapon_touch;
@@ -425,6 +534,17 @@ void () q2_weapon_railgun =
 void () weapon_hyperblaster =
 {
 	q100_weapon_lightning();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		return;
+	}
+
 	self.netname = "Hyper Blaster";
 
 	self.touch = x_weapon_touch;
@@ -456,6 +576,17 @@ void () weapon_hyperblaster =
 void() q2_weapon_rocketlauncher =
 {
 	q100_weapon_rocketlauncher();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_rocketlauncher";
+		return;
+	}
+
 	self.netname = "Rocket Launcher";
 
 // fn
@@ -493,6 +624,17 @@ void() q2_weapon_rocketlauncher =
 void () q2_weapon_grenadelauncher =
 {
 	q100_weapon_grenadelauncher();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_grenadelaunche";
+		return;
+	}
+
 	self.netname = "Grenade Launcher";
 
 // fn
@@ -526,6 +668,17 @@ void () q2_weapon_grenadelauncher =
 void () weapon_chaingun =
 {
 	weapon_supernailgun();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_supernailgun";
+		return;
+	}
+
 	self.netname = "Chain Gun";
 
 	self.touch = x_weapon_touch;
@@ -582,6 +735,16 @@ void() q2_weapon_machinegun =
 {
 	weapon_nailgun();
 
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_nailgun";
+		return;
+	}
+
 	q2_mg_base();
 	self.touch = x_weapon_touch;//wchg2_weapon_touch;
 	self._attack = SUB_Null;
@@ -598,6 +761,17 @@ void() q2_weapon_machinegun =
 void () q2_weapon_supershotgun =
 {
 	q100_weapon_supershotgun();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_supershotgun";
+		return;
+	}
+
 	self.netname = "Super Shotgun";
 
 	self.touch = x_weapon_touch;
@@ -636,6 +810,17 @@ void () q2_weapon_supershotgun =
 void () q2_weapon_shotgun =
 {
 	q100_weapon_shotgun();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = x_weapon_touch;
+		self.classname = "weapon_shotgun";
+		return;
+	}
+
 	self.netname = "Shotgun";
 
 	self.touch = x_weapon_touch;
@@ -667,6 +852,17 @@ void () q2_weapon_shotgun =
 void () q2_weapon_blaster =
 {
 	q100_weapon_shotgun();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = x_weapon_touch;
+		self.classname = "weapon_axe";
+		return;
+	}
+
 	self.netname = "Blaster";
 
 	self.touch = x_weapon_touch;
@@ -700,6 +896,15 @@ void () q2_weapon_blaster =
 void() q2_item_health_small =
 {
 	q100_item_health();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = Q2_DEF_HBOTTLE;
+		return;
+	}
+
 	setmodel(self, "progs/q2_heal_stimpak.mdl");
 	self.noise = "q2_snd/s_health.wav";
 	self.noise4 = "q2_snd/respawn1.wav"; // doom respawn sound
@@ -715,6 +920,15 @@ void() q2_item_health_small =
 void() q2_item_health =
 {
 	q100_item_health();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = Q2_DEF_HFIRSTAID;
+		return;
+	}
+
 	setmodel(self, "progs/q2_heal_medium.mdl");
 	self.noise = "q2_snd/n_health.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -730,6 +944,15 @@ void() q2_item_health =
 void() q2_item_health_large =
 {
 	q100_item_health();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = Q2_DEF_HMEDKIT;
+		return;
+	}
+
 	setmodel(self, "progs/q2_heal_large.mdl");
 	self.noise = "q2_snd/l_health.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -746,6 +969,14 @@ void() q2_item_health_mega =
 {
 	self.spawnflags = self.spawnflags | 2;
 	q100_item_health();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_health_mega"))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_heal_mega.mdl");
 	self.noise = "q2_snd/m_health.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -760,6 +991,13 @@ void() q2_item_health_mega =
 
 void() q2_misc_explobox =
 {
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "misc_explobox"))
+	{
+		return;
+	}
+
 	self.netname = "Barrel";
 	if (self.class_select == "") self.class_select = "q2_item";
 	misc_explodbox_set(self, "progs/q2_barrel.mdl", Q2_BARREL_BLAST, 80, MOVETYPE_NONE);
@@ -774,6 +1012,17 @@ void() q2_misc_explobox =
 void() q2_item_armor_body =
 {
 	item_armorInv();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armorInv";
+		return;
+	}
+
 	setmodel (self, "progs/q2_armorbody.mdl");
 	self.noise = "q2_snd/ar3_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -790,6 +1039,17 @@ void() q2_item_armor_body =
 void() q2_item_armor_combat =
 {
 	item_armor2();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armor2";
+		return;
+	}
+
 	setmodel (self, "progs/q2_armorcombat.mdl");
 	self.noise = "q2_snd/ar1_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -806,6 +1066,17 @@ void() q2_item_armor_combat =
 void() item_armor_jacket =
 {
 	item_armor1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armor1";
+		return;
+	}
+
 	setmodel (self, "progs/q2_armorjacket.mdl");
 	self.noise = "q2_snd/ar1_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -822,6 +1093,14 @@ void() item_armor_jacket =
 void() q2_item_armor_shard =
 {
 	item_armor1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	setmodel (self, "progs/q2_armorshard.mdl");
 	self.noise = "q2_snd/ar2_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -838,6 +1117,17 @@ void() q2_item_armor_shard =
 void() item_power_shield =
 {
 	item_armor1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armor2";
+		return;
+	}
+
 	self.netname = "Energy armor";
 
 	self.touch = x_item_touch;
@@ -857,6 +1147,17 @@ void() item_power_shield =
 void() item_power_screen =
 {
 	item_armor1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armor1";
+		return;
+	}
+
 	self.netname = "Power screen";
 
 	self.touch = x_item_touch;
@@ -875,7 +1176,15 @@ void() item_power_screen =
 
 void() item_silencer =
 {
-	item_spikes();
+	item_artifact_invisibility();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Silencer";
 
 	self.touch = x_pwr_touch;
@@ -893,6 +1202,14 @@ void() item_silencer =
 void() item_invulnerability =
 {
 	item_artifact_invulnerability();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Invulnerability";
 
 	self.touch = x_pwr_touch;
@@ -910,6 +1227,14 @@ void() item_invulnerability =
 void() q2_item_enviro =
 {
 	item_artifact_envirosuit();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Environmental Suit";
 
 	self.touch = x_pwr_touch;
@@ -930,6 +1255,14 @@ void() q2_item_enviro =
 void() q2_item_quad =
 {
 	item_artifact_super_damage();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Quad Damage";
 
 	self.touch = x_pwr_touch;
@@ -948,6 +1281,14 @@ void() q2_item_quad =
 void() item_adrenaline =
 {
 	q100_item_health();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_health_mega"))
+	{
+		return;
+	}
+
 	self.netname = "Adrenaline";
 
 	self.healamount = Q2_DEF_HMEGATUBE;
@@ -965,6 +1306,14 @@ void() item_adrenaline =
 void() item_bandolier =
 {
 	item_spikes();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_armor2"))
+	{
+		return;
+	}
+
 	self.netname = "Bandolier";
 
 	self.touch = x_pack_touch;
@@ -985,6 +1334,14 @@ void() item_bandolier =
 void() item_pack =
 {
 	item_spikes();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_artifact_envirosuit"))
+	{
+		return;
+	}
+
 	self.netname = "Ammo Pack";
 
 	self.touch = x_pack_touch;
@@ -1007,7 +1364,15 @@ void() item_pack =
 
 void() item_breather =
 {
-	item_spikes();
+	item_artifact_envirosuit();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Re-breather";
 
 	self.touch = x_pwr_touch;
@@ -1027,6 +1392,14 @@ void() item_breather =
 void() key_pyramid =
 {
 	item_key1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_keypyramid.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -1040,7 +1413,15 @@ void() key_pyramid =
 
 void() key_power_cube =
 {
-	item_key1();
+	item_key2();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_keypower.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -1055,6 +1436,14 @@ void() key_power_cube =
 void() key_pass =
 {
 	item_key1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_keypass.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -1069,6 +1458,14 @@ void() key_pass =
 void() key_data_cd =
 {
 	item_key1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_keycd.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -1082,7 +1479,15 @@ void() key_data_cd =
 
 void() key_data_spinner =
 {
-	item_key1();
+	item_key2();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_keyspinner.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -1096,7 +1501,15 @@ void() key_data_spinner =
 
 void() key_airstrike_target =
 {
-	item_key1();
+	item_key2();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_keytarget.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -1111,6 +1524,14 @@ void() key_airstrike_target =
 void() key_blue_key =
 {
 	item_key1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_keyrb.mdl");
 	self.skin = 1;
 	self.noise = "doom/dsitemup.wav";
@@ -1126,6 +1547,14 @@ void() key_blue_key =
 void() key_red_key =
 {
 	item_key2();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_keyrb.mdl");
 	self.skin = 0;
 	self.noise = "doom/dsitemup.wav";
@@ -1140,7 +1569,15 @@ void() key_red_key =
 
 void() key_commander_head =
 {
-	item_key1();
+	item_key2();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	setmodel(self, "progs/q2_key_cmd_head.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -1277,6 +1714,14 @@ void() q2_teleport_particles =
 	self.nextthink = time + 0.05;
 };
 
+// allow map compile particle fountain / sound  because regular q2 one requires q2.wad for map
+
+void() func_q2_telepart =
+{
+	chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "", "", SUB_Null, 1, q2_teleport_particles, SUB_Null, self, world);
+	ambientsound (self.origin + ' 0 0 32', "q2_snd/telehum.wav", 1, ATTN_STATIC);
+	remove(self); // IDEA: when chaos mod, leave this for changes?
+};
 
 // fn() - reverse armorsave value so real armor can be manipulated
 

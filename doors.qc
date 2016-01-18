@@ -262,6 +262,11 @@ void () door_touch =
 				centerprint (other, "You need the silver key");
 				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 			}
+			else // Cataboligne - 8.22.11 - interim handling of other worldtype doors
+			{
+				centerprint (other, "You need the key matching the lock encoding");
+				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+			}
 		}
 		else
 		{
@@ -278,6 +283,11 @@ void () door_touch =
 			else if (world.worldtype == 0)
 			{
 				centerprint (other, "You need the gold key");
+				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+			}
+			else // Cataboligne - 8.22.11 - interim handling of other worldtype doors
+			{
+				centerprint (other, "You need the key matching the lock encoding");
 				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 			}
 		}
@@ -466,7 +476,7 @@ void () func_door =
 		self.noise3 = "doors/runetry.wav";
 		self.noise4 = "doors/runeuse.wav";
 	}
-	else if (world.worldtype == 2)
+	else if (world.worldtype >= 2)
 	{
 		precache_sound ("doors/basetry.wav");
 		precache_sound ("doors/baseuse.wav");

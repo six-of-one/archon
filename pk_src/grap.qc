@@ -227,7 +227,10 @@ float() grap_maintainRope =
 	corner = self;
 // Cataboligne - 4.4.11 - start point of rope at end of harpoon gun, new vw calc
   	if (!PK_100)
+	{
 		v3 = cornerOrigin = corner.origin + grap_vw_adj(corner);
+		self.frame = 2; // use longer segment - 7.12.11
+	}
 	else
 		cornerOrigin = corner.origin + '0 0 16';
 

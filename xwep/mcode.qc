@@ -1965,6 +1965,18 @@ void() q2_barrel1 = [ 1, q2_barrel2 ] { self.nextthink = time + 0.05; };
 void() q2_barrel2 = [ 2, q2_barrel3 ] { self.nextthink = time + 0.05; };
 void() q2_barrel3 = [ 3, barrel_explode ] { self.nextthink = time + 0.05; };
 
+// This fixes a bug in which barrel explosions cancel other explosions. - Patrick Martin - 9.14.97 - box fix
+
+// TEST: is this true?  cound have been an engine bug in findradius long since fixed - need to investigate multiple radius damage in same frame
+
+void() barrel_damage =
+{
+  setorigin(self, self.origin + '0 0 32');
+//	Explode(0, bdmg, e, 0, 0, BecomeExplosion); // chaos mod replacement for this code
+	T_RadiusDamage (self, self, self.dmg, world);
+//  self.effects = self.effects | EF_MUZZLEFLASH;
+	BecomeExplosion ();
+}
 
 void() barrel_explode =
 {
@@ -2020,10 +2032,13 @@ void() barrel_explode =
 
 	sound (self, CHAN_VOICE, bsnd, 1, ATTN_NORM);
 	particle (self.origin, '0 0 0', 75, 255);
-	self.origin_z = self.origin_z + 32;
-//	Explode(0, bdmg, e, 0, 0, BecomeExplosion);
-	T_RadiusDamage (self, self, bdmg, world);
-	BecomeExplosion ();
+//	self.origin_z = self.origin_z + 32;
+//	Explode(0, bdmg, e, 0, 0, BecomeExplosion); // chaos mod replacement for this code
+//	T_RadiusDamage (self, self, bdmg, world);
+//	BecomeExplosion ();
+	self.dmg = bdmg;
+	self.think = barrel_damage;
+	self.nextthink = time + 0.2;
 };
 
 

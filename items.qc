@@ -985,7 +985,7 @@ void () key_setsounds =
 		precache_sound ("misc/runekey.wav");
 		self.noise = "misc/runekey.wav";
 	}
-	if (world.worldtype == 2)
+	if (world.worldtype >= 2)
 	{
 		precache_sound2 ("misc/basekey.wav");
 		self.noise = "misc/basekey.wav";
@@ -1017,7 +1017,7 @@ void () item_key1 =
 		setmodel (self,"progs/m_s_key.mdl");
 		self.netname = "silver runekey";
 	}
-	else if (world.worldtype == 2)
+	else if (world.worldtype >= 2)
 	{
 		precache_model2 ("progs/b_s_key.mdl");
 		setmodel (self,"progs/b_s_key.mdl");
@@ -1055,7 +1055,7 @@ void () item_key2 =
 		setmodel (self,"progs/m_g_key.mdl");
 		self.netname = "gold runekey";
 	}
-	if (world.worldtype == 2)
+	if (world.worldtype >= 2)
 	{
 		precache_model2 ("progs/b_g_key.mdl");
 		setmodel (self,"progs/b_g_key.mdl");

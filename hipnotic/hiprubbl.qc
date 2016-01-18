@@ -2,7 +2,7 @@
    By Jim Dose'  9/15/96
    Copyright (c)1996 Hipnotic Interactive, Inc.
    All rights reserved.
-   Do not distribute.
+   Distributed (unsupported) on 3.12.97
 */
 
 // oblong (arm gib) irr block (torso gib) tetra (tetra gib) 0 1 2

@@ -58,122 +58,143 @@ float SAWLEN					= 80; // lenght saw can attack
 void() doom_precache =
 {
 // items
+// ammo
+// doom weps
+// shots
+// view models
+// viswep
 	precache_model ("progs/barrel.mdl");
 	precache_model ("progs/barrel2.mdl");
-	precache_model ("progs/d_bottle.mdl");
+	precache_model ("progs/flame2.mdl"); // doom torches in here
 	precache_model ("progs/heal_medkit.mdl");
-	precache_model ("progs/d_stimpack04.mdl");
 	precache_model ("progs/spiritarmor.mdl");
-	precache_model ("progs/d_spheres.mdl");
-	precache_model ("progs/d_berzerk.mdl");
-	precache_model ("progs/d_radsuit.mdl");
-	precache_model ("progs/d_skullkey.mdl");
-	precache_model ("progs/d_cardkey.mdl");
-	precache_model ("progs/d_armor.mdl");
-	precache_model ("progs/d_map.mdl");
-	precache_model ("progs/d_vis.mdl");
-// ammo
+	precache_model ("progs/d_1rocket.mdl");
 	precache_model ("progs/d_4shell.mdl");
 	precache_model ("progs/d_ammobox.mdl");
-	precache_model ("progs/d_clip.mdl");
-	precache_model ("progs/d_rockbox.mdl");
-	precache_model ("progs/d_1rocket.mdl");
-	precache_model ("progs/d_shellbox.mdl");
+	precache_model ("progs/d_armor.mdl");
+	precache_model ("progs/d_berzerk.mdl");
+	precache_model ("progs/d_bfg_boom.mdl");
+	precache_model ("progs/d_bfg.mdl");
+	precache_model ("progs/d_bottle.mdl");
+	precache_model ("progs/d_cardkey.mdl");
 	precache_model ("progs/d_cellbox.mdl");
 	precache_model ("progs/d_cellpack.mdl");
-	precache_model ("progs/d_pack.mdl");
-// doom weps
-	precache_model ("progs/d_saw.mdl");
-	precache_model ("progs/d_pistol.mdl");
-	precache_model ("progs/d_bfg.mdl");
-	precache_model ("progs/d_rock.mdl");
-	precache_model ("progs/d_plasma.mdl");
 	precache_model ("progs/d_chaingun.mdl");
-	precache_model ("progs/d_shotgun.mdl");
+	precache_model ("progs/d_clip.mdl");
 	precache_model ("progs/d_dblshot.mdl");
-// shots
+	precache_model ("progs/d_map.mdl");
+	precache_model ("progs/d_m_baron.mdl");
+	precache_model ("progs/d_m_imp.mdl");
+	precache_model ("progs/d_m_pinky.mdl");
+	precache_model ("progs/d_pack.mdl");
+	precache_model ("progs/d_pistol.mdl");
+	precache_model ("progs/d_plasma.mdl");
 	precache_model ("progs/d_plasma_sht.mdl");
-	precache_model ("progs/bfgbit.spr");
-
-// view models
-	precache_model ("progs/v_d_pistol.mdl");
+	precache_model ("progs/d_radsuit.mdl");
+	precache_model ("progs/d_rockbox.mdl");
+	precache_model ("progs/d_rock.mdl");
+	precache_model ("progs/d_saw.mdl");
+	precache_model ("progs/d_shellbox.mdl");
+	precache_model ("progs/d_shotgun.mdl");
+	precache_model ("progs/d_skullkey.mdl");
+	precache_model ("progs/d_spheres.mdl");
+	precache_model ("progs/d_stimpack04.mdl");
+	precache_model ("progs/d_vis.mdl");
 	precache_model ("progs/v_d_bfg.mdl");
-	precache_model ("progs/v_d_shot.mdl");
-	precache_model ("progs/v_d_dblshot.mdl");
 	precache_model ("progs/v_d_chg.mdl");
+	precache_model ("progs/v_d_dblshot.mdl");
+	precache_model ("progs/v_d_pistol.mdl");
 	precache_model ("progs/v_d_plasma.mdl");
 	precache_model ("progs/v_d_rock.mdl");
 	precache_model ("progs/v_d_saw.mdl");
-// viswep
-	precache_model ("progs/vw_d_saw.mdl");
-	precache_model ("progs/vw_d_pistol.mdl");
-	precache_model ("progs/vw_d_shot.mdl");
-	precache_model ("progs/vw_d_dblshot.mdl");
-	precache_model ("progs/vw_d_chaing.mdl");
-	precache_model ("progs/vw_d_rock.mdl");
-	precache_model ("progs/vw_d_plasma.mdl");
+	precache_model ("progs/v_d_shot.mdl");
 	precache_model ("progs/vw_d_bfg.mdl");
-// wolfenstien
-	precache_model ("progs/w_armor.mdl");
-	precache_model ("progs/w_knife.mdl");
-	precache_model ("progs/w_pistol.mdl");
-	precache_model ("progs/w_mgun.mdl");
-	precache_model ("progs/w_chaing.mdl");
-	precache_model ("progs/w_mortar.mdl");
-	precache_model ("progs/w_flamer.mdl");
-	precache_model ("progs/w_clip.mdl");
-	precache_model ("progs/w_key.mdl");
-
-	precache_model ("progs/vw_w_knife.mdl");
-	precache_model ("progs/vw_w_pistol.mdl");
-	precache_model ("progs/vw_w_mgun.mdl");
-	precache_model ("progs/vw_w_chaing.mdl");
-	precache_model ("progs/vw_w_2chaing.mdl");
-	precache_model ("progs/vw_w_mortar.mdl");
-	precache_model ("progs/vw_w_flamer.mdl");
-
-	precache_model ("progs/v_w_knife.mdl");
-	precache_model ("progs/v_w_pistol.mdl");
-	precache_model ("progs/v_w_mgun.mdl");
-	precache_model ("progs/v_w_chg.mdl");
-	precache_model ("progs/v_w_2chg.mdl");
-	precache_model ("progs/v_w_mortar.mdl");
-	precache_model ("progs/v_w_flamer.mdl");
+	precache_model ("progs/vw_d_chaing.mdl");
+	precache_model ("progs/vw_d_dblshot.mdl");
+	precache_model ("progs/vw_d_pistol.mdl");
+	precache_model ("progs/vw_d_plasma.mdl");
+	precache_model ("progs/vw_d_rock.mdl");
+	precache_model ("progs/vw_d_saw.mdl");
+	precache_model ("progs/vw_d_shot.mdl");
 
 // sounds
-	precache_sound ("doom/dsbarexp.wav");
-	precache_sound ("doom/dsitemup.wav");
-	precache_sound ("doom/dsitembk.wav");
-	precache_sound ("doom/dswpnup.wav");
-	precache_sound ("doom/dsgetpow.wav");
-	precache_sound ("doom/dspstart.wav");
-	precache_sound ("doom/dspstop.wav");
-	precache_sound ("doom/gibs.wav");
-// weps
-	precache_sound ("doom/dsrlaunc.wav");
-	precache_sound ("doom/dsbfg.wav");
-	precache_sound ("doom/dspistol.wav");
-	precache_sound ("doom/dsshotgn.wav");
-	precache_sound ("doom/dsdshtgn.wav");
-	precache_sound ("doom/dsplasma.wav");
-	precache_sound ("doom/dssawup.wav");
-	precache_sound ("doom/dssawidl.wav");
-	precache_sound ("doom/dssawhit.wav");
-	precache_sound ("doom/dssawful.wav");
-	precache_sound ("doom/dsfirxpl.wav");
-//	precache_sound ("doom/d_f_chg.wav");
-// wolf
-	precache_sound ("wolf/w_knife.wav");
-	precache_sound ("wolf/w_pistol.wav");
-	precache_sound ("wolf/w_mg.wav");
-	precache_sound ("wolf/w_chg.wav");
-	precache_sound ("wolf/w_mortar.wav");
-	precache_sound ("wolf/pickup_am.wav");
-	precache_sound ("wolf/pickup_gn.wav");
-	precache_sound ("wolf/pickup_gdy.wav");
-	precache_sound ("wolf/w_resp.wav");
+	precache_sound ("sound/doom/dsbfg.wav");
+	precache_sound ("sound/doom/dssawup.wav");
+	precache_sound ("sound/doom/dssawidl.wav");
+	precache_sound ("sound/doom/dssawhit.wav");
+	precache_sound ("sound/doom/dssawful.wav");
+	precache_sound ("sound/doom/dsitemup.wav");
+	precache_sound ("sound/doom/dsbarexp.wav");
+	precache_sound ("sound/doom/dswpnup.wav");
+	precache_sound ("sound/doom/dsitembk.wav");
+	precache_sound ("sound/doom/dsdorcls.wav");
+	precache_sound ("sound/doom/dsdoropn.wav");
+	precache_sound ("sound/doom/dsgetpow.wav");
+	precache_sound ("sound/doom/dspstart.wav");
+	precache_sound ("sound/doom/dspstop.wav");
+	precache_sound ("sound/doom/dsbdcls.wav");
+	precache_sound ("sound/doom/dsbdopn.wav");
+	precache_sound ("sound/doom/dspistol.wav");
+	precache_sound ("sound/doom/dsplasma.wav");
+	precache_sound ("sound/doom/dsfirxpl.wav");
+	precache_sound ("sound/doom/gibs.wav");
+	precache_sound ("sound/doom/dsrlaunc.wav");
+	precache_sound ("sound/doom/dsdshtgn.wav");
+	precache_sound ("sound/doom/dsshotgn.wav");
+	precache_sound ("sound/doom/dsoof.wav");
+	precache_sound ("sound/doom/dsstnmov.wav");
+	precache_sound ("sound/doom/dstelept.wav");
+	precache_sound ("sound/doom/dsswtchn.wav");
+	precache_sound ("sound/doom/dsswtchx.wav");
+	precache_sound ("sound/doom/dspunch.wav");
+};
+
+void() wolf_precache =
+{
+// wolfenstien
+	precache_model ("progs/v_w_2chg.mdl");
+	precache_model ("progs/v_w_chg.mdl");
+	precache_model ("progs/v_w_flamer.mdl");
+	precache_model ("progs/v_w_knife.mdl");
+	precache_model ("progs/v_w_mgun.mdl");
+	precache_model ("progs/v_w_mortar.mdl");
+	precache_model ("progs/v_w_pistol.mdl");
+	precache_model ("progs/vw_w_2chaing.mdl");
+	precache_model ("progs/vw_w_chaing.mdl");
+	precache_model ("progs/vw_w_flamer.mdl");
+	precache_model ("progs/vw_w_knife.mdl");
+	precache_model ("progs/vw_w_mgun.mdl");
+	precache_model ("progs/vw_w_mortar.mdl");
+	precache_model ("progs/vw_w_pistol.mdl");
+	precache_model ("progs/w_armor.mdl");
+	precache_model ("progs/w_chaing.mdl");
+	precache_model ("progs/w_clip.mdl");
+//	precache_model ("progs/w_dcr_changrn2.mdl");
+//	precache_model ("progs/w_dcr_changrn.mdl");
+	precache_model ("progs/w_dcr_bluvase.mdl"); // dog food
+	precache_model ("progs/w_foodp.mdl");
+	precache_model ("progs/w_flamer.mdl");
+	precache_model ("progs/w_key.mdl");
+	precache_model ("progs/w_knife.mdl");
+	precache_model ("progs/w_mgun.mdl");
+	precache_model ("progs/w_mortar.mdl");
+	precache_model ("progs/w_pistol.mdl");
+	precache_model ("progs/w_cross.bsp");
 
 
+	precache_sound ("sound/wolf/w_resp.wav");
+	precache_sound ("sound/wolf/w_mortar.wav");
+	precache_sound ("sound/wolf/w_knife.wav");
+	precache_sound ("sound/wolf/w_pistol.wav");
+	precache_sound ("sound/wolf/w_mg.wav");
+	precache_sound ("sound/wolf/w_chg.wav");
+	precache_sound ("sound/wolf/pickup_am.wav");
+	precache_sound ("sound/wolf/pickup_gn.wav");
+	precache_sound ("sound/wolf/pickup_gdy.wav");
+	precache_sound ("sound/wolf/door_cls.wav");
+	precache_sound ("sound/wolf/door_opn.wav");
+	precache_sound ("sound/wolf/door_cls2.wav");
+	precache_sound ("sound/wolf/door_secrt.wav");
 };
 
 /*
@@ -193,8 +214,16 @@ NOTE: this code assumes the translation of doom map entites to quake style defin
 void() d_item_healthbottle =
 {
 	q100_item_health();
-	self.netname = "Health potion";
 
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = D_DEF_HBOTTLE;
+		return;
+	}
+
+	self.netname = "Health potion";
 
 	self.healamount = D_DEF_HBOTTLE;
 	self.healtype = HEAL_BOT;
@@ -216,6 +245,12 @@ void() d_item_healthbottle =
 void() d_item_healthmedkit =
 {
 	q100_item_health();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+		return;
+
 	setmodel(self, "progs/heal_medkit.mdl");
 	self.frame = 0;
 	self.skin = 0;
@@ -233,6 +268,15 @@ void() d_item_healthmedkit =
 void() d_item_healthstimpak =
 {
 	q100_item_health();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = D_DEF_HSTIMPAK;
+		return;
+	}
+
 	setmodel(self, "progs/heal_medkit.mdl");
 	self.frame = 3;
 	self.skin = 3;
@@ -249,7 +293,18 @@ void() d_item_healthstimpak =
 
 void() d_item_spiritarmor =
 {
-	item_armor2();
+	item_armor1();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.armorvalue = ARM_SPIRIT;
+		return;
+	}
+
 	setmodel (self, "progs/spiritarmor.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
@@ -269,6 +324,17 @@ void() d_item_spiritarmor =
 void() d_item_armorgreen =
 {
 	item_armor1();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armor1";
+		return;
+	}
+
 	setmodel (self, "progs/d_armor.mdl");
 	self.skin = 0;
 	self.noise = "doom/dsitemup.wav";
@@ -287,6 +353,17 @@ void() d_item_armorgreen =
 void() d_item_armorblue =
 {
 	item_armor2();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = armor_touch;
+		self.classname = "item_armorInv";
+		return;
+	}
+
 	setmodel (self, "progs/d_armor.mdl");
 	self.skin = 1;
 	self.noise = "doom/dsitemup.wav";
@@ -306,6 +383,14 @@ void() d_ammo_ammobox =
 {
 	item_spikes();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = 50;
+		return;
+	}
 
 	self.lip = AMMO_BULLETS;
 	self.currentammo = D_DEF_BULLETS_BOX;
@@ -327,6 +412,13 @@ void() d_ammo_clip =
 	item_spikes();
 	self.touch = pk_ammo_touch;
 
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.lip = AMMO_BULLETS;
 	self.currentammo = D_DEF_BULLETS_CLIP;
 	self.wait = RSP_TIME;
@@ -346,6 +438,14 @@ void() d_ammo_1rocket =
 {
 	item_rockets();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = 1;
+		return;
+	}
 
 	self.lip = AMMO_ROCKETS;
 	self.currentammo = D_DEF_ROCKETS_SM;
@@ -367,6 +467,13 @@ void() d_ammo_rockbox =
 	item_rockets();
 	self.touch = pk_ammo_touch;
 
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.lip = AMMO_ROCKETS;
 	self.currentammo = D_DEF_ROCKETS_LG;
 	self.wait = RSP_TIME;
@@ -386,6 +493,14 @@ void() d_ammo_4shell =
 {
 	item_shells();
 	self.touch = pk_ammo_touch;
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = 4;
+		return;
+	}
 
 	self.lip = AMMO_SHELLS;
 	self.currentammo = D_DEF_SHELLS;
@@ -407,6 +522,14 @@ void() d_ammo_shellbox =
 	item_shells();
 	self.touch = pk_ammo_touch;
 
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = D_DEF_SHELLBOX;
+		return;
+	}
+
 	self.lip = AMMO_SHELLS;
 	self.currentammo = D_DEF_SHELLBOX;
 	self.wait = RSP_TIME;
@@ -427,6 +550,14 @@ void() d_ammo_cellbox =
 	item_cells();
 	self.touch = pk_ammo_touch;
 
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = D_DEF_CELLBOX;
+		return;
+	}
+
 	self.lip = AMMO_CELLS;
 	self.currentammo = D_DEF_CELLBOX;
 	self.wait = RSP_TIME;
@@ -446,6 +577,14 @@ void() d_ammo_cellpack =
 	item_cells();
 	self.touch = pk_ammo_touch;
 
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = D_DEF_CELLPAK;
+		return;
+	}
+
 	self.lip = AMMO_CELLS;
 	self.currentammo = D_DEF_CELLPAK;
 	self.wait = RSP_TIME;
@@ -463,6 +602,13 @@ void() d_ammo_cellpack =
 
 void() d_barrel =
 {
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "misc_explobox"))
+	{
+		return;
+	}
+
 	self.netname = "Barrel";
 	if (self.class_select == "") self.class_select = "doom_item";
 	misc_explodbox_set(self, "progs/barrel.mdl", D_BARREL_BLAST + random() * 8, 20, MOVETYPE_NONE);
@@ -492,6 +638,23 @@ slot		weapon
 void() d_weapon_bfg =
 {
 	q100_weapon_lightning();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		if (!Q_100 & !Q_99)
+		{
+			weapon_chainlg();
+			self.pk_touch = painkeep_weapon_touch;
+			self.classname = "weapon_chainlg";
+		}
+		return;
+	}
+
 	self.netname = "BFG 9000";
 
 // fn
@@ -528,6 +691,17 @@ void() d_weapon_bfg =
 void() d_weapon_rocketlauncher =
 {
 	q100_weapon_rocketlauncher();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_rocketlauncher";
+		return;
+	}
+
 	self.netname = "Rocket Launcher";
 
 // fn
@@ -562,6 +736,17 @@ void() d_weapon_chaingun =
 {
 	d_rep_set();
 	weapon_supernailgun();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_supernailgun";
+		return;
+	}
+
 	self.netname = "Chain Gun";
 
 	self.touch = x_weapon_touch;
@@ -595,6 +780,17 @@ void() d_weapon_pistol =
 {
 //	d_rep_set();
 	weapon_nailgun();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_nailgun";
+		return;
+	}
+
 	self.netname = "Pistol";
 
 	self.touch = x_weapon_touch;
@@ -631,6 +827,17 @@ void() d_weapon_saw =
 {
 //	d_rep_set();
 	weapon_nailgun();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_nailgun";
+		return;
+	}
+
 	self.netname = "Chainsaw";
 
 	self.touch = x_weapon_touch;
@@ -667,6 +874,17 @@ void() d_weapon_shotgun =
 {
 	d_rep_set();
 	q100_weapon_shotgun();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = x_weapon_touch;
+		self.classname = "weapon_shotgun";
+		return;
+	}
+
 	self.netname = "Shotgun";
 
 	self.touch = x_weapon_touch;
@@ -698,6 +916,17 @@ void() d_weapon_shotgun =
 void() d_weapon_supershotgun =
 {
 	q100_weapon_supershotgun();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_supershotgun";
+		return;
+	}
+
 	self.netname = "Super shotgun";
 
 	self.touch = x_weapon_touch;
@@ -730,6 +959,17 @@ void() d_weapon_supershotgun =
 void() d_weapon_plasma =
 {
 	q100_weapon_lightning();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		return;
+	}
+
 	self.netname = "Plasma Gun";
 
 	self.touch = x_weapon_touch;
@@ -760,6 +1000,13 @@ void() d_weapon_plasma =
 
 void() d_item_pack =
 {
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	item_shells();
 	self.netname = "Ammo Pack";
 
@@ -783,6 +1030,13 @@ void() d_item_pack =
 
 void() d_item_automap =
 {
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	q100_weapon_shotgun();
 	self.netname = "Auto Map";
 
@@ -798,6 +1052,13 @@ void() d_item_automap =
 
 void() d_item_nightvis =
 {
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	q100_weapon_shotgun();
 	self.netname = "Night Vision Goggles";
 
@@ -816,6 +1077,14 @@ void() d_item_nightvis =
 void() d_art_berserker =
 {
 	q100_item_health();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_artifact_super_damage"))
+	{
+		return;
+	}
+
 	self.netname = "Berserker";
 
 	self.touch = x_pwr_touch;
@@ -836,6 +1105,14 @@ void() d_art_berserker =
 void() d_art_soulsphere =
 {
 	q100_item_health();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_health_mega"))
+	{
+		return;
+	}
+
 	self.netname = "Soul Sphere";
 
 	self.healamount = D_DEF_SOULSPH;
@@ -857,6 +1134,13 @@ void() d_art_megasphere =
 {
 // armor
 	d_item_armorblue();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_health_mega"))
+	{
+		return;
+	}
 	self.netname = "Mega Sphere";
 
 	self.touch = x_pwr_touch;
@@ -879,6 +1163,14 @@ void() d_art_megasphere =
 void() d_art_invulnerable =
 {
 	item_artifact_invulnerability();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Invulnerability";
 
 	self.touch = x_pwr_touch;
@@ -900,6 +1192,14 @@ void() d_art_invulnerable =
 void() d_art_invisible =
 {
 	item_artifact_invisibility();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Invisibilty";
 
 	self.touch = x_pwr_touch;
@@ -921,6 +1221,14 @@ void() d_art_invisible =
 void() d_art_radsuit =
 {
 	item_artifact_envirosuit();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Radiation Suit";
 
 	self.touch = x_pwr_touch;
@@ -939,6 +1247,14 @@ void() d_art_radsuit =
 void() d_key_redskull =
 {
 	item_key2();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Red Skull key";
 
 	self.touch = x_item_touch;
@@ -955,6 +1271,14 @@ void() d_key_redskull =
 void() d_key_blueskull =
 {
 	item_key1();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Blue Skull key";
 
 	self.touch = x_item_touch;
@@ -971,6 +1295,14 @@ void() d_key_blueskull =
 void() d_key_yellowskull =
 {
 	item_key2();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Yellow Skull key";
 
 	self.touch = x_item_touch;
@@ -987,6 +1319,14 @@ void() d_key_yellowskull =
 void() d_key_redcard =
 {
 	item_key2();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Red card key";
 
 	self.touch = x_item_touch;
@@ -1003,6 +1343,14 @@ void() d_key_redcard =
 void() d_key_bluecard =
 {
 	item_key1();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Blue card key";
 
 	self.touch = x_item_touch;
@@ -1019,6 +1367,14 @@ void() d_key_bluecard =
 void() d_key_yellowcard =
 {
 	item_key2();
+
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.netname = "Yellow card key";
 
 	self.touch = x_item_touch;
@@ -1060,6 +1416,16 @@ slot		weapon
 void() w_weapon_machinegun =
 {
 	weapon_nailgun();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_nailgun";
+		return;
+	}
 
 	self.touch = x_weapon_touch;
 	self._attack = SUB_Null;
@@ -1113,7 +1479,17 @@ void() w_chg_base =
 void() w_weapon_chaingun =
 {
 	d_rep_set();
-	weapon_nailgun();
+	weapon_supernailgun();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_supernailgun";
+		return;
+	}
 
 	w_chg_base();
 	self.touch = wchg2_weapon_touch;
@@ -1138,6 +1514,17 @@ void() w_fire_motar =
 void() w_weapon_mortar =
 {
 	q100_weapon_rocketlauncher();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_rocketlauncher";
+		return;
+	}
+
 	self.netname = "Mortar";
 
 // fn
@@ -1170,6 +1557,17 @@ void() w_weapon_mortar =
 void() w_weapon_flamer =
 {
 	q100_weapon_lightning();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_lightning";
+		return;
+	}
+
 	self.netname = "Flame thrower";
 
 // fn
@@ -1205,6 +1603,17 @@ void() w_weapon_flamer =
 void() w_weapon_pistol =
 {
 	weapon_nailgun();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = weapon_touch;
+		self.classname = "weapon_nailgun";
+		return;
+	}
+
 	self.netname = "Luger Pistol";
 
 	self.touch = x_weapon_touch;
@@ -1239,6 +1648,17 @@ void() w_weapon_pistol =
 void() w_weapon_knife =
 {
 	weapon_axe();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = x_weapon_touch;
+		self.classname = "weapon_axe";
+		return;
+	}
+
 	self.netname = "Knife";
 
 	self.touch = x_weapon_touch;
@@ -1273,6 +1693,14 @@ void() w_weapon_knife =
 void() w_ammo_clip =
 {
 	item_spikes();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.touch = pk_ammo_touch;
 
 	self.lip = AMMO_BULLETS;
@@ -1293,6 +1721,14 @@ void() w_ammo_clip =
 void() w_ammo_rock =
 {
 	item_rockets();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
 	self.touch = pk_ammo_touch;
 
 	self.lip = AMMO_ROCKETS;
@@ -1311,7 +1747,15 @@ void() w_ammo_rock =
 
 void() w_ammo_gas =
 {
-	item_spikes();
+	item_cells();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.aflag = 14;
+		return;
+	}
 	self.touch = pk_ammo_touch;
 	self.netname = "Gas can";
 
@@ -1337,6 +1781,13 @@ void() w_ammo_gas =
 
 void() w_item_pack =
 {
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	item_shells();
 	self.netname = "Ammo Pack";
 
@@ -1360,6 +1811,13 @@ void() w_item_pack =
 void() w_art_facesphere =
 {
 	q100_item_health();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "item_health_mega"))
+	{
+		return;
+	}
 	setmodel(self, "progs/d_spheres.mdl");
 	self.frame = 0;
 	self.skin = 4;
@@ -1377,6 +1835,15 @@ void() w_art_facesphere =
 void() w_heal_medkit =
 {
 	q100_item_health();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = D_DEF_HMEDKIT;
+		return;
+	}
+
 	setmodel(self, "progs/heal_medkit.mdl");
 	self.frame = 1;
 	self.skin = 1;
@@ -1391,12 +1858,69 @@ void() w_heal_medkit =
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
 
+void() w_heal_food =
+{
+	q100_item_health();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+	setmodel(self, "progs/w_foodp.mdl");
+	self.frame = 2;
+	self.skin = 2;
+	self.noise = "wolf/pickup_gdy.wav";
+	self.noise4 = "wolf/w_resp.wav";
+	self.netname = "Plate of Food";
+	self.healamount = 10;
+	self.healtype = HEAL_NORM;
+	self.volume = 100; // max add
+	self.wait = RSP_TIME;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
+void() w_heal_dogfood =
+{
+	q100_item_health();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.healamount = 4;
+		return;
+	}
+
+	setmodel(self, "progs/w_dcr_bluvase.mdl");
+	self.frame = 2;
+	self.skin = 2;
+	self.noise = "wolf/pickup_gdy.wav";
+	self.noise4 = "wolf/w_resp.wav";
+	self.netname = "Dog Food";
+	self.healamount = 4;
+	self.healtype = HEAL_NORM;
+	self.volume = 100; // max add
+	self.wait = RSP_TIME;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
 void() w_key =
 {
 	if (self.spawnflags & 1)
 		item_key2();
 	else //if (self.spawnflags & 2)
 		item_key1();
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
 
 	self.wait = RSP_TIME;
 
@@ -1406,6 +1930,29 @@ void() w_key =
 
 	self.netname = "Blue key";
 	if (self.spawnflags & 1) self.netname = "Gold key";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
+void() w_item_cross =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	item_key1(); // FIX: treasure pick up fn
+//	self.touch = w_treas_touch;
+
+	self.wait = -1; // RSP_TIME; // no respawn for these, ever
+
+	self.noise = "wolf/pickup_gdy.wav";
+	setmodel (self, "progs/w_cross.bsp");
+	self.noise4 = "wolf/w_resp.wav";
+
+	self.netname = "Cross";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
@@ -1434,6 +1981,14 @@ void() w_barl_solid =
 void() w_barrel =
 {
 	local entity e;
+
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, "misc_explobox2"))
+	{
+		return;
+	}
+
 	e = spawn();
 	if (e)
 	{
@@ -1579,9 +2134,1042 @@ void() player_sawu6 = [$shotatt6, player_stand1] { };
 
 // specials, decor
 
+float NOBLOCK = 1;
+float BLOCK = 1;
+
+void() ddecor_blue_firestick =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 2;
+	self.skin = 3;
+// color it
+	self.glow_color = 208;
+	self.glow_size = 100;
+	self.glow_trail = 1;
+
+//	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_green_firestick =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 2;
+	self.skin = 2;
+// color it
+	self.glow_color = 176;
+	self.glow_size = 100;
+	self.glow_trail = 1;
+
+//	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_red_firestick =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 2;
+	self.skin = 1;
+// color it
+	self.glow_color = 251;
+	self.glow_size = 100;
+	self.glow_trail = 1;
+
+//	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_blue_torch =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 3;
+	self.skin = 3;
+// color it
+	self.glow_color = 208;
+	self.glow_size = 100;
+	self.glow_trail = 1;
+
+//	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_green_torch =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 3;
+	self.skin = 2;
+// color it
+	self.glow_color = 176;
+	self.glow_size = 100;
+	self.glow_trail = 1;
+
+//	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_red_torch =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 3;
+	self.skin = 1;
+// color it
+	self.glow_color = 251;
+	self.glow_size = 100;
+	self.glow_trail = 1;
+
+//	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+// IDEA: make it burn?
+
+void() ddecor_barrel_fire =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model ("progs/barrel2.mdl");
+	setmodel(self,"progs/barrel2.mdl");
+	if (sv_decor(self)) return;
+
+	self.frame = 4;
+	self.skin = 4;
+	self.effects = self.effects | EF_DIMLIGHT;
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+
+	FireAmbient ();
+};
+
+void() ddecor_green_pillar =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/tallgpillar.md2");
+	setmodel(self,"progs/md2/tallgpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_red_pillar =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/tallrpillar.md2");
+	setmodel(self,"progs/md2/tallrpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_green_sht_pillar =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/sgpillar.md2");
+	setmodel(self,"progs/md2/sgpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_red_sht_pillar =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/srpillar.md2");
+	setmodel(self,"progs/md2/srpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_green_hrt_pillar =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/pwheart.md2");
+	setmodel(self,"progs/md2/pwheart.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_red_skull_pillar =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/pwskull.md2");
+	setmodel(self,"progs/md2/pwskull.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_stalagmite =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/stalagmite.md2");
+	setmodel(self,"progs/md2/stalagmite.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_tree =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/bigtree.md2");
+	setmodel(self,"progs/md2/bigtree.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_burnttree =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/tree.md2");
+	setmodel(self,"progs/md2/tree.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_tech_lamp =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/biglamp.md2");
+	setmodel(self,"progs/md2/biglamp.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_tech_sht_lamp =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/mediumlamp.md2");
+	setmodel(self,"progs/md2/mediumlamp.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_low_elex_lamp =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/lamp.md2");
+	setmodel(self,"progs/md2/lamp.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_techno_pillar =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/tekpillar.md2");
+	setmodel(self,"progs/md2/tekpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() light_painkeep_candle;
+
+void() ddecor_candle =
+{
+	if (sv_decor(self)) return;
+	light_painkeep_candle(); // NOTE: this code uses makestatic
+};
+
+void() ddecor_candelabra =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/candleabra.md2");
+	setmodel(self,"progs/md2/candleabra.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_evil_eye =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/evileye.md2");
+	setmodel(self,"progs/md2/evileye.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_skull_float =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/floatskulls.md2");
+	setmodel(self,"progs/md2/floatskulls.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_twitch =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hangtorso.md2");
+	setmodel(self,"progs/md2/hangtorso.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_armout =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hang.md2");
+	setmodel(self,"progs/md2/hang.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_leg_pair =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hanginglegs.md2");
+	setmodel(self,"progs/md2/hanginglegs.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_1leg =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hangnoleg.md2");
+	setmodel(self,"progs/md2/hangnoleg.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_leg =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hangingleg.md2");
+	setmodel(self,"progs/md2/hangingleg.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_twitch_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_twitch();
+};
+
+void() ddecor_hang_armout_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_armout();
+};
+
+void() ddecor_hang_leg_pair_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_leg_pair();
+};
+
+void() ddecor_hang_vic_1leg_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_vic_1leg();
+};
+
+void() ddecor_hang_leg_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_leg();
+};
+
+void() ddecor_hang_vic_noguts =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hangguy.md2");
+	setmodel(self,"progs/md2/hangguy.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_nogutsbrains =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/torsonobrain.md2");
+	setmodel(self,"progs/md2/torsonobrain.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_down =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hang2.md2");
+	setmodel(self,"progs/md2/hang2.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+
+void() ddecor_hang_vic_opnskull =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/torsoshowbrain.md2");
+	setmodel(self,"progs/md2/torsoshowbrain.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_up =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hang2.md2");
+	setmodel(self,"progs/md2/hang2.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_nobrain =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/torsonobrain.md2");
+	setmodel(self,"progs/md2/torsonobrain.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_impaled =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/twitcher1.md2");
+	setmodel(self,"progs/md2/twitcher1.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_impaled_twitch =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/twitcher2.md2");
+	setmodel(self,"progs/md2/twitcher2.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_skull_pole =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/skullspole.md2");
+	setmodel(self,"progs/md2/skullspole.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_skull_kebob =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/headpole.md2");
+	setmodel(self,"progs/md2/headpole.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_skull_pile =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/skullcandles.md2");
+	setmodel(self,"progs/md2/skullcandles.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_pool_blood =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/blood.md2");
+	setmodel(self,"progs/md2/blood.md2");
+//	setorigin(self, self.origin + ' 0 0 -8');
+	self.frame = 9;
+	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
+};
+
+void() ddecor_pool_blood_2 =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/bigblood.md2");
+	setmodel(self,"progs/md2/bigblood.md2");
+//	setorigin(self, self.origin + ' 0 0 -8');
+	self.frame = 9;
+	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
+};
+
+void() ddecor_pool_brains =
+{
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/brainpool.md2");
+	setmodel(self,"progs/md2/brainpool.md2");
+//	setorigin(self, self.origin + ' 0 0 -8');
+	self.frame = 9;
+	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
+};
+
 void() ddecor_bloody_mess =
 {
 // for now
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	if (!DARKPLACES)
 	{
 		remove(self);
@@ -1592,18 +3180,30 @@ void() ddecor_bloody_mess =
 //	setorigin(self, self.origin + ' 0 0 -8');
 	self.frame = 9;
 	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
 };
 
 // prev version - needs deprecation
 
 void() d_bloody_mess =
 {
-	d_bloody_mess();
+	ddecor_bloody_mess();
 };
 
 void() ddecor_dead_player =
 {
 // for now
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	if (!DARKPLACES)
 	{
 		remove(self);
@@ -1614,6 +3214,11 @@ void() ddecor_dead_player =
 //	setorigin(self, self.origin + ' 0 0 -8');
 	self.frame = 146;
 	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
 };
 
 // prev version - needs deprecation
@@ -1626,6 +3231,13 @@ void() d_dead_player =
 void() ddecor_pool_flesh_blood =
 {
 // for now
+	if (!ULOKD)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	if (!DARKPLACES)
 	{
 		remove(self);
@@ -1635,6 +3247,11 @@ void() ddecor_pool_flesh_blood =
 	setmodel(self,"progs/md2/blood.md2");
 	self.frame = 9;
 	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
 };
 
 // prev version - needs deprecation
@@ -1647,11 +3264,299 @@ void() d_pool_flesh_blood =
 
 // wolf decor
 
+void() wdecor_woodbarrel =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+//	precache_model("progs/md2/woodbarrel.md2");
+//	setmodel(self,"progs/md2/woodbarrel.md2");
+	precache_model("progs/woodbarrel.mdl");
+	setmodel(self,"progs/woodbarrel.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
 void() wdecor_chand_grn =
 {
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
 	precache_model("progs/w_dcr_changrn2.mdl");
 	setmodel(self,"progs/w_dcr_changrn2.mdl");
 	self.movetype = MOVETYPE_NONE;	
+	sv_decor(self);
+};
+
+void() wdecor_floorlamp =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/w_dcr_floorlmp.mdl");
+	setmodel(self,"progs/w_dcr_floorlmp.mdl");
+
+	self.solid = SOLID_BSP;
+//	if (self.spawnflags & NOBLOCK) // TEST - restore later
+		self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_NONE;	
+	sv_decor(self);
+};
+
+void() wdecor_bed =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/wdcr_bed.bsp");
+	setmodel(self,"progs/wdcr_bed.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_column =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/wgreypillar.md2");
+	setmodel(self,"progs/md2/wgreypillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_hangcage =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/wdcr_cage.bsp");
+	setmodel(self,"progs/wdcr_cage.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_hangcageskel =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	wdecor_hangcage();
+};
+
+void() wdecor_tablesmall =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/w_dcr_table.mdl");
+	setmodel(self,"progs/w_dcr_table.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_stove =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/woodbarrel.mdl");
+	setmodel(self,"progs/woodbarrel.mdl");
+
+	self.frame = 2;
+	self.skin = 1;
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_sink =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/w_dcr_table.mdl");
+	setmodel(self,"progs/w_dcr_table.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	self.frame = 2;
+	sv_decor(self);
+};
+
+void() wdecor_spears =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/wdcr_spears.bsp");
+	setmodel(self,"progs/wdcr_spears.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_vase =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/w_dcr_bluvase.mdl");
+	setmodel(self,"progs/w_dcr_bluvase.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_basket =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/w_dcr_bluvase.mdl");
+	setmodel(self,"progs/w_dcr_bluvase.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	self.skin = 1;
+	self.frame = 1;
+	sv_decor(self);
+};
+
+void() wdecor_water =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/volcano.mdl");
+	setmodel(self,"progs/volcano.mdl");
+
+	self.solid = SOLID_NOT;
+//	if (self.spawnflags & NOBLOCK)
+//		self.solid = SOLID_BSP;
+	self.skin = 12;
+	self.frame = 6;
+	sv_decor(self);
+};
+
+void() wdecor_well =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/wdcr_well.bsp");
+	setmodel(self,"progs/wdcr_well.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_wellfull =
+{
+	if (!ULOKW)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, FALSE, ""))
+	{
+		return;
+	}
+
+	precache_model("progs/wdcr_well_fl.bsp");
+	setmodel(self,"progs/wdcr_well_fl.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
 };
 
 /*

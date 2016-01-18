@@ -7,6 +7,9 @@ float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 float chaos;									// detect customized glquake engine - has cvars compiled
 float CHAOS_ENG				= 10100010110111; // chaos engine id
 float DARKPLACES;								// for detecting darkplaces
+float GENERATIONS;							// exclude xtra elements
+float ULOKW, ULOKD, ULOK2, ULOK3;		// unlock codes
+float XTR_SAVED1				= 1195724115; // saved1 test val 
 
 // ADMIN section
 float WARNING;									// display warnings - dev work mainly
@@ -72,6 +75,7 @@ string ADMINIMPULSE			= "float2\n"; // load the impulse
 string ADMINTIME				= "float3\n"; // load the time out
 string ADMINMAPCMD			= "_mapcmd\n"; // append to mapname for alias cmd
 float BOTFREEZE;							// if true stop bots cold
+float NODECOR;								// sv decor controls
 void (entity e) bot_froze;
 void(float tm) th_bot_changeParms; // save bot parms to cvar or parm*
 
@@ -436,6 +440,11 @@ float EF_FULLBRIGHT			= 512;
 
 .float modelflags;
 
+// entity color - access 0 - 255 (prob from palette)
+.float glow_color;
+.float glow_size;
+.float glow_trail;
+
 float EF_NOMODELFLAGS		= 8388608; // ignore any effects in a model file and substitute your own
 float MF_ROCKET  				= 1; // leave a trail
 float MF_GRENADE 				= 2; // leave a trail
@@ -591,6 +600,7 @@ float X_INV						= 57331; ///  1101111111110011
 
 void(entity e, float trv) master_item_control;
 void(string tri, float trv) master_item_control_loop;
+float(entity e, float q1ck, string itm) noxtr_item_control;
 void() x_pwr_touch;
 void() x_pack_touch;
 void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, string cname, string md, string sd, void() tch, float tht, void() thk, void() thd) fire_missile;
@@ -635,6 +645,17 @@ void() flamer_precache;
 
 
 // genre section - weps, items, maps etc.
+
+// detect wad = q1 maps, other method - worldtype
+// use 3x this value for worldtype with no wad = q1 items (for now)
+
+float IT0_WQ1					= 3; // worldtype 3
+float IT1_WQ1					= 4; // worldtype 4
+										  // worldtype q1 = 0, 1, 2
+float IT3_WQ1						= 5; // worldtype 5
+float IT4_WQ1						= 6; // worldtype 6
+
+void () weapon_chainlg; // for !GENERATIONS
 
 // hip
 
