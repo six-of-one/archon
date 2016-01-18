@@ -144,6 +144,7 @@ void() q2_precache =
 	precache_model ("progs/vw_q2_shot.mdl");
 	precache_model ("progs/q2_grap.mdl");
 	precache_model ("progs/vw_q2_grap.mdl");
+	precache_model ("progs/q2_ctf_tech.mdl");
 
 
 // sounds
@@ -789,7 +790,8 @@ void () q2_weapon_supershotgun =
 	self._attack = X_FireHitscan;
 	self._fr_attack = player_shot1;
 
-	self.currentammo = Q2_DEF_SHOTG	;
+	self.currentammo = Q2_DEF_SHOTG;
+	self.aflag = IGN_INV;
 	self.items = IT_SUPER_SHOTGUN;
 	self.lip = AMMO_SHELLS;
 	self.volume = Q2_MAX_SHELLS;
@@ -838,7 +840,8 @@ void () q2_weapon_shotgun =
 	self._attack = X_FireHitscan;
 	self._fr_attack = player_shot1;
 
-	self.currentammo = Q2_DEF_SHOTG	;
+	self.currentammo = Q2_DEF_SHOTG;
+	self.aflag = IGN_INV;
 	self.items = IT_SHOTGUN;
 	self.lip = AMMO_SHELLS;
 	self.volume = Q2_MAX_SHELLS;
@@ -932,7 +935,6 @@ void () q2_weapon_grapple =
 /*
 	self.dmg = 5;
 	self.dmg_save = 0;
-	self.dmg_take = 1; // shot cnt
 */
 	self.style = FL_MELEE_WEP;
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
@@ -946,6 +948,18 @@ void () q2_weapon_grapple =
 	self.noise = "q2_snd/w_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.noise3 = "q2_snd/grpull.wav";
+
+// grap specials
+
+	self.killtarget =  "progs/vw_q2_grap.mdl";
+	self.dmg_save = 7; // hook frame internal
+
+	self.target = "q2_snd/grhit.wav"; // hook hit a solid - not damaged
+	self.noise1 = "q2_snd/grreset.wav"; // drop
+	self.target1 = "q2_snd/grhang.wav"; // in + out
+	self.target2 = "q2_snd/grhang.wav"; // in + out
+	self.targetname = "q2_snd/grfire.wav"; // launch snd
+	self.punchangle_x = 0.75; // damp
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1644,6 +1658,123 @@ void() key_commander_head =
 	self.netname = "Commanders Head";
 	self.touch = x_item_touch;
 	self.x_items = X_Q2_KEY_CHEAD;
+	self.wait = RSP_TIME;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "q2_item";
+};
+
+// ctf lithium tech runes
+
+/*QUAKED q2_ctf_haste (0 .5 .8) (-16 -16 -16) (16 16 16)
+*/
+float CTF_TECH_SHELL = 0; // set to 5 for a glow shell around techs
+
+void() q2_ctf_haste =
+{
+	item_key1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
+	setmodel(self, "progs/q2_ctf_tech.mdl");
+	self.frame = 0 + CTF_TECH_SHELL;
+	self.skin = 0;
+
+	self.noise = "q2_snd/pkup.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
+	self.netname = "Haste tech";
+// TDO: tech implement - needs to be controlled by rune server if active - override these settings
+	self.touch = x_item_touch;
+//	self.x_items = X_Q2_KEY_PYRAMID;
+	self.wait = RSP_TIME;
+// override
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "q2_item";
+};
+
+/*QUAKED q2_ctf_regen (0 .5 .8) (-16 -16 -16) (16 16 16)
+*/
+
+void() q2_ctf_regen =
+{
+	item_key1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
+	setmodel(self, "progs/q2_ctf_tech.mdl");
+	self.frame = 1 + CTF_TECH_SHELL;
+	self.skin = 1;
+
+	self.noise = "q2_snd/pkup.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
+	self.netname = "Regeneration tech";
+	self.touch = x_item_touch;
+//	self.x_items = X_Q2_KEY_PYRAMID;
+	self.wait = RSP_TIME;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "q2_item";
+};
+
+/*QUAKED q2_ctf_resist (0 .5 .8) (-16 -16 -16) (16 16 16)
+*/
+
+void() q2_ctf_resist =
+{
+	item_key1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
+	setmodel(self, "progs/q2_ctf_tech.mdl");
+	self.frame = 2 + CTF_TECH_SHELL;
+	self.skin = 2;
+
+	self.noise = "q2_snd/pkup.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
+	self.netname = "Resistance tech";
+	self.touch = x_item_touch;
+//	self.x_items = X_Q2_KEY_PYRAMID;
+	self.wait = RSP_TIME;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "q2_item";
+};
+
+/*QUAKED q2_ctf_stren (0 .5 .8) (-16 -16 -16) (16 16 16)
+*/
+
+void() q2_ctf_stren =
+{
+	item_key1();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		return;
+	}
+
+	setmodel(self, "progs/q2_ctf_tech.mdl");
+	self.frame = 3 + CTF_TECH_SHELL;
+	self.skin = 3;
+
+	self.noise = "q2_snd/pkup.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
+	self.netname = "Strength tech";
+	self.touch = x_item_touch;
+//	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";

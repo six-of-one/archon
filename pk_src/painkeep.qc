@@ -1319,7 +1319,7 @@ POW_TIME = 30;
 // things dealing with the dead
 
 		registercvar("sv_dead_xpack", "1"); // 0 = no xweap in pack, 1 = include extra weapon held in pack, 2 = include held & random xweap, 3 = stuff all dudes xweaps in there
-		registercvar("sv_dead_throw", "0"); // 0 = remove all weps no in pack, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 3 = throw weaps, all worky
+		registercvar("sv_dead_throw", "0"); // -1 = no weps - even pack, 0 = std mode 1 in pack, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 3 = throw weaps, all worky
 		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at ready weapon
 
 // cam controls
@@ -1724,19 +1724,25 @@ void() play_teleport2 =
 	get_teleport_sounds();
 	SOUND_GOT = TRUE;
 
+	if (self.noise)
+		sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);		
+	else
 	sound (self, CHAN_VOICE, reversesound, 1, ATTN_NORM);
 	remove (self);
 };
 
 // called from teleport touch
 
-void(vector org) spawn_tfog2 =
+// s2 - special sound to play
+
+void(vector org, string s2) spawn_tfog2 =
 {
 	local entity e;
 	e = spawn ();
 	e.origin = org;
 	e.nextthink = time + 0.2;
 	e.think = play_teleport2;
+	e.noise = s2;
 
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_TELEPORT);

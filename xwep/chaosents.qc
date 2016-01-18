@@ -57,6 +57,7 @@ void() c_weapon_reggun =
 	self._fr_attack = player_shot1;
 
 	self.currentammo = 33;
+	self.aflag = IGN_INV;
 	self.items = IT_SUPER_SHOTGUN;
 	self.lip = AMMO_SHELLS;
 	self.attack_finished = 1.8;
@@ -310,11 +311,39 @@ void() health_touch =
 void() x_pwr_touch =
 {
 	local float t;
+	local entity e2;
 
 	if (other.classname != "player")
 			return;
 	if (other.health <= 0)
 		return ;
+
+	if (self.class_select == "q3_item") // for holdables - since they use pk slots, tho the corollary of collecting a pk item is not tested
+	if (self.pk_currentitem) // 'es already got one...wot?  'e sais 'yve already got one.  already got a Grail?
+	{
+		if (other.pk_canpabammo && self.pk_currentitem == PK_IT_CANPAB) return;
+		if (other.pkplus_phoneammo && self.pk_currentitem == PKPLUS_IT_PHONE) return;
+		e2 = vchk(self.items, self.pk_currentitem, other.vwepent);
+
+
+bprint("holdable: ");
+if (!e2) bprint("no ent found");
+else bprint("*** ent found!");
+bprint("\n");
+
+
+		if (!e2)
+			e2 = x_wep_store(world, self.items, 1);
+		else
+			return;
+
+
+bprint("xwep own: ");
+bprint(e2.owner.netname);
+bprint("\n");
+
+
+	}
 
 	sprint (other,"You got the ");
 	sprint (other,self.netname);
@@ -324,9 +353,9 @@ void() x_pwr_touch =
 	if (deathmatch)
 	{
 		self.mdl = self.model;
-//		if (self.wait)
-//			self.nextthink = time + self.wait;
-//		else
+		if (self.wait && self.class_select == "q3_item") // q3 wait code react
+			self.nextthink = time + self.wait;
+		else
 		self.nextthink = time + RSP_TIME * 2; // = 60 default
 		self.think = SUB_regen;
 	}

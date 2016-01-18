@@ -131,6 +131,8 @@ void() q3_precache =
 	precache_model ("progs/vw_q3_rl.mdl");
 	precache_model ("progs/vw_q3_ssg.mdl");
 	precache_model ("progs/vw_q3_gauntlet.mdl");
+	precache_model ("progs/vw_q3_tel.mdl");
+	precache_model ("progs/vw_q3_med.mdl");
 
 // hear it
 // art
@@ -176,6 +178,8 @@ void() q3_precache =
 	precache_sound ("sound/q3_snd/pt1_end.wav");
 	precache_sound ("sound/q3_snd/pt1_mid.wav");
 	precache_sound ("sound/q3_snd/pt1_strt.wav");
+	precache_sound ("sound/q3_snd/telein.wav");
+	precache_sound ("sound/q3_snd/teleout.wav");
 // lightning hook
 	precache_sound ("q3_snd/lg_hit3.wav");
 	precache_sound ("q3_snd/gauntrun.wav");
@@ -574,6 +578,7 @@ void() q3_weapon_shotgun =
 	self._fr_attack = player_shot1;
 
 	self.currentammo = Q3_SHOT_AMMO;
+	self.aflag = IGN_INV;
 	self.items = IT_SUPER_SHOTGUN;
 	self.lip = AMMO_SHELLS;
 	self.volume = Q3_MAX_SHELLS;
@@ -780,7 +785,17 @@ void () weapon_grapplinghook =
 	self.vwepmdl = "progs/vw_q3_grap.mdl";
 	self.noise = "q3_snd/w_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
-	self.noise3 = "q3_snd/gauntrun.wav";
+//	self.noise3 = "q3_snd/gauntrun.wav"; // same as targetname, so using that
+
+// grap specials
+
+	self.killtarget =  "progs/null.mdl";
+	self.target = "q3_snd/lg_hit3.wav"; // hook hit a solid - not damaged
+	self.noise1 = ""; // drop
+	self.target1 = ""; // in + out
+	self.target2 = ""; // in + out
+	self.targetname = "q3_snd/gauntrun.wav"; // launch snd
+	self.punchangle_x = 0.5; // damp
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -858,7 +873,7 @@ void () q3_weapon_railgun =
 	self._fr_attack = player_rocket1;
 
 	self.currentammo = Q3_SLUG_AMMO;
-	self.aflag = IGN_INV; // swap with sgs
+	self.aflag = IGN_INV;
 	self.items = IT_SHOTGUN;
 	self.lip = AMMO_SLUGS;
 	self.volume = Q3_MAX_SLUGS;
@@ -1429,13 +1444,13 @@ void() q3_pwr_touch =
 	sprint (other,self.netname);
 	sprint (other,"\n");
 
-	if (Q_99 || (deathmatch != 4)) // *pk - my new rule, logical extrapolation
+	if (Q_99 || (deathmatch != 4)) // *pk - my new rule, logical extrapolation --- NOTE: why q99 here?
 	if (deathmatch)
 	{
 		self.mdl = self.model;
-//		if (self.wait)
-//			self.nextthink = time + self.wait;
-//		else
+		if (self.wait && self.class_select == "q3_item")
+			self.nextthink = time + self.wait;
+		else
 		self.nextthink = time + RSP_TIME * 2; // = 60 default
 		self.think = SUB_regen;
 	}
@@ -1625,6 +1640,57 @@ void() item_flight =
 };
 
 // holdables
+void() player_q3held =
+{
+	local entity e;
+	local float f;
+
+	if (!self.eweapon) return; // nothing to fire apparently
+
+bprint("got here \n");
+
+	if (self.eweapon.pk_currentitem == PK_IT_CANPAB)
+	if (self.health < 100)
+	{
+		other = self;
+		T_Heal(other, 100, 0); // first get 100
+		T_Heal(other, 25, 1); // then take to 125 - we cant just add 125 here
+		q3_ha_rot(other, other.health); // make sure we rot the extra 25
+
+		if (self.eweapon.noise3)
+			sound (self, CHAN_AUTO, self.eweapon.noise3, 1, ATTN_NORM);
+		f = TRUE;
+	}
+
+	if (self.eweapon.pk_currentitem == PKPLUS_IT_PHONE)
+	{
+		e = spawn ();
+		e.owner = self;
+		e.think = phone_teleport;
+		e.nextthink = (time + 0.5);
+		e.noise1 = self.eweapon.noise1;
+		e.noise3 = self.eweapon.noise3;
+		e.pk_currentitem = -1;
+
+		f = TRUE;
+	}
+
+	if (f) // fired this weap
+	{
+		e =  vchk(IT_AXE, self.eweapon.pk_currentitem, self.vwepent);
+		if (e)
+		{
+			e.vwepent = world;
+			remove(e);
+			vw_chain(self);
+		}
+
+		self.weapon = W_BestWeapon();
+		self.pk_currentInventory = self.pk_currentitem = W_BestPKWeapon();
+		W_SetCurrentAmmo();
+	}
+};
+
 void() item_painkeep_can;
 void() item_pkplus_phone;
 
@@ -1642,12 +1708,26 @@ void() holdable_medkit =
 	if (PK_100) return;
 
 	self.netname = "Holdable Medkit";
+	self.touch = x_pwr_touch;
+	self.pk_currentitem = PK_IT_CANPAB;
+	self.items = IT_AXE;
+	
+	self._attack = player_q3held;
+	self._fr_attack = SUB_Null;
+
+	self.currentammo = 1;
+	self.lip = 0;
+	self.attack_finished = 1;
+
+	self.style = FL_MELEE_WEP;
+	self.vv_draw = vw_melee_base;
 
 	if (!self.wait) self.wait = RSP_TIME * 2;
 
 	setmodel(self, "progs/q3_hld_med.mdl");
-	self.vwepmdl = "";
+	self.vwepmdl = "progs/vw_q3_med.mdl";
 	self.noise = "q3_snd/holdable.wav";
+	self.noise3 = "q3_snd/use_medkit.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -1669,11 +1749,27 @@ void() holdable_teleporter =
 
 	self.netname = "Holdable Teleport";
 
+	self.touch = x_pwr_touch;
+	self.pk_currentitem = PKPLUS_IT_PHONE;
+	self.items = IT_AXE;
+	
+	self._attack = player_q3held;
+	self._fr_attack = SUB_Null;
+
+	self.currentammo = 1;
+	self.lip = 0;
+	self.attack_finished = 1;
+
+	self.style = FL_MELEE_WEP;
+	self.vv_draw = vw_melee_base;
+
 	if (!self.wait) self.wait = RSP_TIME * 2;
 
 	setmodel(self, "progs/q3_hld_tel.mdl");
-	self.vwepmdl = "";
+	self.vwepmdl = "progs/vw_q3_tel.mdl";
 	self.noise = "q3_snd/holdable.wav";
+	self.noise1 = "q3_snd/teleout.wav";
+	self.noise3 = "q3_snd/telein.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 
 	if (time < PIC_TO && self.class_select == "pkplus_item") self.class_select = "q3_item"; // TDO: remove when not needed

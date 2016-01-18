@@ -104,6 +104,12 @@ void(vector org, vector vel, float livetm, float mtype) SpawnExitWound =
 
 //========================================================
 
+void() rlspg_fade =
+{
+	self.alpha = self.alpha - 0.1;
+	if (self.alpha < 0) remove(self);
+	else self.nextthink = time + 0.2;
+};
 
 void() railsnd_think =
 {
@@ -158,6 +164,7 @@ void() X_FireRailgun =
 		cn = ceil(vl / 32);
 		if (cn > 63) cn = 63;
 		e.frame = cn;
+		if (!XENV) placestain(trace_endpos, "progs/s_rlspg.spr", rlspg_fade, 20);
 	}
 	else
 	while (i != CONTENT_SOLID)

@@ -70,17 +70,31 @@ entity (entity caller) SelectPhoneDestination =
 	return(spot);
 };
 
+// Cataboligne - 9.3.11 - modified for holdable use
+
 void () phone_teleport =
 {
 	local entity phonedest;
 	local vector org;
 	phonedest = SelectPhoneDestination (self.owner);
-	spawn_tfog2 (self.owner.origin);
 	ClearSpawnPoint (phonedest);
 	makevectors (phonedest.mangle);
 	org = (phonedest.origin + (32 * v_forward));
 	spawn_tfog (org);
 	spawn_tdeath (phonedest.origin,self.owner);
+	if (self.pk_currentitem < 0)
+	{
+		if (self.noise3)
+		{
+			if (telesnd) remove(telesnd);
+			telesnd = world;
+			sound (self, CHAN_AUTO, self.noise3, 1, ATTN_NORM);
+		}
+		spawn_tfog2 (self.owner.origin, self.noise1);
+	}
+	else
+	spawn_tfog2 (self.owner.origin, "");
+
 	self.owner.aiment = world; // Cataboligne - 5.4.10 - telefrag escape for admin, need to reset this
 	if ( !self.owner.health )
 	{

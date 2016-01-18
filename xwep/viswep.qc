@@ -164,6 +164,7 @@ entity(entity e) vw_chain =
 				// chain up any viswep with owner = world
 			if (ch) ch.vwepent = f; // this becomes a list rebuild
 			ch = f;
+//			ch.eweapon = ch; // found when relinking eweapons were wrong
 			f.vwepent = world; // unlink old stuff
 		}
 
@@ -414,7 +415,7 @@ void(entity e, float cd) viswep_ld =
 		}
 		else if (tr.weapon == IT_AXE) // pk item test
 		{
-			
+			if (tr.noise != "q3_snd/holdable.wav")
 			if (! tr.pk_currentitem & pkbits)
 			{
 //				tr.mdl = "";

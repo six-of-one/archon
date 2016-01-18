@@ -446,6 +446,8 @@ float DEAD_XPACK;
 // not used yet - chaos will want this
 
 .float modelflags;
+.float clientcolors; //controls coloring on scoreboard (using a single number that contains pants and shirt colors (pants + shirt * 16, 0-255 potentially), so be sure to set it for a bot)
+.float scale; // make models diff size
 
 // entity color - access 0 - 255 (prob from palette)
 .float glow_color;
@@ -552,6 +554,8 @@ void(entity e, float camct, float mcd, string spf) xwep_fakeload;
 void(entity e, float smc) set_xweap;
 void(entity e) xw_parm;
 float X_CHGLVL;
+
+entity telesnd; // teleport sound effect (dest) global - so holdable can change sound played (hackish way to do things)
 
 float(entity e, entity f, float dm) power_armor;
 void() power_armor_impulse;

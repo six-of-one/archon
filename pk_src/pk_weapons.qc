@@ -859,7 +859,10 @@ float(float weaponnum, float pknum) HasAmmo =
 		else if (pknum == PK_IT_CANPAB)
 		{
 			if (self.pk_canpabammo < 1)
+			{
+				if (vchk(IT_AXE, PK_IT_CANPAB, self.vwepent)) return TRUE;
 				return FALSE;
+			}
 		}
 
 // Cataboligne 8.12.9 purify - pk artifacts
@@ -881,7 +884,10 @@ float(float weaponnum, float pknum) HasAmmo =
 		else if (pknum == PKPLUS_IT_PHONE)
 		{
 			if (self.pkplus_phoneammo < 1)
+			{
+				if (vchk(IT_AXE, PKPLUS_IT_PHONE, self.vwepent)) return TRUE;
 				return FALSE;
+			}
 		}
 // end pk_art
 	}

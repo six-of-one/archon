@@ -142,6 +142,11 @@ void() hip_precache =
 	precache_sound ("sound/weapons/thors_hammer/mjoltink.wav");
 	precache_sound ("sound/weapons/thors_hammer/mjolwam.wav");
 
+// stains
+	precache_model ("progs/s_rlspg.spr");
+	precache_model ("progs/s_plspg.spr");
+	precache_model ("progs/s_plspg2.spr");
+
 };
 
 

@@ -1769,6 +1769,17 @@ void () weapon_hook =
 	setmodel (self, "progs/g_grap.mdl");
 	self.weaponmodel = "progs/v_grap.mdl";
 	self.vwepmdl = "progs/vw_grap.mdl";
+
+// grap specials
+
+	self.killtarget =  "progs/hook.mdl";
+	self.target = "player/axhit2.wav"; // hook hit a solid - not damaged
+	self.noise1 = "hook/retract.wav"; // drop
+	self.target1 = "hook/chain1.wav"; // in + out
+	self.target2 = "hook/chain2.wav"; // in + out
+	self.targetname = "weapons/ax1.wav"; // launch snd
+	self.punchangle_x = 0.85; // damp
+
 };
 
 // all quake 1 key load outs

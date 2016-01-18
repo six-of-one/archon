@@ -344,11 +344,12 @@ void () play_teleport =
 	}
 	sound (self, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
 	remove (self);
+	telesnd = world;
 };
 
 void (vector org) spawn_tfog =
 {
-	s = spawn ();
+	telesnd = s = spawn (); // Cataboligne - 9.3.11 - let holdable kill this sound.
 	s.origin = org;
 	s.nextthink = time + 0.2;
 	s.think = play_teleport;
@@ -459,7 +460,7 @@ void () teleport_touch =
 	SUB_UseTargets ();
 
 // put a tfog where the player was
-	if (PK || (world.wad == "q2.wad")) spawn_tfog2(other.origin); // *pk - new teleport sounds
+	if (PK || (world.wad == "q2.wad")) spawn_tfog2(other.origin, ""); // *pk - new teleport sounds
 	else
 	spawn_tfog (other.origin);
 

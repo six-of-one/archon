@@ -716,6 +716,8 @@ float(float cn, entity e, string op) ammo_con =
 			if (cn == IT_SUPER_SHOTGUN)
 			if (pk_itemovr & WEP_SSHOT) return(1);
 		}
+
+		if(e.eweapon.noise == "q3_snd/holdable.wav") return(1);
 	}
 
 	return(f);

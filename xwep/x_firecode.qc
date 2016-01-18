@@ -4,6 +4,82 @@
 	+---------------------------------------+
 */
 
+// x weapon inventory store fn
+
+// used from touch functions
+
+// other - must be touching ent (player / bot) recv goody
+// self - goodie
+// e - viswep ent slot
+// nw - new weap item bits
+// camcc - current ammo count
+
+entity(entity e, float nw, float camcc) x_wep_store =
+{
+	if (e) // replacing the basics - remove vw ent
+	{
+		remove(e);
+		e = world;
+		vw_chain(other);
+	}
+	e = vload(other, nw);
+	e.eweapon = e;
+	e._attack = self._attack;
+	e._fr_attack = self._fr_attack;
+	e.vv_draw = self.vv_draw;
+	e.vv_holster = self.vv_holster;
+	e.vwepmdl = self.vwepmdl; // for pack / dthrow weps
+//		e.touch = self.touch;
+
+	e.weapon = e.items = self.items;
+	if (self.items == IT_AXE) e.pk_currentitem = self.pk_currentitem; // replacing the axe
+	e.x_items = self.x_items;
+	e.currentammo = self.currentammo;
+	e.lip = self.lip;
+	e.attack_finished = self.attack_finished;
+	e.dmg = self.dmg;
+	e.dodmg = self.dodmg;
+	e.dmg_save = self.dmg_save;
+	e.dmg_take = self.dmg_take;
+	e.punchangle = self.punchangle;
+	e.aflag = camcc;
+	e.style = self.style; // melee flag
+	e.lefty = self.lefty; // misc data
+	e.mcode = self.mcode; // for pack touch deal
+//		e.cnt = self.cnt; // vw skinnage
+
+	e.netname = self.netname;
+//		e.mdl = self.mdl; - invisible
+	setmodel (e, self.vwepmdl);
+	e.mdl = e.model;
+	if (!VW)
+	{
+		if (!(e.weapon == IT_AXE && e.pk_currentitem == PK_IT_AXE)) // any axe replacement
+		if (e.mdl != "progs/vw_q2_hgr.mdl")
+		if (e.mdl != "progs/vw_axe.mdl" && e.mdl != "progs/vw_mjolnir.mdl")
+			setmodel (e, VW_DEFGUN);
+	}
+	if (self.skin) e.skin = self.skin;
+	e.weaponmodel = self.weaponmodel;
+	e.chaosweptime = self.chaosweptime;
+	e.endtime = self.endtime;
+	e.duration = self.duration;
+	e.noise = self.noise;
+	e.noise1 = self.noise1; // holdable tele
+	e.noise2 = self.noise2;
+	e.noise3 = self.noise3;
+	e.noise4 = self.noise4;
+	e.target = self.target; // missile strike snd
+	e.target1 = self.target1; // missile models
+// hook added
+	e.target2 = self.target2;
+	e.targetname = self.targetname;
+	e.killtarget = self.killtarget;
+
+	return(e);
+};
+
+
 // x weapon touch fn
 
 void() x_weapon_touch =
@@ -176,63 +252,8 @@ void() x_weapon_touch =
 		if (e.mdl != self.vwepmdl) ign = TRUE; // not the same vwep and replaceable - load a diff vwep
 	}
 
-	if (!e || ign || new == IT_SHOTGUN) // || new == IT_AXE) // TESTING - axe, shotgun --- melee pickup fails
-	{
-		if (e) // replacing the basics - remove vw ent
-		{
-			remove(e);
-			e = world;
-			vw_chain(other);
-		}
-		e = vload(other, new);
-		e.eweapon = e;
-		e._attack = self._attack;
-		e._fr_attack = self._fr_attack;
-		e.vv_draw = self.vv_draw;
-		e.vv_holster = self.vv_holster;
-		e.vwepmdl = self.vwepmdl; // for pack / dthrow weps
-//		e.touch = self.touch;
-
-		e.weapon = e.items = self.items;
-		if (self.items == IT_AXE) e.pk_currentitem = self.pk_currentitem; // replacing the axe
-		e.x_items = self.x_items;
-		e.currentammo = self.currentammo;
-		e.lip = self.lip;
-		e.attack_finished = self.attack_finished;
-		e.dmg = self.dmg;
-		e.dodmg = self.dodmg;
-		e.dmg_save = self.dmg_save;
-		e.dmg_take = self.dmg_take;
-		e.punchangle = self.punchangle;
-		e.aflag = camc;
-		e.style = self.style; // melee flag
-		e.lefty = self.lefty; // misc data
-		e.mcode = self.mcode; // for pack touch deal
-//		e.cnt = self.cnt; // vw skinnage
-
-		e.netname = self.netname;
-//		e.mdl = self.mdl; - invisible
-		setmodel (e, self.vwepmdl);
-		e.mdl = e.model;
-		if (!VW)
-		{
-			if (!(e.weapon == IT_AXE && e.pk_currentitem == PK_IT_AXE)) // any axe replacement
-			if (e.mdl != "progs/vw_q2_hgr.mdl")
-			if (e.mdl != "progs/vw_axe.mdl" && e.mdl != "progs/vw_mjolnir.mdl")
-				setmodel (e, VW_DEFGUN);
-		}
-		if (self.skin) e.skin = self.skin;
-		e.weaponmodel = self.weaponmodel;
-		e.chaosweptime = self.chaosweptime;
-		e.endtime = self.endtime;
-		e.duration = self.duration;
-		e.noise = self.noise;
-		e.noise2 = self.noise2;
-		e.noise3 = self.noise3;
-		e.noise4 = self.noise4;
-		e.target = self.target; // missile strike snd
-		e.target1 = self.target1; // missile models
-	}
+	if (!e || ign)
+		e = x_wep_store(e, new, camc);
 
 	sprint (other,"You got the ");
 	sprint (other,self.netname);
@@ -1017,6 +1038,23 @@ void() player_pistol1 =
 
 // fire plasma & guns
 
+void() plspg_fade =
+{
+	if (self.model == "progs/s_plspg.spr")
+	{
+		self.alpha = self.alpha - 0.1;
+		self.enemy.alpha = self.enemy.alpha + 0.1;
+		if (self.alpha < 0) remove(self);
+		else self.nextthink = time + 0.2;
+	}
+	if (self.model == "progs/s_plspg2.spr")
+	{
+		self.alpha = self.alpha - 0.1;
+		if (self.alpha < 0) remove(self);
+		else self.nextthink = time + 0.2;
+	}
+};
+
 // fn(plasmaexplode1) - wash plasma bolt out of world
 // fn(Plasma_MissileTouch) - blow a plasma bolt - handles monster stuff if eweapon not set
 // fn(X_FireOnePlasma) - fire a single plasma bolt, handles weapon stuff
@@ -1032,7 +1070,23 @@ void () plasmaexplode2 = [ 4, plasmaexplode3 ]
 	self.alpha = 0.5;
 };
 void () plasmaexplode3 = [ 5, plasmaexplode4 ] { self.alpha = 0.3; };
-void () plasmaexplode4 = [ 6, SUB_Remove    ] { self.alpha = 0.1; };
+void () plasmaexplode4 = [ 6, SUB_Remove    ]
+{
+	self.alpha = 0.1;
+	if (self.mcode == MC_Q3_PLASMA)
+	if (!XENV)
+	{
+		setmodel(self.aiment.aiment, "progs/s_plspg.spr");
+		setmodel(self.aiment, "progs/s_plspg2.spr");
+		self.aiment.aiment.enemy = self.aiment;
+		self.aiment.aiment.scale = 8;
+		self.aiment.scale = 8;
+		self.aiment.aiment.alpha = 1;
+		self.aiment.alpha = 0.1;
+		self.aiment.aiment.nextthink = time  + 2;
+		self.aiment.nextthink = time  + 27;
+	}
+};
 
 void () Plasma_MissileTouch =
 {
@@ -1188,6 +1242,13 @@ bprint(EWEAP.netname);
 		{
 			newmis.eweapon = EWEAP;
 			newmis.dodmg = EWEAP.dodmg;
+			newmis.mcode = EWEAP.mcode;
+			traceline (org, org + v_forward*4096, TRUE, self);
+			if (!XENV)
+			{
+				newmis.aiment = placestain(trace_endpos, "progs/null.mdl", plspg_fade, 60);
+				newmis.aiment.aiment = placestain(trace_endpos, "progs/null.mdl", plspg_fade, 60);
+			}
 		}
 	}
 //	sound (self, CHAN_WEAPON, snd, 1, ATTN_NORM);

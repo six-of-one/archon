@@ -18,3 +18,13 @@ float discharged; // wet suit controls
 .float struck_by_mjolnir;
 
 void() player_laser1;
+
+
+// wall stains
+
+entity nullstain;
+entity stain_set;
+entity last_stain;
+
+float num_stains;
+

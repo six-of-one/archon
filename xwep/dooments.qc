@@ -892,6 +892,7 @@ void() d_weapon_shotgun =
 	self._fr_attack = player_shot1;
 
 	self.currentammo = D_DEF_SHOTG;
+	self.aflag = IGN_INV;
 	self.items = IT_SHOTGUN;
 	self.lip = AMMO_SHELLS;
 	self.volume = D_MAX_SHELLS;

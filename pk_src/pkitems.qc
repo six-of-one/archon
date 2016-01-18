@@ -708,9 +708,9 @@ bprint(")\n");
 	if (deathmatch)
 	if (deathmatch == 1 || deathmatch == 3)
 	{
-		if (self.wait) // IDEA: this prob. never happens
-			self.nextthink = time + self.wait;
-		else
+//		if (self.wait) // NOTE: this is q3 code and q3 items should never come through here as of now
+//			self.nextthink = time + self.wait;
+//		else
 		if (self.pk_items == PK_IT_GRAVITYWELL)
 			self.nextthink = time + RSP_TIME * 4;
 		else
