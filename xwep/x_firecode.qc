@@ -45,7 +45,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.aflag = camcc;
 	e.style = self.style; // melee flag
 	e.lefty = self.lefty; // misc data
-	e.mcode = self.mcode; // for pack touch deal
+	if (self.mcode) e.mcode = self.mcode; // for pack touch deal
 //		e.cnt = self.cnt; // vw skinnage
 
 	e.netname = self.netname;
@@ -108,6 +108,7 @@ void() x_weapon_touch =
 	best = W_BestWeapon ();
 	self = e;
 
+	if (self.wad != "deadtwep")
 	if (deathmatch == 2 || deathmatch == 3 || coop)
 		leave = 1;
 	else
@@ -224,6 +225,12 @@ void() x_weapon_touch =
 		if (PK_100 && PK_100_OBJERR) objerror("x_weapon_touch: unknown classname");
 		else
 		{
+			if (self.wad == "deadtwep")
+			{
+					weapon_touch();
+					if (!self.model) remove(self);
+					return;
+			}
 			if (WARNING)
 			{
 			bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
@@ -293,6 +300,9 @@ void() x_weapon_touch =
 // remove it in single player, or setup for respawning in deathmatch
 	self.model = string_null;
 	self.solid = SOLID_NOT;
+	if (self.wad == "deadtwep") // dont respawn these
+		remove(self);
+	else
 	if (deathmatch == 1)
 	{
 		self.nextthink = time + RSP_TIME;

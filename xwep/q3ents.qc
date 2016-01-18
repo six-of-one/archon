@@ -771,7 +771,7 @@ void () weapon_grapplinghook =
 	self.items = IT_AXE;
 	self.pk_currentitem = PK_IT_GRAPGUN; // grap replacement
 /*
-	self.dmg = 5;
+	self.dmg = 5;  // TDO: check if ltn hook does dmg from gun
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
 */
@@ -1298,7 +1298,7 @@ void() q3_item_health_small =
 	self.netname = "5 health";
 
 	self.healamount = Q3_HEAL5_A;
-	self.healtype = HEAL_BOT; // TDO: special q3 rot - isnt this done ?? CHECK
+	self.healtype = HEAL_BOT;
 
 	setmodel(self, "progs/q3_health.mdl");
 	self.noise = "q3_snd/s_health.wav";
@@ -1772,7 +1772,6 @@ void() holdable_teleporter =
 	self.noise3 = "q3_snd/telein.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 
-	if (time < PIC_TO && self.class_select == "pkplus_item") self.class_select = "q3_item"; // TDO: remove when not needed
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };

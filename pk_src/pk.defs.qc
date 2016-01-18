@@ -433,7 +433,20 @@ float EF_FULLBRIGHT			= 512;
 // dead rules
 
 float DEAD_THROW;
+float DEAD_THROW_PKI;
+float DEAD_THROW_LIVERND = 0.5; // chance a dead threw wep is touchable under rule 2
+float DEAD_THROW_CNTRND = 0.5; // chance a dead threw wep is NOT under rule 8
+float DEAD_THROW_TIME = 240;// TEST: 66; // time (in secs) a deadthrew wep hangs around
 float DEAD_XPACK;
+float DEAD_GIBPACK;
+
+// here because deathrew needs to detect them before mcode
+float MC_HOOK; // CTF hook map item
+float MC_Q2_GRAPPLE;
+float MC_Q3_GRAPPLE;
+float MC_Q3_HOLDMEDKIT;
+float MC_Q3_HOLDTELE;
+
 
 // end inventorys
 
@@ -1038,6 +1051,8 @@ void(entity e, vector v1) item_eject;
 
 
 float PK_INV = 1; // if true show pk items in inventory list
+float PKID; // painkeep item ids that are ammo count stored: PKPLUS_IT_EGO + PKPLUS_IT_TOMB + PKPLUS_IT_ACTOR + PKPLUS_IT_PHONE + PK_IT_GRAVITYWELL + PK_IT_TURRET + PK_IT_CANPAB + PK_IT_BEARTRAP;
+
 
 // Items used in impulse 1
 float PK_IT_AXE				= 1;
@@ -1205,6 +1220,11 @@ float BT_BUFFER				= 2;	  	// The nuber of secs people are immune to beartraps a
 float PK_GRV_TIME;
 float PK_GRV_SET;
 
+// other weps
+
+float LASER_FLY; // time a laser is in flight
+float LASER_BOUNCE; // how much a reflecting laser can bounce
+float LASER_RND_END = 0.02; // orig = 0.15, chance per bounce a laser will end
 
 // exploding ammo for shotgun
 .float pk_explode_ammo;

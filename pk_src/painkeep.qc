@@ -776,11 +776,13 @@ void() pk_liveupd =
 	PK_MAX_LIVENT = cvar("pk_max_livent");
 
 	DEAD_THROW = cvar("sv_dead_throw");
+	DEAD_THROW_PKI = cvar("sv_dead_throw_pki");
 	DEAD_XPACK = cvar("sv_dead_xpack");
+	DEAD_GIBPACK = cvar("sv_dead_gibpack");
 
 	X_CHGLVL = cvar("pk_xchgl");
 
-Q2_SILENCE = cvar("q2_silence");
+	Q2_SILENCE = cvar("q2_silence");
 
 // turrets
 	if (PK_TUR_AMMO != cvar("pk_tur_ammo") || 
@@ -801,6 +803,10 @@ Q2_SILENCE = cvar("q2_silence");
 
 // tomb
 	if (PKPLUS_TOMB_TIME != cvar("pk_tomb_time")) PK_TOMB_SET = FALSE;
+
+// others
+	LASER_FLY = cvar("pk_laser_fly"); 
+	LASER_BOUNCE = cvar("pk_laser_bounce");
 
 // map translations
 	check_translate();
@@ -1004,6 +1010,9 @@ void() pk_srvcmd_set =
 	pk_mapcfg = 1;
 	pk_srvcfg = 1;
 
+// painkeep item ids that are ammo count stored
+	PKID = PKPLUS_IT_EGO + PKPLUS_IT_TOMB + PKPLUS_IT_ACTOR + PKPLUS_IT_PHONE + PK_IT_GRAVITYWELL + PK_IT_TURRET + PK_IT_CANPAB + PK_IT_BEARTRAP;
+
 /// this section assigns vars to default values - they will rule any engine not dp registercvar able or not customized as the glquake build we release
 //				- it would be trivial to take the custom cvar section from the glquake build and add to _any_ engine...
 
@@ -1110,7 +1119,7 @@ void() pk_srvcmd_set =
 	Q2_POWER_TIME = 
 	Q3_POWER_TIME = 
 
-POW_TIME = 30;
+	POW_TIME = 30;
 
 	EXPLBOX_RESP = 1;
 
@@ -1170,7 +1179,9 @@ POW_TIME = 30;
 	PK_MAX_LIVENT = 256; // guessed - need research into where slowdown starts
 
 	DEAD_THROW = 0;
+	DEAD_THROW_PKI = 0;
 	DEAD_XPACK = 1;
+	DEAD_GIBPACK = 1;
 
 	X_CHGLVL = 1;
 
@@ -1184,6 +1195,9 @@ POW_TIME = 30;
 	ROCKET_FUSE = 5.0;
 	WEPHUM = 1;
 	Q2_SILENCE = 0.2; // 20% vol default
+
+	LASER_FLY = 5;
+	LASER_BOUNCE = 3;
 
 // pk artifacts
 	PK_ART = TRUE; // Cataboligne - 8.12.9 - pk artifacts support
@@ -1287,7 +1301,7 @@ POW_TIME = 30;
 		registercvar("sv_c_hook", "0"); // give away the hook - ctf style code, set this to 1 and everyone can use the hook effect per map genre by impulse controls
 																		// q1 - q1 ctf hook, q2 - laser beam hook, q3 - lightning hook
 																		// this does not effect map entities like weapon_hook or runes which will still give hook use
-		registercvar("sv_c_hook_dmg", "0"); // how much damage the q1 hook does - does not apply to q2 or q3 hooks
+		registercvar("sv_c_hook_dmg", "0"); // how much damage the hooks do - overrides weapon stats - does not apply to give away hooks
 		registercvar("sv_c_hook_range", "1200"); // how far you can throw it
 		registercvar("sv_c_hook_time", "0"); // how long the hook will stay once reeled in - if 0, hook never releases till player hits release
 		registercvar("sv_c_hook_urto", "0"); // unreeled timeout - if fired and caught, but not reeled in, this will drop the line after timeout
@@ -1318,8 +1332,10 @@ POW_TIME = 30;
 
 // things dealing with the dead
 
-		registercvar("sv_dead_xpack", "1"); // 0 = no xweap in pack, 1 = include extra weapon held in pack, 2 = include held & random xweap, 3 = stuff all dudes xweaps in there
-		registercvar("sv_dead_throw", "0"); // -1 = no weps - even pack, 0 = std mode 1 in pack, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 3 = throw weaps, all worky
+		registercvar("sv_dead_xpack", "1"); // 0 = no xweap in pack (std op), 1 = include extra weapon held in pack, 2 = no weaps at all, just ammo, 3 = no packs (no applicable to monsters)
+		registercvar("sv_dead_throw", "0"); // 0 = no weps thrown, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 4 = throw weaps, all worky, 8 = randomize throwing (every wep is not thrown), 16 = throw weps when gibbed
+		registercvar("sv_dead_throw_pki", "0"); // 0 = no painkeep items thrown - all in pack, 1 = throw painkieep items, 2 = pain keep items gone
+		registercvar("sv_dead_gibpack", "1"); // 0 = dont throw a back pack when gibbed, 1 = throw back pack always, 2 = throw packs in singleplayer
 		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at ready weapon
 
 // cam controls
@@ -1432,6 +1448,10 @@ POW_TIME = 30;
 		registercvar("pk_max_phoneammo", "1");
 
 		registercvar("pk_tomb_time", "90"); // time for beartraps to live
+
+// other cfg
+		registercvar("pk_laser_fly", "5"); // time lasers fly, laser cannon+
+		registercvar("pk_laser_bounce", "3"); // count lasers bounce, laser cannon+
 
 // x ammos
 		registercvar("pk_bulletammo_max", "200");

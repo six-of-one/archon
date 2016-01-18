@@ -1121,9 +1121,9 @@ void () PlayerPostThink =
 			self.jump_flag = self.velocity_z;
 
 	}
-	else // Cataboligne 9.11.3 purify - this does mean if you are on the hook you dont take hook damage if hooked, yo dawg...
+	else // Cataboligne 9.11.3 purify - this is damage from your own hook activities - i.e. skullcrack
 	{
-//		hook_dmg_check(); TDO: make a server option if (sv_hookdmg) ...
+		hook_dmg_check(); // IDEA: server flag?
 		self.finaldest = self.velocity;
 	}
 

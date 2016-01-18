@@ -119,7 +119,7 @@ float MC_PKP_RNDITM; // + plus items
 
 float MC_T_RNDITM; // # of total items
 
-float MC_HOOK; // CTF hook map item
+//float MC_HOOK; // CTF hook map item - moved to defs
 
 /// hipnotic
 // wep ids
@@ -204,9 +204,16 @@ float MC_W_PACK;
 
 float MC_W_FACESPHERE;
 float MC_W_HEALTH;
+float MC_W_FOOD;
+float MC_W_DOGFOOD;
 
 float MC_W_KEY_G;
 float MC_W_KEY_B;
+
+float MC_W_G_CROSS;
+float MC_W_G_CHALICE;
+float MC_W_G_CHEST;
+float MC_W_G_CROWN;
 
 float MC_W_BARREL;
 
@@ -226,7 +233,7 @@ float MC_Q2_ROCKETL;
 float MC_Q2_HYPBLASTER;
 float MC_Q2_RAILGUN;
 float MC_Q2_BFG;
-float MC_Q2_GRAPPLE;
+//float MC_Q2_GRAPPLE;
 
 float MC_Q2_QUAD;
 float MC_Q2_INVUL;
@@ -276,7 +283,7 @@ float MC_Q2_RNDITM; // # of total items
 /// q3
 
 float MC_Q3_GAUNTLET;
-float MC_Q3_GRAPPLE;
+//float MC_Q3_GRAPPLE;
 float MC_Q3_MACHINEGUN;
 float MC_Q3_SHOTGUN;
 float MC_Q3_GRENADEL;
@@ -311,8 +318,8 @@ float MC_Q3_ASLUGS;
 float MC_Q3_ALIGNTNING;
 float MC_Q3_ABFG;
 
-float MC_Q3_HOLDMEDKIT;
-float MC_Q3_HOLDTELE;
+//float MC_Q3_HOLDMEDKIT;
+//float MC_Q3_HOLDTELE;
 
 float MC_Q3_BARREL;
 
@@ -521,9 +528,16 @@ void() mcode_load =
 
 	MC_W_FACESPHERE = f = (f + 1);
 	MC_W_HEALTH = f = (f + 1);
+	MC_W_FOOD = f = (f + 1);
+	MC_W_DOGFOOD = f = (f + 1);
 
 	MC_W_KEY_G = f = (f + 1);
 	MC_W_KEY_B = f = (f + 1);
+
+//	MC_W_G_CROSS = f = (f + 1); // if these are here they will randomize onto map
+//	MC_W_G_CHALICE = f = (f + 1);
+//	MC_W_G_CHEST = f = (f + 1);
+//	MC_W_G_CROWN = f = (f + 1);
 
 	MC_W_BARREL = f = (f + 1);
 
@@ -764,8 +778,8 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_D_AROCKETS_LG)										return(IT_ROCKETS);
 	if (mc == MC_D_ACELLS)												return(IT_CELLS);
 	if (mc == MC_D_ACELLS_LG)											return(IT_CELLS);
-	if (mc == MC_D_NIGHTVS)											return(X_D_VIS);
-	if (mc == MC_D_AUTOMAP)											return(X_D_MAP);
+	if (mc == MC_D_NIGHTVS)												return(X_D_VIS);
+	if (mc == MC_D_AUTOMAP)												return(X_D_MAP);
 
 /// wolf
 
@@ -777,7 +791,11 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_W_FLAMER)												return(IT_GRENADE_LAUNCHER);
 //	if (mc == MC_W_CLIP)													return(IT_BULLETS);
 //	if (mc == MC_W_GAS)													return(IT_GAS);
-//	if (mc == MC_W_MORTARS)													return(IT_ROCKETS);
+	if (mc == MC_W_MORTARS)												return(IT_ROCKETS);
+
+	if (mc == MC_W_HEALTH)												return(0);
+	if (mc == MC_W_FOOD)													return(0);
+	if (mc == MC_W_DOGFOOD)												return(0);
 
 	if (mc == MC_W_FACESPHERE)											return(IT_SUPERHEALTH);
 
@@ -1070,10 +1088,13 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "w_item_pack")											return(MC_W_PACK);
 
 	if (tsc == "w_heal_medkit")										return(MC_W_HEALTH);
+	if (tsc == "w_heal_food")											return(MC_W_FOOD);
+	if (tsc == "w_heal_dogfood")										return(MC_W_DOGFOOD);
 	if (tsc == "w_art_facesphere")									return(MC_W_FACESPHERE);
 
 	if (tsc == "w_key_g")												return(MC_W_KEY_G);
 	if (tsc == "w_key_b")												return(MC_W_KEY_B);
+	if (tsc == "w_item_cross")											return(MC_W_G_CROSS);
 	if (tsc == "w_barrel")												return(MC_W_BARREL);
 
 /// q2
@@ -1345,14 +1366,17 @@ string (float mc) item_by_mcode =
 
 	if (mc == MC_W_CLIP)													return("w_ammo_clip");
 	if (mc == MC_W_GAS)													return("w_ammo_gas");
-	if (mc == MC_W_MORTARS)													return("w_ammo_rock");
+	if (mc == MC_W_MORTARS)												return("w_ammo_rock");
 	if (mc == MC_W_PACK)													return("w_item_pack");
 
 	if (mc == MC_W_FACESPHERE)											return("w_art_facesphere");
 	if (mc == MC_W_HEALTH)												return("w_heal_medkit");
+	if (mc == MC_W_FOOD)													return("w_heal_food");
+	if (mc == MC_W_DOGFOOD)												return("w_heal_dogfood");
 
 	if (mc == MC_W_KEY_G)												return("w_key_g");
 	if (mc == MC_W_KEY_B)												return("w_key_b");
+	if (mc == MC_W_G_CROSS)												return("w_item_cross");
 	if (mc == MC_W_BARREL)												return("w_barrel");
 
 /// q2
@@ -1570,6 +1594,23 @@ float(float bt, string md) wepbit_mcode =
 		if (bt == IT_MJOLNIR)											return(MC_HIP_MJOLNIR);		// 128
 	}
 
+	if (md == "PK2") // dead threw deal
+	{
+		if (bt == PK_IT_AXE)												return(MC_AXE);				// 4096
+		if (bt == PK_IT_GRAVITYWELL)									return(MC_GRAVITY);			// 2
+		if (bt == PK_IT_TURRET)											return(MC_SENTRY);			// 4
+		if (bt == PK_IT_CANPAB)											return(MC_CANOBEANS);		// 8
+		if (bt == PK_IT_BEARTRAP)										return(MC_BEARTRAP);			// 128
+		if (bt == PK_IT_GRAPGUN)										return(MC_GRAP);				// 16
+		if (bt == PK_IT_AIRGUN)											return(MC_AIRGUN);			// 32
+		if (bt == PK_IT_CLIGHT)											return(MC_CHTHUNDR);			// 64
+
+		if (bt == PKPLUS_IT_EGO)										return(MC_EGO);				// 256
+		if (bt == PKPLUS_IT_TOMB)										return(MC_TOMB);				// 512
+		if (bt == PKPLUS_IT_ACTOR)										return(MC_MASK);				// 1024
+		if (bt == PKPLUS_IT_PHONE)										return(MC_PHONE);				// 2048
+	}
+
 /// doom
 
 	else if (md == "D")
@@ -1756,8 +1797,9 @@ void () weapon_hook =
 	self.lefty = SEL_S_HOOK;
 	self.items = IT_AXE;
 	self.pk_currentitem = PK_IT_GRAPGUN; // grap replacement
-/*
+
 	self.dmg = 5;
+/*
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
 */

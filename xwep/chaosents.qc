@@ -34,7 +34,6 @@ void() chaos_precache =
 	precache_model ("progs/vw_flamer2.mdl");
 	precache_model ("progs/vw_gascyl.mdl");
 	precache_model ("progs/vw_qgun.mdl");
-	precache_model ("progs/vw_shovel.mdl");
 
 	precache_sound ("sound/flm/ft_hum.wav");
 	precache_sound ("sound/flm/ft_fire.wav");
@@ -43,6 +42,9 @@ void() chaos_precache =
 	precache_sound ("sound/reggun/fire.wav");
 	precache_sound ("sound/reggun/fire4.wav");
 
+// shovel test
+	precache_model  ("progs/m_shovel.mdl");
+	precache_model ("progs/vw_shovel.mdl");
 
 //	flamer_precache();
 };
@@ -97,8 +99,8 @@ void() c_weapon_shovel =
 	self.style = FL_MELEE_WEP;
 	self.wait = RSP_TIME;
 
-//	setmodel (self, "progs/m_shovel.mdl");
-	setmodel (self, "progs/shovel.md3"); // TESTING
+	setmodel (self, "progs/m_shovel.mdl");
+	if (DARKPLACES) setmodel (self, "progs/shovel.md3"); // TESTING
 	self.weaponmodel = "progs/v_axe.mdl";
 	self.vwepmdl = "progs/vw_shovel.mdl";
 	self.vv_draw = vw_melee_base;

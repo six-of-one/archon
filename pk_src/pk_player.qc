@@ -582,7 +582,7 @@ void() PK_GibPlayer =
 
 void() PK_PlayerDie =
 {
-	local	float	i;
+	local	float	i, gib;
 
 	self.items = self.items - (self.items & IT_INVISIBILITY);
 
@@ -635,14 +635,20 @@ void() PK_PlayerDie =
 	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.view_ofs = '0 0 -8';
 
+	if (self.health < -40 || (!XENV && pointcontents(self.origin) == CONTENT_LAVA)) gib = TRUE;// TEST - new feature, need full height test
 
-	if (deathmatch || coop)
+	if (deathmatch || coop || (DEAD_GIBPACK & 2))
+	if (!gib || DEAD_GIBPACK)
 		DropBackpack();
+
+	if (DEAD_THROW)
+	if ((DEAD_THROW & 16) || !gib)
+		DeadThrowWeps(newmis); // newmis is the pack - ammo must be accounted
 
 	if (self.velocity_z < 10)
 		self.velocity_z = self.velocity_z + random()*300;
 
-	if (self.health < -40 || (!XENV && pointcontents(self.origin) == CONTENT_LAVA)) // TEST - new feature, need full height test
+	if (gib)
 	{
 		GibPlayer();
 		return;

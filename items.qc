@@ -460,6 +460,7 @@ void () weapon_touch =
 	best = W_BestWeapon ();
 	self = stemp;
 
+	if (self.wad != "deadtwep")
 	if (deathmatch == 3 || deathmatch == 2 || coop) // *pk - more dm modes
 		leave = 1;
 	else
@@ -565,6 +566,9 @@ void () weapon_touch =
 // remove it in single player, or setup for respawning in deathmatch
 	self.model = string_null;
 	self.solid = SOLID_NOT;
+	if (self.wad == "deadtwep") // dont respawn these
+		remove(self);
+	else
   if (deathmatch == 1)
   {
 		self.nextthink = time + RSP_TIME;

@@ -932,8 +932,9 @@ void () q2_weapon_grapple =
 	self.lefty = SEL_S_HOOK;
 	self.items = IT_AXE;
 	self.pk_currentitem = PK_IT_GRAPGUN; // grap replacement
-/*
+
 	self.dmg = 5;
+/*
 	self.dmg_save = 0;
 */
 	self.style = FL_MELEE_WEP;

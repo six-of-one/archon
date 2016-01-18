@@ -59,6 +59,9 @@ void () pkplus_touch =
 	self.solid = SOLID_NOT;
 	self.model = string_null;
 
+	if (self.wad == "deadtwep") // dont respawn these
+		remove(self);
+	else
 	if (deathmatch == 1 || deathmatch == 3)
 	{
 		if ((self.pk_items == PKPLUS_IT_EGO) || (self.pk_items == PKPLUS_IT_PHONE))

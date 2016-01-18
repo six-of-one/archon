@@ -705,6 +705,9 @@ bprint(")\n");
 	// remove object until it is time to respawn
 	self.solid = SOLID_NOT;
 	self.model = string_null;
+	if (self.wad == "deadtwep") // dont respawn these
+		remove(self);
+	else
 	if (deathmatch)
 	if (deathmatch == 1 || deathmatch == 3)
 	{
@@ -992,7 +995,6 @@ void() BackpackTouch =
 		return;
 
 	acount = 0;
-	sprint (other, "You get ");
 
 // st ammo pack code
 	if (self.netname == "Ammo Pack") sprint (other, "an Ammo Pack with ");
@@ -1002,13 +1004,13 @@ void() BackpackTouch =
 	if (self.eweapon) // pack has an xweap
 	{
 		acount = 1;
-		sprint (other, "the ");
+//		sprint (other, "the ");
 
 		st1 = self;
 		self = self.eweapon;
-		sprint (other, self.netname);
+//		sprint (other, self.netname);
 
-		x_weapon_touch();
+		x_weapon_touch(); // prints "you got the"
 		self = other;
 		best = W_BestWeapon();
 		self = st1;
@@ -1017,6 +1019,7 @@ void() BackpackTouch =
 	else // ? may want
 	if (self.items)
 	{
+		sprint (other, "You get ");
 // PAINKEEP_START
 		if ((other.items & self.items) == 0 || (self.items == IT_AXE && (other.pk_items & self.pk_items) == 0))
 // PAINKEEP_END
@@ -1250,7 +1253,7 @@ bprint("\n");
 	W_SetCurrentAmmo ();
 };
 
-// fn(xwep_ammo) - handel xweapon ammo issues when they go in the pack
+// fn(xwep_ammo) - handel xweapon & pki ammo issues when they go in the pack
 // also called prior to dead drop
 
 // p - pack / player
@@ -1258,6 +1261,74 @@ bprint("\n");
 
 void(entity e, entity p) xwep_ammo =
 {
+	float ca;
+
+	ca = e.currentammo;
+	if (ca < 1) ca = 1; // for pki tests
+
+// pki
+	if (e.pk_currentitem == PK_IT_GRAVITYWELL)
+	{
+//		if (ca > p.pkplus_egoammo) { ca = p.pkplus_egoammo;		p.ammo_shells = 0; }
+//		else
+		p.pk_gravitywellammo = p.pk_gravitywellammo - ca;
+		if (p.pk_gravitywellammo < 1) p.pk_gravitywellammo = 0;		
+	}
+	else
+	if (e.pk_currentitem == PK_IT_TURRET)
+	{
+//		if (ca > p.pkplus_egoammo) { ca = p.pkplus_egoammo;		p.ammo_shells = 0; }
+//		else
+		p.pk_turretammo = p.pk_turretammo - ca;
+		if (p.pk_turretammo < 1) p.pk_turretammo = 0;		
+	}
+	if (e.pk_currentitem == PK_IT_CANPAB)
+	{
+//		if (ca > p.pkplus_egoammo) { ca = p.pkplus_egoammo;		p.ammo_shells = 0; }
+//		else
+		p.pk_canpabammo = p.pk_canpabammo - ca;
+		if (p.pk_canpabammo < 1) p.pk_canpabammo = 0;		
+	}
+	if (e.pk_currentitem == PK_IT_BEARTRAP)
+	{
+//		if (ca > p.pkplus_egoammo) { ca = p.pkplus_egoammo;		p.ammo_shells = 0; }
+//		else
+		p.pk_beartrapammo = p.pk_beartrapammo - ca;
+		if (p.pk_beartrapammo < 1) p.pk_beartrapammo = 0;		
+	}
+
+// pk plus
+	if (e.pk_currentitem == PKPLUS_IT_EGO)
+	{
+//		if (ca > p.pkplus_egoammo) { ca = p.pkplus_egoammo;		p.ammo_shells = 0; }
+//		else
+		p.pkplus_egoammo = p.pkplus_egoammo - ca;
+		if (p.pkplus_egoammo < 1) p.pkplus_egoammo = 0;		
+	}
+	else
+	if (e.pk_currentitem == PKPLUS_IT_TOMB)
+	{
+//		if (ca > p.pkplus_egoammo) { ca = p.pkplus_egoammo;		p.ammo_shells = 0; }
+//		else
+		p.pkplus_tombammo = p.pkplus_tombammo - ca;
+		if (p.pkplus_tombammo < 1) p.pkplus_tombammo = 0;		
+	}
+	if (e.pk_currentitem == PKPLUS_IT_ACTOR)
+	{
+//		if (ca > p.pkplus_egoammo) { ca = p.pkplus_egoammo;		p.ammo_shells = 0; }
+//		else
+		p.pkplus_actorammo = p.pkplus_actorammo - ca;
+		if (p.pkplus_actorammo < 1) p.pkplus_actorammo = 0;		
+	}
+	if (e.pk_currentitem == PKPLUS_IT_PHONE)
+	{
+//		if (ca > p.pkplus_egoammo) { ca = p.pkplus_egoammo;		p.ammo_shells = 0; }
+//		else
+		p.pkplus_phoneammo = p.pkplus_phoneammo - ca;
+		if (p.pkplus_phoneammo < 1) p.pkplus_phoneammo = 0;		
+	}
+
+// ammo
 	if (e.lip == AMMO_SHELLS)
 	{
 		if (e.currentammo > p.ammo_shells) { e.currentammo = p.ammo_shells;		p.ammo_shells = 0; }
@@ -1327,6 +1398,9 @@ void() DropBackpack =
 		return;
 	}
 
+	if (!self.flags & FL_MONSTER) // monsters always get to throw down
+	if (DEAD_XPACK == 3) return; // code for no packs at all
+
 	newmis = world;
 	if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells + self.ammo_bullet + self.ammo_slug + self.ammo_gaspr + self.ammo_hgrenade + self.pk_explode_ammo))
 		return;	// nothing in it - IDEA: randomize some stuff?
@@ -1337,7 +1411,7 @@ void() DropBackpack =
 	newmis.items = self.weapon;
 	newmis.pk_items = 0;
 
-	if (self.eweapon && DEAD_XPACK ) // xweap was unholstered - see if it goes in pack
+	if (self.eweapon && (DEAD_XPACK == 1)) // xweap was unholstered - see if it goes in pack
 	{
 		newmis.eweapon = self.eweapon;
 		newmis.eweapon.wad = "packwep";
@@ -1348,8 +1422,15 @@ void() DropBackpack =
 																						  // had to do this because laser cannon was getting wrong weapon value & not selectable
 		xwep_ammo(newmis.eweapon, self);
 	}
-	else // standard weapon
+	else
 
+	if (DEAD_XPACK == 2)
+	{
+		newmis.items = 0;
+		newmis.pk_items = 0;
+		newmis.netname = "Pack of ammo";
+	}
+	else // standard weapon
 	if (newmis.items == IT_AXE)
 	{
 		if (self.pk_currentitem == PK_IT_AXE)
@@ -1405,18 +1486,21 @@ void() DropBackpack =
 	newmis.ammo_gaspr = self.ammo_gaspr;
 	newmis.ammo_hgrenade = self.ammo_hgrenade;
 
-	newmis.pk_gravitywellammo = self.pk_gravitywellammo;
-	newmis.pk_turretammo = self.pk_turretammo;
-	newmis.pk_canpabammo = self.pk_canpabammo;
-	newmis.pk_beartrapammo = self.pk_beartrapammo;
-	newmis.pk_explode_ammo = self.pk_explode_ammo;
+	if (DEAD_THROW_PKI != 2)
+	{
+		newmis.pk_gravitywellammo = self.pk_gravitywellammo;
+		newmis.pk_turretammo = self.pk_turretammo;
+		newmis.pk_canpabammo = self.pk_canpabammo;
+		newmis.pk_beartrapammo = self.pk_beartrapammo;
+		newmis.pk_explode_ammo = self.pk_explode_ammo;
 
 // Cataboligne 8.12.9 purify - pk artifacts
-	newmis.pkplus_egoammo = self.pkplus_egoammo;
-	newmis.pkplus_tombammo = self.pkplus_tombammo;
-	newmis.pkplus_actorammo = self.pkplus_actorammo;
-	newmis.pkplus_phoneammo = self.pkplus_phoneammo;
+		newmis.pkplus_egoammo = self.pkplus_egoammo;
+		newmis.pkplus_tombammo = self.pkplus_tombammo;
+		newmis.pkplus_actorammo = self.pkplus_actorammo;
+		newmis.pkplus_phoneammo = self.pkplus_phoneammo;
 // end pk_art
+	}
 
 	newmis.velocity_z = 300;
 	newmis.velocity_x = -100 + (random() * 200);

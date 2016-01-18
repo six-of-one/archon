@@ -325,6 +325,55 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
+	
+	else if (e.scode == MC_HOOK || e.scode == MC_Q2_GRAPPLE || e.scode == MC_Q3_GRAPPLE)
+	{
+		if (TR == FL_TR_WOLF)
+		{
+			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
+			else if (TR_NOT == FL_NOTRN_BG)
+			{
+				if (random() > 0.45)
+					return("w_weapon_machinegun");
+				else
+					return("w_barrel");
+			}
+			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
+			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
+			return("");
+		}
+		if (TR == FL_TR_DOOM)
+		{
+			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
+			else if (TR_NOT == FL_NOTRN_BG)
+			{
+				if (random() > 0.5)
+					return("d_weapon_saw");
+				else if (random() > 0.33)
+					return("d_weapon_supershotgun");
+				else
+					return("d_item_nightvis");
+			}
+			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
+			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
+			return("");
+		}
+		if (TR == FL_TR_QUAKE)
+		{
+			return("weapon_hook");
+		}
+		if (TR == FL_TR_Q2)
+		{
+			return("q2_weapon_grapple");
+		}
+		if (TR == FL_TR_Q3)
+		{
+			return("weapon_grapplinghook");
+		}
+		if (TR == FL_TR_RANDIN) return(mcg);
+		if (TR == FL_TR_RANDOM) return(mcg);
+		if (TR >= FL_TR_REMOVE) return("RMV");
+	}
 
 	else if (e.scode == MC_D_ASHELLS || e.scode == MC_ASHELLS || e.scode == MC_Q2_ASHELLS || e.scode == MC_Q3_ASHELLS)
 	{
@@ -370,9 +419,9 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
-	else if (e.scode == MC_D_AROCKET || e.scode == MC_AROCKETS || e.scode == MC_Q2_AROCKETS || e.scode == MC_Q3_AROCKETS)
+	else if (e.scode == MC_W_MORTARS || e.scode == MC_D_AROCKET || e.scode == MC_AROCKETS || e.scode == MC_Q2_AROCKETS || e.scode == MC_Q3_AROCKETS)
 	{
-		if (TR == FL_TR_WOLF) return("w_weapon_mortar"); // TDO: mortar ammo
+		if (TR == FL_TR_WOLF) return("w_ammo_rock"); // TDO: mortar ammo model
 		if (TR == FL_TR_DOOM)
 		{
 			if (e.scode == MC_D_AROCKET) return("d_ammo_1rocket");
@@ -387,7 +436,7 @@ string(entity e, float TR) map_trans =
 	}
 	else if (e.scode == MC_D_AROCKETS_LG || e.scode == MC_AROCKETS_LG)
 	{
-		if (TR == FL_TR_WOLF) return("w_weapon_mortar"); // IDEA: new ammo
+		if (TR == FL_TR_WOLF) return("w_ammo_rock");
 		if (TR == FL_TR_DOOM) return("d_ammo_rockbox");
 		if (TR == FL_TR_QUAKE) return("item_rockets_lg");
 		if (TR == FL_TR_Q2) return("q2_ammo_rockets");
@@ -398,7 +447,7 @@ string(entity e, float TR) map_trans =
 	}
 	else if (e.scode == MC_Q2_AGRENADES || e.scode == MC_Q3_AGRENADES)
 	{
-		if (TR == FL_TR_WOLF) return("w_weapon_mortar"); // IDEA: new ammo
+		if (TR == FL_TR_WOLF) return("w_ammo_rock");
 		if (TR == FL_TR_DOOM) return("d_ammo_rockbox");
 		if (TR == FL_TR_QUAKE) return("item_rockets");
 		if (TR == FL_TR_Q2) return("q2_ammo_grenades");
@@ -539,9 +588,9 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
-	else if (e.scode == MC_D_STIMPAK || e.scode == MC_HEALTHROT || e.scode == MC_Q2_FIRSTAID || e.scode == MC_Q3_HEALTH)
+	else if (e.scode == MC_W_FOOD || e.scode == MC_D_STIMPAK || e.scode == MC_HEALTHROT || e.scode == MC_Q2_FIRSTAID || e.scode == MC_Q3_HEALTH)
 	{
-		if (TR == FL_TR_WOLF) return("w_heal_medkit"); // TDO: plate of food
+		if (TR == FL_TR_WOLF) return("w_heal_food");
 		if (TR == FL_TR_DOOM) return("d_item_healthstimpak");
 		if (TR == FL_TR_QUAKE) return("item_health_15");
 		if (TR == FL_TR_Q2) return("q2_item_health");
@@ -550,9 +599,9 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
-	else if (e.scode == MC_D_HBOTTLE || e.scode == MC_Q2_STIMPAK || e.scode == MC_Q3_HSMALL)
+	else if (e.scode == MC_W_DOGFOOD || e.scode == MC_D_HBOTTLE || e.scode == MC_Q2_STIMPAK || e.scode == MC_Q3_HSMALL)
 	{
-		if (TR == FL_TR_WOLF) return(""); // TDO: blood (gibs) - dog food
+		if (TR == FL_TR_WOLF) return("w_heal_dogfood"); // TDO: blood (gibs)
 		if (TR == FL_TR_DOOM) return("d_item_healthbottle");
 		if (TR == FL_TR_QUAKE)
 		{
@@ -1695,67 +1744,6 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_cells_lg");
 		if (TR == FL_TR_Q2) return("q2_ammo_cells");
 		if (TR == FL_TR_Q3) return("ammo_bfg");
-		if (TR == FL_TR_RANDIN) return(mcg);
-		if (TR == FL_TR_RANDOM) return(mcg);
-		if (TR >= FL_TR_REMOVE) return("RMV");
-	}
-	
-	else if (e.scode == MC_Q3_GRAPPLE)
-	{
-		if (TR == FL_TR_WOLF)
-		{
-			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
-			else if (TR_NOT == FL_NOTRN_BG)
-			{
-				if (random() > 0.45)
-					return("w_weapon_machinegun");
-				else
-					return("w_barrel");
-			}
-			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcw);
-			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
-		}
-		if (TR == FL_TR_DOOM)
-		{
-			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
-			else if (TR_NOT == FL_NOTRN_BG)
-			{
-				if (random() > 0.5)
-					return("d_weapon_saw");
-				else if (random() > 0.33)
-					return("d_weapon_supershotgun");
-				else
-					return("d_item_nightvis");
-			}
-			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcd);
-			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
-		}
-		if (TR == FL_TR_QUAKE)
-		{
-			return("weapon_grapgun");
-		}
-		if (TR == FL_TR_Q2) // TDO: q2 grapple hook
-		{
-			if (TR_NOT == FL_NOTRN_RMV) return("RMV");
-			else if (TR_NOT == FL_NOTRN_BG)
-			{
-				if (random() > 0.25)
-					return("q2_weapon_machinegun");
-				else if (random() > 0.75)
-					return("q2_weapon_railgun");
-				else
-					return("weapon_hyperblaster");
-			}
-			else if (TR_NOT == FL_NOTRN_RNDIN) return(mcq2);
-			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
-			return("");
-		}
-		if (TR == FL_TR_Q3)
-		{
-			return("weapon_grapplinghook");
-		}
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");

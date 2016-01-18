@@ -299,9 +299,14 @@ void(string cls) item_call =
 
 	else if (cls == "w_art_facesphere") w_art_facesphere();
 	else if (cls == "w_heal_medkit") w_heal_medkit();
+	else if (cls == "w_heal_food") w_heal_food();
+	else if (cls == "w_heal_dogfood") w_heal_dogfood();
 
 	else if (cls == "w_key_g") w_key_g();
 	else if (cls == "w_key_b") w_key_b();
+
+	else if (cls == "w_item_cross") w_item_cross();
+
 	else if (cls == "w_barrel") w_barrel();
 
 // q2
@@ -343,6 +348,11 @@ void(string cls) item_call =
 	else if (cls == "key_pass") key_pass();
 	else if (cls == "key_power_cube") key_power_cube();
 	else if (cls == "key_pyramid") key_pyramid();
+
+	else if (cls == "q2_ctf_haste") q2_ctf_haste();
+	else if (cls == "q2_ctf_regen") q2_ctf_regen();
+	else if (cls == "q2_ctf_resist") q2_ctf_resist();
+	else if (cls == "q2_ctf_stren") q2_ctf_stren();
 
 	else if (cls == "q2_ammo_shells") q2_ammo_shells();
 	else if (cls == "q2_ammo_bullets") q2_ammo_bullets();

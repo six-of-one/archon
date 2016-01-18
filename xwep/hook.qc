@@ -503,31 +503,34 @@ void () HookBehavior =
 
 	// give some damage to entities that take damage
 	if (self.enemy.takedamage)
-	if (HOOK_DMG)
-	if (self.lefty == SEL_S_HOOK) // TDO: check if ltn hook does dmg from gun
+	if (HOOK_DMG || self.dmg)
+	if (self.lefty == SEL_S_HOOK)
 	if (time > self.wait)
 	{
-			T_Damage (self.enemy, self, self.owner, HOOK_DMG); // TDO: by eweap
+		if (HOOK_DMG)
+			T_Damage (self.enemy, self, self.owner, HOOK_DMG);
+		else
+			T_Damage (self.enemy, self, self.owner, self.dmg);
 
-			// when hook hits live entity add blood and sounds
-			if (self.enemy.solid == SOLID_SLIDEBOX)
+		// when hook hits live entity add blood and sounds
+		if (self.enemy.solid == SOLID_SLIDEBOX)
+		{
+			// .ammo_nails flag used only here
+			if (! self.ammo_nails)
 			{
-				// .ammo_nails flag used only here
-				if (! self.ammo_nails)
-				{
-					sound (self, CHAN_AUTO, "shambler/smack.wav", 1, ATTN_NORM);
-					self.ammo_nails = TRUE;
-				}
-				else
-					sound (self, CHAN_AUTO, "blob/land1.wav", 0.8, ATTN_NORM);
-				spray_x = 100 * crandom();
-				spray_y = 100 * crandom();
-				spray_z = 100 * crandom() + 50;
-				SpawnBlood (self.origin, spray, 20);
-				setorigin (self, self.enemy.origin + self.enemy.mins + self.enemy.size * 0.5);
+				sound (self, CHAN_AUTO, "shambler/smack.wav", 1, ATTN_NORM);
+				self.ammo_nails = TRUE;
 			}
+			else
+				sound (self, CHAN_AUTO, "blob/land1.wav", 0.8, ATTN_NORM);
+			spray_x = 100 * crandom();
+			spray_y = 100 * crandom();
+			spray_z = 100 * crandom() + 50;
+			SpawnBlood (self.origin, spray, 20);
+			setorigin (self, self.enemy.origin + self.enemy.mins + self.enemy.size * 0.5);
+		}
 
-			self.wait = time + 0.3;
+		self.wait = time + 0.3;
 	}
 
 	self.velocity = self.enemy.velocity;
@@ -805,10 +808,12 @@ void(entity e) InitiateHook =
 	if (self.eweapon)
 	if (self.eweapon.netname == "Grappling hook")
 	{
+		newhook.eweapon = self.eweapon;
 		newhook.lefty = self.eweapon.lefty;
 //		newhook.mdl = self.eweapon.killtarget;
 		setmodel(newhook, self.eweapon.killtarget);
 		newhook.frame = self.eweapon.dmg_save; // frame in mdl for hook
+		newhook.dmg = self.eweapon.dmg;
 		newhook.noise1 = self.eweapon.noise1; // these override - so they must alway be set for eweap
 //		newhook.noise3 = self.eweapon.noise3; // continous run sound - ltn hook
 		newhook.target = self.eweapon.target;

@@ -149,6 +149,7 @@ entity(entity e) vw_chain =
 		{
 //			f.model = "";
 			f.vwepent = world;
+			if (f.wad != "deadtwep") // pack deal
 			if (f.wad != "packwep") // pack deal
 				remove(f);
 			rck = TRUE;
@@ -180,6 +181,8 @@ entity(entity e) vw_chain =
 };
 
 // fn([pk]vload) - load up vwepent for an ent
+
+float(float bt, string md) wepbit_mcode;
 
 // e - ent loading to
 // fl - flag of wep to load
@@ -226,6 +229,7 @@ entity(entity e, float fl) vload =
 	if (fl != IT_AXE && !VW) md = VW_DEFGUN;
 	setmodel(tr.vwepent, md);
 
+	tr.vwepent.mcode = wepbit_mcode(fl, "Q");
 /*
 	if (DARKPLACES) // TEST - trying movement deal - movetype 12
 	{
@@ -278,6 +282,9 @@ void (entity e, float fl) pkvload =
 	tr.mdl = md;
 	if (!VW) md = VW_DEFGUN;
 	setmodel(tr, md);
+
+	tr.mcode = wepbit_mcode(fl, "PK2");
+
 };
 
 // fn (vchk) - check for a given item & return ent pointer if found
@@ -356,6 +363,7 @@ void(entity e, float cd) viswep_ld =
 			tr = tr.vwepent;
 //			pr.mdl = "";
 			pr.vwepent = world;
+			if (pr.wad != "deadtwep") // dead threw deal
 			if (pr.wad != "packwep") // pack deal
 				remove(pr);
 		}
@@ -406,6 +414,7 @@ void(entity e, float cd) viswep_ld =
 			{
 				pr = tr.vwepent;
 				tr.vwepent = world;
+				if (tr.wad != "deadtwep") // dead threw deal
 				if (tr.wad != "packwep") // pack deal
 					remove(tr);
 				rmv = TRUE;
@@ -425,6 +434,7 @@ void(entity e, float cd) viswep_ld =
 //				pr.vwepent = tr.vwepent;
 				pr = tr.vwepent;
 				tr.vwepent = world;
+				if (tr.wad != "deadtwep") // dead threw deal
 				if (tr.wad != "packwep") // pack deal
 					remove(tr);
 				rmv = TRUE;
@@ -844,6 +854,94 @@ vector(entity hent) grap_vw_adj =
 	return(vwa);
 */
 };
+
+// fn(DeadThrowWeps) - handel throwing weapons out on death
+
+void(entity e, entity p) xwep_ammo;
+void(entity e, string cl) item_call_save;
+void () painkeep_weapon_touch;
+
+//	bit				rule
+// 0			no weps thrown
+// 1			throw weaps, none worky
+// 2			throw weaps, some no worky
+// 4			throw weaps, all worky
+// 8			randomize throwing (every wep is not thrown)
+// 16		throw weps when gibbed
+
+// self = player / bot
+// pack (if exists) is backpack just thrown out - need to load ammo for retrievable weps
+
+// $frame dthrow1 dthrow2 dthrow3 dthrow4 dthrow5
+
+void(entity pack) DeadThrowWeps =
+{
+	local entity e;
+	local float w, pkid, pkw, pkpid;
+
+	e = self.vwepent;
+
+	if (!e || !DEAD_THROW) return;
+
+	if (!DEAD_THROW_PKI || DEAD_THROW_PKI == 2)
+		pkid = PKID;
+
+	pkw = PK_IT_GRAPGUN + PK_IT_AIRGUN + PK_IT_CLIGHT;
+	pkpid = PKPLUS_IT_EGO + PKPLUS_IT_TOMB + PKPLUS_IT_ACTOR;
+
+	while (e)
+	{
+		w = FALSE;
+		while (pkid & e.pk_currentitem) e = e.vwepent;
+		if (e.wad != "packwep") // pack deal
+		{
+			e.wad = "deadtwep"; // mark it for save from remover code
+			e.movetype = MOVETYPE_TOSS;
+			item_eject(e, ' 210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
+			e.think = SUB_Remove; // TDO: fade or melt
+			if (DEAD_THROW_TIME) e.nextthink = time + DEAD_THROW_TIME;
+			if (DEAD_THROW & 4) w = TRUE;
+			else if (DEAD_THROW & 2)
+			{
+				if (random() < DEAD_THROW_LIVERND) w = TRUE;
+			}
+			if (DEAD_THROW & 8)
+			if (random() < DEAD_THROW_CNTRND) 
+			{
+				e.wad = "";
+				e.model = "";
+				w = FALSE;
+			}
+
+//			if (vhead.vv_draw != (void()) 0) // TDO: some of these might have a separate dead throw framing - or not
+//			else
+			if (e.vv_draw == (void()) 0) // not the alternate vw animation - so it should have deadthrow frames
+			{
+				e.frame = $dthrow1 + rint(random() * 4);
+			}
+			if (w)
+			{
+				e.classname = item_by_mcode(e.mcode);
+				xwep_ammo(e, pack); // adjust ammo in pack for retrievable wep
+				e.pk_touch = x_weapon_touch;
+				if (e.mcode != MC_Q3_HOLDMEDKIT && e.mcode != MC_Q3_HOLDTELE) // dont do for holdable
+				if (PKID & e.pk_currentitem)
+				{
+					if (pkpid & e.pk_currentitem) e.pk_touch = pkplus_touch;
+					else e.pk_touch = painkeep_touch;
+					e.pk_items = e.pk_currentitem;
+				}
+				if (e.mcode != MC_HOOK && e.mcode != MC_Q2_GRAPPLE && e.mcode != MC_Q3_GRAPPLE) // dont do for hook
+				if (pkw & e.pk_currentitem) e.pk_touch = painkeep_weapon_touch;
+				e.touch = painkeep_touch;
+				e.solid = SOLID_TRIGGER;
+//				bot_item_linx(e); // *bot - item tie in
+			}
+		}
+		e = e.vwepent;
+	}
+};
+
 
 // in game editor - increment
 

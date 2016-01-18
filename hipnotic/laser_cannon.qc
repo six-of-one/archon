@@ -68,7 +68,7 @@ void() HIP_LaserTouch =
 		if (other.solid == SOLID_SLIDEBOX) spawn_touchblood (self.dmg);
 		T_Damage (other, self, self.lastvictim, self.dmg);
 		}
-	else if ((self.cnt < 0) || (random()<0.15)) // no more bouncy - flight also over
+	else if ((self.cnt < 0) || (random() < LASER_RND_END)) // no more bouncy - flight also over
 		{
 		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
@@ -149,9 +149,14 @@ void(vector org, vector vec, float light1, string sd) HIP_LaunchLaser =
 		newmis.dmg = EWEAP.dmg;
 		newmis.attack_finished = time + EWEAP.lefty;
 	}
+	if (LASER_FLY > 0)
+		newmis.attack_finished = time + LASER_FLY;
 	newmis.lastvictim = self;
 	newmis.count = 0;
-	newmis.cnt = 2 + random() * 3; // total bounce - IDEA: pk var?
+	newmis.cnt = 2 + random() * 3; 
+	if (LASER_BOUNCE > 0)
+		newmis.cnt = LASER_BOUNCE + random() * 3; 
+
 	if (light1) newmis.effects = EF_DIMLIGHT;
 
 	if (EWEAP) newmis.target = EWEAP.target; // bouncy sound

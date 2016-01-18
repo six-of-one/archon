@@ -231,7 +231,7 @@ void() weapon_laser_gun =
 	self.dmg = 18;
 	self.dmg_save = 1;
 	self.dmg_take = 1; // shot cnt
-	self.lefty = 5; // laser flight time - TDO: pk var later
+	self.lefty = 5; // laser flight time - override by LASER_FLY
 	self.wait = RSP_TIME;
 	
 // appearances
