@@ -255,6 +255,7 @@ float IMP_DROPI_ACT				= 54; // drop inventory - activate impulse
 // flag masks - how cube knows what to offer
 
 float MORPH_ARCHON;
+float MORPH_NOCUBE; // cant get morph cubes
 
 // morph bit flags
 

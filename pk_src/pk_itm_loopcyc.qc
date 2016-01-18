@@ -129,8 +129,28 @@ void() loopcyc_think =
 	}
 	else
 		e = self.theowner;
+
 	while (e)
 	{
+
+
+
+if (1)
+if (!e.flags & FL_ITEM)
+{
+bprint("***     warning: loopcyc - no FL_ITEM set on = ");
+bprint(item_ident(e));
+bprint(" - searched: ");
+bprint(mmc);
+bprint(" - code: ");
+bprint(ftos(self.delay));
+bprint("\n");
+e.button12 = 65536+random();
+}
+
+
+
+
 		if (!e.scode) e.scode = e.mcode;
 		if (!self.cnt) self.cnt = e.mcode;
 		if (cvar("pk_cyc_halt") || rn)

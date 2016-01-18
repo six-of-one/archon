@@ -664,14 +664,41 @@ if (!self.mask_x)
 	if (self.pk_currentitem & PK_IT_CARY)  f = FALSE; // all can get pki (but cthon)
 	if (other.mask_x & CB_HUMAN) f = FALSE; // humans are ignoring the test - TDO: remove this
 	if (other.model == "progs/cthon.mdl") f = TRUE; // cthon get nada
-	if (self.wad == "morph_cube") f = FALSE; // all can get cube
+	if (self.wad == "morph_cube")
+	{
+		if (MORPH_NOCUBE & other.mask_x) f = TRUE;
+		else f = FALSE; // all others can get cube
+	}
+
+
+
+// testing touch select for morphs
+if (WARNING)
+//if (self.classname == "Backpack")
+{
+	bprint("---------------- ** WARNING - in touch: dont allow: ");
+	bprint(ftos(f));
+	bprint(" item: ");
+	bprint(item_ident(self));
+	bprint(" mask_x: ");
+	bprint(ftos(self.mask_x & other.mask_x));
+	bprint(" CARY: ");
+	bprint(ftos(self.pk_currentitem & PK_IT_CARY));
+	bprint(" hooman: ");
+	bprint(ftos(other.mask_x & CB_HUMAN));
+	bprint("\n");
+}
+
+
+
 
 	if (f) // make sure morph can collect this
 	{
 		if (e) e.classname = e.wad;
 
+		if (self.wad != "morph_cube")
 		if (!other.mask_x & CB_HUMAN)
-		if (!other.mask_x & CB_GREMLIN)
+		if (!other.mask_x & CB_GREMLIN) // needs more quals
 		if (self.items & other.builtin) // touch activated special morph builtin
 		if (!self.items & other.items)
 		{

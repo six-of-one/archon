@@ -45,14 +45,15 @@ void() morph_setup =
 // monster bits - original + mod expansion ( scourge, gremlin, super vore, vomitus )
 	MONSTER_MASK = CB_M_ARMY + CB_M_FISH + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
 						CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE + CB_M_GREMLIN + CB_M_VOMIT + CB_M_SPIKEMINE;
-
+//
 // bonus monster bits
 	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA + CB_M_BOSSMAN + CB_M_CLING + CB_M_HEXIMP;
 
 // note - no fish, shubs or cthon
 	MONSTER_Q1 = CB_M_ARMY + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
 						CB_M_TARBABY;
-
+//
+	MORPH_NOCUBE = CB_CHAOS + CB_ORDER + CB_SHAPESHIFT + CB_WRAITH;
 };
 
 
@@ -1228,7 +1229,8 @@ float(string mm) set_char_num =
 
 void() morph_pack_rethink =
 {
-	self.touch = BackpackTouch;
+	self.touch = painkeep_touch;
+	self.pk_touch = BackpackTouch;
 
 	self.nextthink = time + BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
 	self.think = SUB_Remove;

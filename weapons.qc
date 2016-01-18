@@ -527,9 +527,30 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	e1 = e2 = world;
 
 	traceline (p1, p2, FALSE, self);
+
+// hit nothing - spark it & go - this looks pretty cool
+	if (!trace_ent && pointcontents(p2) == CONTENT_SOLID)
+	{
+			WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
+			WriteByte (MSG_BROADCAST,TE_GUNSHOT);
+			WriteCoord (MSG_BROADCAST,trace_endpos_x);
+			WriteCoord (MSG_BROADCAST,trace_endpos_y);
+			WriteCoord (MSG_BROADCAST,trace_endpos_z);
+			return;		
+	}
+
 	if (trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK - 7.29.13 - because dp makes this blood
+			particle (trace_endpos, '0 0 100', 225, damage*4);
+		else
+		{
+			WriteByte (MSG_BROADCAST,SVC_TEMPENTITY); // sparks - but we might want better (see what HD does)
+			WriteByte (MSG_BROADCAST,TE_GUNSHOT);
+			WriteCoord (MSG_BROADCAST,trace_endpos_x);
+			WriteCoord (MSG_BROADCAST,trace_endpos_y);
+			WriteCoord (MSG_BROADCAST,trace_endpos_z);
+		}
 		T_Damage (trace_ent,from,from,damage);
 		if ((self.classname == "player") || (self.classname == "pk*bot"))
 		{
@@ -542,7 +563,16 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	traceline (p1 + f, p2 + f, FALSE, self);
 	if (trace_ent != e1 && trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK - 7.29.13
+			particle (trace_endpos, '0 0 100', 225, damage*4);
+		else
+		{
+			WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
+			WriteByte (MSG_BROADCAST,TE_GUNSHOT);
+			WriteCoord (MSG_BROADCAST,trace_endpos_x);
+			WriteCoord (MSG_BROADCAST,trace_endpos_y);
+			WriteCoord (MSG_BROADCAST,trace_endpos_z);
+		}
 		T_Damage (trace_ent,from,from,damage);
 	}
 	e2 = trace_ent;
@@ -550,7 +580,16 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	traceline (p1 - f, p2 - f, FALSE, self);
 	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && ! (trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT)) )
 	{
-		particle (trace_endpos, '0 0 100', 225, damage*4);
+		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK - 7.29.13
+			particle (trace_endpos, '0 0 100', 225, damage*4);
+		else
+		{
+			WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
+			WriteByte (MSG_BROADCAST,TE_GUNSHOT);
+			WriteCoord (MSG_BROADCAST,trace_endpos_x);
+			WriteCoord (MSG_BROADCAST,trace_endpos_y);
+			WriteCoord (MSG_BROADCAST,trace_endpos_z);
+		}
 		T_Damage (trace_ent,from,from,damage);
 	}
 };
