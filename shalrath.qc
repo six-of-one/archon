@@ -346,3 +346,44 @@ void() monster_shalrath =
 	self.nextthink = time + 0.1 + random ()*0.1;
 
 };
+
+//=================================================================
+
+/*QUAKED monster_supervore (1 0 0) (-32 -32 -24) (32 32 48) Ambush
+*/
+void() monster_supervore =
+{
+	if (deathmatch)
+	{
+		remove(self);
+		return;
+	}
+	precache_model2 ("progs/shalrath.mdl");
+	precache_model2 ("progs/h_shal.mdl");
+	precache_model2 ("progs/v_spike.mdl");
+
+	precache_sound2 ("shalrath/attack.wav");
+	precache_sound2 ("shalrath/attack2.wav");
+	precache_sound2 ("shalrath/death.wav");
+	precache_sound2 ("shalrath/idle.wav");
+	precache_sound2 ("shalrath/pain.wav");
+	precache_sound2 ("shalrath/sight.wav");
+
+	self.solid = SOLID_SLIDEBOX;
+	self.movetype = MOVETYPE_STEP;
+
+	setmodel (self, "progs/shalrath.mdl");
+	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
+	self.health = 800; // wowsers - NOTE: might need tweaked down a bit
+
+	self.th_stand = s_shal_stand;
+	self.th_walk = s_shal_walk1;
+	self.th_run = s_shal_run1;
+	self.th_die = shalrath_die;
+	self.th_pain = shalrath_pain;
+	self.th_missile = s_shal_attack1;
+
+	self.think = walkmonster_start; // NOTE: map tips states this can cause problems with new (hip spawn_* style code)!
+	self.nextthink = time + 0.1 + random ()*0.1;
+
+};

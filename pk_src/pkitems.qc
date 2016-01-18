@@ -37,15 +37,18 @@
 
 void () SUB_regen =
 {
-	if (self.wad == "deadtwep") // dont respawn these
-	{
-		remove(self);
-		return;
-	}
-
 	if (Q_100)
 	{
 		q100_SUB_regen();
+		return;
+	}
+
+	if (self.classname == "dyn_item") // just in case catch - cubes prob. come here
+	{
+		if (WARNING)
+			bprint("*** - WARNING - Removed a dyn item in SUB_regen!\n");
+		pk_ditems = pk_ditems - 1;
+		remove(self);
 		return;
 	}
 
@@ -681,6 +684,8 @@ bprint(")\n");
 	}
 	else if (self.pk_items == PK_IT_CANPAB)
 	{
+		e = vchk(IT_AXE, PK_IT_CANPAB, other.vwepent);
+		if (e.eweapon) return; // holdable medkit
 		// check ammo
 		if (other.pk_canpabammo >= PK_CANPABAMMO_MAX)
 		{
@@ -999,7 +1004,7 @@ void() BackpackTouch =
 	if (other.health <= 0)
 		return;
 
-	acount = 0;
+	acount = 0; // this is just for commas - first entry has none
 
 // st ammo pack code
 	if (self.netname == "Ammo Pack") sprint (other, "an Ammo Pack with ");
@@ -1026,7 +1031,7 @@ void() BackpackTouch =
 	{
 		sprint (other, "You get ");
 // PAINKEEP_START
-		if ((other.items & self.items) == 0 || (self.items == IT_AXE && (other.pk_items & self.pk_items) == 0))
+		if ((other.items & self.items) == 0 || (self.items == IT_AXE && (other.pk_items & self.pk_items) == 0 || self.pk_items == PK_IT_AXE))
 // PAINKEEP_END
 		{
 			acount = 1;
@@ -1223,7 +1228,10 @@ void() BackpackTouch =
 
 	sprint (other, "\n");
 // backpack touch sound
-	sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
+	if (self.noise)
+		sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+	else
+		sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 
 // st ammo pack code
@@ -1267,6 +1275,8 @@ bprint("\n");
 void(entity e, entity p) xwep_ammo =
 {
 	float ca;
+
+	if (!p) return;
 
 	ca = e.currentammo;
 	if (ca < 1) ca = 1; // for pki tests
@@ -1496,11 +1506,6 @@ void() DropBackpack =
 		if (newmis.items == IT_AXE)
 			newmis.pk_items = self.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
 		newmis.netname = swep_id(newmis.items, self);
-/*		if (!self.eweapon)
-		{
-			e = vchk(self.weapon, self.pk_currentitem, other.vwepent);
-			if (e) e.wad = "packwep";
-		}*/
 	}
 
 	newmis.ammo_shells = self.ammo_shells;
@@ -1690,7 +1695,10 @@ void() pk_placeitem =
 	}
 	else
 	{
-		item_eject(self, ' 340 340 300');
+		if (self.punchangle != v0)
+			item_eject(self, self.punchangle);
+		else
+			item_eject(self, ' 340 340 300');
 	}
 
 // handle extra item stuff

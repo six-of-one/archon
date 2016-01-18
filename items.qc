@@ -147,7 +147,7 @@ void () q100_item_health =
 			setmodel (self,"maps/b_bh100.bsp");
 			self.noise = "items/r_item2.wav";
 			self.healamount = 100;
-			self.healtype = 2;
+			self.healtype = HEAL_MEGA; // Cataboligne - 9.8.11 - needed to play nice with q100 / pk100 translate from other genre
 		}
 		else
 		{
@@ -171,7 +171,8 @@ void () q100_health_touch =
 	if (other.classname != "player")
 			return;
 
-	if (self.healtype == 2) // Megahealth?  Ignore max_health...
+//	if (self.healtype == 2) // this is different on default health now
+	if (self.healtype == HEAL_MEGA) // Megahealth?  Ignore max_health...
 	{
 		if (other.health >= 250)
 			return ;
@@ -198,7 +199,7 @@ void () q100_health_touch =
 	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
-	if (self.healtype == 2)
+	if (self.healtype == HEAL_MEGA) // Cataboligne - 9.8.11 - needed to play nice with q100 / pk100 translate from other genre
 	{
 		other.items = other.items | IT_SUPERHEALTH;
 		self.nextthink = time + 5;
@@ -224,7 +225,6 @@ void () item_megahealth_rot =
 
 	if (other.health > other.max_health)
 	{
-		if (self.noise4 != Q3_DET) // q3 already has rot fn
 		other.health = other.health - 1;
 		self.nextthink = time + 1;
 		return ;
@@ -236,7 +236,7 @@ void () item_megahealth_rot =
 
 	if (deathmatch == 1 || deathmatch == 3)	// deathmatch 2 is silly old rules // *pk more dm modes
 	{
-		self.nextthink = time + 20;
+		self.nextthink = time + 20; // NOTE: ignores poss x diff like q3
 		self.think = SUB_regen;
 	}
 };
@@ -292,6 +292,8 @@ void () armor_touch =
 		bit = self.items;
 		type = self.style;
 		value = self.currentammo + other.armorvalue;
+		Q3_HAH_TMP = other.health;
+		Q3_HAA_TMP = other.armorvalue;
 		if (self.volume > 0) // max only applies to non inf
 		{
 			if (value > self.volume) value = self.volume;
@@ -311,6 +313,15 @@ void () armor_touch =
 // end NON q100
 	if (other.armortype*other.armorvalue >= type*value)
 		return ;
+
+// q3 ha rot conflict fix
+	if (self.noise4 != Q3_DET)
+	{
+		Q3_HAH_TMP = 0;
+		Q3_HAA_TMP = self.currentammo;
+		q3_ha_rot(other, -1);
+	}
+// end q3 fix
 
 	other.armortype = type;
 	other.armorvalue = value;
@@ -460,7 +471,6 @@ void () weapon_touch =
 	best = W_BestWeapon ();
 	self = stemp;
 
-	if (self.wad != "deadtwep")
 	if (deathmatch == 3 || deathmatch == 2 || coop) // *pk - more dm modes
 		leave = 1;
 	else

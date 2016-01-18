@@ -40,6 +40,11 @@ void () pkplus_touch =
 	}
 	if (self.pk_items == PKPLUS_IT_PHONE)
 	{
+	local entity e;
+
+		e = vchk(IT_AXE, PKPLUS_IT_PHONE, other.vwepent);
+		if (e.eweapon) return; // holdable tele
+
 		if (other.pkplus_phoneammo >= PKPLUS_PHONEAMMO_MAX) return ;
 		other.pkplus_phoneammo = (other.pkplus_phoneammo + 1);
 	}

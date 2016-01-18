@@ -1574,6 +1574,8 @@ float(float mcv) valid_wep_mcode =
 
 // fn(wepbit_mcode) - given a bit and map mode, provide map code
 
+// Cataboligne - 9.7.11 - added ammo type & default wep counts for dead threw
+
 // bt - bit for weapon
 // md - mode of map
 
@@ -1849,6 +1851,127 @@ void () weapon_hook =
 	self.target2 = "hook/chain2.wav"; // in + out
 	self.targetname = "weapons/ax1.wav"; // launch snd
 	self.punchangle_x = 0.85; // damp
+
+};
+
+// cubes - open 'er up and see what it is
+
+// self is player
+// c = self.eweapon = cube
+
+void(entity e, float trvs) item_translate;
+
+void() painkeep_cube_use =
+{
+	local vector v1;
+	local entity c;
+
+	c = self.eweapon;
+
+	if (c.wad != "pk_cube")
+	{
+		if (WARNING)	bprint("*** WARNING - in cube use and dont have a cube!\n");
+		self.eweapon = world;
+		self.weapon = W_BestWeapon();
+		self.pk_currentitem = W_BestPKWeapon();
+		W_SetCurrentAmmo();
+		return;
+	}
+
+	v1 = self.origin - c.origin;
+	if (vlen(v1) > PK_CUBE_DIST)
+	{
+		sprint(self, "You are too far away to open your cube.\n");
+		return;
+	}
+	sound (self, CHAN_WEAPON, c.noise, 1, ATTN_NORM);
+	c.think = SUB_Null;
+	c.owner = world;
+
+	c.wad = "item_painkeep_gwell";
+	self = c;
+	self.pk_touch = painkeep_touch;
+	item_translate(self, FL_TR_RANDOM);
+//	item_call(self.wad);
+	self.punchangle = ' 110 110 180'; // for ejector
+};
+
+//:-( cube owner didnt open it
+
+void() abandoned_cube =
+{
+	local entity c;
+	c = self;
+	c.effects = 0;
+
+	if (c.owner)
+	{
+		self = self.owner;
+		sprint(self, "Your cube was left alone too long and abanoned you. You rat.\n");
+		c.owner = world;
+
+		self.eweapon = world;
+		self.weapon = W_BestWeapon();
+		self.pk_currentitem = W_BestPKWeapon();
+		W_SetCurrentAmmo();
+	}
+};
+
+// TDO: can only own one cube
+
+void() painkeep_cube_touch =
+{
+	if (other.classname != "player") // *bot - done in master touch fn
+	{
+		grap_checkIfGrap();
+		return ;
+	}
+
+	if (PK_100 || Q_100)
+	{
+		remove(self);
+		return;
+	}
+
+	if (self.owner)
+	if (self.owner.eweapon == self) // TEST: make sure eweapon is cleared when only holding std weps
+		return;
+
+	if (other.eweapon)
+	if (other.eweapon.wad == "pk_cube")
+	{
+		sprint(other, "You already own a Painkeep Cube - you must use it or change weapons.\n");
+		return;
+	}
+
+	sprint(other, "You own this Painkeep Cube! hit fire to open - you must be in range\n");
+	sprint(other, "If you select another weapon the cube will be free...\n");
+	self.owner = other;
+	other.weapon = 0;
+	other.eweapon = self;
+	self.effects = self.effects | EF_DIMLIGHT;
+
+	self.think = abandoned_cube;
+	self.nextthink = time + 120;
+	
+}
+
+void() pk_cube =
+{
+	setmodel(self, "progs/pk_cube.bsp");
+	self.netname = "Painkeep Cube";
+	self.touch = painkeep_touch;
+	self.pk_touch = painkeep_cube_touch;
+	self.noise = "items/r_item2.wav";
+	self._attack = painkeep_cube_use; // fire button to use
+	self._fr_attack = SUB_Null; // fire button to use
+	self.attack_finished = 3;
+
+	self.punchangle = ' 210 210 240'; // for ejector
+//	item_eject(self, ' 210 210 240'); // done by pk_place_item with punchangle set
+
+	setsize (self,'-16 -16 0','16 16 32');
+	StartItem ();
 
 };
 

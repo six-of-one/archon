@@ -1,5 +1,6 @@
 //====================================================================
 //====================================================================
+//====================================================================
 //
 // SWINGING GRAPPLING HOOK			by: Perecli Manole AKA Bort
 //
@@ -219,6 +220,13 @@ r(*) defs
 
 ====================================================================
 
+Cataboligne - 9.8.11 - adapted control cfg files -
+
+exec hook_control.cfg = give mouse wheel control of reel in / out
+exec hook_release.cfg = return mouse wheel to weap select up / down
+
+if these are in the mod dir they will be run when starting / releasing the hook if it is a standard hook
+
 */
 
 /*
@@ -255,6 +263,8 @@ void () DropHook =
 	// remove all hook flags
 	self.owner.hook = 0;
 
+	if (self.lefty == SEL_S_HOOK )
+		localcmd("exec hook_release.cfg\n");
 /*
 	if (hook_ver == CHAOS_VER)
 	{
@@ -277,7 +287,6 @@ void () DropHook =
 		linkptr = nextptr;
 	}
 	remove( self );
-
 };
 
 // think to set laser hook beam len (and lightning hook)
@@ -453,11 +462,13 @@ void () MaintainLinks =
 		{
 			setorigin (currlink, p_self_origin + chainunit * (linkstart + CHAIN_LINK_LEN / 2 ));
 			currlink.frame = 9 + CHAIN_FRAME_ADJ;
+			if (self.model ==  "progs/v_spike.mdl") currlink.frame = 0;
 		}
 		else
 		{
 			setorigin (currlink, p_self_origin + chainunit * (linkstart + (chainlen - linkstart) / 2 ));
 			currlink.frame = floor((chainlen - linkstart) / CHAIN_LINK_LEN * 10) + CHAIN_FRAME_ADJ;
+			if (self.model ==  "progs/v_spike.mdl") currlink.frame = 0;
 		}
 	}
 
@@ -542,13 +553,25 @@ void () HookBehavior =
 	gs = self.ammo_shells;
 	////////////////////////////////////////////////
 	if ( (self.owner.hook & GROW_ON) )	
-	{  gs = gs + 2;
+	{
+		gs = gs + 2;
 		if (gs > GROW_RATE) gs = GROW_RATE;
+		if (self.movetarget)
+		{
+			self.movetarget.nextthink = time + HOOK_TIME;
+			self.movetarget.classname ="";
+		}
 	}
 //	else if ( (self.owner.hook & SHRINK_ON) ) 
 	else if ( (self.owner.hook & SHRINK_ON) || (self.owner.hook & MODE2)) // Cataboligne MOD 9.10.3
-	{	gs = gs - 4;
+	{
+		gs = gs - 4;
 		if (gs < SHRINK_RATE) gs = SHRINK_RATE;
+		if (self.movetarget)
+		{
+			self.movetarget.nextthink = time + HOOK_TIME;
+			self.movetarget.classname ="";
+		}
 	}
 	else
 	{
@@ -764,6 +787,29 @@ void() LaunchHook =
 //--------------------------------------------------------------------
 // Initiates the hook
 //--------------------------------------------------------------------
+
+
+// implement hook timeouts
+
+void() hook_timeout =
+{
+	if ( !(self.owner.hook & HOOK_ON) ||
+			self.owner.solid == SOLID_NOT	)
+	{
+		remove(self);
+	}
+	else if (self.classname == "hook_no_urto") // no urto, but there is a hook timeout
+	{
+		self.nextthink = time + HOOK_TIME;
+	}
+	else
+	{
+		self = self.enemy;
+		DropHook();
+		remove(self.movetarget); // rid of timeout self
+	}
+};
+
 void(entity e) InitiateHook =
 {
 	local entity newhook;
@@ -771,7 +817,7 @@ void(entity e) InitiateHook =
 
 	makevectors (e.v_angle);
 
-	hk = "progs/hook.mdl";
+	hk = "progs/v_spike.mdl";
 
 /*
 	if (hook_ver == CHAOS_VER)
@@ -838,6 +884,7 @@ void(entity e) InitiateHook =
 			newhook.target2 = ""; // in + out
 			newhook.targetname = "q2_snd/lhook_l.wav"; // launch snd			
 			newhook.punchangle_x = 0.5;
+			self.hook = self.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
 		}
 		if (newhook.lefty == SEL_LTN_HOOK)
 		{
@@ -849,9 +896,12 @@ void(entity e) InitiateHook =
 			newhook.targetname = "q3_snd/gauntrun.wav"; // launch snd
 			newhook.noise3 = "q3_snd/gauntrun.wav"; // continous run sound - ltn hook
 			newhook.punchangle_x = 0.5;
+			self.hook = self.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
 		}
 //		if (newhook.lefty == SEL_S_HOOK)
 	}
+
+	if (newhook.model != "progs/null.mdl") setsize (newhook,'-4 -4 -4','4 4 4');
 
 	newhook.avelocity = '0 0 500';
 
@@ -869,6 +919,31 @@ void(entity e) InitiateHook =
 //	if (hook_ver == CHAOS_VER)
 //	if (e.morphnum == IMP_MCTHON)
 //		newhook.frame = 1;
+	if (newhook.lefty == SEL_S_HOOK )
+		localcmd("exec hook_control.cfg\n");
+
+// setup hook timeout
+	local float f;
+	local string md;
+	
+	if (self.impulse == I_HOOK) // mode one, fire & wait
+	{
+		f = HOOK_URTO;
+		if (f <= 0 && HOOK_TIME > 0)
+		{
+			md = "hook_no_urto";
+			f = HOOK_TIME; // no urto, but there is a std timeout - set up ent
+		}
+	}
+//	if (self.impulse == I_HOOK2) 
+	else f = HOOK_TIME;
+
+	newhook.movetarget = world;
+	if (f > 0)
+	{
+		newhook.movetarget = chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, md, "", SUB_Null, f, hook_timeout, SUB_Null, self, world);
+		newhook.movetarget.enemy = newhook;
+	}
 };
 
 
@@ -1023,10 +1098,11 @@ void() hook_dmg_check =
 		if (i1 < i2)
 		{
 			// head impacts
+			if (random() < 0.2) // this happens way too often IDEA: server var?
 			if (self.finaldest_z > 500 &&
 				 self.velocity_z < 10)
 			{
-				T_Damage (self, world, world, 15);
+				T_Damage (self, world, world, 10);
 //				if (self.morphnum == IS_HUMAN)
 					sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
 //				else

@@ -149,7 +149,6 @@ entity(entity e) vw_chain =
 		{
 //			f.model = "";
 			f.vwepent = world;
-			if (f.wad != "deadtwep") // pack deal
 			if (f.wad != "packwep") // pack deal
 				remove(f);
 			rck = TRUE;
@@ -363,7 +362,6 @@ void(entity e, float cd) viswep_ld =
 			tr = tr.vwepent;
 //			pr.mdl = "";
 			pr.vwepent = world;
-			if (pr.wad != "deadtwep") // dead threw deal
 			if (pr.wad != "packwep") // pack deal
 				remove(pr);
 		}
@@ -414,7 +412,6 @@ void(entity e, float cd) viswep_ld =
 			{
 				pr = tr.vwepent;
 				tr.vwepent = world;
-				if (tr.wad != "deadtwep") // dead threw deal
 				if (tr.wad != "packwep") // pack deal
 					remove(tr);
 				rmv = TRUE;
@@ -434,7 +431,6 @@ void(entity e, float cd) viswep_ld =
 //				pr.vwepent = tr.vwepent;
 				pr = tr.vwepent;
 				tr.vwepent = world;
-				if (tr.wad != "deadtwep") // dead threw deal
 				if (tr.wad != "packwep") // pack deal
 					remove(tr);
 				rmv = TRUE;
@@ -855,9 +851,20 @@ vector(entity hent) grap_vw_adj =
 */
 };
 
+// dead threw protos
+
+void(entity e, entity p) xwep_ammo;
+void(entity e, string cl) item_call_save;
+void () painkeep_weapon_touch;
+string(float itm, entity e) swep_id;
+
 // fn(DeadThrew) - create drop ent
 
-void(entity e) DeadThrew =
+// e - viswep entity
+// md - model string
+// p - pack ent if exists
+
+void(entity e, string md, entity p) DeadThrew =
 {
 	newmis = spawn();
 
@@ -866,80 +873,76 @@ void(entity e) DeadThrew =
 
 	if (e.eweapon)
 	{
-		newmis.eweapon = e.eweapon;
+		newmis.eweapon = e;
+		newmis.noise = e.noise;
 		newmis.eweapon.wad = "packwep";
-		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
 		newmis.eweapon.model = "";
+		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
 		newmis.netname = newmis.eweapon.netname;
-		newmis.eweapon.items = e.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
-																						  // had to do this because laser cannon was getting wrong weapon value & not selectable
-		xwep_ammo(newmis.eweapon, e.;
-	}
-	else
-
-	if (DEAD_XPACK == 2)
-	{
-		newmis.items = 0;
-		newmis.pk_items = 0;
-		newmis.netname = "Pack of ammo";
+		newmis.eweapon.items = e.weapon;
+		xwep_ammo(newmis.eweapon, p);
 	}
 	else // standard weapon
 	{
-		if (newmis.items == IT_AXE)
-			newmis.pk_items = e.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
-		newmis.netname = swep_id(newmis.items, e.;
+		newmis.netname = swep_id(newmis.items, e);
+		if (!e.pk_currentitem)
+		{
+			newmis.lip = e.lip = wepbit_mcode(e.weapon, "QA"); // NOTE: set in viswep ent
+			newmis.currentammo = e.currentammo = wepbit_mcode(e.weapon, "QAC");
+			xwep_ammo(newmis, p);
+// ammo
+			if (newmis.items == IT_LIGHTNING) newmis.ammo_cells = newmis.currentammo;
+			else if (newmis.items == IT_ROCKET_LAUNCHER) newmis.ammo_rockets = newmis.currentammo;
+			else if (newmis.items == IT_GRENADE_LAUNCHER) newmis.ammo_rockets = newmis.currentammo;
+			else if (newmis.items == IT_SUPER_NAILGUN) newmis.ammo_nails = newmis.currentammo;
+			else if (newmis.items == IT_NAILGUN) newmis.ammo_nails = newmis.currentammo;
+			else if (newmis.items == IT_SUPER_SHOTGUN) newmis.ammo_shells = newmis.currentammo;
+			else if (newmis.items == IT_SHOTGUN) newmis.ammo_shells = newmis.currentammo;
+		}
+		else
+		{
+//			if (newmis.items == IT_AXE)
+			newmis.pk_currentitem = newmis.pk_items = e.pk_currentitem; // Cataboligne - 9.6.11 - fix a bug in the pk1.1 source!
+
+			if (newmis.pk_items == PK_IT_CLIGHT)
+			{
+				newmis.lip = e.lip = wepbit_mcode(IT_LIGHTNING, "QA");
+				newmis.ammo_cells = newmis.currentammo = e.currentammo = wepbit_mcode(IT_LIGHTNING, "QAC") * 2;
+			}
+
+// pki
+			if (e.pk_currentitem == PK_IT_GRAVITYWELL) newmis.pk_gravitywellammo = 1;
+			else if (e.pk_currentitem == PK_IT_CANPAB) newmis.pk_canpabammo = 1;
+			else if (e.pk_currentitem == PK_IT_TURRET) newmis.pk_turretammo = 1;
+			else if (e.pk_currentitem == PK_IT_BEARTRAP) newmis.pk_beartrapammo = 1;
+// pk plus
+			else if (e.pk_currentitem == PKPLUS_IT_PHONE) newmis.pkplus_phoneammo = 1;
+			else if (e.pk_currentitem == PKPLUS_IT_EGO) newmis.pkplus_egoammo = 1;
+			else if (e.pk_currentitem == PKPLUS_IT_TOMB) newmis.pkplus_tombammo = 1;
+			else if (e.pk_currentitem == PKPLUS_IT_ACTOR) newmis.pkplus_actorammo = 1;
+
+			xwep_ammo(newmis, p);
+			if (newmis.pk_items & PKID) newmis.noise = "misc/pickup/tone2.wav";
+		}
 	}
 
-	newmis.ammo_shells = e.ammo_shells;
-	newmis.ammo_nails = e.ammo_nails;
-	newmis.ammo_rockets = e.ammo_rockets;
-	newmis.ammo_cells = e.ammo_cells;
-
-// new ammo
-	newmis.ammo_bullet = e.ammo_bullet;
-	newmis.ammo_slug = e.ammo_slug;
-	newmis.ammo_gaspr = e.ammo_gaspr;
-	newmis.ammo_hgrenade = e.ammo_hgrenade;
-
-	if (DEAD_THROW_PKI != 2)
-	{
-		newmis.pk_gravitywellammo = e.pk_gravitywellammo;
-		newmis.pk_turretammo = e.pk_turretammo;
-		newmis.pk_canpabammo = e.pk_canpabammo;
-		newmis.pk_beartrapammo = e.pk_beartrapammo;
-		newmis.pk_explode_ammo = e.pk_explode_ammo;
-
-// Cataboligne 8.12.9 purify - pk artifacts
-		newmis.pkplus_egoammo = e.pkplus_egoammo;
-		newmis.pkplus_tombammo = e.pkplus_tombammo;
-		newmis.pkplus_actorammo = e.pkplus_actorammo;
-		newmis.pkplus_phoneammo = e.pkplus_phoneammo;
-// end pk_art
-	}
-
-	newmis.velocity_z = 300;
-	newmis.velocity_x = -100 + (random() * 200);
-	newmis.velocity_y = -100 + (random() * 200);
-
-	newmis.flags = FL_ITEM;
+//	newmis.flags = FL_ITEM; // not making these large
 	newmis.solid = SOLID_TRIGGER;
 	newmis.movetype = MOVETYPE_TOSS;
-	setmodel (newmis, "progs/backpack.mdl");
-	setsize (newmis, '-16 -16 0', '16 16 56');
+	setorigin(newmis, e.origin);
+	setmodel (newmis, md);
+	setsize (newmis, '-12 -12 0', '12 12 56');
 	newmis.touch = BackpackTouch;
 
-	newmis.nextthink = time + 120;	// remove after 2 minutes - TDO: cvar + stdev
-	newmis.think = SUB_Remove;
+	item_eject(newmis, ' 210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
+	newmis.think = SUB_Remove; // TDO: fade or melt
+	if (DEAD_THROW_TIME) newmis.nextthink = time + DEAD_THROW_TIME;
+
 	AddToSplash(newmis); // *pk - splash tossed items
 
 };
 
 // fn(DeadThrowWeps) - handel throwing weapons out on death
-
-void(entity e, entity p) xwep_ammo;
-void(entity e, string cl) item_call_save;
-void () painkeep_weapon_touch;
-string(float itm, entity e) swep_id;
 
 //	bit				rule
 // 0			no weps thrown
@@ -957,7 +960,7 @@ string(float itm, entity e) swep_id;
 void(entity pack) DeadThrowWeps =
 {
 	local entity e, sv;
-	local float w, pkid, pkw, pkpid;
+	local float w, pkid, pd;
 
 	e = self.vwepent;
 
@@ -966,50 +969,85 @@ void(entity pack) DeadThrowWeps =
 	if (!DEAD_THROW_PKI || DEAD_THROW_PKI == 2)
 		pkid = PKID;
 
-	pkw = PK_IT_GRAPGUN + PK_IT_AIRGUN + PK_IT_CLIGHT;
-	pkpid = PKPLUS_IT_EGO + PKPLUS_IT_TOMB + PKPLUS_IT_ACTOR;
+//	pkw = PK_IT_GRAPGUN + PK_IT_AIRGUN + PK_IT_CLIGHT;
+//	pkpid = PKPLUS_IT_EGO + PKPLUS_IT_TOMB + PKPLUS_IT_ACTOR;
 
 	while (e)
 	{
-		w = FALSE;
+		pd = w = FALSE;
 		while (pkid & e.pk_currentitem) e = e.vwepent;
 
-		if (e.wad != "packwep") // pack deal
-		if (pack.eweapon || (e.weapon != pack.items))
+		if (pack)
 		{
-			e.wad = "deadtwep"; // mark it for save from remover code
-			e.movetype = MOVETYPE_TOSS;
-			item_eject(e, ' 210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
-			e.think = SUB_Remove; // TDO: fade or melt
-			if (DEAD_THROW_TIME) e.nextthink = time + DEAD_THROW_TIME;
+			if (e.wad != "packwep") // pack deal
+			if (pack.eweapon || (e.weapon != pack.items)) pd = TRUE;
+		}
+		else
+			pd = TRUE;
+
+
+
+
+bprint("throw loop check: ");
+bprint(e.netname);
+bprint("\n");
+
+
+
+
+		if (pd)
+		{
 			if (DEAD_THROW & 4) w = TRUE;
+
 			else if (DEAD_THROW & 2)
 			{
 				if (random() < DEAD_THROW_LIVERND) w = TRUE;
 			}
+
 			if (DEAD_THROW & 8)
 			if (random() < DEAD_THROW_CNTRND) 
-			{
-				e.wad = "";
-				e.model = "";
-				w = FALSE;
-			}
+				pd = FALSE;
 
-//			if (vhead.vv_draw != (void()) 0) // TDO: some of these might have a separate dead throw framing - or not
+			if (pd)
+			{
+//			if (vhead.vv_draw != (void()) 0) // TDO: dead throw framing or animation for these
 //			else
-			if (e.vv_draw == (void()) 0) // not the alternate vw animation - so it should have deadthrow frames
-			{
-				e.frame = $dthrow1 + rint(random() * 4);
-			}
-			if (w)
-			{
-				e.classname = item_by_mcode(e.mcode);
-				if (!e.eweapon && !e.pk_currentitem)
+				if (e.vv_draw == (void()) 0) // not the alternate vw animation - so it should have deadthrow frames
 				{
-					e.lip = wepbit_mcode(e.weapon, "QA");
-					e.currentammo = wepbit_mcode(e.weapon, "QA");
+					e.frame = $dthrow1 + rint(random() * 4);
 				}
+
+				if (!w) // not live
+				{
+					DeadThrew(e, e.model, world);
+					newmis.touch = SUB_Null;
+
+
+
+bprint("dead thr wep: ");
+bprint(newmis.netname);
+bprint("\n");
+
+
+
+				}
+				else												{
+					DeadThrew(e, e.model, pack);
+
+
+
+bprint("live thr wep: ");
+bprint(newmis.netname);
+bprint("\n");
+}
+
+
+
+				newmis.frame = e.frame;
+			}
+/*
 				xwep_ammo(e, pack); // adjust ammo in pack for retrievable wep
+				e.classname = item_by_mcode(e.mcode);
 				e.pk_touch = x_weapon_touch;
 				if (e.mcode != MC_Q3_HOLDMEDKIT && e.mcode != MC_Q3_HOLDTELE) // dont do for holdable
 				if (PKID & e.pk_currentitem)
@@ -1024,8 +1062,8 @@ void(entity pack) DeadThrowWeps =
 				if (!e.eweapon) e.netname = swep_id(e.weapon, e);
 				e.touch = painkeep_touch;
 				e.solid = SOLID_TRIGGER;
+*/
 //				bot_item_linx(e); // *bot - item tie in
-			}
 		}
 		e = e.vwepent;
 	}

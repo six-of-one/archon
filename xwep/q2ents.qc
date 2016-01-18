@@ -934,9 +934,7 @@ void () q2_weapon_grapple =
 	self.pk_currentitem = PK_IT_GRAPGUN; // grap replacement
 
 	self.dmg = 5;
-/*
-	self.dmg_save = 0;
-*/
+
 	self.style = FL_MELEE_WEP;
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 

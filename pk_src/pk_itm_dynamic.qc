@@ -87,7 +87,7 @@ void(string cls) item_call =
 
 	f = world;
 	rd = random();
-	if (self.classname != "dyn_item")
+	if (self.classname != "dyn_item") // because explod box translantions & randomizes need faked
 	{
 		rd = 1;
 
@@ -220,6 +220,8 @@ void(string cls) item_call =
 	else if (cls == "item_pkplus_tomb") item_pkplus_tomb();
 	else if (cls == "item_pkplus_actor") item_pkplus_actor();
 	else if (cls == "item_pkplus_phone") item_pkplus_phone();
+
+	else if (cls == "pk_cube") pk_cube();
 
 // ctf
 	else if (cls == "weapon_hook") weapon_hook();
@@ -741,7 +743,16 @@ float(float cn, entity e, string op) ammo_con =
 
 void() dyn_rem =
 {
-	remove(self.enemy);
+	if (self.enemy)
+	{
+		if (self.enemy.wad == "pk_cube")
+		if (self.enemy.owner)
+		{
+			self.nextthink = time + PK_CUBE_TIME;
+			return;
+		}
+		remove(self.enemy);
+	}
 	remove(self);
 	pk_ditems = pk_ditems - 1;
 }
@@ -853,6 +864,10 @@ void() dyn_spawn =
 	sv = spawn();
 	sv.enemy = self;
 	sv.think = dyn_rem;
+
+	if (self.wad == "pk_cube")
+		sv.nextthink = time + fabs(PK_CUBE_TIME);
+	else
 	sv.nextthink = time + PK_DYNTO + crandom() * 55;
 };
 
@@ -1094,7 +1109,7 @@ void() func_dynitem =
 
 	if (PK_100 || Q_100)
 	{
-	remove(self);
+//	remove(self); // let these hang out in those modes, mode could get turned off
 	return;
 	}
 
@@ -1133,6 +1148,13 @@ void() func_dynitem =
 			v1 = stdv_rndloc(self.origin, 0, self.lip);
 			setorigin(e, v1);
 		}
+		if (self.netname == "pk_cube_maker") // makin cubes
+		{
+			e.wad = "pk_cube";
+			self.wait = fabs(PK_CUBE_TIME);
+			if (PK_CUBE_TIME < 0) self.delay = fabs(PK_CUBE_TIME) * 0.3;
+		}
+		else
 		if (self.dest1_x) // weapon + q items admin bit codes here
 		{
 			sb = e.cnt = bit_cnt(self.dest1_x, TRUE);
@@ -1163,6 +1185,47 @@ void() func_dynitem =
 			e.wad = ammo_by_bit(e.cnt); // classname to spawn
 		}
 	}
+};
+
+// cube handler fn - called from server var loop
+
+void() pk_cube_handle =
+{
+	local entity e, p;
+	local float f;
+
+	if (PK_CUBE <= 0 && cvar("pk_cubes") > 0)
+	{
+		f =  cvar("pk_cubes");
+		if (WARNING)
+		if (f > 10) bprint("*** Warning - pk cube: making more than 10 cubes!\n");
+
+		while (f > 0)
+		{
+			e = spawn();
+
+			e.classname = "func_dynitem";
+			e.netname = "pk_cube_maker";
+			e.wait = fabs(PK_CUBE_TIME);
+			if (PK_CUBE_TIME < 0) e.delay = fabs(PK_CUBE_TIME) * 0.3;
+			e.think = func_dynitem;
+			e.nextthink = time + e.wait * 0.1 + random() * 10;
+			
+			f = f - 1;
+		}
+		bprint("***  Painkeep Cubes will spawn on this map - keep an eye out\n");
+	}
+	if (PK_CUBE > 0 && cvar("pk_cubes") <= 0)
+	{
+		e = find(world,netname,"pk_cube_make");
+		while (e)
+		{
+			p = e;
+			e = find(e,netname,"pk_cube_make");
+			remove (p);
+		}
+	}
+
 };
 
 // randomize any item

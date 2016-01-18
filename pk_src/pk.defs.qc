@@ -87,7 +87,7 @@ void(float msk, float bt) bit_print;
 float pk_mapcmd;
 float pk_mapcfg;
 //string ADMINSRVCMD			= "_srvcmd\n"; // server vars alias cmd
-//float pk_srvcmd				= 1; 		// TOD: admin option later
+//float pk_srvcmd				= 1; 		// TDO: admin option later
 float pk_srvcfg;
 
 void() pk_srvcmd_set;
@@ -433,6 +433,7 @@ float EF_FULLBRIGHT			= 512;
 // dead rules
 
 float DEAD_THROW;
+float DEAD_THROW_ARMOR;
 float DEAD_THROW_PKI;
 float DEAD_THROW_LIVERND = 0.5; // chance a dead threw wep is touchable under rule 2
 float DEAD_THROW_CNTRND = 0.5; // chance a dead threw wep is NOT under rule 8
@@ -504,7 +505,7 @@ float DEF_REMAMMO				= 512; // bit set in def_weap - if normal ammo set - remove
 float PK_ITEM_MASK = 4094; // mask off non items bits
 float WEP_MASK = 4351; // mask off other items bits for def weap bits 1 + ... + 128 + 4096
 
-float DEF_AMMO_BULLETS; // initial ammo defaults (on {re}-spawn) if set
+float DEF_AMMO_BULLETS; // initial ammo defaults if set
 float DEF_AMMO_SHELLS;
 float DEF_AMMO_CELLS;
 float DEF_AMMO_ROCKETS;
@@ -516,15 +517,15 @@ float DEF_AMMO_BASE = 25; // if no ammo given for a default wep, this is it
 
 // X (extra) weapon stuff
 
-string MAP_MODE; // genre of loaded map (if detected) Q quake (default), Q2 quake 2, Q3 quake 3, D doom, W wolf, PK painkeep
-//.string CHR_MODE; // genre of player - to be based on morph code
-
 float DEF_X_ITEMS; // x bit flags
 
 // end defaults
 
 
 // inits - by genre and map
+
+.string char_mode; // genre of player character - set by selection to vars morph states
+string MAP_MODE; // genre of loaded map (if detected) Q quake (default), Q2 quake 2, Q3 quake 3, D doom, W wolf, PK painkeep
 
 float INIT_CON; // control flag
 
@@ -756,8 +757,10 @@ void() q3_precache;
 void() q3_suspend;
 void() q3_weapon_shotgun;
 void() q3_item_health;
-void(entity e, float v) q3_ha_rot;
 void() q3_bob_height;
+// health - armor rot
+void(entity e, float v) q3_ha_rot;
+float Q3_HAH_TMP, Q3_HAA_TMP; // global temps
 
 // hipnotic
 
@@ -1184,6 +1187,13 @@ float GRAP_ROPE				= 9;
 
 float VW_HARP_FRADJ        = 20; // frame adjust from run / stand for a fired harp
 
+
+// pk cubes
+
+float PK_CUBE;
+float PK_CUBE_DIST			= 132; // must be this close to cube to open, heh heh
+float PK_CUBE_TIME; // freq of respawn
+void() pk_cube_handle;
 
 // can o p&b
 .float copb_timeout;

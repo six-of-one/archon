@@ -776,6 +776,7 @@ void() pk_liveupd =
 	PK_MAX_LIVENT = cvar("pk_max_livent");
 
 	DEAD_THROW = cvar("sv_dead_throw");
+	DEAD_THROW_ARMOR = cvar("sv_dead_throw_armor");
 	DEAD_THROW_PKI = cvar("sv_dead_throw_pki");
 	DEAD_XPACK = cvar("sv_dead_xpack");
 	DEAD_GIBPACK = cvar("sv_dead_gibpack");
@@ -783,6 +784,14 @@ void() pk_liveupd =
 	X_CHGLVL = cvar("pk_xchgl");
 
 	Q2_SILENCE = cvar("q2_silence");
+
+// pk cubes
+	PK_CUBE_TIME = cvar("pk_cubes_time");
+	if (PK_CUBE  != cvar("pk_cubes")) 
+	{
+		pk_cube_handle();
+		PK_CUBE = cvar("pk_cubes");
+	}
 
 // turrets
 	if (PK_TUR_AMMO != cvar("pk_tur_ammo") || 
@@ -1091,6 +1100,11 @@ void() pk_srvcmd_set =
 	PK_DYNTO = 120;
 	pic_tsk = 0;
 
+// pk cubes
+
+	PK_CUBE = 0;
+	PK_CUBE_TIME = 60;
+	
 // map translations
 
 	TR_Q1DEF = 1;
@@ -1179,6 +1193,7 @@ void() pk_srvcmd_set =
 	PK_MAX_LIVENT = 256; // guessed - need research into where slowdown starts
 
 	DEAD_THROW = 0;
+	DEAD_THROW_ARMOR = 0;
 	DEAD_THROW_PKI = 0;
 	DEAD_XPACK = 1;
 	DEAD_GIBPACK = 1;
@@ -1335,6 +1350,7 @@ void() pk_srvcmd_set =
 		registercvar("sv_dead_xpack", "1"); // 0 = no xweap in pack (std op), 1 = include extra weapon held in pack, 2 = no weaps at all, just ammo, 3 = no packs (no applicable to monsters)
 		registercvar("sv_dead_throw", "4");// TEST: "0"); // 0 = no weps thrown, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 4 = throw weaps, all worky, 8 = randomize throwing (every wep is not thrown), 16 = throw weps when gibbed
 		registercvar("sv_dead_throw_pki", "1");// TEST: "0"); // 0 = no painkeep items thrown - all in pack, 1 = throw painkieep items, 2 = pain keep items gone
+		registercvar("sv_dead_throw_armor", "1");// TEST: "0"); // 0 = no armor tossed, 1 = throw armor
 		registercvar("sv_dead_gibpack", "1"); // 0 = dont throw a back pack when gibbed, 1 = throw back pack always, 2 = throw packs in singleplayer
 		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at ready weapon
 
@@ -1412,6 +1428,9 @@ void() pk_srvcmd_set =
 		registercvar("pk_init_7", "0");	// extra
 
 // pk items
+
+		registercvar("pk_cubes", "1"); // TEST: "0"); // randomly spawn this many companion cubes on a map
+		registercvar("pk_cubes_time", "60"); // cube timeout - respawn every this many secs
 
 		registercvar("pk_bt_time", "90"); // time for beartraps to live
 		registercvar("pk_bt_follow", "15"); // time for beartraps to hold on & bite

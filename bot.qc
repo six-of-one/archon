@@ -681,7 +681,7 @@ void(entity e) bot_item_linx =
 	{
 		e.state = BOT_TOUCHED;
 		e.th_weight = healthweight;
-		if (e.healtype == 2) // || e.model == "maps/b_bh100.bsp"
+		if (e.healtype == HEAL_MEGA || e.healtype == HEAL_SOUL) // || e.model == "maps/b_bh100.bsp"
 		{
 			e.th_cache = cachepowerup;
 			e.th_update = updatepowerup;	

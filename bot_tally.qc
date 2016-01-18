@@ -145,7 +145,7 @@ float (entity e) healthweight =
 	{
 		weight = (MUST_HAVE - 1);
 	}
-	else if (e.healtype == 2)
+	else if (e.healtype == HEAL_MEGA || e.healtype == HEAL_SOUL)
 	{
 		weight = MUST_HAVE;
 	}

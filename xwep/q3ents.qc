@@ -15,9 +15,6 @@
 float Q3_DEFW					= 123;
 float Q3_DEFA					= 100;
 
-float Q3_MAX					= 200;
-float Q3_HA_MAX				= 100;
-
 // ammo skins in mdl
 float q3_bfg_amsk				= 0;
 float q3_rail_amsk			= 1;
@@ -64,10 +61,13 @@ float Q3_AMMO_WAIT			= 40;
 float Q3_HEAL_WAIT			= 35;
 float Q3_ARM_WAIT				= 25;
 
+float Q3_HA_MAX				= 100;  // health and armor base max
+
 float Q3_HEALLG				= 0; // skin ? - not needed for now
 float Q3_HEALMD				= 1;
 float Q3_HEAL5					= 2;
 float Q3_HEALM					= 3;
+float Q3_MAX_HEAL				= 200;
 
 float Q3_HEALLG_A				= 50;
 float Q3_HEALMD_A				= 25;
@@ -1149,49 +1149,118 @@ void() q3_ammo_slugs =
 
 // armors + healths
 
+// Cataboligne - 9.7.11 - fix for conflict between q3 & other ex-up health & armor conflicts
+
 void() q3_ha_rot_thk =
 {
-	local float f;
+	local float f, tv1, tv2;
+
+	if (self.owner.rune_flag & RUNE_FLG_RG) // no rot when regen rune is set
+	{
+		self.nextthink = time + 1;
+		return;
+	}
 
 	f = FALSE;
-	if (self.owner.health > Q3_HA_MAX)
+	tv1 = tv2 = Q3_HA_MAX; // Cat - conflict fixes
+	if (self.health > Q3_HA_MAX) tv1 = self.health;
+	if (self.armorvalue > Q3_HA_MAX) tv2 = self.armorvalue;
+
+	if (self.owner.health > tv1)
 	{
 		self.owner.health = self.owner.health - 1;
 		f = TRUE;
 	}
-	if (self.owner.rune_flag & RUNE_FLG_RG) // no rot when regen rune is set
-		f = TRUE;
-	else
-	if (self.owner.armorvalue > Q3_HA_MAX)
+
+	if (self.owner.armorvalue > tv2)
 	{
 		armorsave_rev(self.owner);
 		self.owner.armorvalue = self.owner.armorvalue - 1;
 		f = TRUE;
 	}
-	if (f)
+
+	if (f && self.super_time > time)
 		self.nextthink = time + 1;
 	else
+	{
+		if (self.enemy)
+		{
+			if (self.enemy.wait)
+				self.enemy.nextthink = time + self.enemy.wait;
+			else
+				self.enemy.nextthink = time + 20;
+			self.enemy.think = SUB_regen;
+		}
+		self.owner.items = self.owner.items - (self.owner.items & IT_SUPERHEALTH);
 		remove(self);
+	}
+};
+
+float Q3_ROT_TMAX = 300; // 5 mins - max time a rot can hang around
+
+// in case rot gets lost, we put this back
+
+void() q3_megahealth_restore =
+{
+	self.nextthink = time + 1;
+	self.think = SUB_regen;
 };
 
 void(entity e, float v) q3_ha_rot =
 {
 	local entity f;
+	local float ta;
 
-	if (v > Q3_HA_MAX)
+	if (!e) return;
+
+	ta = fabs(v);
+	newmis = world;
+
+	if (v > Q3_HA_MAX || v < 0)
 	{
 		f = find(world,classname,"q3_rot");
 		while (f)
 		{
 			if (f.owner == e)
 			{
+				if (v < 0)
+				{
+					if (Q3_HAH_TMP > 0) f.health = f.health + Q3_HAH_TMP;
+					if (Q3_HAA_TMP > 0) f.armorvalue = f.armorvalue + Q3_HAA_TMP;
+
+					if (f.health > Q3_MAX_HEAL || f.owner.health < Q3_HA_MAX)
+					if (f.armorvalue > Q3_MAX_HEAL || f.owner.armorvalue < Q3_HA_MAX) // gone beyond capacity of rot - lose it
+					{
+						f.owner.items = f.owner.items - (f.owner.items & IT_SUPERHEALTH);
+						if (f.enemy)
+						{
+							if (f.enemy.wait)
+								f.enemy.nextthink = time + f.enemy.wait;
+							else
+								f.enemy.nextthink = time + 20;
+							f.enemy.think = SUB_regen;
+						}
+						remove(self);
+					}
+					Q3_HAH_TMP = Q3_HAA_TMP = 0;
+				}
+				else
 				f.nextthink = time + 5; // reset with new acq
 				return;
 			}
 			f = find(f,classname,"q3_rot");
 		}
-		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "q3_rot", "", SUB_Null, 5, q3_ha_rot_thk, SUB_Null, e, world);
+
+		if (v > Q3_HA_MAX)
+		{
+			newmis = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "q3_rot", "", SUB_Null, 5, q3_ha_rot_thk, SUB_Null, e, world);
+			newmis.super_time = time + Q3_ROT_TMAX;
+			newmis.health = newmis.armorvalue = Q3_HA_MAX;
+			if (Q3_HAH_TMP > Q3_HA_MAX) newmis.health = Q3_HAH_TMP;
+			if (Q3_HAA_TMP > Q3_HA_MAX) newmis.armorvalue = Q3_HAA_TMP;
+		}
 	}
+	Q3_HAH_TMP = Q3_HAA_TMP = 0;
 };
 
 
@@ -1304,7 +1373,7 @@ void() q3_item_health_small =
 	self.noise = "q3_snd/s_health.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.skin = Q3_HEAL5;
-	self.volume = 200; // max add
+	self.volume = Q3_MAX_HEAL; // max add
 	if (!self.wait) self.wait = RSP_TIME * 1.1666;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -1383,7 +1452,7 @@ void() q3_item_health_mega =
 
 	self.healamount = Q3_HEALM_A;
 	self.healtype = HEAL_MEGA;
-	self.volume = 200; // max add
+	self.volume = Q3_MAX_HEAL; // max add
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
 	setmodel(self, "progs/q3_health.mdl");
@@ -1655,6 +1724,8 @@ bprint("got here \n");
 		other = self;
 		T_Heal(other, 100, 0); // first get 100
 		T_Heal(other, 25, 1); // then take to 125 - we cant just add 125 here
+		Q3_HAH_TMP = 0;
+		Q3_HAA_TMP = other.armorvalue;
 		q3_ha_rot(other, other.health); // make sure we rot the extra 25
 
 		if (self.eweapon.noise3)
@@ -1736,7 +1807,11 @@ void() holdable_medkit =
 
 void() holdable_teleporter =
 {
-	item_pkplus_phone();
+	if (!self.netname)
+	{
+		item_pkplus_phone();
+		self.class_select = "q3_item";
+	}
 
 	if (!ULOK3)
 	if (!GENERATIONS)

@@ -123,6 +123,7 @@ void() hip_precache =
 	precache_model ("progs/v_lasercannon.mdl");
 	precache_model ("progs/v_mjolnir.mdl");
 	precache_model ("progs/vw_mjolnir.mdl");
+	precache_model ("progs/vw_lasercannon.mdl");
 	precache_model ("progs/laser_m.mdl");
 	precache_model ("progs/rubble_m.mdl");
 
@@ -233,12 +234,13 @@ void() weapon_laser_gun =
 	self.dmg_take = 1; // shot cnt
 	self.lefty = 5; // laser flight time - override by LASER_FLY
 	self.wait = RSP_TIME;
+	self.vv_draw = vw_range_base;
 	
 // appearances
    setmodel (self, "progs/g_lasercannon.mdl");
 	setsize (self, '-16 -16 0', '16 16 56');
 	self.weaponmodel = "progs/v_lasercannon.mdl";
-	self.vwepmdl = "progs/vw_qgun.mdl"; // TDO: laser cannon vw
+	self.vwepmdl = "progs/vw_lasercannon.mdl";
 
 //	self.noise2 = "weapons/lasercannon/.wav";
 	self.noise3 = "weapons/lasercannon/laserg.wav";

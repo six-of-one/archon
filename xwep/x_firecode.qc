@@ -64,7 +64,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.chaosweptime = self.chaosweptime;
 	e.endtime = self.endtime;
 	e.duration = self.duration;
-	e.noise = self.noise;
+	e.noise = self.noise; // grabbed
 	e.noise1 = self.noise1; // holdable tele
 	e.noise2 = self.noise2;
 	e.noise3 = self.noise3;
@@ -108,7 +108,6 @@ void() x_weapon_touch =
 	best = W_BestWeapon ();
 	self = e;
 
-	if (self.wad != "deadtwep")
 	if (deathmatch == 2 || deathmatch == 3 || coop)
 		leave = 1;
 	else
@@ -212,6 +211,7 @@ void() x_weapon_touch =
 	else if (self.classname == "d_weapon_saw" ||
 		self.classname == "c_weapon_shovel" ||
 		self.classname == "q2_weapon_blaster" ||
+		self.classname == "c_weapon_deepsleep" ||
 		self.classname == "weapon_gauntlet" ||
 		self.classname == "weapon_grapplinghook" ||
 		self.classname == "q2_weapon_grapple" ||
@@ -225,18 +225,6 @@ void() x_weapon_touch =
 		if (PK_100 && PK_100_OBJERR) objerror("x_weapon_touch: unknown classname");
 		else
 		{
-			if (self.wad == "deadtwep")
-			{
-					e = vchk(self.weapon, self.pk_currentitem, other.vwepent);
-					weapon_touch();
-					if (!self.model)
-					{
-						if (!e)
-							e = x_wep_store(e, self.weapon, 0);
-						remove(self);
-					}
-					return;
-			}
 			if (WARNING)
 			{
 			bprint("\n*** warning:\nx_weapon_touch: unknown classname (");
@@ -1009,6 +997,9 @@ void() player_pistol1 =
 		self.frame = $axatt2;
 		EWEAP = self.eweapon;
 		SuperDamageSound();
+		if (EWEAP.mdl == "progs/vw_deepsleep.mdl")
+			X_FireBlaster();
+		else
 		if (EWEAP.mdl == "progs/vw_q2_blst.mdl")
 			X_FireBlaster();
 		else

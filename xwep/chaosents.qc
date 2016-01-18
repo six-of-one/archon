@@ -34,6 +34,9 @@ void() chaos_precache =
 	precache_model ("progs/vw_flamer2.mdl");
 	precache_model ("progs/vw_gascyl.mdl");
 	precache_model ("progs/vw_qgun.mdl");
+	precache_model ("progs/g_deepsleep.mdl");
+	precache_model ("progs/vw_deepsleep.mdl");
+	precache_model ("progs/pk_cube.bsp");
 
 	precache_sound ("sound/flm/ft_hum.wav");
 	precache_sound ("sound/flm/ft_fire.wav");
@@ -109,6 +112,39 @@ void() c_weapon_shovel =
 	self.noise3 = "player/axhit2.wav"; // hit wall &| solid
 //	self.noise4 = "zombie/z_hit.wav"; // hit flesh
 
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "x_item";
+};
+
+void () c_weapon_deepsleep =
+{
+	q100_weapon_supershotgun();
+
+	self.netname = "Deepsleep gun";
+
+	self.touch = x_weapon_touch;
+	self._attack = SUB_Null;
+	self._fr_attack = player_pistol1;
+
+	self.currentammo = 0;
+	self.aflag = IGN_INV; // swap with axe
+	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE; // axe replacement
+	self.lip = AMMO_NONE;
+	self.attack_finished = 0.7;
+	self.dmg = 30;
+	self.dmg_save = 0;
+	self.dmg_take = 1; // shot cnt
+	self.style = FL_MELEE_WEP;
+	self.wait = RSP_TIME;
+
+	self.vv_draw = vw_melee_base;
+
+	setmodel (self, "progs/g_deepsleep.mdl");
+	self.weaponmodel = "progs/v_q2_blst.mdl";
+	self.vwepmdl = "progs/vw_deepsleep.mdl";
+	self.noise3 = "q2_snd/blastf1a.wav";
+	self.target = "q2_snd/lashit.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 };
@@ -206,6 +242,9 @@ void() health_touch =
 
 //	if (other.state == IMP_MWRAITH) return(TRUE); // wraith never get health
 
+	Q3_HAH_TMP = other.health;
+	Q3_HAA_TMP = other.armorvalue;
+
 	if (self.healtype > HEAL_NORM) // Soul, Mega, health bottle  Ignore max_health...
 	{
 		if (self.volume > 0)
@@ -257,6 +296,12 @@ void() health_touch =
 	{
 		q3_ha_rot(other, other.health);
 	}
+	else if (self.healtype > HEAL_NORM)
+	{
+		Q3_HAH_TMP = self.healamount;
+		Q3_HAA_TMP = 0;
+		q3_ha_rot(other, -1);
+	}
 //		if (other.flags & FL_ONFIRE)
 //		{
 //			if (self.healamount > 99) other.flags = other.flags - (other.flags & FL_ONFIRE); // any mega heal over 99 puts out fire
@@ -282,10 +327,19 @@ void() health_touch =
 	// Megahealth = rot down the player's super health
 	if (self.healtype == HEAL_MEGA)
 	{
-		self.model = string_null;
-		self.solid = SOLID_NOT;
-		
 		other.items = other.items | IT_SUPERHEALTH;
+
+		if (self.noise4 == Q3_DET)
+		{
+			if (newmis) newmis.enemy = self; // so real q3 rot can regen this when done
+			if (self.wait)
+				self.nextthink = time + self.wait * 2;
+			else
+				self.nextthink = time + 80;
+			self.think = q3_megahealth_restore; // just in case q3 rot gets lost
+			return;
+		}
+		
 		self.nextthink = time + 5;
 		self.think = item_megahealth_rot;
 		self.owner = other;
@@ -742,6 +796,10 @@ zz=3;
 
 // e - player / bot to handle
 
+// bit information is continuously maintained in player / bot .mcode & .scode
+// scode - bits to remove from items so xweap are not converted into regular weps
+// mcode - map code of unholstered xweap to reload after level change
+
 void (entity e) xw_parm =
 {
 	local entity tr;
@@ -884,6 +942,32 @@ void(entity e) set_defaults =
 			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); //  && MAP_MODE == "HP") set_xweap(e, INIT_6_HP); // goes to all for now
 			if (INIT_7 > 0) set_xweap(e, INIT_7);
 		}
+		else if (INIT_CON & FL_INIT_CGEN_BIT) // genre by char using bits
+		{
+			if (e.char_mode == "W") xw_bit_loop(e, INIT_0_W);
+			if (e.char_mode == "D") xw_bit_loop(e, INIT_1_D);
+			if (e.char_mode == "Q") xw_bit_loop(e, INIT_2_Q);
+//			if (e.char_mode == "PK") xw_bit_loop(e, INIT_3_PK); // not going to have pk char mode - maybe some other morph class
+			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
+			if (e.char_mode == "Q2") xw_bit_loop(e, INIT_4_Q2);
+			if (e.char_mode == "Q3") xw_bit_loop(e, INIT_5_Q3);
+	//		if (e.char_mode == "") xw_bit_loop(INIT_7);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); // 2 extra map code weps
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+		else if (INIT_CON & FL_INIT_CGEN_MC) // genre by char using code - 1 per + 2 for all
+		{
+			if (INIT_0_W > 0 && e.char_mode == "W") set_xweap(e, INIT_0_W);
+			if (INIT_1_D > 0 && e.char_mode == "D") set_xweap(e, INIT_1_D);
+			if (INIT_2_Q > 0 && e.char_mode == "Q")set_xweap(e, INIT_2_Q);
+//			if (INIT_3_PK > 0 && e.char_mode == "PK") set_xweap(e, INIT_3_PK);
+			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
+			if (INIT_4_Q2 > 0 && e.char_mode == "Q2") set_xweap(e, INIT_4_Q2);
+			if (INIT_5_Q3 > 0 && e.char_mode == "Q3") set_xweap(e, INIT_5_Q3);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); //  && e.char_mode == "HP") set_xweap(e, INIT_6_HP); // goes to all for now
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+
 		ic = e.items & WEP_MASK; // weps set by init - have to see q1 weps added outside of set_xweap
 		if (ic != i0)
 		if (!DEF_WEAPON)
@@ -1018,7 +1102,22 @@ void(entity e, float am, string pr) eweap_am =
 	}
 	else if (am == PK_IT_GRAPGUN && e.pk_items & am)
 	{
+	local entity f;
+	local string nt;
+
 		if (pr != "") sprint(e, pr);
+/*
+		nt = "Harpoon gun";
+		f = vchk(IT_AXE, am, e.vwepent);
+		if (f)
+		if (f.netname)
+		{
+			nt = f.netname;
+		}
+
+		sprint(e, nt);
+		sprint(e, "\n");
+*/
 		sprint(e, "Harpoon gun\n");
 		pk_pr = "";
 	}
@@ -1297,7 +1396,21 @@ void() inventory =
 					k = 2;
 					while (k < 8192)
 					{
-						eweap_am(self, k, pk_pr);
+						e = world;
+						e = vchk(IT_AXE, k, self.vwepent);
+						if (e)
+						{
+							if (e.eweapon)
+							{
+								sprint(self, e.netname);
+								eweap_am(self, e.lip, "   -> ");
+								sprint(self, "\n");
+							}
+							else
+								eweap_am(self, k, pk_pr);
+						}
+						else
+							eweap_am(self, k, pk_pr);
 						k = k * 2;
 					}
 				}
