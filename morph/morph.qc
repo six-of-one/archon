@@ -545,7 +545,7 @@ void(float r1, string sn, float lts ) morph_sound =
 			{
 			sound (self, CHAN_VOICE, sn, 0.8, ATTN_NORM);
 			self.soundlock = time + lts;
-			self.soundoff = time + 2; // FIX - check to make sure all idle & sight < 2 secs
+			self.soundoff = time + 2; // FIX: check to make sure all idle & sight < 2 secs
 			}}
 };
 

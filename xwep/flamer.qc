@@ -94,7 +94,7 @@ float(entity e) grab_fire =
 //	if (IS_LAVA(self)) return(FALSE); // hotties can play with fire
 
 	sv = self;
-	if (e.classname == "fire") // hot things burn when picked up  FIX - use a different string (sFloating = sEnv)
+	if (e.classname == "fire") // hot things burn when picked up  FIX: use a different string (sFloating = sEnv)
 		{
 		if (e.owner == self) e.owner = world; // owner of fire is trying to get it - only chaos and cthon can play with thier own fire
 		other = self;

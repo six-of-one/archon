@@ -829,7 +829,7 @@ void () PlayerJump =
 	self.button2 = 0;
 
 	if(self._jump2 != SUB_Null) { self._jump2(); return; }
-	if (self.mask_x & CB_HUMAN) // Cataboligne - 9.24.03 FIX need jump snd for all morphs
+	if (self.mask_x & CB_HUMAN) // Cataboligne - 9.24.03 FIX: need jump snd for all morphs
 // player jumping sound
 	sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
 //	if (pk_xsound) pk_jump_sound(); // *pk - new jump sounds

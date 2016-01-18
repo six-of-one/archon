@@ -555,6 +555,47 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 };
 
 
+
+// upgrade any missile to smart missile tracker
+
+// e - missile ent
+// tch - touch function for contact
+// dmg - damage assigned to missile
+// self - ent firing missile
+
+void(entity e, void () tch, float dm) Track_Missile =
+{
+	local	vector	dir;
+	local	float	dist, flytime;
+
+	dir = normalize((self.enemy.origin + '0 0 10') - self.origin);
+	dist = vlen (self.enemy.origin - self.origin);
+	flytime = dist * 0.002;
+	if (flytime < 0.1) flytime = 0.1;
+
+//	self.effects = self.effects | EF_MUZZLEFLASH;
+//	sound (self, CHAN_WEAPON, "shalrath/attack2.wav", 1, ATTN_NORM);
+
+	e.owner = self;
+
+	e.solid = SOLID_BBOX;
+	e.movetype = MOVETYPE_FLYMISSILE;
+//	setmodel (e, "progs/k_spike.mdl");
+
+	setsize (e, v0, v0);
+
+	e.dmg = dm;
+//	e.origin = self.origin + '0 0 10';
+	e.velocity = dir * 400;
+//	e.avelocity = '300 300 300';
+	e.nextthink = flytime + time;
+	e.think = ShalHome;
+	e.enemy = self.enemy;
+	e.touch = tch;
+	if (!Q_100) AddToSplash(e); // *pk - Make this entity splash
+};
+
+
 void() melee_hit =
 {
 	local vector source, org;

@@ -1086,6 +1086,7 @@ float(entity e, float q1ck, string itm) noxtr_item_control;
 void() x_pwr_touch;
 void() x_pack_touch;
 void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, string cname, string md, string sd, void() tch, float tht, void() thk, void() thd) fire_missile;
+void(entity e, void () tch, float dm) Track_Missile;
 void(float recurse, vector p1, vector p2, entity from, float damage) LightningDamage_x;
 
 void() melee_hit;
