@@ -825,21 +825,212 @@ void(float v_frm) vv_load_0 =
 	vv_a_000 = v0;
 	vv_x_000 = v0;
 
+// animate range drawn
+	if (v_frm == 0)
+	{
+		vv_o_000 = ' 8.0  -4.2  12.5';
+		vv_a_000 = '-8.4 100.4  11.5';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+   
+		  if (v_frm == 1)
+	{
+		vv_o_000 = ' 6.9  -6.5   8.7';
+		vv_a_000 = '-10.4  86.9   8.1';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 2)
+	{
+		vv_o_000 = ' 6.0 -10.8  10.0';
+		vv_a_000 = '-0.8  64.7  16.7';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 3)
+	{
+		vv_o_000 = ' 3.3 -12.5  12.3';
+		vv_a_000 = ' 9.4  56.7   3.2';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 4)
+	{
+		vv_o_000 = ' 7.1  -8.7  10.0';
+		vv_a_000 = '-2.4  76.6   8.5';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 5)
+	{
+		vv_o_000 = ' 8.6  -6.4  10.3';
+		vv_a_000 = '-4.5  93.0  14.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 6)
+	{
+		vv_o_000 = ' 4.2  -5.4   9.5';
+		vv_a_000 = '-7.2  49.0   6.7';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 7)
+	{
+		vv_o_000 = ' 4.3  -4.9   8.9';
+		vv_a_000 = '-6.6  49.8   4.2';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 8)
+	{
+		vv_o_000 = ' 4.3  -4.8   8.9';
+		vv_a_000 = '-6.1  49.9   5.7';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 9)
+	{
+		vv_o_000 = ' 4.0  -5.0   8.9';
+		vv_a_000 = '-6.8  49.0   5.7';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 10)
+	{
+		vv_o_000 = ' 4.0  -4.8   9.0';
+		vv_a_000 = '-6.1  46.3   6.2';
+	vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 11)
+	{
+		vv_o_000 = ' 6.1  -1.4  13.7';
+		vv_a_000 = '-3.4  70.2   9.3';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 12)
+	{
+		vv_o_000 = '-7.3  -2.0  15.9';
+		vv_a_000 = '-1.5 110.5  -2.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 13)
+	{
+		vv_o_000 = '-6.9  -1.8  16.2';
+		vv_a_000 = ' 4.3 115.8  10.0';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 14)
+	{
+		vv_o_000 = '-4.5  -2.3  15.7';
+		vv_a_000 = ' 6.8 106.1  -1.3';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 15)
+	{
+		vv_o_000 = ' 0.9  -0.3  14.7';
+		vv_a_000 = '-0.0  89.9   0.4';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 16)
+	{
+		vv_o_000 = ' 6.1  -1.4  13.7';
+		vv_a_000 = '-3.4  70.2   9.3';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+// fire frames range wep
+
+	if (v_frm == 17)
+	{
+		vv_o_000 = '-2.0  -9.1   8.9';
+		vv_a_000 = ' 0.2   0.1  -0.9';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 18)
+	{
+		vv_o_000 = '-5.5  -9.9   9.0';
+		vv_a_000 = ' 0.2   0.1   1.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 19)
+	{
+		vv_o_000 = '-2.0  -9.1   8.9';
+		vv_a_000 = ' 0.2   0.1  -0.9';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 20)
+	{
+		vv_o_000 = '-5.5  -9.9   9.0';
+		vv_a_000 = ' 0.2   0.1   1.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+// same as above
+	
+	if (v_frm == 21)
+	{
+		vv_o_000 = '-2.0  -9.1   8.9';
+		vv_a_000 = ' 0.2   0.1  -0.9';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 22)
+	{
+		vv_o_000 = '-5.5  -9.9   9.0';
+		vv_a_000 = ' 0.2   0.1   1.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 23)
+	{
+		vv_o_000 = '-2.0  -9.1   8.9';
+		vv_a_000 = ' 0.2   0.1  -0.9';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
+	if (v_frm == 24)
+	{
+		vv_o_000 = '-5.5  -9.9   9.0';
+		vv_a_000 = ' 0.2   0.1   1.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
 // animate melee drawn
 
 // stand frames	
+
+
+
 	if (v_frm == 65)
 	{
-		vv_o_000 = ' 2.2 -19.3 2.0';
-		vv_a_000 = '-39.9 -29.3 0.8';
-		vv_x_000 = ' 0.0 0.0 0.0';
+		vv_o_000 = ' 2.2 -19.2   2.0';
+		vv_a_000 = '-39.9 -29.3   0.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
 	}
 	if (v_frm == 66)
 	{
-		vv_o_000 = ' 1.8 -19.2 1.9';
-		vv_a_000 = '-39.9 -29.3 0.8';
-		vv_x_000 = ' 0.0 0.0 0.0';
+		vv_o_000 = ' 1.8 -19.2   1.9';
+		vv_a_000 = '-40.5 -29.3   0.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
 	}
+	if (v_frm == 67)
+	{
+		vv_o_000 = ' 2.0 -19.1   2.0';
+		vv_a_000 = '-39.9 -29.3   0.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+	if (v_frm == 68)
+	{
+		vv_o_000 = ' 2.2 -19.1   2.0';
+		vv_a_000 = '-39.9 -29.3   0.8';
+		vv_x_000 = ' 0.0   0.0   0.0';
+	}
+
 
 	return;
 };
@@ -1620,8 +1811,26 @@ void() vw_config =
 		if (self.impulse == 3) // change value edit
 		{
 			vv_chg = vv_chg + 1;
-			if (vv_chg > 8) vv_chg = 0;
+			if (vv_chg > 5) vv_chg = 0;
 //			centerprint3(self, "edit:  ", ftos(vv_chg), "\n");
+		}
+		if (self.impulse == 23) // change value edit
+		{
+			vv_chg = vv_chg - 1;
+			if (vv_chg < 0) vv_chg = 5;
+//			centerprint3(self, "edit:  ", ftos(vv_chg), "\n");
+		}
+		if (self.impulse == 22) // change value edit
+		{
+			if (vv_chg < 6) vv_chg = 6;
+			else
+			vv_chg = vv_chg + 1;
+			if (vv_chg > 8) vv_chg = 6;
+//			centerprint3(self, "edit:  ", ftos(vv_chg), "\n");
+		}
+
+		if (self.impulse == 3 || self.impulse == 23 || self.impulse == 22) // change value edit
+		{
 			if (vv_chg == 0)
 			{
 				centerprint3(self, " --- o_X:  ", ftos(vv_chg), "\n");
@@ -1775,10 +1984,18 @@ void() vw_config =
 					setmodel(vv, "progs/player.mdl");
 				setorigin(vv, self.origin);
 				vv.vwepent = spawn();
-				setmodel(vv.vwepent, "progs/vw_q3_gaunt.mdl");
+				setmodel(vv.vwepent, "progs/vw_q2_rock2.mdl");
+//				setmodel(vv.vwepent, "progs/vw_airgun2b.mdl");
 				setorigin(vv.vwepent, self.origin);
 				vv.vwepent.viswframe = 1; // get / save data for this var slot
 				vv_load(vv.vwepent.viswframe);
+				if (1)
+				{
+					vv.eweapon = spawn();
+					setmodel(vv.eweapon, "progs/vw_q2_rock.mdl");
+					setorigin(vv.eweapon, self.origin);
+					vv.eweapon.alpha = 0.85;
+				}
 			}
 		}
 		else if (self.impulse == 4) // print data by frame val
@@ -1851,6 +2068,9 @@ void() vw_config =
 		setorigin(vv.vwepent, vv.origin + vv_o_0 + vv_o_000); 
 		vv.vwepent.angles = vv.angles + vv_a_0 + vv_a_000;
 		vv.vwepent.frame = vv_x_0_x + vv_x_000_x;
+		setorigin(vv.eweapon, vv.origin); 
+		vv.eweapon.angles = vv.angles;
+		vv.eweapon.frame = vv.frame + viswaddf;
 
 		self.impulse = 0;
 	}
