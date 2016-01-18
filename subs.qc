@@ -40,6 +40,8 @@ void() InitTrigger =
 	self.movetype = MOVETYPE_NONE;
 	self.modelindex = 0;
 	self.model = null_string;
+// for trigger id
+	self.class_select = "trigger_secret"; // heh heh, its a secret
 };
 
 /*

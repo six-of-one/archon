@@ -557,7 +557,6 @@ entity(vector horg) chaos_maphack_probe =
 			self.trigger_field.stack16 = biome.stack16;
 			self.trigger_field.target1 = biome.target1;
 			self.trigger_field.target2 = biome.target2;
-			if (biome.group == "start2") biome.group = ""; // turn off
 			self.trigger_field.group = biome.group;
 			self.trigger_field.rad_time = biome.rad_time;
 			self.trigger_field.spawnflags = biome.spawnflags;
@@ -653,6 +652,14 @@ void() chaos_maphack_fire =
 //	self.dest1 = self.owner.origin + '512 -512 0';
 	self.dest1_x = self.dest1_x + self.lefty;
 	chaos_maphack_probe(self.dest1);
+
+// turn off one shot self replicator
+	if (biome.group == "start2")
+	{
+		biome.rad_time = biome.rad_time - 6;
+		if (biome.rad_time < 1)
+			biome.group = ""; // turn off
+	}
 };
 
 // auto load some biome, like lava
@@ -800,6 +807,8 @@ void() hide_hacks =
 };
 
 void() target_speaker;
+// doors
+entity (vector fmins, vector fmaxs) spawn_field;
 
 // copy a hack element, model, item, monster, etc
 
@@ -817,14 +826,22 @@ void() maphack_copy =
 // only make one
 		if (self.dropent.lefty < 0)
 		{
-			self.dropent.targetname = null_string;
+			self.dropent.targetname = "misc/null.wav";
+			self.dropent.killtarget = "misc/null.wav";
 		}
+
 		self.aiment = spawn();
 		copyentity(self.dropent, self.aiment);
-		self.aiment.targetname = null_string; // dont make copies of this!
+
+// dont make sub-copies of this!
+		if (!self.aiment.killtarget)
+			self.aiment.killtarget = "misc/null.wav"; // can not be null_string - any door that fires will erase all null killtargets!
+		else
+			self.aiment.targetname = "misc/null.wav";
 
 // set new thing origin from - hack (or model) org, copied ent org about '0 0 0' + offset org stored in hack or model
 		setorigin(self.aiment, self.origin + self.dropent.origin + self.view_ofs);
+
 #ifdef warning
 																			if (WARNING & 65536)
 																			{
@@ -846,6 +863,8 @@ void() maphack_copy =
 																		bprint("\n");
 																			}
 #endifdef
+		if (!self.aiment.model) setmodel(self.aiment, self.aiment.mdl);
+
 		if (self.aiment.classname == "func_model") // || (self.aiment.classname == "misc_model"))
 		{
 			if (self.spawnflags & 1)
@@ -858,7 +877,7 @@ void() maphack_copy =
 // so we get restored when slipping back into view range - original will not
 			self.aiment.wad = null_string;
 
-// arg - recursive code again
+// Ph'nglui - recursive code again
 // copy all target1 items to the model - relative origin of item to '0 0 0' added to chunk origin
 			if (self.aiment.target1 || self.aiment.target2)
 			{
@@ -913,6 +932,11 @@ void() maphack_copy =
 		}
 		else
 */
+		if (self.aiment.class_select == "trigger_secret")
+		{
+			self.aiment.think = InitTrigger;
+			self.aiment.nextthink = time + random();			
+		}
 		if (self.aiment.class_select == "class_monster")
 		{
 //					item_call_save(self.aiment, self.aiment.classname);
@@ -922,14 +946,43 @@ void() maphack_copy =
 			self.aiment.wad = "drop";
 			self.aiment.angles_y = rint(19.3 * random()) * 18;
 		}
-		else
 		if (self.aiment.classname == "target_speaker")
 		{
 			self.aiment.think = target_speaker;
 			self.aiment.nextthink = time + 2 * random();
 		}
-		else
-		if (!self.aiment.model) setmodel(self.aiment, self.aiment.mdl);
+		if (self.aiment.classname == "door")
+		{
+			self.aiment.pos1 = self.aiment.origin; // so door moves correctly
+			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so door moves correctly
+			self.aiment.owner = self.aiment;
+			self.aiment.enemy = self.aiment; // so trigger can fire proper door
+//			if (!self.aiment.targetname) // triggers still dont copy right
+//			{
+				self.aiment.trigger_field = spawn_field (self.aiment.absmin + '30 30 0',self.aiment.absmax - '30 30 0'); // make a new trigger field around door
+				self.aiment.trigger_field.owner = self.aiment; // tell trigger to fire this door - it will initially point at the source door that was copied
+//			}
+		}
+		if (self.aiment.classname == "plat")
+		{
+			self.aiment.pos1 = self.aiment.origin; // so door moves correctly
+			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so door moves correctly
+//			self.aiment.owner = self.aiment;
+//			self.aiment.enemy = self.aiment; // so trigger can fire proper door
+//			self.aiment.trigger_field = spawn_field (self.aiment.absmin,self.aiment.absmax); // make a new trigger field around door
+//			self.aiment.trigger_field.owner = self.aiment; // tell trigger to fire this door - it will initially point at the source door that was copied
+		}
+		if (self.aiment.classname == "func_button")
+		{
+			self.aiment.pos1 = self.aiment.origin; // so door moves correctly
+			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so door moves correctly
+//			self.aiment.owner = self.aiment;
+//			self.aiment.enemy = self.aiment; // so trigger can fire proper door
+//			self.aiment.trigger_field = spawn_field (self.aiment.absmin,self.aiment.absmax); // make a new trigger field around door
+//			self.aiment.trigger_field.owner = self.aiment; // tell trigger to fire this door - it will initially point at the source door that was copied
+		}
+//		else
+	
 		if (self.aiment.volume)
 		if (!self.aiment.mcode) // dont scale items that use volume for ammo limit
 		{
@@ -1332,13 +1385,13 @@ void() func_maphack =
 	}
 
 
-	if (self.rotate_type)
+	if (self.rotate_type > 0)
 	{
 		self.aflag = 1;
 		if (self.rotate_type > 0.99)
 		{
 			if (self.state == floor(self.rotate_type)) self.aflag = 0;
-// trick to encode 2 rotates, could do more
+// trick to block 2 states from using rotates and let all other states rotate, could do more
 			self.msgcount = rint((self.rotate_type - floor(self.rotate_type)) * 10);
 			if (self.state == self.msgcount) self.aflag = 0;
 #ifdef warning
@@ -1360,6 +1413,10 @@ void() func_maphack =
 		if (self.aflag)
 		{
 			self.angles_y = rint(3.3 * random()) * 90;
+// 7.12.14 - added rotate angle randomizer, only works with cliffs so far, any round-ish biome block could use this (in theory anyway)
+// this does a lot to break up the repetitve monontony of similar blocks all rotated to some 90 deg. increment
+			if (self.rotate_type < 0.5)
+				self.angles_y = self.angles_y + (self.rotate_type * 100) * random();
 #ifdef warning
 																			if (WARNING & 65536)
 																			{
@@ -1476,6 +1533,87 @@ void() func_maphack =
 		self.think = maphack_poof;
 		self.nextthink = time + 0.2;
 	}
+};
+
+/*QUAKED func_mapday (.6 .1 .6) (-8 -8 -8) (8 8 8) 
+--------  CAT  -------
+Chaos Mod MK II
+
+Day night cycle via r_ambient control
+For map hacks system
+
+-------- NOTES --------
+"rad_time"      "#"     - how long until cycle starts after init
+"state"         "#"     - where daylight starts
+"speed"         "#"     - rate at which daylight changes, up or down
+"delay"         "#"     - time between changes
+
+"volume"        "#"     - max daylight - when hit cycle starts down
+"count"         "#"     - time to sit at max
+"height"        "#"     - min daylight - when hit cycle starts up
+"cnt"           "#"     - time to sit at min
+
+
+"targetname"    "{n}"   - targets for control sequence
+"target1"
+"target2"
+
+"button0"       "#"     - level to set on targeted action
+"button1"       "#"     - set and stop cycle
+"button2"       "#"     - set and start cycle there
+"button3...x"   "#..."  - levels to set sequentially with each subsequent target call
+
+*/
+
+// round and round the sun we go, the moon goes round the earth
+// we do not die of death, we die of vertigo
+
+void() func_mapday =
+{
+	local float autocvar_sv_c_hackday;
+
+	self.think = func_mapday;
+
+// run times
+	if (self.rad_time)
+	{
+		self.nextthink = time + self.rad_time;
+		self.rad_time = 0;
+	}
+	else self.nextthink = time + self.delay;
+
+// start level
+	if (self.state)
+	{
+		self.light_lev = self.state; // set init level
+		self.state = 0;
+	}
+
+	self.light_lev = self.light_lev + self.aflag; // current run level
+
+// set dir if not
+	if (!self.aflag) self.aflag = self.speed;
+
+	if (self.light_lev > self.volume) // hit max
+	{
+		self.light_lev = self.volume;
+		self.aflag = 0 - self.speed;
+		self.nextthink = time + self.count;
+	}
+
+	if (self.light_lev < self.height) // hit min
+	{
+		self.light_lev = self.height;
+		self.aflag = self.speed;
+		self.nextthink = time + self.cnt;
+	}
+
+	if (autocvar_sv_c_hackday) self.light_lev = autocvar_sv_c_hackday;
+
+	localcmd("r_ambient ");
+	localcmd(ftos(self.light_lev));
+	localcmd("\n");
+
 };
 
 // fn(loop_sound) - play a sound looped until stopped by remove, halt or search_time exceeded

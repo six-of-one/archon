@@ -853,6 +853,9 @@ float EF_FULLBRIGHT			= 512;
 
 // env stuff - part of chaos engine env effects - mostly unused
 
+void(vector mincorner, vector maxcorner, vector vel, float howmany, float color) te_particlerain = #409;
+void(vector mincorner, vector maxcorner, vector vel, float howmany, float color) te_particlesnow = #410;
+
 float CHAOS_TELE_LIMIT		= 6; // max number of cube spawned spheres per map instance
 
 void(vector pv1, vector pv2, float typ, string snd) lightning_bolt;

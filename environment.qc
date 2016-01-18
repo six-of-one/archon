@@ -766,6 +766,7 @@ void() effect_item_fall =
 	if (!self.mdl) self.mdl = "progs/s_rain.spr";
 
 	if (!DARKPLACES)
+	if (time < 2)
 	{
 		if (self.mdl) precache_model(self.mdl);
 		precache_sound("ambience/rain.wav");
@@ -800,7 +801,148 @@ void() effect_item_fall =
 		self.th_stand = SUB_Null;
 };
 
+// rain & snow in open hack maps
 
+void() make_it_rain =
+{
+	self.nextthink = time + 0.1;
+
+// locate player spot - cloud follows him, heh heh
+
+	self.pos2_x = self.owner.origin_x + 512;
+	self.pos1_x = self.owner.origin_x - 512;
+
+	self.pos2_y = self.owner.origin_y + 512;
+	self.pos1_y = self.owner.origin_y - 512;
+
+	self.pos2_z = self.owner.origin_z + 256;
+	self.pos1_z = self.owner.origin_z - 64;
+
+	if (self.spawnflags & 3) // snow / ash
+		te_particlesnow(self.pos1, self.pos2, self.dest, self.count, self.cnt);
+	else
+		te_particlerain(self.pos1, self.pos2, self.dest, self.count, self.cnt); // rain
+
+	self.origin = self.owner.origin; // where he is
+
+// moved too far - reset
+	if (!self.spawnflags & 3) // snow / ash does not thunder or piddle
+	{
+		if (vlen(self.oldorigin - self.origin) > 200) self.t_length = 0;
+
+		if (self.t_length < time)
+		{
+			self.t_length = time + 8.254; // len of rain sample
+			sound (self, CHAN_VOICE, "ambience/rain.wav", 1, ATTN_NORM);
+			self.oldorigin = self.origin;
+		}
+
+		if (random() < 0.3)
+		if (self.t_width == MAXFL)
+			self.t_width = time + 40 * random(); // make it go boom
+
+		if (self.t_width < time)
+		{
+			self.t_width = time + 40 * random();
+			sound (self, CHAN_BODY, "ambience/thunder1.wav", 1, ATTN_NORM);
+//		if (random() < 0.1) self.t_width = MAXFL; // boom over
+		}
+	}
+};
+
+void() rain_use =
+{
+// toggle - rain stops
+	if (self.owner)
+	{
+		self.owner = world;
+		self.nextthink = -1;
+		sound (self, CHAN_VOICE, "misc/null.wav", 1, ATTN_NORM);
+		return;
+	}
+
+	self.owner = activator; // should be ent touching trigger
+
+//	self.t_width = MAXFL;  // no boom to start
+
+	self.cnt = 11; //off white rain
+	self.dest_z = 0 - 200 - 200 * random(); // fall rate
+
+	if (self.spawnflags & 1) // snow / ash
+	{
+		self.dest_z = 0 - 100 - 100 * random(); // fall rate
+		self.cnt = 12;
+	}
+
+/*
+	if (fnc == snow_think)
+	{
+		self.dest_x = 3 * crandom(); // windage
+		self.dest_y = 3 * crandom();
+	}
+	else
+	{
+*/
+
+// taking break from gusts & changes - seems to be an issue
+//	c.rad_time = time + 20 + random() * 45; // gusts for snow
+//	c.pos1 = '-10000 -10000 -10000';
+//	c.pos2 = ' 10000 10000 10000';
+/*
+// former cmod I box check version
+	traceline (self.origin, self.origin + ' 3000 0 0', TRUE, self); // x dist to nearest obstacle (wall) in + dir on axis
+	c.pos2_x = trace_endpos_x - 5;
+
+	traceline (self.origin, self.origin + '-3000 0 0', TRUE, self); // - dir on axis
+	c.pos1_x = trace_endpos_x + 5;
+
+	traceline (self.origin, self.origin + ' 0 3000 0', TRUE, self);
+	c.pos2_y = trace_endpos_y - 5;
+
+	traceline (self.origin, self.origin + ' 0 -3000 0', TRUE, self);
+	c.pos1_y = trace_endpos_y + 5;
+
+	traceline (self.origin, self.origin + ' 0 0 3000', TRUE, self);
+	c.pos2_z = trace_endpos_z - 10;
+
+	traceline (self.origin, self.origin + ' 0 0 -3000', TRUE, self);
+	c.pos1_z = trace_endpos_z + 5;
+*/
+	self.count = 10;
+	make_it_rain(); // pre-calc
+	
+	self.count = (self.pos2_x - self.pos1_x)*(self.pos2_y - self.pos1_y)/4096;
+
+if (WARNING)
+{
+bprint("*** warning: \bprec min: ");
+bprint(vtos(self.pos1));
+bprint("prec max: ");
+bprint(vtos(self.pos2));
+bprint("cnt: ");
+bprint(ftos(self.count));
+bprint("\n");
+}
+
+	if (self.count < 1)
+	{
+		self.owner = world;
+		return;
+	}
+	// convert from per second to per 0.1 sec,
+	self.count = ceil(self.count * 0.1);
+
+	self.nextthink = time + 0.1;
+	self.think = make_it_rain;
+};
+
+// note: could possibly use a brush to set parms above for a specific area rain
+
+void() func_rain =
+{
+	self.use = rain_use;
+	
+};
 
 // returns entity for target - behavior:
 
