@@ -91,7 +91,7 @@ float(entity e) grab_fire =
 	local entity sv;
 
 	if (e == world) return(FALSE);
-//	if (IS_LAVA(self)) return(FALSE); // hotties can play with fire
+	if (IS_LAVA(self)) return(FALSE); // hotties can play with fire
 
 	sv = self;
 	if (e.classname == "fire") // hot things burn when picked up  FIX: use a different string (sFloating = sEnv)

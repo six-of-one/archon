@@ -250,7 +250,7 @@ void(string cls) item_call =
 	else if (cls == "item_artifact_wetsuit") item_artifact_wetsuit();
 	else if (cls == "item_artifact_empathy_shields") item_artifact_empathy_shields();
 	else if (cls == "item_hornofconjuring") item_hornofconjuring();
-	else if (cls == "trap_spike_mine") trap_spike_mine();
+	else if (cls == "trap_spike_mine") { trap_spike_mine(A_MONSTER); self.dmg = 20 + (random() * 20); }
 
 // doom
 	else if (cls == "d_weapon_shotgun") d_weapon_shotgun();

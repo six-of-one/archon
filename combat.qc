@@ -75,6 +75,7 @@ void(entity targ, entity attacker) Killed =
 	oself = self;
 	self = targ;
 
+	if (self.class_select == "class_player")
 	if (self.health < -99)
 		self.health = -99;		// don't let sbar look bad if a player
 
@@ -119,7 +120,7 @@ void(entity targ, entity attacker) Killed =
 
 	monster_death_use ();
 
-	if (self.th_die != (void()) 0) // something got thru with 0 th die on server test 10.28.11
+	if (self.th_die != (void()) 0) // something got thru with 0 th_die on server test 10.28.11
 	self.th_die ();
 
 	if (self.vwepent) viswep_ld(self, -2); // still have visweps

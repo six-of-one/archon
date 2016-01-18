@@ -35,6 +35,8 @@ hipnotic/hipdefs.qc
 // hook define
 xwep/hook.defs.qc
 
+// end of define section
+
 // frikbot code
 
 frikbot/map_dm1.qc

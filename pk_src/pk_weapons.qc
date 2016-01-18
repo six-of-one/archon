@@ -59,7 +59,7 @@ void() explodeAttack =
 	BecomeShellExplosion ();
 };
 
-void(float damage, vector dir) TraceExplodeAttack =
+void(vector dir) TraceExplodeAttack =
 {
 	local entity explode;
 
@@ -78,6 +78,8 @@ void(float shotcount, vector dir, vector spread) FireExplodeShells =
 {
 	local	vector direction;
 	local	vector	src;
+
+/* - deprecated - unused
 	local float damage;
 
 	if (shotcount >= 2)
@@ -88,7 +90,7 @@ void(float shotcount, vector dir, vector spread) FireExplodeShells =
 	{
 		damage = 1;
 	}
-
+*/
 	makevectors(self.v_angle);
 
 	src = self.origin + v_forward*10;
@@ -100,7 +102,7 @@ void(float shotcount, vector dir, vector spread) FireExplodeShells =
 
 		traceline (src, src + direction * 2048, FALSE, self);
 		if (trace_fraction != 1.0)
-			TraceExplodeAttack (damage, direction);
+			TraceExplodeAttack (direction);
 
 		shotcount = shotcount - 1;
 	}

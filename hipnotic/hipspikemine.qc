@@ -85,9 +85,13 @@ void() spikemine_Home =
       }
    };
 
+// mod: use self.dmg, so random mines can have var damage
+
 void() spikemine_Touch =
-   {
-   if (self.health>0)
+{
+	local float ldmg;
+
+	if (self.health>0)
       {
       if (other.classname == "trap_spike_mine")
          return;
@@ -106,7 +110,10 @@ void() spikemine_Touch =
       }
 //   self.effects = self.effects | EF_MUZZLEFLASH;
 
-   T_RadiusDamage (self, self, 110, world);
+	ldmg = self.dmg;
+	if (!ldmg) ldmg = 110;
+
+   T_RadiusDamage (self, self, ldmg, world);
 	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
 
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
@@ -121,7 +128,7 @@ void() spikemine_Touch =
 	setmodel (self, "progs/s_explod.spr");
 	self.solid = SOLID_NOT;
 	s_explode1 ();
-   };
+};
 
 /*
 spike_mine_first_think
@@ -139,17 +146,30 @@ void() spike_mine_first_think =
 /*QUAKED trap_spike_mine (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() trap_spike_mine =
-   {
-   if (deathmatch)
+void(float ign) trap_spike_mine =
+{
+if (ign != A_MONSTER)
+{
+	if (M_MONSTER < 0)
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
+	
+	if (!M_MONSTER_II & CB_M_SPIKEMINE)
+	if (deathmatch)
+	{
+		if (R_MONSTER)
+			remove(self);
+		return;
+	}
+
    precache_model ("progs/spikmine.mdl");
    precache_sound ("weapons/r_exp3.wav");
    precache_sound ("hipitems/spikmine.wav");
    precache_sound ("misc/null.wav");
+}
    setmodel (self, "progs/spikmine.mdl");
 //   setmodel (self, "progs/spike.mdl");
    setsize (self, self.mins, self.maxs);
@@ -176,5 +196,7 @@ void() trap_spike_mine =
    total_monsters = total_monsters + 1;
    self.flags = self.flags | FL_MONSTER;
 //   self.deathtype = "was blasted by a spike mine";
-   };
+
+	self.class_select = "class_monster";
+};
 

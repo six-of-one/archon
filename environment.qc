@@ -1071,12 +1071,11 @@ float(entity ent, float flg) content =
 
 void (entity targ, entity inflictor, entity attacker, float damage) T_FireDamage =
 {
-	if ((targ.morphy == IMP_MCTHON) || (targ.morphy == IMP_MCHAOS) || (targ.classname == "monster_tarbaby" || targ.classname == "monster_lavabomb")) // lava capable ents wont get burned...often
-//	if (IS_LAVA(targ)) 
+//	if ((targ.morphy == IMP_MCTHON) || (targ.morphy == IMP_MCHAOS) || (targ.classname == "monster_tarbaby" || targ.classname == "monster_lavabomb")) // lava capable ents wont get burned...often
+	if (IS_LAVA(targ)) 
 	{
 		if (targ.morphy == IMP_MCTHON) T_Heal(targ, damage, 0); // LOL - lava is "healed" by fire - such a horta situation...
-		else if (targ.classname == "monster_tarbaby" || targ.classname == "monster_lavabomb") { if (random() < 0.2) T_Heal(targ, damage, 0); } // tarbabys too..
-		else // chaos here
+		else if (targ.morphy == IMP_MCHAOS) // chaos here
 		{
 			if (targ.watertype == CONTENT_LAVA)
 			{
@@ -1086,6 +1085,8 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_FireDamage
 			else
 				if (random() < 0.02) T_Damage (targ, inflictor, attacker, damage * random());
 		}
+		else //if (targ.classname == "monster_tarbaby" || targ.classname == "monster_lavabomb") 
+			{ if (random() < 0.2) T_Heal(targ, damage, 0); } // tarbabys too..
 	}
 	else T_Damage (targ, inflictor, attacker, damage);
 };

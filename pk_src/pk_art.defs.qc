@@ -35,7 +35,7 @@ void () actor_quad_activate;
 void () actor_pent_activate;
 void () phone_activate;
 // subs.qc
-void (entity ownerEntity) ego_remove;
+//void (entity ownerEntity) ego_remove;
 
 
 

@@ -23,6 +23,8 @@ void() gravity_touch;
 
 // live7 - super eye added for monster_eye
 
+// skins - black (soa), (1-4 group) tele sphere, ghroth (see __deriv dir)
+
 $frame live1 live2 live3 live4 live5 live6 live7
 $frame grvbomb1 grvbomb2 grvbomb3 grvbomb4 grvbomb5 grvbomb6 grvbomb7 grvbomb8 grvbomb9 grvbomb10 grvbomb11 grvbomb12 grvbomb13 grvbomb14 grvbomb15 grvbomb16 grvbomb17 grvbomb18 grvbomb19 grvbomb20
 $frame die1 die2 die3 die4 die5 die6 die7
@@ -276,7 +278,7 @@ if (WARNING)
 }
 		self.nextthink = -1;
 		self.rad_time = 0;
-		if (self.flags & FL_MONSTER && ! self.flags & FL_ANNIHILATED)
+		if ((self.flags & FL_MONSTER) && ! self.flags & FL_ANNIHILATED)
 		{
 			self.think = SUB_Null; // just in case some deaths dont set think fn
 			T_Damage (self, world, world, self.health * 3);
@@ -431,7 +433,7 @@ void() sphere_annihilation_spawn =
 	sphere_a.dest2_z = sphere_a.lefty = 0; // location controls
 	sphere_a.state = ST_FOLLOW; // tag along to start
 	sphere_a.frame = $live2;
-	sphere_a.skin = 2;
+	sphere_a.skin = 0; //2;
 	sphere_a.map = "sphere_annihilation"; // double check search
 // spawn sound?
 

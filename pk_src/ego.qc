@@ -139,6 +139,7 @@ void () ego_touch =
 	s_explode1 ();
 };
 
+/* - deprecated - unused
 void (entity ownerEntity) ego_remove =
 {
 	local entity ent;
@@ -158,6 +159,7 @@ void (entity ownerEntity) ego_remove =
 		}
 	}
 };
+*/
 
 void () ego_seeker =
 {

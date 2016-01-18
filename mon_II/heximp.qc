@@ -195,7 +195,7 @@ Imp Attack Code
 ===============
 */
 
-void(float side) ImpClaw =
+void() ImpClaw =
 {
 local vector	delta;
 local float 	ldmg;
@@ -230,12 +230,12 @@ void() heximp_hit14 =[	$heximpfir14, heximp_hit15 ] {ai_charge(7);};
 void() heximp_hit15 =[	$heximpfir15, heximp_hit16 ]
 {
 sound (self, CHAN_VOICE, "heximp/fist.wav", 1, ATTN_NORM);
-ImpClaw(0);
+ImpClaw();
 };
-void() heximp_hit16 =[	$heximpfir16, heximp_hit17 ] {ImpClaw(0);};
-void() heximp_hit17 =[	$heximpfir17, heximp_hit18 ] {ImpClaw(0);};
-void() heximp_hit18 =[	$heximpfir18, heximp_hit19 ] {ImpClaw(0);};
-void() heximp_hit19 =[	$heximpfir19, heximp_hit20 ] {ImpClaw(0);};
+void() heximp_hit16 =[	$heximpfir16, heximp_hit17 ] {ImpClaw();};
+void() heximp_hit17 =[	$heximpfir17, heximp_hit18 ] {ImpClaw();};
+void() heximp_hit18 =[	$heximpfir18, heximp_hit19 ] {ImpClaw();};
+void() heximp_hit19 =[	$heximpfir19, heximp_hit20 ] {ImpClaw();};
 void() heximp_hit20 =[	$heximpfir20, heximp_hit21 ] {ai_charge(-1);};
 void() heximp_hit21 =[	$heximpfir21, heximp_fly1 ] {ai_charge(-4);};
 

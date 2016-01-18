@@ -15,10 +15,10 @@
 float MORPH_ARCHON;
 float MORPH_MARINE;
 float MORPH_MONSTER;
-float MORPH_CASTLE; // wolf ?
+float MORPH_CASTLE; // wolf
 float MORPH_HELLION;
 float MORPH_STROG;
-float MORPH_ARENA;
+float MORPH_ARENA; // q3
 float MORPH_ANCIENT;
 
 // note - morph limited to monster for now
@@ -45,7 +45,7 @@ void() morph_setup =
 // these are not for morph
 // monster bits - original + mod expansion ( scourge, gremlin, super vore, vomitus )
 	MONSTER_MASK = CB_M_ARMY + CB_M_FISH + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
-						CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE + CB_M_GREMLIN + CB_M_VOMIT;
+						CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE + CB_M_GREMLIN + CB_M_VOMIT + CB_M_SPIKEMINE;
 
 // bonus monster bits
 	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA + CB_M_BOSSMAN + CB_M_CLING + CB_M_HEXIMP;
@@ -231,6 +231,7 @@ string(float mb, float mode) monster_id =
 		if (mb == CB_M_SVORE) 			s2 = "Vorerel";
 		if (mb == CB_M_GREMLIN) 		s2 = "Gremlin";
 		if (mb == CB_M_VOMIT) 			s2 = "Vomitus";
+		if (mb == CB_M_SPIKEMINE) 		s2 = "Spike Mine";
 	}
 	else
 	if (mode == MON_FUNC_REG)
@@ -254,6 +255,7 @@ string(float mb, float mode) monster_id =
 		if (mb == CB_M_SVORE) 			s2 = "monster_supervore";
 		if (mb == CB_M_GREMLIN) 		s2 = "monster_gremlin";
 		if (mb == CB_M_VOMIT) 			s2 = "monster_vomit";
+		if (mb == CB_M_SPIKEMINE) 		s2 = "trap_spike_mine";
 	}
 	else
 	if (mode == MON_NAME_II)
@@ -1249,7 +1251,7 @@ void(float cmd, float pls) polymorph_check =
 
 //		if (cmd == IMP_MCHAOS) player_chaos_become(pls);
 //		else 
-			if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
+		if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
 		else if (cmd == IMP_MWIZARD) player_wizard_become(pls);
 		else if (cmd == IMP_MHKNIGHT) player_hknight_become(pls);
@@ -1586,6 +1588,7 @@ void() random_monster =
 		if (e.health > 0)
 		if (e.event == "dyn_monster") // dont remove regular or respawn monsters
 		if (e.movetype != MOVETYPE_FLY) // because flyers could get to a noway zone and be legit
+		if (e.movetype != MOVETYPE_FLYMISSILE) // spike mine = dang burger king monster
 		{
 			if (noway_below)
 			if (e.origin_z < noway_below) now = TRUE;
@@ -1831,7 +1834,7 @@ void() monster_respawn =
 
 };
 
-// returns true if lava enabled morph
+// returns true if lava enabled morph / monster
 
 float(entity e) IS_LAVA =
 {
@@ -1840,7 +1843,14 @@ float(entity e) IS_LAVA =
 
 	if (e.morphy == IMP_MCTHON) f = TRUE;
 	else if (e.morphy == IMP_MCHAOS) f = TRUE;
-	else if (e.model == "progs/boss.mdl") f = TRUE;
+	else if (e.classname == "monster_boss") f = TRUE;
+	else if (e.classname == "monster_tarbaby") f = TRUE;
+	else if (e.classname == "monster_lavabomb") f = TRUE;
+//	else if (e.model == "progs/boss.mdl") f = TRUE;
+//	else if (e.model == "progs/tarbaby.mdl") f = TRUE;
+//	else if (e.model == "progs/lavabomb.mdl") f = TRUE;
+	else if ((e.model == "progs/scor2.mdl") && (e.skin == 1 || e.skin == 2)) f = TRUE;
+	else if ((e.model == "progs/wizard.mdl") && (e.skin == 1)) f = TRUE;
 
 	return(f);
 };

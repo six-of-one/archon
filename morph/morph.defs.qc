@@ -126,9 +126,9 @@ float CB_M_SHUBS					= 32768;
 float CB_M_SVORE					= 65536; // super vore
 float CB_M_GREMLIN				= 131072;
 float CB_M_VOMIT					= 262144; // guy id left out
+float CB_M_SPIKEMINE				= 524288;	// Hipnotic spiked mine
 
 /*
-float CB_M_					= 524288;
 float CB_M_					= 1048576;
 float CB_M_					= 2097152;
 float CB_M_					= 4194304;
@@ -407,6 +407,7 @@ void() lavablob_slimeflare;
 float LEVEL_CTHON					= TRUE; // bring cthon up to lava level found in house of cthon
 float hoc_level					= 16; // default house of cthon level
 float NO_TFOG						= -2222; // no telefog when transforming
+float(entity e) IS_LAVA;
 
 //scourges
 
