@@ -768,6 +768,7 @@ void() pk_liveupd =
 	SV_FALLEN = cvar("sv_c_fallen");
 	SV_HOLDING = cvar("sv_c_holding");
 
+	if (deathmatch)
 	if (!NOEXIT_CHECK)
 	{
 		NOEXIT_SAVETIME = NOEXIT_SAVEFRAG = -2;

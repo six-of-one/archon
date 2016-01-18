@@ -576,6 +576,12 @@ void(float ign) monster_vomit =
 {
 if (ign != A_MONSTER)
 {
+	if (M_MONSTER < 0)
+	{
+		remove(self);
+		return;
+	}
+	
 	if (!M_MONSTER & CB_M_VOMIT)
 	if (deathmatch)
 	{

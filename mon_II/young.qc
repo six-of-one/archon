@@ -179,6 +179,12 @@ void(float ign) monster_young =
 {
 if (ign != A_MONSTER)
 {
+	if (M_MONSTER < 0)
+	{
+		remove(self);
+		return;
+	}
+	
 	if (!M_MONSTER_II & CB_M_CLING)
 	if (deathmatch)
 	{

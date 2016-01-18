@@ -1106,13 +1106,16 @@ void() archon_powerclr =
 		remove(self);
 		self = e;
 	}
+//	self.nextthink = time + 2;
 };
 
 void() archon_power =
 {
 	local entity e;
 
+
 	e = chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "archon_powerclr", "", SUB_Null, 1, q2_teleport_particles, archon_powerclr, self, world);
+//	e = chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "archon_powerclr", "", SUB_Null, 1, archon_powerclr, SUB_Null, self, world);
 	e.cnt = 74;
 // dont always make items
 	if (random() < 0.4)

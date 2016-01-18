@@ -279,6 +279,12 @@ void(float ign) monster_army =
 
 if (ign != A_MONSTER)
 {
+	if (M_MONSTER < 0)
+	{
+		remove(self);
+		return;
+	}
+	
 	if (!M_MONSTER & CB_M_ARMY)
 	if (deathmatch)
 	{

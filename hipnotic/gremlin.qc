@@ -32,7 +32,6 @@ $frame pain1 pain2 pain3 pain4 pain5 pain6
 // range firing frames
 $frame lightfatt1 lightfatt2 lightfatt3 lightfatt4
 
-// *** duplicate of player.mdl frames above - not really necc... just make sure gun has fire frames there
 $frame light1 light2 light3 light4
 
 $frame rockatt1 rockatt2 rockatt3 rockatt4 rockatt5 rockatt6
@@ -1776,11 +1775,19 @@ void() Gremlin_MissileAttack =
 
 /*QUAKED monster_gremlin (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 
+	note: updated to use new model
+
 */
 void(float ign) monster_gremlin =
 {
 if (ign != A_MONSTER)
 {
+	if (M_MONSTER < 0)
+	{
+		remove(self);
+		return;
+	}
+	
 	if (!M_MONSTER & CB_M_GREMLIN)
 	if (deathmatch)
 	{

@@ -473,6 +473,12 @@ void(float ign) monster_zombie =
 
 if (ign != A_MONSTER)
 {
+	if ((M_MONSTER < 0) && !(self.spawnflags & SPAWN_CRUCIFIED))
+	{
+		remove(self);
+		return;
+	}
+	
 	if (!M_MONSTER & CB_M_ZOMBY)
 	if (deathmatch)
 	{

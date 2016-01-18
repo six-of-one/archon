@@ -2165,33 +2165,40 @@ void() X_FireBlaster =
 void() q2_teleport_particles =
 {
 	local vector v1;
+	local float f;
 
 	if (!self.cnt)
 		self.cnt = 192;
 
-	v1_x = crandom() * 18;
-	v1_y = crandom() * 18;
-	v1_z = crandom() * 6;
-	self.velocity_z = 200 + crandom() * 50;
-	particle (self.origin + v1, self.velocity, self.cnt, 4);
+	f = 4;
+	while (f > 0)
+	{
+		v1_x = crandom() * 18;
+		v1_y = crandom() * 18;
+		v1_z = crandom() * 6;
+		self.velocity_z = 200 + crandom() * 50;
+		particle (self.origin + v1, self.velocity, self.cnt, 4);
 
-	v1_x = crandom() * 18;
-	v1_y = crandom() * 18;
-	v1_z = 16 + crandom() * 6;
-	self.velocity_z = 200 + crandom() * 50;
-	particle (self.origin + v1, self.velocity, self.cnt, 4);
+		v1_x = crandom() * 18;
+		v1_y = crandom() * 18;
+		v1_z = 16 + crandom() * 6;
+		self.velocity_z = 200 + crandom() * 50;
+		particle (self.origin + v1, self.velocity, self.cnt, 4);
 
-	v1_x = crandom() * 18;
-	v1_y = crandom() * 18;
-	v1_z = 32 + crandom() * 6;
-	self.velocity_z = 200 + crandom() * 50;
-	particle (self.origin + v1, self.velocity, self.cnt, 4);
+		v1_x = crandom() * 18;
+		v1_y = crandom() * 18;
+		v1_z = 32 + crandom() * 6;
+		self.velocity_z = 200 + crandom() * 50;
+		particle (self.origin + v1, self.velocity, self.cnt, 4);
+
+		f = f - 1;
+	}
 
 	if (self.th_die != SUB_Null)
    if (self.th_die != (void()) 0)
 		self.th_die();
 
-	self.nextthink = time + 0.05;
+	self.nextthink = time + 0.2;
 };
 
 // allow map compile particle fountain / sound  because regular q2 one requires q2.wad for map

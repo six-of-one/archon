@@ -359,6 +359,12 @@ void(float ign) monster_manga =
 
 if (ign != A_MONSTER)
 {
+	if (M_MONSTER < 0)
+	{
+		remove(self);
+		return;
+	}
+	
 	if (!M_MONSTER_II & CB_M_MANGA)
 	if (deathmatch)
 	{

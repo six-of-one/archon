@@ -278,6 +278,7 @@ if (ign != A_MONSTER)
 		remove(self);
 		return;
 	}
+
 	precache_model ("progs/boss.mdl");
 	precache_model ("progs/lavaball.mdl");
 
