@@ -590,31 +590,17 @@ sb_align = SB_BOTTOM;
 // runes
 	pwr_step = '-400 50 0';
 
-	cnt_left = cnt_left + woff_y;
-
-// move runes over for low range digit display
 /*
 // test to find lowest val in left draw coords
-
-// 80 - 1 item		- 68	- lower level (enginebar = 0)
-// 110 - 2nd		- 98
-// 140 - 3rd		- 128
-// 170 - 4				- 158
-// 200 - 5				- 188
-// 
 
 	DrawAmmo('-300 100 0', chaos_level_y, ALPHA_FULL);
 	DrawAmmo('-300 80 0', p_level_y, ALPHA_FULL);
 	DrawAmmo('-300 60 0', arc_level_y, ALPHA_FULL);
 	DrawAmmo('-300 40 0', cnt_left, ALPHA_FULL);
-
-	k = 55;
-	l = 0; // adjust for power level diff digit display
-	if (cnt_left == 2) k = 85;
-	if (cnt_left == 3) { k = 300; l = 80; }
-	if (cnt_left == 4) { k = 900; l = 80; }
-	if (cnt_left == 5) { k = 1450; l = 80; }
 */
+
+// move runes over for low range digit display
+	cnt_left = cnt_left + woff_y;
 
 	if ((archon > 0) && (arc_level_y < cnt_left + 2))
 		pwr_step = '-370 50 0';
@@ -623,7 +609,7 @@ sb_align = SB_BOTTOM;
 	if ((volspec > 0) && (chaos_level_y < cnt_left + 2))
 		pwr_step = '-370 50 0';
 
-	cnt_left = 0;
+	cnt_left = 0; // recount every time
 
 // armor, health in bar 2, 3
 	if (ibar_flag > 1)

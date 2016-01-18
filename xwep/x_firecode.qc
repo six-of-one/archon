@@ -656,7 +656,7 @@ void() spike_touch =
 {
 	local vector off;
 
-	if (other)
+	if (other) // exclude world - need to impact walls
 	if (other == self.owner)
 		return;
 
