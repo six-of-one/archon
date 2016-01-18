@@ -158,35 +158,6 @@ void () c_weapon_deepsleep =
 	if (self.class_select == "") self.class_select = "x_item";
 };
 
-void() weapon_portal =
-{
-	q100_weapon_supershotgun();
-	self.netname = "Portal apparatus";
-
-	self.touch = x_weapon_touch;
-	self._attack = SUB_Null;
-	self._fr_attack = player_portal1;
-
-	self.currentammo = 0;
-	self.aflag = IGN_INV;
-	self.items = IT_LIGHTNING;
-	self.lip = AMMO_NONE;
-	self.attack_finished = 1;
-	self.dmg = 0;
-	self.dmg_save = 1;
-	self.dmg_take = 1; // shot cnt
-	self.lefty = XW_MULTI + 1; // 2 mode wep
-
-	setmodel (self, "progs/g_harp.mdl");
-	self.weaponmodel = "progs/v_portal.mdl";
-//	self.vwepmdl = "progs/vw_reggun.mdl";
-//	self.noise = "doom/dswpnup.wav";
-	self.noise3 = "portal/portfire.wav";
-//	self.noise4 = "doom/dsitembk.wav";
-//	self.duration = SND_OVER;
-	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "x_item";
-};
 
 // fn(xwep_fakeload) - extra weapon fake load - carried something between levels and it doesnt exist on new level
 
@@ -554,7 +525,26 @@ bprint("\n");
 		else
 			other.silencer_finished = other.silencer_finished + t;
 	}
-	
+
+	if (self.mdl == "progs/q3_art.mdl")
+	if (self.items == IT_SUIT || self.items == IT_QUAD)
+	{
+		local entity e;
+		e = spawn();
+		e.owner = other;
+		e.enemy = vload(other, -1);
+		setmodel(e.enemy, "progs/player_sh.mdl");
+		e.enemy.mdl = e.enemy.model;
+		e.enemy.skin = Q3_SH_QUAD;
+		e.think = q3_art_shell;
+		e.nextthink = time + POW_TIME - 1;
+		if (self.items == IT_SUIT)
+			e.enemy.skin = Q3_SH_ENV;
+		if (self.items == IT_QUAD)
+			e.enemy.skin = Q3_SH_QUAD;
+		e.items = self.items;
+	}
+
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets
 };

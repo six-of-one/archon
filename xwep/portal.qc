@@ -1,4 +1,4 @@
-.float portal_busy;
+//.float portal_busy; // moved to defs - fell out deal
 .entity master; // TDO: replace with existing
 .entity portal_entrance;
 .vector portal_entrance_pos;
@@ -7,10 +7,43 @@
 .float portal_failed;
 .float portal_opened;
 
+// portals seem to dump players outside the level - this saves them
+
+void() PortalSaver =
+{
+	local float p;
+
+	if (self.attack_finished < time)
+	{
+		remove(self);
+		return;
+	}
+
+	if (self.cnt > 10)
+	{
+		centerprint (self.owner, "PORTAL failure: xFF2C1b7A - researcher trapped in dimensional flux\nretrieving!\n");
+		setorigin(self.owner, self.origin + ' 0 0 16');
+		self.owner.velocity = v0;
+		remove(self);
+		return;
+	}
+
+	self.nextthink = time + 0.5;
+
+	p = pointcontents (self.owner.origin);
+	if (p == CONTENT_SOLID)
+	{
+		self.cnt = self.cnt + 1;
+		self.nextthink = time + 0.1;
+	}
+};
+
 // TDO: monsters & items - need different reject quals
 
 void () PortalTouch =
 {
+	local entity e;
+
 	if (((other.classname != "player") && (other.classname != "pk*bot") || !(other.flags & FL_CLIENT)))
 	{
 		return;
@@ -20,16 +53,33 @@ void () PortalTouch =
 		return;
 	}
 	makevectors (other.angles);
+
+	e = spawn(); // in case the portal dumps player outside level - this saves em;
+	e.owner = other;
+	e.origin = other.origin - v_forward * 64;
+	e.think = PortalSaver;
+	e.nextthink = time + 0.2;
+	e.attack_finished = time + 10;
+
+
 	if ((self.classname == "portal_entrance"))
 	{
-//		makevectors (self.portal_exit.angles);
-		other.origin = (self.portal_exit.origin + (v_forward * 20));
+		other.fixangle = 1;		// turn this way immediately
+		other.angles = self.portal_exit.mangle;
+		makevectors (self.portal_exit.mangle);
+		other.velocity = v_forward * 200;
+		other.origin = (self.portal_exit.origin + (v_forward * -24));
+//		other.origin = (self.portal_exit.origin + (self.portal_exit.v_angle * -32));
 	}
 	else
 	if ((self.classname == "portal_exit"))
 	{
-//		makevectors (self.portal_exit.angles);
-		other.origin = (self.portal_entrance.origin + (v_forward * 20));
+		other.fixangle = 1;		// turn this way immediately
+		other.angles = self.portal_exit.mangle;
+		makevectors (self.portal_entrance.mangle);
+		other.velocity = v_forward * 200;
+		other.origin = (self.portal_entrance.origin + (v_forward * -24));
+//		other.origin = (self.portal_entrance.origin + (self.portal_entrance.v_angle * 32));
 	}
 	else
 	{
@@ -45,7 +95,7 @@ void () PortalThink =
 	{
 		if ((self.portal_opened && (self.classname == "portal_entrance")))
 		{
-			centerprint (self.master, "Portal expired\n");
+			centerprint (self.master, "PORTAL expired\n");
 		}
 		self.master.portal_busy = FALSE;
 		self.master.portal_entrance = world;
@@ -85,9 +135,12 @@ void () PortalThink =
 	self.nextthink = (time + 0.1);
 };
 
+vector Test2, Test1;
+
 entity (vector pos, entity entrance) OpenPortalExit =
 {
 	local entity portal;
+	local vector norm;
 
 	portal = spawn ();
 	portal.movetype = MOVETYPE_FLYMISSILE;
@@ -102,7 +155,13 @@ entity (vector pos, entity entrance) OpenPortalExit =
 	portal.portal_opened = TRUE;
 	portal.portal_failed = FALSE;
 	portal.portal_entrance = entrance;
-	portal.angles = entrance.angles;
+
+	Test2 = norm = trace_plane_normal;
+   norm_x = 0 - norm_x;
+   norm_y = 0 - norm_y;
+   portal.angles = vectoangles( norm );
+	portal.mangle = normalize(pos + (norm * -100));
+
 	portal.touch = PortalTouch;
 	portal.attack_finished = entrance.attack_finished;
 	portal.nextthink = (time + 0.1);
@@ -116,11 +175,12 @@ entity (vector pos, entity entrance) OpenPortalExit =
 void () PortalPathThink =
 {
 	local float pntc;
+	local vector o2, v1;
 
 	if ((self.attack_finished < time))
 	{
 		self.portal_entrance.portal_failed = TRUE;
-		centerprint (self.master, "Portal failed\n");
+		centerprint (self.master, "PORTAL failed\n");
 		self.master.portal_busy = FALSE;
 		remove (self);
 		return;
@@ -128,13 +188,30 @@ void () PortalPathThink =
 	pntc = pointcontents (self.origin);
 	if ((pntc != CONTENT_SOLID))
 	{
-		self.portal_exit = OpenPortalExit ((self.origin + (self.velocity * 0.01)), self.portal_entrance);
+		v1 = normalize(self.velocity);
+		o2 = self.origin + (self.v_angle * 100);
+		traceline (o2,self.origin + (v1 * 4), TRUE, self); // for tpn
+
+
+
+local entity e;
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, o2);
+e = spawn();
+setmodel(e, "progs/hook.mdl");
+setorigin(e, self.origin + (self.velocity * 0.01));
+
+
+
+
+		self.portal_exit = OpenPortalExit ((self.origin + (v1 * 4)), self.portal_entrance);
 		self.portal_exit.master = self.master;
 		self.portal_entrance.portal_exit = self.portal_exit;
 		self.portal_entrance.portal_opened = TRUE;
 		sound (self.portal_entrance, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
 		sound (self.portal_exit, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
-		centerprint (self.master, "Portal opened\n");
+		centerprint (self.master, "PORTAL opened\n");
 		self.master.portal_busy = TRUE;
 		remove (self);
 		return;
@@ -163,14 +240,13 @@ float (vector dir) PortalExit2 =
 	}
 	if (!self.portal_entrance)
 	{
-		centerprint (self, "Portail failed: unknown error!\n");
+		centerprint (self, "PORTAL failure: xFF56Ab3E - device unknown error!\n");
 		return (FALSE);
 	}
 
 	org = (trace_endpos - (dir * 8));
 
 	portal = OpenPortalExit (org, self.portal_entrance);
-	portal.angles = vectoangles (dir);
 	portal.master = self;
 	portal.aflag = RED_PORTAL; // make it a red portal
 	portal.skin = 0 + portal.aflag;
@@ -178,23 +254,16 @@ float (vector dir) PortalExit2 =
 	self.portal_entrance.portal_opened = TRUE;
 	sound (self.portal_entrance, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
 	sound (portal, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
-	centerprint (self, "Portal opened\n");
+	centerprint (self, "PORTAL opened\n");
 	self.portal_busy = TRUE;
 	return (TRUE);
 };
-
-/* new calc for placed portals
-   norm = trace_plane_normal;
-   norm_x = 0 - norm_x;
-   norm_y = 0 - norm_y;
-   new.angles = vectoangles( norm );
-*/
 
 float (vector dir, float md2) PreparePortalEntrance =
 {
 	local entity tline;
 	local entity portal;
-	local vector org;
+	local vector org, norm;
 
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_TELEPORT);
@@ -212,7 +281,7 @@ float (vector dir, float md2) PreparePortalEntrance =
 			return (FALSE);
 		}
 	}
-	org = (trace_endpos - (dir * 8));
+	org = (trace_endpos - (dir * 4));
 	portal = spawn ();
 	portal.master = self;
 	if (!md2) // mode2 - the fancy choose the second portal exit deal
@@ -239,7 +308,13 @@ float (vector dir, float md2) PreparePortalEntrance =
 	portal.movetype = MOVETYPE_FLYMISSILE;
 	portal.velocity = '0 0 0';
 	portal.avelocity = '0 0 0';
-	portal.angles = vectoangles (dir);
+
+	Test1 = norm = trace_plane_normal;
+   norm_x = 0 - norm_x;
+   norm_y = 0 - norm_y;
+   portal.angles = vectoangles( norm );
+	portal.mangle = normalize(org + (norm * -100));
+
 	portal.classname = "portal_entrance";
 	portal.solid = SOLID_BBOX;
 	portal.skin = 0;
@@ -294,6 +369,7 @@ void () W_FirePortal =
 	dir = (finish - src);
 	dir = normalize (dir);
 	traceline (src, (src + (dir * 2048)), TRUE, self);
+
 	if ((trace_fraction != 1))
 	{
 		if (!f || !self.portal_busy)
@@ -363,3 +439,34 @@ void () player_portalstart5 = [ $shotatt6, player_run ]
 	W_FirePortal ();
 };
 
+
+void() weapon_portal =
+{
+	q100_weapon_supershotgun();
+	self.netname = "Portal apparatus";
+
+	self.touch = x_weapon_touch;
+	self._attack = SUB_Null;
+	self._fr_attack = player_portal1;
+
+	self.currentammo = 0;
+	self.aflag = IGN_INV;
+	self.items = IT_LIGHTNING;
+	self.lip = AMMO_NONE;
+	self.attack_finished = 1;
+	self.dmg = 0;
+	self.dmg_save = 1;
+	self.dmg_take = 1; // shot cnt
+	self.lefty = XW_MULTI + 1; // 2 mode wep
+	self.vv_draw = vw_range_base;
+
+	setmodel (self, "progs/m_portal.mdl");
+	self.weaponmodel = "progs/v_portal.mdl";
+	self.vwepmdl = "progs/vw_portal.mdl";
+//	self.noise = "doom/dswpnup.wav";
+	self.noise3 = "portal/portfire.wav";
+//	self.noise4 = "doom/dsitembk.wav";
+//	self.duration = SND_OVER;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "x_item";
+};

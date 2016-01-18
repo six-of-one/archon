@@ -191,15 +191,29 @@ void() CheckWaterLevels =
 					}
 				}
 				else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT) e.th_die(); // note: swim monsters dont set splash
-				else if (IROBOT(e) ) //|| e.classname == "player")
+				else if (IROBOT(e) || e.classname == "player")
 				{
-					f = spawn();
-					f.classname = "CDM"; // Cataboligne - 2.20.11 - customized death messages
-					f.netname = " fell from grace.";
-					f.deadflag = 1; // use name
-					f.frags = 0;
-					T_Damage(e, e, f, 10000);
-					remove(f);
+					if (!e.portal_busy) // no action if under influence of portal contols
+					{
+						if (SV_FALLEN == 1)
+						{
+							f = spawn ();
+							f.owner = e;
+							f.think = phone_teleport;
+							f.nextthink = (time + 0.2);
+							if (!IROBOT(e)) centerprint(e, "You have fallen from grace - by grace you are restored!\n");
+						}
+						else if (SV_FALLEN == 2)
+						{
+							f = spawn();
+							f.classname = "CDM"; // Cataboligne - 2.20.11 - customized death messages
+							f.netname = " fell from grace.";
+							f.deadflag = 1; // use name
+							f.frags = 0;
+							T_Damage(e, e, f, 10000);
+							remove(f);
+						}
+					}
 				}
 				else if (e.classname != "player")
 				{

@@ -185,6 +185,7 @@ float(float bt, string md) wepbit_mcode;
 
 // e - ent loading to
 // fl - flag of wep to load
+// Cataboligne - 9.11.11 - added negative flag for specials
 
 entity(entity e, float fl) vload =
 {
@@ -223,12 +224,13 @@ entity(entity e, float fl) vload =
 			xwep_fakeload (tr.vwepent, 0, 0, "weapon_mjolnir", IT_MJOLNIR);
 	}
 	else if (fl == IT_ARMOR1) md = "progs/vw_armor.mdl";
+	else if (fl < 0) md = "progs/null.mdl"; // special cases - set own model
 	if (md == "") md = VW_DEFGUN;
 	tr.vwepent.mdl = md;
-	if (fl != IT_AXE && !VW) md = VW_DEFGUN;
+	if (fl >0 && fl != IT_AXE && !VW) md = VW_DEFGUN;
 	setmodel(tr.vwepent, md);
 
-	tr.vwepent.mcode = wepbit_mcode(fl, "Q");
+	if (fl > 0) tr.vwepent.mcode = wepbit_mcode(fl, "Q");
 /*
 	if (DARKPLACES) // TEST: - trying movement deal - movetype 12
 	{
@@ -408,16 +410,19 @@ void(entity e, float cd) viswep_ld =
 		else
 		if (!tr.pk_currentitem) // non pk item wep
 		{
-			if (! tr.weapon & e.items) // dont have this item - remove vwepent
+			if (tr.weapon > 0)
 			{
-				pr = tr.vwepent;
-				tr.vwepent = world;
-				if (tr.wad != "packwep") // pack deal
-					remove(tr);
-				rmv = TRUE;
-				}
-			else
-				bts = bts | tr.weapon;
+				if (! tr.weapon & e.items) // dont have this item - remove vwepent
+				{
+					pr = tr.vwepent;
+					tr.vwepent = world;
+					if (tr.wad != "packwep") // pack deal
+						remove(tr);
+					rmv = TRUE;
+					}
+				else
+					bts = bts | tr.weapon;
+			}
 		}
 		else if (tr.weapon == IT_AXE) // pk item test
 		{
@@ -670,6 +675,7 @@ void() viswep_post =
 			}
 		}
 		if (!VW)
+		if (vhead.weapon > 0)
 		if (!(vhead.weapon == IT_AXE && vhead.pk_currentitem == PK_IT_AXE))
 		if (vhead.mdl != "progs/vw_q2_hgr.mdl")
 		if (vhead.mdl != "progs/vw_axe.mdl" && vhead.mdl != "progs/vw_mjolnir.mdl") vmdl = VW_DEFGUN; // ret from invisible - set non axe to qgun
@@ -795,6 +801,7 @@ void() viswep_togl =
 	e = find (world, classname, "viswep");
 	while (e)
 	{
+		if (e.weapon > 0)
 		if (!(e.weapon == IT_AXE && e.pk_currentitem == PK_IT_AXE)) // any axe replacement
 		if (e.mdl != "progs/vw_q2_hgr.mdl") /// too much trouble to change (for now)
 		if (e.mdl != "progs/vw_axe.mdl" && e.mdl != "progs/vw_mjolnir.mdl")
@@ -975,7 +982,7 @@ void(entity pack) DeadThrowWeps =
 	while (e)
 	{
 		pd = w = FALSE;
-		while (pkid & e.pk_currentitem) e = e.vwepent;
+		while (pkid & e.pk_currentitem || e.weapon < 0) e = e.vwepent;
 
 		if (pack)
 		{

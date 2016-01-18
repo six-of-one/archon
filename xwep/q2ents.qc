@@ -1687,7 +1687,7 @@ void() q2_ctf_haste =
 
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Haste tech";
+	self.netname = "Time Accelerator";
 // TDO: tech implement - needs to be controlled by rune server if active - override these settings
 	self.touch = x_item_touch;
 //	self.x_items = X_Q2_KEY_PYRAMID;
@@ -1717,7 +1717,7 @@ void() q2_ctf_regen =
 
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Regeneration tech";
+	self.netname = "Auto Doctor";
 	self.touch = x_item_touch;
 //	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;
@@ -1745,7 +1745,7 @@ void() q2_ctf_resist =
 
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Resistance tech";
+	self.netname = "Disruptor Shield";
 	self.touch = x_item_touch;
 //	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;
@@ -1773,7 +1773,7 @@ void() q2_ctf_stren =
 
 	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
-	self.netname = "Strength tech";
+	self.netname = "Power Amplifier";
 	self.touch = x_item_touch;
 //	self.x_items = X_Q2_KEY_PYRAMID;
 	self.wait = RSP_TIME;

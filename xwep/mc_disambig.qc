@@ -379,3 +379,25 @@ void () item_enviro =
 	}
 };
 
+/// ambiguous map features
+
+void () trigger_push =
+{
+/*
+	if (world.wad == "q2.wad")
+	{
+		self.classname = "trigger_push";
+		q2_trigger_push();
+		return;
+	}
+	else 
+*/
+	if (world.wad == "" && !pk_map)
+	{
+		self.classname = "trigger_push";
+		q3_trigger_push(); 
+		return;
+	}
+
+	q100_trigger_push();
+};

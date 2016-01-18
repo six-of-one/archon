@@ -1498,6 +1498,57 @@ void() q3_item_quad =
 
 // code for q3 arts that use rune effects
 
+void() q3_art_shell =
+{
+	local float f;
+	
+	if (self.items) f = (!self.items & self.owner.items);
+	if (self.enemy.skin == Q3_SH_HASTE) f = (!self.owner.rune_flag & RUNE_FLG_HS);
+
+	if (!self.enemy || self.owner.health <= 0 || f )
+	{
+		if (self.enemy)
+		{
+			self.enemy.vwepent = world;
+			remove(self.enemy);
+		}
+		vw_chain(self.owner);
+		remove(self);
+		return;
+	}
+	self.nextthink = time + 0.5;
+};
+
+void() regen_shell_exp =
+{
+	local float h;
+
+	if (!self.owner.rune_flag & RUNE_FLG_RG || !self.enemy || self.owner.health <= 0)
+	{
+		if (self.enemy)
+		{
+			self.enemy.vwepent = world;
+			remove(self.enemy);
+		}
+		vw_chain(self.owner);
+		self.owner.volume = 0;
+		remove(self);
+		return;
+	}
+	self.nextthink = time + 1;
+	
+	if (self.owner.volume > 100)
+		h = self.owner.volume;
+	else
+		h = 200; // q3 default val
+
+		if (self.enemy.mdl != "progs/null.mdl" || (self.owner.health >= h)) 
+			self.enemy.mdl = "progs/null.mdl";
+		else
+			self.enemy.mdl = "progs/player_sh.mdl";
+		setmodel(self.enemy, self.enemy.mdl);
+};
+
 void() q3_pwr_touch =
 {
 	local entity e;
@@ -1527,8 +1578,27 @@ void() q3_pwr_touch =
 
 	other.rune_flag = other.rune_flag | (self.spawnflags);// -- flight & mask deal -- & RUNE_MASK_ALL); // still qualify one of the valid runes
 	other.target2 = self.model;
+	if (self.volume) other.volume = self.volume; // regen rune
 
 	if (self.spawnflags & RUNE_FLG_FLY) other.movetype = MOVETYPE_FLY;
+
+	if (self.spawnflags & (RUNE_FLG_RG | RUNE_FLG_HS))
+	{
+		e = spawn();
+		e.think = regen_shell_exp;
+		e.nextthink = time + 0.5;
+		e.owner = other;
+		e.enemy = vload(other, -1);
+		setmodel(e.enemy, "progs/player_sh.mdl");
+		e.enemy.mdl = e.enemy.model;
+		e.enemy.skin = Q3_SH_REGEN;
+		if (self.spawnflags & RUNE_FLG_HS)
+		{
+			e.enemy.skin = Q3_SH_HASTE;
+			e.think = q3_art_shell;
+			e.nextthink = time + POW_TIME - 1;
+		}
+	}
 
 	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
@@ -1914,6 +1984,112 @@ void() info_player_intermission =
 
 };
 
+// push for q3
+
+// TDO: q3 sounds
+
+void () q3_trigger_push_think =
+{
+
+	if (self.attack_finished < time)
+	{
+		remove(self);
+		return;
+	}
+
+	if (vlen(self.owner.origin - self.goalentity.origin) < 64)
+	{
+//		self.owner.velocity = self.speed * self.movedir * 10 * 0.2;
+		self.nextthink = time + 10; // incase its in link set middle
+		self.think = SUB_Remove;
+//		remove(self);
+		return;
+	}
+	else
+		self.owner.velocity = self.speed * self.movedir * 10;
+
+	self.nextthink = time + 0.2;
+
+	if (self.owner.classname == "player")
+	{
+		if (self.owner.fly_sound < time)
+		{
+			self.owner.fly_sound = time + 1.5;
+			sound (self.owner, CHAN_AUTO, "ambience/windfly.wav", 1, ATTN_NORM);
+		}
+	}
+	if (self.owner.classname == "pk*bot")
+	{
+		if ((self.movedir_x < 0.1) && (self.movedir_y < 0.1))
+		{
+			self.owner.velocity_x = ((self.owner.velocity_x + (80 * random ())) - 40);
+			self.owner.velocity_y = ((self.owner.velocity_y + (80 * random ())) - 40);
+		}
+		if (self.owner.fly_sound < time)
+		{
+			self.owner.fly_sound = (time + 1.5);
+			sound (self.owner,CHAN_AUTO,"ambience/windfly.wav",TRUE,ATTN_NORM);
+		}
+	}
+
+};
+
+void () q3_trigger_push_touch =
+{
+	local entity e;
+
+	if (!self.goalentity)
+	if (self.target)
+	{
+		e = find (world,targetname,self.target);
+		self.goalentity = e;
+		if (e)
+			self.movedir = normalize(e.origin - self.origin);
+	}
+
+	e = self.vwepent;
+
+	if (Q3_JP_INSTANT)
+	{
+		if (self.goalentity)
+		{
+			sound (other,CHAN_AUTO,"ambience/windfly.wav",TRUE,ATTN_NORM);
+			setorigin(other, self.goalentity.origin);
+		}
+		return;
+	}
+
+	while (e) // see if we already jumped him
+	{
+		if (e.owner == other) return;
+		e = e.vwepent;
+	}
+
+	if (other.classname == "grenade")
+		other.velocity = self.speed * self.movedir * 10;
+	else if (other.health > 0)
+	{
+		other.velocity = self.speed * self.movedir * 10;
+		if (other.enemy.classname == "pk*bot")
+		{
+			enemy_touched ();
+		}
+	}
+
+	e = spawn();
+	e.classname = "q3_pusher";
+	e.owner = other;
+	e.goalentity = self.goalentity; // target
+	e.think = q3_trigger_push_think;
+	e.nextthink = time + 0.2;
+	e.attack_finished = time + self.wait; // end push after this
+	e.vwepent = self.vwepent; // push down stack
+	self.vwepent = e;
+	
+	if (self.spawnflags & PUSH_ONCE)
+		remove(self);
+};
+
 /*		q3 ---
 	QUAKED target_position (0 .5 0) (-8 -8 -8) (8 8 8)
 Aiming target for entities like light, misc_portal_camera and trigger_push (jump pads) in particular.
@@ -1928,9 +2104,28 @@ To make a jump pad, place this entity at the highest point of the jump and targe
 
 void() target_position =
 {
-
+	setmodel(self, "progs/hook.mdl");
 };
 
+/*QUAKED q3_trigger_push (.5 .5 .5) ? PUSH_ONCE
+Pushes the player - q3 style
+*/
+void () q3_trigger_push =
+{
+	InitTrigger ();
+	precache_sound ("ambience/windfly.wav");
+	self.touch = q3_trigger_push_touch;
+	self.istrigger = 1;
+	self.th_weight = trigpushweight; // *bot
+	if (!self.speed)
+		self.speed = 80;
+	if (!self.wait) self.wait = 60; // time push can run
+	if (!self.target)
+	{
+		self.wait = 15; // just a guess - this objects 15 mins of faim
+		self.movedir = ' 0 -1 0'; // didnt have a target - default to up
+	}
+};
 
 /*		q3 ---
 	QUAKED misc_teleporter_dest (1 .5 .25) (-32 -32 -24) (32 32 -16)

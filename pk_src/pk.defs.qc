@@ -38,6 +38,12 @@ void() q_startmap;						// fix start map issue for q single player
 .string class_select;					// allow selection by class
 //float GMODE;								// genre mode - cfg for ambig map items
 
+float SV_FALLEN;							// take action if player falls out of level 0 = none, 1 = return via phone type teleport, 2 = kill (no cide)
+.float portal_busy;						// here for fallen test
+float SV_HOLDING;							// 0 - no hold, 1 - allow players to pick up moveable stuff (items harp, aircannon or grav well can move, or temp decor)
+float SV_TELEPORTALL;					// 0 - only telp player / bots / monsters, 1 = add missiles, 2 = teleport anything that hits a porter
+
+// no exit was found (trigger_changelevel) - these set default limits for those levels
 float NOEXIT_TIMEOUT;					// default time for levels without exits (trigger_changelevel)
 float NOEXIT_FRAGLIMIT;					// default fraglimit for levels without exits (trigger_changelevel)
 float NOEXIT_SAVETIME;					// save any timelimit if set
@@ -763,6 +769,7 @@ string Q3_BOBHOFF				= "cl_itembobheight 0\n"; // q3 item bob height off setting
 float Q3_POWER_WAIT; // norm = 120
 float Q3_POWER_TIME; // norm = 30
 float Q3_RAILBEAM				= 357811;
+float Q3_JP_INSTANT			= 1; // if true jump pads are instant trip to target
 
 void() q3_precache;
 void() q3_suspend;
@@ -772,6 +779,13 @@ void() q3_bob_height;
 // health - armor rot
 void(entity e, float v) q3_ha_rot;
 float Q3_HAH_TMP, Q3_HAA_TMP; // global temps
+
+// artifact shells
+
+float Q3_SH_QUAD				= 0;
+float Q3_SH_REGEN				= 1;
+float Q3_SH_HASTE				= 2;
+float Q3_SH_ENV				= 3;
 
 // hipnotic
 

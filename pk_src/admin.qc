@@ -1392,6 +1392,7 @@ void() AdminCommands =
 		}
 		else
 		{
+// TDO: setting when under noexit default - turn off noexit & make setting
 			localcmd(self.path);
 			localcmd(ftos(self.lefty));
 			localcmd("\n");

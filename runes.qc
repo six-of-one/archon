@@ -594,6 +594,7 @@ void() RegenerationSound =
 void() rune_regen =
 {
 	local float f, h;
+	local entity e;
 
 	if (self.deadflag)
 		return;
@@ -608,7 +609,10 @@ void() rune_regen =
 	h = 100;
 	if (self.target2 == "progs/q3_art.mdl") // q3 regen takes health to 200
 	{
-		h = 200; // dont have access to q3 ent here cant use = self.volume;
+		if (self.volume > 100)
+			h = self.volume;
+		else
+			h = 200; // dont have access to q3 ent here cant use = self.volume; - fixed during touch
 	}
 
 	if (self.health < h)

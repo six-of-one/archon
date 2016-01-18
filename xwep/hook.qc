@@ -693,7 +693,8 @@ void () HookBehavior =
 	self.owner.velocity = self.owner.velocity + normalize(chainvec) * f1;
 
 	f1 = HOOK_SPEED;
-	if (self.owner.rune_flag & RUNE_FLG_HS) f1 = HOOK_SPEED * 2;
+	if (self.speed) f1 = self.speed;
+	if (self.owner.rune_flag & RUNE_FLG_HS) f1 = f1 * 2;
 // enforce the speed limit - the greatest grievance against the hook since its inception
 	if (f1 > 100)
 	while (vlen(self.owner.velocity) > (f1 + 1))
@@ -896,6 +897,7 @@ void(entity e) InitiateHook =
 			newhook.target2 = ""; // in + out
 			newhook.targetname = "q2_snd/lhook_l.wav"; // launch snd			
 			newhook.punchangle_x = 0.5;
+			newhook.speed = 650;
 			self.hook = self.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
 		}
 		if (newhook.lefty == SEL_LTN_HOOK)

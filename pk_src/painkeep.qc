@@ -706,13 +706,18 @@ void() pk_liveupd =
 		return;
 	}
 	
+// vars server controls
+
+	SV_FALLEN = cvar("sv_c_fallen");
+	SV_HOLDING = cvar("sv_c_holding");
+
 	if (!NOEXIT_CHECK)
 	{
 		NOEXIT_SAVETIME = NOEXIT_SAVEFRAG = -2;
 
 		if (find(world, classname, "trigger_changelevel"))
 			NOEXIT_CHECK = 1;
-		else
+		else if (!cvar("timelimit") && !cvar("fraglimit")) // no limits already set
 		{
 			NOEXIT_CHECK = -1; // using default timeout if set
 			NOEXIT_SAVETIME = cvar("timelimit");
@@ -1097,6 +1102,9 @@ void() pk_srvcmd_set =
 	WARNING = FALSE;
 	BOTFREEZE = 0;
 
+	SV_FALLEN = 1;
+	SV_HOLDING = 1;
+
 // limits for exits with no detectable exits
 	NOEXIT_TIMEOUT = 0;
 	NOEXIT_FRAGLIMIT = 0;
@@ -1358,6 +1366,8 @@ void() pk_srvcmd_set =
 		registercvar("sv_c_noexit_timeout", "0"); // a default timelimit for any level that doesnt have a trigger_changelevel
 																							// this is only a partial solution (as with end.bsp) the trigger may not be accessible
 		registercvar("sv_c_noexit_fraglimit", "50"); // a default fraglimit for any level that doesnt have a trigger_changelevel
+		registercvar("sv_c_fallen", "1"); // take action if player falls out of level 0 = none, 1 = return via phone type teleport, 2 = kill (no cide)
+		registercvar("sv_c_holding", "1"); // 0 - no hold, 1 - allow players to pick up moveable stuff (items harp, aircannon or grav well can move, or temp decor)
 
 // pk*bot server control - spawns bots on level changes
 		registercvar("sv_bot_pk", "0"); // bot count . skills non team - replaces parm12

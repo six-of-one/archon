@@ -710,7 +710,7 @@ void () trigger_push_touch =
 /*QUAKED trigger_push (.5 .5 .5) ? PUSH_ONCE
 Pushes the player
 */
-void () trigger_push =
+void () q100_trigger_push =
 {
 	InitTrigger ();
 	precache_sound ("ambience/windfly.wav");
