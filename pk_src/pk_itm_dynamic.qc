@@ -84,7 +84,7 @@ void(string cls) item_call =
 	local float rd, t_monsters;
 	local entity f;
 
-	t_monsters = total_monsters;
+	t_monsters = total_monsters; // because *monster_start() increments this value as well
 
 	f = world;
 	rd = random();
@@ -520,7 +520,7 @@ void(string cls) item_call =
 		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, 2 + random(), random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 
-		total_monsters = t_monsters  + 1;
+		total_monsters = t_monsters  + 1; // the "real" bump
   	
 		WriteByte (MSG_BROADCAST, SVC_UPDATESTAT);
 		WriteByte (MSG_BROADCAST, STAT_TOTALMONSTERS);

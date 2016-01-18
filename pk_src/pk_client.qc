@@ -508,7 +508,7 @@ void() PutClientInServer =
 
 	self.classname = "player";
 	player_count(); // count for map over loading ops
-
+	
 // morphic - needs done prior to q10-
 	self._stand = SUB_Null; // make sure these are safe & detectable
 	self._pain = SUB_Null;

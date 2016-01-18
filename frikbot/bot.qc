@@ -593,7 +593,8 @@ void() ClientInRankings =
 		self.ishuman = FALSE;
 		return;
 	}
-   	cno = self.colormap - 1;
+
+  	cno = self.colormap - 1;
 	BotInvalidClientNo (cno);
 	active_clients = active_clients | ClientBitFlag(cno);
 	
@@ -601,6 +602,11 @@ void() ClientInRankings =
 	self.ishuman = TRUE; // this is where human players are indicated as human - Cataboligne, special NOTE:
 	self.class_select = "class_player"; // not redundant since frikbot has classname "player"
 	self.switch_wallhug = time + 1;
+	
+// for HUD scores - does not work here !!!
+//	stuffcmd(self, "cl_number \"");
+//	stuffcmd(self, ftos(self.b_clientno));
+//	stuffcmd(self, "\"\n");
 };
 
 

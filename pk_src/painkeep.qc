@@ -1325,7 +1325,12 @@ void() reload_map =
 };
 
 void() pk_srvcmd_set =
-{
+{	
+// for HUD scores
+	stuffcmd(self, "cl_number \"");
+	stuffcmd(self, ftos(self.b_clientno));
+	stuffcmd(self, "\"\n");
+
 // set mcodes - this means they can change and things like func_make that have fixed map codes might go wrong if the code changes in the future - DOH!
 	mcode_load();
 

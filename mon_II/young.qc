@@ -216,8 +216,11 @@ void()	young_run1	=[	$run1,		young_run1	]
 	ai_run(self.waitmax);
 	young_slimedamage();
 
-// trying to fix "floaty" aliens
-	if (random() > 0.97) droptofloor(0, 0);
+// trying to fix "floaty" aliens - randomly try jumping
+	if (! self.flags & FL_ONGROUND)
+	if (random() < 0.3)
+		self._jump();
+//	if (random() > 0.9) droptofloor(0, 0);
 
 };
 /*

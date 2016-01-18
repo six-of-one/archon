@@ -125,7 +125,7 @@ void() CheckWaterLevels =
 	while (e != world)
 	{
 // bit of fn above - delooped
-		pcc = pc = pointcontents(e.origin + '0 0 4'); // special for item test - see InWater fn code
+		pcc = pc = pointcontents(e.origin + '0 0 2'); // special for item test - see InWater fn code
 
 // clear any op states if in these contents
 		if (pc == CONTENT_EMPTY || pc == CONTENT_WATER)
@@ -377,6 +377,7 @@ void() CheckWaterLevels =
 				else if (e.ip_orgOrigin != v0) // put map spawned items with a storage position back now
 				{
 					e.revotemsg = e.revotemsg + 1; // count resets, & freeze on 3rd try
+					e.msgcount = e.msgcount + 1; // count resets, freeze for bouncy bouncy (where revotemsg is clear by empty space but it keeps bouncing out)
 
 #ifdef warning
 					if (WARNING & 128)
@@ -388,6 +389,8 @@ void() CheckWaterLevels =
 						bprint("\n");
 					}
 #endifdef
+
+					if (e.msgcount > 16) e.revotemsg = 7;
 
 					if (e.revotemsg > 6) 
 					{
