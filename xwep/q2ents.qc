@@ -413,7 +413,7 @@ void () q2_weapon_railgun =
 	self.noise = "q2_snd/w_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.noise3 = "q2_snd/railf_mx.wav";
-	self.noise2 = "q3_snd/rg_hum.wav"; // gun hum - TDO: q2 snd
+	self.noise2 = "q2_snd/rg_hum.wav"; // gun hum
 	self.chaosweptime = 1.16;
 	self.endtime = 2.33;
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -606,7 +606,14 @@ void () q2_weapon_supershotgun =
 	self.dmg = 6;
 	self.dmg_save = 2;
 	self.dmg_take = 20; // shot cnt
-	self.punchangle = ' 0.14 0.08 0'; // bullet spread out -- TDO: get q2 value, this is q1
+	self.punchangle = ' 0.10 0.05 0'; // bullet spread out -- guestimate from q2 code below
+/*
+	r = crandom()*hspread; 1000 (500 for shotgun)
+   u = crandom()*vspread; 500
+   VectorMA (start, 8192, forward, end);
+   VectorMA (end, r, right, end);
+   VectorMA (end, u, up, end);
+*/
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_dblshot.mdl");
@@ -637,7 +644,7 @@ void () q2_weapon_shotgun =
 	self.dmg = 4;
 	self.dmg_save = 1;
 	self.dmg_take = 12; // shot cnt
-	self.punchangle = ' 0.04 0.04 0'; // bullet spread out -- TDO: get q2 value, this is q1
+	self.punchangle = ' 0.05 0.05 0'; // bullet spread out -- guestimate from q2 code
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_shotgun.mdl");
@@ -1201,7 +1208,7 @@ void() X_FireHandGrenade =
 	}
 	else
 	{
-// TDO: frames!, throw control?
+		player_q2hgr1();
 		snd = EWEAP.noise3;
 		if (snd == "") snd = "q2_snd/hgrent1a.wav";
 		EWEAP.noise2 = "";
@@ -1336,11 +1343,11 @@ void() power_armor_impulse =
 	if (! self.x_items & X_PWR_ARM_MASK) // turned off
 	{
 		if (self.ammo_cells > 0)
-			sound (self, CHAN_ITEM, "q2_snd/pwr_arm_off.wav", 1, ATTN_NORM); // TDO: use .noise3
+			sound (self, CHAN_ITEM, "q2_snd/pwr_arm_off.wav", 1, ATTN_NORM);
 	}
 	else if (self.ammo_cells < 1)
 		sprint(self, "Power armor protection will activate when you get some cells.\n");
 	else
-		sound (self, CHAN_ITEM, "q2_snd/pwr_arm_on.wav", 1, ATTN_NORM); // TDO: use .noise3
+		sound (self, CHAN_ITEM, "q2_snd/pwr_arm_on.wav", 1, ATTN_NORM);
 
 }

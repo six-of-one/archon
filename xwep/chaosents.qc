@@ -55,6 +55,76 @@ void() c_weapon_reggun =
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
+// fn(xwep_fakeload) - extra weapon fake load - carried something between levels and it doesnt exist on new level
+
+// self - map weapon ent (fake loaded) ...or 1 of these 2...
+// mcd - map code - overrides spf
+// spf - spawn func, in either case this code handles load up
+
+// ve - viswep ent
+// camct - current ammo cnt
+
+void(entity ve, float camct, float mcd, string spf) xwep_fakeload =
+{
+	local string spt; // spawn this temp
+	local entity sv;
+
+	if (!ve) return;
+
+	sv = self;
+	spt = spf;
+
+	if (mcd)
+	{
+		spt = item_by_mcode(mcd);
+	}
+	if (spt) // spawn this
+	{
+		self = spawn();
+		self.classname = "dyn_item"; // stop item_call from doing a bunch of stuff - if not removed this will spawn the item somewhere
+		item_call(spt);
+		self.think = SUB_Remove;
+		self.nextthink = time + 0.1;
+	}
+
+		ve.eweapon = ve;
+		ve._attack = self._attack;
+		ve._fr_attack = self._fr_attack;
+//		ve.touch = self.touch;
+
+		ve.weapon = ve.items = self.items;
+		ve.x_items = self.x_items;
+		ve.currentammo = self.currentammo;
+		ve.lip = self.lip;
+		ve.attack_finished = self.attack_finished;
+		ve.dmg = self.dmg;
+		ve.dodmg = self.dodmg;
+		ve.dmg_save = self.dmg_save;
+		ve.dmg_take = self.dmg_take;
+		ve.punchangle = self.punchangle;
+		ve.aflag = camct;
+		ve.style = self.style; // melee flag
+		ve.lefty = self.lefty; // misc data
+//		ve.cnt = self.cnt; // vw skinnage
+
+		ve.netname = self.netname;
+//		ve.mdl = self.mdl; - invisible
+		setmodel (ve, self.vwepmdl);
+		ve.mdl = ve.model;
+		if (self.skin) ve.skin = self.skin;
+		ve.weaponmodel = self.weaponmodel;
+		ve.chaosweptime = self.chaosweptime;
+		ve.endtime = self.endtime;
+		ve.duration = self.duration;
+		ve.noise = self.noise;
+		ve.noise2 = self.noise2;
+		ve.noise3 = self.noise3;
+		ve.noise4 = self.noise4;
+		ve.target = self.target; // missile strike snd
+		ve.target1 = self.target1; // missile models
+	
+	self = sv;
+}
 
 
 // from chaos mod

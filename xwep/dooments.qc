@@ -62,6 +62,7 @@ void() doom_precache =
 	precache_model ("progs/barrel2.mdl");
 	precache_model ("progs/d_bottle.mdl");
 	precache_model ("progs/heal_medkit.mdl");
+	precache_model ("progs/d_stimpack04.mdl");
 	precache_model ("progs/spiritarmor.mdl");
 	precache_model ("progs/d_spheres.mdl");
 	precache_model ("progs/d_berzerk.mdl");
@@ -437,8 +438,7 @@ void() d_ammo_cellbox =
 	self.wait = RSP_TIME;
 	self.volume = D_MAX_CELLS;
 
-//	setmodel (self, "progs/d_cellbox.mdl");
-	doom_alpha_tran(self, MC_D_ACELLS);
+	setmodel (self, "progs/d_cellbox.mdl");
 
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
@@ -457,7 +457,9 @@ void() d_ammo_cellpack =
 	self.wait = RSP_TIME;
 	self.volume = D_MAX_CELLS;
 
-	setmodel (self, "progs/d_cellpack.mdl");
+//	setmodel (self, "progs/d_cellpack.mdl");
+	doom_alpha_tran(self, MC_D_ACELLS);
+
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Cells";

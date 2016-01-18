@@ -211,6 +211,12 @@ entity(entity e, float fl) vload =
 	else if (fl == IT_GRENADE_LAUNCHER) md = "progs/vw_gren.mdl";
 	else if (fl == IT_ROCKET_LAUNCHER) md = "progs/vw_rock.mdl";
 	else if (fl == IT_LIGHTNING) md = "progs/vw_light.mdl";
+	else if (fl == IT_MJOLNIR)
+	{
+		md = "progs/vw_mjolnir.mdl";
+		if (self.vwepmdl != md)
+			xwep_fakeload (tr.vwepent, 0, 0, "weapon_mjolnir");
+	}
 	else if (fl == IT_ARMOR1) md = "progs/vw_armor.mdl";
 	if (md == "") md = VW_DEFGUN;
 	tr.vwepent.mdl = md;
@@ -555,13 +561,13 @@ void() viswep_post =
 	if (!vhead)
 		viswep_ld(self, 1);
 	else
-	{
+		{
 		if (self.items & qweps != vhead.items) qld = TRUE;
 		if (!qld && vhead.armorvalue != self.armortype) qld = VW_ARMOR;
 
 		pkbits = mk_pkbits(self);
 		if (vhead.pk_items != pkbits || qld) viswep_ld(self, 1);
-	}
+		}
 	
 	}
 
@@ -617,7 +623,7 @@ void() viswep_post =
 		}
 
 		if (vhead.owner.items & IT_INVISIBILITY) vhead.model = ""; // heh heh, player invisible
-		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = "";
+		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
 		else
 		if (vhead.model == "" || (vhead.origin + vofs) != vhead.owner.origin || vhead.angles != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
 			{

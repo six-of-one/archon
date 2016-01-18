@@ -120,6 +120,16 @@ float MC_PKP_RNDITM; // + plus items
 float MC_T_RNDITM; // # of total items
 float MC_TRNSUB; // skip from q1 - pk
 
+/// hipnotic
+// wep ids
+float MC_HIP_MJOLNIR;
+float MC_HIP_LASERCAN;
+float MC_HIP_PROXGUN;
+
+float MC_HIP;
+
+float MC_HIP_RNDITM; // # of total items
+
 /// doom
 
 float MC_D_FIST;
@@ -414,6 +424,14 @@ void() mcode_load =
 	MC_T_RNDITM = f - MC_AXE;		//	#	of	total	items
 	MC_TRNSUB = 0;		//	skip	from	q1	-	pk - TDO: remove from code
 
+/// hipnotic
+	MC_HIP_MJOLNIR = f = (f + 1);
+	MC_HIP_LASERCAN = f = (f + 1);
+	MC_HIP_PROXGUN = f = (f + 1);
+
+	MC_HIP = (f + 1);
+	MC_HIP_RNDITM = f - MC_HIP_MJOLNIR;
+
 ///	doom
 
 //	MC_D_FIST = f = (f + 1); // NOTE: not a map spawn item, can this be removed?
@@ -666,6 +684,12 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_TOMB)													return(PKPLUS_IT_TOMB);
 	if (mc == MC_MASK)													return(PKPLUS_IT_ACTOR);
 	if (mc == MC_PHONE)													return(PKPLUS_IT_PHONE);
+
+/// hipnotic
+
+	if (mc == MC_HIP_MJOLNIR)											return(IT_AXE);
+	if (mc == MC_HIP_LASERCAN)											return(IT_SUPER_NAILGUN);
+	if (mc == MC_HIP_PROXGUN)											return(IT_GRENADE_LAUNCHER);
 
 /// doom
 
@@ -924,6 +948,12 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "item_pkplus_actor")									return(MC_MASK);
 	if (tsc == "item_pkplus_phone")									return(MC_PHONE);
 
+/// hipnotic
+	
+	if (tsc == "weapon_mjolnir")										return(MC_HIP_MJOLNIR);
+	if (tsc == "weapon_laser_gun")									return(MC_HIP_LASERCAN);
+	if (tsc == "weapon_proximity_gun")								return(MC_HIP_PROXGUN);
+
 /// doom
 	if (tsc == "d_weapon_shotgun")									return(MC_D_SHOTGUN);
 	if (tsc == "d_weapon_supershotgun")								return(MC_D_BOOMSTICK);
@@ -962,8 +992,8 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "d_ammo_ammobox")										return(MC_D_ABULLETS_LG);
 	if (tsc == "d_ammo_1rocket")										return(MC_D_AROCKET);
 	if (tsc == "d_ammo_rockbox")										return(MC_D_AROCKETS_LG);
-	if (tsc == "d_ammo_cellbox")										return(MC_D_ACELLS);
-	if (tsc == "d_ammo_cellpack")										return(MC_D_ACELLS_LG);
+	if (tsc == "d_ammo_cellpack")										return(MC_D_ACELLS);
+	if (tsc == "d_ammo_cellbox")										return(MC_D_ACELLS_LG);
 
 	if (tsc == "d_item_pack")											return(MC_D_PACK);
 	if (tsc == "d_item_nightvis")										return(MC_D_NIGHTVS);
@@ -1179,6 +1209,12 @@ string (float mc) item_by_mcode =
 	if (mc == MC_MASK)													return("item_pkplus_actor");
 	if (mc == MC_PHONE)													return("item_pkplus_phone");
 
+/// hipnotic
+	
+	if (mc == MC_HIP_MJOLNIR)											return("weapon_mjolnir");
+	if (mc == MC_HIP_LASERCAN)											return("weapon_laser_gun");
+	if (mc == MC_HIP_PROXGUN)											return("weapon_proximity_gun");
+
 /// doom
 	if (mc == MC_D_SHOTGUN)												return("d_weapon_shotgun");
 	if (mc == MC_D_BOOMSTICK)											return("d_weapon_supershotgun");
@@ -1217,8 +1253,8 @@ string (float mc) item_by_mcode =
 	if (mc == MC_D_ABULLETS_LG)										return("d_ammo_ammobox");
 	if (mc == MC_D_AROCKET)												return("d_ammo_1rocket");
 	if (mc == MC_D_AROCKETS_LG)										return("d_ammo_rockbox");
-	if (mc == MC_D_ACELLS)												return("d_ammo_cellbox");
-	if (mc == MC_D_ACELLS_LG)											return("d_ammo_cellpack");
+	if (mc == MC_D_ACELLS)												return("d_ammo_cellpack");
+	if (mc == MC_D_ACELLS_LG)											return("d_ammo_cellbox");
 
 	if (mc == MC_D_PACK)													return("d_item_pack");
 	if (mc == MC_D_NIGHTVS)												return("d_item_nightvis");

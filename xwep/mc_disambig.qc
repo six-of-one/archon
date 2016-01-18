@@ -14,8 +14,8 @@
 // classnames have to be set (HERE) if they wont match the generated map code - all advanced fns need this
 // dont ever set classname in spawn call because of rndize, translate & cycle
 
-// if map is not detectable ->	between q2 & q3 default to q3 (since darkplaces cant load q2 native q2 maps should always be detectable)
-// 															between q1 & q2 & q3 default to q1 (this might bufu any q3 map that has .wad set)
+// if map is not detectable ->	between q2 & q3 default to q3 (since darkplaces cant load q2 native, q2 maps should always be detectable)
+// 															between q1 & q2 & q3 default to q1 (this might bufu any q3 map that has .wad set - none should)
 
 // map detection theory ...
 

@@ -37,7 +37,8 @@ void() x_weapon_touch =
 		self.classname == "q3_weapon_grenadelauncher" || self.classname == "q2_weapon_grenadelauncher" ||
 		self.classname == "q2_ammo_grenades" ||
 		self.classname == "weapon_grenadelauncher" || self.classname == "weapon_rocketlauncher" ||
-		self.classname == "d_weapon_rocketlauncher" || self.classname == "w_weapon_mortar")
+		self.classname == "d_weapon_rocketlauncher" || self.classname == "w_weapon_mortar" ||
+		self.classname == "weapon_proximity_gun")
 	{
 	if (self.noise4 == Q3_DET)
 	{
@@ -47,7 +48,7 @@ void() x_weapon_touch =
 			other.ammo_rockets = self.currentammo;
 	}
 	else
-	other.ammo_rockets = other.ammo_rockets + self.currentammo; // TDO: ammo type fn
+	other.ammo_rockets = other.ammo_rockets + self.currentammo;
 	camc = other.ammo_rockets;
 	}
 	else if (self.classname == "d_weapon_shotgun" || self.classname == "d_weapon_supershotgun" ||
@@ -89,7 +90,8 @@ void() x_weapon_touch =
 		self.classname == "q3_weapon_bfg" || self.classname == "weapon_hyperblaster" ||
 		self.classname == "d_weapon_bfg" || self.classname == "q2_weapon_bfg" ||
 		self.classname == "weapon_bfg" || 
-		self.classname == "weapon_plasmagun")
+		self.classname == "weapon_plasmagun" ||
+		self.classname == "weapon_mjolnir" || self.classname == "weapon_laser_gun")
 	{
 	if (self.noise4 == Q3_DET)
 	{
@@ -148,7 +150,8 @@ void() x_weapon_touch =
 	e = vchk(new, 0, other.vwepent);
 	if (self.aflag == IGN_INV)
 	{
-		if (e.mdl != self.vwepmdl) ign = TRUE; // not the same vwep - load a vwep
+		if (e)
+		if (e.mdl != self.vwepmdl) ign = TRUE; // not the same vwep and replaceable - load a diff vwep
 	}
 
 	if (!e || ign || new == IT_SHOTGUN) // || new == IT_AXE) // TESTING - axe, shotgun --- melee pickup fails
@@ -177,11 +180,17 @@ void() x_weapon_touch =
 		e.punchangle = self.punchangle;
 		e.aflag = camc;
 		e.style = self.style; // melee flag
+		e.lefty = self.lefty; // misc data
+//		e.cnt = self.cnt; // vw skinnage
 
 		e.netname = self.netname;
 //		e.mdl = self.mdl; - invisible
-		setmodel (e, self.vwepmdl);
+		if (!VW)
+			setmodel (e, VW_DEFGUN);
+		else
+			setmodel (e, self.vwepmdl);
 		e.mdl = e.model;
+		if (self.skin) e.skin = self.skin;
 		e.weaponmodel = self.weaponmodel;
 		e.chaosweptime = self.chaosweptime;
 		e.endtime = self.endtime;

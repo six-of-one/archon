@@ -1047,7 +1047,8 @@ void() item_regen =
 	if (self.class_select == "") self.class_select = "q3_item";
 
 	self.spawnflags = RUNE_FLG_RG;
-	item_sigil();
+	self.duration = 0;
+//	item_sigil();
 	self.netname = "Regeneration";
 
 	self.touch = q3_pwr_touch;
@@ -1063,6 +1064,8 @@ void() item_regen =
 	self.alpha = 0.9;
 
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	setsize (self, '-16 -16 -24', '16 16 32');
+	StartItem ();
 };
 
 void() item_invis =
@@ -1114,7 +1117,8 @@ void() item_haste =
 	if (self.class_select == "") self.class_select = "q3_item";
 
 	self.spawnflags = RUNE_FLG_HS;
-	item_sigil();
+	self.duration = 0;
+//	item_sigil();
 	self.netname = "Haste";
 
 	self.touch = q3_pwr_touch;
@@ -1129,6 +1133,8 @@ void() item_haste =
 	self.alpha = 0.9;
 
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	setsize (self, '-16 -16 -24', '16 16 32');
+	StartItem ();
 };
 
 void() item_flight =
