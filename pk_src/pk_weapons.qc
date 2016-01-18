@@ -232,6 +232,8 @@ void(float ox) W_FirePulseSpikes =
 	newmis.theowner = self;
 	setmodel (newmis, "progs/pnail.mdl");
 	newmis.angles = vectoangles(dir);
+	newmis.weapon = IT_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
+
 	setsize (newmis, ' 0 0 0', ' 0 0 0');
 	self.punchangle_x = -2;
 	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
@@ -1295,9 +1297,6 @@ float() PK_CheckNoAmmo =
 		return TRUE;
 
 	if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
-		return TRUE;
-
-	if (self.weapon == IT_MJOLNIR) // Cataboligne - 2.13.11 - hipnotic support special wep
 		return TRUE;
 
 	if (ammo_con(self.weapon, self, "wpck")) // see if its inf ammo wep

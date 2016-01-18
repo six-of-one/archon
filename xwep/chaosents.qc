@@ -52,12 +52,13 @@ void() c_weapon_reggun =
 	self.noise4 = "doom/dsitembk.wav";
 	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
+	if (self.class_select == "") self.class_select = "x_item";
 };
 
 // fn(xwep_fakeload) - extra weapon fake load - carried something between levels and it doesnt exist on new level
 
-// self - map weapon ent (fake loaded) ...or 1 of these 2...
+// self - map weapon ent (fake loaded) NOTE: code does not load for self! 
+//...or 1 of these 2... --- what code really does
 // mcd - map code - overrides spf
 // spf - spawn func, in either case this code handles load up
 
@@ -93,6 +94,7 @@ void(entity ve, float camct, float mcd, string spf) xwep_fakeload =
 //		ve.touch = self.touch;
 
 		ve.weapon = ve.items = self.items;
+		if (self.items == IT_AXE) ve.pk_currentitem = self.pk_currentitem; // replacing the axe
 		ve.x_items = self.x_items;
 		ve.currentammo = self.currentammo;
 		ve.lip = self.lip;
@@ -428,11 +430,6 @@ float(float am) bound_ammo_pack =
 	if (SV_AMMO_MAX != 2) // master override check - turns off all ammo limit bounds increases, even the ammo rune
 	if (other.rune_flag & RUNE_AMMO)
 	{
-// defaults - doom if no other settings - TDO: default to rune values once determined
-		bl_mx	= 400;
-		sh_mx	= 100;
-		rk_mx	= 100;
-		cl_mx	= 600;
 
 		if (other.target1 == "progs/w_pack.mdl")
 		{
@@ -448,7 +445,7 @@ bprint("\b *** warning: wolf pack values set\n");
 
 
 		}
-		if (other.target1 == "progs/d_pack.mdl")
+		else if (other.target1 == "progs/d_pack.mdl")
 		{
 			bl_mx	= 400;
 			sh_mx	= 100;
@@ -502,16 +499,24 @@ bprint("\b *** warning: q2 band values set\n");
 
 		}
 		else
-
+		{
+// defaults - rune power 2x all carried ammo if no other settings
+			bl_mx	= PK_BULLETAMMO_MAX * 2;
+			sh_mx	= Q1_SHELLAMMO_MAX * 2;
+			rk_mx	= Q1_ROCKETAMMO_MAX * 2;
+			cl_mx	= Q1_CELLAMMO_MAX * 2;
+			sl_mx	= PK_SLUGAMMO_MAX * 2;
+			nl_mx	= Q1_NAILAMMO_MAX * 2;
+			gs_mx	= PK_GASAMMO_MAX * 2;
 
 
 if (WARNING)
 {
-bprint("\b *** warning: default -- doom pack values set\n");
+bprint("\b *** warning: default -- ammo rune 2x server limit values set\n");
 }
 
 
-
+		}
 
 	}
 
@@ -559,15 +564,122 @@ bprint("\b *** warning: default -- doom pack values set\n");
 	return(0);
 };
 
+// fn(set_q1w_defammo) if new q1 defs are set by bit and no ammo is added for that wep, set base amount
+
+void(float wb, entity e) set_q1w_defammo =
+{
+	if (wb & (IT_SHOTGUN | IT_SUPER_SHOTGUN)) if (e.ammo_shells < 1) e.ammo_shells = DEF_AMMO_BASE;	// 25
+	if (wb & IT_MJOLNIR) if (e.ammo_cells < 1) e.ammo_cells = DEF_AMMO_BASE * 3;
+	if (wb & IT_LIGHTNING) if (e.ammo_cells < 1) e.ammo_cells = DEF_AMMO_BASE * 2;	
+	if (wb & (IT_ROCKET_LAUNCHER | IT_GRENADE_LAUNCHER)) if (e.ammo_rockets < 1) e.ammo_rockets = DEF_AMMO_BASE / 2.5;	
+	if (wb & (IT_NAILGUN | IT_SUPER_NAILGUN)) if (e.ammo_nails < 1) e.ammo_nails = DEF_AMMO_BASE * 2;	
+};
+
+// fn(new_q1w_defammo) see if more q1 weps got set after set_xweap, if so check def ammo
+
+void(float wb, float ic, entity e) new_q1w_defammo =
+{
+	local float f;
+
+	if (!wb) return;
+	if (!e) return;
+	f = 1;
+	while (f != 256)
+	{
+		if ((wb & f) && !(ic & f))
+			set_q1w_defammo(f, e);
+		f = f * 2;
+	}
+};
+
+void(entity xw, entity e) set_xw_defammo =
+{
+	if (xw.lip == AMMO_BULLETS) if (e.ammo_bullet < 1) e.ammo_bullet = DEF_AMMO_BASE * 2;	
+	if (xw.lip == AMMO_SHELLS) if (e.ammo_shells < 1) e.ammo_shells = DEF_AMMO_BASE;	// 25
+	if (xw.lip == AMMO_CELLS) if (e.ammo_cells < 1) e.ammo_cells = DEF_AMMO_BASE * 2;	
+	if (xw.lip == AMMO_NAILS) if (e.ammo_nails < 1) e.ammo_nails = DEF_AMMO_BASE * 2;	
+	if (xw.lip == AMMO_ROCKETS) if (e.ammo_rockets < 1) e.ammo_rockets = DEF_AMMO_BASE / 2.5;	
+	if (xw.lip == AMMO_GRENADES) if (e.ammo_rockets < 1) e.ammo_rockets = DEF_AMMO_BASE / 2.5;	
+	if (xw.lip == AMMO_SLUGS) if (e.ammo_slug < 1) e.ammo_slug = DEF_AMMO_BASE / 2.5;	
+};
+
 // fn(set_defaults) - server control of player/bot load defaults
+// fn(set_xweap) - attemp to load an xweap or q1 wep by map code
+// fn(xw_bit_loop) - given a bit set loop thru getting map codes and calling set_xweap for a give map mode
 
-// TDO: xweap inits & flag rules
+// e - ent to load (player or bot)
+// smc - set map code
 
-// e - ent to set
+void(entity e, float smc) set_xweap =
+{
+	local float wbt;
+	local entity tr;
+	local string ssc;
+
+	if (!e) return;
+	wbt = valid_wep_mcode(smc); // make sure this is a valid weapon & get inv. bit
+	if (!wbt || wbt & e.items) return; // no bit or already got one - IDEA: code an axe swap ??
+
+	if ((smc >= MC_AXE && smc <= MC_THUNDER) || smc == MC_HIP_MJOLNIR) // NOTE: q1 weapon map codes MUST be sequential for condition here
+	{
+		e.items = e.items | wbt;
+		set_q1w_defammo(wbt, e);
+
+
+// TESTING
+spawn_infot(2, "set bits = ", "",  "",  "",  " -- items: ", wbt, 0, 0, 0, v0, e.items);
+
+
+		return;
+	}
+	ssc = item_by_mcode(smc);
+	if (ssc) tr = vload(e, wbt);
+	if (tr)
+	{
+		xwep_fakeload (tr, 0, 0, ssc);
+		e.items = e.items | tr.items;
+		set_xw_defammo(tr, e); // make sure we have ammo
+
+
+
+// TESTING
+spawn_infot(2, "x item bits = ", " -- x wep = ",  "",  "",  " -- items: ", tr.items, tr.weapon, 0, 0, v0, e.items);
+spawn_infot(1, "vwepent:  ", tr.netname,  "\nmapcode: ",  "",  "", 0, 0, smc, 0, v0, 0);
+zz=3;
+
+
+
+	}
+
+};
+
+void(entity e, float bl) xw_bit_loop =
+{
+	local float f, b, mc;
+
+	if (!bl) return;
+	if (!e) return;
+	f = 1;
+	while (f != 8192)
+	{
+		b = bl & f;
+		mc = wepbit_mcode(b, MAP_MODE);
+		if (mc)
+			set_xweap(e, mc);
+		f = f * 2;
+		if (f == 256) f = IT_AXE;
+	}
+}
+
+// e - ent to set (player or bot)
 // defaults read from server var *
+
+// NOTE: q1 & pk mode wep add can be without ammo
 
 void(entity e) set_defaults =
 {
+	local float ic, i0;
+
 	if (Q_100 || PK_100) return;
 
 	if (DEF_HEALTH) e.health = fabs(DEF_HEALTH);
@@ -588,7 +700,6 @@ void(entity e) set_defaults =
 	{
 		e.items = e.items - (e.items & WEP_MASK);
 		e.weapon = 0; 
-		e.items = e.items | IT_AXE; // ISSUE: must have an axe for pk items & wep cycles!
 	}
 
 	if (DEF_WEAPON & DEF_REMAMMO) // remove any default ammo set by code
@@ -597,22 +708,81 @@ void(entity e) set_defaults =
 		e.ammo_nails = 0;
 		e.ammo_rockets = 0;
 		e.ammo_cells = 0;
+		e.ammo_nails = 0;
+		e.ammo_slug = 0;
+		e.ammo_gaspr = 0;
 	}
+
+	if (DEF_AMMO_BULLETS) e.ammo_bullet = fabs(DEF_AMMO_BULLETS);
+	if (DEF_AMMO_SHELLS) e.ammo_shells = fabs(DEF_AMMO_SHELLS);
+	if (DEF_AMMO_CELLS) e.ammo_cells = fabs(DEF_AMMO_CELLS);
+	if (DEF_AMMO_ROCKETS) e.ammo_rockets = fabs(DEF_AMMO_ROCKETS);
+	if (DEF_AMMO_NAILS) e.ammo_nails = fabs(DEF_AMMO_NAILS);
+	if (DEF_AMMO_SLUGS) e.ammo_slug = fabs(DEF_AMMO_SLUGS);
+	if (DEF_AMMO_GAS) e.ammo_gaspr = fabs(DEF_AMMO_GAS);
 
 	DEF_WEAPON = DEF_WEAPON & WEP_MASK; // mask off remove bits
 
-// NOTE: xweap init here...
+// x weapon inits
 
-
+	if (INIT_CON)
+	{
+		i0 = e.items & WEP_MASK; // if init changes def weps we need to allow for a default it_axe
+		if (INIT_CON & FL_INIT_ARB_MC)
+		{
+			if (INIT_0_W > 0) set_xweap(e, INIT_0_W);
+			if (INIT_1_D > 0) set_xweap(e, INIT_1_D);
+			if (INIT_2_Q > 0) set_xweap(e, INIT_2_Q);
+			if (INIT_3_PK > 0) set_xweap(e, INIT_3_PK);
+			if (INIT_4_Q2 > 0) set_xweap(e, INIT_4_Q2);
+			if (INIT_5_Q3 > 0) set_xweap(e, INIT_5_Q3);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP);
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+		else if (INIT_CON & FL_INIT_MGEN_BIT) // genre by map using bits
+		{
+			if (MAP_MODE == "W") xw_bit_loop(e, INIT_0_W);
+			if (MAP_MODE == "D") xw_bit_loop(e, INIT_1_D);
+			if (MAP_MODE == "Q") xw_bit_loop(e, INIT_2_Q);
+			if (MAP_MODE == "PK") xw_bit_loop(e, INIT_3_PK); // really same weps as q1, but allows setting other weps for pk maps
+			if (MAP_MODE == "Q2") xw_bit_loop(e, INIT_4_Q2);
+			if (MAP_MODE == "Q3") xw_bit_loop(e, INIT_5_Q3);
+	//		if (MAP_MODE == "HP") xw_bit_loop(INIT_6_HP);
+	//		if (MAP_MODE == "") xw_bit_loop(INIT_7);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); // 2 extra map code weps
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+		else if (INIT_CON & FL_INIT_MGEN_MC) // genre by map using code - 1 per + 2 for all
+		{
+			if (INIT_0_W > 0 && MAP_MODE == "W") set_xweap(e, INIT_0_W);
+			if (INIT_1_D > 0 && MAP_MODE == "D") set_xweap(e, INIT_1_D);
+			if (INIT_2_Q > 0 && MAP_MODE == "Q")set_xweap(e, INIT_2_Q);
+			if (INIT_3_PK > 0 && MAP_MODE == "PK") set_xweap(e, INIT_3_PK);
+			if (INIT_4_Q2 > 0 && MAP_MODE == "Q2") set_xweap(e, INIT_4_Q2);
+			if (INIT_5_Q3 > 0 && MAP_MODE == "Q3") set_xweap(e, INIT_5_Q3);
+			if (INIT_6_HP > 0) set_xweap(e, INIT_6_HP); //  && MAP_MODE == "HP") set_xweap(e, INIT_6_HP); // goes to all for now
+			if (INIT_7 > 0) set_xweap(e, INIT_7);
+		}
+		ic = e.items & WEP_MASK; // weps set by init - have to see q1 weps added outside of set_xweap
+		if (ic != i0)
+		if (!DEF_WEAPON)
+		if (ic & IT_AXE) DEF_WEAPON = IT_AXE; // allow replacement x weps to default axe bit if present - otherwise we add a q1 shotgun
+	}
 
 	if (DEF_ITEMS) e.items = e.items | DEF_ITEMS; // NOTE: this is an add in, might need vw coding later
+
 	if (DEF_WEAPON) // NOTE: happens after weapons inits to be coded
 	{
-		if (! e.items & DEF_WEAPON) e.items = e.items | DEF_WEAPON; // TDO: genre specific xweap later
-		e.weapon = return_bit(DEF_WEAPON, 255, BIT_HIGH, 0);
+		if (! e.items & DEF_WEAPON) // see if item bit is set
+			e.items = e.items | DEF_WEAPON;
+		e.weapon = return_bit(DEF_WEAPON, 255, BIT_HIGH, 0); // pick 1 bit - highest
+		if (!e.weapon && (e.items & IT_AXE) && (DEF_WEAPON & IT_AXE)) e.weapon = IT_AXE; // can init & def weapon axe as only weapon
 	}
+	new_q1w_defammo(e.items & WEP_MASK, ic, e);
+
 	if (DEF_X_ITEMS) e.x_items = e.x_items | DEF_X_ITEMS; // NOTE: this might entail vw adds later
 
+	if (!(INIT_CON & FL_INIT_PKO) || (MAP_MODE == "PK")) // can restrict pk items to pk mode only with flag in init_con
 	if (DEF_PK_ITEMS & PK_ITEM_MASK) // pk items works differently
 	{
 		if (DEF_PK_ITEMS & PK_IT_BEARTRAP) e.pk_beartrapammo = 2;
@@ -626,29 +796,29 @@ void(entity e) set_defaults =
 		e.pk_items = e.pk_items | (DEF_PK_ITEMS & (PK_IT_GRAPGUN | PK_IT_AIRGUN | PK_IT_CLIGHT));
 	}
 
-	if (DEF_AMMO_BULLETS) e.ammo_bullet = fabs(DEF_AMMO_BULLETS);
-	if (DEF_AMMO_SHELLS) e.ammo_shells = fabs(DEF_AMMO_SHELLS);
-	if (DEF_AMMO_CELLS) e.ammo_cells = fabs(DEF_AMMO_CELLS);
-	if (DEF_AMMO_ROCKETS) e.ammo_rockets = fabs(DEF_AMMO_ROCKETS);
-	if (DEF_AMMO_NAILS) e.ammo_nails = fabs(DEF_AMMO_NAILS);
-	if (DEF_AMMO_SLUGS) e.ammo_slug = fabs(DEF_AMMO_SLUGS);
-	if (DEF_AMMO_GAS) e.ammo_gaspr = fabs(DEF_AMMO_GAS);
+	if(! e.items & IT_AXE) e.items = e.items | IT_AXE; // MUST have an axe slot item for pk items & wep cycles!
 
 	if (! e.weapon) // didnt set a default 
 	{
-		if (e.pk_items & PK_IT_CLIGHT) // have clg & cells - use it
-		if (e.ammo_cells > 1)
+		if (e.pk_items & PK_IT_CLIGHT) // have clg - default it
 		{
 			e.weapon = IT_AXE;
 			e.pk_currentitem = PK_IT_CLIGHT;
+			set_q1w_defammo(IT_LIGHTNING, e); // check ammo
 			return;
 		}
 		e.weapon = return_bit(e.items, 255, BIT_HIGH, 0);
-		if (!e.weapon) // for now no one is without a weapon
+		if (!e.weapon) // for now no one is without a range weapon def if DEF_WEAPON doesnt say otherwise
 		{
 			e.weapon = 1;
 			e.items = e.items | 1;
-			if (e.ammo_shells < 1) e.ammo_shells = DEF_AMMO_BASE;
+			set_q1w_defammo(IT_SHOTGUN, e);
+			if (!(INIT_CON & 15)) // no genre controls, pick a shotgun at random
+			{
+				if (random() < 0.3) set_xweap(e, MC_D_SHOTGUN);
+				else if (random() < 0.2) set_xweap(e, MC_Q2_SHOTGUN);
+				else if (random() < 0.45) set_xweap(e, MC_Q3_SHOTGUN);
+			}
 		}
 	}
 
@@ -974,8 +1144,12 @@ void() inventory =
 		while (f <= IT_QUAD)
 		{
 			e = world;
-			if (f <= IT_MJOLNIR)
-				e = vchk(f, 0, self.vwepent);
+			if (f <= IT_MJOLNIR || f == IT_AXE)
+			{
+				k = 0;
+				if (f == IT_AXE) k = PK_IT_AXE;
+				e = vchk(f, k, self.vwepent);
+			}
 			if (e)
 			{
 				if (e.eweapon)

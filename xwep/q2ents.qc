@@ -361,7 +361,7 @@ void () q2_weapon_bfg =
 	self._fr_attack = player_bfg1;
 // stats
 	self.currentammo = 50;
-	self.items = IT_LIGHTNING;
+	self.items = IT_EXTRA_WEAPON;
 	self.lip = AMMO_CELLS;
 	self.volume = Q2_MAX_CELLS;
 	self.attack_finished = 2;
@@ -400,7 +400,7 @@ void () q2_weapon_railgun =
 	self.items = IT_GRENADE_LAUNCHER;
 	self.lip = AMMO_SLUGS;
 	self.volume = Q2_MAX_SLUGS;
-	self.aflag = IGN_INV; // swap with gl
+	self.aflag = IGN_INV; // swap with gl | grenades
 	self.attack_finished = 1.5;
 	self.dmg = 100;
 	self.dmg_save = 1;
@@ -665,10 +665,12 @@ void () q2_weapon_blaster =
 
 	self.touch = x_weapon_touch;
 	self._attack = SUB_Null;
-	self._fr_attack = player_pistol1; // FIX - special
+	self._fr_attack = player_pistol1;
 
 	self.currentammo = 0;
+	self.aflag = IGN_INV; // swap with axe
 	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE; // axe replacement
 	self.lip = AMMO_NONE;
 	self.attack_finished = 0.5;
 	self.dmg = 15;
@@ -753,12 +755,12 @@ void() q2_item_health_mega =
 void() q2_misc_explobox =
 {
 	self.netname = "Barrel";
+	if (self.class_select == "") self.class_select = "q2_item";
 	misc_explodbox_set(self, "progs/q2_barrel.mdl", Q2_BARREL_BLAST, 80, MOVETYPE_NONE);
 //	self.noise = "doom/dsbarexp.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.wait = RSP_TIME;
 //	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
 };
 
 void() q2_item_armor_body =

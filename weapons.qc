@@ -422,6 +422,7 @@ void () W_FireRocket =
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	missile.solid = SOLID_BBOX;
 	missile.classname = "missile";
+	newmis.weapon = IT_ROCKET_LAUNCHER; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 
 // set missile speed
 
@@ -660,7 +661,8 @@ void () W_FireGrenade =
 	missile.movetype = MOVETYPE_BOUNCE;
 	missile.solid = SOLID_BBOX;
 	missile.classname = "grenade";
-
+	newmis.weapon = IT_GRENADE_LAUNCHER; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
+	
 // set missile speed
 
 	makevectors (self.v_angle);
@@ -760,6 +762,7 @@ void () W_FireSuperSpikes =
 	else
 		launch_spike (self.origin + v_up * VWZ_SNAILG + v_right * VWY_SNAILG + v_forward * VWX_SNAILG, dir);
 	newmis.touch = superspike_touch;
+	newmis.weapon = IT_SUPER_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 	setmodel (newmis,"progs/s_spike.mdl");
 	setsize (newmis,VEC_ORIGIN,VEC_ORIGIN);
 	self.punchangle_x = -2;
@@ -792,7 +795,7 @@ void(float ox) W_FireSpikes =
 		return ;
 	}
 
-	if (PK) // && self.wad == "") /// FIX
+	if (PK)
 	{
 		W_FirePulseSpikes (ox);
 		return;
@@ -810,6 +813,7 @@ void(float ox) W_FireSpikes =
 	else
 		launch_spike (self.origin + v_up * VWZ_NAILG + v_right * ox + v_right * VWY_NAILG + v_forward * VWX_NAILG, dir);
 
+	newmis.weapon = IT_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 	self.punchangle_x = -2;
 	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 };
@@ -905,7 +909,7 @@ void () W_SetCurrentAmmo =
 //	if (PK || custom_hub_loaded || (self.cam_x & CHSCAM_ON)) // Cataboligne 8.8.9 purify - cc thru pk code - chase cam
 	if (!Q_100)
 	{
-		if (PK_100 || !VW)
+		if (PK_100)// || !VW)
 			PK_SetCurrentAmmo(); // *pk - handle ammo for all pk items & cam
 		else
 			PK_SetCurrentAmmoOnly();
@@ -1301,7 +1305,7 @@ void () CycleWeaponCommand =
 				am = 1;
 		}
 
-// fix loop bug - we hope
+// fixed loop bug - we hope
 		if (sf < 1)
 		{
 			self.weapon = IT_AXE;
@@ -1390,7 +1394,7 @@ void () CycleWeaponReverseCommand =
 				am = 1;
 		}
 
-// fix loop bug - we hope
+// fixed loop bug - we hope
 		if (sf < 1)
 		{
 			self.weapon = IT_AXE;

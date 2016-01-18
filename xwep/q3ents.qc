@@ -204,15 +204,6 @@ deprecating for full support - need this in translate
 
 q3 support via translation
 
-- precache needed !
-
-SV_SoundIndex("sound/misc/w_pkup.wav"): not precached (fix your code), precaching anyway
-SV_SoundIndex("sound/misc/am_pkup.wav"): not precached (fix your code), precaching anyway
-SV_SoundIndex("sound/items/respawn1.wav"): not precached (fix your code), precaching anyway
-SV_SoundIndex("reggun/fire4.wav"): not precached (fix your code), precaching anyway
-SV_SoundIndex("sound/weapons/machinegun/machgf1b.wav"): not precached (fix your code), precaching anyway
-SV_SoundIndex("sound/weapons/rocket/rocklf1a.wav"): not precached (fix your code), precaching anyway
-
 */
 
 float SUSPENDED = 1; // some q3 items "float" in the air - hope this works
@@ -258,11 +249,11 @@ void () q3_weapon_bfg =
 	self._attack = X_Fire3BFG;
 	self._fr_attack = player_shot1;
 
-	self.items = IT_LIGHTNING;
+	self.items = IT_EXTRA_WEAPON;
 	self.currentammo = 200; // 20 - adj =10 cells per shot -- using cell ammo for now
 	self.lip = AMMO_BFG; // cells
 	self.volume = Q3_MAX_CELLS;
-	self.aflag = IGN_INV; // swap with lg
+	self.aflag = IGN_INV; // swap with *
 	self.attack_finished = 0.2;
 	self.dmg = 100;
 	self.dodmg = 120;
@@ -298,7 +289,7 @@ void() weapon_plasmagun =
 	self._attack = SUB_Null;
 	self._fr_attack = player_plasma1;
 
-	self.items = IT_NAILGUN;
+	self.items = IT_SUPER_NAILGUN;
 	self.currentammo = 50;
 	self.lip = AMMO_CELLS;
 	self.volume = Q3_MAX_CELLS;
@@ -330,7 +321,7 @@ void() weapon_plasmagun =
 void() q3_mg_base =
 {
 // stats
-	self.items = IT_SUPER_SHOTGUN;
+	self.items = IT_NAILGUN;
 	self.currentammo = 100;
 	self.lip = AMMO_BULLETS;
 	self.volume = Q3_MAX_BULLETS;
@@ -379,7 +370,7 @@ void() q3_weapon_shotgun =
 	self._fr_attack = player_shot1;
 
 	self.currentammo = Q3_SHOT_AMMO;
-	self.items = IT_SHOTGUN;
+	self.items = IT_SUPER_SHOTGUN;
 	self.lip = AMMO_SHELLS;
 	self.volume = Q3_MAX_SHELLS;
 	self.attack_finished = 1;
@@ -479,7 +470,9 @@ void () weapon_gauntlet =
 //	self._fr_attack = player_shot1;
 
 	self.currentammo = 0;
+	self.aflag = IGN_INV; // swap with axe
 	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE; // axe replacement
 	self.lip = 0;
 	self.attack_finished = 0.4;
 	self.dmg = 50;
@@ -501,23 +494,26 @@ void () weapon_gauntlet =
 
 /*QUAKED weapon_grapplinghook (0 .5 .8) (-16 -16 0) (16 16 32)
 */
+void () weapon_grapgun;
 
 void () weapon_grapplinghook =
 {
-	weapon_axe();
+	weapon_grapgun();
 	self.netname = "Grappling hook";
 
+/*
 	self.touch = x_weapon_touch;
 	self._attack = SUB_Null;
-	self._fr_attack = player_pistol1; // FIX - special
+	self._fr_attack = player_;
 
 	self.currentammo = 0;
-	self.items = IT_AXE; // TDO: use pk grapple slot
+//	self.items = IT_AXE; // using grap gun
 	self.lip = 0;
 	self.attack_finished = 0.5;
 	self.dmg = 5;
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
+*/
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 
 	setmodel (self, "progs/q3_grapple.mdl");
@@ -574,7 +570,8 @@ void () q3_weapon_railgun =
 	self._fr_attack = player_rocket1;
 
 	self.currentammo = Q3_SLUG_AMMO;
-	self.items = IT_SUPER_NAILGUN;
+	self.aflag = IGN_INV; // swap with sgs
+	self.items = IT_SHOTGUN;
 	self.lip = AMMO_SLUGS;
 	self.volume = Q3_MAX_SLUGS;
 	self.attack_finished = 1.5;
@@ -1027,7 +1024,7 @@ void() q3_pwr_touch =
 	{
 		e.classname = "rune_1_expiry";
 		e.netname = self.netname;
-		e.rune_flag = self.spawnflags; // & RUNE_MASK_ALL; // FIX - not all in mask yet - flight
+		e.rune_flag = self.spawnflags; // & RUNE_MASK_ALL; // NOTE: not really needed as long as bit for inv item is set right
 		e.think = rune_1_expire;
 		if (self.dmgtime)
 			e.nextthink = time + self.dmgtime;
@@ -1165,11 +1162,14 @@ void() item_pkplus_phone;
 void() holdable_medkit =
 {
 	item_painkeep_can();
+	if (PK_100) return;
+
 	self.netname = "Holdable Medkit";
 
 	if (!self.wait) self.wait = RSP_TIME * 2;
 
 	setmodel(self, "progs/q3_hld_med.mdl");
+	self.vwepmdl = "";
 	self.noise = "q3_snd/holdable.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 
@@ -1180,11 +1180,14 @@ void() holdable_medkit =
 void() holdable_teleporter =
 {
 	item_pkplus_phone();
+	if (PK_100) return;
+
 	self.netname = "Holdable Teleport";
 
 	if (!self.wait) self.wait = RSP_TIME * 2;
 
 	setmodel(self, "progs/q3_hld_tel.mdl");
+	self.vwepmdl = "";
 	self.noise = "q3_snd/holdable.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 
@@ -1201,6 +1204,7 @@ void() q3_misc_explobox =
 {
 	local float r;
 	self.netname = "Barrel";
+	if (self.class_select == "") self.class_select = "q3_item";
 	misc_explodbox_set(self, "progs/d_barrel.mdl", Q3_BARREL_BLAST, 80, MOVETYPE_NONE);
 
 	r = rint(3 * random());
@@ -1233,7 +1237,6 @@ void() q3_misc_explobox =
 
 	if (!self.wait) self.wait = RSP_TIME;
 //	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
 
@@ -1485,7 +1488,7 @@ void() shooter_grenade =
 
 void() shooter_plasma =
 {
-	precache_model ("progs/lavaball.mdl"); // fix
+	precache_model ("progs/lavaball.mdl"); // TDO
 	precache_sound ("q3_snd/hyprbf1a.wav");
 	precache_sound ("q3_snd/plasmx1a.wav");
 	q3trap_shooter();

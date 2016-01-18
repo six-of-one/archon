@@ -271,7 +271,7 @@ void() d_item_spiritarmor =
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
-// FIX - different damage handling than q1 armors
+// TWEAK - different damage handling than q1 armors
 void() d_item_armorgreen =
 {
 	item_armor1();
@@ -470,13 +470,13 @@ void() d_ammo_cellpack =
 void() d_barrel =
 {
 	self.netname = "Barrel";
+	if (self.class_select == "") self.class_select = "doom_item";
 	misc_explodbox_set(self, "progs/barrel.mdl", D_BARREL_BLAST + random() * 8, 20, MOVETYPE_NONE);
 	self.health = 20 + random() * 16; // heh heh
 	self.wait = RSP_TIME;
 	self.noise = "doom/dsbarexp.wav";
 	self.noise4 = "doom/dsitembk.wav";
 //	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "doom_item";
 };
 
 /*
@@ -506,9 +506,10 @@ void() d_weapon_bfg =
 	self._fr_attack = player_bfg1;
 // stats
 	self.currentammo = D_DEF_BFG;
-	self.items = IT_LIGHTNING;
+	self.items = IT_EXTRA_WEAPON;
 	self.lip = AMMO_CELLS;
 	self.volume = D_MAX_CELLS;
+	self.aflag = IGN_INV; // swap with others
 	self.attack_finished = 2;
 	self.dmg = DOOM_BFG_DMG;
 //	self.dodmg = 128; // splash
@@ -608,7 +609,9 @@ void() d_weapon_pistol =
 
 // stats
 	self.currentammo = 25;
+	self.aflag = IGN_INV; // swap with axe
 	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE; // axe replacement
 	self.lip = AMMO_BULLETS;
 	self.volume = D_MAX_BULLETS;
 	self.attack_finished = 0.4;
@@ -1250,7 +1253,9 @@ void() w_weapon_knife =
 
 // stats
 	self.currentammo = 0;
+	self.aflag = IGN_INV; // swap with axe
 	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE; // axe replacement
 	self.lip = AMMO_NONE;
 	self.attack_finished = 0.465; // 2.15 per
 	self.dmg = 20;

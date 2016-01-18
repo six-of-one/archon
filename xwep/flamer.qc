@@ -606,7 +606,7 @@ void () weapon_flamer =
 //	self.target = ".wav";
 	self.chaosweptime = 1.2;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "quake_item";
+	if (self.class_select == "") self.class_select = "x_item";
 };
 
 void() ammo_gas =
@@ -629,7 +629,7 @@ void() ammo_gas =
 //	self.map = " lbs gas cylinder pressure";
 //	self.volume = MAX_GAS;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "quake_item";
+	if (self.class_select == "") self.class_select = "x_item";
 };
 
 void() ammo_gas_lg =

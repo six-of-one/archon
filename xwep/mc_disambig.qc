@@ -55,6 +55,7 @@ void() weapon_railgun =
 
 void() weapon_lightning =
 {
+	if (!pk_map) // not a pk map (some hubX maps have no .wad!)
 	if (world.wad == "")
 	{
 		q3_weapon_lightning();
@@ -73,7 +74,7 @@ void () weapon_rocketlauncher =
 		self.classname = "q2_weapon_rocketlauncher";
 		return;
 	}
-	else if (world.wad == "")
+	else if (world.wad == "" && !pk_map)
 	{
 		q3_weapon_rocketlauncher(); 
 		self.classname = "q3_weapon_rocketlauncher";
@@ -91,7 +92,7 @@ void () weapon_grenadelauncher =
 		self.classname = "q2_weapon_grenadelauncher";
 		return;
 	}
-	else if (world.wad == "")
+	else if (world.wad == "" && !pk_map)
 	{
 		q3_weapon_grenadelauncher(); 
 		self.classname = "q3_weapon_grenadelauncher";
@@ -135,7 +136,7 @@ void () weapon_shotgun =
 		self.classname = "q2_weapon_shotgun";
 		return;
 	}
-	else if (world.wad == "")
+	else if (world.wad == "" && !pk_map)
 	{
 		q3_weapon_shotgun(); 
 		self.classname = "q3_weapon_shotgun"; // for item translates, map code controls, etc
@@ -288,7 +289,7 @@ void () item_health =
 		self.classname = "q2_item_health";
 		return;
 	}
-	else if (world.wad == "")
+	else if (world.wad == "" && !pk_map)
 	{
 		q3_item_health(); 
 		self.classname = "q3_item_health";

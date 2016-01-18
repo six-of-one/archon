@@ -18,6 +18,14 @@ void() x_weapon_touch =
 		return ;
 	}
 
+	if (PK_100 || Q_100)
+	{
+		if (self.mcode >= MC_PULSE_NAILGUN)
+			painkeep_weapon_touch();
+		else
+			weapon_touch();
+		return;
+	}
 // if the player was using his best weapon, change up to the new one if better
 	e = self;
 	self = other;
@@ -30,7 +38,7 @@ void() x_weapon_touch =
 		leave = 0;
 
 // IDEA: always leave for another rl type
-	if (leave && (other.items & self.items))	return ;
+	if (leave && (other.items & self.items))	return;
 	new = self.items;
 
 	if (self.classname == "q2_weapon_rocketlauncher" || self.classname == "q3_weapon_rocketlauncher" ||
@@ -147,7 +155,7 @@ void() x_weapon_touch =
 	}
 
 	ign = FALSE;
-	e = vchk(new, 0, other.vwepent);
+	e = vchk(new, self.pk_currentitem, other.vwepent);
 	if (self.aflag == IGN_INV)
 	{
 		if (e)
@@ -169,6 +177,7 @@ void() x_weapon_touch =
 //		e.touch = self.touch;
 
 		e.weapon = e.items = self.items;
+		if (self.items == IT_AXE) e.pk_currentitem = self.pk_currentitem; // replacing the axe
 		e.x_items = self.x_items;
 		e.currentammo = self.currentammo;
 		e.lip = self.lip;
@@ -185,11 +194,15 @@ void() x_weapon_touch =
 
 		e.netname = self.netname;
 //		e.mdl = self.mdl; - invisible
-		if (!VW)
-			setmodel (e, VW_DEFGUN);
-		else
-			setmodel (e, self.vwepmdl);
+		setmodel (e, self.vwepmdl);
 		e.mdl = e.model;
+		if (!VW)
+		{
+			if (!(e.weapon == IT_AXE && e.pk_currentitem == PK_IT_AXE)) // any axe replacement
+			if (e.mdl != "progs/vw_q2_hgr.mdl")
+			if (e.mdl != "progs/vw_axe.mdl" && e.mdl != "progs/vw_mjolnir.mdl")
+				setmodel (e, VW_DEFGUN);
+		}
 		if (self.skin) e.skin = self.skin;
 		e.weaponmodel = self.weaponmodel;
 		e.chaosweptime = self.chaosweptime;
@@ -1107,7 +1120,7 @@ bprint(EWEAP.netname);
 	dm = 15;
 	pls = "progs/d_plasma_sht.mdl";
 	expl = "doom/dsfirxpl.wav";
-	snd = "doom/dsplasma.wav"; // FIX - different generic, chaos will come here
+	snd = "doom/dsplasma.wav"; // TWEAK - different generic, chaos will come here
 //	org = self.origin; // self.origin + (v_forward * 30) + '0 0 11' - arach ref
 	if (EWEAP) 
 	{
@@ -1254,6 +1267,7 @@ void() player_plasma1   = [$lightfatt1, player_plasma1b]
 
 void() hyper_fire_fr =
 {
+	local float vl;
 	EWEAP = self.eweapon;
 
 	self.effects = self.effects | EF_MUZZLEFLASH;
@@ -1264,7 +1278,21 @@ void() hyper_fire_fr =
 	laser_fr = 4;
 	fire_laser1(FL_PUNCH | FL_USEAMMO);
 	newmis.effects = EF_DIMLIGHT;
-	sound (self, CHAN_ITEM, "q2_snd/hyprbf1a.wav", TRUE, ATTN_NORM);
+	vl = 1;
+	if (self.silencer_finished)
+	{
+		if (self.silencer_finished > time)
+		{
+			vl =  Q2_SILENCE;
+		}
+		else
+		{
+			self.silencer_finished = 0;
+			sprint (self, "Silencer used up\n");
+		}
+	}
+
+	sound (self, CHAN_ITEM, "q2_snd/hyprbf1a.wav", vl, ATTN_NORM);
 
 	EWEAP = world;
 };

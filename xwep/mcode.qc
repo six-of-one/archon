@@ -125,6 +125,10 @@ float MC_HIP_MJOLNIR;
 float MC_HIP_LASERCAN;
 float MC_HIP_PROXGUN;
 
+float MC_HIP_WETSUIT;
+float MC_HIP_EMPSH;
+float MC_HIP_CORNUCOPIA;
+
 float MC_HIP;
 
 float MC_HIP_RNDITM; // # of total items
@@ -313,6 +317,14 @@ float MC_Q3;
 
 float MC_Q3_RNDITM; // # of total items
 
+/// chaos
+
+float MC_REGGUN;
+
+float MC_C_FLAMER;
+float MC_C_AGAS;
+float MC_C_AGAS_LG;
+
 float MC_TOT; // total mcodes
 
 // fn(mcode_load) - set map codes dynamically so we dont have the long list anymore
@@ -408,7 +420,7 @@ void() mcode_load =
 	MC_CANOBEANS = f = (f + 1);
 	MC_AEXPLSH = f = (f + 1);
 
-// TDO: fix when there is a map loadable exploding shot gun? or not...
+// IDEA: change (what ??) when there is a map loadable exploding shot gun? or not...
 	MC_PK_RNDITM = f - MC_PULSE_NAILGUN;		//	#	of	base	pk	items
 
 //	pk	plus
@@ -426,6 +438,10 @@ void() mcode_load =
 	MC_HIP_MJOLNIR = f = (f + 1);
 	MC_HIP_LASERCAN = f = (f + 1);
 	MC_HIP_PROXGUN = f = (f + 1);
+
+	MC_HIP_WETSUIT = f = (f + 1);
+	MC_HIP_EMPSH = f = (f + 1);
+	MC_HIP_CORNUCOPIA = f = (f + 1);
 
 	MC_HIP = (f + 1);
 	MC_HIP_RNDITM = f - MC_HIP_MJOLNIR;
@@ -609,8 +625,14 @@ void() mcode_load =
 	MC_Q3 = (f + 1);
 	MC_Q3_RNDITM = f - MC_Q3_GAUNTLET; // # of total items
 
+	MC_REGGUN = f = (f + 1);
+	MC_C_FLAMER = f = (f + 1);
+	MC_C_AGAS = f = (f + 1);
+	MC_C_AGAS_LG = (f + 1);
+
 	MC_TOT = f - MC_AXE;		//	total # of total items
 };
+
 
 // fn(bit_mcode) - item bit assoc with given mcode
 
@@ -685,9 +707,13 @@ float(float mcv, entity e) bit_mcode =
 
 /// hipnotic
 
-	if (mc == MC_HIP_MJOLNIR)											return(IT_AXE);
+	if (mc == MC_HIP_MJOLNIR)											return(IT_MJOLNIR);
 	if (mc == MC_HIP_LASERCAN)											return(IT_SUPER_NAILGUN);
 	if (mc == MC_HIP_PROXGUN)											return(IT_GRENADE_LAUNCHER);
+
+	if (mc == MC_HIP_WETSUIT)											return(0);
+	if (mc == MC_HIP_EMPSH)												return(0);
+	if (mc == MC_HIP_CORNUCOPIA)										return(0);
 
 /// doom
 
@@ -697,8 +723,8 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_D_ROCKETL)												return(IT_ROCKET_LAUNCHER);
 	if (mc == MC_D_PLASMA)												return(IT_LIGHTNING);
 	if (mc == MC_D_BFG)													return(IT_EXTRA_WEAPON);
-	if (mc == MC_D_SAW)													return(IT_AXE);
-	if (mc == MC_D_PISTOL)												return(IT_NAILGUN);
+	if (mc == MC_D_SAW)													return(IT_NAILGUN);
+	if (mc == MC_D_PISTOL)												return(IT_AXE);
 
 	if (mc == MC_D_BERS)													return(IT_QUAD);
 	if (mc == MC_D_INVUL)												return(IT_INVULNERABILITY);
@@ -747,7 +773,7 @@ float(float mcv, entity e) bit_mcode =
 
 /// q2
 
-	if (mc == MC_Q2_BLASTER)											return(0);
+	if (mc == MC_Q2_BLASTER)											return(IT_AXE);
 	if (mc == MC_Q2_SHOTGUN)											return(IT_SHOTGUN);
 	if (mc == MC_Q2_DBLSHOTGUN)										return(IT_SUPER_SHOTGUN);
 	if (mc == MC_Q2_MACHINEGUN)										return(IT_NAILGUN);
@@ -755,8 +781,8 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_Q2_GRENADEL)											return(IT_GRENADE_LAUNCHER);
 	if (mc == MC_Q2_ROCKETL)											return(IT_ROCKET_LAUNCHER);
 	if (mc == MC_Q2_HYPBLASTER)										return(IT_LIGHTNING);
-	if (mc == MC_Q2_RAILGUN)											return(IT_ROCKET_LAUNCHER);
-	if (mc == MC_Q2_BFG)													return(IT_LIGHTNING);
+	if (mc == MC_Q2_RAILGUN)											return(IT_GRENADE_LAUNCHER);
+	if (mc == MC_Q2_BFG)													return(IT_EXTRA_WEAPON);
 
 	if (mc == MC_Q2_QUAD)												return(IT_QUAD);
 	if (mc == MC_Q2_INVUL)												return(IT_INVULNERABILITY);
@@ -802,15 +828,15 @@ float(float mcv, entity e) bit_mcode =
 /// q3
 
 	if (mc == MC_Q3_GAUNTLET)											return(IT_AXE);
-	if (mc == MC_Q3_GRAPPLE)											return(0);
+	if (mc == MC_Q3_GRAPPLE)											return(IT_AXE);
 	if (mc == MC_Q3_MACHINEGUN)										return(IT_NAILGUN);
 	if (mc == MC_Q3_SHOTGUN)											return(IT_SUPER_SHOTGUN);
 	if (mc == MC_Q3_GRENADEL)											return(IT_GRENADE_LAUNCHER);
 	if (mc == MC_Q3_ROCKETL)											return(IT_ROCKET_LAUNCHER);
 	if (mc == MC_Q3_PLASMA)												return(IT_SUPER_NAILGUN);
 	if (mc == MC_Q3_LIGHTNING)											return(IT_LIGHTNING);
-	if (mc == MC_Q3_RAILGUN)											return(IT_ROCKET_LAUNCHER);
-	if (mc == MC_Q3_BFG)													return(IT_LIGHTNING);
+	if (mc == MC_Q3_RAILGUN)											return(IT_SHOTGUN);
+	if (mc == MC_Q3_BFG)													return(IT_EXTRA_WEAPON);
 
 	if (mc == MC_Q3_QUAD)												return(IT_QUAD);
 	if (mc == MC_Q3_REGEN)												return(0);
@@ -839,6 +865,13 @@ float(float mcv, entity e) bit_mcode =
 
 	if (mc == MC_Q3_HOLDMEDKIT)										return(PK_IT_CANPAB);
 	if (mc == MC_Q3_HOLDTELE)											return(PKPLUS_IT_PHONE);
+
+/// chaos
+	
+	if (mc == MC_REGGUN)													return(IT_SUPER_SHOTGUN);
+	if (mc == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
+	if (mc == MC_C_AGAS)													return(0);
+	if (mc == MC_C_AGAS_LG)												return(0);
 
 	return(0);
 };
@@ -952,6 +985,10 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "weapon_mjolnir")										return(MC_HIP_MJOLNIR);
 	if (tsc == "weapon_laser_gun")									return(MC_HIP_LASERCAN);
 	if (tsc == "weapon_proximity_gun")								return(MC_HIP_PROXGUN);
+
+	if (tsc == "item_artifact_wetsuit")								return(MC_HIP_WETSUIT);
+	if (tsc == "item_artifact_empathy_shields")					return(MC_HIP_EMPSH);
+	if (tsc == "item_hornofconjuring")								return(MC_HIP_CORNUCOPIA);
 
 /// doom
 	if (tsc == "d_weapon_shotgun")									return(MC_D_SHOTGUN);
@@ -1116,6 +1153,14 @@ float(string sc, entity e) pk_mcode =
 
 	if (tsc == "q3_misc_explobox")									return(MC_Q3_BARREL);
 
+/// chaos
+	
+	if (tsc == "c_weapon_reggun")										return(MC_REGGUN);
+	if (tsc == "weapon_flamer")										return(MC_C_FLAMER);
+	if (tsc == "ammo_gas")												return(MC_C_AGAS);
+	if (tsc == "ammo_gas_lg")											return(MC_C_AGAS_LG);
+
+
 // q3 - translates classname for now
 //	else if (tsc == "")								return(MC_);
 
@@ -1213,6 +1258,10 @@ string (float mc) item_by_mcode =
 	if (mc == MC_HIP_MJOLNIR)											return("weapon_mjolnir");
 	if (mc == MC_HIP_LASERCAN)											return("weapon_laser_gun");
 	if (mc == MC_HIP_PROXGUN)											return("weapon_proximity_gun");
+
+	if (mc == MC_HIP_WETSUIT)											return("item_artifact_wetsuit");
+	if (mc == MC_HIP_EMPSH)												return("item_artifact_empathy_shields");
+	if (mc == MC_HIP_CORNUCOPIA)										return("item_hornofconjuring");
 
 /// doom
 	if (mc == MC_D_SHOTGUN)												return("d_weapon_shotgun");
@@ -1377,12 +1426,178 @@ string (float mc) item_by_mcode =
 
 	if (mc == MC_Q3_BARREL)												return("q3_misc_explobox"); 
 
+/// chaos
+	
+	if (mc == MC_REGGUN)													return("c_weapon_reggun");
+	if (mc == MC_C_FLAMER)												return("weapon_flamer");
+	if (mc == MC_C_AGAS)													return("ammo_gas");
+	if (mc == MC_C_AGAS_LG)												return("ammo_gas_lg");
 
 //	if (mc == MC_) return("item_");
 
 	return("");
 };
 
+// fn(valid_wep_mcode) - validate weapon map codes for fake loads, etc.
+
+// return a valid inventory bit for op
+// return 0 if not a valid weapon map code
+
+float(float mcv) valid_wep_mcode =
+{
+/// q1
+
+	if (mcv == MC_AXE)													return(IT_AXE);
+	if (mcv == MC_SHOTGUN)												return(IT_SHOTGUN);
+	if (mcv == MC_SUPER_SHOTGUN)										return(IT_SUPER_SHOTGUN);
+	if (mcv == MC_NAILGUN)												return(IT_NAILGUN);
+	if (mcv == MC_SUPER_NAILGUN)										return(IT_SUPER_NAILGUN);
+	if (mcv == MC_GRENADEL)												return(IT_GRENADE_LAUNCHER);
+	if (mcv == MC_ROCKETL)												return(IT_ROCKET_LAUNCHER);
+	if (mcv == MC_THUNDER)												return(IT_LIGHTNING);
+
+/// hipnotic
+
+	if (mcv == MC_HIP_MJOLNIR)											return(IT_MJOLNIR);
+	if (mcv == MC_HIP_LASERCAN)										return(IT_SUPER_NAILGUN);
+	if (mcv == MC_HIP_PROXGUN)											return(IT_GRENADE_LAUNCHER);
+
+/// doom
+
+	if (mcv == MC_D_SHOTGUN)											return(IT_SHOTGUN);
+	if (mcv == MC_D_BOOMSTICK)											return(IT_SUPER_SHOTGUN);
+	if (mcv == MC_D_CHAINGUN)											return(IT_SUPER_NAILGUN);
+	if (mcv == MC_D_ROCKETL)											return(IT_ROCKET_LAUNCHER);
+	if (mcv == MC_D_PLASMA)												return(IT_LIGHTNING);
+	if (mcv == MC_D_BFG)													return(IT_EXTRA_WEAPON);
+	if (mcv == MC_D_SAW)													return(IT_NAILGUN);
+	if (mcv == MC_D_PISTOL)												return(IT_AXE);
+
+/// wolf
+
+	if (mcv == MC_W_KNIFE)												return(IT_AXE);
+	if (mcv == MC_W_PISTOL)												return(IT_SHOTGUN);
+	if (mcv == MC_W_MACHGUN)											return(IT_NAILGUN);
+	if (mcv == MC_W_CHAINGUN)											return(IT_SUPER_NAILGUN);
+	if (mcv == MC_W_MORTAR)												return(IT_ROCKET_LAUNCHER);
+	if (mcv == MC_W_FLAMER)												return(IT_GRENADE_LAUNCHER);
+
+/// q2
+
+	if (mcv == MC_Q2_BLASTER)											return(IT_AXE);
+	if (mcv == MC_Q2_SHOTGUN)											return(IT_SHOTGUN);
+	if (mcv == MC_Q2_DBLSHOTGUN)										return(IT_SUPER_SHOTGUN);
+	if (mcv == MC_Q2_MACHINEGUN)										return(IT_NAILGUN);
+	if (mcv == MC_Q2_CHAINGUN)											return(IT_SUPER_NAILGUN);
+	if (mcv == MC_Q2_GRENADEL)											return(IT_GRENADE_LAUNCHER);
+	if (mcv == MC_Q2_ROCKETL)											return(IT_ROCKET_LAUNCHER);
+	if (mcv == MC_Q2_HYPBLASTER)										return(IT_LIGHTNING);
+	if (mcv == MC_Q2_RAILGUN)											return(IT_GRENADE_LAUNCHER);
+	if (mcv == MC_Q2_BFG)												return(IT_EXTRA_WEAPON);
+
+/// q3
+
+//	if (mcv == MC_Q3_GAUNTLET)											return(IT_AXE);
+//	if (mcv == MC_Q3_GRAPPLE)											return(IT_AXE); // needs to be grap gun -> special
+	if (mcv == MC_Q3_MACHINEGUN)										return(IT_NAILGUN);
+	if (mcv == MC_Q3_SHOTGUN)											return(IT_SUPER_SHOTGUN);
+	if (mcv == MC_Q3_GRENADEL)											return(IT_GRENADE_LAUNCHER);
+	if (mcv == MC_Q3_ROCKETL)											return(IT_ROCKET_LAUNCHER);
+	if (mcv == MC_Q3_PLASMA)											return(IT_SUPER_NAILGUN);
+	if (mcv == MC_Q3_LIGHTNING)										return(IT_LIGHTNING);
+	if (mcv == MC_Q3_RAILGUN)											return(IT_SHOTGUN);
+	if (mcv == MC_Q3_BFG)												return(IT_EXTRA_WEAPON);
+
+/// chaos
+
+	if (mcv == MC_REGGUN)												return(IT_SUPER_SHOTGUN);
+	if (mcv == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
+
+	return(0); // not a valid x weapon
+};
+
+// fn(wepbit_mcode) - given a bit and map mode, provide map code
+
+// bt - bit for weapon
+// md - mode of map
+
+float(float bt, string md) wepbit_mcode =
+{
+/// q1
+
+	if (md == "Q" || md == "PK")
+	{
+		if (bt == IT_AXE)													return(MC_AXE);				// 4096
+		if (bt == IT_SHOTGUN)											return(MC_SHOTGUN);			// 1
+		if (bt == IT_SUPER_SHOTGUN)									return(MC_SUPER_SHOTGUN);	// 2
+		if (bt == IT_NAILGUN)											return(MC_NAILGUN);			// 4
+		if (bt == IT_SUPER_NAILGUN)									return(MC_SUPER_NAILGUN);	// 8
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_GRENADEL);			// 16
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_ROCKETL);			// 32
+		if (bt == IT_LIGHTNING)											return(MC_THUNDER);			// 64
+		if (bt == IT_MJOLNIR)											return(MC_HIP_MJOLNIR);		// 128
+	}
+
+/// doom
+
+	else if (md == "D")
+	{
+		if (bt == IT_SHOTGUN)											return(MC_D_SHOTGUN); 		// (IT_);
+		if (bt == IT_SUPER_SHOTGUN)									return(MC_D_BOOMSTICK); 	// (IT_SUPER_SHOTGUN);
+		if (bt == IT_SUPER_NAILGUN)									return(MC_D_CHAINGUN); 		// (IT_SUPER_NAILGUN);
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_D_ROCKETL); 		// (IT_ROCKET_LAUNCHER);
+		if (bt == IT_LIGHTNING)											return(MC_D_PLASMA); 		// (IT_LIGHTNING);
+		if (bt == IT_EXTRA_WEAPON)										return(MC_D_BFG); 			// (IT_EXTRA_WEAPON);
+		if (bt == IT_NAILGUN)											return(MC_D_SAW); 			// (IT_GRENADE_LAUNCHER); //IT_AXE);
+		if (bt == IT_AXE)													return(MC_D_PISTOL); 		// (IT_NAILGUN);
+	}
+
+/// wolf
+
+	else if (md == "W")
+	{
+		if (bt == IT_AXE)													return(MC_W_KNIFE); // (IT_AXE);
+		if (bt == IT_SHOTGUN)											return(MC_W_PISTOL); // (IT_SHOTGUN);
+		if (bt == IT_NAILGUN)											return(MC_W_MACHGUN); // (IT_NAILGUN);
+		if (bt == IT_SUPER_NAILGUN)									return(MC_W_CHAINGUN); // (IT_SUPER_NAILGUN);
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_W_MORTAR); // (IT_ROCKET_LAUNCHER);
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_W_FLAMER); // (IT_GRENADE_LAUNCHER);
+	}
+	
+/// q2
+
+	else if (md == "Q2")
+	{
+		if (bt == IT_AXE)													return(MC_Q2_BLASTER); // (IT_EXTRA_WEAPON);
+		if (bt == IT_SHOTGUN)											return(MC_Q2_SHOTGUN); // (IT_SHOTGUN);
+		if (bt == IT_SUPER_SHOTGUN)									return(MC_Q2_DBLSHOTGUN); // (IT_SUPER_SHOTGUN);
+		if (bt == IT_NAILGUN)											return(MC_Q2_MACHINEGUN); // (IT_NAILGUN);
+		if (bt == IT_SUPER_NAILGUN)									return(MC_Q2_CHAINGUN); // (IT_SUPER_NAILGUN);
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q2_GRENADEL); // (IT_GRENADE_LAUNCHER);
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_Q2_ROCKETL); // (IT_ROCKET_LAUNCHER);
+		if (bt == IT_LIGHTNING)											return(MC_Q2_HYPBLASTER); // (IT_LIGHTNING);
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q2_RAILGUN); // (IT_ROCKET_LAUNCHER);
+		if (bt == IT_EXTRA_WEAPON)										return(MC_Q2_BFG); // (IT_EXTRA_WEAPON); // NOTE: repeat bits DONT work! - cant default q2 bfg for now
+	}
+
+/// q3
+
+	else if (md == "Q3")
+	{
+//		if (bt == IT_AXE)													return(MC_Q3_GAUNTLET); // (IT_AXE);
+//		if (bt == IT_AXE)													return(MC_Q3_GRAPPLE); // (IT_SHOTGUN);
+		if (bt == IT_NAILGUN)											return(MC_Q3_MACHINEGUN); // (IT_NAILGUN);
+		if (bt == IT_SUPER_SHOTGUN)									return(MC_Q3_SHOTGUN); // (IT_SUPER_SHOTGUN);
+		if (bt == IT_GRENADE_LAUNCHER)								return(MC_Q3_GRENADEL); // (IT_GRENADE_LAUNCHER);
+		if (bt == IT_ROCKET_LAUNCHER)									return(MC_Q3_ROCKETL); // (IT_ROCKET_LAUNCHER);
+		if (bt == IT_SUPER_NAILGUN)									return(MC_Q3_PLASMA); // (IT_SUPER_NAILGUN);
+		if (bt == IT_LIGHTNING)											return(MC_Q3_LIGHTNING); // (IT_LIGHTNING);
+		if (bt == IT_SHOTGUN)											return(MC_Q3_RAILGUN); // (IT_ROCKET_LAUNCHER);
+		if (bt == IT_EXTRA_WEAPON)										return(MC_Q3_BFG); // (IT_LIGHTNING);
+	}
+
+	return(0);
+};
 // implement for upgrades
 
 void () painkeep_weapon_touch;
@@ -1430,6 +1645,7 @@ void () weapon_axe =
 
 	self.currentammo = 0;
 	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE;
 	self.weaponframe = AMMO_NONE;
 	self.attack_finished = 0.5;
 	self.dmg_save = 0;
@@ -1750,16 +1966,13 @@ void() barrel_explode =
 	self.mdl = self.model;
 	self.solid = SOLID_NOT;
 	self.model = string_null;
-
-	boombox = spawn();
-	boombox.origin = self.origin;
 	
 	bdmg = self.currentammo;
 	bsnd = self.noise;
 	self.takedamage = DAMAGE_NO;
 
-	e = world;
-	if (self.classname == "chaos_item") e = self.owner;
+//	e = world;
+//	if (self.classname == "chaos_item") e = self.owner; // this made no sense in the chaos code - it meant owner gets direct damage!
 
 //	if (self.classname == "chaos_item" && random() > CI_EXPLBOX_RES)
 //		self.think = SUB_Remove;
@@ -1777,6 +1990,8 @@ void() barrel_explode =
 	else
 		SUB_Remove();
 
+	boombox = spawn();
+	boombox.origin = self.origin;
 	self = boombox;
 
 	self.takedamage = DAMAGE_NO;
@@ -1786,7 +2001,7 @@ void() barrel_explode =
 	particle (self.origin, '0 0 0', 75, 255);
 	self.origin_z = self.origin_z + 32;
 //	Explode(0, bdmg, e, 0, 0, BecomeExplosion);
-	T_RadiusDamage (self,self,bdmg,world);
+	T_RadiusDamage (self, self, bdmg, world);
 	BecomeExplosion ();
 };
 
@@ -1814,7 +2029,7 @@ void(entity e, string md, float dm, float hl, float mt) misc_explodbox_set =
 
 //	e.class_select = "class_explosive";
 	e.solid = SOLID_BBOX;
-	e.movetype = mt; // FIX - this would be why an explodbox cant be picked up
+	e.movetype = mt; // NOTE: movetype is why an explodbox cant be picked up
 
 	if (md != "")
 	{
@@ -1868,6 +2083,15 @@ void(entity e, string md, float dm, float hl, float mt) misc_explodbox_set =
 	if (!PK_100 && !Q_100)
 	if (self.wad == "q1")
 		master_item_control(self, 0);
+
+	if (Q_100 || PK_100) PlaceItem(); // *100 deal
+
+	if (deathmatch)
+	if (EXPLBOX_RESP < 0) // new mode 2.25.11
+	{
+		self.think = SUB_Remove;
+		self.nextthink = time + 0.1;
+	}
 };
 
 
@@ -1981,7 +2205,7 @@ void() fn_backpack =
 		self.nextthink = newmis.nextthink;
 	}
 
-	DropBackpack();
+	DropBackpack(); // create a backback as newmis, set stats
 
 	if (random() < 0.0666)
 	{

@@ -6,7 +6,7 @@ Cataboligne 9.26.9
 */
 
 .float viswframe; // special framing - drop / pull [not used yet]
-.entity exteriormodeltoclient; // dp var -- viswep deal - good fix for dp
+.entity exteriormodeltoclient; // dp var -- viswep deal - good solution (only) for dp
 
 string VW_DEFGUN = "progs/vw_qgun.mdl";
 
@@ -157,7 +157,7 @@ entity(entity e) vw_chain =
 			if (!c) c = f;
 //			else
 //			{
-//				ch.chain = f; // NOTE - use vwepent?
+//				ch.chain = f; // NOTE: use vwepent?
 //			}
 				// chain up any viswep with owner = world
 			if (ch) ch.vwepent = f; // this becomes a list rebuild
@@ -220,6 +220,7 @@ entity(entity e, float fl) vload =
 	else if (fl == IT_ARMOR1) md = "progs/vw_armor.mdl";
 	if (md == "") md = VW_DEFGUN;
 	tr.vwepent.mdl = md;
+	if (fl != IT_AXE && !VW) md = VW_DEFGUN;
 	setmodel(tr.vwepent, md);
 
 /*
@@ -233,7 +234,6 @@ entity(entity e, float fl) vload =
 		tr.vwepent.v_angle = '0 0 0'; //tr.vwepent.angles - e.angles; // relative angles
 	}
 */
-
 	return(tr.vwepent);
 };
 
@@ -241,6 +241,14 @@ void (entity e, float fl) pkvload =
 {
 	local entity tr;
 	local string md;
+
+	tr = e.vwepent;
+	if (fl == PK_IT_AXE)
+	while (tr)
+	{
+		if (tr.pk_currentitem == PK_IT_AXE) return; // dont add extra vw axes
+		tr = tr.vwepent;
+	}
 
 	tr = vload(e, IT_AXE);
 
@@ -263,11 +271,10 @@ void (entity e, float fl) pkvload =
 	else if (fl == PKPLUS_IT_ACTOR) md = "progs/vw_pkp_actor.mdl";
 	else if (fl == PKPLUS_IT_PHONE) md = "progs/vw_pkp_phone.mdl";
 
-	if (md == "") md = VW_DEFGUN;
+	if (md == "" ) md = VW_DEFGUN;
 	tr.mdl = md;
+	if (!VW) md = VW_DEFGUN;
 	setmodel(tr, md);
-
-
 };
 
 // fn (vchk) - check for a given item & return ent pointer if found
@@ -336,7 +343,6 @@ void(entity e, float cd) viswep_ld =
 
 	pkbits = mk_pkbits(e);
 
-// NOTE: fix - need unload (-1) here
 	if (cd < 0)
 	{
 		while (tr)
@@ -350,7 +356,7 @@ void(entity e, float cd) viswep_ld =
 		if (e) // because we may come here with self = first viswep ent
 		{
 			vw_chain(e);
-			if (e.classname != "viswep")
+			if (e.classname != "viswep") // NOTE: if cond fails, we have a viswep left!
 				e.vwepent = world;
 		}
 
@@ -367,7 +373,7 @@ void(entity e, float cd) viswep_ld =
 	while (tr)
 	{
 		pr = world;
-		if (tr.armortype && VW_ARMOR)
+		if (tr.armortype && VW_ARMOR) // armor visuals
 		{
 			at = e.armortype;
 			if (!at)
@@ -386,16 +392,12 @@ void(entity e, float cd) viswep_ld =
 			else if (at <= 0.3) tr.skin = 0;
 			tr.armortype = at;
 		}
+		// else if ( )// IDEA: x_items test - extra visual stuff like tanks for flamer, wetsuit / etc
 		else
-		if (tr.weapon != IT_AXE || !pkbits)
+		if (!tr.pk_currentitem) // non pk item wep
 		{
-			if (! tr.weapon & e.items)
+			if (! tr.weapon & e.items) // dont have this item - remove vwepent
 			{
-//				tr.mdl = "";
-//				tr.think = SUB_Remove;
-//				tr.nextthink = time + 0.01;
-//				tr.model = "";
-//				pr.vwepent = tr.vwepent;
 				pr = tr.vwepent;
 				tr.vwepent = world;
 				remove(tr);
@@ -404,8 +406,9 @@ void(entity e, float cd) viswep_ld =
 			else
 				bts = bts | tr.weapon;
 		}
-		else
+		else if (tr.weapon == IT_AXE) // pk item test
 		{
+			
 			if (! tr.pk_currentitem & pkbits)
 			{
 //				tr.mdl = "";
@@ -421,6 +424,7 @@ void(entity e, float cd) viswep_ld =
 			else
 				pkts = pkts | tr.pk_currentitem;
 		}
+
 //		pr = tr;
 		if (pr) tr = pr;
 		else if (tr) tr = tr.vwepent;
@@ -455,8 +459,6 @@ void(entity e, float cd) viswep_ld =
 			pkvload(e, f);
 		f = f * 2;
 	}
-
-
 };
 
 
@@ -504,13 +506,14 @@ float vw_frame; // once per frame
 void() viswep_post =
 {
 	local entity vhead;
-	local float qld, pkbits; 
+	local float qld, pkbits, vwc, hr1;
+	local string vmdl;
 
 //	if (!self.flags & FL_CLIENT) return;
 
 	vw_chain(self);
 
-														// NOTE - check this vs. invisibility for norm & morphs
+														// NOTE: check this vs. invisibility for norm & morphs
 	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0' || self.model == "") //(self.admin && self.admin != USER_MENU)) //intermission_running)
 	{
 		if (self.vwepent) viswep_ld(self, -2); // unload all weps - for now just removes ent, later deadthrow what's not put in pack if died
@@ -521,7 +524,7 @@ void() viswep_post =
 
 //	qld = FALSE;
 
-	if (PK_100 || Q_100 || !VW)
+	if (PK_100 || Q_100)
 	{
 		if (!vhead)
 		{
@@ -586,7 +589,7 @@ void() viswep_post =
 
 	if (vhead)
 		{
-		vhead.owner.viswframe = -1; // FIX - remove to use visframe code anywhere
+		vhead.owner.viswframe = -1; // NOTE: remove to use visframe code anywhere - ? what does this mean ?
 		vang = v_forward;
 		vang_z = 0;
 //		makevectors(vang);
@@ -596,16 +599,22 @@ void() viswep_post =
 	dwep = vhead.owner.weapon; // active wep, or pulled
 	pkdwep = vhead.owner.pk_currentitem;
 //	if (vhead.owner.flags & FL_DROP) dwep = vhead.owner.prev_weapon; // drop this down first
+	hr1 = TRUE; // only display one holstered range wep when !vw
 
 	while (vhead) // IDEA: do this in engine & test above for chaos = CHAOS_ENGINE
 		{
 		qld = grap_frame_adjust = gremlin_frame_adjust = vadd = 0;
 //		vofs = vhead.finaldest_x * normalize(vang) + vhead.finaldest_y * normalize(v_right);
 	//	vofs_z = vhead.finaldest_z;
+		vwc = TRUE; // viswep control -  == VW for holstered weps
+		vmdl = vhead.mdl; // for return from invisible
 		if (dwep > 0)
-		if (vhead.weapon == dwep)
+		if (vhead.weapon == dwep && (vhead.pk_currentitem == pkdwep || vhead.weapon != IT_AXE))
 		{
-			vhead.owner.eweapon = vhead.eweapon;
+//			if (pkdwep < 2)
+				vhead.owner.eweapon = vhead.eweapon;
+//			else
+//				vhead.owner.eweapon =  world;
 
 			if (self.ishuman)
 			if ( !(self.cam_x & CHSCAM_ON))
@@ -621,13 +630,38 @@ void() viswep_post =
 			}
 			else	if ((vhead.owner.prevweapon != vhead.owner.weapon) || (vhead.owner.pkprevweapon != vhead.owner.pk_currentitem) || (vhead.owner.forcewchange == 1)) PK_SetCurrentAmmo();
 		}
+		else if (!PK_100 && !Q_100)
+		{
+			if (!VW)
+			{
+				vwc = FALSE; // dont updated this viswep (only held gun and axe holstered)
+				if (dwep == IT_AXE && pkdwep == PK_IT_AXE) // holding an axe - leave one holstered range wep
+				if (hr1)
+				if (vhead.model == VW_DEFGUN)
+				{
+					vwc = TRUE; // viswep control -  == VW for holstered weps
+					hr1 = FALSE;
+				}
+				if (!vwc) vhead.model = "";
+			}
+			else if (!VW_HOLSTER)
+			{
+				vwc = FALSE; // dont updated this viswep (only held gun)
+				vhead.model = "";
+			}
+		}
+		if (!VW)
+		if (!(vhead.weapon == IT_AXE && vhead.pk_currentitem == PK_IT_AXE))
+		if (vhead.mdl != "progs/vw_q2_hgr.mdl")
+		if (vhead.mdl != "progs/vw_axe.mdl" && vhead.mdl != "progs/vw_mjolnir.mdl") vmdl = VW_DEFGUN; // ret from invisible - set non axe to qgun
 
+		if (vwc)
 		if (vhead.owner.items & IT_INVISIBILITY) vhead.model = ""; // heh heh, player invisible
 		else if (vhead.owner.eweapon.model == "progs/vw_w_2chaing.mdl" && vhead.mdl == "progs/vw_w_chaing.mdl") vhead.model = ""; // hack to get rid of single chain gun vw_ when dbl chg selected
 		else
 		if (vhead.model == "" || (vhead.origin + vofs) != vhead.owner.origin || vhead.angles != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
 			{
-			if (vhead.model == "") setmodel(vhead, vhead.mdl);
+			if (vhead.model == "") setmodel(vhead, vmdl);
 			vhead.weaponframe = vhead.owner.frame; // track player frame, vw .frame may not match
 
 			vframe = vhead.owner.frame;
@@ -673,6 +707,29 @@ void() viswep_post =
 
 };
 
+
+// fn(viswep_togl) - toggle VW option on or off
+
+// goes thru all viswep models and sets visual to .mdl (vis storage) or VW_DEFGUN depending on VW
+// axes (& replacements) and mjolnir are excluded
+
+void() viswep_togl =
+{
+	local entity e;
+
+	e = find (world, classname, "viswep");
+	while (e)
+	{
+		if (!(e.weapon == IT_AXE && e.pk_currentitem == PK_IT_AXE)) // any axe replacement
+		if (e.mdl != "progs/vw_q2_hgr.mdl") /// too much trouble to change (for now)
+		if (e.mdl != "progs/vw_axe.mdl" && e.mdl != "progs/vw_mjolnir.mdl")
+		{
+			if (VW) setmodel(e, e.mdl);
+			else setmodel(e, VW_DEFGUN);
+		}
+		e = find (e, classname, "viswep");
+	}
+};
 
 // fn(grap_vw_adj) - adjust start position for viswep location
 
