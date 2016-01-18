@@ -1106,7 +1106,7 @@ void () item_key1 =
 	self.touch = key_touch;
 	self.items = IT_KEY1;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL; // everyone can get keys
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ITEM;
 
@@ -1148,7 +1148,7 @@ void () item_key2 =
 	self.touch = key_touch;
 	self.items = IT_KEY2;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL; // everyone can get keys
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ITEM + 0.5;
 
@@ -1224,7 +1224,7 @@ void () q10-_item_sigil =
 
 	self.touch = sigil_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL; // everyone can get keys
+	self.mask_x = MORPH_ALL;
 	self.archon = ARCHON_ART;
 	StartItem ();
 };
@@ -1325,7 +1325,7 @@ void () item_artifact_invulnerability =
 	self.netname = "Pentagram of Protection";
 	self.items = IT_INVULNERABILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL; // everyone can get arts
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART + 0.3;
 
@@ -1347,7 +1347,7 @@ void () item_artifact_envirosuit =
 	self.netname = "Biosuit";
 	self.items = IT_SUIT;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON);
 
 	self.archon = ARCHON_ART;
 
@@ -1371,7 +1371,7 @@ void () item_artifact_invisibility =
 	self.netname = "Ring of Shadows";
 	self.items = IT_INVISIBILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL; // everyone can get arts
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART;
 
@@ -1395,7 +1395,7 @@ void () item_artifact_super_damage =
 	self.netname = "Quad Damage";
 	self.items = IT_QUAD;
 	setsize (self, '-16 -16 -24', '16 16 32');
-	self.mask_x = MORPH_ALL; // everyone can get arts
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART + 0.2;
 

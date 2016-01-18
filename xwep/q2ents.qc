@@ -1217,7 +1217,7 @@ void() q2_item_health_small =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q2_item_health =
@@ -1242,7 +1242,7 @@ void() q2_item_health =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q2_item_health_large =
@@ -1267,7 +1267,7 @@ void() q2_item_health_large =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q2_item_health_mega =
@@ -1293,7 +1293,7 @@ void() q2_item_health_mega =
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q2_misc_explobox =
@@ -1428,7 +1428,7 @@ void() q2_item_armor_shard =
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() item_power_shield =
@@ -1518,7 +1518,7 @@ void() item_silencer =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 
@@ -1546,7 +1546,7 @@ void() item_invulnerability =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q2_item_enviro =
@@ -1575,7 +1575,7 @@ void() q2_item_enviro =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON);
 };
 
 void() q2_item_quad =
@@ -1603,7 +1603,7 @@ void() q2_item_quad =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() adrenaline_touch =
@@ -1637,7 +1637,7 @@ void() item_adrenaline =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() item_bandolier =
@@ -1666,7 +1666,7 @@ void() item_bandolier =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF; // everyone can get arts
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
 
 void() item_pack =
@@ -1698,7 +1698,7 @@ void() item_pack =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = CB_HUMAN + CB_GREMLIN; // everyone can get arts
+	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_SCOURGE;
 };
 
 void() item_breather =
@@ -1728,7 +1728,7 @@ void() item_breather =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON);
 };
 
 void() key_pyramid =
@@ -1751,7 +1751,7 @@ void() key_pyramid =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() key_power_cube =
@@ -1774,7 +1774,7 @@ void() key_power_cube =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() key_pass =
@@ -1797,7 +1797,7 @@ void() key_pass =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() key_data_cd =
@@ -1820,7 +1820,7 @@ void() key_data_cd =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() key_data_spinner =
@@ -1843,7 +1843,7 @@ void() key_data_spinner =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() key_airstrike_target =
@@ -1866,7 +1866,7 @@ void() key_airstrike_target =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() key_blue_key =
@@ -1890,7 +1890,7 @@ void() key_blue_key =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() key_red_key =
@@ -1914,7 +1914,7 @@ void() key_red_key =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() key_commander_head =
@@ -1937,7 +1937,7 @@ void() key_commander_head =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 // ctf lithium tech runes - map item spawn code
@@ -1976,7 +1976,7 @@ void() q2_ctf_haste =
 // override
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 /*QUAKED q2_ctf_regen (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2005,7 +2005,7 @@ void() q2_ctf_regen =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 /*QUAKED q2_ctf_resist (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2034,7 +2034,7 @@ void() q2_ctf_resist =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 /*QUAKED q2_ctf_stren (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2063,7 +2063,7 @@ void() q2_ctf_stren =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q2_item";
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() hand_grenade_thk =

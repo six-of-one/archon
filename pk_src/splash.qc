@@ -228,15 +228,15 @@ void() CheckWaterLevels =
 
 
 
-							if (WARNING)
-							{
-								bprint("*** warning: solid splash rune - model = ");
-								bprint(e.model);
-								bprint("\n");
+									if (WARNING)
+									{
+										bprint("*** warning: solid splash rune - model = ");
+										bprint(e.model);
+										bprint("\n");
+									}
+
+
 							}
-
-
-						}
 						}
 						else if (e.ip_orgOrigin != v0) // put items back now
 						{
@@ -258,8 +258,22 @@ void() CheckWaterLevels =
 					}
 					else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT)
 					{
-						T_Damage (e,world,world,e.health + 10); //e.th_die(); // note: swim monsters dont set splash - have to damage for accounting - see random monsters
-						remove(e);
+						if (e.class_select != "class_mosnter") // polyed mosnter - cant kill
+						{
+							if (e.ip_orgOrigin != v0) setorigin (e, e.ip_orgOrigin + '0 0 40');
+							else
+							{
+								newmis = dyn_rndloc();
+								if (!newmis) newmis= findradius(world.origin, 256000);
+								setorigin (e, newmis.origin + '0 0 40');
+							}
+							e.velocity = v0;
+						}
+						else
+						{
+							T_Damage (e,world,world,e.health + 10); //e.th_die(); // note: swim monsters dont set splash - have to damage for accounting - see random monsters
+							remove(e);
+						}
 					}
 					else if (e.class_select == "class_bot" || e.classname == "player")
 					{

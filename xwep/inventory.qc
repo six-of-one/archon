@@ -1234,6 +1234,7 @@ void(float im, entity p, vector vb) drop_inventory =
 		if (e.volume > 0) // q2 deal
 		if (e.currentammo > e.volume) e.volume = e.currentammo; // note: max should be set by item_call
 		p.armorvalue = p.armortype = 0;
+		p.items = p.items - (p.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 
 		dropinview(p, e, vb);
 		p.dropent.map = sel;

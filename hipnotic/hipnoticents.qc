@@ -371,7 +371,7 @@ void() item_hornofconjuring =
 
 	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
-	self.mask_x = MORPH_ALL; // everyone can get arts
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART + 0.1;
 };
@@ -442,7 +442,7 @@ void() item_artifact_empathy_shields =
 
 	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
-	self.mask_x = MORPH_ALL; // everyone can get arts
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART + 0.1;
 };
@@ -469,7 +469,7 @@ void() item_artifact_wetsuit =
 
 	if (self.class_select == null_string) self.class_select = "hip_item";
 	StartItem ();
-	self.mask_x = MORPH_ALL; // everyone can get arts
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART;
 };

@@ -64,6 +64,13 @@ void() m_precache_chaos =
 	precache_sound ("chaos/lava1.wav");
 	precache_sound ("chaos/cbeam.1.wav");
 	precache_sound ("chaos/cbeam.2.wav");
+
+//archon
+	precache_model ("progs/nodule1.mdl");
+	precache_model ("progs/nodule10.mdl");
+	precache_model ("progs/nodule11.mdl");
+	precache_model ("progs/nodule110110110.bsp");
+	precache_sound ("items/r_item2.wav");
 };
 
 float FL_CSB						= 16; // star burst in progress
@@ -1747,16 +1754,55 @@ void() set_beacon =
 
 /// polymoprh
 
-// for order
-//	self.mask_x = IMP_MHUMAN + CB_ENF + CB_HKNIGHT + CB_OGRE;
+void() poly_monster =
+{
+	trace_ent = self;
+	if ((self.pk_explode_ammo < 50) && !self.bolt_target.flags & FL_MONSTER) self.pk_explode_ammo = 50; // repeat defaults to 30
+	self.stack3 = monster_id(self.pk_beartrapammo, MON_FUNC_REG);
+	self = self.bolt_target;
+	setorigin(self, self.origin + '0 0 32');
 
+	trace_ent.stack4 = self.class_select;
+	if (self.flags & FL_MONSTER) total_monsters = total_monsters - 1; // because this will be bumped and this guy is already a mosnter
+	else self.class_select = "class_monster"; // so item_call does right stuff
+	self.flags = FL_ONGROUND; // strips of item flags, etc
+	self.touch = SUB_Null;
+	self.spawnflags = 0;
+	item_call(trace_ent.stack3);
 
-void() poly_self =
+	self.class_select = trace_ent.stack4;
+	self = trace_ent;
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.impulse = 0;
+	remove(self.eweapon);
+	cube_rearm(); // re arm player - in case other was a player - get rid of after client mode is done for poly players
+	self.pk_explode_ammo = 0;
+	self.bolt_targetTimeout = 0;	
+};
+
+void() poly_init =
 {
 	other = self;
 	self = spawn();
 	morph_cube();
-	self.mask_x = CB_DEMON + CB_OGRE + CB_SHALR + CB_SCRAG + CB_ZOMBY + CB_CTHON + CB_GREMLIN + CB_SCOURGE;
+	if (other.ammo_nails == 5) // poly other can use all forms accessible
+	{
+		if (other.bolt_target.flags & FL_CLIENT)
+			self.mask_x = MORPH_MONSTER;
+		else
+		{
+			self.mask_x = 421887; // CB_M_ARMY+ CB_M_FISH+ CB_M_KNIGHT+ CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE+ CB_M_SHALR+ CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + CB_M_TARBABY	+ CB_M_SCOURGE +CB_M_GREMLIN + CB_M_VOMIT;
+			self.ammo_nails = FL_MONSTER;
+			self._alt_fire = poly_monster;
+		}
+	}
+	else
+	if (other.height == IMP_MCHAOS)
+		self.mask_x = CB_DEMON + CB_OGRE + CB_SHALR + CB_SCRAG + CB_ZOMBY + CB_CTHON + CB_GREMLIN + CB_SCOURGE;
+	else
+	if (other.height == IMP_MORDER)
+		self.mask_x = IMP_MHUMAN + CB_ENF + CB_HKNIGHT + CB_OGRE;
+
 	other.state = 0;
 	self.model = null_string;
 	self.wad = "morph_cube";
@@ -1764,7 +1810,9 @@ void() poly_self =
 	cube_touch();
 	self.nextthink = 0;
 	self = other;
+	self.weapon = IT_SUPER_SHOTGUN; // for HUD
 	self.archon = self.archon - self.pk_explode_ammo;
+	morphic_impulse();
 };
 
 // setup spells
@@ -1792,6 +1840,7 @@ void() clear_reticle =
 //				- if bit 2 is set, normal targeting will occur - this will always show potential alternates
 //			4 - spell uses 2 targets - for HUD to display both
 //			8 - spell target must be a player / bot
+//		 16 - spell can NOT be a client / bot
 //		 32 - spell target must be a monster
 
 
@@ -1830,7 +1879,9 @@ void() spell_target =
 	}
 	if (self.weapon == IT_SUPER_SHOTGUN)
 	{
-		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_self; }
+		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; }
+		if (self.ammo_nails == 5) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; }
+		if (self.ammo_nails == 7) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; } // repeat last monster poly
 	}
 
 	if (self.pkplus_actorammo == 0) // changed - remove existing reitcles
@@ -1912,6 +1963,8 @@ void() player_chaos_attack =
 		if (random() < 0.15) self.chaosattnoise = 0;
 		else self.chaosattnoise = 1;
 	}
+
+
 
 // NOTE: crap hard to do with this code
 //		if (rune_haste(0.275))
@@ -2056,6 +2109,17 @@ void() clear_spell =
 	self.stack1 = self.stack2 = null_string;
 	self.mcode = -666; // archon casting spell
 };
+
+// pkplus_actorammo - targeting for server & HUD
+// 		0 - no reticles or targets - spell just fires
+//			1 - free roaming reticle
+//			2 - target(s) needed on this spell
+//				- if bit 2 is set, normal targeting will occur - this will always show potential alternates
+//			4 - spell uses 2 targets - for HUD to display both
+//			8 - spell target must be a player / bot
+//		 16 - spell can NOT be a client / bot
+//		 32 - spell target must be a monster
+
 // self is archon, sets .bolt_target if world, if not sets potential new target in .enemy
 
 void() archon_target =
@@ -2126,7 +2190,7 @@ void() archon_target =
 			trace_ent = trace_ent.chain;
 			gsf = gsf - 1;
 		}
-		if (!newmis) return;
+		if (!newmis) return;// none shall pass
 		trace_ent = newmis;
 	}
 
@@ -2139,6 +2203,22 @@ void() archon_target =
 		if (trace_ent.movetype == MOVETYPE_NONE) return;
 		if (trace_ent.movetype == MOVETYPE_PUSH) return;
 		if (trace_ent.movetype == MOVETYPE_NOCLIP) return;
+	}
+
+	if (self.pkplus_actorammo & 16)
+	if (trace_ent.flags & FL_CLIENT) return;
+
+	if ((self.pkplus_actorammo & 40) == 40) // test for both due to mutual exclusivity of next 2 test
+	{
+		if (! trace_ent.flags & 40) return;
+	}
+	else
+	{
+		if (self.pkplus_actorammo & FL_CLIENT)
+		if (! trace_ent.flags & FL_CLIENT) return;
+
+		if (self.pkplus_actorammo & FL_MONSTER)
+		if (! trace_ent.flags & FL_MONSTER) return;
 	}
 
 	if (trace_ent.classname == "turret") // target the turrets base so it can be moved - note other spells will be diff
@@ -2219,6 +2299,14 @@ void() archon_target =
 
 void() player_chaos_impulse =
 {
+	if (self.ammo_nails == 5) // when in poly other, ALT_FIRE gives spell command, so 50 is alt target
+	if (self.impulse == 50)
+	{
+		self.impulse = ALT_FIRE_IMP;
+		player_chaos_attack();
+		self.impulse = 0;
+		return;
+	}
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
 
@@ -2266,15 +2354,21 @@ void() player_chaos_impulse =
 		if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
 		{
 			if (!self.ammo_nails) self.ammo_nails = 3;
-//			else if (self.ammo_nails == 3) self.ammo_nails = 5; // poly to monster - uses fake cube
-//			else if (self.ammo_nails == 5) self.ammo_nails = 7;
+			else if (self.ammo_nails == 3) self.ammo_nails = 5;
+			else if (self.ammo_nails == 5)
+			{
+				if (self.pk_beartrapammo & 421887) // skip if no valid bit
+					self.ammo_nails = 7;
+				else
+					self.ammo_nails = 3;
+			}
 //			else if (self.ammo_nails == 7) self.ammo_nails = 11;
 //			else if (self.ammo_nails == 11) self.ammo_nails = 13;
 //			else if (self.ammo_nails == 13) self.ammo_nails = 17;
 //			else if (self.ammo_nails == 17) self.ammo_nails = 19;
 //			else if (self.ammo_nails == 19) self.ammo_nails = 23;
 //			else if (self.ammo_nails == 23) self.ammo_nails = 29;
-			else if (self.ammo_nails == 3) self.ammo_nails = 3;
+			else if (self.ammo_nails == 7) self.ammo_nails = 3;
 		}
 		self.weapon = IT_SUPER_SHOTGUN;
 	}

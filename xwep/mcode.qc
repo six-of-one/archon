@@ -1984,13 +1984,15 @@ void() cube_rearm =
 {
 	if (self.deadflag) return;
 
-	self.mcode = 0; // clear HUD
+	if (self.morphy == IMP_MCHAOS) self.mcode = -666;
+	else if (self.morphy == IMP_MORDER) self.mcode = -667;
+	else self.mcode = 0; // clear HUD
 	self.weapon = W_BestWeapon();
 	self.pk_currentitem = W_BestPKWeapon();
 	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
 	W_SetCurrentAmmo();
 	admin_clear(self); // for morphic cube
-	self.volume = 0; // clear HUD
+	if (!self.mask_x & MORPH_ARCHON) self.volume = 0; // clear HUD
 };
 
 
@@ -2422,7 +2424,7 @@ void() cube_touch =
 	}
 
 	if (self.wad == "morph_cube")
-	if (!MORPH_FREE)
+	if (!MORPH_FREE || self.mcode == -666)
 	if (other.archon < ARCHON_MORPH_MIN) //not enough power yet
 	{
 		if (self.theowner != other) // debounce
@@ -2442,7 +2444,7 @@ void() cube_touch =
 		if (random() < BOT_NOUSE_MCUBE) return;
 	}
 
-	if (self.wad == "morph_cube")
+	if ((self.wad == "morph_cube") && (self.mcode != -666))
 	{
 		sprint(other, "you merged with this ");
 		sprint(other, self.netname);
@@ -2456,7 +2458,6 @@ void() cube_touch =
 	else
 	{
 		other.cnt = -1;
-		other.cnt = -1;
 		other.state = other.morphy; // set morph_lock
 		if (other.class_select == "class_player") // not a bot
 		{
@@ -2464,9 +2465,12 @@ void() cube_touch =
 
 			other.impulse = 10; // display first item
 			self.lefty = 8388608; // start bit will be 1
-			stuffcmd(other, "usergamma\n");
-			stuffcmd(other, "admin_centertime\n");
-//			admin_timer(FALSE, USER_TIMEOUT);
+			if (self.ammo_nails != FL_MONSTER)
+			{
+				stuffcmd(other, "usergamma\n");
+				stuffcmd(other, "admin_centertime\n");
+//				admin_timer(FALSE, USER_TIMEOUT);
+			}
 		}
 	}
 
@@ -2474,6 +2478,7 @@ void() cube_touch =
 	if (cvar("r_ambient") > 0)
 		other.light_lev = cvar("r_ambient"); // because of cube re-arm
 
+	if (self.mcode != -666)
 	sprint(other, "\nIf you select another weapon the item will be free...\n");
 	self.owner = other;
 	other.prevweapon = other.weapon; // save for pack on morphic

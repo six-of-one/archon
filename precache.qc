@@ -111,7 +111,7 @@ void() pk_precache =
 
 // PULSE_GUN_START
 	precache_model ("progs/g_fnail.mdl");
-	precache_model ("progs/pnail.mdl");
+//	precache_model ("progs/pnail.mdl"); // using spike.mdl super now
 	precache_model ("progs/v_fnail.mdl");
 	precache_sound ("weapons/pulse/pulse_1.wav");
 	precache_sound ("weapons/pulse/ric_1.wav");

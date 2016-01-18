@@ -1410,7 +1410,7 @@ void() run_runes =
 				e.think = rune_maker;
 				e.nextthink = time + PIC_TO + 2 + 23 * random(); // do this well after items spawn - PIC_TO
 			}
-			bprint("\n***   \bRunes\b of power will spawn on this map - keep an eye out\n");
+			bprint("\n***  \bRunes\b of power will spawn on this map - keep an eye out\n");
 			rune_new_map = TRUE;
 			rune_map = 0; // clear this - IMP: clear any rune flags players might have
 		}

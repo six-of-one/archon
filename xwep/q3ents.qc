@@ -1600,7 +1600,7 @@ void() q3_item_armor_shard =
 
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q3_item_health_small =
@@ -1630,7 +1630,7 @@ void() q3_item_health_small =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q3_item_health =
@@ -1657,7 +1657,7 @@ void() q3_item_health =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q3_item_health_large =
@@ -1687,7 +1687,7 @@ void() q3_item_health_large =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q3_item_health_mega =
@@ -1719,7 +1719,7 @@ void() q3_item_health_mega =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q3_item_quad =
@@ -1749,7 +1749,7 @@ void() q3_item_quad =
 
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 // code for q3 arts that use rune effects
@@ -1938,7 +1938,7 @@ void() item_regen =
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART + 0.2;
 };
@@ -1971,7 +1971,7 @@ void() item_invis =
 
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 };
 
 void() q3_item_enviro =
@@ -2003,7 +2003,7 @@ void() q3_item_enviro =
 
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON); // everyone can get arts - no bio for lava boy tho
+	self.mask_x = MORPH_ALL - (MORPH_ALL & CB_CTHON);
 };
 
 void() item_haste =
@@ -2037,7 +2037,7 @@ void() item_haste =
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART + 0.1;
 };

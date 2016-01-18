@@ -80,87 +80,7 @@ void () setSkinsMode =
 	}
 };
 
-void () observer_off;
 
-void() end_observer =
-{
-	bprint(self.enemy.netname);
-	bprint (", observer time ran out\n");
-	self.nextthink = time + 1;
-	self.think = SUB_Remove;
-	self = self.enemy;
-	observer_off();
-};
-
-// Cataboligne - 8.16.9 - observer fix - move fast while flying - using cam_deathmove
-// note: this didnt actually work good, fixed by adapting haste code, 10.11
-
-// IDEA - do something with body so it doesnt just "vanish", maybe a trance /// --- deadframe it & return a/la zombie wake up!, or kibble it down or some such
-
-void () observer =
-{
-	local entity e;
-
-	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0') return;
-
-	if (self.class_select == "class_bot") return; // bots cant observe either
-
-	if (!self.admin)
-	{
-//		if (! serverflags & FL_OBSERVER) // restricted, only admins can observe
-		if (! cvar("sv_observe")) // restricted, only admins can observe
-			return;
-		if (observer_time) // can only observe for this long
-		{
-			e = spawn();
-			e.nextthink = time + observer_time;
-			e.think = end_observer;
-			e.enemy = self;
-		}
-	}
-
-	if (self.vwepent)
-	{
-		vw_chain(self);
-		viswep_ld(self, -2);
-	}
-	
-	cam_startdeathview(); // get a cam ent
-
-	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
-	morph_clearparms(self.owner, TRUE);
-	self.ltime = time;
-
-	setmodel(self, null_model);
-	setsize (self,'-4 -4 -4', ' 4 4 4'); // dont look in floors / walls
-	self.movetype = MOVETYPE_FLY;
-	self.health = self.view_ofs_z = 1;
-	self.oldenemy.oldorigin = self.origin;
-	self.oldenemy.think = cam_deathmove; // straight to death move, do not collect $200
-	self.classname = OBSERVER;
-	self.frags = 0; // woo - lose score?
-	self.solid = SOLID_NOT;
-	self.takedamage = DAMAGE_NO;
-	centerprint (self,"Observer mode activated\nPress \bFIRE\b to exit and respawn\n");
-	self.wad = "\nObserver mode activated\nPress \bFIRE\b to exit and respawn\n";
-};
-
-void () observer_off =
-{
-	self.classname = "player";
-	respawn ();
-	bprint ("Observer mode turned off\n");
-};
-
-void () setobserverMode =
-{
-	if (self.classname == OBSERVER)
-	{
-		observer_off ();
-		return ;
-	}
-	observer ();
-};
 
 void () setVerboseMode =
 {
@@ -254,15 +174,9 @@ void () botImpulseCommand =
 	{
 		if (!PK) printIntro ();
 	}
-	else if (self.impulse == 212)
-	{
-		setobserverMode ();
-	}
 	else if (self.impulse == 221)
 	{
 		UpdateTeamColors ();
 	}
-	else if (self.admin) // || (serverflags & UNRESTRICTED))
-		botControl();
 };
 

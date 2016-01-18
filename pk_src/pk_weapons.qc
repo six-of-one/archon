@@ -231,12 +231,15 @@ void(float ox) W_FirePulseSpikes =
 	else
 		launch_spike (self.origin + v_up * VWZ_PNAILG + v_right * (ox / 2.5) + v_right * VWY_PNAILG + v_forward * VWX_PNAILG, dir);
 	if (ENHANCED)
-	newmis.touch = spike_touch; //pulse_touch;
+	newmis.touch = spike_touch;
 	else
 	newmis.touch = pulse_touch;
 	newmis.dmg = 27;
 	newmis.theowner = self;
-	setmodel (newmis, "progs/pnail.mdl");
+	newmis.classname = "pulse_spike";
+//	setmodel (newmis, "progs/p-nail.mdl");
+	setmodel (newmis, "progs/spike.mdl");
+	newmis.skin = 3;
 	newmis.angles = vectoangles(dir);
 	newmis.weapon = IT_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 
@@ -1990,41 +1993,6 @@ void() PK_ImpulseCommands =
 		}
 	}
 
-// SPARK_START
-	else if (self.admin > 0 && self.impulse == 253)
-	{
-		if (pk_flags & PK_TP_SPARKSFLASH)
-		{
-			bprint("SFX Enabled");
-			if (XENV)
-				bprint(" - but blocked by XENV (sv_c_xenv)");				
-			else
-				bprint(".\n");
-			pk_bas_flags(PK_TP_SPARKSFLASH, 1);
-		}
-		else
-		{
-			bprint("SFX Disabled.\n");
-			pk_bas_flags(PK_TP_SPARKSFLASH, 0);
-		}
-		admin_sv_cfg();
-	}
-
-// PK_HUB_START
-	else if (self.admin > 0 && self.impulse == 200)
-	{
-		if (pk_flags & PK_SF_HUB)
-		{
-			bprint("Hub mode OFF\n");
-			pk_bas_flags(PK_SF_HUB, 0);
-		}
-		else
-		{
-			bprint("Hub mode ON\n");
-			pk_bas_flags(PK_SF_HUB, 1);
-		}
-		if (pk_admintime > 0) admin_resettimeout();
-	}
 
 
 	else if (self.impulse == 225)

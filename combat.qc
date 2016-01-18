@@ -108,12 +108,10 @@ void(entity targ, entity attacker) Killed =
 			attacker.archon = attacker.archon + self.archon; // pts for monster kills
 	}
 
-	if (self.classname == "pk*bot" || attacker.classname == "pk*bot") 
+	if (self.classname == "pk*bot" || attacker.classname == "pk*bot") // note: handles "player" setting for obit fn - need this
 		bot_kill(self, attacker); // *bot - tie in to count bot kills / deaths
 	else
 	PK_ClientObituary(self, damage_inflictor, attacker);
-
-//	ClientObituary(self, attacker);
 
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;

@@ -395,8 +395,8 @@ void() morphic_impulse =
 		return;
 	}
 
-	if (MORPH_FREE)
-	if (!self.archon) self.archon = 1; // 0 test case below
+//	if (MORPH_FREE)
+//	if (!self.archon) self.archon = 1; // 0 test case below - the MF below should fix this
 
 	dx = 2; // incase by some weird chance we have no valid impulse
 	if (self.impulse == 10) dx = 2;
@@ -426,14 +426,26 @@ void() morphic_impulse =
 		}
 		else
 		{
-			k = cb_morph(f);
-			if (k)
+			if (c.ammo_nails == FL_MONSTER)
 			{
-				self.state = k;
-				c.aflag = k; // save in case we have fail
+				self.pk_beartrapammo = f;
+				if (self.bolt_target.flags & FL_MONSTER)
+					self.pk_explode_ammo = c.archon = 30; // some monsters might cost more - use bit flags
+				else
+					self.pk_explode_ammo = c.archon = 50;
 			}
-			else self.state = c.aflag;
-			morph_print(self);
+			else
+			{
+				k = cb_morph(f);
+				if (k)
+				{
+					self.state = k;
+					c.aflag = k; // save in case we have fail
+				}
+				else self.state = c.aflag;
+				morph_print(self);
+			}
+
 			if (c.archon > 0)		// track this so we know player has options
 			{
 				if (!c.volume) c.volume = c.archon;
@@ -445,7 +457,7 @@ void() morphic_impulse =
 			else
 				self.volume = 0 - c.archon; // for HUD
 		}
-		if (MORPH_FREE) sv = 0;
+		if (MORPH_FREE && (c.mcode != -666)) sv = 0;
 		else if (self.archon > c.archon) sv = 0;
 		else
 		{				// doesnt have power for this morph - try next
@@ -523,19 +535,42 @@ void() morph_cube_use =
 
 // evolve here
 
-	if (self.state == IMP_MGREMLIN_F)
-	if (random() < 0.65) self.state = IMP_MGREMLIN_L;
-
 	c.height = self.archon;
 	self.archon = self.archon - c.archon; // do now for checks on becoming
-	c.button0 = self.state;
 
 	if (c.netname == "Archon Spirit") self.height = self.morphy; // for Archons - what they were
 
+	trace_ent = world;
+	if (c.mcode == -666) // a poly spell, not morph cube
+	if (self.bolt_target != self)
+	{
+		trace_ent = self;
+		self = self.bolt_target;
+		self.state = trace_ent.state;
+		trace_ent.state = 0;
+	}
+
+	c.button0 = self.state; // save to compare with self.morphy later
+
+	if (self.state == IMP_MGREMLIN_F)
+	if (random() < 0.65) self.state = IMP_MGREMLIN_L;
+
 	polymorph_check(self.state, 0);
 
-	if ((MORPH_FREE) || (c.button0 != self.morphy)) // failed morph - restore points, does this ever need any verification?
+	if ((c.mcode != -666) && MORPH_FREE)
 		self.archon = c.height;
+	else
+	if (c.button0 != self.morphy) // failed morph - restore points, does this ever need any verification?
+	{
+		if (trace_ent)
+		{
+			centerprint3(self, "You have been polymorphed by chaos into: ", polymorph_id(self.morphy),null_string);
+			cube_rearm(); // does a few things, incase they are in cubes, spells or menus
+			self = trace_ent;
+		}
+		self.archon = c.height;
+	}
+	else if (trace_ent) self = trace_ent;
 
 	self.impulse = 0;
 	remove(c);

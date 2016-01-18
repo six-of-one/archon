@@ -5,10 +5,14 @@
 // file: progs.src
 //
 // date: 3.25.8
+// date: 8.7.13 - moved qcc to "fteqcc" see notes in "archon/source code/fteqcc"
+//
 //
 // qcc - compile Chaos Mod MK II
 //			"Archon"
 //
+//
+// fteqcc *MUST* be used to compile this code - other compilers just break
 //
 
 ./progs.dat

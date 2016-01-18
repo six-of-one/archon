@@ -121,8 +121,7 @@ else if (p1.state == IMP_MGREMLIN_F)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 35;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 80;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 20;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 200;
+	else p1.eweapon.archon = 200;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1, 
 						 "Gremlin:\n----------------------------------------\n\bA nasty gremlin spawn - You are taunted\nby the other beasties because of your  \nsize and miserable failure in the movie\nAnd you stink.  Get revenge. You can   \nsteal human weapons. Oh, and try not to\nget wet :-) Gremlins are not hurt by   \nslime and may even drink some if health\nis low.  Good luck shorty. \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -136,8 +135,7 @@ else if (p1.state == IMP_MENF)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 20;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 45;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 10;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 100;
+	else p1.eweapon.archon = 100;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Enforcer:\n----------------------------------------\n\bAn elite former marine hard wired for  \ncombat.  Your laser rifle has a self   \ncharging battery, and you still know   \nhow to use human weapons and armor.    \nWreak havok, soldier.                  \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -148,8 +146,7 @@ else if (p1.state == IMP_MSCOURGE)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 60;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 125;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 40;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	else p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Scourge:\n----------------------------------------\n\bYou have a mechanical scorpian body with\na poison stinger and built in nailguns  \nwith replicating ammo.  Life has never  \nbeen better.  It was boring working for \nArmagon because you didnt do anything   \nbut sit and wait in one place.  Duh. If \nyou find certain human weapons you can  \nimprove your built in weapons (you are a\nbeasty tech!) to use their ammo.  And   \nyour built in armor is healable, but    \nyour health must be near max.           \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -160,8 +157,7 @@ else if (p1.state == IMP_MSHAMBLR)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 100;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 180;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 80;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 450;
+	else p1.eweapon.archon = 450;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Shambler:\n----------------------------------------\n\bYou are the loved and feared shambler.  \nShoot lightning bolts and rip flesh like\nthere is no tommorow.  Smash every      \nliving thing you find...why?  You just  \nwant to hibernate and dream about giant \nhoney bee hives...                      \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -172,8 +168,7 @@ else if (p1.state == IMP_MHKNIGHT)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 60;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 120;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 40;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	else p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Hell Knight:\n----------------------------------------\n\bBeing a former general among Shubs     \nminions has taught you some new tricks.\nYou know how to fire a concentrated    \nburst of magic spikes from your sword. \nAnd you can use armor.  Urrr, kill the \nhumans.                                \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -184,8 +179,7 @@ else if (p1.state == IMP_MSHALR)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 65;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 145;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 45;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	else p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Shalrath:\n----------------------------------------\n\bYou are an elite spell caster from      \nanother dimension.  And you have no idea\nwhy they call you a \"Vore\".  You're     \npissed about it too... Try new spells!  \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -199,8 +193,7 @@ else if (p1.state == IMP_MDEMON)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 115;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 200;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 75;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 500;
+	else p1.eweapon.archon = 500;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Fiend:\n----------------------------------------\n\bYou are a flesh ripping and jumping     \nmachine. That is about it. And you stink\nbad.  You are one thick skinned beasty. \nKeep your health up and most attacks    \nwont gib you!                           \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -211,8 +204,7 @@ else if (p1.state == IMP_MOGRE)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 55;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 120;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 35;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	else p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Ogre:\n----------------------------------------\n\bGrrr, get Grank and Grud.  All you know\nis chainsaws and grenades.  Can an ogre\nlearn more?  And does he need to?      \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -224,8 +216,7 @@ else if (p1.state == IMP_MZOMBIE)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 20;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 45;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 10;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 100;
+	else p1.eweapon.archon = 100;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Zomby:\n----------------------------------------\n\bYou are dead.  And slow. And you stink!\nAs the living dead, however you do have\none advantage: regeneration. Reanimated\nflesh just cant be killed unless its   \nblasted apart into stinking little     \ngibblets.  Go pelt all the living with \nyour dead and diseased flesh.          \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -236,8 +227,7 @@ else if (p1.state == IMP_MWIZARD)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 45;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 100;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 25;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 200;
+	else p1.eweapon.archon = 200;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Scrag:\n----------------------------------------\n\bYou fly and you stink.  And you have   \nspikes for arms.  Lets face it you dont\nhave many redeeming qualities even for \na beasty.  You have one joy in life,   \nhowever. You know how humiliating it is\nwhen someone is \"Scragged\".            \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -251,8 +241,7 @@ else if (p1.state == IMP_MCTHON)
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 60;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 125;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 40;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	else p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Lava Bomb:\n----------------------------------------\n\bYou are the sentient offspring          \nof Cthon. You are very hot under the    \ncollar at your fathers betrayers. You   \nonly exist as a lava bomb blobbng around\nuntil you find a pool of lava. Then you \ncan grow into a small Cthon. Just dont  \nleave the lava without returning to blob\nform.  You are a very hard kill as Cthon\n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -264,8 +253,7 @@ else if (p1.state == IMP_MHUMAN) // basic grunt desc.
 	if (p1.mask_x == CB_CHAOS) p1.eweapon.archon = 25;
 	else if (p1.mask_x == CB_ORDER) p1.eweapon.archon = 50;
 	else if (p1.mask_x == CB_SHAPESHIFT) p1.eweapon.archon = 17;
-	else
-	if (!MORPH_FREE) p1.eweapon.archon = 150;
+	else p1.eweapon.archon = 150;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Marine:\n----------------------------------------\n\bYou are _the_ weapons guy.  If it has a\ntrigger and a business end you can use \nit.  You learn new weapons fast...and  \nyou walk around looking like           \nSchwarzenegger. Gear up and blast em!  \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -325,7 +313,7 @@ else if (p1.state == IMP_MENG)
 else if (p1.state == IMP_MIMP)
 	{
 	if (morph_classpr(p1, SC_DOOM)) return;
-	if (!MORPH_FREE) p1.eweapon.archon = 200;
+	p1.eweapon.archon = 200;
 	if (p1.archon > p1.eweapon.archon)
 		centerprint3(p1, 
 						 "Imp:\n----------------------------------------\n\bDoom Imp - you are a spiny fire tossing\nfreak nobody wants to run into in some \ndark corridor.  That pretty much says  \nit all...go slay something hideously!  \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -333,7 +321,7 @@ else if (p1.state == IMP_MIMP)
 else if (p1.state == IMP_MARACHN)
 	{
 	if (morph_classpr(p1, SC_DOOM)) return;
-	if (!MORPH_FREE) p1.eweapon.archon = 400;
+	p1.eweapon.archon = 400;
 	if (p1.archon > p1.eweapon.archon)
 		centerprint3(p1, 
 						 "Arachnotron:\n----------------------------------------\n\bScary monster brain on top of a spider \nmechanical body - EEK.  Oh wait, thats \nyou.  You are one bizzare beastie from \nthe Doom realm - with a built in plasma\ncannon.  Go melt everything!           \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -341,7 +329,7 @@ else if (p1.state == IMP_MARACHN)
 else if (p1.state == IMP_MCYBER)
 	{
 	if (morph_classpr(p1, SC_DOOM)) return;
-	if (!MORPH_FREE) p1.eweapon.archon = 800;
+	p1.eweapon.archon = 800;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1, 
 						 "Cyberdemon:\n----------------------------------------\n\bThe original bad ass beastie from the  \nDoom realm. Before the Shambler was big\nyou were there.  Tall as a 2 story with\na rocket launcher for a right hand. Go \nkick ass? You gotta be kiddin - go     \nblast them to kibbles and bits!        \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -349,7 +337,7 @@ else if (p1.state == IMP_MCYBER)
 else if (p1.state == IMP_MGUNNEY)
 	{
 	if (morph_classpr(p1, SC_Q2)) return;
-	if (!MORPH_FREE) p1.eweapon.archon = 300;
+	p1.eweapon.archon = 300;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1, 
 						 "Gunney:\n----------------------------------------\n\bGunney, you are the pride of all front \nline soldiers. No enemy has known fear \nuntil your weapons are aimed at them...\nGo clear the field - you own it!       \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -357,7 +345,7 @@ else if (p1.state == IMP_MGUNNEY)
 else if (p1.state == IMP_MTANK)
 	{
 	if (morph_classpr(p1, SC_Q2)) return;
-	if (!MORPH_FREE) p1.eweapon.archon = 750;
+	p1.eweapon.archon = 750;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1, 
 						 "Tank:\n----------------------------------------\n\bThe Man...the Machine...the Menace!    \nyou are a TANK - go bust some ass now! \nYour precision engineering has one goal\n- years of trouble free mayhem and     \ndestruction. Your builtin self reload  \nweapons are ready to clear the field...\n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -365,7 +353,7 @@ else if (p1.state == IMP_MTANK)
 else if (p1.state == IMP_MSUPTANK)
 	{
 	if (morph_classpr(p1, SC_Q2)) return;
-	if (!MORPH_FREE) p1.eweapon.archon = 2000;
+	p1.eweapon.archon = 2000;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1, 
 						 "Super Tank:\n----------------------------------------\n\bThe Super Man...the Super Machine...the\nSuper Menace! you are one mean machine.\nYour precision engineering has one goal\nthe destruction of every opponent on   \nthe field of honor - go Soldier, go!   \n\b----------------------------------------\nuses: ", ftos(p1.eweapon.archon), " points.");
@@ -377,20 +365,24 @@ else if (p1.state == IMP_MSUPTANK)
 //						 "\n"
 //						 "\n"
 //						 "\n"
-
-if (MORPH_FREE)
+	
+	if (MORPH_FREE && (p1.eweapon.mcode != -666))
 	{
-	sprint(p1,"Your current selection = ");
-	sprint(p1,polymorph_id(p1.state));
-	sprint(p1,".\n");
+		p1.eweapon.archon = 0;
+		sprint(p1,"Your current selection = ");
+		sprint(p1,polymorph_id(p1.state));
+		sprint(p1,".\n");
 	}
-else
+	else
 	if (p1.archon > p1.eweapon.archon)
 	{
-	sprint(p1,"Your current selection = ");
-	sprint(p1,polymorph_id(p1.state));
-	sprint(p1,", ");
-	sprint(p1,ftos(p1.eweapon.archon));
-	sprint(p1," points.\n");
+		if (p1.eweapon.mcode == -666)
+		if (p1.ammo_nails == 5)
+			p1.eweapon.archon = p1.eweapon.archon * 1.4; // 40% more for poly other
+		sprint(p1,"Your current selection = ");
+		sprint(p1,polymorph_id(p1.state));
+		sprint(p1,", ");
+		sprint(p1,ftos(p1.eweapon.archon));
+		sprint(p1," points.\n");
 	}
 };

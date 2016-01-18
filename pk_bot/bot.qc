@@ -448,64 +448,6 @@ void(entity targ, entity attacker) bot_kill =
 		}
 	}
 
-/*
-this is really useless code, so we shall deprecate
-
-	if ((targ.classname == "player") || (targ.classname == "pk*bot"))
-	{
-		if (attacker.classname == "teledeath")
-		{
-//			attacker.owner.frags = attacker.owner.frags + 1;
-			if (attacker.owner.classname == "pk*bot")
-			{
-				TELEFRAGFLAG = 1;
-			}
-			if (attacker.owner.classname == "pk*bot")
-				Update_Frags(attacker.owner);
-			return;
-		}
-
-		if (attacker.classname == "teledeath2")
-		{
-//			targ.frags = targ.frags - 1;
-			if (targ.classname == "pk*bot")
-				Update_Frags(targ);
-			return;
-		}
-
-		if ((attacker.classname == "player") || (attacker.classname == "pk*bot"))
-		{
-			if (targ == attacker)
-			{
-				// killed self
-//				attacker.frags = attacker.frags - 1;
-				if (targ.classname == "pk*bot")
-					Update_Frags(targ);
-			
-				return;
-			}
-			else if ((teamplay == 2) && (targ.team > 0)&&(targ.team == attacker.team))
-			{
-//				attacker.frags = attacker.frags - 1;
-				if (attacker.classname == "pk*bot")
-					Update_Frags(attacker);
-				return;
-			}
-			else
-			{
-//				attacker.frags = attacker.frags + 1;
-				if (attacker.classname == "pk*bot")
-					Update_Frags(attacker);
-			}
-			return;
-		}
-		else
-		{
-			Update_Frags(targ);
-//			targ.frags = targ.frags - 1;
-		}
-	}
-*/
 };
 
 /*

@@ -336,7 +336,7 @@ void () weapon_grapgun =
 void() pk_dyn_touch =
 {
 	if (self.event != "dynamic_item") return;
-	if (self.netname != "cells") pk_ditems = pk_ditems - 1;
+	pk_ditems = pk_ditems - 1;
 	remove(self);
 };
 // called from below - handle ammo touch extras
@@ -519,7 +519,8 @@ void() pk_ammo_touch =
 
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets
-	if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
+	pk_dyn_touch(); // always checking because there are lots of dyn items now
+//	if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
 };
 
 
@@ -716,6 +717,7 @@ if (self.classname == null_string)
 		}
 		else
 		if (ARCHON_UNCOL) // item was no collected - may get some pts for touch
+		if (self.classname != "archon_nodule")
 		if (self.class_select != "chaos_item")
 		{
 			other.archon = other.archon + (self.archon * ARCHON_UNCOL);
@@ -784,7 +786,6 @@ bprint(")\n");
 			if (e.think == player_stand1) e.think = e.th_stand;
 		}
 
-		if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
 // special codes - for things that are touchable but dont disappear
 		if (self.aflag <= NO_REMOVE_TCH)
 		{
@@ -793,6 +794,9 @@ bprint(")\n");
 		}
 		if (self.aflag == NO_REMOVE_NORET) self.nextthink = -1;
 		other.duration = 0;
+
+		pk_dyn_touch(); // always checking because there are lots of dyn items now
+//		if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
 		return;
 	}
 
@@ -896,7 +900,8 @@ bprint(")\n");
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets
 	
-	if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
+	pk_dyn_touch(); // always checking because there are lots of dyn items now
+//	if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
 	other.duration = 0;
 };
 

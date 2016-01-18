@@ -853,7 +853,9 @@ void(vector org, vector vec) turret_launchNail =
 		self.attack_finished = time + 0.35;
 		newmis.touch = pulse_touch;
 		newmis.theowner = self.owner;
-		setmodel (newmis, "progs/pnail.mdl");
+		newmis.classname = "pulse_spike";
+		setmodel (newmis, "progs/spike.mdl");
+		newmis.skin = 3;
 	}
 	else
 		sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM);

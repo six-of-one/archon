@@ -43,6 +43,8 @@ float() SUB_False				= { return 0; }; // Return a false value
 float() SUB_True				= { return 1; }; // Return a true value
 void() SUB_Void				= {  }; // just so fteqcc code can assign (void()) 0 to a fn call and detect it later
 
+float() crandom;
+
 // **************************************
 // server strings section
 
@@ -116,6 +118,11 @@ qr heximp_hover|cut -b 18-38|sed -e 's/$/;/
 
 // **************************************
 
+var float autocvar_sv_nodule = 20;  // # of nodules on map
+float ARCHON_NODULES;					// server count of nodules on map
+// float NODULE_ENTRY_TIME;			// time when nodules start to appear
+entity god_particle;						// one special nodule worth buku points
+
 .float archon; // accumulates power
 
 float ARCHON_FRAG;				 		// points per frag
@@ -139,6 +146,12 @@ void() archon_target;
 void(entity e) archon_target_clear;
 void() clear_spell;
 void() spell_target;
+
+// spawn flag values
+float NOITEM = 1;
+float NOHEAL = 1;
+float NOSPRAY = 2;
+float P_RELOAD = 4;
 
 // **************************************
 // ADMIN section
@@ -1552,8 +1565,6 @@ void() admin_sv_cfg;
 void() Admin_mainmenu;
 float() admin_postthink;
 void() admin_resettimeout;
-void() observer; // *bot
-void() observer_off;
 string OBSERVER = "jafo"; // nod to Blue Thunder : "just another fucking observer"
 float pk_flags_ck;
 float pk_itemovr_ck;

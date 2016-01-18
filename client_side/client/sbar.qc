@@ -229,6 +229,40 @@ void() Sbar_DrawCompass =
 };
 
 //-----------------------------------------------------------------------------
+// monster names
+//-----------------------------------------------------------------------------
+
+string(float mb) monster_id =
+{
+	local string s2;
+
+	s2 = "";
+
+	if (mb == CB_M_ARMY) 			s2 = "Army Grunt";
+	if (mb == CB_M_FISH) 			s2 = "Fish";
+	if (mb == CB_M_KNIGHT) 			s2 = "Knight";
+	if (mb == CB_M_DOG) 				s2 = "Rabid Dog";
+	if (mb == CB_M_DEMON) 			s2 = "Fiend";
+	if (mb == CB_M_ENF) 				s2 = "Enforcer";
+	if (mb == CB_M_HKNIGHT) 		s2 = "Hell Knight";
+	if (mb == CB_M_OGRE) 			s2 = "Ogre";
+	if (mb == CB_M_SHALR) 			s2 = "Shalrath";
+	if (mb == CB_M_SHAMBL) 			s2 = "Shambler";
+	if (mb == CB_M_SCRAG) 			s2 = "Scragg";
+	if (mb == CB_M_ZOMBY) 			s2 = "Zomby";
+	if (mb == CB_M_CTHON) 			s2 = "Cthon";
+	if (mb == CB_M_TARBABY) 		s2 = "Spawn";
+	if (mb == CB_M_SCOURGE) 		s2 = "Scourge";
+	if (mb == CB_M_SHUBS) 			s2 = "Shub Niggurath";
+	if (mb == CB_M_SVORE) 			s2 = "Vorerel";
+	if (mb == CB_M_GREMLIN) 		s2 = "Gremlin";
+	if (mb == CB_M_VOMIT) 			s2 = "Vomitus";
+	if (mb == CB_M_SPIKEMINE) 		s2 = "Spike Mine";
+
+	return(s2);
+};
+
+//-----------------------------------------------------------------------------
 // Sbar_DrawInventory
 //-----------------------------------------------------------------------------
 
@@ -1076,6 +1110,35 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						else
 							instr = "*FIRE - cast polymorph spell";
 					}
+					else if (nails == 5)
+					{
+						Sbar_DrawString('260 40 0' + woff, "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (explodeshot == 24) // no creature cost can be this val
+							instr = "*FIRE - start polymorph selection";
+						else
+						{
+							if (pk_bt > 0)
+							{
+								Sbar_DrawString(pwr_step + '22 -5 0' + woff, "target becomes: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+								Sbar_DrawString(pwr_step + '130 -5 0' + woff, monster_id(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+								cnt_left = pwr_step_y;
+								pwr_step_y = pwr_step_y + 18;
+							}
+							instr = "*ALT_FIRE - cast polymorph spell";
+						}
+					}
+					else if (nails == 7)
+					{
+						Sbar_DrawString('260 40 0' + woff, "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (pk_bt > 0)
+						{
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "target becomes: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString(pwr_step + '130 -5 0' + woff, monster_id(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							cnt_left = pwr_step_y;
+							pwr_step_y = pwr_step_y + 18;
+						}
+						instr = "*FIRE - cast polymorph spell (repeat)";
+					}
 				}
 				DrawInventoryAmmo('372 50 0', "gfx/reticle.spr_0", ALPHA_FULL, 0.05);
 			}
@@ -1093,9 +1156,18 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					else
 					{
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Select alternate target with reticle", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						cnt_left = pwr_step_y;
-						pwr_step_y = pwr_step_y + 14;
-						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "ALT_FIRE - use alternate target", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (nails == 5)
+						{
+							cnt_left = pwr_step_y;
+							pwr_step_y = pwr_step_y + 14;
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "CUBE_RELEASE (imp: 50) - use alternate target", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
+						else
+						{
+							cnt_left = pwr_step_y;
+							pwr_step_y = pwr_step_y + 14;
+							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "ALT_FIRE - use alternate target", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						}
 						if (instr)
 						{
 							cnt_left = pwr_step_y;

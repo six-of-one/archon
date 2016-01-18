@@ -390,6 +390,22 @@ void() x_item_touch =
 
 	other.x_items = other.x_items | self.x_items;
 
+// nodule special
+	if (self.classname == "archon_nodule") // non Archon only get 10% of nodules
+	{
+		if (self == god_particle)
+		{
+			if (self.goalentity.classname == "dyn_removal")
+				remove(self.goalentity);
+//				self.button13 = self.goalentity.button13; // usual remove if touch fails to
+			god_particle = world;
+		}
+		else
+		if (!other.mask_x & MORPH_ARCHON)
+			other.archon = other.archon - self.archon * 0.9;
+
+	}
+
 	if (self.noise != null_string)
 		sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
@@ -671,10 +687,10 @@ void() spike_touch =
 // hit something that bleeds
 	if (other.takedamage)
 	{
+		if (self.classname == "pulse_spike") self.classname = "spike"; // reflective gets removed
 		if (other.solid == SOLID_SLIDEBOX || !ENHANCED)  // BLOODCHECK - in case some other bit of gib / dead body can make blood
 			spawn_touchblood (self.dmg);
 		T_Damage (other, self, self.owner, self.dmg);
-		if (self.model == "progs/pnail.mdl") self.model = "progs/nail.mdl"; // reflective gets removed
 	}
 	if (!other.takedamage || (other.solid != SOLID_SLIDEBOX && ENHANCED))
 	{
@@ -683,7 +699,7 @@ void() spike_touch =
 
 		makevectors(self.angles);
 
-		if (self.model == "progs/pnail.mdl") // pulse spikes reflect off solids
+		if (self.classname == "pulse_spike") // pulse spikes reflect off solids
 		{
 //			if (!(Q-100 || PK-100))
 
@@ -747,7 +763,7 @@ void() spike_touch =
 		WriteCoord (MSG_BROADCAST, self.origin_z);
 	}
 
-	if (self.model != "progs/pnail.mdl") SUB_Remove();
+	if (self.classname != "pulse_spike") SUB_Remove();
 };
 
 

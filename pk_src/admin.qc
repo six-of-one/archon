@@ -110,17 +110,6 @@ bprint("\n");
 void(entity e) admin_clear =
 {
 
-
-/*
-if (self.class_select == "class_bot")
-{
-bprint("------------------- **  admin clear ");
-bprint(e.netname);
-bprint("\n");
-}
-*/
-
-
 	if (e.class_select == "class_bot") return;
 
 	if (e.light_lev > 0)
@@ -702,7 +691,7 @@ float(float sk) skill_add =
 void() Admin_botmenu =
 {
 	self.message =
-				       "\b     Admin Bot Menu:     \n\b+--------------------------+\n    pk*bot       frikbot    \n 01: add bot   11: add bot  \n 02: remove 1  12: remove 1 \n 03: 3 *skill  13: 3 *skill \n - add 1 bot of each skill  \n 04: add 4     14: add 4    \n - add 4 bots - same skill  \n 05: verbose                \n 06: update    20: +skill   \n 08: observer mode          \n 09: observer time          \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
+				       "\b     Admin Bot Menu:     \n\b+--------------------------+\n    pk*bot       frikbot    \n 01: add bot   11: add bot  \n 02: remove 1  12: remove 1 \n 03: 3 *skill  13: 3 *skill \n - add 1 bot of each skill  \n 04: add 4     14: add 4    \n - add 4 bots - same skill  \n 05: verbose                \n 06: update    20: +skill   \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
 // 07: unrestricted           \n
 
 	self.wad = null_string;
@@ -1025,12 +1014,12 @@ void() Admin_mainmenu =
 	if (PK) // menu with PK only entries
 	{
 	self.message =
-					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  hub map load        \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  60:  PK mode toggle      \n  ---  PK mode = TRUE      \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
+					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  hub map load        \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  60:  PK mode toggle      \n  ---  PK mode = TRUE      \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 	}
 	else
 	{
 	self.message =
-					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  start map load      \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  60:  PK mode toggle      \n  ---  PK mode = FALSE     \n  97:  exit menu only      \n  98:  observer            \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
+					"\b   Administration Menu:    \n\b+-------------------------+\n  01:  toggle deathmatch   \n  02:  toggle teamplay     \n  03:  toggle coop         \n  04:  toggle no exit      \n  05:  goto next level     \n  06:  reset level         \n  07:  start map load      \n  10:  server frag limit   \n  11:  server time limit   \n  12:  server gravity      \n  13:  server friction     \n  22:  map control         \n  23:  bot control         \n  24:  painkeep control    \n  25:  item control        \n  26:  monster control     \n  30:  kick players        \n  60:  PK mode toggle      \n  ---  PK mode = FALSE     \n  99:  respawn (exits)     \n admin impulse: exit admin \n\b+-------------------------+\n\b Enter code: ";
 	}
 
 	self.target = self.path = self.wad = null_string;
@@ -1040,10 +1029,9 @@ void() Admin_mainmenu =
 
 // setup timer for closing menus
 
-// lt - light up admin if true
 // tm - timeout to use
 
-void(float lt, float tm) admin_timer =
+void(float tm) admin_timer =
 {
 	if (self.goalentity && self.goalentity.classname == "admintimer") // 'e says they already got one
 	{
@@ -1057,14 +1045,8 @@ void(float lt, float tm) admin_timer =
 	self.goalentity.owner = self;
 	self.goalentity.think = PK_AdminImpulse;
 	self.goalentity.nextthink = time + tm;
-
-// if lt is true, this is a beacon light over an admin player
-	if (lt)
-	{
-		self.goalentity.effects = EF_DIMLIGHT;
-		setmodel(self.goalentity, "progs/s_light.spr"); // let everyone know this guy is in admin mode
-	}
 };
+
 
 void() AdminCommands =
 {
@@ -1084,10 +1066,20 @@ void() AdminCommands =
 			return;
 		}
 		centerprint(self,"Administration privileges enabled, hit \b[ENTER]");
+
+// take player out of world for admin, & setup respawn / deadcam
+//		- not exactly died, not exactly lived on either
+
+		morph_clearparms(self, 1);
+		self.solid = SOLID_NOT;
+		cam_startdeathview();
+		
+//		admin_tow();
+
 		Admin_mainmenu();
 		if (pk_admintime > 0) // admin timeout
 		{
-			admin_timer(TRUE, pk_admintime);
+			admin_timer(pk_admintime);
 		}
 		return;
 	}
@@ -1198,45 +1190,7 @@ void() AdminCommands =
 			find_Kick();
 			if (self.enemy) Admin_kickmenu();
 		}
-		else if (self.admin_input == 97)													// live in game admin - not in menu
-		{
-			self.admin = LIVE_ADMIN;
-			self.wad = self.message = self.path = self.target = null_string;
-			self.enemy = world;
-			centerprint(self, null_string);
-			self.takedamage = DAMAGE_AIM;
-			self.impulse = 0;
-			if (self.light_lev > 0)
-			{
-				stuffcmd(self, "r_ambient \n");
-				stuffcmd(self, ftos(self.light_lev));
-				stuffcmd(self, "\n");
-//				self.light_lev = 0;
-			}
-			else
-				stuffcmd(self, "noadmingamma\n"); // set gamma level
-			stuffcmd(self, "noadmin_centertime\n");
-			sprint(self,"Entering live game admin mode - timeout is: ");
-			if (pk_admintime < 60)
-			{
-				sprint(self,ftos(pk_admintime));
-				sprint(self," seconds\n");
-			}
-			else
-			{
-				sprint(self,ftos(floor(pk_admintime / 60)));
-				sprint(self," minutes\n");
-			}
-			sprint(self,"after which admin will turn off.\n");
-			sprint(self,"Use admin impulse to return to menu mode.\n");
-			return;
-		}
-		else if (self.admin_input == 98)
-		{
-			observer();
-			self.goalentity.effects = 0;
-			setmodel(self.goalentity, null_string); // no light on admin observer
-		}
+
 		else if (self.admin_input == 99)													// admin respawn - exits admin mode
 		{
 			self.impulse = pk_adminimp;
@@ -1252,24 +1206,18 @@ void() AdminCommands =
 	}
 	else if (self.admin == 9)															// new data value entered
 	{
-		if (self.path == "observer_time")
-		{
-			observer_time = self.admin_input;
-		}
-		else
-		{
-			if (self.path == "fraglimit ")
-			if (NOEXIT_SAVEFRAG > -1)
-				NOEXIT_SAVEFRAG = self.admin_input;
+		if (self.path == "fraglimit ")
+		if (NOEXIT_SAVEFRAG > -1)
+			NOEXIT_SAVEFRAG = self.admin_input;
 
-			if (self.path == "timelimit ")
-			if (NOEXIT_SAVETIME > -1)
-				NOEXIT_SAVETIME = self.admin_input;
+		if (self.path == "timelimit ")
+		if (NOEXIT_SAVETIME > -1)
+			NOEXIT_SAVETIME = self.admin_input;
 
-			localcmd(self.path);
-			localcmd(ftos(self.admin_input));
-			localcmd("\n");
-		}
+		localcmd(self.path);
+		localcmd(ftos(self.admin_input));
+		localcmd("\n");
+
 		self.admin = self.lip; // admin level we are on
 		self.wad = self.target;
 		self.target = self.path = null_string;
@@ -1384,48 +1332,6 @@ void() AdminCommands =
 			else
 				self.wad = "\ncats got pk*bots tongues.";
 			self.admin_input = 0;
-		}
-/*
-		else if (self.admin_input == 7)
-		{
-//			if (serverflags & UNRESTRICTED)
-			{
-//				serverflags = (serverflags - UNRESTRICTED);
-				self.wad = "\nBot commands restricted to admin.";
-			}
-			else
-			{
-//				serverflags = (serverflags | UNRESTRICTED);
-				self.wad = "\nBot commands NOT restricted on server.\n\banyone can issue bot admin commands!";
-			}
-			self.admin_input = 0;
-		}
-*/
-		else if (self.admin_input == 8)
-		{
-//			if (serverflags & FL_OBSERVER)
-			if (cvar("sv_observe"))
-			{
-//				serverflags = (serverflags - FL_OBSERVER);
-				cvar_set("sv_observe", "0");
-				self.wad = "\nOnly admins can observe.";
-			}
-			else
-			{
-//				serverflags = (serverflags | FL_OBSERVER);
-				cvar_set("sv_observe", "1");
-				self.wad = "\n\bAll players can observe.";
-			}
-			self.admin_input = 0;
-		}
-		if (self.admin_input == 9)
-		{
-			self.wad = "\nEnter an observer time limit in seconds";
-			self.admin_input = observer_time;
-			self.admin = 10;
-			self.lip = 18;
-			self.path = "observer_time";
-			self.target = "\nObserver time limit changed...";
 		}
 		else if (self.admin_input == 20)
 		{
@@ -1783,6 +1689,16 @@ User Menu
 */
 
 
+void() User_menu =
+{
+	if (self.aflag == IMP_DROPI) // drop inv menu
+	{
+		drop_menu();
+		return;
+	}
+};
+
+
 // fn(PK_AdminImpulse) - main admin input control routine
 
 void() PK_AdminImpulse =
@@ -1790,7 +1706,7 @@ void() PK_AdminImpulse =
 	local string as;
 	local float f;
 
-	self.attack_finished = time + 0.1; // debounce - dont want this every frame
+	self.attack_finished = time + 0.07; // debounce - dont want this every frame
 
 	if (self.admin == -1) // process user menu (impulse 39) here + impulse 53, drop menu  // USER-MENU
 	{
@@ -1804,9 +1720,9 @@ void() PK_AdminImpulse =
 				self.light_lev = cvar("r_ambient");
 			stuffcmd(self, "usergamma\n");
 			stuffcmd(self, "admin_centertime\n");
-			admin_timer(FALSE, USER_TIMEOUT);
+			admin_timer(USER_TIMEOUT);
 			self.impulse = 0;
-			self.message = null_string;
+			self.message = "USER_MENU";
 		}
 		if (self.aflag == IMP_DROPI) // drop inv section
 		{
@@ -1829,6 +1745,7 @@ void() PK_AdminImpulse =
 				drop_setup(self, -1); // redo page
 				self.impulse = 0;
 				self.button0 = 0;
+				admin_clear(self);
 			}
 			if (self.impulse == 8) // next page
 			{
@@ -1841,22 +1758,9 @@ void() PK_AdminImpulse =
 				self.impulse = 0;
 			}
 		}
-/*		else if (self.impulse == 11)
-		{
-			self.weapon = W_BestWeapon();
-			self.pk_currentitem = W_BestPKWeapon();
-			W_SetCurrentAmmo();
-		}
-		else if (self.impulse == 12)
-			if (CanSelect(self.lastweapon, self.pklastweapon))
-			{
-				self.weapon = self.lastweapon;
-				self.pk_currentitem = self.pklastweapon;
-				W_SetCurrentAmmo();
-			}
-*/
+
 		f = self.impulse;
-//		User_menu();
+		User_menu();
 //		centerprint3(self, self.message, null_string, null_string);
 		if (self.button0 || self.button1 || self.button2 || self.impulse)
 		{
@@ -1872,7 +1776,7 @@ void() PK_AdminImpulse =
 		else if (f == 12) // admin backspace
 			self.impulse = 69;
 		else if (f == 13)
-			self.impulse = 201;
+			self.impulse = 201; // FIX: this impulse is deprecated
 		else if (f == 10) // admin 0
 			self.impulse = 38;
 		else
@@ -1926,7 +1830,6 @@ void() PK_AdminImpulse =
 				self.admin = 6;
 				Admin_mainmenu();
 
-// IDEA: 5.19 go observer here, escape or fail dont go observer
 			}
 			else // login
 			{
@@ -2022,7 +1925,6 @@ float() admin_postthink =
 
 			if (pk_admintime > 0)
 			if (self.admin > 0)
-			if (self.goalentity)
 			if (self.goalentity.classname == "admintimer") // any input to admin menus resets timeout
 				self.goalentity.nextthink = time + pk_admintime;
 		}
@@ -2030,15 +1932,8 @@ float() admin_postthink =
 			PK_AdminImpulse();
 	}
 	if (self.admin)
-	{
-		if (pk_admintime > 0)
-		if (self.goalentity)
-		if (self.goalentity.classname == "admintimer")
-		if (self.goalentity.model != null_string)
-			setorigin(self.goalentity, self.origin + ' 0 0 60'); // track admin players
+	if (self.admin != LIVE_ADMIN) return(TRUE);
 
-		if (self.admin != LIVE_ADMIN) return(TRUE);
-	}
 	return(FALSE);
 };
 

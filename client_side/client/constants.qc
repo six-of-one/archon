@@ -214,3 +214,26 @@ float IMP_MDRAGON					= 96;	// string STI_MDRAGON		= "impulse 96";
 float IMP_MSCOURGE				= 97;	// string STI_MSCOURGE		= "impulse 97";
 float IMP_MGREMLIN_F				= 98;	// string STI_MGREMLIN		= "impulse 98"; // flying gremlin
 float IMP_MGREMLIN_L				= 99;
+
+// monster bits
+
+float CB_M_ARMY					= 1;
+float CB_M_FISH					= 2;
+float CB_M_KNIGHT					= 4;
+float CB_M_DOG						= 8;
+float CB_M_DEMON					= 16;
+float CB_M_ENF						= 32;
+float CB_M_HKNIGHT				= 64;
+float CB_M_OGRE					= 128;
+float CB_M_SHALR					= 256; // + super vore ?
+float CB_M_SHAMBL					= 512;
+float CB_M_SCRAG					= 1024;
+float CB_M_ZOMBY					= 2048;
+float CB_M_CTHON					= 4096; // boss
+float CB_M_TARBABY				= 8192;
+float CB_M_SCOURGE				= 16384;
+float CB_M_SHUBS					= 32768;
+float CB_M_SVORE					= 65536; // super vore
+float CB_M_GREMLIN				= 131072;
+float CB_M_VOMIT					= 262144; // guy id left out
+float CB_M_SPIKEMINE				= 524288;	// Hipnotic spiked mine

@@ -338,7 +338,7 @@ void () item_health =
 	self.volume = 100;
 	if (self.spawnflags & 2) self.volume = Q_MEGA_MAX;
 
-	self.mask_x = MORPH_ALL; // everyone can get health
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ITEM;
 };
@@ -355,7 +355,7 @@ void () item_health_small =
 		q3_item_health_small(); 
 		self.classname = "q3_item_health_small";
 	}
-	self.mask_x = MORPH_ALL; // everyone can get health
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ITEM;
 };
@@ -372,7 +372,7 @@ void () item_health_large =
 		q3_item_health_large(); 
 		self.classname = "q3_item_health_large";
 	}
-	self.mask_x = MORPH_ALL; // everyone can get health
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ITEM;
 };
@@ -389,7 +389,7 @@ void () item_health_mega =
 		q3_item_health_mega(); 
 		self.classname = "q3_item_health_mega";
 	}
-	self.mask_x = MORPH_ALL; // everyone can get health
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART;
 };
@@ -409,7 +409,7 @@ void () item_quad =
 		self.classname = "q3_item_quad";
 		q3_item_quad(); 
 	}
-	self.mask_x = MORPH_ALL; // everyone can get health
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART + 0.1;
 };
@@ -426,7 +426,7 @@ void () item_enviro =
 		self.classname = "q3_item_enviro";
 		q3_item_enviro(); 
 	}
-	self.mask_x = MORPH_ALL; // everyone can get health
+	self.mask_x = MORPH_ALL;
 
 	self.archon = ARCHON_ART;
 };

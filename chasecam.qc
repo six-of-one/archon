@@ -111,7 +111,6 @@ void () cam_deathmove =
 	{
 		self.owner.health = -1;
 		self.owner.deadflag = DEAD_RESPAWNABLE; // really die & respawn
-//		stuffcmd(self.owner,"scr_centertime 5\n");
 
 		self.think = SUB_Remove;
 
@@ -159,10 +158,11 @@ void () cam_deathmove =
 // pbserver status bar - time spent observing in rels + "high score"
 		stuffcmd(self.owner, "infobar 2 \"");
 		stuffcmd(self.owner, self.owner.netname);
-		if (self.owner.deadflag)
+		if (self.admin)
+			stuffcmd(self.owner, " : * admin (");
+		else 
+//		if (self.owner.deadflag)
 			stuffcmd(self.owner, " :dead (");
-		else
-		stuffcmd(self.owner, " :observer (");
 		stuffcmd(self.owner, ftos(rint(time - self.ltime)));
 		stuffcmd(self.owner, " rels) Archon - high score: ");
 		stuffcmd(self.owner, ftos(high_score));
@@ -243,7 +243,7 @@ void () cam_deathview =
 	else
 	if (self.wait < time + 3  && self.owner.model != null_string  && self.owner.solid == SOLID_NOT) // once corpse settles, dont let player move it
 	{
-		CopyToBodyQue (self.owner);
+		if (self.admin) CopyToBodyQue (self.owner);
 		self.owner.model = null_string;
 	}
 

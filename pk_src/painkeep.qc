@@ -976,11 +976,34 @@ void() pk_liveupd =
 
 	Q2_SILENCE = cvar("q2_silence");
 
+// nodules
+
+//	if (time > 120) // no nodules for 2 mins - NODULE_ENTRY_TIME
+// if (time < 240)
+//TEST
+	if (time > 10)
+	if (time < 70)
+	{
+		if (ARCHON_NODULES  != (autocvar_sv_nodule / 2)) // only 1/2 cnt to start
+		{
+			ARCHON_NODULES = autocvar_sv_nodule / 2;
+			cube_handle("sv_nodule");
+		}
+	}
+	else
+	if (ARCHON_NODULES  != autocvar_sv_nodule) 
+	{
+		cube_handle("sv_nodule");
+		ARCHON_NODULES = autocvar_sv_nodule;
+	}
+
 // morphic
 	MORPH_CUBE_TIME = cvar("sv_morph_time");
 	MORPH_CUBE_DV = cvar("sv_morph_dv");
 	MORPH_BOT = cvar("sv_morph_bot");
 	MORPH_FREE = cvar("sv_morph_free");
+
+	if (time > 5) // for msg
 	if (MORPHIC  != cvar("sv_morph")) 
 	{
 		cube_handle("sv_morph");
@@ -1054,6 +1077,7 @@ void() pk_liveupd =
 	else
 		PK_CUBE_DV = 0;
 
+	if (time > 5) // for msg
 	if (PK_CUBE  != cvar("pk_cubes")) 
 	{
 		cube_handle("pk_cubes");
@@ -1061,6 +1085,7 @@ void() pk_liveupd =
 	}
 
 // crates - use cube timing, but lasts twice as long
+	if (time > 5) // for msg
 	if (PK_CRATE  != cvar("pk_crates")) 
 	{
 		cube_handle("pk_crates");

@@ -435,6 +435,8 @@ void(vector org, float rn, float pr, float col) chaos_particle;
 float(entity e) IS_CHAOS;
 void() chaos_morph_chgthk;
 void(entity e) chaos_mdlsize;
+void() archon_nodule_rnd;
+void(entity e) archon_pprint;
 
 // gremlin
 

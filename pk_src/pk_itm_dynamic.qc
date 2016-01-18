@@ -236,6 +236,7 @@ void(string cls) item_call =
 	else if (cls == "pk_crate") pk_crate();
 	else if (cls == "pk_cube") pk_cube();
 	else if (cls == "morph_cube") morph_cube();
+	else if (cls == "archon_nodule") archon_nodule_rnd();
 
 // ctf
 	else if (cls == "weapon_hook") weapon_hook();
@@ -867,6 +868,21 @@ void() dyn_rem =
 {
 	if (self.enemy)
 	{
+		if (self.enemy.button13 == -666) // relocate special - like god particle
+		{
+			if (!self.wait) self.wait = PK_CUBE_TIME + random() * 66;
+			self.nextthink = time + self.wait + random() * 6;
+			self.wait = self.wait - random() * 6; // relocates faster every time
+			if (self.wait < 10) self.wait = 15 + random() * 30; // till this
+
+			newmis = dyn_rndloc();
+			if (!newmis) newmis= findradius(world.origin, 256000);
+			if (!newmis) return; // nothing found!
+			self.dest = stdv_rndloc(newmis.origin, 50, 124);
+			setorigin(self.enemy, self.dest + '0 0 2');
+			return;
+		}
+		else
 		if (self.button13 == self.enemy.button13)
 		{
 			if (self.wait) // new ops - set sub rem & exit
@@ -885,14 +901,14 @@ void() dyn_rem =
 					self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 4;
 					return;
 				}
-				if (self.enemy.model != null_string)
+				if (self.enemy.model != null_string) // not touched yet
 				{
 					self.enemy.think = remove_fade; //SUB_Remove;
 					self.enemy.nextthink = time + 0.1;
 				}
 				else
 					remove(self.enemy);
-	//			pk_ditems = pk_ditems - 1; // this is really meaningless
+	//			pk_ditems = pk_ditems - 1; // this is really meaningless - and its done in item_call
 			}
 		}
 		else
@@ -944,17 +960,21 @@ void(entity e, float tm, void() rmv) dyn_remove =
 	f = spawn();
 	f.classname = "dyn_removal";
 	f.think = dyn_rem;
-	f.nextthink = time + DYN_REM_TIME;
+	f.nextthink = time + DYN_REM_TIME; // 6 secs
 
 	f.netname = e.netname; // in case of hash fail
 	f.target1 = e.classname;
 	f.enemy = e;
+	e.goalentity = f; // back pointer for god particle, etc
 
 	f.button13 = e.button13 = system_hash;
 	system_hash = system_hash + 1 + rint(random() * 5);
 
 	dv = REMOVE_DV;
+
+	if (tm)
 	if (dv > tm) dv = tm * 0.2;
+
 	if (tm)
 		f.wait = tm + crandom() * dv;
 	else if (e.wad == "morph_cube")
@@ -1094,15 +1114,15 @@ void() dyn_spawn =
 		drop_inv_check(); // check for anyone in drop inventory menu - residplay menu
 	}
 
-	item_call(self.wad);
-
 	if (self.wad != "pk_crate") // pk_crates get removed by ops code - because they can leave an open box
 	{
 		if (self.wad == "morph_cube" || self.wad == "pk_cube") // cubes think & need old op
-			dyn_remove(self, 0, dyn_rem);
+			dyn_remove(self, 0, dyn_rem); // changes how remove happens, see this fn & dyn_rem ops - because of owners on cubes
 		else
-			dyn_remove(self, 0, SUB_Null);
+			dyn_remove(self, 0, SUB_Null); // uses dyn rem new opts, where wait is a t/o on the remove
 	}
+
+	item_call(self.wad); // make item
 };
 
 // think to handle dynamic item spawns if enabled by admin - pk_items only
@@ -1187,7 +1207,7 @@ void() dyn_item =
 						e.wad = "item_cells";
 					}
 				}
-//				pk_ditems = pk_ditems + 1; // done in spawn
+//				pk_ditems = pk_ditems + 1; // done in item_call
 			}
 			cd = cd - 1;
 		}
@@ -1406,6 +1426,13 @@ void() func_dynitem =
 			self.delay = fabs(MORPH_CUBE_DV);
 		}
 		else
+		if (self.netname == "sv_nodule_maker") // makin cubes
+		{
+			e.wad = "archon_nodule";
+			self.wait = PK_CUBE_TIME;
+			self.delay = PK_CUBE_DV;
+		}
+		else
 		if (self.dest1_x) // weapon + q items admin bit codes here
 		{
 			sb = e.cnt = bit_cnt(self.dest1_x, TRUE);
@@ -1474,6 +1501,16 @@ void(string cb) cube_handle =
 		cbnet = "pk_crate_maker";
 		cn = "Crates";
 		cbv = PK_CRATE;
+		cbt = PK_CUBE_TIME;
+		cbd = PK_CUBE_DV;
+	}
+	else
+	if (cb == "sv_nodule")
+	{
+		cv = cvar(cb);
+		cbnet = "sv_nodule_maker";
+		cn = "Nodules";
+		cbv = ARCHON_NODULES;
 		cbt = PK_CUBE_TIME;
 		cbd = PK_CUBE_DV;
 	}
