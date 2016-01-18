@@ -90,6 +90,7 @@ void() walkmonster_start_go =
 	self.use = monster_use;
 
 	self.flags = self.flags | FL_MONSTER;
+	self.max_health = self.health;
 
 	if (self.target)
 	{
@@ -147,6 +148,7 @@ void() flymonster_start_go =
 
 	self.flags = self.flags | FL_FLY;
 	self.flags = self.flags | FL_MONSTER;
+	self.max_health = self.health;
 
 	if (!walkmove(0,0))
 	{
@@ -211,6 +213,7 @@ void() swimmonster_start_go =
 
 	self.flags = self.flags | FL_SWIM;
 	self.flags = self.flags | FL_MONSTER;
+	self.max_health = self.health;
 
 	if (self.target)
 	{
@@ -246,5 +249,36 @@ void() swimmonster_start =
 	self.archon = self.health / ARCHON_MONSTER;
 	if (self.archon <= 0) self.archon = 1;
 };
+
+// self is monster
+
+void() monster_imprisoned =
+{
+	self.button4 = self.button4 - 3;
+
+// NOTE: archon sub-game idea
+	if (self.button4 < 0) // imprisoned eventually kills a monster
+	{
+		remove(self.bolt_target);
+		Killed(self, self.owner);
+		return;
+	}
+
+	self.stack6 = "imprisoned";
+	self.think = monster_imprisoned;
+	self.nextthink = time + 3;
+
+	self.owner.archon = self.owner.archon - 5;
+};
+
+
+
+
+
+
+
+
+
+
 
 

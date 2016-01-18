@@ -2120,6 +2120,14 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 
 // IMP: all fire & forget - are there any left?
 
+            if (targ.deathtype == "banished")
+				{
+					bprint (targ.netname);
+					bprint (" was banished by \bArchon ");
+					bprint (attacker.netname);
+					bprint ("\n");
+					return;
+				}
 
 //MED 11/18/96
             if (inflictor.classname == "proximity_grenade")

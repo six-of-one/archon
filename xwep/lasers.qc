@@ -128,6 +128,7 @@ void(float fl) fire_laser1 =
 	fire_missile(lv, MOVETYPE_FLYMISSILE, fl, RM_SKY | PF_LAVA, org, ' 0 0 0', "laser", "progs/laser_m.mdl", snd, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 	newmis.skin = laser_sk;
 	newmis.frame = laser_fr;
+	newmis.effects = newmis.effects | EF_FULLBRIGHT;
 //		newmis.effects = EF_DIMLIGHT;
 	if (EWEAP)
 	{
@@ -149,5 +150,5 @@ void() fire_enflaser =
 	fire_missile(LASER_VEL, MOVETYPE_FLYMISSILE, f, RM_SKY | PF_LAVA, self.origin + v_forward * VWX_LASER + v_right * VWY_LASER + v_up * VWZ_LASER, v0, "laser", "progs/laser_m.mdl", "enforcer/enfire.wav", Laser_Blast, 5, SUB_Remove, Laser_Blast);
 	newmis.skin = 4;
 	newmis.frame = 8; // yellow bolt, small cylinder
-	newmis.effects = EF_DIMLIGHT;
+	newmis.effects = EF_DIMLIGHT | EF_FULLBRIGHT;
 };

@@ -2289,7 +2289,7 @@ void() painkeep_cube_use =
 			self.charmer = damage_attacker;
 			self.charmed = 1;
 		}
-									self.netname = "I came from a cube / crate"; // TEST - remove
+									self.map = "I came from a cube / crate"; // TEST - remove
 //
 									}
 	}

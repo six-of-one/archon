@@ -1389,6 +1389,7 @@ void () X_FireOnePlasma =
 
 		newmis.dmg = dm;
 		newmis.delay = dbfg; // tell missile its a bfg blast for init of trace dmg
+		newmis.effects = newmis.effects | EF_FULLBRIGHT;
 
 		if (EWEAP)
 		{

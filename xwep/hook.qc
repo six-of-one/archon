@@ -439,6 +439,7 @@ void () MaintainLinks =
 				{
 					newlink.classname = "laser_hook_beam";
 					setmodel (newlink, "progs/lzrbm_seg.mdl");
+					newlink.effects = newlink.effects | EF_FULLBRIGHT;
 					chainlen = vlen(chainvec);
 					chainlen = floor(chainlen / 32);
 					if (chainlen > 63) chainlen = 63;

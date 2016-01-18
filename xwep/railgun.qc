@@ -176,6 +176,7 @@ void() X_FireRailgun =
 	if (ew)
 	{
 		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, org, v0, v0, vectoangles(v_forward), self.velocity, null_string, "progs/lzrbm_seg.mdl", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
+		e.effects = e.effects | EF_FULLBRIGHT;
 		cn = ceil(vl / 32);
 		if (cn > 63) cn = 63;
 		e.frame = cn;
@@ -191,6 +192,7 @@ void() X_FireRailgun =
 		if (random() < 0.2) particle (v1, v_forward * 30, 250, 2);
 
 		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, v1 + vp, v0, v0, v0, vp + self.velocity, null_string, "progs/beambit.spr", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
+		e.effects = e.effects | EF_FULLBRIGHT;
 		if (e)
 		{
 			cn = cn + 1;

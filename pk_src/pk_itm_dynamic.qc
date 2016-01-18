@@ -857,7 +857,22 @@ void() remove_fade =
 	self.think = remove_fade;
 
 	self.alpha = self.alpha - 0.05;
-	if (self.alpha < 0.05) remove(self);
+	if (self.alpha < 0.05)
+	{
+		if (self.button4 == -664) // for respawning a banished item
+		{
+			self.model = string_null;
+			self.solid = SOLID_NOT;
+			if (deathmatch == 1)
+			{
+				self.nextthink = time + RSP_TIME * 4; // takes longer when banished
+				self.think = SUB_regen;
+				self.button4 = 0;
+			}
+		}
+		else
+		remove(self);
+	}
 	else self.nextthink = time + 0.15;
 };
 

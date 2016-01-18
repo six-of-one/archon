@@ -156,6 +156,7 @@ void(vector org, vector vec, float light1, string sd) HIP_LaunchLaser =
 	newmis.speed = LASERCAN_VEL;
 	newmis.avelocity = '0 0 400';
 	newmis.dmg = 18;
+	newmis.effects = newmis.effects | EF_FULLBRIGHT;
 	newmis.attack_finished = time + 5; // flight time
 	if (EWEAP)
 	{

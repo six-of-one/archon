@@ -135,12 +135,60 @@ void() player_order_attack =
 
 	if (self.archon < -9) return;
 
-	fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "laser", "progs/laser_m.mdl", "enforcer/enfire.wav", Laser_Blast, 6, SUB_Remove, Laser_Blast);
-	newmis.skin = 13;
-	newmis.frame = 6;
-	self.attack_finished = time + 0.3;		
+	if ((self.pk_beartrapammo == 1) || (self.pk_beartrapammo == 2))
+	{
+		self.stack5 = "enforcer/enfire.wav";
+		if (self.pk_beartrapammo == 2) self.stack5 = "weapons/sgun1.wav";
+		fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "laser", "progs/laser_m.mdl", self.stack5, Laser_Blast, 6, SUB_Remove, Laser_Blast);
+		newmis.skin = 13;
+		newmis.frame = 6;
+		newmis.effects = newmis.effects | EF_FULLBRIGHT;
+		if (self.pk_beartrapammo == 2)
+		{
+//			newmis.classname = "missile";
+			newmis.scale = 2;
+			newmis.th_die = SUB_Remove;
+			newmis.touch = T_MissileTouch;
+			newmis.dmg = 50;
+			self.attack_finished = time + 0.8;
+			self.archon = self.archon - 4;
+		}
+		else
+		{
+			self.attack_finished = time + 0.3;		
+		}
+		self.archon = self.archon - 1;
+	}
+	else if (self.pk_beartrapammo == 4)
+	{
+		self.button4 = 0;
+		self.enemy = findradius(self.origin, 120);
+		self.attack_finished = time + 1;
+		while (self.enemy)
+		{
+			if (self.enemy != self)
+			if (self.enemy.takedamage)
+			{
+				T_Damage(self.enemy, self, self, 35);
+				self.button4 = self.button4 + 1;
+			}
+			self.enemy = self.enemy.chain;
+		}
+		if (self.button4)
+		{
+			newmis = chaos_spawn(0, 0, 0, 0, self.origin, v0, v0, v0, v0, null_string, "progs/sphere_annihilation.mdl", SUB_Null, 0.2, remove_fade, SUB_Null, self, world);
+			newmis.scale = 14;
+			newmis.skin = 3;
+			newmis = chaos_spawn(0, 0, 0, 0, self.origin, v0, v0, v0, v0, null_string, "progs/sphere_annihilation.mdl", SUB_Null, 0.6, remove_fade, SUB_Null, self, world);
+			newmis.scale = 7;
+			newmis.skin = 3;
+			self.archon = self.archon - 10;
+			if (self.button4 > 2) self.archon = self.archon - 10;
+			sound (self, CHAN_WEAPON, "hipitems/empathy.wav", 1, ATTN_NORM);
+			self.attack_finished = time + 3;
+		}
+	}
 
-	self.archon = self.archon - 1;
 };
 
 /*
@@ -157,21 +205,13 @@ void() player_order_impulse =
 
 //	morph_impulse();
 
-	if (self.aflag & 16) // no morph during star bursts
-	{
-		self.items = self.items - (self.items & IT_SUPER_SHOTGUN);
-	}
-	else
-		self.items = self.items | IT_SUPER_SHOTGUN;	
-
-	if (self.impulse == 1)
-		self.weapon = IT_AXE;
-	else if (self.impulse == 10)
+	if (self.impulse == 10)
 		morph_CycleWeaponCommand(1);
 	else if (self.impulse == 12)
 		morph_CycleWeaponCommand(-1);
 	else if (self.impulse == 14) // slot loops
 	{
+		if (self.weapon == IT_AXE) self.impulse = 1;
 		if (self.weapon == IT_SHOTGUN) self.impulse = 2;
 		if (self.weapon == IT_SUPER_SHOTGUN) self.impulse = 3;
 		if (self.weapon == IT_NAILGUN) self.impulse = 4;
@@ -181,9 +221,9 @@ void() player_order_impulse =
 	{
 		if (self.weapon == IT_SUPER_SHOTGUN)
 		{
-			if (self.ammo_nails == 5) aux_bits(421887);
-			else if (self.ammo_nails == 7) aux_bits(421887);
-			else if (self.ammo_nails == 11) aux_bits(1023);
+			if (self.ammo_nails == 5) aux_bits(421887); // monster set
+			else if (self.ammo_nails == 7) aux_bits(421887); // monster set
+//			else if (self.ammo_nails == 11) aux_bits(1023);
 		}
 		if (self.weapon == IT_NAILGUN)
 		{
@@ -194,18 +234,27 @@ void() player_order_impulse =
 		}
 		if (self.weapon == IT_LIGHTNING)
 		{
-			if (self.ammo_rockets == 3) aux_bits(3);
-			if (self.ammo_rockets == 5) aux_bits(3);
+			if (self.ammo_cells == 3) aux_bits(3);
+//			if (self.ammo_cells == 5) aux_bits(3);
+			if (self.ammo_cells == 7) next_imprisoned();
+			if (self.ammo_cells == 11) aux_bits(421887); // monster set
+			if (self.ammo_cells == 17) aux_bits(7);
 		}
 	}
 
-	if (self.weapon == IT_AXE)
+	if (self.impulse == 1) // spell list - attacks
 	{
-//		sprint(self, "Chaos firing random bolts\n");
-		clear_spell(); // timeout any spell in selection
+		if (self.weapon == IT_AXE)
+		{
+			self.pk_beartrapammo = self.aflag;
+			aux_bits(7);
+			self.aflag = self.pk_beartrapammo;
+		}
+		self.weapon = IT_AXE;
 	}
 
-	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
+	if (self.weapon == IT_AXE) clear_spell(); // timeout any spell in selection
+
 
 	if (self.impulse == 2) // spell list 1 - teleports
 	{
@@ -223,15 +272,16 @@ void() player_order_impulse =
 		if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
 		{
 			if (self.ammo_nails == 3) self.ammo_nails = 5;
-			else if (self.ammo_nails == 5)
-			{
-				if (self.pk_beartrapammo & 421887) // skip if no valid bit
-					self.ammo_nails = 7;
-				else
-					self.ammo_nails = 11;
-			}
+			else if (self.ammo_nails == 5) self.ammo_nails = 7;
 			else if (self.ammo_nails == 7) self.ammo_nails = 3;
 //			else if (self.ammo_nails == 11) self.ammo_nails = 13; - order CAN NOT tranmogrify
+
+			if (self.ammo_nails == 11)
+			{
+				if (! self.pk_beartrapammo & 1023) self.pk_beartrapammo = 1;
+			}
+			else
+				if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
 		}
 		self.weapon = IT_SUPER_SHOTGUN;
 	}
@@ -242,17 +292,40 @@ void() player_order_impulse =
 			if (self.ammo_rockets == 3) self.ammo_rockets = 5;
 			else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
 			else if (self.ammo_rockets == 7) self.ammo_rockets = 3;
+
+			if (self.ammo_rockets == 7)
+			{
+				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+			}
+			else
+				if (! self.pk_beartrapammo & 71) self.pk_beartrapammo = 1;
 		}
 //		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
 		self.weapon = IT_NAILGUN;
 	}
-	if (self.impulse == 8) // spell list archon
+	if (self.impulse == 8) // spell list archon legacy
 	{
 		if (self.weapon == IT_LIGHTNING) // loop thru spell set
 		{
 			if (self.ammo_cells == 3) self.ammo_cells = 5;
 			else if (self.ammo_cells == 5) self.ammo_cells = 7;
-			else if (self.ammo_cells == 7) self.ammo_cells = 3;
+			else if (self.ammo_cells == 7) self.ammo_cells = 11;
+			else if (self.ammo_cells == 11) self.ammo_cells = 13;
+			else if (self.ammo_cells == 13) self.ammo_cells = 17;
+			else if (self.ammo_cells == 17) self.ammo_cells = 3;
+
+			if (self.ammo_cells == 3)
+			{
+				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+			}
+			else if (self.ammo_cells == 11)
+			{
+				if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
+			}
+			else if (self.ammo_cells == 17)
+			{
+				if (! self.pk_beartrapammo & 7) self.pk_beartrapammo = 1;
+			}
 		}
 		self.weapon = IT_LIGHTNING;
 	}
@@ -319,6 +392,7 @@ void(float silent) player_order_become =
 	self.ammo_nails = 3;
 	self.ammo_rockets = 3;
 	self.ammo_cells = 3;
+	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	self.pk_explode_ammo = 0; // spell cost
 	self.th_missile = SUB_Null; // spell target

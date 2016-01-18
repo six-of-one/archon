@@ -1929,17 +1929,254 @@ void() monster_speed =
 
 void() archon_heal =
 {
+// things we cant heal
+	if (self.bolt_target == self) return;
+	if (self.bolt_target.health <= 0) return;
+	if (! self.bolt_target.takedamage) return;
+	if (self.bolt_target.mask_x & MORPH_ARCHON) return;
+//	if (self.bolt_target.flags & FL_GODMODE) return;
+
+	if (self.bolt_target.max_health <= 0)
+	{
+		if (self.bolt_target.health > 100) self.bolt_target.max_health = self.bolt_target.health;
+		else self.bolt_target.max_health = 100;
+	}
+	if (self.bolt_target.health >= self.bolt_target.max_health) return;
+
+	if (self.pk_beartrapammo & 1)
+	{
+		self.AIRG_Flags = floor((self.bolt_target.max_health - self.bolt_target.health) / 2);
+		if (self.AIRG_Flags < 5) self.AIRG_Flags = 5;
+		if (self.bolt_target.flags & FL_CLIENT) T_Heal(self.bolt_target, self.AIRG_Flags, 0);
+		else self.bolt_target.health = self.bolt_target.health + self.AIRG_Flags;
+	}
+	else
+	{
+		self.AIRG_Flags = floor(self.bolt_target.max_health / 2);
+		if (self.AIRG_Flags > 200) self.AIRG_Flags = 200; // cap this
+		T_Damage(self.bolt_target, self, self, self.AIRG_Flags);
+//		self.bolt_target.health = self.bolt_target.health - self.AIRG_Flags;		
+	}
 	
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
+};
+
+void() player_imprisoned =
+{
+	if (self.enemy.disconnectPlayer)
+	{
+		remove(self);
+		return;
+	}
+
+	self.classname = "imprisoned";
+	self.stack6 = "imprisoned";
+	self.nextthink = time + 3;
+	self.button4 = self.button4 - 3;
+	if (self.button4 < 0) // player freed in one complete color exchange
+	{
+		self.enemy.movetype = MOVETYPE_WALK;
+		self.enemy.attack_finished = 0;
+		self.enemy.event = "";
+		remove(self.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
+		remove(self);
+		self.archon = self.archon + self.pk_explode_ammo;		
+	}
+	else
+	{
+		self.enemy.movetype = MOVETYPE_NONE;
+		self.enemy.attack_finished = MAXFL;
+		self.enemy.event = "imprisoned";
+
+		self.owner.archon = self.owner.archon - 5;
+	}
+}
+
+void() next_imprisoned =
+{
+	gsf = 200;
+	if (!self.bolt_target)
+		self.bolt_target = find(world, stack6, "imprisoned");
+	else
+		self.bolt_target = find(self.bolt_target, stack6, "imprisoned");
+
+	while ((gsf > 0) && self.bolt_target)
+	{
+		if (self.bolt_target.owner = self) gsf = 0;
+		else self.bolt_target = find(self.bolt_target, stack6, "imprisoned");
+		gsf = gsf - 1;
+	}
+
+	if (!self.bolt_target)
+	{
+		stuffcmd(self.owner, "hud_message \"No prisoners to free\"\n");
+		self.pk_explode_ammo = 0;
+		self.bolt_targetTimeout = 0;	
+		self.ammo_cells = 11;
+	}
+};
+
+void() archon_release =
+{
+	if (!self.bolt_target) return;
+	if (self.bolt_target == self) return;
+	if (!self.bolt_target.owner != self) return;
+
+	if (self.bolt_target.classname == "imprisoned")
+	{
+		self.bolt_target.enemy.movetype = MOVETYPE_WALK;
+		self.bolt_target.enemy.attack_finished = 0;
+		self.bolt_target.enemy.event = "";
+		remove(self.bolt_target.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
+		remove(self.bolt_target);
+		self.archon = self.archon + self.pk_explode_ammo;
+	}
+	else if (self.bolt_target.class_select == "class_monster")
+	if (self.bolt_target.stack6 == "imprisoned")
+	{
+		remove(self.bolt_target.bolt_target);
+		self.bolt_target.stack6 = "";
+		self.bolt_target.think = self.bolt_target.th_run;
+		self.bolt_target.nextthink = time + 1;
+		self.archon = self.archon + self.pk_explode_ammo;
+	}
 };
 
 void() archon_imprison =
 {
+	if (self.bolt_target == self) return;
+	if (self.bolt_target.flags & FL_CLIENT)
+	{
+		if (self.bolt_target.event == "imprisoned")
+		{
+			self.bolt_targetTimeout = 0;	
+			return; // could not imprison
+		}
+		newmis = spawn();
+		newmis.think = player_imprisoned;
+		newmis.nextthink = time + 0.1;
+		newmis.owner = self;
+		newmis.enemy = self.bolt_target;
+		newmis.button4 = 40; // 40 secs, black to white on arc_hub floor changes
+		self.bolt_target.movetype = MOVETYPE_NONE;
+		self.bolt_target = world; // leave reticle on the imprisoned - maybe change
+	}
+	else if (self.bolt_target.flags & FL_MONSTER)
+	{
+		if (self.bolt_target.think == monster_imprisoned)
+		{
+			self.bolt_targetTimeout = 0;	
+			return; // could not imprison
+		}
+		self.bolt_target.owner = self;
+		self.bolt_target.think = monster_imprisoned;
+		self.bolt_target.nextthink = time + 0.1;
+		self.bolt_target.button4 = self.bolt_target.max_health;
+		if (self.bolt_target.button4 <= 0) self.bolt_target.button4 = 100;
+		self.bolt_target = world; // leave reticle on the imprisoned - maybe change
+	}
+	else
+	{
+		self.bolt_targetTimeout = 0;	
+		return; // could not imprison
+	}
 	
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
+	self.pk_explode_ammo = 0;
+	self.bolt_targetTimeout = 0;	
 };
+
+void() archon_summon =
+{
+	self.stack3 = monster_id(self.pk_beartrapammo, MON_FUNC_REG);
+	newmis = spawn();
+	setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
+
+	newmis.class_select = "class_monster"; // so item_call does right stuff
+	item_call_save(newmis, self.stack3);
+	
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
+};
+
+// IDEA: sparks / parts wilst fading
 
 void() archon_banish =
 {
-	
+	if (self.bolt_target.mask_x & MORPH_ARCHON) return;
+//	if (self.bolt_target.flags & FL_GODMODE) return;
+
+	if (self.bolt_target.flags & FL_CLIENT)
+	{
+		self.bolt_target.deathtype = "banished";
+		Killed(self.bolt_target, self); // NOTE: throws viswep, pack
+		CopyToBodyQue(self.bolt_target);
+		self.bolt_target.model = null_string;
+		newmis.nextthink = time + 60; // penalty for banish
+		bodyque_head.nextthink = time + 1;
+		bodyque_head.think = remove_fade;
+	}
+	if (self.bolt_target.flags & FL_MONSTER)
+	{
+		Killed(self.bolt_target, self);
+		self.bolt_target.nextthink = time + 1;
+		self.bolt_target.think = remove_fade;
+		self.pk_explode_ammo = 100;
+	}
+	else
+	{														// NOTE: rune should enter delayed move code
+		if (self.bolt_target.flags & FL_ITEM)
+		if (self.bolt_target.event != "dynamic_item")
+		{
+			self.bolt_target.button4 = -664; // respawn instead of remove
+		}
+		if (self.bolt_target.classname == "turret_base")
+		{
+			self.bolt_target.owner.solid = SOLID_NOT; // no touch
+			self.bolt_target.owner.nextthink = time + 1;
+			self.bolt_target.owner.think = remove_fade;			
+		}
+		self.bolt_target.solid = SOLID_NOT; // no touch
+		self.bolt_target.nextthink = time + 1;
+		self.bolt_target.think = remove_fade;
+		self.pk_explode_ammo = 20;
+	}
+
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
+};
+
+void() archon_time_flow =
+{
+	if (self.pk_beartrapammo == 1)
+	{
+		self.AIRG_Flags = cvar("slowmo");
+		if (self.AIRG_Flags == 1) return;
+		self.AIRG_Flags = 1;
+	}
+	else if (self.pk_beartrapammo == 2)
+	{
+		self.AIRG_Flags = cvar("slowmo");
+		if (self.AIRG_Flags == 0.5) return;
+		self.AIRG_Flags = self.AIRG_Flags - 0.05;
+		if (self.AIRG_Flags < 0.5) self.AIRG_Flags = 0.5;
+	}
+	else if (self.pk_beartrapammo == 4)
+	{
+		self.AIRG_Flags = cvar("slowmo");
+		if (self.AIRG_Flags == 1.5) return;
+		self.AIRG_Flags = self.AIRG_Flags + 0.05;
+		if (self.AIRG_Flags > 1.5) self.AIRG_Flags = 1.5;
+	}
+	else return;
+
+	localcmd("slowmo ");
+	localcmd(ftos(self.AIRG_Flags));
+	localcmd("\n");
+	self.archon = self.archon - self.pk_explode_ammo;
+	self.attack_finished = time + 1; //debounce
 };
 
 
@@ -1948,7 +2185,7 @@ void() archon_banish =
 void() clear_reticle =
 {
 	if (self.bolt_targetNext)
-	if (self.bolt_targetNext.model == "gfx/reticle.spr")
+	if ((self.bolt_targetNext.model == "gfx/reticle.spr") || (self.bolt_targetNext.model == "gfx/reticle2.spr"))
 	{
 		remove(self.bolt_targetNext); // IMP: fade remove this later
 		self.bolt_targetNext = world;
@@ -2038,6 +2275,7 @@ void() player_chaos_attack =
 			self.chaosweptime = self.chaosweptime + random() * 25;
 		}
 		else if (r1 < 0.87) self.lastweapon = IT_ROCKET_LAUNCHER;
+		else if (r1 < 0.92) self.lastweapon = IT_MJOLNIR;
 		else self.lastweapon = IT_LIGHTNING;
 //		self.delay = 3 + rint(random() * 2);
 		if (random() < 0.15) self.chaosattnoise = 0;
@@ -2053,6 +2291,12 @@ void() player_chaos_attack =
 
 //		newmis.morphy = self.morphy; // missiles should have a morphy
 
+	if (self.lastweapon == IT_MJOLNIR)
+	{
+		X_FireOnePlasma();
+		newmis.skin = rint(random() * 2);
+		self.attack_finished = time + 0.15;
+	}
 	if (self.lastweapon == IT_LIGHTNING)
 	{
 		if (self.t_width < time)
@@ -2131,6 +2375,7 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 			fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "laser", "progs/laser_m.mdl", sd, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 		newmis.skin = random() * 10.4;
 		newmis.frame = random() * 10.4;
+		newmis.effects = newmis.effects | EF_FULLBRIGHT;
 		self.attack_finished = time + 0.3;
 	}
 };
@@ -2145,7 +2390,7 @@ void(entity e) archon_target_clear =
 
 	if (e.bolt_target)
 	{
-		if (e.bolt_target.model == "gfx/reticle.spr")
+		if ((e.bolt_target.model == "gfx/reticle.spr") || (e.bolt_target.model == "gfx/reticle2.spr"))
 		{
 			remove(e.bolt_target); // IMP: fade remove this later
 			e.bolt_target = world;
@@ -2235,7 +2480,7 @@ void() spell_target =
 		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; self.bolt_target = self; }
 		if (self.ammo_nails == 5) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; if (self.bolt_target == self) self.bolt_target = world; }
 		if (self.ammo_nails == 7) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; if (self.bolt_target == self) self.bolt_target = world; } // repeat last monster poly
-		if (self.ammo_nails == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); } // repeat last monster poly
+		if (self.ammo_nails == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); }
 	}
 	if (self.weapon == IT_NAILGUN)
 	{
@@ -2248,9 +2493,12 @@ void() spell_target =
 	{
 		if (self.bolt_target == self) self.bolt_target = world;
 		if (!self.ammo_cells) self.ammo_cells = 3;
-		if (self.ammo_cells == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 2; self.th_melee = archon_heal; }
-		if (self.ammo_cells == 5) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 2; self.th_melee = archon_imprison; }
-		if (self.ammo_cells == 7) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 2; self.th_melee = archon_banish; }
+		if (self.ammo_cells == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 3; self.th_melee = archon_heal; }
+		if (self.ammo_cells == 5) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 43; self.th_melee = archon_imprison; }
+		if (self.ammo_cells == 7) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 0; self.th_melee = archon_release; if (!self.bolt_target) next_imprisoned(); }
+		if (self.ammo_cells == 11) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_summon; }
+		if (self.ammo_cells == 13) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 3; self.th_melee = archon_banish; }
+		if (self.ammo_cells == 17) { self.pk_explode_ammo = 100; self.pkplus_actorammo = 0; self.th_melee = archon_time_flow; }
 	}
 
 	if (self.pkplus_actorammo == 0) // changed - remove existing reitcles
@@ -2292,17 +2540,21 @@ void() archon_target =
 	if (!self.bolt_targetNext)
 	{
 		self.bolt_targetNext = spawn();
+		if (self.morphy == IMP_MORDER)
+			self.bolt_targetNext.mdl = "gfx/reticle2.spr";
+		else
+			self.bolt_targetNext.mdl = "gfx/reticle.spr";
 		self.bolt_targetNext.nextthink = time + 31;
 		self.bolt_targetNext.pkplus_actorammo = -66;
 		self.bolt_targetNext.think = clear_target;
-		setmodel(self.bolt_targetNext, "gfx/reticle.spr");
+		setmodel(self.bolt_targetNext, self.bolt_targetNext.mdl);
 		self.bolt_targetNext.scale = 0.4;
 		self.bolt_targetNext.owner = self;
 		self.bolt_targetNext.movetype = MOVETYPE_FLY;
 	}
 
 	if (self.bolt_targetNext)
-	if (self.bolt_targetNext.model == "gfx/reticle.spr")
+	if ((self.bolt_targetNext.model == "gfx/reticle.spr") || (self.bolt_targetNext.model == "gfx/reticle2.spr"))
 	{
 		setorigin(self.bolt_targetNext, trace_endpos -  (v_forward * 6));
 
@@ -2412,7 +2664,11 @@ void() archon_target =
 
 	setorigin(trace_ent.bolt_target, trace_ent.origin + trace_ent.bolt_target.view_ofs);
 //	setmodel(trace_ent.bolt_target, "progs/reticle.mdl");
-	setmodel(trace_ent.bolt_target, "gfx/reticle.spr");
+	if (self.morphy == IMP_MORDER)
+		self.bolt_target.mdl = "gfx/reticle2.spr";
+	else
+		self.bolt_target.mdl = "gfx/reticle.spr";
+	setmodel(trace_ent.bolt_target, self.bolt_target.mdl);
 	if (trace_ent.flags & FL_ITEM)
 		trace_ent.bolt_target.scale = 0.7;
 
@@ -2510,8 +2766,8 @@ void() player_chaos_impulse =
 	{
 		if (self.weapon == IT_SUPER_SHOTGUN)
 		{
-			if (self.ammo_nails == 5) aux_bits(421887);
-			else if (self.ammo_nails == 7) aux_bits(421887);
+			if (self.ammo_nails == 5) aux_bits(421887); // monster set
+			else if (self.ammo_nails == 7) aux_bits(421887); // monster set
 			else if (self.ammo_nails == 11) aux_bits(1023);
 		}
 		if (self.weapon == IT_NAILGUN)
@@ -2523,8 +2779,11 @@ void() player_chaos_impulse =
 		}
 		if (self.weapon == IT_LIGHTNING)
 		{
-			if (self.ammo_rockets == 3) aux_bits(3);
-			if (self.ammo_rockets == 5) aux_bits(3);
+			if (self.ammo_cells == 3) aux_bits(3);
+//			if (self.ammo_cells == 5) aux_bits(3);
+			if (self.ammo_cells == 7) next_imprisoned();
+			if (self.ammo_cells == 11) aux_bits(421887); // monster set
+			if (self.ammo_cells == 17) aux_bits(7);
 		}
 	}
 
@@ -2534,7 +2793,6 @@ void() player_chaos_impulse =
 		clear_spell(); // timeout any spell in selection
 	}
 
-	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	if (self.impulse == 2) // spell list 1 - teleports
 	{
@@ -2552,13 +2810,7 @@ void() player_chaos_impulse =
 		if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
 		{
 			if (self.ammo_nails == 3) self.ammo_nails = 5;
-			else if (self.ammo_nails == 5)
-			{
-				if (self.pk_beartrapammo & 421887) // skip if no valid bit
-					self.ammo_nails = 7;
-				else
-					self.ammo_nails = 11;
-			}
+			else if (self.ammo_nails == 5) self.ammo_nails = 7;
 			else if (self.ammo_nails == 7) self.ammo_nails = 11;
 //			else if (self.ammo_nails == 11) self.ammo_nails = 13;
 //			else if (self.ammo_nails == 13) self.ammo_nails = 17;
@@ -2566,6 +2818,13 @@ void() player_chaos_impulse =
 //			else if (self.ammo_nails == 19) self.ammo_nails = 23;
 //			else if (self.ammo_nails == 23) self.ammo_nails = 29;
 			else if (self.ammo_nails == 11) self.ammo_nails = 3;
+
+			if (self.ammo_nails == 11)
+			{
+				if (! self.pk_beartrapammo & 1023) self.pk_beartrapammo = 1;
+			}
+			else
+				if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
 		}
 		self.weapon = IT_SUPER_SHOTGUN;
 	}
@@ -2576,17 +2835,40 @@ void() player_chaos_impulse =
 			if (self.ammo_rockets == 3) self.ammo_rockets = 5;
 			else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
 			else if (self.ammo_rockets == 7) self.ammo_rockets = 3;
+
+			if (self.ammo_rockets == 7)
+			{
+				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+			}
+			else
+				if (! self.pk_beartrapammo & 71) self.pk_beartrapammo = 1;
 		}
 //		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
 		self.weapon = IT_NAILGUN;
 	}
-	if (self.impulse == 8) // spell list archon
+	if (self.impulse == 8) // spell list archon legacy
 	{
 		if (self.weapon == IT_LIGHTNING) // loop thru spell set
 		{
-			if (self.ammo_rockets == 3) self.ammo_cells = 5;
-			else if (self.ammo_rockets == 5) self.ammo_cells = 7;
-			else if (self.ammo_rockets == 7) self.ammo_cells = 3;
+			if (self.ammo_cells == 3) self.ammo_cells = 5;
+			else if (self.ammo_cells == 5) self.ammo_cells = 7;
+			else if (self.ammo_cells == 7) self.ammo_cells = 11;
+			else if (self.ammo_cells == 11) self.ammo_cells = 13;
+			else if (self.ammo_cells == 13) self.ammo_cells = 17;
+			else if (self.ammo_cells == 17) self.ammo_cells = 3;
+
+			if (self.ammo_cells == 3)
+			{
+				if (! self.pk_beartrapammo & 3) self.pk_beartrapammo = 1;
+			}
+			else if (self.ammo_cells == 11)
+			{
+				if (! self.pk_beartrapammo & 421887) self.pk_beartrapammo = 1;
+			}
+			else if (self.ammo_cells == 17)
+			{
+				if (! self.pk_beartrapammo & 7) self.pk_beartrapammo = 1;
+			}
 		}
 		self.weapon = IT_LIGHTNING;
 	}
@@ -2669,6 +2951,7 @@ void(float silent) player_chaos_become =
 	self.ammo_nails = 3;
 	self.ammo_rockets = 3;
 	self.ammo_cells = 3;
+	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	self.pk_explode_ammo = 0; // spell cost
 	self.th_missile = SUB_Null; // spell target

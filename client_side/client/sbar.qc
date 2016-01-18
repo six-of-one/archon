@@ -1079,12 +1079,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		}
 		else if (morph == IMP_MCHAOS)
 		{
+			wep_step_x = 35;
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/chaos", ALPHA_FULL * k, 0.11);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Archon Chaos", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
 			huds = 6;
 		}
 		else if (morph == IMP_MORDER)
 		{
+			wep_step_x = 35;
 			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/order", ALPHA_FULL * k, 0.1);
 			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Archon Order", ALPHA_FULL, '7 7 0','1.0 1.0 1.0');
 			huds = 6;
@@ -1291,14 +1293,23 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		DrawInventory('230 48 0', "gfx/sb_sigil4", 0, 256, ALPHA_MEDIUM, 1.5);
 	}
 
-	local string lside_icon;
-	local float lside_scale;
+	local string rside_icon, lside_icon;
+	local float rside_scale, lside_scale, draw_targ;
 
 /// spells
 	if (archon_magic)
 	{
+		if (ibar_flag < 3) pwr_step_y = pwr_step_y + 18;
+		rside_icon = "gfx/reticle.spr_0";
 		lside_icon = "gfx/reticle.spr_0";
-		lside_scale = 0.05;
+		rside_scale = 0.05;
+		lside_scale = 0.04;
+		draw_targ = 0;
+		if (morph == IMP_MORDER)
+		{
+			rside_icon = "gfx/reticle2.spr_0";
+			lside_icon = "gfx/reticle2.spr_0";
+		}
 		if (explodeshot == -6)
 		{
 			Sbar_DrawString(pwr_step + '20 -5 0' + woff, "Spell cancelled...", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -1379,6 +1390,10 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					else if (nails == 7)
 					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
 						Sbar_DrawString('260 40 0' + woff, "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (pk_bt > 0)
 						{
@@ -1391,6 +1406,10 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					if (nails == 11)
 					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
 						Sbar_DrawString('250 40 0' + woff, "Metamorphose self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Archon becomes: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '130 -5 0' + woff, transmogrify(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -1401,6 +1420,10 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				{
 					if (rockets == 3)
 					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
 						Sbar_DrawString('290 40 0' + woff, "Rune powers", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (pk_bt == 4194304)
 						{
@@ -1413,7 +1436,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 							else if (pk_bt == RUNE_FLG_DM) DrawInventoryAmmo(pwr_step + '130 4 0', "gfx/rune_dmg", ALPHA_FULL, 0.18);
 							else if (pk_bt == RUNE_FLG_HS) DrawInventoryAmmo(pwr_step + '130 4 0', "gfx/rune_hst", ALPHA_FULL, 0.18);
 							else if (pk_bt == RUNE_VAMPIRE) DrawInventoryAmmo(pwr_step + '130 4 0', "gfx/rune_vmp", ALPHA_FULL, 0.18);
-							else DrawInventoryAmmo(pwr_step + '130 2 0', "gfx/reticle.spr_0", ALPHA_FULL, 0.038);
+							else DrawInventoryAmmo(pwr_step + '130 2 0', lside_icon, ALPHA_FULL, 0.038);
 							Sbar_DrawString(pwr_step + '158 -5 0' + woff, rune_power(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							pwr_step_y = pwr_step_y + 4;
 						}
@@ -1422,12 +1445,16 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					if (rockets == 5)
 					{
 						Sbar_DrawString('285 40 0' + woff, "Gravity well", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						lside_icon = "gfx/inv_gwell";
-						lside_scale = 0.18;
+						rside_icon = "gfx/inv_gwell";
+						rside_scale = 0.18;
 						instr = "*FIRE - cast gravity well spell";
 					}
 					if (rockets == 7)
 					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
 						if (pk_bt == 1)
 							Sbar_DrawString('275 40 0' + woff, "Monster faster", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						else
@@ -1439,6 +1466,10 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				{
 					if (cells == 3)
 					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
 						if (pk_bt == 1)
 							Sbar_DrawString('300 40 0' + woff, "Heal being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						else
@@ -1447,22 +1478,53 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					if (cells == 5)
 					{
-						if (pk_bt == 1)
-							Sbar_DrawString('272 40 0' + woff, "Imprison being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						else
-							Sbar_DrawString('280 40 0' + woff, "Release being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('272 40 0' + woff, "Imprison being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast imprison spell";
 					}
 					if (cells == 7)
 					{
+						Sbar_DrawString('280 40 0' + woff, "Release being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						instr = "*FIRE - cast release spell";
+						if (target1) draw_targ = 1;
+					}
+					if (cells == 11)
+					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
+						Sbar_DrawString('286 40 0' + woff, "Summon being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Summon a: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '90 -5 0' + woff, monster_id(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 14;
+						instr = "*FIRE - cast summon spell";
+					}
+					if (cells == 13)
+					{
 						Sbar_DrawString('286 40 0' + woff, "Banish being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast banish spell";
 					}
+					if (cells == 17)
+					{
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
+						if (pk_bt == 2)
+							Sbar_DrawString('221 40 0' + woff, "Slow the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						else
+						if (pk_bt == 4)
+							Sbar_DrawString('214 40 0' + woff, "Speed the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						else
+							Sbar_DrawString('200 40 0' + woff, "Restore the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						instr = "*FIRE - cast time flow spell";
+					}
 				}
-				DrawInventoryAmmo('372 50 0', lside_icon, ALPHA_FULL, lside_scale);
+				DrawInventoryAmmo('372 50 0', rside_icon, ALPHA_FULL, rside_scale);
 			}
 
-			if (pk_mask & 2) // spell requires targets
+			if ((pk_mask & 2) || draw_targ) // spell requires targets
 			{
 				if (ibar_flag > 1) // ibar_f = 1, no instructions
 				{
@@ -1474,6 +1536,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					else
 					{
+						if (!draw_targ)
 						if ((nails != 5) || explodeshot == 24)
 						{							
 							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Select alternate target with reticle", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -1495,14 +1558,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 				if (target2)
 				{
-					DrawInventoryAmmo(pwr_step, "gfx/reticle.spr_0", ALPHA_MEDIUM, 0.04);
+					DrawInventoryAmmo(pwr_step, lside_icon, ALPHA_MEDIUM, lside_scale);
 					Sbar_DrawString(pwr_step + '22 -7 0' + woff, target2, ALPHA_MEDIUM, '7 7 0','1 0.5 0.5');
 					cnt_left = pwr_step_y;
 					pwr_step_y = pwr_step_y + 23;
 				}
 				if (target1)
 				{
-					DrawInventoryAmmo(pwr_step, "gfx/reticle.spr_0", ALPHA_FULL, 0.04);
+					DrawInventoryAmmo(pwr_step, lside_icon, ALPHA_FULL, lside_scale);
 					Sbar_DrawString(pwr_step + '22 -7 0' + woff, target1, ALPHA_FULL, '7 7 0','1 0.5 0.5');
 					cnt_left = pwr_step_y;
 					pwr_step_y = pwr_step_y + 23;
@@ -1539,8 +1602,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			if (morph == IMP_MCHAOS)
 				Sbar_DrawString(pwr_step + '22 -5 0' + woff, "FIRE - chaos bolt attack", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			else
+			if (morph == IMP_MORDER)
 			{
-				Sbar_DrawString(pwr_step + '22 -5 0' + woff, "FIRE - order bolt attack", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				if (pk_bt == 1)
+					Sbar_DrawString(pwr_step + '22 -5 0' + woff, "FIRE - order bolt attack", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				else if (pk_bt == 2)
+					Sbar_DrawString(pwr_step + '22 -5 0' + woff, "FIRE - order explosive bolt attack", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+				else if (pk_bt == 4)
+					Sbar_DrawString(pwr_step + '22 -5 0' + woff, "FIRE - order melee attack", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			}
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 14;
@@ -1552,7 +1621,13 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			else
 			if (morph == IMP_MORDER)
 			{
-				DrawInventoryAmmo('362 50 0', "gfx/inv_order_shot", ALPHA_FULL, 0.1);
+				if (pk_bt == 4)
+					DrawInventoryAmmo('362 50 0', "gfx/order", ALPHA_FULL, 0.1);
+				else
+				if (pk_bt == 2)
+					DrawInventoryAmmo('362 50 0', "gfx/inv_order_shot", ALPHA_FULL, 0.15);
+				else
+					DrawInventoryAmmo('362 50 0', "gfx/inv_order_shot", ALPHA_FULL, 0.1);
 				if (volspec > 2000) Sbar_DrawString(pwr_step + '22 -5 0' + woff, "ALT_FIRE - order beam", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			}
 		}

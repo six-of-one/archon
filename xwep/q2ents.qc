@@ -2086,14 +2086,14 @@ void() hand_grenade_thk =
 	{
 		if (!self.owner.eweapon)
 		{
-			stuffcmd(self.owner, "hud_message \"Hand grenade disarmed\"");
+			stuffcmd(self.owner, "hud_message \"Hand grenade disarmed\"\n");
 			centerprint(self.owner, null_string);
 			remove(self);
 			return;
 		}
 		if (self.owner.eweapon.mdl != self.target)
 		{
-			stuffcmd(self.owner, "hud_message \"Hand grenade disarmed\"");
+			stuffcmd(self.owner, "hud_message \"Hand grenade disarmed\"\n");
 			centerprint(self.owner, null_string);
 			remove(self);
 			return;

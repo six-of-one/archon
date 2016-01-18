@@ -78,6 +78,7 @@ void() morph_precache =
 	precache_model ("progs/plyr_q3.mdl");
 //	precache_model ("progs/reticle.mdl");
 	precache_model ("gfx/reticle.spr");
+	precache_model ("gfx/reticle2.spr");
 
 };
 
@@ -2058,7 +2059,7 @@ void() monster_respawn =
 				if (e.health <= 0)
 				if (e.think != monster_respawn_fire)
 				{
-					BodyQueAsset(e, world, TRUE); // make a dead body
+					BodyQueAsset(e, world, TRUE); // make a dead body - FIX: make sure this follows deathframes to end
 					e.model = null_string; // hide this guy
 					e.think = monster_respawn_fire;
 					e.nextthink = time + 10 + 20 * random();

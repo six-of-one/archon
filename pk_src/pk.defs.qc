@@ -699,7 +699,7 @@ float DUD_DEF_DMG				= 20; // defualt base damage for a dud explosive that blow
 
 // inventory flags
 
-.string stack1, stack2; // here for specials
+.string stack1, stack2, stack6; // here for specials
 
 float WEP_ITEM_MASK			= 255; // mask of range weapon bits in .items
 float PK_ITEM_MASK			= 4094; // mask off non items bits

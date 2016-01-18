@@ -1316,7 +1316,7 @@ void() run_runes =
 				if (e.rune_flag)
 				{
 					e.AIRG_FireCount = e.rune_flag;
-					e.AIRG_Timeout = 2000; // get runes back;
+					e.AIRG_Timeout = 2000; // get runes back at this level of archon power
 				}
 				e.rune_flag = 0;
 			}

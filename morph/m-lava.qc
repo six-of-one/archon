@@ -556,7 +556,7 @@ void() player_lavablob_impulse =
 
 	if (!self.builtin & IT_ROCKET_LAUNCHER)
 	{
-		if (self.archon > 60) // ARCHON_MORPH_XMIN - minimum archon pts req to activate powers
+		if (self.archon > 120) // ARCHON_MORPH_XMIN - minimum archon pts req to activate powers
 		{
 			self.builtin = self.builtin | IT_ROCKET_LAUNCHER;
 			self.items = self.items | self.builtin;

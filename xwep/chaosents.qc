@@ -439,7 +439,7 @@ float (entity e, float healamount6, float ignore) T_Heal =
 };
 
 // Cataboligne - 9.9.11 - tweak to prevent multiple health rots on 1 avatar
-float Test, Smd;
+float Smd;
 
 // special max calc for morphs
 
@@ -455,7 +455,7 @@ float(float ehm, float hv) morph_healmax =
 	if (smd < 1) smd = 1;
 	smax = hv - Q_NORM_MAX; // what can be added by a healer - maximum
 //			if (smax < 100) smax = 100;
-	Test = smax = (Q_NORM_MAX * ehm) + (smax * smd); // morph adjusted max
+	smax = (Q_NORM_MAX * ehm) + (smax * smd); // morph adjusted max
 	return (smax);
 }
 

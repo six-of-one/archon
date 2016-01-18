@@ -287,7 +287,7 @@ void() player_hknight_impulse =
 
 	if (!self.builtin & IT_ROCKET_LAUNCHER)
 	{
-		if (self.archon > 100) // ARCHON_MORPH_XMIN - minimum archon pts req to activate powers
+		if (self.archon > 200) // ARCHON_MORPH_XMIN - minimum archon pts req to activate powers
 		{
 			self.builtin = self.builtin | IT_ROCKET_LAUNCHER;
 			self.items = self.items | self.builtin;

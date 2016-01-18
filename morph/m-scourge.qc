@@ -206,6 +206,7 @@ void(float ox) player_scourge_FireSpikes =
 
 		newmis.skin = 8; // white / blue shift
 		newmis.frame = 5; // small slope trap
+		newmis.effects = newmis.effects | EF_FULLBRIGHT;
 		newmis.dmg = 18;
 		newmis.morphy = self.morphy;
 //		newmis.effects = EF_DIMLIGHT;

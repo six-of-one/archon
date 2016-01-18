@@ -1901,7 +1901,7 @@ rune_map_print(4);
 
 // put classname or other strings of some player touched ents in a string stack
 
-.string stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
+.string stack3, stack4, stack5, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
 
 
 // remove empties
