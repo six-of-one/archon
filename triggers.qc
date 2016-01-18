@@ -412,6 +412,10 @@ void () tdeath_touch =
 	if (other == self.owner)
 		return ;
 
+// dont let generators get fragged by monsters they make
+	if (self.owner.flags & FL_MONSTER)
+	if (self.owner.owner.classname == "monster_generator") return ;
+
 	if (other.admin)
 	if (other.admin != LIVE_ADMIN)
 	if (other.admin != -1) // Cataboligned - 5.4.10 - dont let admin be telefragged either  // USER-MENU

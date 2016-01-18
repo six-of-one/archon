@@ -1278,7 +1278,7 @@ void() generator_fire =
 	self.dropent = spawn();
 
 	setorigin(self.dropent, self.dest1 + '0 0 4');
-	spawn_tdeath(self.dropent.origin, self);
+	spawn_tdeath(self.dropent.origin, self.dropent);
 
 	self.dropent.event = "dyn_monster";
 	self.dropent.msgcount = 0.2; // wake up faster

@@ -360,3 +360,4 @@ float E_LIGHT       = 16; // vector - modellight
 float(float entitynum, float fldnum) getentity = #504;
 vector(float entitynum, float fldnum) getentityvec = #504;
 vector(float property) getpropertyvec = #303;  
+string (string s) cvar_string = #448;

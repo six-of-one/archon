@@ -454,7 +454,7 @@ void(entity e) archon_pprint;
 void(entity e) power_drain;
 void(entity e) archon_bouncer;
 void() archon_ppp_thk;
-void() PowerPointMove;
+//void() PowerPointMove;
 
 // gremlin
 

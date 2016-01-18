@@ -719,68 +719,6 @@ void(entity e) archon_pprint =
 	sprint(e, "\n");
 }
 
-// move power points - called once per frame from pre think by player(s)
-
-void() PowerPointMove =
-{
-	local entity e;
-
-// note - if power points settle after a map load, this should be done later
-// this also means points can NOT be put on anything thats is moving in the first 5 seconds
-	if (time < 5) return;
-
-	e = find(world,classname,"archon_power");
-	if (e) // found a point
-	{
-		if (e.target) // follow this target
-		{
-			e.movetarget = find (world, targetname, e.target);
-			if (e.movetarget)
-			{
-
-/*
-bprint(" *** ppm found target = ");
-bprint(item_ident(e.movetarget));
-bprint(", search = ");
-bprint(e.target);
-bprint("\n");
-*/
-
-
-// doors, plats and trains do NOT have normal origins
-				if (!e.oldorigin)
-				{
-					e.oldorigin = e.origin - e.movetarget.origin; // calculate origin sync for the paired target mover - tracking normal origin item
-// adopted to plat / door / train
-					if (e.target1 == "_both_z") e.oldorigin = e.origin;
-				}
-
-// NOTE: this code does not actually work - you can NOT move a map trigger with an origin - you have to make a trigger everywhere the power point stops.  yep.
-//					it should also be pointed out that you CAN make a moveable trigger - you have to use the telesphere trick, where you make a model bounding box the trigger then get clear the .model string
-// thats why I left this code live - it can work
-				if (e.target2)
-				e.goalentity = find (world,target2,e.target2); // find the trigger that pairs with this pp
-				if (e.goalentity && !e.ip_orgOrigin) e.ip_orgOrigin = e.goalentity.origin - e.origin; // calculate origin sync for the paired trigger field position
-
-// the _z calc does not reposition x and y - accepting that the point moves only up and down, and those are set
-// the height setting is intended to give the point a small boost up -- this seems to be bunk, they are MOVETYPE_NONE
-				v1 = e.origin;
-				if (e.target1 == "_z") v1_z = e.movetarget.origin_z + e.oldorigin_z + e.height; // height adjust from target (could be a mover)
-				else if (e.target1 == "mins_z") v1_z = e.movetarget.mins_z +  e.oldorigin_z + e.height;
-				else if (e.target1 == "_both_z") v1_z = e.movetarget.origin_z + e.oldorigin_z + e.height;
-
-// this makes no sense - maybe was supposed to be a bounding box cacl before we started using oldorigin
-//				else if (e.target1 == "_both_z") v1_z = e.movetarget.origin_z + e.movetarget.mins_z + e.oldorigin_z + e.height;
-				else if (e.target1 == "_dest") v1 = e.movetarget.origin + e.oldorigin + e.dest;
-				else v1 = e.movetarget.origin +  e.oldorigin;
-// re-locate us
-				if (e.origin != v1) setorigin(e, v1);
-				if (e.goalentity) setorigin(e.goalentity, v1 + e.ip_orgOrigin); // sync the paired trigger field
-			}
-		}
-		e = find(e,classname,"archon_power");
-	}
-};
 
 // spawn flag values - moved for other fn
 //float NOITEM = 1;

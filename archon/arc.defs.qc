@@ -865,6 +865,9 @@ float CHAOS_TELE_LIMIT		= 6; // max number of cube spawned spheres per map insta
 
 void(vector pv1, vector pv2, float typ, string snd) lightning_bolt;
 
+void (vector fireorg) SpawnTouchFlame;
+void () BurnThem;
+
 void(vector org, float ofs, vector vp, vector vr, float dur, float amt, float rmt, float flg, vector clm, vector crm, vector per) particle_burst;
 float FL_RND					= 1; // pick a random color
 float FL_COL1					= 2; // this color active
