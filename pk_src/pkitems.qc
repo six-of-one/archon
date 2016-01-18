@@ -158,6 +158,8 @@ bprint("placeitem barrel return\n");
 	pk_placeitem(); // *pk - set item details
 
 	pic_test();
+
+	if (!self.archon) self.archon = ARCHON_GEN + (random() * 0.1);
 };
 
 

@@ -1378,6 +1378,7 @@ void() pk_srvcmd_set =
 	ARCHON_WEP_EXT = 0.2; // points per advanced weapon
 	ARCHON_MONSTER = 100;
 	ARCHON_POINT = 1;
+	ARCHON_GEN = 0.1; // generic points
 
 // pk control
 	PK_100 = FALSE; // if true run 100% true to pk v1.11 - i n theory, dev purposes only

@@ -59,6 +59,11 @@ float MON_SLOW = 0.16; // 0.625 times slower
 // note: this is a global effect that happens to all .speed controled monsters - .lip is an individual monster speed divisor
 float MON_SPEED_DIV;
 
+// super monsters have a chance to speed up on thier own during pain frames
+float mon_superspeed_chn = 0.1; // chance per pain frame a super monster will speed up
+float mon_superspeed_fact = 0.001; // speed up factor per instance
+float mon_superspeedup_max = 0.085; // 1.176 times faster - max super monsters can speed up
+
 string CFAST = "fast";
 string CSLOW = "slow";
 

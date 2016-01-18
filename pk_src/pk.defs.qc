@@ -78,6 +78,7 @@ float ARCHON_AMMO; 						// points per std ammo
 float ARCHON_AMMO_EXP; 					// points per explosive ammo
 float ARCHON_WEP;							// points per gen weapon
 float ARCHON_WEP_EXT;					// points per advanced weapon
+float ARCHON_GEN;							// generic points
 float ARCHON_MONSTER;					// points per monster = health / {}
 float ARCHON_POINT;						// points added per touch on power point if power_act does not spec it on map
 
