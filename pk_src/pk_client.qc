@@ -1192,8 +1192,8 @@ void () WaterMove =
 
 	if (ISL && self.pain_finished < time)  //checks for non breathers based on lava / plasma makeup
 	{
-//		if (IS_CHAOS_PURE(self)) drown = FALSE;
-//		else 
+		if (IS_CHAOS_PURE(self)) drown = FALSE;
+		else 
 		if (self.watertype == CONTENT_LAVA) drown = FALSE;
 		else if (self.watertype == CONTENT_SLIME) drown = FALSE;
 		else if (self.watertype == CONTENT_WATER) drown = TRUE;
@@ -2030,7 +2030,35 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			attacker.archon = (attacker.archon + ARCHON_FRAG);
 		return;
 		}
+	
+// TURRET_START
+// Cataboligne - moved 8.7.13 - catch before we "spike" out
+		if (attacker.classname == "turret" || attacker.classname == "turret_gib")
+		{
+			bprint(targ.netname);
 
+		// check if killed the droper of the turret.
+			if (attacker.owner == targ) {
+					// killed self
+					if (!NOPKCIDE)
+						targ.frags = targ.frags - frag_minus();
+					if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
+					else
+					bprint(" forgot to hide from his own AutoSentry!\n");
+				return;
+			}
+
+		// increase frags & print message.
+			attacker.owner.frags = attacker.owner.frags + frag_plus(attacker.owner);
+			attacker.owner.archon = attacker.owner.archon + ARCHON_FRAG;
+
+			bprint(" was ventilated by ");
+			bprint(attacker.owner.netname);
+			bprint("'s AutoSentry\n");
+			return;
+		}
+// TURRET_END
 // NOTE: non score list bot
 		if (attacker.classname == "player" ||  attacker.classname == OBSERVER) // Cataboligne 9.23.9 - attacker could have died & become observer
 		{
@@ -2128,26 +2156,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 //					bprint(rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n","",""," made a really bad mistake\n"));
 				else
 				{
-// NOTE: conflict - morph that can get eweaps - fires builtin (capable of morphicide) & switches to eweap or v.v
-					if (attacker.eweapon)
-					{
-						if (attacker.eweapon._killmsg != SUB_Null) // xwep kill - must be coded to handle suicide message
-						{
-							deathstring = attacker.eweapon._killmsg(targ, attacker);
-							if (deathstring == "return") return; // printed in killmsg call, just go back
-
-							deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
-							if (deathstring != "")
-							{
-								bprint (deathstring);
-								bprint (deathstring2);
-								return;
-							}
-						}
-						bprint (" fell victim to his own experimental weapon\n");
-						return;
-					}
-
+					if (attacker._killmsg)
 					if (attacker._killmsg != SUB_Null) // morphicide
 					if (attacker.weapon & attacker.builtin) // make sure its not a reg or xwep kill
 					{
@@ -2172,6 +2181,27 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 							bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n","",""," discharges into the water\n"));
 						else
 							bprint (" discharges into the water.\n");
+						return;
+					}
+// NOTE: conflict - morph that can get eweaps - fires builtin (capable of morphicide) & switches to eweap or v.v
+// Cataboligne - moved 8.7.13
+					if (attacker.eweapon)
+					{
+						if (attacker.eweapon._killmsg)
+						if (attacker.eweapon._killmsg != SUB_Null) // xwep kill - must be coded to handle suicide message
+						{
+							deathstring = attacker.eweapon._killmsg(targ, attacker);
+							if (deathstring == "return") return; // printed in killmsg call, just go back
+
+							deathstring2 = attacker.eweapon._killmsg2(targ, attacker);
+							if (deathstring != "")
+							{
+								bprint (deathstring);
+								bprint (deathstring2);
+								return;
+							}
+						}
+						bprint (" fell victim to his own experimental weapon\n");
 						return;
 					}
 
@@ -2817,33 +2847,6 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			}
 			return;
 		}
-// TURRET_START
-		else if (attacker.classname == "turret" || attacker.classname == "turret_gib")
-		{
-			bprint(targ.netname);
-
-		// check if killed the droper of the turret.
-			if (attacker.owner == targ) {
-					// killed self
-					if (!NOPKCIDE)
-						targ.frags = targ.frags - frag_minus();
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n","",""," forgot to hide from his autosentry\n"));
-					else
-					bprint(" forgot to hide from his own AutoSentry!\n");
-				return;
-			}
-
-		// increase frags & print message.
-			attacker.owner.frags = attacker.owner.frags + frag_plus(attacker.owner);
-			attacker.owner.archon = attacker.owner.archon + ARCHON_FRAG;
-
-			bprint(" was ventilated by ");
-			bprint(attacker.owner.netname);
-			bprint("'s AutoSentry\n");
-			return;
-		}
-// TURRET_END
 		else
 		{
 			bprint (targ.netname);

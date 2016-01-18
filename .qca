@@ -5,7 +5,9 @@
 
 # QCC="fqcc /O2"
 
-QCC="fteqcc"
+# NOTE: no-mundane removes some compiler warnings
+
+QCC="fteqcc -Wno-mundane"
 
 if [[ "$1" == "0" ]]; then QCC="fqcc0"; echo;echo Using qcc 0;echo;shift;fi
 

@@ -161,11 +161,14 @@ float() GremlinFindTarget =
             }
          head = nextent(head);
          }
+// NOTE: not sure wht to do with this code! - cant go into gorge, its weird with the new model
+
+/*
+
+NOTE: disabled by previous return - needs adjusted
+
       if ((gorge != world) && (dist < (700*random())))
          {
-// NOTE: not sure wht to do with this code! - cant go into gorge, its weird with the new model
-return FALSE;
-
 //         dprint("starting to gorge on ");
 //         dprint(gorge.classname);
 //         dprint("\n");
@@ -192,6 +195,9 @@ return FALSE;
    result = FindTarget();
    self.search_time = time + 2.0;
    return result;
+*/
+		} // remove when fragment above fixed
+return FALSE;
    };
 //============================================================================
 /*

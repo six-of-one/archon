@@ -740,6 +740,8 @@ if (m6)
 if (e.morphy == m6) return TRUE;
 if (bt)
 if (e.mask_x & bt) return TRUE;
+
+return FALSE;
 };
 
 // fn(morph_ffchk) - see if morph matches morph / monster under fire conditions
@@ -1280,7 +1282,7 @@ void(float cmd, float pls) polymorph_check =
 		{
 			if (self.morphy == cmd) return; // nothing to do - NOTE: WARNING: if an eweapon fires this off, it must be cleared after this
 	// changing states & not starting level - validated in weapons.qc -- impulse commands 
-	/*
+
 			if (IS_CHAOS(self))
 			{
 				if (self.aflag & 16) return; // no change during star bursts
@@ -1297,7 +1299,7 @@ void(float cmd, float pls) polymorph_check =
 					chaos_poly = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", "", SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
 				}
 			}
-	*/
+
 			viswep_ld(self, -1); // unloads weps - NOTE: threw option
 
 
@@ -1351,9 +1353,8 @@ void(float cmd, float pls) polymorph_check =
 //		self.eweapon = world;
 		self._summon = SUB_Null;
 
-//		if (cmd == IMP_MCHAOS) player_chaos_become(pls);
-//		else 
-		if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
+		if (cmd == IMP_MCHAOS) player_chaos_become(pls);
+		else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
 		else if (cmd == IMP_MWIZARD) player_wizard_become(pls);
 		else if (cmd == IMP_MHKNIGHT) player_hknight_become(pls);
@@ -1365,7 +1366,6 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MENF) player_enforcer_become(pls);
 		else if (cmd == IMP_MGREMLIN_F) player_gremlin_become(pls);
 		else if (cmd == IMP_MGREMLIN_L) player_gremlin_become(pls);
-		else if (cmd == IMP_MCHAOS) player_chaos_become(pls);
 
 		else player_human_become(pls);
 	/*

@@ -47,7 +47,7 @@ void() Laser_Blast =
 
 	dm = 35;
 	if (self.dmg) dm = self.dmg;
-//	if (IS_CHAOS_PURE(self.owner)) dm = rint(20 + (random() * 40));
+	if (IS_CHAOS_PURE(self.owner)) dm = rint(20 + (random() * 40));
 
 	if (self.noise3 == "") self.noise3 = "enforcer/enfstop.wav";
 

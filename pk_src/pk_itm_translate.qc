@@ -2219,7 +2219,9 @@ void(entity e, float trvs) item_translate =
 		if(e.map == "repic") e.map = "pic_item";
 		item_call_save(e, mcc);
 		e.mcode = pk_mcode("", e);
-		e.sscode = ftos(e.mcode); // sid_code[(int)(e.mcode - 100) * %4]; // just for doom_alpha code 		// Cataboligne - 8.7.13 - compiler compatibility
+// just for doom_alpha code
+//		e.sscode = sid_code[(int)(e.mcode - 100) * %4]; 
+		sid_code(e.mcode, e);		// Cataboligne - 8.7.13 - compiler compatibility
 		if (e.touch != painkeep_touch && e.touch != SUB_Null)
 		{
 			e.pk_touch = e.touch;
@@ -2338,7 +2340,9 @@ float(entity e, float q1ck, string itm) noxtr_item_control =
 			if(e.map == "repic") e.map = "pic_item";
 			item_call_save(e, itm);
 			e.mcode = pk_mcode("", e);
-			e.sscode = ftos(e.mcode); //sid_code[(int)(e.mcode - 100) * %4]; // just for doom_alpha code		// Cataboligne - 8.7.13 - compiler compatibility
+// just for doom_alpha code
+//			e.sscode = sid_code[(int)(e.mcode - 100) * %4];
+			sid_code(e.mcode, e);		// Cataboligne - 8.7.13 - compiler compatibility
 		}
 //		else
 //			hide_item (e);
@@ -2381,20 +2385,13 @@ void() check_translate =
 
 		if (DOOM_ALPHA != cvar("pk_doom_alpha"))
 		{
-			local float f;
 			local entity e;
 			DOOM_ALPHA = cvar("pk_doom_alpha"); // set doom alpha level - intended to be loaded by server cfg
-			f = MC_D_SAW;
-			while (f <= MC_DOOM)
+			e = find(world,class_select,"doom_item");
+			while (e)
 			{
-				if (f == MC_DOOM) f = MC_D_NIGHTVS;
-				e = find(world,sscode,ftos(f));
-				while (e)
-				{
-					doom_alpha_tran(e, 0);
-					e = find(e,sscode,ftos(f));
-				}
-				f = f + 1;
+				doom_alpha_tran(e, 0);
+				e = find(e,class_select,"doom_item");
 			}
 		}
 

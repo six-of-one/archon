@@ -1470,7 +1470,7 @@ void() run_runes =
 		}
 	}
 
-	if (cvar("pk_runemap")) // display rune info on console (network - all players see this)
+	if (autocvar_pk_runemap) // display rune info on console (network - all players see this)
 	{
 		stuffcmd(self, "con_notify 22\n"); // for this op
 		stuffcmd(self, "con_notifytime 10\n");
@@ -1510,7 +1510,8 @@ void() run_runes =
 		bprint("\n");
 		if (nonserver_rune_found)
 			bprint("* non server Runes are loaded on this map.\n\n");
-		cvar_set("pk_runemap", "0"); // ideally want a stuffcmd, but this is called from a think - no idea which player set this.
+//		cvar_set("pk_runemap", "0"); // ideally want a stuffcmd, but this is called from a think - no idea which player set this.
+		autocvar_pk_runemap = 0;
 	}
 
 };

@@ -7,6 +7,9 @@
 vector v0						= ' 0 0 0'; // zero vector | dimension
 float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 
+// dont list unused vars warning when compiling
+#pragma warning disable Q302
+
 // **************************************
 // engine section
 
@@ -44,6 +47,13 @@ string vdev						= "alias devsite \"echo http://www.moddb.com/members/invadercat
 string vqcs						= "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n";
 string sites					= "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n";
 
+// **************************************
+// server console vars section
+
+// **************************************
+
+var float autocvar_no_auto = 0;	// allow everything to be turned off without re-launching defaults
+var float autocvar_pk_runemap = 0;  // if true print rune data to console
 
 // **************************************
 // Developer section
@@ -444,7 +454,9 @@ float(float mcv, entity e) bit_mcode;
 .float mcode;								// map item code - handle sub lists
 .float scode;								// save item code - for restore
 .string sscode;							// map item code string - for find
-string sid_code;							// list of all codes as string, access = (code - 100) * 4;
+void(float mcd, entity e) sid_code;
+
+//string sid_code[330];							// list of all codes as string, access = (code - 100) * 4;
 ///float item_op;								// item operation currently in progress
 ///float IT_CALL					= 16;		// op is item call
 ///float IT_MAP					= 8;		// op is map call

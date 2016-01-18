@@ -1946,6 +1946,7 @@ float(string mp) rogue_map =
 
 // chaos morph and beam support
 
+
 // fn(IS_CHAOS) - morph is master of chaos
 // fn(IS_CHAOS_PURE) - morph is master of chaos in natural form
 
@@ -1959,7 +1960,6 @@ float(entity e) IS_CHAOS_PURE =
 {
 	return(e.morphy == IMP_MCHAOS);
 };
-
 
 // fn(chaos_particle) - chaos particle field effect
 // org - origin

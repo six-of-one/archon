@@ -1160,10 +1160,11 @@ void() pk_liveupd =
 
 	if (deathmatch)
 	{
-		f = cvar("no_auto");
+		f = autocvar_no_auto;
 		if (!f) // test auto-launch
 		{
-			cvar_set("no_auto", "1"); // only test once
+			autocvar_no_auto = 1;
+//			cvar_set("no_auto", "1"); // only test once
 			if (!PK_CRATE && !PK_CUBE && !MORPHIC && !RUNES)
 			if (!S_MONSTER && !S_MONSTER_II && !C_MONSTER && !C_MONSTER_II && !M_MONSTER && !M_MONSTER_II)
 			{
@@ -1729,8 +1730,10 @@ void() pk_srvcmd_set =
 CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 // sscode - so map codes can be entity stored and find(...) string searchable
-//			- nifty frikqcc compiler trick here - dont think this works with regular QC compilers
 
+/*
+//			- nifty frikqcc compiler trick here - dont think this works with regular QC compilers
+frik method - remove
 
 	sid_code = 
 						"100":"101":"102":"103":"104":"105":"106":"107":"108":"109":"110":"111":"112":"113":"114":"115":"116":"117":"118":"119":
@@ -1744,7 +1747,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 						"260":"261":"262":"263":"264":"265":"266":"267":"268":"269":"270":"271":"272":"273":"274":"275":"276":"277":"278":"279":
 						"280":"281":"282":"283":"284":"285":"286":"287":"288":"289":"290":"291":"292":"293":"294":"295":"296":"297":"298":"299":
 						"300":"301":"302":"303":"304":"305":"306":"307":"308":"309":"310":"311":"312":"313":"314":"315":"316":"317":"318":"319":
-/*
+
 NOTE: we have hit 313 in pk_mapcode
 
 current max is 312, move lines out of comment as needed
@@ -1782,8 +1785,8 @@ current max is 312, move lines out of comment as needed
 						"940":"941":"942":"943":"944":"945":"946":"947":"948":"949":"950":"951":"952":"953":"954":"955":"956":"957":"958":"959":
 						"960":"961":"962":"963":"964":"965":"966":"967":"968":"969":"970":"971":"972":"973":"974":"975":"976":"977":"978":"979":
 						"980":"981":"982":"983":"984":"985":"986":"987":"988":"989":"990":"991":"992":"993":"994":"995":"996":"997":"998":"999"
-*/
 ;
+*/
 
 // not an enabled / wise engine - we must return now, no live server controls are possible and we are running on defaults
 
@@ -1800,7 +1803,7 @@ current max is 312, move lines out of comment as needed
 	if (DARKPLACES) // reg under darkplaces - chaos engine has pre-reg
 	{
 // server controls
-		registercvar("no_auto", "0"); // allow everything to be turned off without re-launching defaults
+//		registercvar("no_auto", "0"); // allow everything to be turned off without re-launching defaults
 
 		registercvar("sv_xtras", "1"); // set true when xtras are available
 		registercvar("pk_seven", "0"); // xops
@@ -2063,7 +2066,7 @@ current max is 312, move lines out of comment as needed
 		registercvar("pk_place_item_reload", "0"); // reload place_item 2 deal every this cnt + this cnt * random
 		registercvar("pk_mapcode", "0"); // if true print mapcode item classname calls to console
 		registercvar("pk_make", "0"); // if set to valid map code, create item at player location
-		registercvar("pk_runemap", "0"); // if true print rune data to console
+//		registercvar("pk_runemap", "0"); // if true print rune data to console
 		registercvar("pk_tog_mcode", "0"); // if set toggle mcode item bit in item override
 		registercvar("pk_tog_itemmenu", "0"); // if set run menu cmd item - includes show menu, 32
 
