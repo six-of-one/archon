@@ -135,7 +135,7 @@ float(entity hent, string match, string srch) cnt_ent =
 // fn(bit_cnt) - count available bits for random selection
 
 // fb - bits to count
-// rb - return a random bit from set
+// rb - return a random bit from set - if zero, return total count
 
 float(float fb, float rb) bit_cnt =
 {
@@ -412,6 +412,8 @@ void() func_model =
 		self.think = func_model_frames;
 		self.nextthink = time + self.delay;
 	}
+// if mapper didnt say it can move...it cant
+	if (self.map != "move") self.map = "nonmove";
 };
 
 
@@ -600,10 +602,15 @@ float(string surf, vector v, entity e) sky_touch =
 		if (last_texture == "sky1" || last_texture == "sky4" || last_texture == "sky0" || last_texture == "sky2" || last_texture == "sky6") t = TRUE;
 		else if (last_texture == "firey_") t = TRUE;
 		else if (last_texture == "s6_") t = TRUE;
+		else if (last_texture == "dsky1_") t = TRUE;
+		else if (last_texture == "d2_sky1_rmd_") t = TRUE;
+		else if (last_texture == "textures/K_sky/rabbit_skybox" || last_texture == "textures/skies/pjbasesky_arena1_sky") t = TRUE;
 		else if (last_texture == "graveyard/grave_") t = TRUE;
 		else if (last_texture == "skydark") t = TRUE;
 		else if (last_texture == "c1_") t = TRUE;
-		else if (last_texture == "textures/K_sky/rabbit_skybox" || last_texture == "textures/skies/pjbasesky_arena1_sky") t = TRUE;
+		else if (last_texture == "unit5_") t = TRUE;
+		else if (last_texture == "mandr_") t = TRUE;
+		else if (last_texture == "snow2_") t = TRUE;
 	}
 
 	return(t);
@@ -875,7 +882,7 @@ uses pk stat data .mean & .stdev for delay if present
 */
 void() trigger_stat_relay =
 {
-// Cataboligne - 4.21.11 - triggerss not in mod maps
+// Cataboligne - 4.21.11 - triggers not in mod maps
 	if (notmod(self)) return;
 
 	self.use = SUB_Stat_UseTargets;

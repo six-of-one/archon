@@ -270,6 +270,7 @@ void(float firstBlast) horn_airblast =
 	  if (e.movetype != MOVETYPE_NONE) // anything that can move
 	  if (e.movetype != MOVETYPE_PUSH)
 	  if (e.movetype != MOVETYPE_NOCLIP)
+		if (e.map != "nonmove") // 7.22.13 - func_models we should not blow
 // AIRG_EXCLUDE_START
 	  if ((e.AIRG_Flags & AIRG_EXCLUDEENTITY) != AIRG_EXCLUDEENTITY) // custom exclusion (like laser fire)
 // AIRG_EXCLUDE_END

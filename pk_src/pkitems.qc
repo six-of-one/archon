@@ -724,7 +724,15 @@ if (self.classname == "")
 		self.pk_touch();
 
 // power up archon
-		if (self.archon) other.archon = other.archon + self.archon;
+		if (self.solid == SOLID_NOT) // got item
+		{
+			other.archon = other.archon + self.archon;
+		}
+		else
+		if (ARCHON_UNCOL) // item was no collected - may get some pts for touch
+		{
+			other.archon = other.archon + (self.archon * ARCHON_UNCOL);
+		}
 
 
 
@@ -855,7 +863,7 @@ bprint(")\n");
 	}
 
 // power up archon - pki
-	if (self.archon) other.archon = other.archon + self.archon;
+	other.archon = other.archon + self.archon;
 
 	// print message of what you picked up
 	/*

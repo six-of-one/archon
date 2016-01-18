@@ -2360,10 +2360,18 @@ void() cube_touch =
 		return;
 	}
 
+// initial control for bots using evolution cubes
 	if (self.wad == "morph_cube")
 	if (other.class_select == "class_bot")
 	{
-		if (other.wad == "pk*bot") return;
+		if (other.wad == "pk*bot") // see if server admin denied either bot morphic upgrades
+		{
+			if (!MORPH_BOT & 2) return;
+		}
+		else // frik test
+		{
+			if (!MORPH_BOT & 1) return;
+		} 
 
 		if (other.mask_x & CB_HUMAN) // if bot score is low, stay human for now
 		{

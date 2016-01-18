@@ -17,7 +17,7 @@ void() chaos_precache =
 // sounds
 	precache_sound ("reggun/fire4.wav");
 
-	precache_model ("progs/bit.mdl");
+//	precache_model ("progs/bit.mdl"); - not used
 	precache_model ("progs/g_axe.mdl");
 	precache_model ("progs/v_axe.mdl");
 	precache_model ("progs/vw_axe.1.mdl");
@@ -437,7 +437,7 @@ void() health_touch =
 	else
 	{
 		amount = morph_heal(other, self.healamount); // Cataboligne - check max - 100 rule for morphs
-
+//
 																							if (WARNING)
 																							if (amount) {
 																								bprint("health boost scale: ");
@@ -445,7 +445,7 @@ void() health_touch =
 																								bprint(", total: ");
 																								bprint(ftos(self.healamount + amount));
 																								newline(world);}
-
+//
 		if (vmax)
 		{
 			if (!T_Heal(other, vmax, 0)) return; //(TRUE);

@@ -135,8 +135,8 @@ void() sphere_annihilation_move =
 
 
 
-if (1) //WARNING)
-	if (self.classname != "chaos_teleport_icon")
+if (WARNING)
+if (self.classname != "chaos_teleport_icon")
 {
 		bprint("*** dev: sphere_annihilation_move classn = ");
 		bprint(self.classname);
@@ -295,7 +295,7 @@ if (WARNING)
 				else self.think = SUB_Null; // just in case some deaths dont set think fn
 				self.invincible_finished = time - 1; // not invincible enough
 				CheckPowerups();
-				T_Damage (self, world, world, self.health * 2); // this shit can kill anybody
+				T_Damage (self, world, world, self.health * 5 + 100); // this shit can kill anybody
 				return;
 		}
 		if (self.classname == "Harpoon")
@@ -365,7 +365,7 @@ void(entity g) set_annihilate =
 
 
 
-if (1) //WARNING)
+if (WARNING)
 {
 		bprint("*** dev: set_annihilate on - ");
 		bprint(item_ident(g));
@@ -398,11 +398,11 @@ if (1) //WARNING)
 
 void() sphere_annihilation_touch =
 {
+	local entity e;
 
 
 
-
-if (1) //WARNING)
+if (WARNING)
 {
 		bprint("*** dev: sphere_annihilation_touch classn = ");
 		bprint(self.classname);
@@ -420,14 +420,23 @@ if (1) //WARNING)
 
 
 	if (annihilation_check(other))
+	{
 		set_annihilate(other);
+		if (other.classname == "chaos_teleport_icon") // NOTE: if this is the anti-sphere this is the place to do it
+		{
+			e = self;
+			self = other;
+			chaos_tele_expire();
+			self = e;
+		}
+	}
 };
 
 // fn(sphere_annihilation_spawn) - create one of these nasty things
 
 void() sphere_annihilation_spawn =
 {
-	sphere_a = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, self.origin + ' 0 0 24' + v_forward * 60, '-7 -7 -7', ' 7 7 7', ' 0 0 0', ' 0 0 0', "sphere_annihilation", "progs/sphere_annihilation.mdl", sphere_annihilation_touch, 0.1, sphere_annihilation_move, sphere_annihilation_death, self, world);
+	sphere_a = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, self.origin + ' 0 0 24' + v_forward * 60, '-7 -7 -7', ' 7 7 7', ' 0 0 0', ' 0 0 0', "sphere_annihilation", "progs/sphere_annihilation.mdl", sphere_annihilation_touch, 0.1, sphere_annihilation_move, sphere_annihilation_death, self, world); // here we divide by zero...
 	sphere_a.wait = time + 3;// TEST120; // cant kill off for this long
 	sphere_a.dest1 = sphere_a.origin - sphere_a.owner.origin; // position from holder
 	sphere_a.dest2_z = sphere_a.lefty = 0; // location controls
@@ -478,6 +487,8 @@ void() sphere_whirl =
 };
 
 // fn(sphere_annihilation_phys_move) - move the sphere and its flotsam in physics code - following controller player
+
+// IDEA: when a player controls it, use attach method if in dp, instead of jump follow
 
 void() sphere_annihilation_phys_move =
 {

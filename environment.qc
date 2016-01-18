@@ -972,6 +972,7 @@ void() chaos_trigger_teleport =
 	InitTrigger ();
 	self.touch = teleport_touch;
 	self.model = "";
+	setsize(self, '-16 -16 -16', ' 16 16 16'); // getting bonked somehow
 };
 
 void(vector torg, string trgname, entity trgent) chaos_teleport =

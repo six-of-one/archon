@@ -116,8 +116,10 @@ float ARCHON_WEP;							// points per gen weapon
 float ARCHON_WEP_EXT;					// points per advanced weapon
 float ARCHON_GEN;							// generic points
 float ARCHON_MONSTER;					// points per monster = health / {}
+float ARCHON_RUNE;						// points per rune per 3+ secs - run_runes timing
 float ARCHON_POINT;						// points added per touch on power point if power_act does not spec it on map
-
+float ARCHON_UNCOL = 0;					// if true allow uncollectable items (touching health box when you are at 100) to add archon pts
+//												// value is factor 1 = full pts, 0.5 = 1/2 pts, etc.
 
 // **************************************
 // ADMIN section
@@ -132,7 +134,7 @@ float PK_MAP					= 6144;	// bit * = FALSE -- map sets painkeep mode  - PK = TRUE
 float PK_ALWAYS				= 2048;	// bit *	= TRUE --- always in painkeep mode - PK = TRUE;
 float PK_NEVER					= 4096;	// bit *	= TRUE --- never in painkeep mode  - PK = FALSE;
 float PK_DYNAMIC				= 8192;	// bit *	= TRUE --- when always in painkeep mode & not on a PK map, dynamically load pk items if they are not present
-												// items include  - bear trap, can o' beans, gravity well, harpoon, turret, airfist, exploding shot, XXX - chain thunderbolt, pulse nailgun
+//												// items include  - bear trap, can o' beans, gravity well, harpoon, turret, airfist, exploding shot, XXX - chain thunderbolt, pulse nailgun
 float PK_SPIKER				= 16384;	// bit *	= FALSE -- allow spike traps, set to true for original pk treatment of spike shooters - they are removed
 float PK_XSOUND				= 32768;	// bit * = TRUE --- use extra pk sound set
 // compatability modes for the purists out there
@@ -188,7 +190,7 @@ float USER_TIMEOUT			= 5;		// timeout user menu in 5 secs
 float USER_IMPULSE			= 39;		// user menu impulse
 float ADMIN_FAILED_LOGIN	= -777;	// login didnt succeed
 string ADMINCODE				= "float1\n"; // local command that loads admin security password
-													  //- obscured to keep anyone with casual console access from divining its true meaning
+//													  //- obscured to keep anyone with casual console access from divining its true meaning
 string ADMINIMPULSE			= "float2\n"; // load the impulse
 string ADMINTIME				= "float3\n"; // load the time out
 string ADMINMAPCMD			= "_mapcmd\n"; // append to mapname for alias cmd
@@ -386,7 +388,7 @@ float RUNE_QUAD_COMB			= 1; // allow damage runes to combind with quad
 float RUNE_TECH_DMG_COMB	= 1; // allow damage runes to combind with each other
 float RUNE_TECH_RS_COMB		= 1; // allow resist runes to combind with each other
 float RUNE_NOWAY				= 1; // if true relocate runes past noway bounds for waypoints (quicker than normal relo
-										  // note: this also enables relocation repair (e.g. nextthink fail fix)
+//										  // note: this also enables relocation repair (e.g. nextthink fail fix)
 float RUNE_SHOW				= 0; // if true, rune console info print obeys DYN_SHOW rules
 string RUNE_MSG_ISO			= ""; // set to "\n" to put blank lines around relocating msg
 
@@ -910,7 +912,7 @@ float Q2_ARMOR_MAX;
 float(float ehm, float hv) morph_healmax;
 
 float SPC_HEAL_MOD			= 0.25; // how much a special heal (mega, etc) lets its max expand for morphs with heal mod > 1
-											  // so if max heal is 200, and the mod is 3.0, the max is 1.75 * 200 = 350
+//											  // so if max heal is 200, and the mod is 3.0, the max is 1.75 * 200 = 350
 // defaults
 
 void(entity e) set_defaults;
@@ -1181,7 +1183,7 @@ float DOOM_BFG_TRACE			= 1024; // IDEA: adjust by doom to quake dist adjust for 
 // detect wad = q1 maps, other method - worldtype
 // use 3x this value for worldtype with no wad = q1 items (for now)
 
-										  // worldtype q = 0, 1, 2
+//										  // worldtype q = 0, 1, 2
 float IT0_WQ1					= 3; // worldtype 3
 float IT1_WQ1					= 4; // worldtype 4
 float IT3_WQ1					= 5; // worldtype 5

@@ -1286,7 +1286,26 @@ void() run_runes =
 		tech_tiem_sound = "q2_snd/tech3.wav";
 	}
 
-
+	e = find(world, classname, "player"); // add archon pts for runes
+	while (e)
+	{
+		if (e.rune_flag)
+		{
+			f = bit_cnt(e.rune_flag, FALSE);
+			e.archon = e.archon + (ARCHON_RUNE * f);
+		}
+		e = find(e, classname, "player");
+	}
+	e = find(world, class_select, "class_bot");
+	while (e)
+	{
+		if (e.rune_flag)
+		{
+			f = bit_cnt(e.rune_flag, FALSE);
+			e.archon = e.archon + (ARCHON_RUNE * f);
+		}
+		e = find(e, class_select, "class_bot");
+	}
 
  	if (RUNE_RANDOM != cvar("sv_c_rune_random")) // changed random state
 	{

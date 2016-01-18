@@ -1015,6 +1015,7 @@ void() pk_liveupd =
 // morphic
 	MORPH_CUBE_TIME = cvar("sv_morph_time");
 	MORPH_CUBE_DV = cvar("sv_morph_dv");
+	MORPH_BOT = cvar("sv_morph_bot");
 	if (MORPHIC  != cvar("sv_morph")) 
 	{
 		cube_handle("sv_morph");
@@ -1423,7 +1424,8 @@ void() pk_srvcmd_set =
 	ARCHON_AMMO_EXP = 0.07; // points per explosive ammo
 	ARCHON_WEP = 0.1; // points per gen weapon
 	ARCHON_WEP_EXT = 0.2; // points per advanced weapon
-	ARCHON_MONSTER = 100;
+	ARCHON_MONSTER = 50; // 100 health at spawn = 2 pts
+	ARCHON_RUNE = 2; // points added per rune every time run_runes runs
 	ARCHON_POINT = 1;
 	ARCHON_GEN = 0.1; // generic points
 
@@ -1858,6 +1860,7 @@ current max is 312, move lines out of comment as needed
 		registercvar("sv_morph", "0");
 		registercvar("sv_morph_time", "60");
 		registercvar("sv_morph_dv", "10");
+		registercvar("sv_morph_bot", "1"); // if false bots will not morph
 //		registercvar("cl_morph", "12"); // client ident
 
 // dm monsters

@@ -1428,14 +1428,16 @@ void() random_monster_wakey =
 {
 	local entity f;
 
+// no matter what, this goes away after 1 use
+	self.think = SUB_Remove;
+	self.nextthink = time + 2;
+
 	if (!self.owner ||
 		(self.owner.health < 1) || // got killed - likely a monsta_frag --- note: chaos vector
 		(self.owner.think == (void ()) 0))
 	{
 		self.owner.think = SUB_Remove;
 		self.owner.nextthink = time + 15 + random() * 2;
-		
-		remove(self);
 		return;
 	}
 
@@ -1452,13 +1454,11 @@ void() random_monster_wakey =
 	if (self.owner.class_select == "class_monster")
 	if (self.owner.enemy.classname == "player")
 	{
-		f = self;
 		self.owner.goalentity = self.owner.enemy;
 //		self.owner.nextthink = time + 2 + random() * 2;
 //		self.owner.think = self.owner.th_walk;
 		self = self.owner;
 		FoundTarget();
-		remove(f);
 		return;
 	}
 
@@ -1475,7 +1475,6 @@ void() random_monster_wakey =
 			self.owner.think = self.owner.th_walk;
 		}
 	}
-	remove(self);
 };
 
 // note: has issue of assuming all monsters feet are at -24

@@ -2165,7 +2165,7 @@ void() X_FireBlaster =
 	newmis.effects = EF_DIMLIGHT;
 };
 
-// if an ent is targeted, reload origin
+// IMP: if an ent is targeted, reload origin
 
 void() q2_teleport_particles =
 {

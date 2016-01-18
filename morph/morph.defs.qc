@@ -21,6 +21,7 @@ float MORPH_FLY;
 float MORPH_HOOK; // morphs that have built in hook - mostly for jump & get stuck issues
 float MORPH_CHAIN_LEN			= 320; // built in hook is for escape - shorter length
 float MORPH_SARMOR; // morphs with healable (scourge) armor built in
+float MORPH_BOT; // allow bots to morph -- 0 = no bots, 1 = frik bots, 2 = pk bots, 3 = all bots
 
 .float morphy; // morphic code number from list below
 .vector mask; // inventory a player can pickup by class - mask for item, class for player
@@ -40,7 +41,27 @@ float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent 
 float DM_MONSTER;	// true if any option allows monsters in dm
 float HUB_MONSTER;	// true if monsters will appear on hub maps - "sv_monster_hub"
 
+// monster enhancements
+
 float ENH_Q1_MAP_MONSTERS 		= 1; // if true some q1 map monsters get weapon upgrades - grunt, enforcer
+
+float MAP_LAVABABY				= 0.5; // chance map babys will be lava monsters
+float RND_LAVABABY				= 0.3; // chance random babys will be lava monsters
+
+
+// spike mine launcher  controls - mines are launched while idle
+
+void() SShalSpikeMine;
+
+float SV_SETMINE = 0.15; // chance to summon a spike mine
+float SV_CKTIME = 15; // how frequently we check - 15 secs
+float SV_MINELIM = 3; // max mines one monster can make
+
+// supervore = 65536
+// super 3x scrag = 1024
+// death knight = 64
+float SV_MINEALLOW = 66624; // allow monsters to set mines by bitmask
+
 
 // fast and slow monsters
 //void(float fst, float slw, string mcls, origin vm) fast_slow_monster;
@@ -161,6 +182,8 @@ float CB_M_HEXIMP					= 64;	// Hexen2 Imp by Claus Kruuskopf AKA WiCKeD
 float MON_NAME_II					= 2;
 float MON_FUNC_II					= 3;
 
+// end monster spec section
+
 /* special - will use something else
 float CB_M_GUNNEY					= 64;
 float CB_M_SUPTANK				= 128;
@@ -169,9 +192,6 @@ float CB_M_IMP						= 2097152;
 float CB_M_ARACHN					= 4194304;
 float CB_M_CYBER					= 8388608;
 */
-
-float MAP_LAVABABY				= 0.5; // chance map babys will be lava monsters
-float RND_LAVABABY				= 0.3; // chance random babys will be lava monsters
 
 // selection
 void() morph_cube;

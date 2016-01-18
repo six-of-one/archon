@@ -94,6 +94,9 @@ void () PortalTouch =
 	if (self.ltime > time) // debounce delay
 		return;
 
+	if (other.map == "nonmove") // 7.22.13 - func_models we should not port
+		return;
+
 //	if (self.portal_entrance.target == PORTAL_TELEFRAG) // no telefragging with missiles
 //	if (m) return;
 
