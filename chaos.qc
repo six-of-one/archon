@@ -839,7 +839,62 @@ void() maphack_copy =
 		self.aiment = spawn();
 		copyentity(self.dropent, self.aiment);
 
+		self.aiment.dest1 = self.aiment.dest = self.dropent.origin;
+
 		if (self.classname == "func_maphack")
+		if ((self.angles_y == 90) || (self.angles_y == 180) || (self.angles_y == 270))
+		{
+																				bprint(" *** warning:   attempting turn: ");
+																				bprint(item_ident(self.aiment));
+																				bprint(", mdl: ");
+																				if (self.aiment.model)
+																					bprint(self.aiment.model);
+																				else
+																					bprint(self.aiment.mdl);
+																				bprint(", at: ");
+																				bprint(vtos(self.aiment.dest));
+//			self.aiment.dest1 = v0;
+//			self.aiment.dest1_z = self.aiment.dest_z;
+//			self.aiment.dest2 = self.aiment.dest1 - self.aiment.dest; // his vector from 0, 0
+			makevectors(self.angles); // this only works with multiples of 90 degrees! - need true vector calc
+			if (v_forward_y == 1) // 90 deg
+			{
+				self.aiment.dest1_x = 0 - self.aiment.dest_y;
+				self.aiment.dest1_y = self.aiment.dest_x;
+			}
+			if (v_forward_y == -1) // 270 deg
+			{
+				self.aiment.dest1_x = self.aiment.dest_y;
+				self.aiment.dest1_y = 0 - self.aiment.dest_x;
+			}
+			if (v_forward_x == -1) // 180 deg
+			{
+				self.aiment.dest1_x = 0 - self.aiment.dest_x;
+				self.aiment.dest1_y = 0 - self.aiment.dest_y;
+			}
+//			self.aiment.dest = self.aiment.dest * v_forward_y; // attemp rotate to correct pos
+			self.aiment.angles_y = self.angles_y; // face dir
+																				bprint(", to: ");
+																				bprint(vtos(self.aiment.dest1));
+																				bprint(", add vec: ");
+																				bprint(vtos(v_forward));
+																				bprint(", angle: ");
+																				bprint(ftos(self.angles_y));
+																				bprint("\n");
+
+			if (self.aiment.classname == "door") // try to fix doors, once rotated, all will be up / down
+			if (self.aiment.movedir != '0 0 -1')
+			if (self.aiment.movedir != '0 0 1')
+			{
+				self.aiment.dest2 = v0;
+				self.aiment.dest2_z = 0 - self.aiment.absmax_z - self.aiment.absmin_z; // convert to move down
+				self.aiment.movedir = '0 0 -1';
+			}
+		}
+		else
+			if (self.aiment.classname == "door")
+			self.aiment.dest2 = self.dropent.pos2; // door only
+
 // dont make sub-copies of this!
 		if (self.aiment.weaponmodel) self.aiment.weaponmodel = "misc/null.wav"; // 2nd random copy from biome chunk lists
 		if (self.aiment.deathtype)
@@ -850,27 +905,27 @@ void() maphack_copy =
 // set new thing origin from - hack (or model) org, copied ent org about '0 0 0' + offset org stored in hack or model
 // offset from stored copies can be in: biome or func_model (or any other master item) or in individual copies
 // --- make sure not to double offset this way
-		setorigin(self.aiment, self.origin + self.dropent.origin + self.v_angle + self.aiment.v_angle);
+		setorigin(self.aiment, self.origin + self.aiment.dest1 + self.v_angle + self.aiment.v_angle);
 
 #ifdef warning
 																			if (WARNING & 65536)
 																			{
-																		bprint(" *** warning:   made a target2: ");
-																		bprint(item_ident(self.aiment));
-																		bprint(", mdl: ");
-																		if (self.aiment.model)
-																			bprint(self.aiment.model);
-																		else
-																			bprint(self.aiment.mdl);
-																		bprint(", at: ");
-																		bprint(vtos(self.aiment.origin));
-																		bprint(", from: ");
-																		bprint(vtos(self.origin));
-																		bprint(", add vec: ");
-																		bprint(vtos(self.dropent.origin));
-																		bprint(", prob: ");
-																		bprint(ftos(self.dropent.lefty));
-																		bprint("\n");
+																				bprint(" *** warning:   made a target2: ");
+																				bprint(item_ident(self.aiment));
+																				bprint(", mdl: ");
+																				if (self.aiment.model)
+																					bprint(self.aiment.model);
+																				else
+																					bprint(self.aiment.mdl);
+																				bprint(", at: ");
+																				bprint(vtos(self.aiment.origin));
+																				bprint(", from: ");
+																				bprint(vtos(self.origin));
+																				bprint(", add vec: ");
+																				bprint(vtos(self.dropent.origin));
+																				bprint(", prob: ");
+																				bprint(ftos(self.dropent.lefty));
+																				bprint("\n");
 																			}
 #endifdef
 		if (!self.aiment.model) setmodel(self.aiment, self.aiment.mdl);
@@ -964,7 +1019,7 @@ void() maphack_copy =
 		if (self.aiment.classname == "door")
 		{
 			self.aiment.pos1 = self.aiment.origin; // so door moves correctly
-			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so door moves correctly
+			self.aiment.pos2 = self.aiment.origin + self.aiment.dest2; //self.dropent.pos2; // so door moves correctly - dest1 for rotates
 			self.aiment.owner = self.aiment;
 			self.aiment.enemy = self.aiment; // so trigger can fire proper door
 //			if (!self.aiment.targetname) // triggers still dont copy right
@@ -1100,6 +1155,9 @@ void() func_maphack =
 		{
 			self.state = 1;
 			self.aflag = MAXFL;
+/*
+	*** warning set offloaded on 7.29.14 - see bkp
+
 #ifdef warning
 																			if (WARNING & 131072)
 																			{
@@ -1112,247 +1170,96 @@ void() func_maphack =
 																				bprint("\n");
 																			}
 #endifdef
+*/
 		}
 		self.aflag = self.aflag - biome.button2;
 		if (self.aflag <= 0)
 		{
 			self.state = 2;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint(", prob: ");
-																				bprint(ftos(biome.button2 / 10));
-																				bprint(", dice roll: ");
-																				bprint(ftos(self.msgcount / 10));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button3;
 		if (self.aflag <= 0)
 		{
 			self.state = 3;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint(", prob: ");
-																				bprint(ftos(biome.button3 / 10));
-																				bprint(", dice roll: ");
-																				bprint(ftos(self.msgcount / 10));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button4;
 		if (self.aflag <= 0)
 		{
 			self.state = 4;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint(", prob: ");
-																				bprint(ftos(biome.button4 / 10));
-																				bprint(", dice roll: ");
-																				bprint(ftos(self.msgcount / 10));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button5;
 		if (self.aflag <= 0)
 		{
 			self.state = 5;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint(", prob: ");
-																				bprint(ftos(biome.button5 / 10));
-																				bprint(", dice roll: ");
-																				bprint(ftos(self.msgcount / 10));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button6;
 		if (self.aflag <= 0)
 		{
 			self.state = 6;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint(", prob: ");
-																				bprint(ftos(biome.button6 / 10));
-																				bprint(", dice roll: ");
-																				bprint(ftos(self.msgcount / 10));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button7;
 		if (self.aflag <= 0)
 		{
 			self.state = 7;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint(", prob: ");
-																				bprint(ftos(biome.button7 / 10));
-																				bprint(", dice roll: ");
-																				bprint(ftos(self.msgcount / 10));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button8;
 		if (self.aflag <= 0)
 		{
 			self.state = 8;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint(", prob: ");
-																				bprint(ftos(biome.button8 / 10));
-																				bprint(", dice roll: ");
-																				bprint(ftos(self.msgcount / 10));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button9;
 		if (self.aflag <= 0)
 		{
 			self.state = 9;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button10;
 		if (self.aflag <= 0)
 		{
 			self.state = 10;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button11;
 		if (self.aflag <= 0)
 		{
 			self.state = 11;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button12;
 		if (self.aflag <= 0)
 		{
 			self.state = 12;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button13;
 		if (self.aflag <= 0)
 		{
 			self.state = 13;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button14;
 		if (self.aflag <= 0)
 		{
 			self.state = 14;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button15;
 		if (self.aflag <= 0)
 		{
 			self.state = 15;
 			self.aflag = MAXFL;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 		self.aflag = self.aflag - biome.button16;
 		if (self.aflag <= 0)
 		{
 			self.state = 16;
-#ifdef warning
-																			if (WARNING & 131072)
-																			{
-																				bprint(" *** warning:   biome % pick: ");
-																				bprint(ftos(self.state));
-																				bprint(", prob: ");
-																				bprint(ftos(biome.button16 / 10));
-																				bprint(", dice roll: ");
-																				bprint(ftos(self.msgcount / 10));
-																				bprint("\n");
-																			}
-#endifdef
 		}
 	}
 
