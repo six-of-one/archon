@@ -257,6 +257,14 @@ float IMP_MSCOURGE				= 97;	// string STI_MSCOURGE		= "impulse 97";
 float IMP_MGREMLIN_F				= 98;	// string STI_MGREMLIN		= "impulse 98"; // flying gremlin
 float IMP_MGREMLIN_L				= 99;	// landlubber gremlin
 
+// head skin map
+
+float HEADSKN_W					= 1;
+float HEADSKN_D					= 1; // 2;
+float HEADSKN_Q					= 0;
+float HEADSKN_PK					= 3;
+float HEADSKN_Q2					= 4;
+float HEADSKN_Q3					= 5;
 
 // evolution
 void(float silent) player_scourge_become;

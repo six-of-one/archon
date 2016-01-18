@@ -357,7 +357,8 @@ void () PutBotInServer =
 	// sets FL_CLIENT - might be ok
 
 	self.classname = "pk*bot"; // NOTE: decided to fix vw issue and not change this to player now as pk*bot work quite well
-	self.class_select = "pk*bot";
+//	self.class_select = "pk*bot";
+	self.class_select = "class_bot";
 	self.movetype = MOVETYPE_STEP;
 	self.air_finished = (time + 30);
 	self.dmg = 1;

@@ -145,7 +145,7 @@ void() q2_precache =
 	precache_model ("progs/q2_grap.mdl");
 	precache_model ("progs/vw_q2_grap.mdl");
 //	precache_model ("progs/q2_ctf_tech.mdl");
-	precache_model ("progs/q2_ctf_haste.mdl"); // lith tech
+	precache_model ("progs/q2_ctf_haste.mdl");
 	precache_model ("progs/q2_ctf_regen.mdl");
 	precache_model ("progs/q2_ctf_resist.mdl");
 	precache_model ("progs/q2_ctf_stren.mdl");
@@ -221,6 +221,18 @@ void() q2_precache =
 	precache_sound ("q2_snd/grhit.wav");
 	precache_sound ("q2_snd/grpull.wav");
 	precache_sound ("q2_snd/grreset.wav");
+
+// runes
+	precache_sound ("q2_snd/force2.wav");
+	precache_sound ("q2_snd/damage3.wav");
+	precache_sound ("q2_snd/x_light.wav");
+	precache_sound ("q2_snd/s_health.wav");
+	precache_sound ("q2_snd/makr_pain2.wav");
+	precache_sound ("q2_snd/tech4.wav");
+	precache_sound ("q2_snd/tech2.wav"); // tech2x - comb with quad
+	precache_sound ("q2_snd/tech2x.wav");
+	precache_sound ("q2_snd/tech1.wav");
+	precache_sound ("q2_snd/tech3.wav");
 
 //	precache_sound ("q2_snd/.wav");
 	rail_precache();
@@ -1076,6 +1088,7 @@ void() q2_item_health_mega =
 	self.noise = "q2_snd/m_health.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Mega health";
+	self.items = IT_SUPERHEALTH;
 	self.healamount = Q2_DEF_HMEGATUBE;
 	self.healtype = HEAL_MEGA;
 	self.volume = Q_MEGA_MAX;

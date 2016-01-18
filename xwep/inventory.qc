@@ -981,10 +981,13 @@ void(float im, entity p) drop_inventory =
 		item_call_save(e, ic);
 
 		if (RUNES != 1) // CHECK: does run toss need to turn of dyn_item
+		if (ic == "item_sigil")
 			e.event = ""; // not dyn_item - for relocation control code
 //		if (ic == "item_sigil") e.classname = ic; // make a real item
 
-		if (RUNES)
+		if (ic != "item_sigil")
+			p.rune_flag = p.rune_flag - (p.rune_flag & b); // remove rune item
+		else if (RUNES)
 			p.rune_flag = p.rune_flag - (p.rune_flag & b); // remove rune
 		else if (ic == "item_sigil")
 		{
@@ -999,7 +1002,10 @@ void(float im, entity p) drop_inventory =
 // dropping an artifact
 	if (sel == "Invulerability" && (p.items & b))
 	{
-		item_call_save(e, "item_artifact_invulnerability");
+		ic = "item_artifact_invulnerability";
+		if (stack_search(p, "item_invulnerability"))  ic = "item_invulnerability";
+		else if (stack_search(p, "d_art_invulnerable"))  ic = "d_art_invulnerable";
+		item_call_save(e, ic);
 		f = p.invincible_finished;
 		p.invincible_finished = -1;
 		if (f < 1) f = time + 10;
@@ -1007,7 +1013,11 @@ void(float im, entity p) drop_inventory =
 
 	if (sel == "Quad Damage" && (p.items & b))
 	{
-		item_call_save(e, "item_artifact_super_damage");
+		ic = "item_artifact_super_damage";
+		if (stack_search(p, "q2_item_quad"))  ic = "q2_item_quad";
+		else if (stack_search(p, "q3_item_quad"))  ic = "q3_item_quad";
+		else if (stack_search(p, "d_art_berserker"))  ic = "d_art_berserker";
+		item_call_save(e, ic);
 		f = p.super_damage_finished;
 		p.super_damage_finished = -1;
 		if (f < 1) f = time + 10;
@@ -1015,7 +1025,10 @@ void(float im, entity p) drop_inventory =
 
 	if (sel == "Limited Invisibility" && (p.items & b))
 	{
-		item_call_save(e, "item_artifact_invisibility");
+		ic = "item_artifact_invisibility";
+		if (stack_search(p, "item_invis"))  ic = "item_invis";
+		else if (stack_search(p, "d_art_invisible"))  ic = "d_art_invisible";
+		item_call_save(e, ic);
 		f = p.invisible_time;
 		p.invisible_finished = -1;
 		if (f < 1) f = time + 10;
@@ -1023,7 +1036,11 @@ void(float im, entity p) drop_inventory =
 
 	if (sel == "Hazmat Suit" && (p.items & b))
 	{
-		item_call_save(e, "item_artifact_envirosuit");
+		ic = "item_artifact_envirosuit";
+		if (stack_search(p, "q2_item_enviro"))  ic = "q2_item_enviro";
+		else if (stack_search(p, "q3_item_enviro"))  ic = "q3_item_enviro";
+		else if (stack_search(p, "d_art_radsuit"))  ic = "d_art_radsuit";
+		item_call_save(e, ic);
 		f = p.radsuit_finished;
 		p.radsuit_finished = -1;
 		if (f < 1) f = time + 10;
@@ -1058,6 +1075,23 @@ void(float im, entity p) drop_inventory =
 		return;
 	}
 
+// note: when droping search .map for mega_health_rot & get value in duration for next add - goes in .healamount & take away from player
+
+	if (sel == "Mega Health" && (p.items & b))
+	{
+		ic = "item_health_mega";
+//		if (stack_search(p, "d_art_megasphere"))  ic = "d_art_megasphere"; // note: this is not mega health!
+//		else 
+		if (stack_search(p, "q2_item_health_mega"))  ic = "q2_item_health_mega";
+		else if (stack_search(p, "q3_item_health_mega"))  ic = "q3_item_health_mega";
+		item_call_save(e, ic);
+		p.items = p.items - (p.items & b);
+
+		dropinview(p, e);
+		p.dropent.map = sel;
+		return;
+	}
+
 	if (sel == "Ammo Pack" && (p.rune_flag & RUNE_AMMO))
 	{
 		item_call_save(e, "d_item_pack");
@@ -1079,6 +1113,7 @@ void(float im, entity p) drop_inventory =
 	}
 
 	remove(e); // nothing tossed out
+	newmis = world;
 };
 
 
@@ -1137,72 +1172,74 @@ void(string sl, float b, entity e) drop_string =
 // count - bit flags of eweaps so we can find reg weps
 
 
-void(float pg) drop_setup =
+void(entity p, float pg) drop_setup =
 {
 	local float a, d, e, f, k, l, m, n;
 	local string sel, ic;
+	local entity de;
 
-	if (!self.dropent) return;
-	if (self.dropent.classname != "dropinv") return;
+	de = p.dropent;
+	if (!de) return;
+	if (de.classname != "dropinv") return;
 
-	self.dropent.grap_firetest = 0; // redo menu
-	self.dropent.weapon = 0;
-	self.dropent.wad = "";
+	de.grap_firetest = 0; // redo menu
+	de.weapon = 0;
+	de.wad = "";
 
-	self.dropent.noise = "";
-	self.dropent.noise1 = "";
-	self.dropent.noise2 = "";
-	self.dropent.noise3 = "";
-	self.dropent.noise4 = "";
-	self.dropent.target1 = "";
-	self.dropent.target2 = "";
+	de.noise = "";
+	de.noise1 = "";
+	de.noise2 = "";
+	de.noise3 = "";
+	de.noise4 = "";
+	de.target1 = "";
+	de.target2 = "";
 
 	if (!pg) // set place holders
 	{
 		d = e = f = k = //l = m = n =
 
-		self.dropent.button7 =
-		self.dropent.button8 =
-		self.dropent.button9 =
-		self.dropent.button10 =
-//		self.dropent.button11 =
-//		self.dropent.button12 =
-//		self.dropent.button13 =
+		de.button7 =
+		de.button8 =
+		de.button9 =
+		de.button10 =
+//		de.button11 =
+//		de.button12 =
+//		de.button13 =
 
-		self.dropent.button0 = 
-		self.dropent.button1 = 
-		self.dropent.button2 = 
-		self.dropent.button3 =
-//		self.dropent.button4 =
-//		self.dropent.button5 =
-//		self.dropent.button6 =
+		de.button0 = 
+		de.button1 = 
+		de.button2 = 
+		de.button3 =
+//		de.button4 =
+//		de.button5 =
+//		de.button6 =
 										1; //init
 	}
 	else if (pg < 0) // redo same page - but diff stuff
 	{
-		d = self.dropent.button7;
-		e = self.dropent.button8;
-		f = self.dropent.button9;
-		k = self.dropent.button10;
-//		l = self.dropent.button11;
-//		m = self.dropent.button12;
-//		n = self.dropent.button13;
+		d = de.button7;
+		e = de.button8;
+		f = de.button9;
+		k = de.button10;
+//		l = de.button11;
+//		m = de.button12;
+//		n = de.button13;
 	}
 	else
 	{
-		self.dropent.button7  = d = self.dropent.button0; // save pos for next page
-		self.dropent.button8  = e = self.dropent.button1;
-		self.dropent.button9  = f = self.dropent.button2;
-		self.dropent.button10 = k = self.dropent.button3;
-//		self.dropent.button11 = l = self.dropent.button4;
-//		self.dropent.button12 = m = self.dropent.button5;
-//		self.dropent.button13 = n = self.dropent.button6;
+		de.button7  = d = de.button0; // save pos for next page
+		de.button8  = e = de.button1;
+		de.button9  = f = de.button2;
+		de.button10 = k = de.button3;
+//		de.button11 = l = de.button4;
+//		de.button12 = m = de.button5;
+//		de.button13 = n = de.button6;
 	}
 
-	self.dropent.cnt = 1;
+	de.cnt = 1;
 	sel = "";
 
-	while (self.dropent.cnt < 8)
+	while (de.cnt < 8)
 	{
 		if (d <= 8388608)
 		{
@@ -1210,24 +1247,40 @@ void(float pg) drop_setup =
 			{
 				if (!RUNES) // if rune server is off any player can drop serverflags runes
 				{
+					if (p.rune_flag & d)
+					{
+						ic = "";
+						if (d & RUNE_FLG_HS)
+		//					if (p.target2 == "progs/q3_art.mdl")
+						if (stack_search(p, "item_haste"))
+							ic = "Haste ";
+
+						if (d & RUNE_FLG_RG)
+						if (stack_search(p, "item_regen"))
+							ic = "Regeneration ";
+
+						if (ic != "") drop_string(ic, d, world);
+					}
+
 					a = d & 15; // in case runes are ever > bit 8
 					if (serverflags & a)
 					{
 						drop_string(rune_name(a), d, world);
-						self.dropent.msight = " *: server runes can be released";
+						de.msight = " *: server runes can be released";
 					}
 				}
 				else
 				if (RUNES > 1) // rule 1 - cant drop rune
-				if (self.rune_flag & d)
+				if (p.rune_flag & d)
 				{
 					ic = rune_name(d);
 					if (d & RUNE_FLG_HS)
-					if (self.target2 == "progs/q3_art.mdl")
+//					if (p.target2 == "progs/q3_art.mdl")
+					if (stack_search(p, "item_haste"))
 						ic = "Haste ";
 
 					if (d & RUNE_FLG_RG)
-					if (self.target2 == "progs/q3_art.mdl")
+					if (stack_search(p, "item_regen"))
 						ic = "Regeneration ";
 
 					drop_string(ic, d, world);
@@ -1238,67 +1291,65 @@ void(float pg) drop_setup =
 			{
 				a = RUNE_FLG_FLY;
 				if (!(a & RUNE_MASK_ALL))
-				if (self.rune_flag & RUNE_FLG_FLY)
+				if (p.rune_flag & RUNE_FLG_FLY)
 					drop_string("Flying Rune", RUNE_FLG_FLY, world);
 			}
 
 			if (d == 64)
-			if (self.rune_flag & R_VAMPIRE)
+			if (p.rune_flag & R_VAMPIRE)
 				drop_string(rune_name(R_VAMPIRE), R_VAMPIRE, world);
 
 			if (d == 128)
-			if (self.rune_flag & T_DSH)
+			if (p.rune_flag & T_DSH)
 				drop_string(rune_name(T_DSH), T_DSH, world);
 
 			if (d == 256)
-			if (self.rune_flag & T_AMP)
+			if (p.rune_flag & T_AMP)
 				drop_string(rune_name(T_AMP), T_AMP, world);
 
 			if (d == 512)
-			if (self.rune_flag & T_TEIM)
+			if (p.rune_flag & T_TEIM)
 				drop_string(rune_name(T_TEIM), T_TEIM, world);
 
 			if (d == 1024)
-			if (self.rune_flag & T_ADOC)
+			if (p.rune_flag & T_ADOC)
 				drop_string(rune_name(T_ADOC), T_ADOC, world);
 
 			if (d == 2048)
-			if (self.items & IT_INVULNERABILITY) drop_string("Invulerability", IT_INVULNERABILITY, world);
+			if (p.items & IT_INVULNERABILITY) drop_string("Invulerability", IT_INVULNERABILITY, world);
 
 			if (d == 4096)
-			if (self.items & IT_QUAD) drop_string("Quad Damage", IT_QUAD, world);
+			if (p.items & IT_QUAD) drop_string("Quad Damage", IT_QUAD, world);
 
 			if (d == 8192)
-			if (self.items & IT_INVISIBILITY) drop_string("Limited Invisibility", IT_INVISIBILITY, world);
+			if (p.items & IT_INVISIBILITY) drop_string("Limited Invisibility", IT_INVISIBILITY, world);
 
 			if (d == 16384)
-			if ((self.items & IT_SUIT) && !self.wetsuit_finished) drop_string("Hazmat Suit", IT_SUIT, world);
+			if ((p.items & IT_SUIT) && !p.wetsuit_finished) drop_string("Hazmat Suit", IT_SUIT, world);
 
 			if (d == 32768)
-			if ((self.items & IT_SUIT) && self.wetsuit_finished) drop_string("Diving Suit", IT_SUIT, world);
-
-// note: when droping search .map for mega_health_rot & get value in duration for next add - goes in .healamount
-//			if (d == 2048)
-//			if (self.items & IT_SUPERHEALTH) drop_string("Mega Health", IT_SUPERHEALTH, world);
+			if ((p.items & IT_SUIT) && p.wetsuit_finished) drop_string("Diving Suit", IT_SUIT, world);
 
 			if (d == 65536)
-			if (self.empathy_finished) drop_string("Empathy Shields", 0, world);
+			if (p.empathy_finished) drop_string("Empathy Shields", 0, world);
 
 			if (d == 131072)
 			{
 				a = RUNE_AMMO;
 				if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
-				if (self.rune_flag & RUNE_AMMO)
+				if (p.rune_flag & RUNE_AMMO)
 					drop_string("Ammo Pack", RUNE_AMMO, world);
 			}
 
+			if (d == 262144)
+			if (p.items & IT_SUPERHEALTH) drop_string("Mega Health", IT_SUPERHEALTH, world);
 
 
 
 
 // note: protect builtin armors
 //			if (d == 65536)
-//			if (self.items & IT_ARMOR_BITS) drop_string("Armor", IT_ARMOR_BITS, world);
+//			if (p.items & IT_ARMOR_BITS) drop_string("Armor", IT_ARMOR_BITS, world);
 
 			d = d * 2;
 		}
@@ -1315,16 +1366,16 @@ void(float pg) drop_setup =
 			f = f * 2;
 		}
 		if (f == 8388608) 
-			self.dropent.cnt = 8;
+			de.cnt = 8;
 	}
 
-	self.dropent.button0 = d; // continue
-	self.dropent.button1 = e;
-	self.dropent.button2 = f;
-	self.dropent.button3 = k;
-//	self.dropent.button4 = l;
-//	self.dropent.button5 = m;
-//	self.dropent.button6 = n;
+	de.button0 = d; // continue
+	de.button1 = e;
+	de.button2 = f;
+	de.button3 = k;
+//	de.button4 = l;
+//	de.button5 = m;
+//	de.button6 = n;
 
 };
 
@@ -1343,7 +1394,7 @@ void() drop_menu =
 	{
 		self.dropent = spawn();
 		self.dropent.classname = "dropinv";
-		drop_setup(0);
+		drop_setup(self, 0);
 
 // save notify stats
 		self.dropent.grap_state = cvar("con_notifytime");
@@ -1602,5 +1653,66 @@ void() drop_inv_check =
 		e = find(e, classname, "player");
 	}
 };
+
+// put model strings of some player touched ents in a string stack
+
+.string stack1, stack2, stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
+
+float(entity e, string ss) stack_search =
+{
+	if (e.stack1 == ss) return(TRUE);
+	if (e.stack2 == ss) return(TRUE);
+	if (e.stack3 == ss) return(TRUE);
+	if (e.stack4 == ss) return(TRUE);
+	if (e.stack5 == ss) return(TRUE);
+	if (e.stack6 == ss) return(TRUE);
+	if (e.stack7 == ss) return(TRUE);
+	if (e.stack8 == ss) return(TRUE);
+	if (e.stack9 == ss) return(TRUE);
+	if (e.stack10 == ss) return(TRUE);
+	if (e.stack11 == ss) return(TRUE);
+	if (e.stack12 == ss) return(TRUE);
+	if (e.stack13 == ss) return(TRUE);
+	if (e.stack14 == ss) return(TRUE);
+	if (e.stack15 == ss) return(TRUE);
+	if (e.stack16 == ss) return(TRUE);
+	return(FALSE);
+};
+
+void(entity e, string ss) stack_string =
+{
+	if (stack_search(e, ss)) return; // already in there
+
+	e.stack16 = e.stack15;
+	e.stack15 = e.stack14;
+	e.stack14 = e.stack13;
+	e.stack13 = e.stack12;
+	e.stack12 = e.stack11;
+	e.stack11 = e.stack10;
+	e.stack10 = e.stack9;
+	e.stack9 = e.stack8;
+	e.stack8 = e.stack7;
+	e.stack7 = e.stack6;
+	e.stack6 = e.stack5;
+	e.stack5 = e.stack4;
+	e.stack4 = e.stack3;
+	e.stack3 = e.stack2;
+	e.stack2 = e.stack1;
+	e.stack1 = ss;
+};
+
+void (entity e, entity p) stack_touch =
+{
+	if (e.model == "progs/q3_art.mdl") stack_string(p, e.classname);
+	else if ( (e.items & IT_ARTIFACT) && (e.mcode >= MC_D_SAW ) ) stack_string(p, e.classname);
+	else if ( (e.items & IT_ARMOR_BITS) && (e.mcode >= MC_D_SAW ) ) stack_string(p, e.model);
+	else if ( (e.items & (IT_KEY1 | IT_KEY2)) && (e.mcode >= MC_D_SAW ) && !e.x_items ) stack_string(p, e.model);
+	else if ((e.mcode >= MC_D_BERS) && (e.mcode <= MC_D_MEGASPH) ) stack_string(p, e.classname);
+	if (e.model == "progs/g_fnail.mdl") stack_string(p, e.model);
+	if (e.netname == "Ammo Pack") stack_string(p, e.classname);
+	
+};
+
+
 
 

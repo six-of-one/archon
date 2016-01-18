@@ -319,8 +319,10 @@ void(string cls) item_call =
 	else if (cls == "w_key_b") w_key_b();
 
 	else if (cls == "w_item_cross") w_item_cross();
+	else if (cls == "w_item_chalice") w_item_chalice();
+	else if (cls == "w_item_chest") w_item_chest();
+	else if (cls == "w_item_crown") w_item_crown();
 
-	else if (cls == "w_barrel") w_barrel();
 
 // q2
 	else if (cls == "q2_weapon_blaster") q2_weapon_blaster();

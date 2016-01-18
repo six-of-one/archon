@@ -2393,17 +2393,17 @@ void() PK_AdminImpulse =
 			{
 				self.goalentity.nextthink = time + USER_TIMEOUT;
 				drop_inventory(self.dropent.weapon, self);
-				drop_setup(-1); // redo page
+				drop_setup(self, -1); // redo page
 				self.impulse = 0;
 				self.button0 = 0;
 			}
 			if (self.impulse == 8) // next page
 			{
 				self.goalentity.nextthink = time + USER_TIMEOUT;
-				drop_setup(1);
+				drop_setup(self, 1);
 				if (self.dropent.noise == "")
 				{
-					drop_setup(0);
+					drop_setup(self, 0);
 				}
 				self.impulse = 0;
 			}

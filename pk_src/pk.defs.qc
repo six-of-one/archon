@@ -175,6 +175,7 @@ void() rune_vamp;
 float(float atf) rune_haste;
 void () rune_touch;
 void(entity e) dead_runes;
+void() rune_dmg_sound;
 
 float RUNES;
 float RUNE_CNT;
@@ -186,6 +187,18 @@ float RUNE_MOVE; // move a rune after this many min regardless of other cnts
 
 float rune_count; // total # on map
 void() rune_maker;
+void() rune_precache;
+
+string rune_resist_sound;
+string rune_strength_sound;
+string rune_haste_sound;
+string rune_regen_sound;
+string rune_vampire_sound;
+
+string tech_adoc_sound;
+string tech_amp_sound;
+string tech_dsh_sound;
+string tech_tiem_sound;
 
 float R_EARTH; // allow power mix
 float R_HELL;
@@ -358,9 +371,6 @@ void() item_control_menu;
 float ammo_frame;
 float(float cn, entity e, string op) ammo_con;
 void () PlaceItem;
-void(entity de, entity ve) dropinview;
-void(float pg) drop_setup;
-void(float im, entity p) drop_inventory;
 
 // end item overrides
 
@@ -444,6 +454,10 @@ float DEAD_THROW_PKI;
 float DEAD_THROW_LIVERND	= 0.5; // chance a dead threw wep is touchable under rule 2
 float DEAD_THROW_CNTRND		= 0.5; // chance a dead threw wep is NOT under rule 8
 float DEAD_THROW_TIME		= 240;// TEST: 66; // time (in secs) a deadthrew wep hangs around
+float DEAD_THROW_ARTIFACT	= 1; // if true when dead, any artifacts will be tossed out as inventory dropped
+
+float IT_ARTIFACT = 7929856; // for detecting arts in items - used by rune id & dead drop
+
 float DEAD_XPACK;
 float DEAD_GIBPACK;
 
@@ -495,6 +509,16 @@ float WEP_MASK					= 4351; // mask off other items bits for def weap bits 1 + ..
 
 float DROP_ALLOW; // inv bits player is allowed to drop
 
+// inventory flags
+
+void(entity de, entity ve) dropinview;
+void(entity p, float pg) drop_setup;
+void(float im, entity p) drop_inventory;
+void() inventory;
+void(string sl, float b, entity e) drop_string;
+void(entity e) dead_artifact;
+void (entity e, entity p) stack_touch;
+float(entity e, string ss) stack_search;
 
 void() chaos_precache;
 
@@ -1031,8 +1055,6 @@ float Q3_SH_ENV				= 3;
 
 // end genre section
 
-
-void() inventory;
 
 // so we can make new sv_ console vars
 //DP_REGISTERCVAR - adds a new console cvar to the server console (in singleplayer this is the player's console), the cvar exists until the mod is unloaded or the game quits.

@@ -1476,6 +1476,7 @@ void() q3_item_health_mega =
 
 	self.netname = "Mega health";
 
+	self.items = IT_SUPERHEALTH;
 	self.healamount = Q3_HEALM_A;
 	self.healtype = HEAL_MEGA;
 	self.volume = Q3_MAX_HEAL; // max add
@@ -1608,7 +1609,7 @@ void() q3_pwr_touch =
 	}
 
 	other.rune_flag = other.rune_flag | (self.spawnflags);// -- flight & mask deal -- & RUNE_MASK_ALL); // still qualify one of the valid runes
-	other.target2 = self.model;
+//	other.target2 = self.model; // moved to touch
 	if (self.volume) other.volume = self.volume; // regen rune
 
 	if (self.spawnflags & RUNE_FLG_FLY) other.movetype = MOVETYPE_FLY;

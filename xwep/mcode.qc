@@ -417,18 +417,6 @@ void() mcode_load =
 
 	MC_RNDITM = f - MC_AXE;		//	#	of	q1	items	-	have	to	change	as	items	changes
 
-	MC_SIGIL16 = f = (f + 1);
-	MC_SIGIL32 = f = (f + 1);
-	MC_SIGIL64 = f = (f + 1);
-
-//	key ids special
-	MC_KEY1_0 = f = (f + 1);
-	MC_KEY1_1 = f = (f + 1);
-	MC_KEY1_2 = f = (f + 1);
-	MC_KEY2_0 = f = (f + 1);
-	MC_KEY2_1 = f = (f + 1);
-	MC_KEY2_2 = f = (f + 1);
-
 	MC_BACKPACK = f = (f + 1);
 
 ///	painkeep
@@ -522,8 +510,6 @@ void() mcode_load =
 	MC_D_ACELLS_LG = f = (f + 1);
 
 	MC_D_PACK = f = (f + 1);
-	MC_D_NIGHTVS = f = (f + 1);
-	MC_D_AUTOMAP = f = (f + 1);
 
 	MC_D_BARREL = f = (f + 1);
 
@@ -553,11 +539,6 @@ void() mcode_load =
 
 	MC_W_KEY_G = f = (f + 1);
 	MC_W_KEY_B = f = (f + 1);
-
-//	MC_W_G_CROSS = f = (f + 1); // if these are here they will randomize onto map
-//	MC_W_G_CHALICE = f = (f + 1);
-//	MC_W_G_CHEST = f = (f + 1);
-//	MC_W_G_CROWN = f = (f + 1);
 
 	MC_W_BARREL = f = (f + 1);
 
@@ -622,11 +603,6 @@ void() mcode_load =
 	MC_Q2 = (f + 1);
 	MC_Q2_RNDITM = f - MC_Q2_BLASTER; // # of total items
 
-	MC_Q2_TECH_RES = f = (f + 1);
-	MC_Q2_TECH_DOC = f = (f + 1);
-	MC_Q2_TECH_AMP = f = (f + 1);
-	MC_Q2_TECH_TM = f = (f + 1);
-
 /// q3
 
 	MC_Q3_GAUNTLET = f = (f + 1);
@@ -681,6 +657,34 @@ void() mcode_load =
 	MC_C_AGAS_LG = (f + 1);
 
 	MC_TOT = f - MC_AXE;		//	total # of total items
+
+// specials we dont want randomizing onto map with rnd across all genres
+
+	MC_SIGIL16 = f = (f + 1);
+	MC_SIGIL32 = f = (f + 1);
+	MC_SIGIL64 = f = (f + 1);
+
+//	key ids special
+	MC_KEY1_0 = f = (f + 1);
+	MC_KEY1_1 = f = (f + 1);
+	MC_KEY1_2 = f = (f + 1);
+	MC_KEY2_0 = f = (f + 1);
+	MC_KEY2_1 = f = (f + 1);
+	MC_KEY2_2 = f = (f + 1);
+
+	MC_D_NIGHTVS = f = (f + 1);
+	MC_D_AUTOMAP = f = (f + 1);
+
+	MC_W_G_CROSS = f = (f + 1); // if these are here they will randomize onto map
+	MC_W_G_CHALICE = f = (f + 1);
+	MC_W_G_CHEST = f = (f + 1);
+	MC_W_G_CROWN = f = (f + 1);
+
+	MC_Q2_TECH_RES = f = (f + 1);
+	MC_Q2_TECH_DOC = f = (f + 1);
+	MC_Q2_TECH_AMP = f = (f + 1);
+	MC_Q2_TECH_TM = f = (f + 1);
+
 };
 
 
@@ -835,6 +839,11 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_W_KEY_G)												return(IT_KEY1);
 	if (mc == MC_W_KEY_B)												return(IT_KEY2);
 	if (mc == MC_W_BARREL)												return(0);
+
+	if (mc == MC_W_G_CROSS)												return(0);
+	if (mc == MC_W_G_CHALICE)											return(0);
+	if (mc == MC_W_G_CHEST)												return(0);
+	if (mc == MC_W_G_CROWN)												return(0);
 
 /// q2
 
@@ -1147,6 +1156,11 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "w_item_cross")											return(MC_W_G_CROSS);
 	if (tsc == "w_barrel")												return(MC_W_BARREL);
 
+	if (tsc == "w_item_cross")											return(MC_W_G_CROSS);
+	if (tsc == "w_item_chalice")										return(MC_W_G_CHALICE);
+	if (tsc == "w_item_chest")											return(MC_W_G_CHEST);
+	if (tsc == "w_item_crown")											return(MC_W_G_CROWN);
+
 /// q2
 
 	if (tsc == "q2_weapon_blaster")									return(MC_Q2_BLASTER);
@@ -1440,8 +1454,13 @@ string (float mc) item_by_mcode =
 
 	if (mc == MC_W_KEY_G)												return("w_key_g");
 	if (mc == MC_W_KEY_B)												return("w_key_b");
-	if (mc == MC_W_G_CROSS)												return("w_item_cross");
 	if (mc == MC_W_BARREL)												return("w_barrel");
+	
+	if (mc == MC_W_G_CROSS)												return("w_item_cross");
+	if (mc == MC_W_G_CHALICE)											return("w_item_chalice");
+	if (mc == MC_W_G_CHEST)												return("w_item_chest");
+	if (mc == MC_W_G_CROWN)												return("w_item_crown");
+
 
 /// q2
 
@@ -2297,6 +2316,9 @@ void() cube_touch =
 	if (sphere_a.owner == other) // no cubes while controlling sphere
 		return;
 
+	if (self.dropent) // dont touch while inventory controlling
+		return;
+
 	if (other.eweapon) // other has a cube and is touching different one
 	{
 		if (other.eweapon.wad == "pk_cube")
@@ -2323,7 +2345,10 @@ void() cube_touch =
 		if (random() < BOT_NOUSE_PKCUBE) return;
 
 		if (self.wad == "morph_cube")
-		if (random() < BOT_NOUSE_MCUBE) return;
+		{
+			if (random() < BOT_NOUSE_MCUBE) return;
+			if (other.wad == "pk*bot") return;
+		}
 	}
 
 	if (self.wad == "morph_cube")

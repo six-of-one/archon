@@ -748,7 +748,7 @@ void() PK_PlayerDie =
 
 	if (DEAD_THROW)
 	if ((DEAD_THROW & 16) || !gib)
-		DeadThrowWeps(newmis); // newmis is the pack - ammo must be accounted
+		DeadThrowWeps(newmis, self.origin); // newmis is the pack - ammo must be accounted
 
 	if (self.velocity_z < 10)
 		self.velocity_z = self.velocity_z + random()*300;

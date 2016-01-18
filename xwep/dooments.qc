@@ -2061,6 +2061,33 @@ void() w_key =
 void() w_treas_touch =
 {
 	other.xp = other.xp + self.xp;
+
+	sprint(other, "You got the ");
+	sprint(other, self.netname);
+
+	if (self.xp)
+	{
+		sprint(other, " -  ");
+		sprint(other, ftos(self.xp));
+		sprint(other, " points. You have" );
+		sprint(other, ftos(other.xp));
+		sprint(other, " total.");
+		
+	}
+
+	sprint(other, "\n");
+
+// pickup souond
+	sound (other, CHAN_ITEM, self.noise , 1, ATTN_NORM);
+	stuffcmd (other, "bf\n");
+
+	if (self.mcode == self.scode) // in case its a translation
+		remove(self);
+	else
+	{
+		self.model = "";
+		self.solid = SOLID_NOT;
+	}
 };
 
 void() w_item_cross =
@@ -2088,6 +2115,23 @@ void() w_item_cross =
 	if (self.class_select == "") self.class_select = "wolf_item";
 	self.mask_x = MORPH_ALL; // everyone can get goody
 };
+
+// TDO: finish treasure
+void() w_item_chalice =
+{
+	w_item_cross();
+};
+
+void() w_item_chest =
+{
+	w_item_cross();
+};
+
+void() w_item_crown =
+{
+	w_item_cross();
+};
+
 
 void() w_key_g =
 {

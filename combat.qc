@@ -199,7 +199,10 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		}
 		if (targ.invincible_sound < time)
 		{
-			sound (targ, CHAN_ITEM, "items/protect3.wav", 1, ATTN_NORM);
+			if ( (self.rune_flag & T_DSH) && !(self.rune_flag & RUNE_FLG_RS) )
+				sound (self, CHAN_BODY, tech_dsh_sound, 1, ATTN_NORM);
+			else
+				sound (targ, CHAN_ITEM, rune_resist_sound, 1, ATTN_NORM);
 			targ.invincible_sound = time + 2;
 		}
 	}

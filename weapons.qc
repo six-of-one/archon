@@ -1547,16 +1547,15 @@ Plays sound if needed
 */
 void () SuperDamageSound =
 {
-	if (self.super_damage_finished > time
-		|| self.rune_flag & RUNE_FLG_DM)
+	if (self.super_damage_finished > time)
 	{
 		if (self.super_sound < time)
 		{
 			self.super_sound = time + 1;
 			sound (self, CHAN_BODY, "items/damage3.wav", 1, ATTN_NORM);
 		}
+		rune_dmg_sound();
 	}
-	return ;
 };
 
 

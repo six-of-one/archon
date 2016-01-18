@@ -13,6 +13,9 @@ void(entity e, float f, float r) rune_print =
 	local float rul;
 
 	rul = cvar("sv_c_rune"); // see -2 for q1 only models & not techs in rule 2
+	if (!ULOK2) 
+	if (rul == 2) // note: rule 3, 4 
+		rul = -2; // models not avail
 
 	if (f < 0)
 	{
@@ -177,7 +180,7 @@ string(float b) rune_name =
 	if (b == T_TEIM) return("Time Accelerator");
 	if (b == T_ADOC) return("Auto Doc");
 
-	if (cvar("sv_c_rune") > 1) return(rune2_name(b));
+	if (cvar("sv_c_rune") > 1 && ULOK2) return(rune2_name(b));
 
 	if (b == R_EARTH) return("Earth magic");
 	if (b == R_BLACK) return("Black magic");
@@ -257,6 +260,25 @@ void() mk_rune_set =
 	}
 };
 
+float(entity e, string ms) force_drop_set =
+{
+	if (!e.dropent)
+	{
+		e.dropent = spawn();
+		e.dropent.classname = "dropinv";
+
+// save notify stats
+		e.dropent.grap_state = cvar("con_notifytime");
+		e.dropent.grap_length = cvar("con_notify");
+	}
+	else
+	{
+		if (ms != "") sprint(e, ms);
+		return(TRUE);
+	}
+	return(FALSE);
+};
+
 // drop a single rune - in bit order 1 - 2 - 4 - 8
 
 void(entity e) rune_drop =
@@ -280,24 +302,14 @@ void(entity e) rune_drop =
 
 	if (k & RUNE_MASK_ALL) // drop a rune
 	{
-		if (!e.dropent)
-		{
-			e.dropent = spawn();
-			e.dropent.classname = "dropinv";
-			drop_setup(0);
+		if (force_drop_set(e, "Rune drop failure - clear menus and try again\n")) return;
+		drop_setup(e, 0);
 
-	// save notify stats
-			e.dropent.grap_state = cvar("con_notifytime");
-			e.dropent.grap_length = cvar("con_notify");
-		}
-		else
-		{
-			sprint(e, "Rune drop failure - clear menus and try again\n");
-			return;
-		}
 		if (e.dropent.dmg != k) // should be this rune bit - idea: more validation
 		{
 			sprint(e, "Rune drop failure - oh no\n");
+			remove(e.dropent);
+			e.dropent = world;
 			return;
 		}
 		drop_inventory(1, e);
@@ -331,11 +343,113 @@ void(entity e) dead_runes =
 	
 };
 
+
+
+void(entity e) dead_artifact =
+{
+	local float f, a;
+
+	if (force_drop_set(e, "")) return;
+
+	if (e.items & IT_ARTIFACT)
+	{
+		f = IT_SUPERHEALTH;
+		
+		while (f <= IT_QUAD)
+		{
+			e.dropent.cnt = 1;
+
+			if (f == IT_SUPERHEALTH)
+			{
+				drop_string("Mega Health", IT_SUPERHEALTH, world);
+			}
+
+			else if (f == IT_INVISIBILITY)
+			{
+				drop_string("Limited Invisibility", IT_INVISIBILITY, world);
+			}
+
+			else if (f == IT_INVULNERABILITY)
+			{
+				drop_string("Invulerability", IT_INVULNERABILITY, world);
+			}
+
+			else if (f == IT_QUAD)
+			{
+				drop_string("Quad Damage", IT_QUAD, world);
+			}
+
+			else if ( (f == IT_SUIT) && !e.wetsuit_finished)
+			{
+				drop_string("Hazmat Suit", IT_SUIT, world);
+			}
+
+			else if ( (f == IT_SUIT) && e.wetsuit_finished)
+			{
+				drop_string("Diving Suit", IT_SUIT, world);
+			}
+
+			if (e.dropent.cnt == 2)
+			{
+				drop_inventory(1, e);
+				item_eject(newmis, ' 210 210 320');
+			}
+			f = f * 2;
+		}
+	}
+
+	if (e.empathy_finished)
+	{
+		e.dropent.cnt = 1;
+		drop_string("Empathy Shields", 0, world);
+		drop_inventory(1, e);
+		item_eject(newmis, ' 210 210 320');
+	}
+
+	a = RUNE_FLG_FLY;
+	if (!(a & RUNE_MASK_ALL))
+	if (e.rune_flag & RUNE_FLG_FLY)
+	{
+		e.dropent.cnt = 1;
+		drop_string("Flying Rune", RUNE_FLG_FLY, world);
+		drop_inventory(1, e);
+		item_eject(newmis, ' 210 210 320');
+	}
+
+	a = RUNE_AMMO;
+	if (!(a & RUNE_MASK_ALL)) // ammo pack not in runes
+	if (e.rune_flag & RUNE_AMMO)
+	{
+		e.dropent.cnt = 1;
+		drop_string("Ammo Pack", RUNE_AMMO, world);
+		drop_inventory(1, e);
+		item_eject(newmis, ' 210 210 320');
+	}
+
+	remove(e.dropent);
+	e.dropent = world;
+};
+/*
+	if (e.wetsuit_finished || e.empathy_finished || e.silencer_finished || k)
+		sprint(p, "and the following items:\n");
+	if (e.wetsuit_finished)
+	{
+		if (e.items & IT_SUIT) 
+
+	f = RUNE_AMMO;
+	if (!(f & RUNE_MASK_ALL))
+	if (e.rune_flag & RUNE_AMMO) k = 1; //didnt show pack as rune, show it below
+
+	
+	f = RUNE_FLG_FLY;
+	if (!(f & RUNE_MASK_ALL))
+	if (e.rune_flag & RUNE_FLG_FLY) g = 1; //didnt show flight as rune, show it below
+*/
+
 // print rune info on impulse from e to p's console
 
 // only admin is supposed to print where e != p
 
-float IT_ARTIFACT = 7929856;
 
 void(entity e, entity p) rune_id =
 {
@@ -882,6 +996,10 @@ void() run_runes =
 
 	r = cvar("sv_c_rune"); // because we need a sneek peak
 
+	if (!ULOK2)
+	if (r == 2) // note: rule 3, 4 
+		r = -2;
+
 	if (r < 2) RUNE_MASK_ALL = RULE1_MASK; // set all mask for rules
 	else if (r > 1) RUNE_MASK_ALL = RULE2_MASK;
 
@@ -915,6 +1033,29 @@ void() run_runes =
 	f = f & RUNE_MASK;
 	if (!f)	NO_TECH = TRUE; // rune mask disallowed techs
 	if (r < 2) NO_TECH = TRUE;
+
+	if (r < 2)
+	{
+		rune_resist_sound = "items/protect3.wav";
+		rune_strength_sound = "items/damage3.wav";
+		rune_haste_sound = "boss1/sight1.wav";
+		rune_regen_sound = "items/r_item1.wav";
+		rune_vampire_sound = "q2_snd/makr_pain2.wav"; // TDO: appr q1 sound
+	}
+	else
+	{
+		rune_resist_sound = "q2_snd/force2.wav";
+		rune_strength_sound = "q2_snd/damage3.wav";
+		rune_haste_sound = "q2_snd/x_light.wav";
+		rune_regen_sound = "q2_snd/s_health.wav";
+		rune_vampire_sound = "q2_snd/makr_pain2.wav";
+		tech_adoc_sound = "q2_snd/tech4.wav";
+		tech_amp_sound = "q2_snd/tech2.wav"; // tech2x - comb with quad
+		tech_dsh_sound = "q2_snd/tech1.wav";
+		tech_tiem_sound = "q2_snd/tech3.wav";
+	}
+
+
 
  	if (RUNE_RANDOM != cvar("sv_c_rune_random")) // changed random state
 	{
@@ -1124,7 +1265,7 @@ void() RegenerationSound =
 	if (self.regeneration_sound < time)
 	{
 		self.regeneration_sound = time + 1;
-		sound(self, CHAN_BODY, "items/r_item1.wav", 1, ATTN_NORM);
+		sound(self, CHAN_BODY, rune_regen_sound, 1, ATTN_NORM);
 	}
 };
 
@@ -1264,8 +1405,34 @@ void() HasteSound =
 		if (self.haste_sound < time)
 		{
 			self.haste_sound = time + 2;
-			sound(self, CHAN_BODY, "boss1/sight1.wav", 1, ATTN_NORM);
+			if ( (self.rune_flag & T_TEIM) && !(self.rune_flag & RUNE_FLG_HS) )
+				sound(self, CHAN_BODY, tech_tiem_sound, 1, ATTN_NORM);
+			else
+			sound(self, CHAN_BODY, rune_haste_sound, 1, ATTN_NORM);			
 		}
+};
+
+void() rune_dmg_sound =
+{
+	if (self.rune_flag & RUNE_FLG_DM || self.rune_flag & T_AMP)
+	{
+		if (!(self.rune_flag & RUNE_FLG_DM) && (self.rune_flag & T_AMP) )
+//		if (cvar("sv_c_rune") > 1 && ULOK2) // quad & rune
+		if (self.items & IT_QUAD)
+		{
+			sound (self, CHAN_BODY, "q2_snd/tech2x.wav", 1, ATTN_NORM);
+			return;
+		}
+
+		if (self.super_sound < time) // note - quad sound blocks this
+		{
+			self.super_sound = time + 1;
+			if ( (self.rune_flag & T_AMP) && !(self.rune_flag & RUNE_FLG_DM) )
+				sound (self, CHAN_BODY, tech_amp_sound, 1, ATTN_NORM);
+			else
+				sound (self, CHAN_BODY, rune_strength_sound, 1, ATTN_NORM);
+		}
+	}
 };
 
 // op haste - ret true if att_fin needs set
@@ -1285,6 +1452,18 @@ float(float atf) rune_haste =
 	self.attack_finished = time + (atf / f); 
 	HasteSound();
 	return(FALSE); // TDO: double haste in other code - where o/p from this is just a flag = return value of f - means all conditional on this needs reversed
+};
+
+void() rune_precache =
+{
+	precache_model ("progs/end1.mdl");
+	precache_model ("progs/end2.mdl");
+	precache_model ("progs/end3.mdl");
+	precache_model ("progs/end4.mdl");
+
+	precache_sound ("misc/runekey.wav");
+	precache_sound ("items/r_item1.wav"); // regen
+	precache_sound ("boss1/sight1.wav"); // haste
 };
 
 /*QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
@@ -1314,7 +1493,7 @@ void () item_sigil =
 	if (!RUNES)
 	if (time < PIC_TO) // note: for successful op with this code time out must be > 2
 	{
-		if (time < 2) // delay till we can read cvar - HUH?  dont freaking get why this is necc!  if this isnt done for an initial server start map load rune has sigil_touch set and things fail
+		if (time < 2) // delay till we can read cvar (run_runes) - if this isnt done for an initial server start map load rune has sigil_touch set and things fail
 		{
 			self.nextthink = time + 1;
 			self.think = item_sigil;
@@ -1349,10 +1528,12 @@ void () item_sigil =
 	}
 
 	rul = cvar("sv_c_rune"); // see -2 for q1 only models in rule 2
-	if (!ULOK2) rul = -2; // models not avail
+	if (!ULOK2) 
+	if (rul == 2) // note: rule 3, 4 
+		rul = -2; // models not avail
 
-	precache_sound ("misc/runekey.wav");
 	self.noise = "misc/runekey.wav";
+	precache_sound ("misc/runekey.wav");
 
 	self.duration = 0;
 	if (time < PIC_TO) // make sure map runes load the correct appearance even if powers change
@@ -1370,31 +1551,32 @@ void () item_sigil =
 	{
 		if (self.spawnflags & R_EARTH)
 		{
-//		precache_model ("progs/end1.mdl");
+			precache_model ("progs/end1.mdl");
 			setmodel (self,"progs/end1.mdl");
 			self.netname = "Earth magic"; // Cataboligne - 5.32.10 - for rune server
 		
 		}
 		if (self.spawnflags & R_BLACK)
 		{
-//		precache_model2 ("progs/end2.mdl");
+			precache_model ("progs/end2.mdl");
 			setmodel (self,"progs/end2.mdl");
 			self.netname = "Black magic"; // Cataboligne - 5.32.10 - for rune server
 		}
 		if (self.spawnflags & R_HELL)
 		{
-//		precache_model2 ("progs/end3.mdl");
+			precache_model ("progs/end3.mdl");
 			setmodel (self,"progs/end3.mdl");
 			self.netname = "Hell magic"; // Cataboligne - 5.32.10 - for rune server
 		}
 		if (self.spawnflags & R_ELDER)
 		{
-//		precache_model2 ("progs/end4.mdl");
-			setmodel (self,"progs/end4.mdl");
+				precache_model ("progs/end4.mdl");
+		setmodel (self,"progs/end4.mdl");
 			self.netname = "Elder magic"; // Cataboligne - 5.32.10 - for rune server
 		}
 		if (self.spawnflags & R_VAMPIRE) // bit 64
 		{
+			precache_model ("progs/g_axe.mdl");
 			setmodel (self,"progs/g_axe.mdl"); // hur?
 			self.netname = "Vampire magic";
 			self.effects = EF_DIMLIGHT;

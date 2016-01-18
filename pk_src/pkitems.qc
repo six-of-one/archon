@@ -575,11 +575,9 @@ void() painkeep_touch =
 		{
 			bot_toucheditem ();
 		}
-//		if (self.pk_touch != painkeep_touch) // bots dont get pktouch stuff yet...
-//		{
 			e = other;
+			e.wad = e.classname;
 			e.classname = "player";
-//		}
 	}
 
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
@@ -669,6 +667,7 @@ if (self.classname == "") bprint("*** - blank classname in touch fn \n");
 
 
 
+		stack_touch(self, other); // save some items model string for drop codes
 //		if (self.event == "dynamic_item")
 //		{
 //			f = TRUE;

@@ -289,7 +289,7 @@ void () armor_touch =
 		if (self.volume != -1)
 		if (other.armorvalue >= self.volume) return; // already max
 
-		other.target2 = self.model; // for dropinv
+//		other.target2 = self.model; // for dropinv - moved to touch
 		ck = FALSE;
 		if (self.noise) snd = self.noise; // Cataboligne - 9.23.11 - defaulted a few things if not set
 		bit = IT_ARMOR2;

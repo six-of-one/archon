@@ -921,3 +921,144 @@ void (entity e) bot_froze =
 		}
 	}
 };
+
+// bot stuck in dead - tyr to force a respawn
+
+void() bot_wakey =
+{
+	if (self.owner.deadflag)
+	if (self.owner.button16 == -66)
+	if (!self.owner.ishuman)
+	{
+		if (self.owner.classname == "pk*bot")
+		{
+			self.owner.nextthink = time + 1 + random();
+			self.owner.think = respawnBot;
+		}
+		else
+		{
+			self.owner.nextthink = time + 1 + random();
+			self.owner.think = BotAI;
+		}
+	}
+	remove(self);
+}
+
+// take a shot at fixing 2 bot problems - infinite axe war / getting stuck on a level and being dead too long
+
+void() bot_fixer =
+{
+	local entity e, f;
+
+
+	e = find(world,class_select,"class_bot");
+
+	if (!BOT_FIXED || (bot_fix && !e) || (intermission_running) )
+	{
+
+
+
+bprint("bot fix removed\n");
+
+
+
+		remove(self);
+		bot_fix = world;
+		return;
+	}
+
+	if (!bot_fix && e) //|| self.classname != "bot_fix")
+	{
+
+
+
+bprint("bot fix started\n");
+
+
+
+		bot_fix = spawn();
+		bot_fix.classname = "bot_fix";
+		bot_fix.think = bot_fixer;
+		bot_fix.nextthink = time + BOT_FIX_TIME;
+
+		while (e)
+		{
+			e.button16 = e.frags;
+			e = find(e,class_select,"class_bot");
+		}
+
+		return;
+	}
+
+	if (self.classname == "bot_fix")
+	{
+		while (e)
+		{
+			if (BOT_FIXED)
+			if (e.button16 == e.frags)
+			{
+				if (e.deadflag)
+				{
+					f = spawn();
+					f.think = bot_wakey;
+					f.nextthink = time + 5 + random() * 10;
+					f.owner = e;
+					f.owner.button16 = -66;
+
+
+bprint("** bot waking  ");
+//bprint(item_ident(e));
+bprint(e.netname);
+bprint("\n");
+
+
+
+				}
+				else
+				{
+
+
+bprint("** bot fixing  ");
+bprint(e.netname);
+//bprint(item_ident(e));
+bprint("\n");
+
+
+				bot_fix.frags = bot_fix.frags + 1;
+				e.armorvalue = 0;
+				e.invincible_finished = 0;
+				T_Damage (e,world,bot_fix,e.health + 10);
+				}
+			}
+			e.button16 = e.frags;
+			e = find(e,class_select,"class_bot");
+		}
+
+		self.nextthink = time + BOT_FIX_TIME;
+	}
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

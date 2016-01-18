@@ -476,6 +476,7 @@ void() PutClientInServer =
 	local entity spot;
 
 	set_initBotLevel(); // *bot
+	self.button16 = 0; // bot fixer
 
 	self.admin = 0;
 	self.rune_flag = 0;
@@ -1848,6 +1849,7 @@ bprint("\n");
 
 
 
+	if (attacker.classname == "bot_fix") return;
 
 	if (targ.classname == "player")
 	{

@@ -1008,7 +1008,7 @@ void(entity e, string md, entity p) DeadThrew =
 		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
 		newmis.netname = newmis.eweapon.netname;
 		newmis.eweapon.items = e.weapon;
-		xwep_ammo(newmis.eweapon, p);
+		if (p) xwep_ammo(newmis.eweapon, p);
 	}
 	else // standard weapon
 	{
@@ -1017,7 +1017,7 @@ void(entity e, string md, entity p) DeadThrew =
 		{
 			newmis.lip = e.lip = wepbit_mcode(e.weapon, "QA"); // NOTE: set in viswep ent
 			newmis.currentammo = e.currentammo = wepbit_mcode(e.weapon, "QAC");
-			xwep_ammo(newmis, p);
+			if (p) xwep_ammo(newmis, p);
 // ammo
 			if (newmis.items == IT_LIGHTNING) newmis.ammo_cells = newmis.currentammo;
 			else if (newmis.items == IT_ROCKET_LAUNCHER) newmis.ammo_rockets = newmis.currentammo;
@@ -1049,7 +1049,7 @@ void(entity e, string md, entity p) DeadThrew =
 			else if (e.pk_currentitem == PKPLUS_IT_TOMB) newmis.pkplus_tombammo = 1;
 			else if (e.pk_currentitem == PKPLUS_IT_ACTOR) newmis.pkplus_actorammo = 1;
 
-			xwep_ammo(newmis, p);
+			if (p) xwep_ammo(newmis, p);
 			if (newmis.pk_items & PKID) newmis.noise = "misc/pickup/tone2.wav";
 		}
 	}
@@ -1082,10 +1082,11 @@ void(entity e, string md, entity p) DeadThrew =
 
 // self = player / bot
 // pack (if exists) is backpack just thrown out - need to load ammo for retrievable weps
+// v1 - alternate origin for attach ent vweps
 
 // $frame dthrow1 dthrow2 dthrow3 dthrow4 dthrow5
 
-void(entity pack) DeadThrowWeps =
+void(entity pack, vector v1) DeadThrowWeps =
 {
 	local entity e, sv;
 	local float w, pkid, pd;
@@ -1103,28 +1104,43 @@ void(entity pack) DeadThrowWeps =
 	while (e)
 	{
 		pd = w = FALSE;
-		while (pkid & e.pk_currentitem || e.weapon < 0) e = e.vwepent;
+		while (pkid & e.pk_currentitem || e.weapon < 0) e = e.vwepent; // skip painkeep items as detailed by bit mask
+
+		if (!e) return; // ran off end of card
 
 		if (pack)
 		{
 			if (e.wad != "packwep") // pack deal
-			if (pack.eweapon || (e.weapon != pack.items)) pd = TRUE;
+			{
+				if (pack.eweapon)  pd = TRUE;
+				else if (e.pk_currentitem <= PK_IT_AXE)
+				{
+					if (e.weapon != pack.items) pd = TRUE;
+				}
+				else if (pack.pk_items != e.pk_currentitem) pd = TRUE;
+//				else if ((pack.pk_items != e.pk_currentitem) && (e.weapon == pack.items)) pd = TRUE;
+			}
 		}
 		else
 			pd = TRUE;
+		
+		if (e.pk_currentitem <= PK_IT_AXE)
+		if (e.weapon & self.builtin) pd = FALSE; // in case morphs come here - dont throw builtin
 
 
 
 if (PR_THREW)
 {
 bprint("throw loop check: ");
-bprint(e.netname);
+bprint(item_ident(e));
+bprint(" - pki:  ");
+bprint(ftos(e.pk_currentitem));
+bprint(" - pd test:  ");
+bprint(ftos(pd));
 bprint("\n");
 }
 
 
-
-		if (e.weapon & self.builtin) pd = FALSE; // in case morphs come here - dont throw builtin
 
 		if (pd)
 		{
@@ -1179,6 +1195,7 @@ bprint("\n");
 
 
 				newmis.frame = e.frame;
+				if (newmis.origin == v0) setorigin(newmis, v1);
 			}
 /*
 				xwep_ammo(e, pack); // adjust ammo in pack for retrievable wep

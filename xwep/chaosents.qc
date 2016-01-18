@@ -70,11 +70,6 @@ void() chaos_precache =
 	precache_model ("progs/sphere_annihilation.mdl");
 	precache_sound ("alt_ambience/hum1.wav");
 
-// rune server
-		precache_model ("progs/end1.mdl");
-		precache_model ("progs/end2.mdl");
-		precache_model ("progs/end3.mdl");
-		precache_model ("progs/end4.mdl");
 
 //	flamer_precache();
 };
@@ -515,28 +510,14 @@ void() x_pwr_touch =
 	if (self.class_select == "q3_item") // for holdables - since they use pk slots, tho the corollary of collecting a pk item is not tested
 	if (self.pk_currentitem) // 'es already got one...wot?  'e sais 'yve already got one.  already got a Grail?
 	{
-bprint("holdable: ");
 		if (other.pk_canpabammo && self.pk_currentitem == PK_IT_CANPAB) return;
 		if (other.pkplus_phoneammo && self.pk_currentitem == PKPLUS_IT_PHONE) return;
 		e2 = vchk(self.items, self.pk_currentitem, other.vwepent);
-
-
-if (!e2) bprint("no ent found");
-else bprint("*** ent found!");
-bprint("\n");
-
 
 		if (!e2)
 			e2 = x_wep_store(world, self.items, 1);
 		else
 			return;
-
-
-bprint("xwep own: ");
-bprint(e2.owner.netname);
-bprint("\n");
-
-
 	}
 
 	sprint (other,"You got the ");
@@ -554,7 +535,7 @@ bprint("\n");
 		self.think = SUB_regen;
 	}
 
-	other.target2 = self.model; // for inventory toss
+//	other.target2 = self.model; // for inventory toss - moved to touch
 
 	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");

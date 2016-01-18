@@ -614,6 +614,14 @@ void() GibPlayer =
 void() PlayerDie =
 {
 
+	if (self.dropent)
+	{
+		remove(self.dropent);
+		self.dropent = world;
+	}
+	if (DEAD_THROW_ARTIFACT)
+		dead_artifact(self);
+
 	if (self.rune_flag) // because you can have runs in q100 for some reason
 		dead_runes(self);
 

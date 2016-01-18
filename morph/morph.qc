@@ -758,6 +758,9 @@ void(entity e, float all) morph_clearparms =
 	}
 	stuffcmd(e, "con_notify_alias\n"); // for some other default
 
+// clear item ident stack
+	e.stack1 = e.stack2 = e.stack3 = e.stack4 = e.stack5 = e.stack6 = e.stack7 = e.stack8 = e.stack9 = e.stack10 = e.stack11 = e.stack12 = e.stack13 = e.stack14 = e.stack15 = e.stack16 = "";
+
 // Cataboligne - 9.15.11 - moved from chasecam
 	if (all) // morph change will retain these
 	{

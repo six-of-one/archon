@@ -266,7 +266,7 @@ void() player_gremlin_die =
 
 	if (DEAD_THROW)
 	if ((DEAD_THROW & 16) || !gib)
-		DeadThrowWeps(newmis); // newmis is the pack - ammo must be accounted
+		DeadThrowWeps(newmis, self.origin); // newmis is the pack - ammo must be accounted
 
 	if ( GibMorph ("progs/gremlin.mdl", $severedhead, FL_HEADGIB | FL_NONHUMGIB | FL_NOSND | FL_PLAGUE, 0, -95, 8, 0, "") ) return;
 

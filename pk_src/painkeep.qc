@@ -54,6 +54,7 @@ void() PK_init =
 	chaos_precache();
 	hip_precache();
 	morph_precache();
+	rune_precache();
 	hook_precache();  // Cataboligne - hook mod
 	}
 
@@ -639,6 +640,7 @@ void(float bt, float st) pk_bas_flags =
 
 // fn(pk_liveupd) - detect live changes to config cvars by server admin - call up code to effect in game
 /// genius code
+entity bot_fix;
 
 void() pk_liveupd =
 {
@@ -662,6 +664,12 @@ void() pk_liveupd =
 // check for botmatch changes
 	if (deathmatch || coop)
 	if (cvar("sv_botmatch") != 0) b_launch(0);
+
+	if (BOT_FIXED)  // try to fix stuck bots
+	if (!bot_fix)
+	if (!intermission_running)
+	if (find(world,class_select,"class_bot")) // at least one bot
+		bot_fixer();
 
 // toggle for q1 def item translation
 	if (PK_100 || Q_100)

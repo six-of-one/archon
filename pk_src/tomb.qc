@@ -89,6 +89,10 @@ void () corpsefollow =
 		self.angles = (self.tomb_target.angles + '0 0 0');
 		self.dodmg = 1;
 	}
+	if (!self.tomb_target.ishuman) // Cataboligne - 10.3.11 - just for stationary bots
+	if (random() < 0.1)
+		self.dodmg = 1;
+		
 	self.tomb_time = (self.tomb_time + 0.1);
 	self.tombdmg_time = (self.tombdmg_time + 0.1);
 	if ( (self.tombsoundtime < time) )

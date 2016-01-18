@@ -401,6 +401,7 @@ void(entity e, float chan, string samp, float vol, float atten) sound =
 		other.b_sound = time + 1;
 
 };
+
 void(float to, float f) WriteByte =
 {
 	if ((to == MSG_ONE) && (msg_entity.ishuman != TRUE))
@@ -1007,6 +1008,7 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
 	UpdateClient(self);
 	SetNewParms();
 	self.ishuman = 2; // pretend to be human for a bit
+	self.class_select = "class_bot";
 	ClientConnect();
 	PutClientInServer();
 
