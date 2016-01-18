@@ -42,7 +42,7 @@ void() morph_setup =
 	MONSTER_MASK = CB_M_ARMY + CB_M_FISH + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
 						CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE + CB_M_GREMLIN + CB_M_VOMIT;
 
-	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER;
+	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA;
 
 };
 
@@ -254,6 +254,7 @@ string(float mb, float mode) monster_id =
 		if (mb == CB_M_BLARG) 			s2 = "Blarg";
 		if (mb == CB_M_RAPTOR) 			s2 = "Velociraptor";
 		if (mb == CB_M_SPIDER) 			s2 = "Phase Spider";
+		if (mb == CB_M_MANGA) 			s2 = "Manga Tai";
 	}
 	else
 	if (mode == MON_FUNC_II)
@@ -261,6 +262,7 @@ string(float mb, float mode) monster_id =
 		if (mb == CB_M_BLARG) 			s2 = "monster_blarg";
 		if (mb == CB_M_RAPTOR) 			s2 = "monster_raptor";
 		if (mb == CB_M_SPIDER) 			s2 = "monster_spider";
+		if (mb == CB_M_MANGA) 			s2 = "monster_manga";
 	}
 	return s2;	
 };
@@ -1281,7 +1283,7 @@ void() random_monster =
 //	f = 100;
 	self.cnt = rnd_bit_mask(C_MONSTER);
 	self.count = rnd_bit_mask(C_MONSTER_II);
-	if (self.cnt < 1) self.cnt = 1;
+//	if (self.cnt < 1) self.cnt = 1;
 //	else self.cnt = self.cnt * 2;
 /* this loop was for an incremental search - we do random selection now
 	while ( (! self.cnt & C_MONSTER) && (f > 0) )

@@ -169,6 +169,7 @@ void() wolf_precache =
 	precache_model ("progs/w_armor.mdl");
 	precache_model ("progs/w_chaing.mdl");
 	precache_model ("progs/w_clip.mdl");
+	precache_sound ("sound/wolf/w_mortars.wav");
 //	precache_model ("progs/w_dcr_changrn2.mdl");
 //	precache_model ("progs/w_dcr_changrn.mdl");
 	precache_model ("progs/w_dcr_bluvase.mdl"); // dog food
@@ -1776,8 +1777,7 @@ void() w_ammo_rock =
 	self.currentammo = 5;
 	self.wait = RSP_TIME;
 
-	setmodel (self, "progs/w_mortar.mdl");
-//	setmodel (self, "progs/w_amort.mdl");
+	setmodel (self, "progs/w_mortars.mdl");
 	self.noise = "wolf/pickup_am.wav";
 	self.noise4 = "wolf/w_resp.wav";
 	self.netname = "Mortars";
