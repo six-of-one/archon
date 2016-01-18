@@ -170,11 +170,12 @@ void() weapon_portal =
 	self.currentammo = 0;
 	self.aflag = IGN_INV;
 	self.items = IT_LIGHTNING;
-	self.lip = AMMO_CELLS;
+	self.lip = AMMO_NONE;
 	self.attack_finished = 1;
 	self.dmg = 0;
 	self.dmg_save = 1;
 	self.dmg_take = 1; // shot cnt
+	self.lefty = XW_MULTI + 1; // 2 mode wep
 
 	setmodel (self, "progs/g_harp.mdl");
 	self.weaponmodel = "progs/v_portal.mdl";

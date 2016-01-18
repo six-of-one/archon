@@ -6,10 +6,12 @@
 .vector portal_exit_pos;
 .float portal_failed;
 .float portal_opened;
- 
+
+// TDO: monsters & items - need different reject quals
+
 void () PortalTouch =
 {
-	if (((other.classname != "player") || !(other.flags & FL_CLIENT)))
+	if (((other.classname != "player") && (other.classname != "pk*bot") || !(other.flags & FL_CLIENT)))
 	{
 		return;
 	}
@@ -20,20 +22,22 @@ void () PortalTouch =
 	makevectors (other.angles);
 	if ((self.classname == "portal_entrance"))
 	{
+//		makevectors (self.portal_exit.angles);
 		other.origin = (self.portal_exit.origin + (v_forward * 20));
 	}
 	else
+	if ((self.classname == "portal_exit"))
 	{
-		if ((self.classname == "portal_exit"))
-		{
-			other.origin = (self.portal_entrance.origin + (v_forward * 20));
-		}
-		else
-		{
-			return;
-		}
+//		makevectors (self.portal_exit.angles);
+		other.origin = (self.portal_entrance.origin + (v_forward * 20));
+	}
+	else
+	{
+		return;
 	}
 };
+
+float RED_PORTAL = 4; // add this for red portal skins - test
 
 void () PortalThink =
 {
@@ -44,6 +48,7 @@ void () PortalThink =
 			centerprint (self.master, "Portal expired\n");
 		}
 		self.master.portal_busy = FALSE;
+		self.master.portal_entrance = world;
 		remove (self);
 		return;
 	}
@@ -55,17 +60,19 @@ void () PortalThink =
 	{
 		self.skin = (self.skin + 1);
 	}
-	if ((self.skin >= 3))
+
+	if ((self.skin >= (3 + self.aflag)))
 	{
 		self.weapon = TRUE;
 	}
 	else
 	{
-		if ((self.skin <= 0))
+		if ((self.skin <= (0 + self.aflag)))
 		{
 			self.weapon = FALSE;
 		}
 	}
+
 	if (self.portal_opened)
 	{
 		self.frame = (self.frame + 1);
@@ -88,7 +95,7 @@ entity (vector pos, entity entrance) OpenPortalExit =
 	portal.avelocity = '0 0 0';
 	portal.classname = "portal_exit";
 	portal.solid = SOLID_BBOX;
-	portal.skin = 0;
+	portal.skin = 0 + portal.aflag;
 	portal.frame = 0;
 	portal.weapon = 0;
 	portal.effects = (portal.effects | EF_DIMLIGHT);
@@ -136,7 +143,54 @@ void () PortalPathThink =
 	self.nextthink = (time + 0.1);
 };
 
-float (vector dir) PreparePortalEntrance =
+// Cataboligne - 9.10.11 - added md2 - mode2
+
+float (vector dir) PortalExit2 =
+{
+	local vector org;
+	local entity portal;
+
+	if (trace_ent.takedamage)
+	{
+		return (FALSE);
+	}
+	else
+	{
+		if ((trace_ent != world))
+		{
+			return (FALSE);
+		}
+	}
+	if (!self.portal_entrance)
+	{
+		centerprint (self, "Portail failed: unknown error!\n");
+		return (FALSE);
+	}
+
+	org = (trace_endpos - (dir * 8));
+
+	portal = OpenPortalExit (org, self.portal_entrance);
+	portal.angles = vectoangles (dir);
+	portal.master = self;
+	portal.aflag = RED_PORTAL; // make it a red portal
+	portal.skin = 0 + portal.aflag;
+	self.portal_entrance.portal_exit = portal;
+	self.portal_entrance.portal_opened = TRUE;
+	sound (self.portal_entrance, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
+	sound (portal, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
+	centerprint (self, "Portal opened\n");
+	self.portal_busy = TRUE;
+	return (TRUE);
+};
+
+/* new calc for placed portals
+   norm = trace_plane_normal;
+   norm_x = 0 - norm_x;
+   norm_y = 0 - norm_y;
+   new.angles = vectoangles( norm );
+*/
+
+float (vector dir, float md2) PreparePortalEntrance =
 {
 	local entity tline;
 	local entity portal;
@@ -159,23 +213,29 @@ float (vector dir) PreparePortalEntrance =
 		}
 	}
 	org = (trace_endpos - (dir * 8));
-	tline = spawn ();
-	tline.master = self;
 	portal = spawn ();
 	portal.master = self;
-	tline.movetype = MOVETYPE_NOCLIP;
-	tline.solid = SOLID_BBOX;
-	tline.classname = "portalpath";
-	tline.portal_entrance = portal;
-	tline.velocity = (dir * 380);
-	tline.v_angle = dir;
-	tline.touch = SUB_Null;
-	tline.attack_finished = (time + 3.8);
-	tline.nextthink = (time + 0.1);
-	tline.think = PortalPathThink;
-	setmodel (tline, "");
-	setsize (tline, '0 0 0', '0 0 0');
-	setorigin (tline, trace_endpos);
+	if (!md2) // mode2 - the fancy choose the second portal exit deal
+	{
+		tline = spawn ();
+		tline.master = self;
+		tline.movetype = MOVETYPE_NOCLIP;
+		tline.solid = SOLID_BBOX;
+		tline.classname = "portalpath";
+		tline.portal_entrance = portal;
+		tline.velocity = (dir * 380);
+		tline.v_angle = dir;
+		tline.touch = SUB_Null;
+		tline.attack_finished = (time + 3.8);
+		tline.nextthink = (time + 0.1);
+		tline.think = PortalPathThink;
+		setmodel (tline, "");
+		setsize (tline, '0 0 0', '0 0 0');
+		setorigin (tline, trace_endpos);
+	}
+	else
+		self.portal_entrance = portal; // save for mode 2
+
 	portal.movetype = MOVETYPE_FLYMISSILE;
 	portal.velocity = '0 0 0';
 	portal.avelocity = '0 0 0';
@@ -190,6 +250,8 @@ float (vector dir) PreparePortalEntrance =
 	portal.portal_failed = FALSE;
 	portal.touch = PortalTouch;
 	portal.attack_finished = (time + 10);
+	if (md2)
+		portal.attack_finished = (time + 20);
 	portal.nextthink = (time + 0.1);
 	portal.think = PortalThink;
 	setmodel (portal, "progs/portal.mdl");
@@ -205,8 +267,11 @@ void () W_FirePortal =
 	local vector finish;
 	local vector sdir;
 	local float success;
-	local float loop;
+	local float loop, f;
 
+	if (self.eweapon) f = self.eweapon.cnt; // TDO: mode for non wep portals?
+
+	if (!f || !self.portal_entrance)
 	if (self.portal_busy)
 	{
 		centerprint (self, "Charging warp energy\n");
@@ -231,7 +296,13 @@ void () W_FirePortal =
 	traceline (src, (src + (dir * 2048)), TRUE, self);
 	if ((trace_fraction != 1))
 	{
-		success = PreparePortalEntrance (dir);
+		if (!f || !self.portal_busy)
+			success = PreparePortalEntrance (dir, f);
+		if (f && self.portal_busy) // open 2nd portal
+		{
+			success = PortalExit2 (dir);			
+			self.portal_entrance = world;
+		}
 	}
 	if (success)
 	{
@@ -239,6 +310,7 @@ void () W_FirePortal =
 	}
 	else
 	{
+		self.portal_entrance = world;
 		self.portal_busy = FALSE;
 		centerprint (self, "Cannot open portal there\n");
 	}

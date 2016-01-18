@@ -425,6 +425,11 @@ float IGN_INV 					= 66600;
 float FL_MELEE_WEP			= 66601;
 float SND_OVER					= 66602; // play eweapon sound over after fire call
 
+// multi mode weps
+
+float XW_MULTI					= 66660;
+float XW_MULTI_END			= 66680; // 20 modes defined here, loops at highest mode - 
+
 
 void() chaos_precache;
 

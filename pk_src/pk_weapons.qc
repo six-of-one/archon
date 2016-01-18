@@ -1670,7 +1670,7 @@ void() pk_cycleObjects =
 
 void() PK_ChangeWeapon =
 {
-		local float am, fl, fl2;
+		local float am, fl, fl2, k;
 
 	am = 0;
 	fl2 = 0;
@@ -1710,6 +1710,21 @@ void() PK_ChangeWeapon =
 	}
 	else if (self.impulse == 9) // Cataboligne - 2.13.11 - hipnotic support special wep
 		fl = IT_MJOLNIR;
+
+
+	if (self.eweapon) // multi mode test
+	if ((self.eweapon.weapon == fl) || (fl == IT_AXE && fl2 == PK_IT_CLIGHT && self.eweapon.weapon == IT_LIGHTNING)) // getting selected again
+	if (self.eweapon.lefty >= XW_MULTI && self.eweapon.lefty < XW_MULTI_END)
+	{
+		k = self.eweapon.lefty - XW_MULTI;
+		self.eweapon.cnt = self.eweapon.cnt + 1;
+		if (self.eweapon.cnt > k) self.eweapon.cnt = 0;
+		sprint(self, self.eweapon.netname);
+		sprint(self, " mode set to: ");
+		sprint(self, ftos(self.eweapon.cnt + 1)); // dont show mode 1 as 0
+		sprint(self, "\n");
+		return;
+	}
 
 	am = !HasAmmo(fl, fl2);
 
