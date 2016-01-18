@@ -1471,15 +1471,38 @@ void() random_monster_wakey =
 
 // note: has issue of assuming all monsters feet are at -24
 
-void() random_monster_location =
+// rdl - stdv around this loc, randomize if cant find open area
+// IMP: range acc to monster
+
+void(vector rdl) random_monster_location =
 {
 	local entity e;
 	local vector v;
+	local float sf;
 
-	e = dyn_rndloc();
-	v = e.origin;
-	if (e.flags & FL_ITEM) // randomize away from map items - in case its not an immediate mover
-		v = stdv_rndloc(e.origin, 50, 120);
+	v = v0;
+	sf = 50;
+	if (rdl) // randomize around this loc, try to avoid monsters / players
+	while ((sf > 0) && !v)
+	{
+		v = stdv_rndloc(rdl, 100, 200); // only checks for solids
+		e = findradius(v, 100);
+		while (e) // note: 2nd loop safety ?
+		{
+			if (e.flags & FL_MONSTER) v = v0;
+//			if (e.flags & FL_PLAYER) v = v0; // only testing monsters for now
+			e = e.chain;
+		}
+		sf = sf - 1;
+	}
+
+	if (!v)
+	{
+		e = dyn_rndloc();
+		v = e.origin;
+		if (e.flags & FL_ITEM) // randomize away from map items - in case its not an immediate mover
+			v = stdv_rndloc(e.origin, 50, 120);
+	}
 
 	v_z = v_z + 30 - fabs(e.mins_z); // has to move up enough to account for monsters feet at -24
 	setorigin(self, v);
@@ -1653,7 +1676,7 @@ void() random_monster =
 			return;
 		}
 
-		random_monster_location();
+		random_monster_location(v0);
 
 		self.event = "dyn_monster";
 		item_call(self.wad);
@@ -1688,7 +1711,47 @@ void() random_monster =
 	self = c;
 };
 
-// sv_monster_map < 0
+// Cataboligne - 11.14.12 - fast / slow code - if we need to randomly spawn extra fast or slow monsters
+
+//void(float fst, float slw, string mcls, origin vm) fast_slow_monster =
+void(string sp, string mcls, vector vm) speed_monster =
+{
+	local entity sv;
+
+	sv = self;
+
+	self = spawn();
+	self.netname = sp;
+	self.classname = mcls;
+	item_call(mcls);
+//		monster_ogre(A_MONSTER); // FIX: use item call? - incr count, wake up
+	random_monster_location(vm); // note: try to home near parent
+
+/*
+	if (fst)
+	{
+		self = spawn();
+		self.netname = "fast";
+		self.classname = mcls;
+		item_call();
+		random_monster_location(vm); // note: try to home near parent
+	}
+
+	if (slw)
+	{
+		self = spawn();
+		self.netname = "slow";
+		self.classname = mcls;
+		item_call();
+		random_monster_location(vm);
+	}
+*/
+	self = sv;
+};
+
+// sv_monster_map < 0 - fire off targets & remove monster ent
+// note: monster_wakey should never be trained on map monsters & non map monsters should never be thought here
+//		doing so could cause inconsistent behavior
 
 void() remove_monster =
 {

@@ -1,0 +1,1 @@
+/home/Quake/qlnx/bkp/2012/Nov/11.17.12/pk_bot_qc/fish.qc

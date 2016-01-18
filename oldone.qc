@@ -29,7 +29,7 @@ $frame old30 old31 old32 old33 old34 old35 old36 old37 old38 old39
 $frame old40 old41 old42 old43 old44 old45 old46 
 
 $frame shake1 shake2 shake3 shake4 shake5 shake6 shake7 shake8
-$frame shake9 shake10 shake11 shake12 shake12 shake13 shake14
+$frame shake9 shake10 shake11 shake12 shakeb12 shake13 shake14
 $frame shake15 shake16 shake17 shake18 shake19 shake20
 
 //void() old_stand     =[      $old1,       old_stand    ] {};
@@ -130,7 +130,7 @@ void() finale_1 =
 	remove (pl);
 
 	WriteByte (MSG_ALL, SVC_FINALE);
-	WriteString (MSG_ALL, "");
+	WriteString (MSG_ALL, null_string);
 
 	pl = find (world, classname, "player");
 	while (pl != world)
@@ -158,7 +158,7 @@ void() finale_1 =
 	// make fake versions of all players as standins, and move the real
 	// players to the intermission spot
 	
-	// wait for 1 second
+	// wait for 1 rel
 	timer = spawn();
 	timer.nextthink = time + 1;
 	timer.think = finale_2;	
@@ -300,7 +300,8 @@ if (ign != A_MONSTER)
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
-	
+	self.walkframe = 0;
+
 	setmodel (self, "progs/oldone.mdl");
 	setsize (self, '-160 -128 -24', '160 128 256');
 
@@ -309,6 +310,7 @@ if (ign != A_MONSTER)
 	self.nextthink = time + 0.1;	
 	self.takedamage = DAMAGE_YES;
 	self.th_pain = nopain;
+// IMP: something different in DM if shubs is bit mapped in - like a gibs fountain explode
 	self.th_die = finale_1;
 	shub = self;
 	

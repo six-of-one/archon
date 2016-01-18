@@ -161,7 +161,7 @@ ZombieFireGrenade
 */
 void(vector st) ZombieFireGrenade =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 	local	vector	org;
 
 	sound (self, CHAN_WEAPON, "zombie/z_shot1.wav", 1, ATTN_NORM);
@@ -404,7 +404,7 @@ A hit of 25 points or more (super shotgun, quad nailgun) will allways put it
 down to the ground.
 
 A hit of from 10 to 40 points in one frame will cause it to go down if it
-has been twice in two seconds, otherwise it goes into one of the four
+has been twice in two rels, otherwise it goes into one of the four
 fast pain frames.
 
 A hit of less than 10 points of damage (winged by a shotgun) will be ignored.
@@ -434,7 +434,7 @@ void(entity attacker, float take) zombie_pain =
 
 	if (self.inpain)
 	{
-// if hit again in next gre seconds while not in pain frames, definately drop
+// if hit again in next gre rels while not in pain frames, definately drop
 		self.pain_finished = time + 3;
 		return;			// currently going through an animation, don't change
 	}
@@ -475,7 +475,8 @@ if (ign != A_MONSTER)
 {
 	if ((M_MONSTER < 0) && !(self.spawnflags & SPAWN_CRUCIFIED))
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	
@@ -488,7 +489,7 @@ if (ign != A_MONSTER)
 			return;
 		}
 
-		if (Q_100 || !(self.spawnflags & SPAWN_CRUCIFIED))
+		if (!(self.spawnflags & SPAWN_CRUCIFIED))
 		{
 			if (R_MONSTER)
 				remove(self);
@@ -516,6 +517,7 @@ if (ign != A_MONSTER)
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/zombie.mdl");
 

@@ -47,8 +47,76 @@ $frame bdeath7 bdeath8 bdeath9 bdeath10
 
 $frame pull1 pull2 pull3 pull4 pull5 pull6 pull7 pull8 pull9 pull10 pull11
 
+// super (boss) ogre frames
+
+$frame	sostand1 sostand2 sostand3 sostand4 sostand5 sostand6 sostand7 sostand8 sostand9
+
+$frame sowalk1 sowalk2 sowalk3 sowalk4 sowalk5 sowalk6 sowalk7
+$frame sowalk8 sowalk9 sowalk10 sowalk11 sowalk12 sowalk13 sowalk14 sowalk15 sowalk16
+
+$frame sorun1 sorun2 sorun3 sorun4 sorun5 sorun6 sorun7 sorun8
+
+$frame soswing1 soswing2 soswing3 soswing4 soswing5 soswing6 soswing7
+$frame soswing8 soswing9 soswing10 soswing11 soswing12 soswing13 soswing14
+
+$frame sosmash1 sosmash2 sosmash3 sosmash4 sosmash5 sosmash6 sosmash7
+$frame sosmash8 sosmash9 sosmash10 sosmash11 sosmash12 sosmash13 sosmash14
+
+$frame soshoot1 soshoot2 soshoot3 soshoot4 soshoot5 soshoot6
+
+$frame sopain1 sopain2 sopain3 sopain4 sopain5
+
+$frame sopainb1 sopainb2 sopainb3
+
+$frame sopainc1 sopainc2 sopainc3 sopainc4 sopainc5 sopainc6
+
+$frame sopaind1 sopaind2 sopaind3 sopaind4 sopaind5 sopaind6 sopaind7 sopaind8 sopaind9 sopaind10
+$frame sopaind11 sopaind12 sopaind13 sopaind14 sopaind15 sopaind16
+
+$frame sopaine1 sopaine2 sopaine3 sopaine4 sopaine5 sopaine6 sopaine7 sopaine8 sopaine9 sopaine10
+$frame sopaine11 sopaine12 sopaine13 sopaine14 sopaine15
+
+$frame sodeath1 sodeath2 sodeath3 sodeath4 sodeath5 sodeath6
+$frame sodeath7 sodeath8 sodeath9 sodeath10 sodeath11 sodeath12
+$frame sodeath13 sodeath14
+
+$frame sobdeath1 sobdeath2 sobdeath3 sobdeath4 sobdeath5 sobdeath6
+$frame sobdeath7 sobdeath8 sobdeath9 sobdeath10
+
+$frame sopull1 sopull2 sopull3 sopull4 sopull5 sopull6 sopull7 sopull8 sopull9 sopull10 sopull11
+
+// super ogre - extra mad
+
+$frame	soemsstand1 soemsstand2 soemsstand3 soemsstand4 soemsstand5 soemsstand6 soemsstand7 soemsstand8 soemsstand9
+
+$frame soemwalk1 soemwalk2 soemwalk3 soemwalk4 soemwalk5 soemwalk6 soemwalk7
+$frame soemwalk8 soemwalk9 soemwalk10 soemwalk11 soemwalk12 soemwalk13 soemwalk14 soemwalk15 soemwalk16
+
+$frame soemrun1 soemrun2 soemrun3 soemrun4 soemrun5 soemrun6 soemrun7 soemrun8
+
+$frame soemsswing1 soemsswing2 soemsswing3 soemsswing4 soemsswing5 soemsswing6 soemsswing7
+$frame soemsswing8 soemsswing9 soemsswing10 soemsswing11 soemsswing12 soemsswing13 soemsswing14
+
+$frame soemsmash1 soemsmash2 soemsmash3 soemsmash4 soemsmash5 soemsmash6 soemsmash7
+$frame soemsmash8 soemsmash9 soemsmash10 soemsmash11 soemsmash12 soemsmash13 soemsmash14
+
+$frame soemdeath1 soemdeath2 soemdeath3 soemdeath4 soemdeath5 soemdeath6
+$frame soemdeath7 soemdeath8 soemdeath9 soemdeath10 soemdeath11 soemdeath12
+$frame soemdeath13 soemdeath14
+
 //=============================================================================
 
+float	OGRE_BAWSE	= 2;
+float	OGRE_NORMAL	= 4;
+float	OGRE_SUPER	= 8;
+float	OGRE_SUPER_MAD	= 16; // got extra mad
+
+//float super_ogre_chance = 0.1;
+//float super_ogre_emheal = 80; // how much a super ogre thats extra mad could heal in a pain frame
+//float super_ogre_emheal_chn = 0.4; // chance to heal
+
+/*
+deprecated - replaced with reg. grenade stuff
 
 void() OgreGrenadeExplode =
 {
@@ -61,7 +129,7 @@ void() OgreGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
 
-	self.velocity = '0 0 0';
+	self.velocity = '0 0 0'; // this is become explosion
 	self.touch = SUB_Null;
 	setmodel (self, "progs/s_explod.spr");
 	self.solid = SOLID_NOT;
@@ -81,47 +149,64 @@ void() OgreGrenadeTouch =
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
+*/
 
 /*
 ================
 OgreFireGrenade
 ================
 */
+void() MultiGrenadeTouch;
+void() MultiGrenadeExplode;
+
+// Note: manga comes thru here
+
 void() OgreFireGrenade =
 {
-	local	entity missile, mpuff;
-
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
 	sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
 
-	missile = spawn ();
-	missile.owner = self;
-	missile.movetype = MOVETYPE_BOUNCE;
-	missile.solid = SOLID_BBOX;
+	newmis = spawn ();
+	newmis.owner = self;
+	newmis.movetype = MOVETYPE_BOUNCE;
+	newmis.solid = SOLID_BBOX;
+	newmis.classname = "ogre_grenade";
 
-// set missile speed
+// set missile speed	
 
 	makevectors (self.angles);
 
-	missile.velocity = normalize(self.enemy.origin - self.origin);
-	missile.velocity = missile.velocity * 600;
-	missile.velocity_z = 200;
+	newmis.velocity = normalize(self.enemy.origin - self.origin);
+	newmis.velocity = newmis.velocity * 600;
+	newmis.velocity_z = 200;
+	newmis.avelocity = '300 300 300';
 
-	missile.avelocity = '300 300 300';
-
-	missile.angles = vectoangles(missile.velocity);
-
-	missile.touch = OgreGrenadeTouch;
+	newmis.angles = vectoangles(newmis.velocity);
 
 // set missile duration
-	missile.nextthink = time + 2.5;
-	missile.think = OgreGrenadeExplode;
+	if(self.spawnflags & OGRE_BAWSE)
+	{
+		newmis.touch = MultiGrenadeTouch;
+		newmis.dodmg = 60;
+		newmis.nextthink = time + 2.5;
+		newmis.think = MultiGrenadeExplode;
+		setmodel (newmis, "progs/mervup.mdl");
+		setsize (newmis, '0 0 0', '0 0 0');		
+		newmis.classname = "MultiGrenade";
+	}
+	else
+	{
+		newmis.touch = GrenadeTouch;
+		newmis.dodmg = 40;
+		newmis.nextthink = time + 2.5;
+		newmis.think = GrenadeExplode;
+		setmodel (newmis, "progs/grenade.mdl");
+		setsize (newmis, '0 0 0', '0 0 0');
+	}
 
-	setmodel (missile, "progs/grenade.mdl");
-	setsize (missile, '0 0 0', '0 0 0');
-	setorigin (missile, self.origin);
-	if (!Q_100) AddToSplash(missile); // *pk - Make this entity splash
+	setorigin (newmis, self.origin);
+	AddToSplash(newmis); // *pk - Make this entity splash
 };
 
 
@@ -130,15 +215,11 @@ void() OgreFireGrenade =
 /*
 ================
 chainsaw
-
-FIXME
 ================
 */
+
 void(float side) chainsaw =
 {
-local vector	delta;
-local float 	ldmg;
-
 	if (!self.enemy)
 		return;
 	if (!CanDamage (self.enemy, self))
@@ -146,13 +227,22 @@ local float 	ldmg;
 
 	ai_charge(10);
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 100)
+	if (vlen(self.dest) > 100)
 		return;
 
-	ldmg = (random() + random() + random()) * 4;
-	T_Damage (self.enemy, self, self, ldmg);
+	self.dmg = (random() + random() + random()) * 4;
+
+// one of those "BIG" ogres
+	if (self.spawnflags & OGRE_SUPER) self.dmg = self.dmg * 1.8;
+	if (self.spawnflags & OGRE_SUPER_MAD) self.dmg = self.dmg * 1.2;
+
+	if ((side) && (side < 2))
+	if (self.spawnflags & OGRE_SUPER)
+		sound (self, CHAN_VOICE, "zombie/z_hit.wav", 1, ATTN_IDLE); // 10.13.13
+
+	T_Damage (self.enemy, self, self, self.dmg);
 
 	if (side)
 	{
@@ -164,7 +254,37 @@ local float 	ldmg;
 	}
 };
 
+void() ogre_walk1;
 
+void() ogre_stand1	=[	$stand1,	ogre_stand1	]
+{
+/*
+
+// didnt used to have stand frames - this is fixed now
+
+	if (self.spawnflags & OGRE_SUPER_MAD)
+	{
+		ogre_walk1();
+		return;
+	}
+*/
+	
+	if ((self.duration < $stand1) || (self.duration > $stand8))
+	{
+		self.duration = $stand1;
+	}
+	else self.duration = self.duration + 1;
+
+	self.frame = self.duration;
+
+	if (self.frame == $stand5)
+	if (random() < 0.2)
+		sound (self, CHAN_VOICE, "ogre/ogidle.wav", 1, ATTN_IDLE);
+
+	ai_stand();
+};
+
+/*
 void() ogre_stand1	=[	$stand1,	ogre_stand2	] {ai_stand();};
 void() ogre_stand2	=[	$stand2,	ogre_stand3	] {ai_stand();};
 void() ogre_stand3	=[	$stand3,	ogre_stand4	] {ai_stand();};
@@ -178,225 +298,408 @@ void() ogre_stand6	=[	$stand6,	ogre_stand7	] {ai_stand();};
 void() ogre_stand7	=[	$stand7,	ogre_stand8	] {ai_stand();};
 void() ogre_stand8	=[	$stand8,	ogre_stand9	] {ai_stand();};
 void() ogre_stand9	=[	$stand9,	ogre_stand1	] {ai_stand();};
+*/
 
-void() ogre_walk1	=[	$walk1,		ogre_walk2	] {ai_walk(3); self.nextthink = time + self.speed; };
-void() ogre_walk2	=[	$walk2,		ogre_walk3	] {ai_walk(2); self.nextthink = time + self.speed; };
+// Modified by Dave Weiden (Weiden@Trenton.EDU) 9/20/96
+
+void() ogre_pull1       =[      $pull1,         ogre_pull2      ] {ai_frame(self.walkframe);};
+void() ogre_pull2       =[      $pull2,         ogre_pull3      ] {ai_frame(self.walkframe);};
+void() ogre_pull3       =[      $pull3,         ogre_pull4      ] {ai_frame(self.walkframe);};
+void() ogre_pull4       =[      $pull4,         ogre_pull5      ] {ai_frame(self.walkframe);};
+void() ogre_pull5       =[      $pull5,         ogre_pull6      ] {
+	ai_frame(self.walkframe);
+	sound (self, CHAN_VOICE, "ogre/ogidle2.wav", 1, ATTN_IDLE);
+};
+void() ogre_pull6       =[      $pull6,         ogre_pull7      ] {ai_frame(self.walkframe);};
+void() ogre_pull7       =[      $pull7,         ogre_pull8      ] {ai_frame(self.walkframe);};
+void() ogre_pull8       =[      $pull8,         ogre_pull9      ] {ai_frame(self.walkframe);};
+void() ogre_pull9       =[      $pull9,         ogre_pull10     ] {ai_frame(self.walkframe);};
+void() ogre_pull10      =[      $pull10,        ogre_pull11     ] {ai_frame(self.walkframe);};
+void() ogre_pull11      =[      $pull11,        ogre_pull12     ] {ai_frame(self.walkframe);};
+void() ogre_pull12      =[      $pull10,        ogre_pull13     ] {ai_frame(self.walkframe);};
+void() ogre_pull13      =[      $pull9,         ogre_pull14     ] {ai_frame(self.walkframe);};
+void() ogre_pull14      =[      $pull8,         ogre_pull15     ] {ai_frame(self.walkframe);};
+void() ogre_pull15      =[      $pull6,         ogre_pull16     ] {ai_frame(self.walkframe);};
+void() ogre_pull16      =[      $pull4,         ogre_walk13     ] {ai_frame(self.walkframe);};
+
+void() ogre_walk13;
+
+// ogre_check is called in ogre_walk12, to determine if he'll pull or walk on.
+void() ogre_check =
+{
+	ai_walk(3 * self.waitmax);
+
+	if ((random() <0.25) && ! (self.spawnflags & OGRE_SUPER)) // he (will) has a club - no pulling
+		ogre_pull1(); 
+	else
+		ogre_walk13();
+};
+
+// end weiden mod
+
+void() ogre_walk1	=[	$walk1,		ogre_walk2	] {ai_walk(3 * self.waitmax);};
+void() ogre_walk2	=[	$walk2,		ogre_walk3	] {ai_walk(2 * self.waitmax);};
 void() ogre_walk3	=[	$walk3,		ogre_walk4	] {
-ai_walk(2);
+ai_walk(2 * self.waitmax);
 if (random() < 0.2)
 	sound (self, CHAN_VOICE, "ogre/ogidle.wav", 1, ATTN_IDLE);
-self.nextthink = time + self.speed;
 };
-void() ogre_walk4	=[	$walk4,		ogre_walk5	] {ai_walk(2); self.nextthink = time + self.speed; };
-void() ogre_walk5	=[	$walk5,		ogre_walk6	] {ai_walk(2); self.nextthink = time + self.speed; };
-void() ogre_walk6	=[	$walk6,		ogre_walk7	] {
-ai_walk(5);
-if (random() < 0.1)
-	sound (self, CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE);
-self.nextthink = time + self.speed;
+void() ogre_walk4	=[	$walk4,		ogre_walk5	] {ai_walk(2 * self.waitmax);};
+void() ogre_walk5	=[	$walk5,		ogre_walk6	] {ai_walk(2 * self.waitmax);};
+void() ogre_walk6	=[	$walk6,		ogre_walk7	] 
+{
+	ai_walk(5 * self.waitmax);
+	if (random() < 0.1)
+	{
+		if (self.spawnflags & OGRE_SUPER)
+			sound (self, CHAN_VOICE, "ogre/ogidle.wav", 1, ATTN_IDLE);
+		else
+		sound (self, CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE);
+	}
 };
-void() ogre_walk7	=[	$walk7,		ogre_walk8	] {ai_walk(3); self.nextthink = time + self.speed; };
-void() ogre_walk8	=[	$walk8,		ogre_walk9	] {ai_walk(2); self.nextthink = time + self.speed; };
-void() ogre_walk9	=[	$walk9,		ogre_walk10	] {ai_walk(3); self.nextthink = time + self.speed; };
-void() ogre_walk10	=[	$walk10,	ogre_walk11	] {ai_walk(1); self.nextthink = time + self.speed; };
-void() ogre_walk11	=[	$walk11,	ogre_walk12	] {ai_walk(2); self.nextthink = time + self.speed; };
-void() ogre_walk12	=[	$walk12,	ogre_walk13	] {ai_walk(3); self.nextthink = time + self.speed; };
-void() ogre_walk13	=[	$walk13,	ogre_walk14	] {ai_walk(3); self.nextthink = time + self.speed; };
-void() ogre_walk14	=[	$walk14,	ogre_walk15	] {ai_walk(3); self.nextthink = time + self.speed; };
-void() ogre_walk15	=[	$walk15,	ogre_walk16	] {ai_walk(3); self.nextthink = time + self.speed; };
-void() ogre_walk16	=[	$walk16,	ogre_walk1	] {ai_walk(4); self.nextthink = time + self.speed; };
+void() ogre_walk7	=[	$walk7,		ogre_walk8	] {ai_walk(3 * self.waitmax);};
+void() ogre_walk8	=[	$walk8,		ogre_walk9	] {ai_walk(2 * self.waitmax);};
+void() ogre_walk9	=[	$walk9,		ogre_walk10	] {ai_walk(3 * self.waitmax);};
+void() ogre_walk10	=[	$walk10,	ogre_walk11	] {ai_walk(1 * self.waitmax);};
+void() ogre_walk11	=[	$walk11,	ogre_walk12	] {ai_walk(2 * self.waitmax);};
+//void() ogre_walk12	=[	$walk12,	ogre_walk13	] {ai_walk(3 * self.waitmax);};
+void() ogre_walk12	=[	$walk12,	ogre_check	] {ai_walk(3 * self.waitmax);};
+void() ogre_walk13	=[	$walk13,	ogre_walk14	] {ai_walk(3 * self.waitmax);};
+void() ogre_walk14	=[	$walk14,	ogre_walk15	] {ai_walk(3 * self.waitmax);};
+void() ogre_walk15	=[	$walk15,	ogre_walk16	] {ai_walk(3 * self.waitmax);};
+void() ogre_walk16	=[	$walk16,	ogre_walk1	] {ai_walk(4 * self.waitmax);};
 
-void() ogre_run1	=[	$run1,		ogre_run2	] {ai_run(9);
+
+void() ogre_run1	=[	$run1,		ogre_run2	] {ai_run(9 * self.waitmax);
 if (random() < 0.2)
 	sound (self, CHAN_VOICE, "ogre/ogidle2.wav", 1, ATTN_IDLE);
-self.nextthink = time + self.speed;
 };
-void() ogre_run2	=[	$run2,		ogre_run3	] {ai_run(12); self.nextthink = time + self.speed; };
-void() ogre_run3	=[	$run3,		ogre_run4	] {ai_run(8); self.nextthink = time + self.speed; };
-void() ogre_run4	=[	$run4,		ogre_run5	] {ai_run(22); self.nextthink = time + self.speed; };
-void() ogre_run5	=[	$run5,		ogre_run6	] {ai_run(16); self.nextthink = time + self.speed; };
-void() ogre_run6	=[	$run6,		ogre_run7	] {ai_run(4); self.nextthink = time + self.speed; };
-void() ogre_run7	=[	$run7,		ogre_run8	] {ai_run(13); self.nextthink = time + self.speed; };
-void() ogre_run8	=[	$run8,		ogre_run1	] {ai_run(24); self.nextthink = time + self.speed; };
+void() ogre_run2	=[	$run2,		ogre_run3	] {ai_run(12 * self.waitmax);};
+void() ogre_run3	=[	$run3,		ogre_run4	] {ai_run(8 * self.waitmax);};
+void() ogre_run4	=[	$run4,		ogre_run5	] {ai_run(22 * self.waitmax);};
+void() ogre_run5	=[	$run5,		ogre_run6	]
+{
+	ai_run(16 * self.waitmax);
 
-void() ogre_swing1	=[	$swing1,		ogre_swing2	] {ai_charge(11);
-sound (self, CHAN_WEAPON, "ogre/ogsawatk.wav", 1, ATTN_NORM);
-self.nextthink = time + self.speed;
+// super ogres get minions
+
+	if (self.wad == "SUPER")
+	if ((time & SV_CKTIME) == SV_CKTIME)
+	{
+		self.count = 0;
+		if (!self.spawnflags & OGRE_SUPER_MAD) self.count = cnt_ent(world, "owner",  "monster_ogre");
+		self.count = self.count + cnt_ent(world, "owner",  "monster_dog");
+		self.count = self.count + cnt_ent(world, "owner",  "monster_spider");
+		if (self.count < 4 + skill)
+		{
+			self.cnt = random();
+			if (self.cnt < 0.35) SummonMonster("monster_ogre");
+			else if (self.cnt < 0.5) SummonMonster("monster_dog");
+			else if (self.cnt < 0.6) SummonMonster("monster_spider");
+		}
+	}
 };
-void() ogre_swing2	=[	$swing2,		ogre_swing3	] {ai_charge(1); self.nextthink = time + self.speed; };
-void() ogre_swing3	=[	$swing3,		ogre_swing4	] {ai_charge(4); self.nextthink = time + self.speed; };
-void() ogre_swing4	=[	$swing4,		ogre_swing5	] {ai_charge(13); self.nextthink = time + self.speed; };
-void() ogre_swing5	=[	$swing5,		ogre_swing6	] {ai_charge(9); chainsaw(0);self.angles_y = self.angles_y + random()*25; self.nextthink = time + self.speed; };
-void() ogre_swing6	=[	$swing6,		ogre_swing7	] {chainsaw(200);self.angles_y = self.angles_y + random()* 25; self.nextthink = time + self.speed; };
-void() ogre_swing7	=[	$swing7,		ogre_swing8	] {chainsaw(0);self.angles_y = self.angles_y + random()* 25; self.nextthink = time + self.speed; };
-void() ogre_swing8	=[	$swing8,		ogre_swing9	] {chainsaw(0);self.angles_y = self.angles_y + random()* 25; self.nextthink = time + self.speed; };
-void() ogre_swing9	=[	$swing9,		ogre_swing10 ] {chainsaw(0);self.angles_y = self.angles_y + random()* 25; self.nextthink = time + self.speed; };
-void() ogre_swing10	=[	$swing10,		ogre_swing11 ] {chainsaw(-200);self.angles_y = self.angles_y + random()* 25; self.nextthink = time + self.speed; };
-void() ogre_swing11	=[	$swing11,		ogre_swing12 ] {chainsaw(0);self.angles_y = self.angles_y + random()* 25; self.nextthink = time + self.speed; };
-void() ogre_swing12	=[	$swing12,		ogre_swing13 ] {ai_charge(3); self.nextthink = time + self.speed; };
-void() ogre_swing13	=[	$swing13,		ogre_swing14 ] {ai_charge(8); self.nextthink = time + self.speed; };
-void() ogre_swing14	=[	$swing14,		ogre_run1	] {ai_charge(9);};
+void() ogre_run6	=[	$run6,		ogre_run7	] {ai_run(4 * self.waitmax);};
+void() ogre_run7	=[	$run7,		ogre_run8	] {ai_run(13 * self.waitmax);};
+void() ogre_run8	=[	$run8,		ogre_run1	] {ai_run(24 * self.waitmax);};
 
-void() ogre_smash1	=[	$smash1,		ogre_smash2	] {ai_charge(6);
-sound (self, CHAN_WEAPON, "ogre/ogsawatk.wav", 1, ATTN_NORM);
-self.nextthink = time + self.speed;
+void() ogre_swing1	=[	$swing1,		ogre_swing2	]
+{
+	ai_frame(self.walkframe);
+	ai_charge(11);
+	if (self.spawnflags & OGRE_SUPER)
+	{
+		if (random() < 0.5)
+			sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM); // 10.13.13
+		else
+			sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
+	}
+	else
+	sound (self, CHAN_WEAPON, "ogre/ogsawatk.wav", 1, ATTN_NORM);
 };
-void() ogre_smash2	=[	$smash2,		ogre_smash3	] {ai_charge(0); self.nextthink = time + self.speed; };
-void() ogre_smash3	=[	$smash3,		ogre_smash4	] {ai_charge(0); self.nextthink = time + self.speed; };
-void() ogre_smash4	=[	$smash4,		ogre_smash5	] {ai_charge(1); self.nextthink = time + self.speed; };
-void() ogre_smash5	=[	$smash5,		ogre_smash6	] {ai_charge(4); self.nextthink = time + self.speed; };
-void() ogre_smash6	=[	$smash6,		ogre_smash7	] {ai_charge(4); chainsaw(0); self.nextthink = time + self.speed; };
-void() ogre_smash7	=[	$smash7,		ogre_smash8	] {ai_charge(4); chainsaw(0); self.nextthink = time + self.speed; };
-void() ogre_smash8	=[	$smash8,		ogre_smash9	] {ai_charge(10); chainsaw(0); self.nextthink = time + self.speed; };
-void() ogre_smash9	=[	$smash9,		ogre_smash10 ] {ai_charge(13); chainsaw(0); self.nextthink = time + self.speed; };
-void() ogre_smash10	=[	$smash10,		ogre_smash11 ] {chainsaw(1); self.nextthink = time + self.speed; };
-void() ogre_smash11	=[	$smash11,		ogre_smash12 ] {ai_charge(2); chainsaw(0);
-self.nextthink = self.nextthink + random()*0.2; self.nextthink = time + self.speed; };	// slight variation
-void() ogre_smash12	=[	$smash12,		ogre_smash13 ] {ai_charge(0); self.nextthink = time + self.speed; }; // Cataboligne 9.17.3 - fixed this compiler warning
-void() ogre_smash13	=[	$smash13,		ogre_smash14 ] {ai_charge(4); self.nextthink = time + self.speed; };
-void() ogre_smash14	=[	$smash14,		ogre_run1	] {ai_charge(12);};
+void() ogre_swing2	=[	$swing2,		ogre_swing3	] {ai_frame(self.walkframe);ai_charge(1);};
+void() ogre_swing3	=[	$swing3,		ogre_swing4	] {ai_frame(self.walkframe);ai_charge(4);};
+void() ogre_swing4	=[	$swing4,		ogre_swing5	] {ai_frame(self.walkframe);ai_charge(13);};
+void() ogre_swing5	=[	$swing5,		ogre_swing6	] {ai_frame(self.walkframe);ai_charge(9); chainsaw(0);self.angles_y = self.angles_y + random()*25;};
+void() ogre_swing6	=[	$swing6,		ogre_swing7	] {ai_frame(self.walkframe);chainsaw(200);self.angles_y = self.angles_y + random()* 25;};
+void() ogre_swing7	=[	$swing7,		ogre_swing8	] {ai_frame(self.walkframe);chainsaw(0);self.angles_y = self.angles_y + random()* 25;};
+void() ogre_swing8	=[	$swing8,		ogre_swing9	] {ai_frame(self.walkframe);chainsaw(0);self.angles_y = self.angles_y + random()* 25;};
+void() ogre_swing9	=[	$swing9,		ogre_swing10 ] {ai_frame(self.walkframe);chainsaw(0);self.angles_y = self.angles_y + random()* 25;};
+void() ogre_swing10	=[	$swing10,		ogre_swing11 ] {ai_frame(self.walkframe);chainsaw(-200);self.angles_y = self.angles_y + random()* 25;};
+void() ogre_swing11	=[	$swing11,		ogre_swing12 ] {ai_frame(self.walkframe);chainsaw(0);self.angles_y = self.angles_y + random()* 25;};
+void() ogre_swing12	=[	$swing12,		ogre_swing13 ] {ai_frame(self.walkframe);ai_charge(3);};
+void() ogre_swing13	=[	$swing13,		ogre_swing14 ] {ai_frame(self.walkframe);ai_charge(8);};
+void() ogre_swing14	=[	$swing14,		ogre_run1	] {ai_frame(self.walkframe);ai_charge(9);};
 
-void() ogre_nail1	=[	$shoot1,		ogre_nail2	] {ai_face(); self.nextthink = time + self.speed; };
-void() ogre_nail2	=[	$shoot2,		ogre_nail3	] {ai_face(); self.nextthink = time + self.speed; };
-void() ogre_nail3	=[	$shoot2,		ogre_nail4	] {ai_face(); self.nextthink = time + self.speed; };
-void() ogre_nail4	=[	$shoot3,		ogre_nail5	] {ai_face();OgreFireGrenade(); self.nextthink = time + self.speed; };
-void() ogre_nail5	=[	$shoot4,		ogre_nail6	] {ai_face(); self.nextthink = time + self.speed; };
-void() ogre_nail6	=[	$shoot5,		ogre_nail7	] {ai_face(); self.nextthink = time + self.speed; };
-void() ogre_nail7	=[	$shoot6,		ogre_run1	] {ai_face();};
+void() ogre_smash1	=[	$smash1,		ogre_smash2	]
+{
+	ai_frame(self.walkframe);
+	ai_charge(6);
+	if (self.spawnflags & OGRE_SUPER)
+		sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
+	else
+	sound (self, CHAN_WEAPON, "ogre/ogsawatk.wav", 1, ATTN_NORM);
+};
+void() ogre_smash2	=[	$smash2,		ogre_smash3	] {ai_frame(self.walkframe);ai_charge(0);};
+void() ogre_smash3	=[	$smash3,		ogre_smash4	] {ai_frame(self.walkframe);ai_charge(0);};
+void() ogre_smash4	=[	$smash4,		ogre_smash5	] {ai_frame(self.walkframe);ai_charge(1);};
+void() ogre_smash5	=[	$smash5,		ogre_smash6	] {ai_frame(self.walkframe);ai_charge(4);};
+void() ogre_smash6	=[	$smash6,		ogre_smash7	] {ai_frame(self.walkframe);ai_charge(4); chainsaw(0);};
+void() ogre_smash7	=[	$smash7,		ogre_smash8	] {ai_frame(self.walkframe);ai_charge(4); chainsaw(0);};
+void() ogre_smash8	=[	$smash8,		ogre_smash9	] {ai_frame(self.walkframe);ai_charge(10); chainsaw(0);};
+void() ogre_smash9	=[	$smash9,		ogre_smash10 ] {ai_frame(self.walkframe);ai_charge(13); chainsaw(0);};
+void() ogre_smash10	=[	$smash10,		ogre_smash11 ] {ai_frame(self.walkframe);chainsaw(1);};
+void() ogre_smash11	=[	$smash11,		ogre_smash12 ] {ai_frame(self.walkframe);ai_charge(2); chainsaw(0);
+self.nextthink = self.nextthink + random()*0.2;};	// slight variation
+void() ogre_smash12	=[	$smash12,		ogre_smash13 ] {ai_frame(self.walkframe);ai_charge(0);}; // Cataboligne 9.17.3 - fixed this compiler warning
+void() ogre_smash13	=[	$smash13,		ogre_smash14 ] {ai_frame(self.walkframe);ai_charge(4);};
+void() ogre_smash14	=[	$smash14,		ogre_run1	] {ai_frame(self.walkframe);ai_charge(12);};
 
-void()	ogre_pain1	=[	$pain1,		ogre_pain2	] {};
-void()	ogre_pain2	=[	$pain2,		ogre_pain3	] {};
-void()	ogre_pain3	=[	$pain3,		ogre_pain4	] {};
-void()	ogre_pain4	=[	$pain4,		ogre_pain5	] {};
-void()	ogre_pain5	=[	$pain5,		ogre_run1	] {};
+void() ogre_nail1	=[	$shoot1,		ogre_nail2	] {ai_frame(self.walkframe);ai_face();};
+void() ogre_nail2	=[	$shoot2,		ogre_nail3	] {ai_frame(self.walkframe);ai_face();};
+void() ogre_nail3	=[	$shoot2,		ogre_nail4	] {ai_frame(self.walkframe);ai_face();};
+void() ogre_nail4	=[	$shoot3,		ogre_nail5	] {ai_frame(self.walkframe);ai_face();OgreFireGrenade();};
+void() ogre_nail5	=[	$shoot4,		ogre_nail6	] {ai_frame(self.walkframe);ai_face();};
+void() ogre_nail6	=[	$shoot5,		ogre_nail7	] {ai_frame(self.walkframe);ai_face();};
+void() ogre_nail7	=[	$shoot6,		ogre_run1	] {ai_frame(self.walkframe);ai_face();};
+
+void()	ogre_pain1	=[	$pain1,		ogre_pain2	] {ai_frame(self.walkframe);};
+void()	ogre_pain2	=[	$pain2,		ogre_pain3	] {ai_frame(self.walkframe);};
+void()	ogre_pain3	=[	$pain3,		ogre_pain4	] {ai_frame(self.walkframe);};
+void()	ogre_pain4	=[	$pain4,		ogre_pain5	] {ai_frame(self.walkframe);};
+void()	ogre_pain5	=[	$pain5,		ogre_run1	] {ai_frame(self.walkframe);};
 
 
-void()	ogre_painb1	=[	$painb1,	ogre_painb2	] {};
-void()	ogre_painb2	=[	$painb2,	ogre_painb3	] {};
-void()	ogre_painb3	=[	$painb3,	ogre_run1	] {};
+void()	ogre_painb1	=[	$painb1,	ogre_painb2	] {ai_frame(self.walkframe);};
+void()	ogre_painb2	=[	$painb2,	ogre_painb3	] {ai_frame(self.walkframe);};
+void()	ogre_painb3	=[	$painb3,	ogre_run1	] {ai_frame(self.walkframe);};
 
 
-void()	ogre_painc1	=[	$painc1,	ogre_painc2	] {};
-void()	ogre_painc2	=[	$painc2,	ogre_painc3	] {};
-void()	ogre_painc3	=[	$painc3,	ogre_painc4	] {};
-void()	ogre_painc4	=[	$painc4,	ogre_painc5	] {};
-void()	ogre_painc5	=[	$painc5,	ogre_painc6	] {};
-void()	ogre_painc6	=[	$painc6,	ogre_run1	] {};
+void()	ogre_painc1	=[	$painc1,	ogre_painc2	] {ai_frame(self.walkframe);};
+void()	ogre_painc2	=[	$painc2,	ogre_painc3	] {ai_frame(self.walkframe);};
+void()	ogre_painc3	=[	$painc3,	ogre_painc4	] {ai_frame(self.walkframe);};
+void()	ogre_painc4	=[	$painc4,	ogre_painc5	] {ai_frame(self.walkframe);};
+void()	ogre_painc5	=[	$painc5,	ogre_painc6	] {ai_frame(self.walkframe);};
+void()	ogre_painc6	=[	$painc6,	ogre_run1	] {ai_frame(self.walkframe);};
 
 
-void()	ogre_paind1	=[	$paind1,	ogre_paind2	] {};
+void()	ogre_paind1	=[	$paind1,	ogre_paind2	] {ai_frame(self.walkframe);};
 void()	ogre_paind2	=[	$paind2,	ogre_paind3	] {ai_pain(10);};
 void()	ogre_paind3	=[	$paind3,	ogre_paind4	] {ai_pain(9);};
 void()	ogre_paind4	=[	$paind4,	ogre_paind5	] {ai_pain(4);};
-void()	ogre_paind5	=[	$paind5,	ogre_paind6	] {};
-void()	ogre_paind6	=[	$paind6,	ogre_paind7	] {};
-void()	ogre_paind7	=[	$paind7,	ogre_paind8	] {};
-void()	ogre_paind8	=[	$paind8,	ogre_paind9	] {};
-void()	ogre_paind9	=[	$paind9,	ogre_paind10	] {};
-void()	ogre_paind10=[	$paind10,	ogre_paind11	] {};
-void()	ogre_paind11=[	$paind11,	ogre_paind12	] {};
-void()	ogre_paind12=[	$paind12,	ogre_paind13	] {};
-void()	ogre_paind13=[	$paind13,	ogre_paind14	] {};
-void()	ogre_paind14=[	$paind14,	ogre_paind15	] {};
-void()	ogre_paind15=[	$paind15,	ogre_paind16	] {};
-void()	ogre_paind16=[	$paind16,	ogre_run1	] {};
+void()	ogre_paind5	=[	$paind5,	ogre_paind6	] {ai_frame(self.walkframe);};
+void()	ogre_paind6	=[	$paind6,	ogre_paind7	] {ai_frame(self.walkframe);};
+void()	ogre_paind7	=[	$paind7,	ogre_paind8	] {ai_frame(self.walkframe);};
+void()	ogre_paind8	=[	$paind8,	ogre_paind9	] {ai_frame(self.walkframe);};
+void()	ogre_paind9	=[	$paind9,	ogre_paind10	] {ai_frame(self.walkframe);};
+void()	ogre_paind10=[	$paind10,	ogre_paind11	] {ai_frame(self.walkframe);};
+void()	ogre_paind11=[	$paind11,	ogre_paind12	] {ai_frame(self.walkframe);};
+void()	ogre_paind12=[	$paind12,	ogre_paind13	] {ai_frame(self.walkframe);};
+void()	ogre_paind13=[	$paind13,	ogre_paind14	] {ai_frame(self.walkframe);};
+void()	ogre_paind14=[	$paind14,	ogre_paind15	] {ai_frame(self.walkframe);};
+void()	ogre_paind15=[	$paind15,	ogre_paind16	] {ai_frame(self.walkframe);};
+void()	ogre_paind16=[	$paind16,	ogre_run1	] {ai_frame(self.walkframe);};
 
-void()	ogre_paine1	=[	$paine1,	ogre_paine2	] {};
+void()	ogre_paine1	=[	$paine1,	ogre_paine2	] {ai_frame(self.walkframe);};
 void()	ogre_paine2	=[	$paine2,	ogre_paine3	] {ai_pain(10);};
 void()	ogre_paine3	=[	$paine3,	ogre_paine4	] {ai_pain(9);};
 void()	ogre_paine4	=[	$paine4,	ogre_paine5	] {ai_pain(4);};
-void()	ogre_paine5	=[	$paine5,	ogre_paine6	] {};
-void()	ogre_paine6	=[	$paine6,	ogre_paine7	] {};
-void()	ogre_paine7	=[	$paine7,	ogre_paine8	] {};
-void()	ogre_paine8	=[	$paine8,	ogre_paine9	] {};
-void()	ogre_paine9	=[	$paine9,	ogre_paine10	] {};
-void()	ogre_paine10=[	$paine10,	ogre_paine11	] {};
-void()	ogre_paine11=[	$paine11,	ogre_paine12	] {};
-void()	ogre_paine12=[	$paine12,	ogre_paine13	] {};
-void()	ogre_paine13=[	$paine13,	ogre_paine14	] {};
-void()	ogre_paine14=[	$paine14,	ogre_paine15	] {};
-void()	ogre_paine15=[	$paine15,	ogre_run1	] {};
+void()	ogre_paine5	=[	$paine5,	ogre_paine6	] {ai_frame(self.walkframe);};
+void()	ogre_paine6	=[	$paine6,	ogre_paine7	] {ai_frame(self.walkframe);};
+void()	ogre_paine7	=[	$paine7,	ogre_paine8	] {ai_frame(self.walkframe);};
+void()	ogre_paine8	=[	$paine8,	ogre_paine9	] {ai_frame(self.walkframe);};
+void()	ogre_paine9	=[	$paine9,	ogre_paine10	] {ai_frame(self.walkframe);};
+void()	ogre_paine10=[	$paine10,	ogre_paine11	] {ai_frame(self.walkframe);};
+void()	ogre_paine11=[	$paine11,	ogre_paine12	] {ai_frame(self.walkframe);};
+void()	ogre_paine12=[	$paine12,	ogre_paine13	] {ai_frame(self.walkframe);};
+void()	ogre_paine13=[	$paine13,	ogre_paine14	] {ai_frame(self.walkframe);};
+void()	ogre_paine14=[	$paine14,	ogre_paine15	] {ai_frame(self.walkframe);};
+void()	ogre_paine15=[	$paine15,	ogre_run1	] {ai_frame(self.walkframe);};
 
 
-void(entity attacker, float damage)	ogre_pain =
+void()	ogre_die1	=[	$death1,	ogre_die2	] {ai_frame(self.walkframe);};
+void()	ogre_die2	=[	$death2,	ogre_die3	] {ai_frame(self.walkframe);};
+void()	ogre_die3	=[	$death3,	ogre_die4	]
 {
-	local float	r, tm;
+	ai_frame(self.walkframe);
+	self.solid = SOLID_NOT;
+//		if (self.spawnflags & OGRE_BOSS)
+//			self.ammo_multi_rockets = 2;
+//		else
+	if (! self.spawnflags & OGRE_SUPER)
+//		self.ammo_rockets = 6 + random() * 4;
+//else
+	{
+		self.ammo_rockets = 2;
+		DropBackpack();
+	}
+};
+void()	ogre_die4	=[	$death4,	ogre_die5	] {ai_frame(self.walkframe);};
+void()	ogre_die5	=[	$death5,	ogre_die6	] {ai_frame(self.walkframe);};
+void()	ogre_die6	=[	$death6,	ogre_die7	] {ai_frame(self.walkframe);};
+void()	ogre_die7	=[	$death7,	ogre_die8	] {ai_frame(self.walkframe);};
+void()	ogre_die8	=[	$death8,	ogre_die9	] {ai_frame(self.walkframe);};
+void()	ogre_die9	=[	$death9,	ogre_die10	] {ai_frame(self.walkframe);};
+void()	ogre_die10	=[	$death10,	ogre_die11	] {ai_frame(self.walkframe);};
+void()	ogre_die11	=[	$death11,	ogre_die12	] {ai_frame(self.walkframe);};
+void()	ogre_die12	=[	$death12,	ogre_die13	] {ai_frame(self.walkframe);};
+void()	ogre_die13	=[	$death13,	ogre_die14	] {ai_frame(self.walkframe);};
+void()	ogre_die14	=[	$death14,	ogre_die14	] {ai_frame(self.walkframe);};
 
-	tm = 1;
+void()	ogre_bdie1	=[	$bdeath1,	ogre_bdie2	] {ai_frame(self.walkframe);};
+void()	ogre_bdie2	=[	$bdeath2,	ogre_bdie3	] {ai_forward(5 * self.waitmax);};
+void()	ogre_bdie3	=[	$bdeath3,	ogre_bdie4	]
+{
+		self.solid = SOLID_NOT;
+//		if (self.spawnflags & OGRE_BOSS)
+//			self.ammo_multi_rockets = 2;
+//		else
+	if (! self.spawnflags & OGRE_SUPER)
+//		self.ammo_rockets = 6 + random() * 4;
+//else
+	{
+		self.ammo_rockets = 2;
+		DropBackpack();
+	}
+};
+void()	ogre_bdie4	=[	$bdeath4,	ogre_bdie5	] {ai_forward(1 * self.waitmax);};
+void()	ogre_bdie5	=[	$bdeath5,	ogre_bdie6	] {ai_forward(3 * self.waitmax);};
+void()	ogre_bdie6	=[	$bdeath6,	ogre_bdie7	] {ai_forward(7 * self.waitmax);};
+void()	ogre_bdie7	=[	$bdeath7,	ogre_bdie8	] {ai_forward(25);};
+void()	ogre_bdie8	=[	$bdeath8,	ogre_bdie9	] {ai_frame(self.walkframe);};
+void()	ogre_bdie9	=[	$bdeath9,	ogre_bdie10	] {ai_frame(self.walkframe);};
+void()	ogre_bdie10	=[	$bdeath10,	ogre_bdie10	] {ai_frame(self.walkframe);};
+
+
+//=======================================================
+
+// extra mad - these frames are diff in model, so we knead this
+
+void()	ogre_soemdie1	=[	$soemdeath1,	ogre_soemdie2	] {};
+void()	ogre_soemdie2	=[	$soemdeath2,	ogre_soemdie3	] {};
+void()	ogre_soemdie3	=[	$soemdeath3,	ogre_soemdie4	]
+	{
+		self.solid = SOLID_NOT;
+	};
+void()	ogre_soemdie4	=[	$soemdeath4,	ogre_soemdie5	] {};
+void()	ogre_soemdie5	=[	$soemdeath5,	ogre_soemdie6	] {};
+void()	ogre_soemdie6	=[	$soemdeath6,	ogre_soemdie7	] {};
+void()	ogre_soemdie7	=[	$soemdeath7,	ogre_soemdie8	] {};
+void()	ogre_soemdie8	=[	$soemdeath8,	ogre_soemdie9	] {};
+void()	ogre_soemdie9	=[	$soemdeath9,	ogre_soemdie10	] {};
+void()	ogre_soemdie10	=[	$soemdeath10,	ogre_soemdie11	] {};
+void()	ogre_soemdie11	=[	$soemdeath11,	ogre_soemdie12	] {};
+void()	ogre_soemdie12	=[	$soemdeath12,	ogre_soemdie13	] {};
+void()	ogre_soemdie13	=[	$soemdeath13,	ogre_soemdie14	] {};
+void()	ogre_soemdie14	=[	$soemdeath14,	ogre_soemdie14	] {};
+
+
+//=======================================================
+
+//void(entity attacker, float damage)	ogre_pain =
+void()	ogre_pain =
+{
+	local float	r;
+
 // don't make multiple pain sounds right after each other
 	if (self.pain_finished > time)
 		return;
 
 	sound (self, CHAN_VOICE, "ogre/ogpain1.wav", 1, ATTN_NORM);
 
-	if (self.speed && (random() < 0.5)) tm = (self.speed / 0.1);
-
 	r = random();
+
+	self.cnt = 1;
+
+	if (self.spawnflags & OGRE_SUPER)
+	{
+// check to see if super ogre gets EXTRA mad
+		if (!self.spawnflags & OGRE_SUPER_MAD)
+		{
+			if (self.health < 250)
+			if (random() < 0.5)
+				self.spawnflags = self.spawnflags | OGRE_SUPER_MAD;
+
+			if (self.health < 50)
+				self.spawnflags = self.spawnflags | OGRE_SUPER_MAD;
+
+// just like the hulk - super ogre gets bigger & a health boost when going to extra mad
+			if (self.spawnflags & OGRE_SUPER_MAD)
+			{
+				self.waitmax = 2.25; // multiplier in this case
+				self.walkframe = $soemsstand1;
+				self.wad = "SUPER_XMAD";
+				if ((random() < 0.25) || (self.health < 20))
+					self.health = 800 + (200 * random()) + (200 * random());
+				else
+					self.health = self.health + 200 + (100 * random());
+				self.max_health = self.health;
+
+				self.th_missile = ogre_smash1; // XMAD ogre has forgotten grenades, maybe he could throw boulders
+//				self.th_run(); // set new frames
+			}
+		}
+// could make this one dangerous brute
+		else
+		if (random() < 0.4) // super_ogre_emheal_chn)
+			self.health = self.health + (80 * random()); // super_ogre_emheal
+
+		if (self.speed > mon_superspeedup_max)
+		if (random() < mon_superspeed_chn)
+		{
+			self.speed  = self.speed - mon_superspeed_fact;
+			if (self.speed < mon_superspeedup_max) self.speed = mon_superspeedup_max;
+		}
+
+		self.cnt = 2;
+		self.pain_finished = time + 1.5; // set a default
+
+		if (self.spawnflags & OGRE_SUPER_MAD) return; // SOEM - no pain frames in model
+
+		if (r > 0.75) return;
+
+	}
+
 
 	if (r < 0.25)
 	{
 		ogre_pain1 ();
-		self.pain_finished = time + tm;
+		self.pain_finished = time + self.cnt;
 	}
 	else if (r < 0.5)
 	{
 		ogre_painb1 ();
-		self.pain_finished = time + tm;
+		self.pain_finished = time + self.cnt;
 	}
 	else if (r < 0.75)
 	{
 		ogre_painc1 ();
-		self.pain_finished = time + tm;
+		self.pain_finished = time + self.cnt;
 	}
 	else if (r < 0.88)
 	{
 		ogre_paind1 ();
-		self.pain_finished = time + (tm * 2);
+		self.pain_finished = time + self.cnt + 1;
 	}
 	else
 	{
 		ogre_paine1 ();
-		self.pain_finished = time + (tm * 2);
+		self.pain_finished = time + self.cnt + 1;
 	}
 };
 
-void()	ogre_die1	=[	$death1,	ogre_die2	] {};
-void()	ogre_die2	=[	$death2,	ogre_die3	] {};
-void()	ogre_die3	=[	$death3,	ogre_die4	]
-{self.solid = SOLID_NOT;
-self.ammo_rockets = 2;DropBackpack();};
-void()	ogre_die4	=[	$death4,	ogre_die5	] {};
-void()	ogre_die5	=[	$death5,	ogre_die6	] {};
-void()	ogre_die6	=[	$death6,	ogre_die7	] {};
-void()	ogre_die7	=[	$death7,	ogre_die8	] {};
-void()	ogre_die8	=[	$death8,	ogre_die9	] {};
-void()	ogre_die9	=[	$death9,	ogre_die10	] {};
-void()	ogre_die10	=[	$death10,	ogre_die11	] {};
-void()	ogre_die11	=[	$death11,	ogre_die12	] {};
-void()	ogre_die12	=[	$death12,	ogre_die13	] {};
-void()	ogre_die13	=[	$death13,	ogre_die14	] {};
-void()	ogre_die14	=[	$death14,	ogre_die14	] {};
-
-void()	ogre_bdie1	=[	$bdeath1,	ogre_bdie2	] {};
-void()	ogre_bdie2	=[	$bdeath2,	ogre_bdie3	] {ai_forward(5);};
-void()	ogre_bdie3	=[	$bdeath3,	ogre_bdie4	]
-{self.solid = SOLID_NOT;
-self.ammo_rockets = 2;DropBackpack();};
-void()	ogre_bdie4	=[	$bdeath4,	ogre_bdie5	] {ai_forward(1);};
-void()	ogre_bdie5	=[	$bdeath5,	ogre_bdie6	] {ai_forward(3);};
-void()	ogre_bdie6	=[	$bdeath6,	ogre_bdie7	] {ai_forward(7);};
-void()	ogre_bdie7	=[	$bdeath7,	ogre_bdie8	] {ai_forward(25);};
-void()	ogre_bdie8	=[	$bdeath8,	ogre_bdie9	] {};
-void()	ogre_bdie9	=[	$bdeath9,	ogre_bdie10	] {};
-void()	ogre_bdie10	=[	$bdeath10,	ogre_bdie10	] {};
 
 void() ogre_die =
 {
+	self.dmg = -80;
+	if (self.spawnflags & OGRE_SUPER) self.dmg = -300;
+
 // check for gib
-	if (self.health < -80)
+	if (self.health < self.dmg)
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 		ThrowHead ("progs/h_ogre.mdl", self.health);
+		if (self.spawnflags & OGRE_SUPER) self.scale = 1.4;
 		ThrowGib ("progs/gib3.mdl", self.health);
 		ThrowGib ("progs/gib3.mdl", self.health);
 		ThrowGib ("progs/gib3.mdl", self.health);
@@ -405,6 +708,8 @@ void() ogre_die =
 
 	sound (self, CHAN_VOICE, "ogre/ogdth.wav", 1, ATTN_NORM);
 
+	if (self.spawnflags & OGRE_SUPER_MAD) // special death frame
+		ogre_soemdie1();
 	if (random() < 0.5)
 		ogre_die1 ();
 	else
@@ -420,23 +725,27 @@ void() ogre_melee =
 };
 
 
-/*QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush
+/*QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush Boss Normal Super
+The Ogre
 
 --------  CAT  -------
 "netname" - fast = fast ogre, slow = slow ogre
 "speed" - 0.1 normal, 0.05 fast, 0.2 slow
+Super: mega ogre
 
+-------- ROGU --------
+Boss: use the modified skin and fire multigrenades.
+Normal: use the original skin and fire normal grenades.
 */
 void(float ign) monster_ogre =
 {
-local float fst, slw;
 
-if (ign != A_MONSTER)
+if (ign != A_MONSTER) // map monster has no ign
 {
 	if (M_MONSTER < 0)
 	{
 		self.think = remove_monster;
-		self.nextthink = time + 2 + random() * 2;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	
@@ -449,13 +758,14 @@ if (ign != A_MONSTER)
 	}
 
 // make some more random ogres according to server rules - only for map spawned ogres, wont happen with random monsters
+//	local float fst, slw;
 	if (R_FAST_MONSTER & CB_M_OGRE)
 	if (random() < C_FS_MONSTER)
-		fst = TRUE;
-
+		speed_monster(CFAST, "monster_ogre", self.origin);
+		
 	if (R_SLOW_MONSTER & CB_M_OGRE)
 	if (random() < C_FS_MONSTER)
-		slw = TRUE;
+		speed_monster(CSLOW, "monster_ogre", self.origin);
 
 	precache_model ("progs/ogre.mdl");
 	precache_model ("progs/h_ogre.mdl");
@@ -468,56 +778,90 @@ if (ign != A_MONSTER)
 	precache_sound ("ogre/ogpain1.wav");
 	precache_sound ("ogre/ogsawatk.wav");
 	precache_sound ("ogre/ogwake.wav");
+
+// super ogre / xtra mad
+	precache_sound ("knight/sword1.wav"); // swings
+	precache_sound ("knight/sword2.wav");
+	precache_sound ("zombie/z_hit.wav"); // hit flesh
+//	precache_sound ("tank/thud.wav"); // hit world - not yet, ogre code doesnt detect world hit
 }
 
 
 // Cataboligne - 11.14.12 - fast / slow code
-	if (self.speed <= 0) self.speed = 0.1;
+	if (self.speed <= 0) self.speed = MON_NORM;
+	self.lip = 1; // local speed divisor
 // map specced
-	if (self.netname == "fast") self.speed = 0.05;
-	else if (self.netname == "slow") self.speed = 0.2;
+	if (self.netname == CFAST) self.speed = MON_FAST;
+	else if (self.netname == CSLOW) self.speed = MON_SLOW;
 
-// server controls set all ogres fast or slow if not specced
-	else if (FAST_MONSTER & CB_M_OGRE) self.speed = 0.05;
-	else if (SLOW_MONSTER & CB_M_OGRE) self.speed = 0.2;
+// server controls set all ogres fast or slow if not specced - this includes random monsters
+	else if (FAST_MONSTER & CB_M_OGRE) self.speed = MON_FAST;
+	else if (SLOW_MONSTER & CB_M_OGRE) self.speed = MON_SLOW;
 
 	self.netname = "Ogre";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
+	self.waitmax = 1; // multiplier in this case
+	self.th_missile = ogre_nail1;
 
 	setmodel (self, "progs/ogre.mdl");
 
+// rogue - multi ogre
+// none specified - choose random. 25% boss on normal, hard, bloodbath
+	if (rogue_map(world.model) || (ign == A_MONSTER))
+	if (self.spawnflags <= 1)
+	{
+		if (cvar("skill") > 0)
+		{
+			if ( random() <= 0.25 )
+			{
+				self.spawnflags = self.spawnflags | OGRE_BAWSE;
+			}
+		}
+	}
+
+#ifdef enhanced
+//	if (ENHANCED)
+	if (ign == A_MONSTER)
+	if (!self.spawnflags & OGRE_NORMAL)
+	if (random() < 0.1) // super_ogre_chance)
+		self.spawnflags = self.spawnflags | OGRE_SUPER;
+#endifdef
+
+	if (self.spawnflags & OGRE_BAWSE)
+	{
+		self.skin = 1;
+		self.wad = "MEGA";
+	}
+
 	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
-	self.health = 200;
+
+	if (self.spawnflags & OGRE_SUPER)
+	{
+		self.health = 400 + (100 * random()) + (100 * random());
+
+		self.wad = "SUPER";
+		self.th_missile = ogre_melee; // SUPER has no grenades
+		self.walkframe = $sostand1;
+		self.waitmax = 2; // multiplier in this case
+	}
+	else
+	{
+		self.health = 200;
+	}
 
 	self.th_stand = ogre_stand1;
 	self.th_walk = ogre_walk1;
 	self.th_run = ogre_run1;
 	self.th_die = ogre_die;
 	self.th_melee = ogre_melee;
-	self.th_missile = ogre_nail1;
 	self.th_pain = ogre_pain;
 
 	walkmonster_start();
 
-// Cataboligne - 11.14.12 - fast / slow code
-
-	if (fst)
-	{
-		self = spawn();
-		self.netname = "fast";
-		monster_ogre(A_MONSTER); // FIX: use item call? - incr count, wake up
-		random_monster_location(); // note: these could be anywhere
-	}
-
-	if (slw)
-	{
-		self = spawn();
-		self.netname = "slow";
-		monster_ogre(A_MONSTER);
-		random_monster_location();
-	}
+//	if (fst || slw) fast_slow_monster(fst, slw, "monster_ogre", self.origin);
 };
 
 void(float ign) monster_ogre_marksman =

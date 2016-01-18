@@ -22,6 +22,17 @@ $frame stand1
 $frame run1 run2 run3 run4 run5 run6 run7 run8
 $frame runatt1 runatt2 runatt3 runatt4 runatt5 runatt6 runatt7 runatt8
 
+// young grow "up" now - after a certain time passes they get bigger
+// the final stage - Aliens!
+
+$frame mdstand1
+$frame mdrun1 mdrun2 mdrun3 mdrun4 mdrun5 mdrun6 mdrun7 mdrun8
+$frame mdrunatt1 mdrunatt2 mdrunatt3 mdrunatt4 mdrunatt5 mdrunatt6 mdrunatt7 mdrunatt8
+
+$frame lgstand1
+$frame lgrun1 lgrun2 lgrun3 lgrun4 lgrun5 lgrun6 lgrun7 lgrun8
+$frame lgrunatt1 lgrunatt2 lgrunatt3 lgrunatt4 lgrunatt5 lgrunatt6 lgrunatt7 lgrunatt8
+
 //============================================================================
 
 // hrm - this should be genericed in watermove dealy
@@ -181,7 +192,8 @@ if (ign != A_MONSTER)
 {
 	if (M_MONSTER < 0)
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	

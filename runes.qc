@@ -282,12 +282,28 @@ void() mk_rune_set =
 };
 
 
+// pull a rune forcefully from player
+
+float HARP_PULL				= 0.15; // % chance harpoon poink gets a rune from a player - IDEA: seperate chance to drop a rune whilst being pulled ?
+float HORN_PULL				= 0.08; // % chance air horn will blow a rune off a player
+float FALL_PULL				= 0.1;  // % chance a damaging fall will pull a rune loose
+float GRAV_PULL				= 0.5;  // % chance a gravity well will pull a rune loose - mostly depends on player being caught on something and in range of pull
+float SGRAV_PULL				= 0.8;  // % chance a super gravity well / reality bomb will pull a rune loose
+
+float RUNE_PULL; // if true tells print code rune is being pulled and not to print drop messages
+
+// TDO: harp can grab ejected rune - will be in newmis if exists
+// TDO: level 3 rules that have incremental - will not pull a whole rune, but a series of increments
 
 // drop a single rune - in bit order 1 - 2 - 4 - 8 - 16 - 32 - 64 - 131072 - 262144 - 524288 - 1048576
 
 void(entity e) rune_drop =
 {
-	local float f, k;
+	local float f, k, rp;
+	local string ms;
+
+	rp = RUNE_PULL;
+	RUNE_PULL = FALSE; // always clear
 
 	if (RUNES < 2) return;
 
@@ -306,11 +322,13 @@ void(entity e) rune_drop =
 
 	if (k & RUNE_MASK) // drop a rune - wont drop if it was disabled by admin
 	{
-		if (force_drop_set(e, "Rune drop failure - clear menus and try again\n")) return;
+		if (!rp) ms = "Rune drop failure - clear menus and try again\n";
+		if (force_drop_set(e, ms)) return;
 		drop_setup(e, 0);
 
 		if (e.dropent.dmg != k) // should be this rune bit - idea: more validation
 		{
+			if (!rp)
 			sprint(e, "Rune drop failure - oh no\n");
 			remove(e.dropent);
 			e.dropent = world;
@@ -319,6 +337,9 @@ void(entity e) rune_drop =
 		drop_inventory(1, e, anti_bounce); // must have anti bounce  here - rune could have been ejected manually with impulse
 		if (e.dropent.map)
 		{
+			if (rp)
+				sprint(e," You \bLOST\b: ");
+			else
 			sprint(e," You dropped: ");
 			sprint(e, e.dropent.map);
 			sprint(e,"\n");

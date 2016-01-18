@@ -199,10 +199,10 @@ void()	bossman_die13	=[	$death13,	bossman_die13	] {};
 void() bossman_die =
 {
 // check for gib
-	if (self.health < -40)
+	if (self.health < -100)
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
-		ThrowHead ("progs/h_hellkn.mdl", self.health);
+		ThrowHead ("progs/h_bossman.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib2.mdl", self.health);
 		ThrowGib ("progs/gib3.mdl", self.health);
@@ -298,7 +298,8 @@ if (ign != A_MONSTER)
 {
 	if (M_MONSTER < 0)
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	

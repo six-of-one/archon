@@ -154,8 +154,14 @@ float(entity targ) range;
 
 void(float d) ai_charge =
 {
+	local float ddist;
+	ddist = d;
+
+	if (self.lip <= 0) self.lip = 1; // local speed divisor
+	if (self.speed) ddist = d * ((0.1 / self.speed) / self.lip) / MON_SPEED_DIV;
+
 	ai_face ();	
-	movetogoal (d);		// done in C code...
+	movetogoal (ddist);		// done in C code...
 };
 
 void() ai_charge_side =

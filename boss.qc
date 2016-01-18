@@ -200,6 +200,7 @@ void(vector p) boss_missile =
 
 	if (self.enemy.mask_x & CB_CTHON) // dont attack soc
 	{
+		if (self.model == "progs/boss.mdl") // because super tarbaby calls this
 		boss_idle1 ();
 		return;
 	}
@@ -233,6 +234,7 @@ void(vector p) boss_missile =
 	sound (self, CHAN_WEAPON, "boss1/throw.wav", 1, ATTN_NORM);
 
 // check for dead enemy
+	if (self.model == "progs/boss.mdl") // because super tarbaby calls this
 	if (self.enemy.health <= 0)
 		boss_idle1 ();
 };
@@ -271,11 +273,18 @@ void(float ign) monster_boss =
 {
 if (ign != A_MONSTER)
 {
+	if (M_MONSTER < 0)
+	{
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD); // make this happen after all  map spawn stuff is done
+		return;
+	}
+
 	if (!M_MONSTER & CB_M_CTHON)
 	if (deathmatch)
 	{
 		if (R_MONSTER)
-		remove(self);
+			remove(self);
 		return;
 	}
 
@@ -292,7 +301,8 @@ if (ign != A_MONSTER)
 }
 	self.netname = "Cthon";
 
-	total_monsters = total_monsters + 1;
+	total_monsters = total_monsters + 1; // doesnt use *monster_start
+	self.walkframe = 0;
 
 	if (deathmatch) boss_awake();
 	else

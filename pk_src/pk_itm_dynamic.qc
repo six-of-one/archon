@@ -505,7 +505,11 @@ void(string cls) item_call =
 		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2 + random(), random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 
-		total_monsters = t_monsters  + 1; // NOTE: update message not sent
+		total_monsters = t_monsters  + 1;
+  	
+		WriteByte (MSG_BROADCAST, SVC_UPDATESTAT);
+		WriteByte (MSG_BROADCAST, STAT_TOTALMONSTERS);
+		WriteLong (MSG_BROADCAST, total_monsters);
 
 		return;		
 	}

@@ -29,7 +29,8 @@ $frame painb10 painb11
 //frame attack1 attack2 attack3 attack4 attack5 attack6 attack7
 //frame attack8 attack9 attack10 attack11
 
-$frame attackb1 attackb1 attackb2 attackb3 attackb4 attackb5
+// NOTE: knight.mdl has two attackb1, exactly the same, code ignores it
+$frame attackb0 attackb1 attackb2 attackb3 attackb4 attackb5
 $frame attackb6 attackb7 attackb8 attackb9 attackb10
 
 $frame walk1 walk2 walk3 walk4 walk5 walk6 walk7 walk8 walk9
@@ -143,7 +144,8 @@ void()	knight_painb9	=[	$painb9,	knight_painb10	] {ai_painforward(5);};
 void()	knight_painb10	=[	$painb10,	knight_painb11	] {ai_painforward(0);};
 void()	knight_painb11	=[	$painb11,	knight_run1	] {};
 
-void(entity attacker, float damage)	knight_pain =
+//void(entity attacker, float damage)	knight_pain =
+void()	knight_pain =
 {
 	local float r;
 
@@ -241,7 +243,8 @@ if (ign != A_MONSTER)
 {
 	if (M_MONSTER < 0)
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	
@@ -252,6 +255,16 @@ if (ign != A_MONSTER)
 			remove(self);
 		return;
 	}
+
+// make some more random monsters according to server rules - only do this on map spawned monsters, wont happen with random monsters
+	if (R_FAST_MONSTER & CB_M_KNIGHT)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CFAST, "monster_knight", self.origin);
+		
+	if (R_SLOW_MONSTER & CB_M_KNIGHT)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CSLOW, "monster_knight", self.origin);
+
 	precache_model ("progs/knight.mdl");
 	precache_model ("progs/h_knight.mdl");
 
@@ -262,10 +275,23 @@ if (ign != A_MONSTER)
 	precache_sound ("knight/sword2.wav");
 	precache_sound ("knight/idle.wav");
 }
+
+// Cataboligne - 11.14.12 - fast / slow code
+	if (self.speed <= 0) self.speed = MON_NORM;
+	self.lip = 1; // local speed divisor
+// map specced
+	if (self.netname == CFAST) self.speed = MON_FAST;
+	else if (self.netname == CSLOW) self.speed = MON_SLOW;
+
+// server controls set all monsters fast or slow if not specced - this includes random monsters
+	else if (FAST_MONSTER & CB_M_KNIGHT) self.speed = MON_FAST;
+	else if (SLOW_MONSTER & CB_M_KNIGHT) self.speed = MON_SLOW;
+
 	self.netname = "Knight";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/knight.mdl");
 

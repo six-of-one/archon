@@ -91,22 +91,20 @@ void() sham_smash7     =[      $smash7,       sham_smash8    ] {ai_charge(0);};
 void() sham_smash8     =[      $smash8,       sham_smash9    ] {ai_charge(0);};
 void() sham_smash9     =[      $smash9,       sham_smash10   ] {ai_charge(0);};
 void() sham_smash10    =[      $smash10,      sham_smash11   ] {
-local vector	delta;
-local float 	ldmg;
 
 	if (!self.enemy)
 		return;
 	ai_charge(0);
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 100)
+	if (vlen(self.dest) > 100)
 		return;
 	if (!CanDamage (self.enemy, self))
 		return;
 		
-	ldmg = (random() + random() + random()) * 40;
-	T_Damage (self.enemy, self, self, ldmg);
+	self.dmg = (random() + random() + random()) * 40;
+	T_Damage (self.enemy, self, self, self.dmg);
 	sound (self, CHAN_VOICE, "shambler/smack.wav", 1, ATTN_NORM);
 
 	SpawnMeatSpray (self.origin + v_forward*16, crandom() * 100 * v_right);
@@ -119,20 +117,17 @@ void() sham_swingr1;
 
 void(float side) ShamClaw =
 {
-local vector	delta;
-local float 	ldmg;
-
 	if (!self.enemy)
 		return;
 	ai_charge(10);
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 100)
+	if (vlen(self.dest) > 100)
 		return;
 		
-	ldmg = (random() + random() + random()) * 20;
-	T_Damage (self.enemy, self, self, ldmg);
+	self.dmg = (random() + random() + random()) * 20;
+	T_Damage (self.enemy, self, self, self.dmg);
 	sound (self, CHAN_VOICE, "shambler/smack.wav", 1, ATTN_NORM);
 
 	if (side)
@@ -175,9 +170,7 @@ if (random()<0.5)
 };
 
 void() sham_melee =
-{
-	local float chance;
-	
+{	
 	chance = random();
 	if (chance > 0.6 || self.health == 600)
 		sham_smash1 ();
@@ -333,7 +326,8 @@ if (ign != A_MONSTER)
 {
 	if (M_MONSTER < 0)
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	
@@ -344,6 +338,16 @@ if (ign != A_MONSTER)
 			remove(self);
 		return;
 	}
+
+// make some more random monsters according to server rules - only do this on map spawned monsters, wont happen with random monsters
+	if (R_FAST_MONSTER & CB_M_SHAMBL)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CFAST, "monster_shambler", self.origin);
+		
+	if (R_SLOW_MONSTER & CB_M_SHAMBL)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CSLOW, "monster_shambler", self.origin);
+
 	precache_model ("progs/shambler.mdl");
 	precache_model ("progs/s_light.mdl");
 	precache_model ("progs/h_shams.mdl");
@@ -359,10 +363,24 @@ if (ign != A_MONSTER)
 	precache_sound ("shambler/melee2.wav");
 	precache_sound ("shambler/smack.wav");
 }
+
+// Cataboligne - 11.14.12 - fast / slow code
+	if (self.speed <= 0) self.speed = MON_NORM;
+	self.lip = 1; // local speed divisor
+// map specced
+	if (self.netname == CFAST) self.speed = MON_FAST;
+	else if (self.netname == CSLOW) self.speed = MON_SLOW;
+
+// server controls set all monsters fast or slow if not specced - this includes random monsters
+	else if (FAST_MONSTER & CB_M_SHAMBL) self.speed = MON_FAST;
+	else if (SLOW_MONSTER & CB_M_SHAMBL) self.speed = MON_SLOW;
+
 	self.netname = "Shambler";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
+
 	setmodel (self, "progs/shambler.mdl");
 
 	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);

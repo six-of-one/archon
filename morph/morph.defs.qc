@@ -39,14 +39,37 @@ float DM_MONSTER;	// true if any option allows monsters in dm
 float HUB_MONSTER;	// true if monsters will appear on hub maps - "sv_monster_hub"
 
 // fast and slow monsters
+//void(float fst, float slw, string mcls, origin vm) fast_slow_monster;
+void(string sp, string mcls, vector vm) speed_monster;
+
 float FAST_MONSTER; // monster bits set here will always be fast monsters
 float SLOW_MONSTER; // monster bits set here will always be slow monsters
 float R_FAST_MONSTER; // randomly generate fast monsters when regular map monsters (of these bits) spawn
 float R_SLOW_MONSTER; // randomly generate slow monsters when regular map monsters (of these bits) spawn
 float C_FS_MONSTER; // chance to make a fast / slow monster
 
-void() random_monster_location;
+// speed contants for monsters
+// slowing down too much or speeding up too much looks "funny" (admittedly chaotic tho), try to say in limits
+
+float MON_NORM = 0.1; // base think speed for animation frames
+float MON_FAST = 0.07; // 1.429 times faster
+float MON_SLOW = 0.16; // 0.625 times slower
+// divisor - divide monsters speed up by this value --- > 1 slows monsters, < 1 speeds up monsters
+// shoot poison potions to slow monsters down
+// note: this is a global effect that happens to all .speed controled monsters - .lip is an individual monster speed divisor
+float MON_SPEED_DIV;
+
+string CFAST = "fast";
+string CSLOW = "slow";
+
+void(vector rdl) random_monster_location;
+
+// remove map monsters in singleplayer when sv_monster_map < 0
 void() remove_monster;
+
+// these need to happen after other map spawn items & special server items
+// secs to randomize monster removal spread on top of time + 2
+float REMOVE_MON_SPREAD = 5;
 
 // timings
 float S_MONSTER_WAIT; // min wait till we respawn a dead mosnter

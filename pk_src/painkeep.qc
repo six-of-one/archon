@@ -1033,6 +1033,17 @@ void() pk_liveupd =
 		monster_respawner = world;
 	}
 
+	if (ENHANCED)
+	{
+		FAST_MONSTER = cvar("sv_monster_fast");
+		SLOW_MONSTER = cvar("sv_monster_slow");
+		R_FAST_MONSTER = cvar("sv_monster_rnd_fast");
+		R_SLOW_MONSTER = cvar("sv_monster_rnd_slow");
+	}
+	C_FS_MONSTER = cvar("sv_monster_cfs");
+
+	if (MON_SPEED_DIV <= 0) MON_SPEED_DIV = 1;
+
 	C_MONSTER_CNT = cvar("sv_monster_cnt");
 	if ( (C_MONSTER != cvar("sv_monster_rnd")) || (C_MONSTER_II != cvar("sv_monster_rnd2")) )
 	{
@@ -1045,15 +1056,10 @@ void() pk_liveupd =
 //		if (!R_MONSTER) // monsters were not removed when loading map - live controls usefull
 		if (M_MONSTER < 0)
 		if (!deathmatch)
-			bprint("*** Alert - map monsters turned off in single player / coop\n --- certain levels can NOT be finished without using enhancements\n");
+//			bprint("*** Alert - map monsters turned off in single player / coop\n --- certain levels can NOT be finished without using enhancements\n");
+			bprint("*** Alert - map monsters turned off in single player / coop\n --- all monster targets will fire on map load\n");
 	}
 	M_MONSTER_II = cvar("sv_monster_map2");
-
-	FAST_MONSTER = cvar("sv_monster_fast");
-	SLOW_MONSTER = cvar("sv_monster_slow");
-	R_FAST_MONSTER = cvar("sv_monster_rnd_fast");
-	R_SLOW_MONSTER = cvar("sv_monster_rnd_slow");
-	C_FS_MONSTER = cvar("sv_monster_cfs");
 
 // pk cubes
 	PK_CUBE_TIME = cvar("pk_cubes_time"); // TDO: doesnt reset existing makers
@@ -1499,6 +1505,8 @@ void() pk_srvcmd_set =
 	R_SLOW_MONSTER = 0;
 	C_FS_MONSTER = 0;
 
+	if (MON_SPEED_DIV <= 0) MON_SPEED_DIV = 1;
+
 // crates
 
 	PK_CRATE = 0;
@@ -1804,11 +1812,11 @@ current max is 312, move lines out of comment as needed
 		registercvar("sv_monster_rnd2", "0"); // bit mask to allow extra random spawned monsters in dm
 		registercvar("sv_monster_resp2", "0"); // bit mask to respawn some map monsters (not random ones)
 // fast | slow monsters
-		registercvar("sv_monster_fast", "0"); // make any map monster with this bit fast
-		registercvar("sv_monster_slow", "0"); // make any map monster with this bit slow
+		registercvar("sv_monster_fast", "0"); // make any monsters with bits in flag fast
+		registercvar("sv_monster_slow", "0"); // make any monsters with bits in flag fast
 		registercvar("sv_monster_rnd_fast", "0"); // make extra fast monsters when map monsters of these bits spawn
 		registercvar("sv_monster_rnd_slow", "0"); // make extra slow monsters when map monsters of these bits spawn
-		registercvar("sv_monster_cfs", "0.05"); // chance to make random fast / slow monster
+		registercvar("sv_monster_cfs", "0.075"); // chance to make random fast / slow monster - per regular monster of same type
 
 // things dealing with the dead
 

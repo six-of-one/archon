@@ -43,8 +43,41 @@ SOLDIER CODE
 ==============================================================================
 */
 
+// enhanced - more weapons
+
+float ARMY_NAILS = 2; // nail gun
+float ARMY_SSGUN = 4; // super shot gun
+float ARMY_ROCK = 8;
+float ARMY_XWEP = 14; // det all x bits
+
+//float army_ofone = 0.2; // total chance for a better map grunt
+//float army_rndenh = 0.8; // total chance for a better random grunt
+float army_fire_grenades = 0.87; // chance to fire grenades if he has some
+float army_canhas_grenades = 5; // random grenades to give enhanced grunts
+
+void() army_firenails;
+
+float ARMY_ROCKET_DMG = 20; // dmg from soldier rockets
+
+// end more weapons
+
+
 void() army_fire;
 
+void()	army_stand1	=[	$stand1,	army_stand1	]
+{
+	if ((self.duration < $stand1) || (self.duration > $stand7))
+	{
+		self.duration = $stand1;
+	}
+	else self.duration = self.duration + 1;
+
+	self.frame = self.duration;
+
+	ai_stand();
+};
+
+/*
 void()	army_stand1	=[	$stand1,	army_stand2	] {ai_stand();};
 void()	army_stand2	=[	$stand2,	army_stand3	] {ai_stand();};
 void()	army_stand3	=[	$stand3,	army_stand4	] {ai_stand();};
@@ -53,6 +86,7 @@ void()	army_stand5	=[	$stand5,	army_stand6	] {ai_stand();};
 void()	army_stand6	=[	$stand6,	army_stand7	] {ai_stand();};
 void()	army_stand7	=[	$stand7,	army_stand8	] {ai_stand();};
 void()	army_stand8	=[	$stand8,	army_stand1	] {ai_stand();};
+*/
 
 void()	army_walk1	=[	$prowl_1,	army_walk2	] {
 if (random() < 0.2)
@@ -98,12 +132,42 @@ void()	army_atk1	=[	$shoot1,	army_atk2	] {ai_face();};
 void()	army_atk2	=[	$shoot2,	army_atk3	] {ai_face();};
 void()	army_atk3	=[	$shoot3,	army_atk4	] {ai_face();};
 void()	army_atk4	=[	$shoot4,	army_atk5	] {ai_face();};
-void()	army_atk5	=[	$shoot5,	army_atk6	] {ai_face();army_fire();
-self.effects = self.effects | EF_MUZZLEFLASH;};
+void()	army_atk5	=[	$shoot5,	army_atk6	]
+{
+	ai_face();
+	if ((self.ammo_rockets > 0) && (random() > army_fire_grenades) && (!self.spawnflags & ARMY_ROCK))
+	{
+		self.ammo_rockets = self.ammo_rockets - 1;
+		OgreFireGrenade();
+	}
+	else
+	army_fire();
+	self.effects = self.effects | EF_MUZZLEFLASH;
+};
 void()	army_atk6	=[	$shoot6,	army_atk7	] {ai_face();};
 void()	army_atk7	=[	$shoot7,	army_atk8	] {ai_face();SUB_CheckRefire (army_atk1);};
 void()	army_atk8	=[	$shoot8,	army_atk9	] {ai_face();};
 void()	army_atk9	=[	$shoot9,	army_run1	] {ai_face();};
+
+//GRUNT WITH NAILS*************
+void()  army_natk1   =[  $shoot1,    army_natk2   ] {ai_face();};
+void()  army_natk2   =[  $shoot2,    army_natk3   ] {ai_face();};
+void()  army_natk3   =[  $shoot3,    army_natk4   ] {ai_face();
+ army_firenails();
+ self.effects = self.effects | EF_MUZZLEFLASH;};
+void()  army_natk4   =[  $shoot4,    army_natk5   ] {ai_face();
+ army_firenails();
+ self.effects = self.effects | EF_MUZZLEFLASH;};
+void()  army_natk5   =[  $shoot5,    army_natk6   ] {ai_face();
+ army_firenails();
+ self.effects = self.effects | EF_MUZZLEFLASH;};
+void()  army_natk6   =[  $shoot6,    army_natk7   ] {ai_face();
+ army_firenails();
+ self.effects = self.effects | EF_MUZZLEFLASH;};
+void()  army_natk7   =[  $shoot7,    army_natk8   ] {ai_face();SUB_CheckRefire (army_natk1);};
+void()  army_natk8   =[  $shoot8,    army_natk9   ] {ai_face();};
+void()  army_natk9   =[  $shoot9,    army_run1   ] {ai_face();};
+//*****************************
 
 
 void()	army_pain1	=[	$pain1,		army_pain2	] {};
@@ -142,7 +206,8 @@ void()	army_painc11=[	$painc11,	army_painc12] {ai_painforward(6);};
 void()	army_painc12=[	$painc12,	army_painc13] {ai_painforward(8);};
 void()	army_painc13=[	$painc13,	army_run1] {};
 
-void(entity attacker, float damage)	army_pain =
+//void(entity attacker, float damage)	army_pain =
+void()	army_pain =
 {
 	local float r;
 	
@@ -174,28 +239,55 @@ void(entity attacker, float damage)	army_pain =
 
 void() army_fire =
 {
-	local	vector	dir;
-	local	entity	en;
+//	local	vector	d;
+	local	entity	e;
 	
 	ai_face();
 	
-	sound (self, CHAN_WEAPON, "soldier/sattck1.wav", 1, ATTN_NORM);	
+//	sound (self, CHAN_WEAPON, "soldier/sattck1.wav", 1, ATTN_NORM);	
+	makevectors (self.angles);
 
 // fire somewhat behind the player, so a dodging player is harder to hit
-	en = self.enemy;
+	e = self.enemy;
 	
-	dir = en.origin - en.velocity*0.2;
-	dir = normalize (dir - self.origin);
+	self.dest = e.origin - e.velocity*0.2;
+	self.dest = normalize (self.dest - self.origin);
 	
-	FireBullets (4, dir, '0.1 0.1 0');
+   if ((self.spawnflags & ARMY_ROCK) && (self.ammo_rockets > 0))
+	{
+//		self.ammo_rockets = self.ammo_rockets - 1; - done in W_Fire
+		W_FireRocket();
+		newmis.dmg = ARMY_ROCKET_DMG;
+	}
+	else if (self.spawnflags & ARMY_SSGUN)
+	{
+		sound (self ,CHAN_WEAPON, "weapons/shotgn2.wav", 1, ATTN_NORM); 
+		FireBullets (14, self.dest, '0.1 0.1 0');
+	}
+	else
+	{
+		sound (self, CHAN_WEAPON, "soldier/sattck1.wav", 1, ATTN_NORM);	
+		FireBullets (4, self.dest, '0.1 0.1 0');
+	}
 };
 
+void() army_firenails =
+{
+//	local vector d;
+	local entity	e;
 
+	sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM);
+	self.attack_finished = time;
+	e = self.enemy;
+	self.dest = e.origin - e.velocity*0.2;
+	self.dest = normalize (self.dest - self.origin);
+	launch_spike (self.origin + '0 0 16', self.dest);
+};
 
 void()	army_die1	=[	$death1,	army_die2	] {};
 void()	army_die2	=[	$death2,	army_die3	] {};
 void()	army_die3	=[	$death3,	army_die4	]
-{self.solid = SOLID_NOT;self.ammo_shells = 5;DropBackpack();};
+{self.solid = SOLID_NOT;DropBackpack();}; // mod for multiweps
 void()	army_die4	=[	$death4,	army_die5	] {};
 void()	army_die5	=[	$death5,	army_die6	] {};
 void()	army_die6	=[	$death6,	army_die7	] {};
@@ -207,7 +299,7 @@ void()	army_die10	=[	$death10,	army_die10	] {};
 void()	army_cdie1	=[	$deathc1,	army_cdie2	] {};
 void()	army_cdie2	=[	$deathc2,	army_cdie3	] {ai_back(5);};
 void()	army_cdie3	=[	$deathc3,	army_cdie4	]
-{self.solid = SOLID_NOT;self.ammo_shells = 5;DropBackpack();ai_back(4);};
+{self.solid = SOLID_NOT;DropBackpack();ai_back(4);};
 void()	army_cdie4	=[	$deathc4,	army_cdie5	] {ai_back(13);};
 void()	army_cdie5	=[	$deathc5,	army_cdie6	] {ai_back(3);};
 void()	army_cdie6	=[	$deathc6,	army_cdie7	] {ai_back(4);};
@@ -272,7 +364,7 @@ void() army_die =
 };
 
 
-/*QUAKED monster_army (1 0 0) (-16 -16 -24) (16 16 40) Ambush
+/*QUAKED monster_army (1 0 0) (-16 -16 -24) (16 16 40) Ambush Nailgun Ssgun Rocket
 */
 void(float ign) monster_army =
 {
@@ -281,7 +373,8 @@ if (ign != A_MONSTER)
 {
 	if (M_MONSTER < 0)
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	
@@ -292,6 +385,16 @@ if (ign != A_MONSTER)
 			remove(self);
 		return;
 	}
+
+// make some more random monsters according to server rules - only do this on map spawned monsters, wont happen with random monsters
+	if (R_FAST_MONSTER & CB_M_ARMY)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CFAST, "monster_army", self.origin);
+		
+	if (R_SLOW_MONSTER & CB_M_ARMY)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CSLOW, "monster_army", self.origin);
+
 	precache_model ("progs/soldier.mdl");
 	precache_model ("progs/h_guard.mdl");
 	precache_model ("progs/gib1.mdl");
@@ -307,10 +410,23 @@ if (ign != A_MONSTER)
 
 	precache_sound ("player/udeath.wav");		// gib death
 }
+
+// Cataboligne - 11.14.12 - fast / slow code
+	if (self.speed <= 0) self.speed = MON_NORM;
+	self.lip = 1; // local speed divisor
+// map specced
+	if (self.netname == CFAST) self.speed = MON_FAST;
+	else if (self.netname == CSLOW) self.speed = MON_SLOW;
+
+// server controls set all monsters fast or slow if not specced - this includes random monsters
+	else if (FAST_MONSTER & CB_M_ARMY) self.speed = MON_FAST;
+	else if (SLOW_MONSTER & CB_M_ARMY) self.speed = MON_SLOW;
+
 	self.netname = "Soldier";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/soldier.mdl");
 
@@ -323,6 +439,46 @@ if (ign != A_MONSTER)
 	self.th_missile = army_atk1;
 	self.th_pain = army_pain;
 	self.th_die = army_die;
+
+	self.ammo_shells = 5; // not in die anymore
+
+	enhance = FALSE;
+
+#ifdef enhanced
+//	if (ENHANCED)
+	if (ENH_Q1_MAP_MONSTERS || (ign == A_MONSTER))
+		enhance = TRUE;
+#endifdef
+
+	if ((enhance) || (self.spawnflags & ARMY_XWEP))
+	{
+		local float r;
+		self.ammo_rockets = ceil(army_canhas_grenades * random()); // give 'em some grenades
+
+		chance = 0.2; // army_ofone;
+		if (ign == A_MONSTER) chance = 0.8; // army_rndenh;
+
+		if (!self.spawnflags & ARMY_XWEP) // not map specced - enhance him
+		if (random() < chance)
+		{
+			r = random();
+			if (r > 0.85) self.spawnflags = self.spawnflags | ARMY_ROCK;
+			else if (r > 0.6) { self.spawnflags = self.spawnflags | ARMY_SSGUN; self.ammo_shells = 25; }
+			else self.spawnflags = self.spawnflags | ARMY_NAILS;
+		}
+
+		if (self.spawnflags & ARMY_ROCK)
+		{
+//			self.th_missile = army_natk1;
+			self.ammo_rockets = ceil(self.ammo_rockets + 20 + random() * army_canhas_grenades);
+		}
+		else
+		if (self.spawnflags & ARMY_NAILS)
+		{
+			self.th_missile = army_natk1;
+			self.ammo_nails = 15;
+		}
+	}
 
 	walkmonster_start ();
 };

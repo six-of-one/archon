@@ -10,6 +10,55 @@
  *
  */
  
+ /*
+Lava morph - Cthons son
+A.K.A "Lavabomb"
+
+(orignal chaos mod designator "SOC")
+
+"the Story"
+
+Once upon a Quake, Shubbers needed a realm gaurdian.
+What better than an 80 foot tall lava creature that can throw explosive lava blobs?
+
+Once summoned Cthon proved to be a great gaurdian.  With the exception of being very difficult to control.
+The thing about a large mass of living lava - its hard damage.
+
+Enter the massive "House of Cthon" lava pit electric grid.
+It took 100 shamblers to pump out the juice to power one electrode.  The grid needed two.
+Cthon could be controlled.
+
+Until the Nehahra conspiracy.
+
+A lone power hungry immortal named "Max" bribed a few units of Shubbers forces to give the 200 Shamblers
+a few dozen quad artifacts.  Max engineered this to happen when a lone warrior for the earth realm - "Lt. Phil"
+just happened to come by looking for the earth rune.
+
+And the over juiced electric anodes melted Cthon (the indestructible) into his own lava pool.
+
+"I need a vacation"
+
+But...
+
+As the lava blobbed down into the pool, a few bits retained intellect and will.
+Parts of Cthon lived!
+
+Lavabomb is a small sentient lava pool the near exact size and shape of a tarbaby.
+
+The lava form is capable of firing lava balls and spikes of its own mass.
+It also possess the dangerous tarbaby jump attack and the tendency to explode when excessive damage occurs.
+
+Jump in a lava pool and get healed.  Or... Turn into a mini Cthon.  Stay in the pool though - mini Cthon can NOT
+exist away from the lava.  Mini Cthons lava balls explode - just like Dads.
+
+And stay out of water - it causes damage.
+
+However, when a Lavabomb takes damage - the wounded lava can metasize more tarbabys and lavabombs.
+
+(If you get stuck Lavabomb has a built in grapple hook of lava with limited range.)
+
+ */
+ 
 /*
 		+---------------------------------------+
 		|  Frame code                           | SEC-HEAD

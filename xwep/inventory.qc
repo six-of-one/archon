@@ -955,6 +955,7 @@ void(float im, entity p, vector vb) drop_inventory =
 	local float b, f, nt;
 	local entity e, d;
 
+	newmis = world;
 	nt = DROP_NOTST;
 	DROP_NOTST = FALSE;
 

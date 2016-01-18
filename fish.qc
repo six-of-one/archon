@@ -75,20 +75,17 @@ void() f_run9  =[      $swim17, f_run1 ] {ai_run(12);};
 
 void() fish_melee =
 {
-	local vector	delta;
-	local float 	ldmg;
-
 	if (!self.enemy)
 		return;		// removed before stroke
 		
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 60)
+	if (vlen(self.dest) > 60)
 		return;
 		
 	sound (self, CHAN_VOICE, "fish/bite.wav", 1, ATTN_NORM);
-	ldmg = (random() + random()) * 3;
-	T_Damage (self.enemy, self, self, ldmg);
+	self.dmg = (random() + random()) * 3;
+	T_Damage (self.enemy, self, self, self.dmg);
 };
 
 void() f_attack1        =[      $attack1,       f_attack2 ] {ai_charge(10);};
@@ -162,7 +159,8 @@ if (ign != A_MONSTER)
 {
 	if (M_MONSTER < 0)
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	
@@ -173,16 +171,39 @@ if (ign != A_MONSTER)
 			remove(self);
 		return;
 	}
+
+// make some more random monsters according to server rules - only do this on map spawned monsters, wont happen with random monsters
+	if (R_FAST_MONSTER & CB_M_FISH)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CFAST, "monster_fish", self.origin);
+		
+	if (R_SLOW_MONSTER & CB_M_FISH)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CSLOW, "monster_fish", self.origin);
+
 	precache_model ("progs/fish.mdl");
 
 	precache_sound ("fish/death.wav");
 	precache_sound ("fish/bite.wav");
 	precache_sound ("fish/idle.wav");
 }
+
+// Cataboligne - 11.14.12 - fast / slow code
+	if (self.speed <= 0) self.speed = MON_NORM;
+	self.lip = 1; // local speed divisor
+// map specced
+	if (self.netname == CFAST) self.speed = MON_FAST;
+	else if (self.netname == CSLOW) self.speed = MON_SLOW;
+
+// server controls set all monsters fast or slow if not specced - this includes random monsters
+	else if (FAST_MONSTER & CB_M_FISH) self.speed = MON_FAST;
+	else if (SLOW_MONSTER & CB_M_FISH) self.speed = MON_SLOW;
+
 	self.netname = "Fishy";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/fish.mdl");
 

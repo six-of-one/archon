@@ -1,7 +1,7 @@
 /*
 ==============================================================================
 
-SOLDIER / PLAYER
+ENFORCER
 
 ==============================================================================
 */
@@ -37,6 +37,32 @@ $frame paind1 paind2 paind3 paind4 paind5 paind6 paind7 paind8
 $frame paind9 paind10 paind11 paind12 paind13 paind14 paind15 paind16
 $frame paind17 paind18 paind19
 
+/*
+==============================================================================
+ENFORCER CODE
+==============================================================================
+*/
+
+// enhanced - more weapons
+
+float ENF_LTN = 2; // lightning
+float ENF_HLASER = 4; // hip laser
+float ENF_RAIL = 8; // rail gun
+float ENF_ROCK = 16; // rockets
+float ENF_SSG = 32; // super shot gun
+float ENF_XWEP = 62; // det all x bits
+
+//float enf_imprv = 0.4; // total chance for a better map enforcer
+//float enf_rndenh = 0.9; // total chance for a better random enforcer
+float enf_extend = 16; // if set, extend extra weps to include rocket & ssg as bits indicate
+float enf_railslugs = 20; // base rail slug count
+// float enf_fire_grenades = 0.87; // chance to fire 
+// float enf_canhas_grenades = 5; // random to give enhanced enforcers
+
+float ENF_ROCKET_DMG = 45; // dmg from enforcer rockets
+
+// end more weapons
+
 
 void() Laser_Touch =
 {
@@ -57,7 +83,7 @@ void() Laser_Touch =
 	if (other.health)
 	{
 		if (!self.dmg) self.dmg = 15; // Cataboligne - 5.24.10 - store damage here for turret lasers
-		SpawnBlood (org, self.velocity*0.2, self.dmg);
+		SpawnBlood (other, org, self.velocity*0.2, self.dmg);
 		T_Damage (other, self, self.owner, self.dmg);
 	}
 	else
@@ -86,7 +112,7 @@ void(vector org, vector vec) LaunchLaser =
 	newmis.movetype = MOVETYPE_FLY;
 	newmis.solid = SOLID_BBOX;
 	newmis.effects = EF_DIMLIGHT;
-	if (!Q_100) newmis.AIRG_Flags = AIRG_EXCLUDEENTITY; // *pk - This code excludes the Laser fire from enforcers as well as the laser fire from laser turrets as well from the affect of the AirGun. 
+	 newmis.AIRG_Flags = AIRG_EXCLUDEENTITY; // *pk - This code excludes the Laser fire from enforcers as well as the laser fire from laser turrets as well from the affect of the AirGun. 
 
 	setmodel (newmis, "progs/laser.mdl");
 	setsize (newmis, '0 0 0', '0 0 0');		
@@ -102,6 +128,7 @@ void(vector org, vector vec) LaunchLaser =
 };
 
 
+void(float stat) HIP_FireLaser;
 
 void() enforcer_fire =
 {
@@ -112,11 +139,51 @@ void() enforcer_fire =
 	
 	org = self.origin + v_forward * 30 + v_right * 8.5 + '0 0 16';
 
+	if ((self.spawnflags & ENF_RAIL) && (self.ammo_slug > 0))
+	{
+		X_FireRailgun();
+	}
+	else if ((self.spawnflags & ENF_ROCK) && (self.ammo_rockets > 0))
+	{
+		W_FireRocket();
+		newmis.dmg = ENF_ROCKET_DMG;
+	}
+	else if (self.spawnflags & ENF_HLASER)
+	{
+		HIP_FireLaser(1);
+	}
+	else if (self.spawnflags & ENF_LTN)
+	{
+		W_FireLightning();
+	}
+	else if (self.spawnflags & ENF_SSG)
+	{
+		org = self.enemy.origin - self.enemy.velocity*0.2;
+		org = normalize (org - self.origin);
+		
+		sound (self ,CHAN_WEAPON, "weapons/shotgn2.wav", 1, ATTN_NORM); 
+		FireBullets (14, org, '0.1 0.1 0');
+	}
+	else
 	LaunchLaser(org, self.enemy.origin - self.origin);
 };
 
 //============================================================================
 
+void()	enf_stand1	=[	$stand1,	enf_stand1	]
+{
+	if ((self.duration < $stand1) || (self.duration > $stand6))
+	{
+		self.duration = $stand1;
+	}
+	else self.duration = self.duration + 1;
+
+	self.frame = self.duration;
+
+	ai_stand();
+};
+
+/*
 void()	enf_stand1	=[	$stand1,	enf_stand2	] {ai_stand();};
 void()	enf_stand2	=[	$stand2,	enf_stand3	] {ai_stand();};
 void()	enf_stand3	=[	$stand3,	enf_stand4	] {ai_stand();};
@@ -124,6 +191,7 @@ void()	enf_stand4	=[	$stand4,	enf_stand5	] {ai_stand();};
 void()	enf_stand5	=[	$stand5,	enf_stand6	] {ai_stand();};
 void()	enf_stand6	=[	$stand6,	enf_stand7	] {ai_stand();};
 void()	enf_stand7	=[	$stand7,	enf_stand1	] {ai_stand();};
+*/
 
 void()	enf_walk1	=[	$walk1 ,	enf_walk2	] {
 if (random() < 0.2)
@@ -166,7 +234,17 @@ void()	enf_atk6	=[	$attack6,	enf_atk7	] {enforcer_fire();};
 void()	enf_atk7	=[	$attack7,	enf_atk8	] {ai_face();};
 void()	enf_atk8	=[	$attack8,	enf_atk9	] {ai_face();};
 void()	enf_atk9	=[	$attack5,	enf_atk10	] {ai_face();};
-void()	enf_atk10	=[	$attack6,	enf_atk11	] {enforcer_fire();};
+void()	enf_atk10	=[	$attack6,	enf_atk11	]
+{
+	if (self.spawnflags & ENF_RAIL)
+	{
+		if (self.ammo_slug > 0) enf_run1();
+		else enforcer_fire();
+	}
+	else
+	if (self.spawnflags & ENF_SSG) enf_run1();
+	else enforcer_fire();
+};
 void()	enf_atk11	=[	$attack7,	enf_atk12	] {ai_face();};
 void()	enf_atk12	=[	$attack8,	enf_atk13	] {ai_face();};
 void()	enf_atk13	=[	$attack9,	enf_atk14	] {ai_face();};
@@ -214,7 +292,8 @@ void()	enf_paind17	=[	$paind17,	enf_paind18	] {ai_pain(1);};
 void()	enf_paind18	=[	$paind18,	enf_paind19	] {};
 void()	enf_paind19	=[	$paind19,	enf_run1	] {};
 
-void(entity attacker, float damage)	enf_pain =
+//void(entity attacker, float damage)	enf_pain =
+void()	enf_pain =
 {
 	local float r;
 
@@ -309,7 +388,7 @@ void() enf_die =
 };
 
 
-/*QUAKED monster_enforcer (1 0 0) (-16 -16 -24) (16 16 40) Ambush
+/*QUAKED monster_enforcer (1 0 0) (-16 -16 -24) (16 16 40) Ambush Lightning Laser Rail Rocket SSG
 
 */
 void(float ign) monster_enforcer =
@@ -319,7 +398,8 @@ if (ign != A_MONSTER)
 {
 	if (M_MONSTER < 0)
 	{
-		remove(self);
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
 		return;
 	}
 	
@@ -330,6 +410,16 @@ if (ign != A_MONSTER)
 			remove(self);
 		return;
 	}
+
+// make some more random monsters according to server rules - only do this on map spawned monsters, wont happen with random monsters
+	if (R_FAST_MONSTER & CB_M_ENF)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CFAST, "monster_enforcer", self.origin);
+		
+	if (R_SLOW_MONSTER & CB_M_ENF)
+	if (random() < C_FS_MONSTER)
+		speed_monster(CSLOW, "monster_enforcer", self.origin);
+
 	precache_model ("progs/enforcer.mdl");
 	precache_model ("progs/h_mega.mdl");
 	precache_model ("progs/laser.mdl");
@@ -345,10 +435,24 @@ if (ign != A_MONSTER)
 	precache_sound ("enforcer/sight3.wav");
 	precache_sound ("enforcer/sight4.wav");
 }
+
+
+// Cataboligne - 11.14.12 - fast / slow code
+	if (self.speed <= 0) self.speed = MON_NORM;
+	self.lip = 1; // local speed divisor
+// map specced
+	if (self.netname == CFAST) self.speed = MON_FAST;
+	else if (self.netname == CSLOW) self.speed = MON_SLOW;
+
+// server controls set all monsters fast or slow if not specced - this includes random monsters
+	else if (FAST_MONSTER & CB_M_ENF) self.speed = MON_FAST;
+	else if (SLOW_MONSTER & CB_M_ENF) self.speed = MON_SLOW;
+
 	self.netname = "Enforcer";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/enforcer.mdl");
 
@@ -361,6 +465,48 @@ if (ign != A_MONSTER)
 	self.th_pain = enf_pain;
 	self.th_die = enf_die;
 	self.th_missile = enf_atk1;
+
+	enhance = FALSE;
+
+#ifdef enhanced
+//	if (ENHANCED)
+	if (ENH_Q1_MAP_MONSTERS || (ign == A_MONSTER))
+		enhance = TRUE;
+#endifdef
+
+	if ((enhance) || (self.spawnflags & ENF_XWEP))
+	{
+		local float r;
+
+		chance = 0.4; // enf_imprv;
+		if (ign == A_MONSTER) chance = 0.9; // enf_rndenh;
+
+		if (!self.spawnflags & ENF_XWEP) // not map specced - enhance him
+		if (random() < chance)
+		{
+			r = random();
+			if (r > 0.95) self.spawnflags = self.spawnflags | ENF_RAIL; // not many of these guys
+			else if (r > 0.6) self.spawnflags = self.spawnflags | ENF_HLASER;
+			else
+			{
+				if (r < 0.1)
+				{
+					if (enf_extend & ENF_ROCK) self.spawnflags = self.spawnflags | ENF_ROCK;
+					if (enf_extend & ENF_SSG) self.spawnflags = self.spawnflags | ENF_SSG;
+				}
+				if (!self.spawnflags & enf_extend)
+				self.spawnflags = self.spawnflags | ENF_LTN;
+			}
+		}
+
+		if (self.spawnflags & ENF_RAIL)
+		{
+//			self.th_missile = army_natk1;
+			self.ammo_slug = ceil(enf_railslugs + random() * army_canhas_grenades);
+		}
+		if (self.spawnflags & ENF_ROCK)
+			self.ammo_rockets = ceil((enf_railslugs * 2) + random() * army_canhas_grenades);
+	}
 
 	walkmonster_start();
 };
