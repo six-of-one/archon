@@ -792,7 +792,7 @@ void() Keep_cam_chasing_owner =
 // called by player only
 void() Toggle_chase_cam =
 {
-	local float tg;
+//	local float tg;
 
 	if (self.admin) return; // pk mods
 	if (self.classname == OBSERVER) return;

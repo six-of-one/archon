@@ -15,6 +15,7 @@
 
 void () pkplus_touch =
 {
+	local entity stemp;
 	if (!PK_ART) return;
 
 	if (other.classname != "player") //&& other.classname != "pk*bot")
@@ -181,7 +182,7 @@ string pkp_str; // search string
 void() find_pkpitems =
 {
 	local entity e;
-	local float k;
+//	local float k;
 
 	pkp_str = ftos(pkp_sc);
 	e = find(world,sscode,pkp_str);
@@ -201,7 +202,7 @@ void() find_pkpitems =
 
 void() pkplus_item_control_loop =
 {
-	local entity e, sv;
+	local entity e;//, sv;
 	local string sr;
 
 // note: disabled - if rndize makes any that get clobbered we want to restore them

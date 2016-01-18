@@ -1108,8 +1108,8 @@ void() fade_relocate =
 
 void() rune_relocate =
 {
-	local entity e, f;
-	local vector v1;
+	local entity e;
+//	local vector v1;
 
 	if (self.think == fade_relocate) return; // heh heh - dont relocate while relocating
 
@@ -1508,7 +1508,7 @@ void() RegenerationSound =
 void() rune_regen =
 {
 	local float f, h, r;
-	local entity e;
+//	local entity e;
 
 	if (self.deadflag)
 		return;

@@ -620,7 +620,7 @@ void(string cls, string rep, string am, string ram) item_repm =
 
 void() item_loop =
 {
-	local float f, e, d, pko, pks, sf, lvl, lvls, msk;
+	local float f, e, pko, pks, sf, lvl, lvls, msk;
 	local string cl;
 
 	pks = 0;
@@ -1435,7 +1435,7 @@ void() func_dynitem =
 void(string cb) cube_handle =
 {
 	local entity e, p;
-	local float f, cbv, cbt, cbd, cv, msg;
+	local float f, cbv, cbt, cbd, cv;
 	local string cbnet, cn;
 
 	if (cb == "pk_cubes")
@@ -1557,7 +1557,7 @@ void() rndize_restore =
 
 void() rndize_item =
 {
-	local entity e;
+//	local entity e;
 	local float d, f;
 
 	f = MC_RNDITM - 2;

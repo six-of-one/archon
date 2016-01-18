@@ -116,7 +116,7 @@ float (float dist) teleptest =
 
 float (float dist) waterupz =
 {
-	local vector start;
+//	local vector start;
 	local vector up;
 	if (!teleptest (dist))
 	{
@@ -340,7 +340,7 @@ float (float vz, float dist, float imagine) Bot_tryjump =
 	local float NOTLAND;
 	local float lnd;
 	local float len;
-	local float depth;
+//	local float depth;
 	local float wlevel;
 	local float velz;
 	local float ht;
@@ -596,8 +596,8 @@ float (float dist) waterupdown =
 {
 	local float wlevel;
 	local float dis;
-	local float rnd;
-	local float zbottom;
+//	local float rnd;
+//	local float zbottom;
 	dis = KINDA_WANT;
 	wlevel = CheckWaterLevel ();
 	if (wlevel < 2)

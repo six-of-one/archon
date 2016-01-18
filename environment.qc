@@ -222,7 +222,7 @@ void(vector org, vector end, float fr) beam4 =
 void(vector org, vector end, float fr) multi_beam =
 {
 	local entity sv, s2;
-	local	vector cf;
+//	local	vector cf;
 
 	sv = self;
 
@@ -423,8 +423,9 @@ FL_ANGADR		- angles added randomly / iter - vp_x = vp_x + vr_x * random()
 void(void() fr, vector org, float mvt, float velm, string cln, string md, float ct, float amt, float rmt, vector vp, vector vr, void() cb, float flg, entity s) fire_burst =
 {
 	local float r1, v;
-	local entity sv, s2;
-	local vector cf;
+//	local entity sv, s2;
+	local entity sv;
+//	local vector cf;
 
 	sv = self;
 	self = s;

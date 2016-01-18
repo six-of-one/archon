@@ -209,9 +209,8 @@ Set "sounds" to one of the following:
 
 
 void () func_plat =
-
 {
-	local entity t;
+//	local entity t;
 
 	if (!self.t_length)
 		self.t_length = 80;
@@ -377,7 +376,7 @@ void () func_train_find =
 void() train_teleporter = 
 {
 local string	otarg;
-local float		otime, oflag;
+local float		otime;//, oflag;
 
 	otarg = self.target;
 	otime = self.nextthink;

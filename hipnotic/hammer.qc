@@ -282,7 +282,7 @@ void() HIP_SpawnMjolnirBase =
 
 void() HIP_FireMjolnirLightning =
 {
-	local vector	org;
+//	local vector	org;
 	local	float		cells;
 
 	if (self.eweapon)

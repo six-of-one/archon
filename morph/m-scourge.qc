@@ -522,7 +522,7 @@ string(entity targ, entity attacker) player_scourge_killmsg2 =
 
 void(float silent) player_scourge_become = 
 {
-	float tr,tc; // swap out cells, rockets
+//	float tr,tc; // swap out cells, rockets
 
 	self._stand = player_scourge_stand;
 	self._run = player_scourge_run;

@@ -148,8 +148,8 @@ void() vw_remove =
 
 entity(entity e) vw_chain =
 {
-	local entity f, c, ch, dcl, pr;
-	local float rck, sf;
+	local entity f, c, ch;
+	local float rck;
 
 	c = world;
 	ch = e;
@@ -538,7 +538,7 @@ void(entity e, float cd) viswep_ld =
 
 float (string wpm) ver_weaponmodel =
 {
-	string wmr;
+//	string wmr;
 
 	if (wpm == "progs/v_w_mortar.mdl") return(TRUE);
 	else if (wpm == "progs/v_d_rock.mdl") return(TRUE);
@@ -1116,7 +1116,7 @@ void(entity e, string md, entity p) DeadThrew =
 
 void(entity pack, vector v1) DeadThrowWeps =
 {
-	local entity e, sv;
+	local entity e;
 	local float w, pkid, pd;
 
 	e = self.vwepent;

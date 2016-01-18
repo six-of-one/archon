@@ -1776,7 +1776,7 @@ void() pk_cycleObjects =
 
 void() PK_ChangeWeapon =
 {
-		local float am, fl, fl2, k;
+		local float am, fl, fl2;
 
 	am = 0;
 	fl2 = 0;
@@ -2050,7 +2050,7 @@ void() PK_CheatCommand =
 
 void() PK_ImpulseCommands =
 {
-	local entity sv;
+//	local entity sv;
 
 	if (self.impulse == IMP_MFLY)
 	{

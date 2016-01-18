@@ -39,7 +39,7 @@ void() HIP_LaserTouch =
 	local vector spot1,spot2;
 	local vector oldvel;
 	local float mag;
-	local float r;
+//	local float r;
 
 	if (self.owner.class_select != "class_monster")
 	self.owner = world;
@@ -118,7 +118,7 @@ void() HIP_LaserTouch =
 
 void() HIP_LaserThink =
 {
-	local float delta;
+//	local float delta;
 
 	if (time>self.attack_finished) // flight over
 	{

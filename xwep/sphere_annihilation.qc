@@ -21,7 +21,9 @@ void() gravity_touch;
 
 // the venerable ad&d standard super disposal device and mayhem maker
 
-$frame live1 live2 live3 live4 live5 live6
+// live7 - super eye added for monster_eye
+
+$frame live1 live2 live3 live4 live5 live6 live7
 $frame grvbomb1 grvbomb2 grvbomb3 grvbomb4 grvbomb5 grvbomb6 grvbomb7 grvbomb8 grvbomb9 grvbomb10 grvbomb11 grvbomb12 grvbomb13 grvbomb14 grvbomb15 grvbomb16 grvbomb17 grvbomb18 grvbomb19 grvbomb20
 $frame die1 die2 die3 die4 die5 die6 die7
 
@@ -48,7 +50,13 @@ void() sphere_gravity_pulse5 = [ $grvbomb5, sphere_gravity_pulse6 ] { gravity_pu
 void() sphere_gravity_pulse6 = [ $grvbomb6, sphere_gravity_pulse7 ] { gravity_pull(); };
 void() sphere_gravity_pulse7 = [ $grvbomb7, sphere_gravity_pulse8 ] { gravity_pull(); };
 void() sphere_gravity_pulse8 = [ $grvbomb8, sphere_gravity_pulse9 ] { gravity_pull(); };
-void() sphere_gravity_pulse9 = [ $grvbomb9, sphere_gravity_pulse10 ] { gravity_pull(); };
+void() sphere_gravity_pulse9 = [ $grvbomb9, sphere_gravity_pulse10 ]
+{
+	gravity_pull();
+	if ((self.attack_finished - time) > 8)
+	if ((time & 7) == 4)
+		sound (self, CHAN_BODY, "misc/ambient/machine6.wav", 1, ATTN_NORM); // IMP: better sound
+};
 void() sphere_gravity_pulse10 = [ $grvbomb10, sphere_gravity_pulse11 ] { gravity_pull(); };
 void() sphere_gravity_pulse11 = [ $grvbomb11, sphere_gravity_pulse12 ] { gravity_pull(); };
 void() sphere_gravity_pulse12 = [ $grvbomb12, sphere_gravity_pulse13 ] { gravity_pull(); };
@@ -105,7 +113,7 @@ float SPHERE_AUDIO_LIMIT = 3;
 void() sphere_annihilation_move =
 {
 	local float r1, v1;
-	local vector v2;
+//	local vector v2;
 
 	self.nextthink = time + 0.1 + random();
 	if (random() < 0.2) self.frame = self.frame + crandom();

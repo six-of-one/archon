@@ -115,7 +115,7 @@ SpawnMeatSpray
 */
 void (vector org, vector vel) SpawnMeatSpray =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 //	local	vector	org; // Cataboligne 9.17.3 - fix compiler warning
 
 	missile = spawn ();
@@ -430,7 +430,7 @@ W_FireRocket
 */
 void () W_FireRocket =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 	vector bfwd;
 
 	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, "");
@@ -704,7 +704,7 @@ W_FireGrenade
 */
 void () W_FireGrenade =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 
 	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, "");
 
@@ -924,7 +924,7 @@ void () spike_touch =
 
 void () superspike_touch =
 {
-	local float rand;
+//	local float rand;
 	if (other == self.owner)
 		return ;
 

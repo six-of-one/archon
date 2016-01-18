@@ -875,7 +875,7 @@ The monster is walking it's beat
 */
 void(float dist) ai_walk =
 {
-	local vector		mtemp;
+//	local vector		mtemp;
 	local float ddist;
 	ddist = dist;
 
@@ -1222,9 +1222,10 @@ The monster has an enemy it is trying to kill
 float RUN_STRAIGHT;
 void(float dist) ai_run =
 {
-	local	vector	delta;
+//	local	vector	delta;
 	local	float	axis;
-	local	float	direct, ang_rint, ang_floor, ang_ceil, ddist;
+//	local	float	direct, ang_rint, ang_floor, ang_ceil, ddist;
+	local	float	ddist;
 
 	movedist = ddist = dist;
 

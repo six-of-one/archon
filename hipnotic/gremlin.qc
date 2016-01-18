@@ -248,7 +248,7 @@ The monster has an enemy it is trying to kill
 */
 void(float dist) gremlin_run =
    {
-   local entity oldtarget;
+//   local entity oldtarget;
    local float r;
    local vector d;
 
@@ -901,7 +901,7 @@ void()   gremlin_gunpain6   =[ $pain6,     gremlin_run1 ] { };
 
 void(entity attacker, float damage) gremlin_pain =
 {
-   local float r;
+//   local float r;
 
    if (random()<0.8)
       {
@@ -1395,7 +1395,7 @@ entity() GremlinFindVictim =
    local entity selected;
    local float dist;
    local float head_dist;
-   local float decision;
+//   local float decision;
 
    self.search_time = time + 1.0;
 // look in our immediate vicinity
@@ -1439,7 +1439,7 @@ fire a rocket
 */
 void() Gremlin_FireRocket =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
    local vector dir;
 
 	self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
@@ -1692,9 +1692,9 @@ void()   gremlin_rocket1;
 
 float() GremlinWeaponAttack =
    {
-	local	float	r;
-   local entity targ;
-   local vector vec;
+//	local	float	r;
+//   local entity targ;
+//   local vector vec;
 
 
    if (!GremlinCheckNoAmmo ())
@@ -1892,7 +1892,7 @@ float()  GremlinCheckAttack =
 
 void(float stc)  Gremlin_Melee =
 {
-	local	float	ldmg;
+//	local	float	ldmg;
 	local vector	delta;
 
 	ai_face ();
@@ -2150,7 +2150,7 @@ void(float side)  Gremlin_Gorge =
 
 void()   Gremlin_JumpTouch =
 {
-	local	float	ldmg;
+//	local	float	ldmg;
 
    if (self.health <= 0)
 		return;
@@ -2183,7 +2183,7 @@ void()   Gremlin_JumpTouch =
 
 void()   Gremlin_FlipTouch =
 {
-	local	float	ldmg;
+//	local	float	ldmg;
 
 	if (!checkbottom(self))
       {

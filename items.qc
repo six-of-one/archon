@@ -91,15 +91,15 @@ HEALTH BOX
 // T_Heal: add health to an entity, limiting health to max_health
 // "ignore" will ignore max_health limit
 //
-float (entity e, float healamount, float ignore) q100_T_Heal =
+float (entity e, float Thealamount, float ignore) q100_T_Heal =
 {
 	if (e.health <= 0)
 		return 0;
 	if ((!ignore) && (e.health >= other.max_health))
 		return 0;
-	healamount = ceil (healamount);
+	Thealamount = ceil (Thealamount);
 
-	e.health = e.health + healamount;
+	e.health = e.health + Thealamount;
 	if ((!ignore) && (e.health >= other.max_health))
 		e.health = other.max_health;
 
@@ -170,7 +170,7 @@ void () q100_item_health =
 
 void () q100_health_touch =
 {
-	local float amount;
+//	local float amount;
 	local string s;
 
 	if (other.classname != "player")
@@ -1032,8 +1032,8 @@ KEYS
 
 void () key_touch =
 {
-	local entity stemp;
-	local float best;
+//	local entity stemp;
+//	local float best;
 
 	if (other.classname != "player")
 			return;
@@ -1176,8 +1176,8 @@ END OF LEVEL RUNES
 
 void () sigil_touch =
 {
-	local entity stemp;
-	local float best;
+//	local entity stemp;
+//	local float best;
 
 	if (other.classname != "player")
 			return;
@@ -1248,8 +1248,8 @@ POWERUPS
 
 void () powerup_touch =
 {
-	local entity stemp;
-	local float best;
+//	local entity stemp;
+//	local float best;
 
 	if (other.classname != "player")
 			return;

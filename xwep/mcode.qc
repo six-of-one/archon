@@ -3167,8 +3167,8 @@ void() barrel_damage =
 
 void() barrel_explode =
 {
-	local entity boombox, e;
-	local vector flg;
+	local entity boombox;
+//	local vector flg;
 	local float bdmg;
 	local string bsnd;
 
@@ -3328,7 +3328,7 @@ TESTING THING
 
 void () misc_explobox =
 {
-	local float oldz;
+//	local float oldz;
 
 	if (Q_100)
 	{
@@ -3346,7 +3346,7 @@ Smaller exploding box, REGISTERED ONLY
 
 void () misc_explobox2 =
 {
-	local float oldz;
+//	local float oldz;
 
 	if (Q_100)
 	{

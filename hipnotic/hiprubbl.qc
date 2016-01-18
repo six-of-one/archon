@@ -68,7 +68,7 @@ void() RubbleInSolid =
 
 void(string rubblename, float rubblefr, float rubblesk, vector org, string code) hipThrowRubble =
 {
-	local	entity rubble;
+//	local	entity rubble;
 
 // no rubble if env turned off or in *_100 mode
 	if (XENV) return;

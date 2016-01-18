@@ -89,7 +89,7 @@ void() remove_stain =
 entity( vector pos, string stain, void() thk, float ttm ) placestain =
 {
    local entity new;
-   local entity ent;
+//   local entity ent;
    local vector norm;
 	local string stainv;
 

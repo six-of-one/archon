@@ -1127,8 +1127,8 @@ void() rotate_door_group_reversedirection =
    };
 
 void() rotate_door_use =
-   {
-   local entity t;
+{
+//   local entity t;
    local vector start;
 
    if ( ( self.state != STATE_OPEN ) && ( self.state != STATE_CLOSED ) )
@@ -1163,7 +1163,7 @@ void() rotate_door_use =
    self.nextthink = time + 0.01;
    self.endtime = time + self.speed;
    self.ltime = time;
-   };
+};
 
 
 /*QUAKED func_rotate_door (0 .5 .8) (-8 -8 -8) (8 8 8) STAYOPEN

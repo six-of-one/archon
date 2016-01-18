@@ -254,7 +254,7 @@ ImpThrowBall
 */
 void() ImpThrowBall =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 
 	self.effects = self.effects | EF_MUZZLEFLASH;
 

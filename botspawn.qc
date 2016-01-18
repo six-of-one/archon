@@ -45,7 +45,7 @@ void () initBotLevel =
 	local float offset;
 	local float i, f;
 	local entity e;
-	local string tmp;
+//	local string tmp;
 
 	NOISEQUEUE = noisetarget ();
 	num = ((serverflags & BOTS) / 16);
@@ -143,7 +143,7 @@ void () setBotGravity =
 {
 	local float newmax;
 	local float vel;
-	local float sk;
+//	local float sk;
 	local string tmp;
 	GRAVITY = (cvar ("sv_gravity") * 0.1);
 	bprint ("Gravity accel is ");
@@ -309,8 +309,8 @@ entity () botmovetarget;
 
 void () PutBotInServer =
 {
-	local entity spwn;
-	local vector spot;
+//	local entity spwn;
+//	local vector spot;
 	local string tmp;
 	local float aimvar;
 
@@ -435,8 +435,8 @@ entity () AddBot =
 {
 	local entity newbot;
 	local entity oldself;
-	local string mycolor;
-	local float plycolor;
+//	local string mycolor;
+//	local float plycolor;
 	newbot = spawn ();
 
 	oldself = self;
@@ -748,7 +748,7 @@ void (float skl) AddAnotherBot =
 void (entity ply, float n) addTeamBots =
 {
 	local entity newbot;
-	local entity tmp;
+//	local entity tmp;
 	local float i;
 	i = n;
 	while (i > 0)

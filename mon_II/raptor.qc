@@ -633,7 +633,7 @@ float() CheckraptorJump =
 
 float() raptorCheckAttack =
 {
-	local   vector  vec;
+//	local   vector  vec;
 	
 // if close enough for slashing, go for it
 	if (CheckraptorMelee ())

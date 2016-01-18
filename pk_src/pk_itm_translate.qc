@@ -2165,7 +2165,7 @@ string(entity e, float TR) map_trans =
 void(entity e, float trvs) item_translate =
 {
 	local string mcc;
-	local entity f;
+//	local entity f;
 	local float k;
 
 	k = trvs;
@@ -2258,7 +2258,7 @@ void(entity e, float trv) master_item_control =
 
 void(string tri, float trv) master_item_control_loop =
 {
-	local entity e, sv;
+	local entity e;
 	local string sr;
 
 	sr = tri;

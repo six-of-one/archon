@@ -775,7 +775,7 @@ return morph_test(chk,IMP_MSCOURGE,0,0,0,0,IMP_MSHAMBLR,   0); // no classname
 
 void(entity e, float all) morph_clearparms =
 {
-	local float f;
+//	local float f;
 	e.mask = v0;
 	e.noise1 = e.noise2 = e.noise3 = e.noise4 = e.msight = "";
 
@@ -1517,7 +1517,7 @@ void(vector rdl) random_monster_location =
 
 void() random_monster =
 {
-	local vector v;
+//	local vector v;
 	local float M;
 
 	C_MONSTER = cvar("sv_monster_rnd");

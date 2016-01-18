@@ -38,7 +38,7 @@ void() spawn_think =
 void() spawn_use =
 {
 	local entity spawnentity;
-	local entity tempself;
+//	local entity tempself;
 
 	if ((self.spawnmulti == 1) || (horn_active))
 	{
@@ -132,7 +132,7 @@ void() func_spawn =
 	local entity monster;
 	local float tempdeathmatch;
 	local float temptotal_monsters;
-	local vector mn,mx;
+//	local vector mn,mx;
 
 //	if (deathmatch)
 //{

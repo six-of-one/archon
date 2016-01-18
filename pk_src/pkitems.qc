@@ -1644,7 +1644,7 @@ string(float itm, entity e) swep_id =
 
 void() DropBackpack =
 {
-	local entity e;
+//	local entity e;
 	local float bkt;
 
 	if (Q_100)

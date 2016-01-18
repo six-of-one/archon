@@ -79,7 +79,8 @@ float (entity e) hearnoise =
 	return (0);
 };
 
-float (entity e) heardistantnoise =
+//float (entity e) heardistantnoise =
+float () heardistantnoise =
 {
 	return (0);
 };

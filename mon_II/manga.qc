@@ -80,7 +80,7 @@ mangaFireGrenade
 */
 void() mangaFireGrenade =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 	
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
@@ -311,7 +311,7 @@ void()	manga_pain6	=[	$pa6,		manga_run1	] {};
 
 void(entity attacker, float damage)	manga_pain =
 {
-	local float	r;
+//	local float	r;
 
 // don't make multiple pain sounds right after each other
 	if (self.pain_finished > time)

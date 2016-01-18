@@ -1186,7 +1186,7 @@ void () plasmaexplode4 = [ 6, SUB_Remove    ]
 void () Plasma_MissileTouch =
 {
 	local vector org;
-	local string mon, snd;
+	local string mon;
 	local float bdm;
 
 	if (other == self.owner)
@@ -1837,7 +1837,7 @@ void() bfg_trace_thk =
 				}
 
 local vector v1, v2;
-local float i, m;
+local float i;
 local entity g;
 
 				T_Damage (e,self,self.owner,f);

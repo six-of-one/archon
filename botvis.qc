@@ -272,8 +272,8 @@ float (entity a, entity b, float truereach) Reachable =
 	local float rng;
 	local float maxzd;
 	local float bmaxjump;
-	local float brad;
-	local string tmp;
+//	local float brad;
+//	local string tmp;
 	if (truereach)
 	{
 		bmaxjump = MAXJUMP;

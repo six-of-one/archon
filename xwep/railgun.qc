@@ -120,7 +120,7 @@ void() railsnd_think =
 void() X_FireRailgun =
 {
 	local	vector org, destination, v1, v2, vp;
-	local	float	i, j, k, m, vl, damage, aj,ak, af, al, cn, ew;
+	local	float	i, j, k, vl, damage, aj,ak, af, cn, ew;
 	local	entity startent, impactent, e;
 
 //	self.lefty = self.movetype; // temp str

@@ -34,7 +34,7 @@ void() MiniGrenadeExplode =
 //================================
 void(float offsetAngle) MiniGrenadeLaunch =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 	local	float	tempRand;
 	
 	missile = spawn ();
@@ -111,7 +111,7 @@ void() MultiGrenadeTouch =
 //================================
 void() W_FireMultiGrenade =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 
 // Cat - just use rockets for now
 	self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(1, self, "");
@@ -272,7 +272,7 @@ void() HomingMissileAcquire =
 //================================
 void(float offset, float frameNum) MultiRocketLaunch = 
 {
-	local entity 	missile, mpuff;
+	local entity 	missile;
 	local vector	aimangle;
 	
 	missile = spawn ();
@@ -501,7 +501,7 @@ void() PlasmaLaunch =
 
 void(vector org, vector dir) launch_plasma =
 {
-	local entity	missile, mpuff;
+	local entity	missile;
 
 	missile = spawn ();
 	missile.owner = self;

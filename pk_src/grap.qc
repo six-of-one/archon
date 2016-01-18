@@ -451,7 +451,7 @@ void(entity corner, vector cornerOrigin) grep_createCornerRope =
 void() grap_touch =
 {
 	local entity grapOwner;
-	local vector temp;
+//	local vector temp;
 	local float sf;
 
 	if (other == self.grap_owner)
@@ -727,8 +727,8 @@ void() grap_ownerToTarget =
 
 void() grap_maintainHarpoon =
 {
-	local vector harpoonDifference;
-	local float chainLength, vecfactor;
+//	local vector harpoonDifference;
+//	local float chainLength, vecfactor;
 	local entity temp;
 
 	temp = self;

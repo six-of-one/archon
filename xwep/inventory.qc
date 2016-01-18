@@ -461,8 +461,8 @@ void(entity e, float am, string pr) eweap_am =
 	}
 	else if (am == PK_IT_GRAPGUN && e.pk_items & am)
 	{
-	local entity f;
-	local string nt;
+//	local entity f;
+//	local string nt;
 
 		if (pr != "") sprint(e, pr);
 /*
@@ -1313,7 +1313,7 @@ void(entity p, string sl, float b, entity e) drop_string =
 
 void(entity p, float pg) drop_setup =
 {
-	local float a, d, e, f, k, l, m, n;
+	local float a, d, e, f, k;
 	local string sel, ic;
 	local entity de;
 

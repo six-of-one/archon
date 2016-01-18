@@ -568,8 +568,8 @@ string() player_lavablob_killmsg2 =
 
 void(float silent) player_lavablob_become = 
 {
-	local float tc;
-	local entity s2;
+//	local float tc;
+//	local entity s2;
 
 	self._stand=player_lavablob_stand;
 	self._run=player_lavablob_run;

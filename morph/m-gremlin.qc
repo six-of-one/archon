@@ -285,8 +285,8 @@ void() player_gremlin_die =
 
 void(float st) W_FireClawBite =
 {
-	local	vector	source;
-	local	vector	org;
+//	local	vector	source;
+//	local	vector	org;
 	local float dist, dm;
 	local string miss;
 
@@ -314,8 +314,8 @@ void(float st) W_FireClawBite =
 
 float() gremlin_flight_check =
 {
-	local float scnt, sf;
-	local entity lt;
+	local float scnt;//, sf;
+//	local entity lt;
 
 	scnt = 0;
 //	force_unload_list();
@@ -496,8 +496,9 @@ float STEAL_BASE				= 0.1; // base chance to steal item
 
 void() touch_theft =
 {
-	local entity el, sv, ew, ow; // for make_prime
-	local float a, w, si;
+//	local entity el, sv, ew, ow; // for make_prime
+	local entity sv;
+//	local float a, w, si;
 
 	if (other == self.owner) return;
 	if (!(other.flags & FL_STEAL)) return;
@@ -734,7 +735,7 @@ if (WARNING) bprint("gremlin spawn fail\n");
 
 void(float silent) player_gremlin_become = 
 {
-	float sv_melee;
+//	float sv_melee;
 
 	self._stand = SUB_Null;
 	self._run = SUB_Null;

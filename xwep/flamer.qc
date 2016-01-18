@@ -496,14 +496,13 @@ else if (self.watertype == CONTENT_SLIME)
 
 void() W_FireFlamer =
 {
-	local   float rn;
-
 	if (self.waterlevel > 2)
 	{
 		makevectors (self.v_angle);
 		NewBubbles(2, self.origin+v_forward*64);
 
 		sound (self, CHAN_WEAPON, "flm/airhiss1.wav", 1, ATTN_NORM);
+//	local   float rn;
 //		rn = random();
 //		if (rn < 0.5)
 //			sound (self, CHAN_WEAPON, "flamethrower/airhiss1.wav", 1, ATTN_NORM);

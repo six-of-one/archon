@@ -4,7 +4,7 @@
  */
 
 void() bolt_findNextTarget;
-void(vector org, entity target, entity boltOwner, vector endPos, float first, float dam) bolt_doDamage;
+void(vector org, entity target, entity boltOwner, vector endPos, float first1, float dam) bolt_doDamage;
 float(entity check, entity checkFor) bolt_checkForLoops;
 void(entity boltOwner) bolt_createTimeoutEntity;
 void() bolt_timeoutNextEntity;
@@ -134,13 +134,13 @@ void() bolt_findNextTarget =
 {
 	local entity boltorg, head, targetEntity;
 	local	vector org, endPos;
-	local float first, dist, tempDist;
+	local float first2, dist, tempDist;
 	local float maxTargets; // the lighting will only last for 20 targets..
 	local float loopBlow, cellsToBlow;
 
 	loopBlow = FALSE;
 
-	first = TRUE;
+	first2 = TRUE;
 	boltorg = self;
 	targetEntity = boltorg.bolt_target;
 	maxTargets = 20;
@@ -161,8 +161,8 @@ void() bolt_findNextTarget =
 	  if (trace_fraction >= 1 && // can see...
 	  	!(trace_inopen && trace_inwater) && // can't see the target if it goes tho water & air.
 	    dist <= 600 && // within distance
-	    (!first || bolt_infront(targetEntity)) && // in front if the first target..
-//		  (first || targetEntity.health > 0) &&  // not dead... (the first  target always acts as a conduit...)
+	    (!first2 || bolt_infront(targetEntity)) && // in front if the first target..
+//		  (first2 || targetEntity.health > 0) &&  // not dead... (the first  target always acts as a conduit...)
 			(targetEntity.solid != SOLID_NOT) && // make shore it's solid...
 	  	(targetEntity.classname != "player" || !(targetEntity.items & IT_INVISIBILITY))) // not invisible..
 	  {
@@ -175,7 +175,7 @@ void() bolt_findNextTarget =
 
 	    cellsToBlow = cellsToBlow + targetEntity.ammo_cells;
 
-	    if (first) // reset the target timeout...
+	    if (first2) // reset the target timeout...
 	    {
 	      boltorg.bolt_targetTimeout = time + 0.5;
 
@@ -190,7 +190,7 @@ void() bolt_findNextTarget =
 	    // entity conduit timeout if the entity dies & handles being a conduit
 	    targetEntity.bolt_conduitTimeout = time + 0.5;
 
-	    first = FALSE; // get the next target
+	    first2 = FALSE; // get the next target
 	    boltorg = targetEntity;
 	    targetEntity = boltorg.bolt_targetNext;
 	    maxTargets = maxTargets - 1;
@@ -198,7 +198,7 @@ void() bolt_findNextTarget =
 	  else
 	  {
 	  	// disable next target... (the rest of the path will time out if not used...)
-			if (first)
+			if (first2)
 			{
 				bolt_removeTarget(targetEntity);
 			  boltorg.bolt_target = world;
@@ -219,7 +219,7 @@ void() bolt_findNextTarget =
 	  loopBlow = TRUE;
 	}
 
-	first = TRUE;
+	first2 = TRUE;
 	boltorg = self;
 	targetEntity = boltorg.bolt_target;
 	maxTargets = 20;
@@ -235,15 +235,15 @@ void() bolt_findNextTarget =
 	    targetEntity.ammo_cells = 0;
 
 			self.ammo_cells = cellsToBlow;
-		  bolt_doDamage(org, targetEntity, boltorg, trace_endpos, first, cellsToBlow);
+		  bolt_doDamage(org, targetEntity, boltorg, trace_endpos, first2, cellsToBlow);
 			self.ammo_cells = cellsToBlow;
 		}
 	  else
 	  {
-		  bolt_doDamage(org, targetEntity, boltorg, trace_endpos, first, 2);
+		  bolt_doDamage(org, targetEntity, boltorg, trace_endpos, first2, 2);
 	  }
 
-	  first = FALSE; // get the next target
+	  first2 = FALSE; // get the next target
 	  boltorg = targetEntity;
 
 	  if (targetEntity == self)
@@ -282,7 +282,7 @@ void() bolt_findNextTarget =
 		{
 		  // loop.. blow
 		  self.ammo_cells = cellsToBlow;
-		  bolt_doDamage(org, self, self, trace_endpos, first, cellsToBlow);
+		  bolt_doDamage(org, self, self, trace_endpos, first2, cellsToBlow);
 		}
 
  		self.ammo_cells = 0;
@@ -297,7 +297,7 @@ void() bolt_findNextTarget =
 	}
 
 	// if max targets reached or if it's finding the first target, do no more...
-	if (maxTargets < 1 || first)
+	if (maxTargets < 1 || first2)
 	{
 		return;
 	}
@@ -358,7 +358,7 @@ void() bolt_findNextTarget =
 // check for target path loops...
 float(entity check, entity checkFor) bolt_checkForLoops =
 {
-	local string str;
+//	local string str;
 
 	while(check.bolt_targetNext)
 	{
@@ -375,7 +375,7 @@ float(entity check, entity checkFor) bolt_checkForLoops =
 
 
 
-void(vector org, entity boltTarget, entity boltOwner, vector endPos, float first, float dam) bolt_doDamage =
+void(vector org, entity boltTarget, entity boltOwner, vector endPos, float first1, float dam) bolt_doDamage =
 {
 	local entity lightEntity;
 	local vector vangle;
@@ -397,7 +397,7 @@ void(vector org, entity boltTarget, entity boltOwner, vector endPos, float first
 
 	if (boltOwner != boltTarget)
 	{
-	  if (first)
+	  if (first1)
 	  {
 	    lightEntity = boltOwner;
 	  }

@@ -106,7 +106,7 @@ When a button is touched, it moves some distance in the direction of it's angle,
 */
 void () func_button =
 {
-local float		gtemp, ftemp;
+//local float		gtemp, ftemp;
 
 
 	button_sounds_d();				// cataboligne - 6.28.11 doom buttons
