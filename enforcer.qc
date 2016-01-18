@@ -339,6 +339,7 @@ if (ign != A_MONSTER)
 	precache_sound2 ("enforcer/sight3.wav");
 	precache_sound2 ("enforcer/sight4.wav");
 }
+	self.netname = "Enforcer";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

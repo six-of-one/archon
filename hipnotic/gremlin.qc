@@ -1814,6 +1814,8 @@ if (ign != A_MONSTER)
 	precache_sound ("gremlin/sight4.wav"); // water
 */
 }
+	self.netname = "Gremlin";
+
 	if (deathmatch) GREM_MAX = 64;
 	else GREM_MAX = 256;
 

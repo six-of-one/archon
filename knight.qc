@@ -256,6 +256,7 @@ if (ign != A_MONSTER)
 	precache_sound ("knight/sword2.wav");
 	precache_sound ("knight/idle.wav");
 }
+	self.netname = "Knight";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

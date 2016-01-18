@@ -172,7 +172,7 @@ void() scourge_think =
       }
    else if ((self.spawnsilent == 1) && (self.spawnmulti == 0))
       {
-      sound (self, CHAN_BODY, "scrg/walk.wav", 1, ATTN_IDLE);
+      sound (self, CHAN_BODY, "scourge/walk.wav", 1, ATTN_IDLE);
       }
    self.spawnmulti = self.spawnsilent;
    };
@@ -204,7 +204,7 @@ void()   scourge_stand12  =[ $stand12.asc, scourge_stand1  ] {self.spawnsilent =
 
 void()   scourge_walk1   =[ $walk1.asc , scourge_walk2   ] {
 if (random() < 0.1)
-   sound (self, CHAN_VOICE, "scrg/idle.wav", 1, ATTN_IDLE);
+   sound (self, CHAN_VOICE, "scourge/idle.wav", 1, ATTN_IDLE);
 self.spawnsilent = 1;
 scourge_think();
 ai_walk(8);};
@@ -216,7 +216,7 @@ void()   scourge_walk6   =[ $walk6.asc , scourge_walk1   ] {ai_walk(8);};
 
 void()   scourge_run1 =[ $walk1.asc  , scourge_run2 ] {
 if (random() < 0.1)
-   sound (self, CHAN_VOICE, "scrg/idle.wav", 1, ATTN_IDLE);
+   sound (self, CHAN_VOICE, "scourge/idle.wav", 1, ATTN_IDLE);
 self.spawnsilent = 1;
 scourge_think();
 ai_run(18);};
@@ -318,7 +318,7 @@ void()   scourge_melee3 =[ $sting3.asc,   scourge_melee4 ] {ai_charge(2);};
 void()   scourge_melee4 =[ $sting4.asc,   scourge_melee5 ] {ai_charge(2);};
 void()   scourge_melee5 =[ $sting5.asc,   scourge_melee6 ]
    {
-   sound (self, CHAN_WEAPON, "scrg/tailswng.wav", 1, ATTN_NORM);
+   sound (self, CHAN_WEAPON, "scourge/tailswng.wav", 1, ATTN_NORM);
    ai_charge(3);
    };
 void()   scourge_melee6 =[ $sting6.asc,   scourge_melee7 ] {ai_charge(1);};
@@ -352,7 +352,7 @@ void(entity attacker, float damage) scourge_pain =
 
 
    r = random ();
-   sound (self, CHAN_VOICE, "scrg/pain.wav", 1, ATTN_NORM);
+   sound (self, CHAN_VOICE, "scourge/pain.wav", 1, ATTN_NORM);
 
    self.pain_finished = time + 2.0;
    scourge_pain1 ();
@@ -387,7 +387,7 @@ void() scourge_die =
    }
 
 // regular death
-   sound (self, CHAN_VOICE, "scrg/pain2.wav", 1, ATTN_NORM);
+   sound (self, CHAN_VOICE, "scourge/pain2.wav", 1, ATTN_NORM);
    scourge_die1 ();
 };
 
@@ -497,15 +497,16 @@ if (ign != A_MONSTER)
    precache_model2 ("progs/spike.mdl");
 
    precache_sound ("misc/null.wav");
-   precache_sound ("scrg/idle.wav");
-   precache_sound ("scrg/pain.wav");
-   precache_sound ("scrg/pain2.wav");
-   precache_sound ("scrg/sight.wav");
-   precache_sound ("scrg/tailswng.wav");
-   precache_sound ("scrg/walk.wav");
+   precache_sound ("scourge/idle.wav");
+   precache_sound ("scourge/pain.wav");
+   precache_sound ("scourge/pain2.wav");
+   precache_sound ("scourge/sight.wav");
+   precache_sound ("scourge/tailswng.wav");
+   precache_sound ("scourge/walk.wav");
    precache_sound2 ("shambler/smack.wav");
    precache_sound2 ("weapons/rocket1i.wav");
 }
+	self.netname = "Centroid";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

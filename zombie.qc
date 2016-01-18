@@ -506,6 +506,7 @@ if (ign != A_MONSTER)
 	precache_sound ("zombie/z_hit.wav");
 	precache_sound ("zombie/idle_w2.wav");
 }
+	self.netname = "Zomby";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

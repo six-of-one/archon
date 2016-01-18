@@ -14,6 +14,7 @@ float PORTAL_M3START = 1; // if true - allow mode 3 portal to include player sta
 float PORTAL_M3RND = 1; // if true - mode 3 portal picks random destinations every time
 
 string PORTAL_TELEFRAG = "md4";
+string PORTAL_FAIL; // alt fail msg
 
 // portals seem to dump players outside the level - this saves them
 
@@ -133,6 +134,7 @@ void () PortalTouch =
 			spawn_tdeath (self.portal_entrance.origin, self.master);
 			makevectors(self.portal_entrance.enemy.v_angle);
 			self.portal_entrance.mangle = v_forward;
+			centerprint (self.owner, "PORTAL frag: xFFFF1a99 - \b portal-telefrag +1\n");
 		}
 		else if (self.portal_entrance.mangle == ' 0 0 1')
 		{
@@ -322,7 +324,7 @@ float (vector dir) PortalExit2 =
 	}
 	if (!self.portal_entrance)
 	{
-		centerprint (self, "PORTAL failure: xFF56Ab3E - device unknown error!\n");
+		PORTAL_FAIL = "PORTAL failure: xFF56Ab3E - device unknown error!\n";
 		return (FALSE);
 	}
 
@@ -348,14 +350,18 @@ float (vector dir, float md2) PreparePortalEntrance =
 	local entity portal;
 	local vector org, norm;
 	local string ts;
+	local float f;
 
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_TELEPORT);
 	WriteCoord (MSG_BROADCAST, trace_endpos_x);
 	WriteCoord (MSG_BROADCAST, trace_endpos_y);
 	WriteCoord (MSG_BROADCAST, trace_endpos_z);
-	if (trace_ent.takedamage)
+	if (trace_ent.takedamage && trace_ent.solid == SOLID_SLIDEBOX) // here we want to check a telefrag able ent for mode 8
 	{
+		if (md2 == 9) // opening frag portal & selected another target - retarget
+			remove(self.portal_entrance);
+		else
 		if (self.eweapon.cnt != 8)
 			return (FALSE);
 	}
@@ -365,10 +371,16 @@ float (vector dir, float md2) PreparePortalEntrance =
 		{
 			return (FALSE);
 		}
+		else if (md2 == 9)
+		{
+			f = PortalExit2 (dir); // set frag portal on world brush
+			self.portal_entrance = world;
+			return(f);
+		}
 		else
 		if (self.eweapon.cnt == 8)
 		{
-			centerprint(self, "PORTAL failure: xFF91Ba77 - device target not acquired\n");
+			PORTAL_FAIL =  "PORTAL failure: xFF91Ba77 - device target not acquired\n";
 			return (FALSE);
 		}
 	}
@@ -454,6 +466,7 @@ void () W_FirePortal =
 	if (self.eweapon) f = self.eweapon.cnt;
 	else f = PORTAL_MODE;
 	PORTAL_MODE = 0; // always clear this, one shot deal only - NOTE: this will need set on first & second entry for 2x portal
+	PORTAL_FAIL = "";
 
 	if (!f || !self.portal_entrance)
 	if (self.portal_busy)
@@ -494,8 +507,8 @@ void () W_FirePortal =
 		}
 		if ((f == 8) && self.portal_busy) // open 2nd portal
 		{
-			success = PortalExit2 (dir);
-			self.portal_entrance = world;
+			success = PreparePortalEntrance (dir, 9); // PortalExit2 (dir);
+//			self.portal_entrance = world;
 		}
 	}
 	if (success)
@@ -506,7 +519,10 @@ void () W_FirePortal =
 	{
 		self.portal_entrance = world;
 		self.portal_busy = FALSE;
-		centerprint (self, "PORTAL failure: xFFB78d15 - not open\n");
+		if (PORTAL_FAIL)
+			centerprint (self, PORTAL_FAIL);
+		else
+			centerprint (self, "PORTAL failure: xFFB78d15 - not open\n");
 	}
 };
 

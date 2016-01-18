@@ -2251,44 +2251,72 @@ bprint("\n");
 				targ.frags = targ.frags - frag_minus(targ);
 				if (attacker.classname == "monster_army")
 					bprint (" was shot by a Grunt\n");
+				else
 				if (attacker.classname == "monster_demon1")
 					bprint (" was eviscerated by a Fiend\n");
+				else
 				if (attacker.classname == "monster_dog")
 					bprint (" was mauled by a Rottweiler\n");
+				else
 				if (attacker.classname == "monster_dragon")
 					bprint (" was fried by a Dragon\n");
+				else
 				if (attacker.classname == "monster_enforcer")
 					bprint (" was blasted by an Enforcer\n");
+				else
 				if (attacker.classname == "monster_fish")
 					bprint (" was fed to the Rotfish\n");
+				else
 				if (attacker.classname == "monster_hell_knight")
 					bprint (" was slain by a Death Knight\n");
+				else
 				if (attacker.classname == "monster_knight")
 					bprint (" was slashed by a Knight\n");
+				else
 				if (attacker.classname == "monster_ogre")
 					bprint (" was destroyed by an Ogre\n");
+				else
 				if (attacker.classname == "monster_oldone")
 					bprint (" became one with Shub-Niggurath\n");
+				else
 				if (attacker.classname == "monster_shalrath")
 					bprint (" was exploded by a Vore\n");
+				else
 				if (attacker.classname == "monster_supervore")
-					bprint (" was eviscerated by a Hierophant Vore\n");
+					bprint (" was eviscerated by a Hierophant Vorerel\n");
+				else
 				if (attacker.classname == "monster_shambler")
 					bprint (" was smashed by a Shambler\n");
+				else
 				if (attacker.classname == "monster_tarbaby")
 					bprint (" was slimed by a Spawn\n");
+				else
 				if (attacker.classname == "monster_vomit")
 					bprint (" was vomited on by a Vomitus\n");
+				else
 				if (attacker.classname == "monster_wizard")
 					bprint (" was scragged by a Scrag\n");
+				else
 				if (attacker.classname == "monster_zombie")
 					bprint (" joins the Zombies\n");
 //MED
+				else
             if (attacker.classname == "monster_gremlin")
                bprint (" was outsmarted by a Gremlin\n");
 //MED
+				else
             if (attacker.classname == "monster_scourge")
                bprint (" was stung by a Centroid\n");
+				else // now have generic
+				{
+					deathstring = "";
+					if (attacker._killmsg != (void()) 0)
+						deathstring = attacker._killmsg(targ, attacker);
+					if (!deathstring)
+						bprint(" was mauled by ");
+					bprint(attacker.netname);
+               bprint ("\n");
+				}
 
 				return;
 			}

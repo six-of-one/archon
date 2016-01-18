@@ -268,6 +268,7 @@ if (ign != A_MONSTER)
 	precache_sound2 ("boss2/sight.wav");
 	precache_sound2 ("boss2/pop2.wav");
 }
+	self.netname = "Shub Niggurath";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

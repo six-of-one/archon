@@ -39,7 +39,11 @@ void() morph_setup =
 	MORPH_HOOK = CB_CHAOS + CB_CTHON + CB_ZOMBY + CB_SCOURGE; // + CB_GREMLIN;
 	MORPH_SARMOR = CB_SCOURGE + CB_GREMLIN + CB_IMP;
 
-	MONSTER_MASK = CB_M_ARMY + CB_M_FISH + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE;
+	MONSTER_MASK = CB_M_ARMY + CB_M_FISH + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
+						CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE + CB_M_GREMLIN + CB_M_VOMIT;
+
+	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER;
+
 };
 
 
@@ -199,45 +203,64 @@ string(float mb, float mode) monster_id =
 
 	s2 = "";
 
-	if (!mode)
+	if (mode == MON_NAME_REG)
 	{
-		if (mb == CB_M_ARMY) s2 = "Army Grunt";
-		if (mb == CB_M_FISH) s2 = "Fish";
-		if (mb == CB_M_KNIGHT) s2 = "Knight";
-		if (mb == CB_M_DOG) s2 = "Rabid Dog";
-		if (mb == CB_M_DEMON) s2 = "Fiend";
-		if (mb == CB_M_ENF) s2 = "Enforcer";
-		if (mb == CB_M_HKNIGHT) s2 = "Hell Knight";
-		if (mb == CB_M_OGRE) s2 = "Ogre";
-		if (mb == CB_M_SHALR) s2 = "Shalrath";
-		if (mb == CB_M_SHAMBL) s2 = "Shambler";
-		if (mb == CB_M_SCRAG) s2 = "Scragg";
-		if (mb == CB_M_ZOMBY) s2 = "Zomby";
-		if (mb == CB_M_CTHON) s2 = "Cthon";
-		if (mb == CB_M_TARBABY) s2 = "Spawn";
-		if (mb == CB_M_SCOURGE) s2 = "Scourge";
-		if (mb == CB_M_SHUBS) s2 = "Shub Niggurath";
-		if (mb == CB_M_SVORE) s2 = "Super Vore";
+		if (mb == CB_M_ARMY) 			s2 = "Army Grunt";
+		if (mb == CB_M_FISH) 			s2 = "Fish";
+		if (mb == CB_M_KNIGHT) 			s2 = "Knight";
+		if (mb == CB_M_DOG) 				s2 = "Rabid Dog";
+		if (mb == CB_M_DEMON) 			s2 = "Fiend";
+		if (mb == CB_M_ENF) 				s2 = "Enforcer";
+		if (mb == CB_M_HKNIGHT) 		s2 = "Hell Knight";
+		if (mb == CB_M_OGRE) 			s2 = "Ogre";
+		if (mb == CB_M_SHALR) 			s2 = "Shalrath";
+		if (mb == CB_M_SHAMBL) 			s2 = "Shambler";
+		if (mb == CB_M_SCRAG) 			s2 = "Scragg";
+		if (mb == CB_M_ZOMBY) 			s2 = "Zomby";
+		if (mb == CB_M_CTHON) 			s2 = "Cthon";
+		if (mb == CB_M_TARBABY) 		s2 = "Spawn";
+		if (mb == CB_M_SCOURGE) 		s2 = "Scourge";
+		if (mb == CB_M_SHUBS) 			s2 = "Shub Niggurath";
+		if (mb == CB_M_SVORE) 			s2 = "Vorerel";
+		if (mb == CB_M_GREMLIN) 		s2 = "Gremlin";
+		if (mb == CB_M_VOMIT) 			s2 = "Vomitus";
 	}
 	else
+	if (mode == MON_FUNC_REG)
 	{
-		if (mb == CB_M_ARMY) s2 = "monster_army";
-		if (mb == CB_M_FISH) s2 = "monster_fish";
-		if (mb == CB_M_KNIGHT) s2 = "monster_knight";
-		if (mb == CB_M_DOG) s2 = "monster_dog";
-		if (mb == CB_M_DEMON) s2 = "monster_demon1";
-		if (mb == CB_M_ENF) s2 = "monster_enforcer";
-		if (mb == CB_M_HKNIGHT) s2 = "monster_hell_knight";
-		if (mb == CB_M_OGRE) s2 = "monster_ogre";
-		if (mb == CB_M_SHALR) s2 = "monster_shalrath";
-		if (mb == CB_M_SHAMBL) s2 = "monster_shambler";
-		if (mb == CB_M_SCRAG) s2 = "monster_wizard";
-		if (mb == CB_M_ZOMBY) s2 = "monster_zombie";
-		if (mb == CB_M_CTHON) s2 = "monster_boss";
-		if (mb == CB_M_TARBABY) s2 = "monster_tarbaby";
-		if (mb == CB_M_SCOURGE) s2 = "monster_scourge";
-		if (mb == CB_M_SHUBS) s2 = "monster_oldone";
-		if (mb == CB_M_SVORE) s2 = "monster_supervore";
+		if (mb == CB_M_ARMY) 			s2 = "monster_army";
+		if (mb == CB_M_FISH) 			s2 = "monster_fish";
+		if (mb == CB_M_KNIGHT) 			s2 = "monster_knight";
+		if (mb == CB_M_DOG) 				s2 = "monster_dog";
+		if (mb == CB_M_DEMON) 			s2 = "monster_demon1";
+		if (mb == CB_M_ENF) 				s2 = "monster_enforcer";
+		if (mb == CB_M_HKNIGHT) 		s2 = "monster_hell_knight";
+		if (mb == CB_M_OGRE) 			s2 = "monster_ogre";
+		if (mb == CB_M_SHALR) 			s2 = "monster_shalrath";
+		if (mb == CB_M_SHAMBL) 			s2 = "monster_shambler";
+		if (mb == CB_M_SCRAG) 			s2 = "monster_wizard";
+		if (mb == CB_M_ZOMBY) 			s2 = "monster_zombie";
+		if (mb == CB_M_CTHON) 			s2 = "monster_boss";
+		if (mb == CB_M_TARBABY) 		s2 = "monster_tarbaby";
+		if (mb == CB_M_SCOURGE) 		s2 = "monster_scourge";
+		if (mb == CB_M_SHUBS) 			s2 = "monster_oldone";
+		if (mb == CB_M_SVORE) 			s2 = "monster_supervore";
+		if (mb == CB_M_GREMLIN) 		s2 = "monster_gremlin";
+		if (mb == CB_M_VOMIT) 			s2 = "monster_vomit";
+	}
+	else
+	if (mode == MON_NAME_II)
+	{
+		if (mb == CB_M_BLARG) 			s2 = "Blarg";
+		if (mb == CB_M_RAPTOR) 			s2 = "Velociraptor";
+		if (mb == CB_M_SPIDER) 			s2 = "Phase Spider";
+	}
+	else
+	if (mode == MON_FUNC_II)
+	{
+		if (mb == CB_M_BLARG) 			s2 = "monster_blarg";
+		if (mb == CB_M_RAPTOR) 			s2 = "monster_raptor";
+		if (mb == CB_M_SPIDER) 			s2 = "monster_spider";
 	}
 	return s2;	
 };
@@ -610,6 +633,8 @@ IMP_MOGRE
 IMP_MSCOURGE
 */
 
+// not having - fish, oldone
+
 float(entity chk) morph_clichk =
 {
 if (self.classname == "monster_army") return morph_test(chk,IMP_MENF,IMP_MOGRE,IMP_MZOMBIE,0,0,0); // he's kinda dumb...and a dork
@@ -623,12 +648,12 @@ else if (self.classname == "monster_dog") return morph_test(chk,IMP_MOGRE,IMP_ME
 else if (self.classname == "monster_hell_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR);
 else if (self.classname == "monster_tarbaby") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MWIZARD,IMP_MGREMLIN,IMP_MCTHON,IMP_MSHAMBLR);
 else if (self.classname == "monster_boss") return morph_test(chk,IMP_MCTHON,0,0,0,0,0); // cthon likes lava
-//else if (self.classname == "monster_vomit") return morph_test(chk,0,0,0,0,0,IMP_MSHAMBLR);
 else if (self.classname == "monster_enforcer") return morph_test(chk,IMP_MENF,IMP_MHKNIGHT,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR);
 else if (self.classname == "monster_supervore") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,IMP_MGREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
 else if (self.classname == "monster_shalrath") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,IMP_MGREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
 else if (self.classname == "monster_scourge") return morph_test(chk,IMP_MSCOURGE,IMP_MGREMLIN,0,0,0,IMP_MSHAMBLR);
 else if (self.classname == "monster_gremlin") return morph_test(chk,IMP_MSCOURGE,IMP_MGREMLIN,IMP_MDEMON,IMP_MOGRE,0,IMP_MSHAMBLR);
+else if (self.classname == "monster_vomit") return morph_test(chk,IMP_MSCOURGE,IMP_MGREMLIN,IMP_MDEMON,IMP_MCTHON,0,IMP_MSHAMBLR);
 // doom monsters - only friendly with doom dimension biengs
 else if (self.classname == "monster_imp") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
 else if (self.classname == "monster_arachnotron") return morph_test(chk,IMP_MIMP,IMP_MARACHN,IMP_MCYBER,0,0,0);
@@ -1169,6 +1194,12 @@ void() random_monster_wakey =
 {
 	local entity f;
 
+	if (self.owner.health < 1) // got killed - likely a monsta_frag --- note: chaos vector
+	{
+		remove(self);
+		return;
+	}
+		
 	if (self.owner.class_select == "class_monster")
 	if (self.owner.enemy.classname == "player")
 	{
@@ -1201,16 +1232,17 @@ void() random_monster_wakey =
 void() random_monster =
 {
 	local vector v;
+	local float M;
 
 	C_MONSTER = cvar("sv_monster_rnd");
-	C2_MONSTER = cvar("sv_monster_rnd2");
+	C_MONSTER_II = cvar("sv_monster_rnd2");
 
-	C_MONSTER = C_MONSTER - (C_MONSTER & (CB_M_CTHON | CB_M_SHUBS)); // because we really dont want to spawn cthon or shubs
+	C_MONSTER = C_MONSTER - (C_MONSTER & (CB_M_CTHON | CB_M_SHUBS)); // because we really dont want to spawn cthon or shubs without a qualify - maybe pre coded map locations
 
 	if (self.classname != "random_mspawn")
 	{
 // turned off
-		if (!C_MONSTER) // && ! C2_MONSTER)
+		if ((!C_MONSTER)  && (!C_MONSTER_II))
 		{
 // IDEA: get rid of all random monsters here?
 			if (random_monster_spawn)
@@ -1235,7 +1267,7 @@ void() random_monster =
 	}
 
 	local float f;
-	local entity e;
+	local entity e,c;
 	self.nextthink = time + C_MONSTER_WAIT * random() + C_MONSTER_DEV * crandom();
 /*
 	if (!C_MONSTER)
@@ -1244,12 +1276,14 @@ void() random_monster =
 		random_monster_spawn = world;
 		return;
 	}	*/
-	if (!C_MONSTER) return; // whoops - nothing to do - this shouldnt happen...of course
+	if ((!C_MONSTER) && (!C_MONSTER_II)) return; // whoops - nothing to do - this shouldnt happen...of course
 
-	f = 100;
+//	f = 100;
 	self.cnt = rnd_bit_mask(C_MONSTER);
+	self.count = rnd_bit_mask(C_MONSTER_II);
 	if (self.cnt < 1) self.cnt = 1;
 //	else self.cnt = self.cnt * 2;
+/* this loop was for an incremental search - we do random selection now
 	while ( (! self.cnt & C_MONSTER) && (f > 0) )
 	{
 		self.cnt = self.cnt * 2;
@@ -1257,22 +1291,45 @@ void() random_monster =
 		f = f - 1;
 	}
 	if (f <= 0)
+*/
+	if ((self.cnt < 1) && (self.count < 1))
 	{
 		if (WARNING) bprint("*** WARNING - random monster spawn found no bits - check sv_monster_rnd!\n");
 		return;
 	}
 
+	M = MON_FUNC_REG;
 	f = self.cnt;
-	self = spawn();
-	self.wad = monster_id(f, TRUE); // get spawn func
+	if (self.count < 1) self.count = 0;
+	if ( (f < 1) && (self.count >= 1) )
+	{
+		self.cnt = 0;
+		f = self.count;
+	}
 
-	self.classname = "dyn_monster";
-	item_call(self.wad);
-	e = dyn_rndloc();
-	v = e.origin;
-	v_z = v_z + 30 - fabs(e.mins_z); // has to move up enough to account for monsters feet at -24
-	setorigin(self, v);
-	spawn_tdeath(v, self);
+	c = self;
+	while (f)
+	{
+		self = spawn();
+		self.wad = monster_id(f, M); // get spawn func
+
+		self.classname = "dyn_monster";
+		item_call(self.wad);
+		e = dyn_rndloc();
+		v = e.origin;
+		v_z = v_z + 30 - fabs(e.mins_z); // has to move up enough to account for monsters feet at -24
+		setorigin(self, v);
+		spawn_tdeath(v, self);
+		if ((f >= 1) && (M == MON_FUNC_II)) f = 0;
+		if ( (c.cnt >= 1) && random() < C_MONSTER_II_RND)
+		{
+			c.cnt = 0;
+			f = c.count;
+			M = MON_FUNC_II;
+		}
+		else
+			f = 0;
+	}
 
 
 	if (WARNING) // dont normally post random monster info
@@ -1333,7 +1390,7 @@ void() monster_respawn =
 	{
 		if (f & S_MONSTER) // want to try and respawn these guys
 		{
-			mn = monster_id(f, TRUE);
+			mn = monster_id(f, MON_FUNC_REG);
 			e = find(world, classname, mn);
 			while (e)
 			{

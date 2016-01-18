@@ -289,6 +289,7 @@ if (ign != A_MONSTER)
 	precache_sound ("boss1/pain.wav");
 	precache_sound ("boss1/death.wav");
 }
+	self.netname = "Cthon";
 
 	total_monsters = total_monsters + 1;
 

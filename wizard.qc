@@ -397,6 +397,7 @@ if (ign != A_MONSTER)
 	precache_sound ("wizard/wpain.wav");
 	precache_sound ("wizard/wsight.wav");
 }
+	self.netname = "Scragg";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

@@ -423,6 +423,7 @@ if (ign != A_MONSTER)
 	precache_sound ("knight/sword1.wav");
 	precache_sound ("knight/sword2.wav");
 }
+	self.netname = "Hell Knight";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

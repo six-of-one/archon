@@ -77,6 +77,13 @@ shalrath.qc
 enforcer.qc
 oldone.qc
 scourge.qc
+mon_II/vomitus.qc
+
+// monsters II
+mon_II/blarg.qc
+mon_II/raptor.qc
+mon_II/spider.qc
+
 
 chasecam.qc  //Cataboligne MOD 9.11.3
 xwep/hook.qc

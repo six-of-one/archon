@@ -434,6 +434,7 @@ void(string cls) item_call =
 // monsters - random spawns
 	else if (cls == "monster_army") monster_army(A_MONSTER);
 	else if (cls == "monster_boss") monster_boss(A_MONSTER);
+	else if (cls == "monster_demon1") monster_demon1(A_MONSTER);
 	else if (cls == "monster_dog") monster_dog(A_MONSTER);
 	else if (cls == "monster_enforcer") monster_enforcer(A_MONSTER);
 	else if (cls == "monster_fish") monster_fish(A_MONSTER);
@@ -447,7 +448,15 @@ void(string cls) item_call =
 	else if (cls == "monster_tarbaby") monster_tarbaby(A_MONSTER);
 	else if (cls == "monster_wizard") monster_wizard(A_MONSTER);
 	else if (cls == "monster_zombie") monster_zombie(A_MONSTER);
+	else if (cls == "monster_scourge") monster_scourge(A_MONSTER);
+	else if (cls == "monster_gremlin") monster_gremlin(A_MONSTER);
+	else if (cls == "monster_vomit") monster_vomit(A_MONSTER);
 
+// monster set II
+	else if (cls == "monster_blarg") monster_blarg(A_MONSTER);
+	else if (cls == "monster_raptor") monster_raptor(A_MONSTER);
+	else if (cls == "monster_spider") monster_spider(A_MONSTER);
+	
 	else // fail - not valid
 	{
 		if (f) remove(f); // IDEA: restore what was hidden?

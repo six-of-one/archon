@@ -1898,7 +1898,7 @@ void() holdable_medkit =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = CB_HUMAN | CB_GREMLIN;
 };
 
 void() holdable_teleporter =
@@ -1945,7 +1945,7 @@ void() holdable_teleporter =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = MORPH_ALL; // everyone can get goody
+	self.mask_x = CB_HUMAN | CB_GREMLIN;
 };
 
 // hack just to match others - q3 has no explode boxes - and appearances can be deceiving

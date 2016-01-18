@@ -333,6 +333,8 @@ if (ign != A_MONSTER)
 	precache_sound2 ("shalrath/pain.wav");
 	precache_sound2 ("shalrath/sight.wav");
 }
+	self.netname = "Shalrath";
+
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
@@ -379,6 +381,7 @@ if (ign != A_MONSTER)
 	precache_sound2 ("shalrath/pain.wav");
 	precache_sound2 ("shalrath/sight.wav");
 }
+	self.netname = "Vorerel";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

@@ -348,6 +348,7 @@ if (ign != A_MONSTER)
 	precache_sound ("dog/dsight.wav");
 	precache_sound ("dog/idle.wav");
 }
+	self.netname = "Doggy";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

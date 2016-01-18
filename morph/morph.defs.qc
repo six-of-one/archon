@@ -34,7 +34,6 @@ float A_MONSTER				= -555777; // allow monsters in dm - monster_* called from co
 float M_MONSTER; // bit mask to allow map monsters in dm
 float S_MONSTER; // bit mask of monsters to respawn when dead (map monsters only, no random ones) - works in single player too!
 float C_MONSTER; // bit mask of monsters to spawn randomly
-float C2_MONSTER; // bit mask for extra set of randomly spawned critters
 float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent - if 0 save for a live control update loop that can recreate the monster
 
 // timings
@@ -78,9 +77,9 @@ float CB_M_SCOURGE				= 16384;
 float CB_M_SHUBS					= 32768;
 float CB_M_SVORE					= 65536; // super vore
 float CB_M_GREMLIN				= 131072;
+float CB_M_VOMIT					= 262144; // guy id left out
 
 /*
-float CB_M_					= 262144;
 float CB_M_					= 524288;
 float CB_M_					= 1048576;
 float CB_M_					= 2097152;
@@ -88,13 +87,35 @@ float CB_M_					= 4194304;
 float CB_M_					= 8388608;
 */
 
+float MON_NAME_REG				= 0;
+float MON_FUNC_REG				= 1;
+
+
+// add in monster set from vars mods
+
+float C_MONSTER_II_RND			= 0.6; // chance of spawning a monster from 2nd random mask
+
+float M_MONSTER_II; // bit mask to allow map monsters in dm
+float S_MONSTER_II; // bit mask of monsters to respawn when dead (map monsters only, no random ones) - works in single player too!
+float C_MONSTER_II; // bit mask of monsters to spawn randomly
+
+float MONSTER_MASK_II; // all monster bits
+
+
+float CB_M_BLARG					= 1;
+float CB_M_RAPTOR					= 2;
+float CB_M_SPIDER					= 4;
+
+float MON_NAME_II					= 2;
+float MON_FUNC_II					= 3;
+
 /* special - will use something else
-float CB_GUNNEY					= 64;
-float CB_SUPTANK					= 128;
-float CB_TANK						= 256;
-float CB_IMP						= 2097152;
-float CB_ARACHN					= 4194304;
-float CB_CYBER						= 8388608;
+float CB_M_GUNNEY					= 64;
+float CB_M_SUPTANK				= 128;
+float CB_M_TANK					= 256;
+float CB_M_IMP						= 2097152;
+float CB_M_ARACHN					= 4194304;
+float CB_M_CYBER					= 8388608;
 */
 
 // selection

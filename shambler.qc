@@ -353,6 +353,7 @@ if (ign != A_MONSTER)
 	precache_sound ("shambler/melee2.wav");
 	precache_sound ("shambler/smack.wav");
 }
+	self.netname = "Shambler";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

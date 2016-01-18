@@ -173,6 +173,7 @@ if (ign != A_MONSTER)
 	precache_sound2 ("fish/bite.wav");
 	precache_sound2 ("fish/idle.wav");
 }
+	self.netname = "Fishy";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

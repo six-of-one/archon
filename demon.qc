@@ -199,6 +199,7 @@ if (ign != A_MONSTER)
 	precache_sound ("demon/idle1.wav");
 	precache_sound ("demon/sight2.wav");
 }
+	self.netname = "Fiend";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

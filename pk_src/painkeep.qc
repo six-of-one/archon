@@ -858,6 +858,7 @@ void() pk_liveupd =
 	}
 
 	S_MONSTER = cvar("sv_monster_resp");
+	S_MONSTER_II = cvar("sv_monster_resp2");
 	if (S_MONSTER & MONSTER_MASK)
 	{
 		if (!monster_respawner) monster_respawn();
@@ -870,7 +871,7 @@ void() pk_liveupd =
 	}
 
 	C_MONSTER_CNT = cvar("sv_monster_cnt");
-	if ( (C_MONSTER != cvar("sv_monster_rnd")) || (C2_MONSTER != cvar("sv_monster_rnd2")) )
+	if ( (C_MONSTER != cvar("sv_monster_rnd")) || (C_MONSTER_II != cvar("sv_monster_rnd2")) )
 	{
 		random_monster(); // control
 	}
@@ -879,6 +880,7 @@ void() pk_liveupd =
 	if (M_MONSTER != cvar("sv_monster_map"))
 	{
 		M_MONSTER = cvar("sv_monster_map"); // TDO: process loop - turn bits on and off
+		M_MONSTER_II = cvar("sv_monster_map2");
 //		if (!R_MONSTER) // monsters were not removed when loading map - live controls usefull
 	}
 
@@ -1214,7 +1216,10 @@ void() pk_srvcmd_set =
 	M_MONSTER = 0;
 	S_MONSTER = 0;
 	C_MONSTER = 0;
-	C2_MONSTER = 0;
+
+	M_MONSTER_II = 0;
+	S_MONSTER_II = 0;
+	C_MONSTER_II = 0;
 
 	S_MONSTER_WAIT = 30; //60; // min wait till we respawn a dead mosnter
 	S_MONSTER_DEV = 10;
@@ -1495,8 +1500,11 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_monster_map", "0"); // bit mask to allow map monsters in dm
 		registercvar("sv_monster_rnd", "0"); // bit mask to allow random spawned monsters in dm
 		registercvar("sv_monster_cnt", "0"); // # of random monster to spawn
-		registercvar("sv_monster_rnd2", "0"); // bit mask to allow extra random spawned monsters in dm
 		registercvar("sv_monster_resp", "0"); // bit mask to respawn some map monsters (not random ones)
+// monsters II
+		registercvar("sv_monster_map2", "0"); // bit mask to allow map monsters in dm
+		registercvar("sv_monster_rnd2", "0"); // bit mask to allow extra random spawned monsters in dm
+		registercvar("sv_monster_resp2", "0"); // bit mask to respawn some map monsters (not random ones)
 
 // things dealing with the dead
 

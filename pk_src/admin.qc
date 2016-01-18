@@ -1025,24 +1025,33 @@ void() Admin_itemmenu =
 Monsters menu admin
 ==========
 */
+// TDO: extend for monsters 2
+
 void() Admin_allmonsters =
 {
 	local string it;
-	local float f, mn;
+	local float f, mn, c, m;
 
 	mn = 0;
+	c = MON_NAME_REG;
+	m = MONSTER_MASK;
+	if (self.cnt) 
+	{
+		c = MON_NAME_II;
+		m = MONSTER_MASK_II;
+	}
 
 	bprint("\b--------------------------------\n");
 	mn = 1;
 	bprint("All monsters bit set: ");
-	bit_print(MONSTER_MASK, MONSTER_MASK);
+	bit_print(m, m);
 	bprint(" f: ");
-	bprint(ftos(MONSTER_MASK));
+	bprint(ftos(m));
 	bprint("\n\nlist of all monsters:\n");
 	f = 1;
 	while (f < MONSTER_MASK)
 	{
-		it = monster_id(f, 0);
+		it = monster_id(f, c);
 		bprint(it);
 		bprint("\n"); 
 		f = f * 2;
@@ -1054,79 +1063,92 @@ void() Admin_allmonsters =
 void() Admin_monsterbits =
 {
 	local string it;
-	local float f, mn;
+	local float f, mn, c, m, SS, CC, MM;
 
 	mn = 0;
+	c = MON_NAME_REG;
+	m = MONSTER_MASK;
+	SS = S_MONSTER;
+	CC = C_MONSTER;
+	MM = M_MONSTER;
+	if (self.cnt) 
+	{
+		c = MON_NAME_II;
+		m = MONSTER_MASK_II;
+		SS = S_MONSTER_II;
+		CC = C_MONSTER_II;
+		MM = M_MONSTER_II;
+	}
 
 	bprint("\b--------------------------------\n");
-	if (! M_MONSTER & MONSTER_MASK)
+	if (! MM & m)
 		bprint("No map monsters appearing in DM\n");
 	else
 	{
 		mn = 1;
 		bprint("Map monsters bit set: ");
-		bit_print(MONSTER_MASK, M_MONSTER);
+		bit_print(m, MM);
 		bprint(" f: ");
-		bprint(ftos(M_MONSTER));
+		bprint(ftos(MM));
 		bprint("\n\nlist appearing in DM:\n");
 		f = 1;
-		while (f < MONSTER_MASK)
+		while (f < m)
 		{
-			it = monster_id(f, 0);
-			if (f & M_MONSTER) { bprint(it); bprint("\n"); }
+			it = monster_id(f, c);
+			if (f & MM) { bprint(it); bprint("\n"); }
 			f = f * 2;
 		}
 	}
 
 	bprint("\b--------------------------------\n");
-	if (! S_MONSTER & MONSTER_MASK)
+	if (! SS & m)
 		bprint("No map monsters will respawn\n");
 	else
 	{
 		mn = 1;
 		bprint("Respawn monsters bit set: ");
-		bit_print(MONSTER_MASK, S_MONSTER);
+		bit_print(m, SS);
 		bprint(" f: ");
-		bprint(ftos(S_MONSTER));
+		bprint(ftos(SS));
 		bprint("\n\nlist that respawn:\n");
 		f = 1;
-		while (f < MONSTER_MASK)
+		while (f < m)
 		{
-			it = monster_id(f, 0);
-			if (f & S_MONSTER) { bprint(it); bprint("\n"); }
+			it = monster_id(f, c);
+			if (f & SS) { bprint(it); bprint("\n"); }
 			f = f * 2;
 		}
 	}
 	bprint("\b--------------------------------\n");
-	if (! C_MONSTER & MONSTER_MASK)
+	if (! CC & m)
 		bprint("No random monsters appearing in DM\n");
 	else
 	{
 		mn = 1;
 		bprint("Random monsters bit set: ");
-		bit_print(MONSTER_MASK, C_MONSTER);
+		bit_print(m, CC);
 		bprint(" f: ");
-		bprint(ftos(C_MONSTER));
+		bprint(ftos(CC));
 		bprint("\n\nlist appearing in DM:\n");
 		f = 1;
-		while (f < MONSTER_MASK)
+		while (f < m)
 		{
-			it = monster_id(f, 0);
-			if (f & C_MONSTER) { bprint(it); bprint("\n"); }
+			it = monster_id(f, c);
+			if (f & CC) { bprint(it); bprint("\n"); }
 			f = f * 2;
 		}
 	}
 
 	bprint("\b--------------------------------\n");
 	bprint("Control bits set: ");
-	bit_print(MONSTER_MASK, pk_monster_set);
+	bit_print(m, pk_monster_set);
 	bprint(" f: ");
 	bprint(ftos(pk_monster_set));
 	bprint("\n\nlist contol set:\n");
 	f = 1;
-	while (f < MONSTER_MASK)
+	while (f < m)
 	{
-		it = monster_id(f, 0);
+		it = monster_id(f, c);
 		if (f & pk_monster_set) { bprint(it); bprint("\n"); }
 		f = f * 2;
 	}
@@ -1140,6 +1162,49 @@ void() Admin_monsterbits =
 Monsters menu admin
 ==========
 */
+void() Admin_monstermenu2 =
+{
+	self.message =
+				       "\b     Admin Monster Menu:    \n"
+				       "\b+--------------------------+\n"
+							"  +------- \bmonster\b ------+  \n"
+							"  01: Blarg                 \n" // 1
+							"  02: Velociraptor          \n" // 2
+							"  03: Phase spider          \n" // 4
+//							"  04:        \n" // 8
+//							"  05:        \n" // 16
+//							"  06:        \n" // 32
+//							"  07:        \n" // 64
+//							"  08:        \n" // 128
+//							"  09:        \n" // 256
+//							"  10:        \n" // 512
+//							"  11:        \n" // 1024
+//							"  12:        \n" // 2048
+//							"  13:        \n" // 4096
+//							"  14:        \n" // 8192
+//							"  15:        \n" // 16384
+//							"  16:        \n" // 32768
+//							"  17:        \n" // 65536
+//							"  18:        \n" // 131072
+//							"  19:        \n" // 262144
+//							"  20:        \n" // 542288
+//							"  21:        \n" // 1048576
+//							"  22:        \n" // 2097152
+//							"  23:        \n" // 4194304
+//							"  24:        \n" // 8388608
+							"  +------ \bcontrols\b ------+  \n" 
+							"  26: Bits -> map monsters  \n" 
+							"  27: Bits -> to random     \n"
+							"  28: Bits -> to respawn    \n"
+							"  29: All bits off          \n" 
+							"  30: Show monster bits     \n"
+							"  31: List all monsters     \n"
+							"  32: Monster set I         \n"
+							" 666:  main menu            \n"
+							" admin impulse: exit admin  \n"
+				       "\b+--------------------------+\n"
+						 "\b  Enter code: ";
+};
 
 void() Admin_monstermenu =
 {
@@ -1147,7 +1212,7 @@ void() Admin_monstermenu =
 				       "\b     Admin Monster Menu:    \n"
 				       "\b+--------------------------+\n"
 							"  +------- \bmonster\b ------+  \n"
-							"  01: Army Grunt            \n" // 1			- really 32
+							"  01: Army Grunt            \n" // 1
 							"  02: Fish                  \n" // 2
 							"  03: Knight                \n" // 4
 							"  04: Rabid Dog             \n" // 8
@@ -1163,14 +1228,14 @@ void() Admin_monstermenu =
 							"  14: Spawn                 \n" // 8192
 							"  15: Scourge               \n" // 16384
 							"  16: Shubbers              \n" // 32768
-							"  17: Super Vore            \n" // 65536
-//							"  18: Only these items      \n" // 131072
-//							"  19: None of these items   \n" // 262144
-//							"  20: Substitute removed    \n" // 542288
-//							"  21: Infinite ammo         \n" // 1048576
-//							"  22: Infinite ammo         \n" // 2097152
-//							"  23: Infinite ammo         \n" // 4194304
-//							"  24: Infinite ammo         \n" // 8388608
+							"  17: Vorerel               \n" // 65536
+							"  18: Gremlin               \n" // 131072
+							"  19: Vomitus               \n" // 262144
+//							"  20:        \n" // 542288
+//							"  21:        \n" // 1048576
+//							"  22:        \n" // 2097152
+//							"  23:        \n" // 4194304
+//							"  24:        \n" // 8388608
 							"  +------ \bcontrols\b ------+  \n" 
 							"  26: Bits -> map monsters  \n" 
 							"  27: Bits -> to random     \n"
@@ -1178,12 +1243,13 @@ void() Admin_monstermenu =
 							"  29: All bits off          \n" 
 							"  30: Show monster bits     \n"
 							"  31: List all monsters     \n"
-//							"  32: Monster set II        \n"
+							"  32: Monster set II        \n"
 							" 666:  main menu            \n"
 							" admin impulse: exit admin  \n"
 				       "\b+--------------------------+\n"
 						 "\b  Enter code: ";
 
+	if (self.cnt) Admin_monstermenu2();
 	self.wad = "";
 	self.admin = 30; //  - this & 3 must = 2
 	self.lefty = 0;
@@ -1997,7 +2063,10 @@ void() AdminCommands =
 			Admin_mainmenu();
 		else if (self.lefty == 26)
 		{
-			cvar_set("sv_monster_map", ftos(pk_monster_set));
+			if (self.cnt)
+				cvar_set("sv_monster_map2", ftos(pk_monster_set));				
+			else
+				cvar_set("sv_monster_map", ftos(pk_monster_set));
 			self.wad = "\nBit set written to sv_monster_map";
 			bprint("Map monsters bit set: ");
 			bit_print(MONSTER_MASK, pk_monster_set);
@@ -2005,7 +2074,10 @@ void() AdminCommands =
 		}
 		else if (self.lefty == 27)
 		{
-			cvar_set("sv_monster_rnd", ftos(pk_monster_set));
+			if (self.cnt)
+				cvar_set("sv_monster_rnd2", ftos(pk_monster_set));				
+			else
+				cvar_set("sv_monster_rnd", ftos(pk_monster_set));
 			self.wad = "\nBit set written to sv_monster_rnd";
 			bprint("Random monsters bit set: ");
 			bit_print(MONSTER_MASK, pk_monster_set);
@@ -2013,7 +2085,10 @@ void() AdminCommands =
 		}
 		else if (self.lefty == 28)
 		{
-			cvar_set("sv_monster_resp", ftos(pk_monster_set));
+			if (self.cnt)
+				cvar_set("sv_monster_resp2", ftos(pk_monster_set));				
+			else
+				cvar_set("sv_monster_resp", ftos(pk_monster_set));
 			self.wad = "\nBit set written to sv_monster_resp";
 			bprint("Respawning map monsters bit set: ");
 			bit_print(MONSTER_MASK, pk_monster_set);
@@ -2033,10 +2108,12 @@ void() AdminCommands =
 			Admin_monsterbits();
 		else if (self.lefty == 31)
 			Admin_allmonsters();
-//		else if (self.lefty == 32)
-//		{
-//		}
-		else if (self.lefty > 0 && self.lefty < 18) // < 25) NOTE: only 1 - 17 used
+		else if (self.lefty == 32)
+		{
+			self.cnt = !self.cnt;
+			Admin_monstermenu();
+		}
+		else if (self.lefty > 0 && self.lefty < 20) // < 25) NOTE: only 1 - 17 used
 		{
 			self.lefty = self.lefty - 1;
 			f = AdminBitFlag(self.lefty);

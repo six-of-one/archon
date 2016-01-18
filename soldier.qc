@@ -301,6 +301,7 @@ if (ign != A_MONSTER)
 
 	precache_sound ("player/udeath.wav");		// gib death
 }
+	self.netname = "Soldier";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

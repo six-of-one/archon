@@ -439,6 +439,7 @@ if (ign != A_MONSTER)
 	precache_sound ("ogre/ogsawatk.wav");
 	precache_sound ("ogre/ogwake.wav");
 }
+	self.netname = "Ogre";
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

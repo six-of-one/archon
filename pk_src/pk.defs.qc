@@ -204,6 +204,7 @@ float DYN_FORCE_CNT; // max forced items to load
 float DYN_START_TIME			= 5;	// seconds till dynamic spawner starts its thing - precache must cutoff before this, leave a couple secs for map load
 string (float mc) item_by_mcode;
 void(string cls) item_call;
+void(entity e, string cl) item_call_save;
 string(entity e) item_ident;
 void() dtf_handle;
 entity() dyn_rndloc;

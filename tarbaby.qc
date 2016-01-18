@@ -206,7 +206,9 @@ if (ign != A_MONSTER)
 	precache_sound2 ("blob/hit1.wav");
 	precache_sound2 ("blob/land1.wav");
 	precache_sound2 ("blob/sight1.wav");
-}	
+}
+	self.netname = "Spawn";
+
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
@@ -230,6 +232,7 @@ if (ign != A_MONSTER)
 		setsize (self, '-16 -16 -24', '16 16 40');
 		self.health = 160;
 		self.th_missile = lavaball_shot;
+		self.netname = "Bomb";
 	}
 
 	walkmonster_start ();
