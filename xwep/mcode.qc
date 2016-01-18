@@ -1953,7 +1953,13 @@ void() barrel_regen =
 		d_barrel();
 	else
 		misc_explodbox_set(self, self.mdl, self.currentammo, self.armorvalue, self.movetype);
+	if (self.model == "progs/q2_barrel.mdl")
+		setsize (self, '-14 -14 0', '14 14 42');
 };
+
+void() q2_barrel1 = [ 1, q2_barrel2 ] { self.nextthink = time + 0.05; };
+void() q2_barrel2 = [ 2, q2_barrel3 ] { self.nextthink = time + 0.05; };
+void() q2_barrel3 = [ 3, barrel_explode ] { self.nextthink = time + 0.05; };
 
 
 void() barrel_explode =
@@ -1962,6 +1968,17 @@ void() barrel_explode =
 	local vector flg;
 	local float bdmg;
 	local string bsnd;
+
+	if (self.model == "progs/q2_barrel.mdl")
+	{
+		if (self.frame != 3)
+		{
+			q2_barrel1(); // blow up
+			return;
+		}
+		self.frame = 0; // restore
+		setsize (self, '-14 -14 0', '14 14 42');
+	}
 
 	self.mdl = self.model;
 	self.solid = SOLID_NOT;

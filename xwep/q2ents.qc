@@ -757,6 +757,8 @@ void() q2_misc_explobox =
 	self.netname = "Barrel";
 	if (self.class_select == "") self.class_select = "q2_item";
 	misc_explodbox_set(self, "progs/q2_barrel.mdl", Q2_BARREL_BLAST, 80, MOVETYPE_NONE);
+	setsize (self, '-14 -14 0', '14 14 42');
+	self.frame = 0;
 //	self.noise = "doom/dsbarexp.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.wait = RSP_TIME;

@@ -1358,11 +1358,13 @@ void() player_chain0   = [$lightfatt1, player_chain0]
 	if (self.weaponframe >= 9)
 		self.weaponframe = 1;
 
-	if (self.tomb_time == -666)
+	if (self.tomb_time < -600)
 	{
 		self.frame = self.frame + (self.weaponframe & 3);
+		self.tomb_time = self.tomb_time + 1;
 		self.nextthink = time + 0.2;
-		if (self.attack_finished > time) return;
+//		if (self.attack_finished > time) return;
+		if (self.tomb_time < -656) return;
 		self.tomb_time = 0;
 		player_run();
 		return;

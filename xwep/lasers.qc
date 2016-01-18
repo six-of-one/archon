@@ -78,14 +78,6 @@ void(float fl) fire_laser1 =
 
 	if (!laser_sel) laser_bolt_select();
 
-
-
-// TESTING
-bprint(" *** eweap ");
-bprint(EWEAP.netname);
-
-
-
 	lv = LASER_VEL;
 	fy = fz = 0;
 	org = self.origin; // + v_forward * 4 + v_up * 16; // gen fire ref - really chaos morph, but was screwing up firebursts
@@ -119,6 +111,11 @@ bprint(EWEAP.netname);
 
 
 
+// TESTING
+if (cvar("saved1") == -777)
+{
+bprint(" *** eweap ");
+bprint(EWEAP.netname);
 
 bprint(", hit dmg = ");
 bprint(ftos(newmis.dmg));
@@ -133,6 +130,10 @@ bprint(ftos(newmis.dmg+EWEAP.dodmg));
 bprint(".\n");
 fts.dmg = fts.dmg + newmis.dmg+EWEAP.dodmg;
 fts.cnt = fts.cnt + 1;
+}
+
+
+
 
 
 };

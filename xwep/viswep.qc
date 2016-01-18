@@ -301,8 +301,8 @@ entity(float qw, float pkw, entity vh) vchk =
 // fn (vwep_firecary) - fired a carryable, remove viswep if last one
 
 // called from pk_weapon  / pk_artifacts
-// e - ent firing wep
 // pkbt - pk bit of weapon
+// e - ent firing wep
 
 void(entity e, float pkbt) vwep_firecary =
 {
@@ -644,7 +644,7 @@ void() viswep_post =
 				}
 				if (!vwc) vhead.model = "";
 			}
-			else if (!VW_HOLSTER)
+			else if (!VW_HOLSTER) // dont show holstered weps / items
 			{
 				vwc = FALSE; // dont updated this viswep (only held gun)
 				vhead.model = "";
