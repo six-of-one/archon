@@ -643,7 +643,11 @@ void() morph_cube =
 		r = rint(random() * 6);
 		if (!r)
 		{
+#ifdef testset
+			if (time > 24) self.mask_x = MORPH_ARCHON;
+#else
 			if (time > 240) self.mask_x = MORPH_ARCHON;
+#endifdef
 			else r = r + 1;
 		}
 //		if ((r < 3) && ULOK2) self.mask_x = MORPH_STROG;

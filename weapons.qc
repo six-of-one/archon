@@ -63,6 +63,7 @@ void () W_FireAxe =
 	traceline (source, source + v_forward*64, FALSE, self);
 
 #ifdef warning
+/*
 							if (WARNING & 32)
 							{
 								bprint("*** warning: fireaxe hit = ");
@@ -73,6 +74,7 @@ void () W_FireAxe =
 								bprint(vtos(trace_endpos));
 								bprint("\n");
 							}
+							*/
 #endifdef
 
 	if (trace_fraction == 1.0)

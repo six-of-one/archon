@@ -217,10 +217,23 @@ void()	young_run1	=[	$run1,		young_run1	]
 	young_slimedamage();
 
 // trying to fix "floaty" aliens - randomly try jumping
-	if (! self.flags & FL_ONGROUND)
-	if (random() < 0.3)
-		self._jump();
+//	if (! self.flags & FL_ONGROUND) - flag says they are on ground
 //	if (random() > 0.9) droptofloor(0, 0);
+
+	if (self.ip_orgOrigin != self.origin)
+	{
+		self.ip_orgOrigin = self.origin;
+		self.cnt = 0;
+	}
+	else
+	{
+		self.cnt = self.cnt + 1;
+		if (self.cnt > 50)
+		{
+			self._jump();
+			self.cnt = 0;
+		}
+	}
 
 };
 /*

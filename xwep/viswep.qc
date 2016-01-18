@@ -674,6 +674,7 @@ void() viswep_post =
 			{
 				if (vhead.owner.eweapon)
 				{
+					if (vhead.owner.eweapon.grap_state != 666000)
 					if (vhead.owner.eweapon.weaponmodel != vhead.owner.weaponmodel) PK_SetCurrentAmmo();
 				}
 				else
@@ -963,6 +964,18 @@ void(entity e, string md, entity p) DeadThrew =
 
 	if (e.eweapon) // note: even though newmis is spawned for the thrown item, eweapon is kept around, because threw weps use backpack touch code
 	{
+
+
+#ifdef warning
+		if (WARNING & 16384)
+		{
+			bprint(" *** warning: dead threw - ");
+			bprint(e.netname);
+			bprint("\n");
+		}
+#endifdef
+
+
 		newmis.eweapon = e;
 		newmis.noise = e.noise;
 		newmis.eweapon.wad = "packwep";
@@ -1035,6 +1048,18 @@ void(entity e, string md, entity p) DeadThrew =
 				newmis.noise = "misc/pickup/tone2.wav";
 			}
 		}
+
+
+#ifdef warning
+		if (WARNING & 16384)
+		{
+			bprint(" *** warning: dead threw - ");
+			bprint(ftos(newmis.lip));
+			bprint("\n");
+		}
+#endifdef
+
+
 	}
 
 //	newmis.flags = FL_ITEM; // not making these large
@@ -1090,6 +1115,17 @@ void(entity pack, vector pv1) DeadThrowWeps =
 	e = self.vwepent;
 
 	if (!e || !DEAD_THROW) return;
+
+
+#ifdef warning
+		if (WARNING & 16384)
+		{
+			bprint(" *** warning: dead throwing for - ");
+			bprint(self.netname);
+			bprint("\n");
+		}
+#endifdef
+
 
 	if (!DEAD_THROW_PKI || DEAD_THROW_PKI == 2) // not throwning or just gone - set mask
 		pkid = PKID;

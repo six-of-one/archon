@@ -45,6 +45,7 @@ float WARNING;								// display warnings - dev work mainly - now uses the follo
 												// & 2048 - hub ops
 												// & 4096 - archon ops
 												// & 8192 - looped ops
+												// & 16384 - dead threw / viswep
 												// & 262144 - block some repeating warnings
 //
 // control over test code
@@ -118,12 +119,12 @@ float XTR_SAVED1				= 1195724115; // saved1 test val
 //
 // **************************************
 
-// version info - at 1.0.5 - KEEP up to date! - note: files = admin.cfg, archon.txt, readme.txt, alias_codes.txt, cvar.txt
-string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.5\"\n"; // these are displayed prior to the darkplaces internal cmd, which then runs - very cool
-string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.5\"\n";
-string vmotd					= "\\/ersion \b1\b.\b0\b.\b5a\b\n\n";
-string motd2					= "\n\n[\\/\b1\b.\b0\b.\b5a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
-string infobver				= "infobar 10 \"you are playing: Archon 1.0.5 alpha\"\n";
+// version info - at 1.1 - KEEP up to date! - note: files = admin.cfg, archon.txt, readme.txt, alias_codes.txt, cvar.txt
+string vers						= "alias version \"echo quake-c: chaos archon (beta) 1.1\"\n"; // these are displayed prior to the darkplaces internal cmd, which then runs - very cool
+string stats					= "alias status \"echo code:     chaos archon (beta) 1.1\"\n";
+string vmotd					= "\\/ersion \b1\b.\b1\b.\b0b\b\n\n";
+string motd2					= "\n\n[\\/\b1\b.\b1\b.\b0b\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
+string infobver				= "infobar 10 \"you are playing: Archon 1.1 beta\"\n";
 
 // web sites
 string vweb						= "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n";

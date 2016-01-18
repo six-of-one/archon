@@ -612,6 +612,16 @@ void() PlayerDie =
 {
 	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
 
+
+#ifdef warning
+		if (WARNING & 16384)
+		{
+			bprint("\n*** warning: player die - ");
+			bprint(self.netname);
+			bprint("\n");
+		}
+#endifdef
+
 	PK_PlayerDie();
 /*
 	local	float	i;

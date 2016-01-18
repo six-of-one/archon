@@ -1093,6 +1093,11 @@ void() player_mgchg4   =[$lightfatt4, player_mgchg1  ]
 
 // fire pistols & other items that use axe frames
 
+// uses a few axe frames & a hack to create the appearance of holding up and firing a pistol type weapon
+// this saved buku work making an entire new frameset and animating through its positions
+// it looks midly believable - very acceptable for q1 level appearances anyway
+// and now we bring you..."how not to be seen"
+
 float GUN_WAIT  = 666020;
 float GUN_BASE  = 666000;
 
@@ -1124,6 +1129,7 @@ void() player_pistol1 =
 		{
 //			sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
 			self.eweapon.tomb_time = random();
+
 			if (self.eweapon.tomb_time < 0.5)
 				player_axe1 ();
 			else if (self.eweapon.tomb_time <0.7)
@@ -2140,6 +2146,17 @@ void() X_Fire3BFG =
 void() e_weap_Attack =
 {
 	local float c;
+
+
+#ifdef warning
+							if (WARNING & 32)
+							{
+								bprint("*** warning: in e_weap_Attack = ");
+								bprint(self.eweapon.netname);
+								bprint("\n");
+							}
+#endifdef
+
 
 	EWEAP = self.eweapon;
 	if (EWEAP._attack == painkeep_cube_use) c = TRUE;
