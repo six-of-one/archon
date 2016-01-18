@@ -485,9 +485,9 @@ void(string cls) item_call =
 	else if (cls == "monster_supervore") monster_supervore(A_MONSTER);
 	else if (cls == "monster_shambler") monster_shambler(A_MONSTER);
 //	else if (cls == "monster_tarbaby") monster_tarbaby(A_MONSTER);
-//	else if (cls == "monster_tarbaby_rnd") {self.spawnflags = TB_RANDOM; monster_tarbaby(A_MONSTER); }
+//	else if (cls == "monster_tarbaby_rnd") {self.spawnflags = 16; monster_tarbaby(A_MONSTER); }
 // just make randomly spawned spawns random select
-	else if (cls == "monster_tarbaby") {self.spawnflags = TB_RANDOM; monster_tarbaby(A_MONSTER); }
+	else if (cls == "monster_tarbaby") {self.spawnflags = 16 /*TB_RANDOM*/; monster_tarbaby(A_MONSTER); }
 	else if (cls == "monster_wizard") monster_wizard(A_MONSTER);
 	else if (cls == "monster_zombie") monster_zombie(A_MONSTER);
 	else if (cls == "monster_scourge") monster_scourge(A_MONSTER);
@@ -1121,7 +1121,19 @@ entity() dyn_rndloc =
 					}
 			e.chain = e.chain.chain;
 			}
+		else if (e.chain.v_angle_z)  {
+					if (WARNING & 8192)
+					{
+						bprint("*** warning: dyn_rndloc - skipped (v_angle - map_hack source ent) - ");
+						bprint(item_ident(e.chain));
+						bprint(" v: ");
+						bprint(vtos(e.chain.origin));
+						bprint("\n");
+					}
+			e.chain = e.chain.chain;
+			}
 #else
+		else if (e.chain.v_angle_z) e.chain = e.chain.chain; // ignore map_hack source ents
 		else if (noway_below && (e.chain.origin_z < noway_below)) e.chain = e.chain.chain;
 		else if (noway_above && (e.chain.origin_z > noway_above)) e.chain = e.chain.chain;
 // 11.15.13 - and dont pick solid origins

@@ -246,6 +246,9 @@ void() PK_init =
 	}
 	rune_new_map = FALSE;
 
+// start hash
+	if (!system_hash) system_hash = 10000 + rint(random() * 3000);
+
 // extra sounds by...are apparently not supplied, except gib_?.wav
 
 	pk_xsound = (pk_flags & PK_XSOUND);

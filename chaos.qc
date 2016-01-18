@@ -83,7 +83,7 @@ entity(float mvt, float sd, float flg, float ct, vector org, vector smin, vector
 
 // fn(cnt_ent) - count all such ents on level, make chain if head ent provided
 
-// hent - head entity for chain struct
+// hent - head entity for chain struct, no chain if world is sent as hent
 // match - find on this field
 // srch - search for this
 
@@ -95,7 +95,7 @@ entity(float mvt, float sd, float flg, float ct, vector org, vector smin, vector
 //#define cntentnext
 
 #ifdef cntentnext
-float cnt_ent_next; // use pk .next to chain up
+float cnt_ent_next; // use pk .next to chain up instead of .chain
 #endifdef
 
 float(entity hent, string match, string srch) cnt_ent =
@@ -816,180 +816,237 @@ void () plat_spawn_inside_trigger;
 
 // copy a hack element, model, item, monster, etc
 
+void () trigger_multiple;
+void () trigger_relay;
+void () trigger_secret;
+void () trigger_counter;
+void () trigger_hurt;
+void () q100_trigger_push;
+
 // self - hack to copy to
+
+// - replaced by locals 8.3.14
 // self.dropent - source item
 // self.aiment - set to copied ent
 
 // deathtype - sub search string for recursive replication of target1 / target2 sub items
 
-void() maphack_copy =
-{
-/// ******* - add 2 local ents, one for copy, and one for recursive sub ent run (target1, target2)
+// ec - new ent copied from source
+// es - source ent to copy
+// self - originating ent that targets the sources to copy
 
-//	if (self.dropent.rad_time < fabs(self.dropent.lefty))
+// hacks master ent - the current map hack
+entity mh;
+
+void(entity es) maphack_copy =
+{
+	local entity ec, sv;
 
 // got a live one
-	if (self.dropent)
+	if (es && mh)
 	{
 // only make one - really intended for buildings, altars, etc.  may have other uses
-		if (self.dropent.lefty < 0)
+		if (es.lefty < 0)
 		{
-			self.dropent.targetname = "misc/null.wav";
-			self.dropent.deathtype = "misc/null.wav";
+			es.targetname = "misc/null.wav";
+			es.deathtype = "misc/null.wav";
 		}
 
-		self.aiment = spawn();
-		copyentity(self.dropent, self.aiment);
+		ec = spawn();
+		copyentity(es, ec);
 
-		self.aiment.finaldest = self.aiment.dest = self.dropent.origin;
+		ec.button12 = mh.button12; // associate him with his hack
+// get origin & rotate translate
+		ec.finaldest = ec.dest = es.origin;
 
-		self.aiment.dest1 = self.aiment.dest2 = v0;
-		if ((self.aiment.classname == "func_button") ||
-			(self.aiment.classname == "door") && (self.aiment.touch != secret_touch))
-			self.aiment.dest1 = self.aiment.dest2 = self.dropent.pos2; // door / button only
+		ec.dest1 = ec.dest2 = v0;
+		if ((ec.classname == "func_button") ||
+			(ec.classname == "door") && (ec.touch != secret_touch))
+			ec.dest1 = ec.dest2 = es.pos2; // door / button only
 
-		if (self.classname == "func_maphack")
-		if ((self.angles_y == 90) || (self.angles_y == 180) || (self.angles_y == 270))
+//		if (self.classname == "func_maphack") // always have a maphack now
+		if ((mh.angles_y == 90) || (mh.angles_y == 180) || (mh.angles_y == 270))
 		{
+// note: does not work on secret doors that use mangle for dir
+			if (ec.mangle_y && (ec.touch != secret_touch)) // make sure this copy item matches - mostly for plats / doors that dont rotate triggers
+			{
+				if (ec.mangle_y > 0) // negative values are a passthrough - copy / no rotates
+				if (ec.mangle_y == 360) ec.mangle_y = 0;
+				if (ec.mangle_y != mh.angles_y) // fail
+				{
+																				bprint(" *** warning:   failed hack_copy on mangle_y test\n"); // TEST - remove
+					remove(ec);
+					return;
+				}
+// note - these do not get rotated - they MUST be in the correct position to start with
+			}
+			else // rotate code for all else
+			{
+
 #ifdef warning
 																			if (WARNING & 131072)
 																			{
 																				bprint(" *** warning:   attempting turn: ");
-																				bprint(item_ident(self.aiment));
+																				bprint(item_ident(ec));
 																				bprint(", mdl: ");
-																				if (self.aiment.model)
-																					bprint(self.aiment.model);
+																				if (ec.model)
+																					bprint(ec.model);
 																				else
-																					bprint(self.aiment.mdl);
+																					bprint(ec.mdl);
 																				bprint(", at: ");
-																				bprint(vtos(self.aiment.dest));
+																				bprint(vtos(ec.dest));
 																			}
 #endifdef
-//			self.aiment.finaldest = v0;
-//			self.aiment.finaldest_z = self.aiment.dest_z;
-//			self.aiment.dest2 = self.aiment.finaldest - self.aiment.dest; // his vector from 0, 0
-			makevectors(self.angles); // this only works with multiples of 90 degrees! - need true vector calc
-			if (v_forward_y == 1) // 90 deg
-			{
-				self.aiment.finaldest_x = 0 - self.aiment.dest_y;
-				self.aiment.finaldest_y = self.aiment.dest_x;
+//			ec.finaldest = v0;
+//			ec.finaldest_z = ec.dest_z;
+//			ec.dest2 = ec.finaldest - ec.dest; // his vector from 0, 0
+				makevectors(mh.angles); // this only works with multiples of 90 degrees! - need true vector calc
+				if (v_forward_y == 1) // 90 deg
+				{
+					ec.finaldest_x = 0 - ec.dest_y;
+					ec.finaldest_y = ec.dest_x;
 // doors & buttons if set
-				self.aiment.dest2_x = 0 - self.aiment.dest1_y;
-				self.aiment.dest2_y = self.aiment.dest1_x;
-			}
-			if (v_forward_y == -1) // 270 deg
-			{
-				self.aiment.finaldest_x = self.aiment.dest_y;
-				self.aiment.finaldest_y = 0 - self.aiment.dest_x;
+					ec.dest2_x = 0 - ec.dest1_y;
+					ec.dest2_y = ec.dest1_x;
+				}
+				if (v_forward_y == -1) // 270 deg
+				{
+					ec.finaldest_x = ec.dest_y;
+					ec.finaldest_y = 0 - ec.dest_x;
 // doors & buttons if set
-				self.aiment.dest2_x = self.aiment.dest1_y;
-				self.aiment.dest2_y = 0 - self.aiment.dest1_x;
-			}
-			if (v_forward_x == -1) // 180 deg
-			{
-				self.aiment.finaldest_x = 0 - self.aiment.dest_x;
-				self.aiment.finaldest_y = 0 - self.aiment.dest_y;
+					ec.dest2_x = ec.dest1_y;
+					ec.dest2_y = 0 - ec.dest1_x;
+				}
+				if (v_forward_x == -1) // 180 deg
+				{
+					ec.finaldest_x = 0 - ec.dest_x;
+					ec.finaldest_y = 0 - ec.dest_y;
 // doors & buttons if set
-				self.aiment.dest2_x = 0 - self.aiment.dest1_x;
-				self.aiment.dest2_y = 0 - self.aiment.dest1_y;
-			}
-//			self.aiment.dest = self.aiment.dest * v_forward_y; // attemp rotate to correct pos
-			self.aiment.angles_y = self.angles_y; // face dir
+					ec.dest2_x = 0 - ec.dest1_x;
+					ec.dest2_y = 0 - ec.dest1_y;
+				}
+//				ec.dest = ec.dest * v_forward_y; // attemp rotate to correct pos
+				ec.angles_y = mh.angles_y; // face dir
+				
+				if (ec.touch == secret_touch) ec.mangle_y = ec.mangle_y + mh.angles_y; // note: would not work on any secret door that opened up / down
 #ifdef warning
 																			if (WARNING & 131072)
 																			{
 																				bprint(", to: ");
-																				bprint(vtos(self.aiment.finaldest));
+																				bprint(vtos(ec.finaldest));
 																				bprint(", add vec: ");
 																				bprint(vtos(v_forward));
 																				bprint(", angle: ");
-																				bprint(ftos(self.angles_y));
+																				bprint(ftos(mh.angles_y));
 																				bprint("\n");
 																			}
 #endifdef
-
-/*
- *** removed for new method of adjusting pos2 ***
-
-			if (self.aiment.classname == "door") // try to fix doors, once rotated, all will be up / down
-			if (self.aiment.movedir != '0 0 -1')
-			if (self.aiment.movedir != '0 0 1')
-			{
-				self.aiment.dest2 = v0;
-				self.aiment.dest2_z = 0 - self.aiment.absmax_z - self.aiment.absmin_z; // convert to move down
-				self.aiment.movedir = '0 0 -1';
 			}
-*/
 		}
 
 // dont make sub-copies of this!
-		if (self.aiment.weaponmodel) self.aiment.weaponmodel = "misc/null.wav"; // 2nd random copy from biome chunk lists
-		if (self.aiment.deathtype) self.aiment.deathtype = "misc/null.wav"; // can not be null_string - any door that fires will erase all null deathtypes!
+		if (ec.weaponmodel) ec.weaponmodel = "misc/null.wav"; // 2nd random copy from biome chunk lists
+		if (ec.deathtype) ec.deathtype = "misc/null.wav"; // can not be null_string - any door that fires will erase all null deathtypes!
 // must have been copied via target1 or target2 with a targetname test
-		if (!self.aiment.weaponmodel && !self.aiment.deathtype) self.aiment.targetname = "misc/null.wav";
+		if (!ec.weaponmodel && !ec.deathtype) ec.targetname = "misc/null.wav";
 
 // set new thing origin from - hack (or model) org, copied ent org about '0 0 0' + offset org stored in hack or model
 // offset from stored copies can be in: biome or func_model (or any other master item) or in individual copies
 // --- make sure not to double offset this way
-		setorigin(self.aiment, self.origin + self.aiment.finaldest + self.v_angle + self.aiment.v_angle);
-/// FAILS ---=v
-		if (self.aiment.model != null_string) setmodel(self.aiment, self.aiment.model); // really only for play / door triggers 
+		setorigin(ec, mh.origin + ec.finaldest + mh.v_angle + ec.v_angle);
+		ec.v_angle = v0; // so it can locate random spawns
 
 #ifdef warning
 																			if (WARNING & 65536)
 																			{
 																				bprint(" *** warning:   made a copy: ");
-																				bprint(item_ident(self.aiment));
+																				bprint(item_ident(ec));
 																				bprint(", mdl: ");
-																				if (self.aiment.model)
-																					bprint(self.aiment.model);
+																				if (ec.model)
+																					bprint(ec.model);
 																				else
-																					bprint(self.aiment.mdl);
+																					bprint(ec.mdl);
 																				bprint(", at: ");
-																				bprint(vtos(self.aiment.origin));
+																				bprint(vtos(ec.origin));
 																				bprint(", from: ");
-																				bprint(vtos(self.origin));
+																				bprint(vtos(mh.origin));
 																				bprint(", add vec: ");
-																				bprint(vtos(self.dropent.origin));
+																				bprint(vtos(es.origin));
 																				bprint(", prob: ");
-																				bprint(ftos(self.dropent.lefty));
+																				bprint(ftos(es.lefty));
 																				bprint("\n");
 																			}
 #endifdef
-		if (!self.aiment.model) setmodel(self.aiment, self.aiment.mdl);
+		if (!ec.model) setmodel(ec, ec.mdl);
 
-		if (self.aiment.classname == "func_model") // || (self.aiment.classname == "misc_model"))
+		if (ec.classname == "func_model") // || (ec.classname == "misc_model"))
 		{
-			if (self.spawnflags & 1)
+/// note: cost is ridculous - deprecated for now
+/*
+			if (mh.spawnflags & 1)
 			{
-				self.aiment.alpha = 0.05;
-				self.aiment.think = maphack_poof;
-				self.aiment.nextthink = time + 0.2;
+				ec.alpha = 0.05;
+				ec.think = maphack_poof;
+				ec.nextthink = time + 0.2;
 			}
+*/
 
 // so we get restored when slipping back into view range - original will not
-			self.aiment.wad = null_string;
+			ec.wad = null_string;
 		}
+  
+		if (ec.classname == "func_wall")
+		if (ec.netname) // becomes triggers
+		{
+			ec.aflag = 666; // hash search indicator
+			ec.classname = ec.netname; // activates
+//			ec.class_select == "trigger_secret";
+			sv = self;
+			self = ec;
+			self.mins = self.absmin;
+			self.maxs = self.absmax;
+			if (self.classname == "trigger_teleport") trigger_teleport();
+			else if (self.classname == "trigger_hurt") trigger_hurt();
+			else if (self.classname == "trigger_push") q100_trigger_push();
+			else if (self.classname == "trigger_counter") trigger_counter();
+			else if (self.classname == "trigger_relay") trigger_relay();
+			else if (self.classname == "trigger_secret") trigger_secret();
+			else trigger_multiple();
+			self = sv;
+		}
+
+		if (self.button16 == system_hash) ec.button16 = system_hash;
+
 // previously func_model test included below - had to change for sub items
 
 // Ph'nglui - recursive code again
-// copy all target1 items to the model - relative origin of item to '0 0 0' added to chunk origin
+// copy all target1 items to the hack - relative origin of item to '0 0 0' added to chunk origin
 /// sub items (2 part doors, etc.) should be copied with target1 - the sub parts have ONLY the target1 id !!
-			if (self.aiment.target1 || self.aiment.target2)
+			if (ec.target1 || ec.target2)
 			{
+				if (ec.class_select == "trigger_secret")
+				{
+					ec.button16 = system_hash;
+					if (ec.classname == "trigger_teleport") ec.spawnflags = ec.spawnflags | 256; // perm link
+				}
+				if (ec.class_select == "func_button") ec.button16 = system_hash;
+/*
+// remove
 																							bprint(" *** warning:   detect target1 in: ");
-																							bprint(item_ident(self.aiment));
+																							bprint(item_ident(ec));
 																							bprint(", at: ");
-																							bprint(vtos(self.aiment.origin));
+																							bprint(vtos(ec.origin));
 																							bprint(", search: ");
-																							bprint(self.aiment.target1);
+																							bprint(ec.target1);
 																							bprint("\n");
-				self.aiment.aiment = self; // back link
-				self = self.aiment;
+*/
+				sv = self; // back link
+				self = ec;
 				if (self.target1)
 				{
 					self.grap_state =  // test  remove
 					cnt_ent(self, "deathtype", self.target1);
+/*
 // remove:
 																							bprint(" *** warning:   found target1: ");
 																							bprint(item_ident(self));
@@ -1000,10 +1057,11 @@ void() maphack_copy =
 																							bprint(", found: ");
 																							bprint(ftos(self.grap_state));
 																							bprint("\n");
+*/
 					self.dropent = self.chain;
 					while (self.dropent)
 					{
-						maphack_copy();
+						maphack_copy(self.dropent);
 						self.dropent = self.dropent.chain;
 					}
 				}
@@ -1011,7 +1069,7 @@ void() maphack_copy =
 			// randomly select target2 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
 				if (self.target2)
 				{
-					self.aflag = cnt_ent(self, "deathtype", self.target2);
+					self.aflag = cnt_ent(self, "weaponmodel", self.target2);
 					self.dropent = self.chain;
 					while (self.dropent)
 					{
@@ -1019,105 +1077,147 @@ void() maphack_copy =
 						if (!self.dropent.lefty) self.dropent.lefty = 0.3;
 			/* remove
 																							bprint(" *** warning:   test target2: ");
-																							bprint(item_ident(self.dropent));
+																							bprint(item_ident(es));
 																							bprint(", prob: ");
-																							bprint(ftos(self.dropent.lefty));
+																							bprint(ftos(es.lefty));
 																							bprint(", test against: ");
-																							bprint(ftos(fabs(self.dropent.lefty)));
+																							bprint(ftos(fabs(es.lefty)));
 																							bprint(", dice roll: ");
-																							bprint(ftos(self.dropent.rad_time));
+																							bprint(ftos(es.rad_time));
 																							bprint("\n");
 			*/
 						if (self.dropent.rad_time < fabs(self.dropent.lefty))
 						{
-							maphack_copy();
+							maphack_copy(self.dropent);
+						}
+						else
+						if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
+						{
+// note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
+							self.aiment = self.chain;
+							while (self.aiment)
+							{
+								maphack_copy(self.aiment);
+								self.aiment = self.aiment.chain;
+							}							
 						}
 					self.dropent = self.dropent.chain;
 					}
 				}
-				self = self.aiment;
+				self = sv;
 			}
 /*
-		if (self.aiment.class_select == "quake_item")
+		if (ec.class_select == "quake_item")
 		{
-			self.aiment.class_select = null_string; // clear so it gets set properly
-			item_call_save(self.aiment, self.aiment.classname);
+			ec.class_select = null_string; // clear so it gets set properly
+			item_call_save(ec, ec.classname);
 		}
 		else
-*/
-		if (self.aiment.class_select == "trigger_secret")
-		{
-			self.aiment.think = InitTrigger;
-			self.aiment.nextthink = time + random();			
-		}
-		if (self.aiment.class_select == "class_monster")
-		{
-//					item_call_save(self.aiment, self.aiment.classname);
-			if (self.aiment.wad != "no_monster_wakey")
-				chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, 1, random_monster_wakey, SUB_Null, self.aiment, world);
-			self.aiment.pausetime = 0;
-			self.aiment.wad = "drop";
-			self.aiment.angles_y = rint(19.3 * random()) * 18;
-		}
-		if (self.aiment.classname == "target_speaker")
-		{
-			self.aiment.think = target_speaker;
-			self.aiment.nextthink = time + 2 * random();
-		}
-		if (self.aiment.classname == "door")
-		{
-			if (self.aiment.touch != secret_touch)
-			{
-				self.aiment.pos1 = self.aiment.origin; // so door moves correctly
-				self.aiment.pos2 = self.aiment.origin + self.aiment.dest2; //self.dropent.pos2; // so door moves correctly - dest2 for rotates
-				self.aiment.owner = self.aiment;
-				self.aiment.enemy = self.aiment; // so trigger can fire proper door
 
-//				if (!self.aiment.targetname) // triggers still dont copy right
-				self.aiment.trigger_field = spawn_field (self.aiment.absmin + '30 30 0',self.aiment.absmax - '30 30 0'); // make a new trigger field around door
-				self.aiment.trigger_field.owner = self.aiment; // tell trigger to fire this door - it will initially point at the source door that was copied
+		if (ec.class_select == "trigger_secret") // copied a trigger - init
+		{
+			if (ec.button16 == system_hash) system_hash = system_hash + 1 + rint(random() * 3);			
+			ec.think = InitTrigger;
+			ec.nextthink = time + random();			
+		}
+
+*/
+		if (ec.button16 == system_hash) system_hash = system_hash + 1 + rint(random() * 3);			
+
+		if (ec.classname == "func_copymod")
+		{
+			ec.classname = ec.netname; // activates
+			ec.targetname = ec.stack16; // make searchable
+// some of these may need thinks to some activating action
+		}
+		if (ec.classname == "trigger_teleport")
+		{
+#ifdef warning
+																							if (!ec.stack16)
+																							bprint(" *** warning:   trigger_teleport system_hash target & no stack16 to search\n");
+#endifdef
+			if (!ec.spawnflags & 1792) // no type yet
+			{
+				ec.spawnflags = 256 * rint(1 + random()) * rint(1 + random()); // 256, 512 or 1024
+				ec.cnt = random() * 15; // if 256 is selected
+			}
+		}
+		if (ec.class_select == "class_monster")
+		{
+//					item_call_save(ec, ec.classname);
+			if (ec.wad != "no_monster_wakey")
+				chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, 1, random_monster_wakey, SUB_Null, ec, world);
+			ec.pausetime = 0;
+			ec.wad = "drop";
+			ec.angles_y = rint(19.3 * random()) * 18;
+		}
+		if (ec.classname == "target_speaker")
+		{
+			ec.think = target_speaker;
+			ec.nextthink = time + 2 * random();
+		}
+		if (ec.classname == "door")
+		{
+			if (ec.touch != secret_touch)
+			{
+				ec.pos1 = ec.origin; // so door moves correctly
+				ec.pos2 = ec.origin + ec.dest2; //es.pos2; // so door moves correctly - dest2 for rotates
+				ec.owner = ec;
+				ec.enemy = ec; // so trigger can fire proper door
+
+//				if (!ec.targetname) // triggers still dont copy right
+				ec.trigger_field = spawn_field (ec.absmin + '30 30 0',ec.absmax - '30 30 0'); // make a new trigger field around door
+				ec.trigger_field.owner = ec; // tell trigger to fire this door - it will initially point at the source door that was copied
 			}
 			else
 			{
-				self.aiment.mins = self.aiment.absmin;
-				self.aiment.maxs = self.aiment.absmax;	
+				ec.oldorigin = ec.origin;
+				ec.mins = ec.absmin;
+				ec.maxs = ec.absmax;	
 			}
 		}
-		if (self.aiment.classname == "plat")
+		if (ec.classname == "plat")
 		{
-			self.aiment.pos1 = self.aiment.origin; // so plat moves correctly
-			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so plat moves correctly
+			ec.pos1 = ec.origin; // so plat moves correctly
+			ec.pos2 = ec.origin + es.pos2; // so plat moves correctly
 
 // create a trigger field
-			self.aiment.aiment = self; // back link
-			self = self.aiment;
+			sv = self; // back link
+			self = ec;
 			plat_spawn_inside_trigger();
-			self = self.aiment;
+			self = sv;
 		}
-		if (self.aiment.classname == "func_button")
+		if (ec.classname == "func_button")
 		{
-			self.aiment.pos1 = self.aiment.origin; // so button moves correctly
-			self.aiment.pos2 = self.aiment.origin + self.aiment.dest2; //self.dropent.pos2; // so button moves correctly - dest2 for rotates
-//			self.aiment.owner = self.aiment;
-//			self.aiment.enemy = self.aiment; // so trigger can fire proper door
-//			self.aiment.trigger_field = spawn_field (self.aiment.absmin,self.aiment.absmax); // make a new trigger field around door
-//			self.aiment.trigger_field.owner = self.aiment; // tell trigger to fire this door - it will initially point at the source door that was copied
+			ec.pos1 = ec.origin; // so button moves correctly
+			ec.pos2 = ec.origin + ec.dest2; //es.pos2; // so button moves correctly - dest2 for rotates
+//			ec.owner = ec;
+//			ec.enemy = ec; // so trigger can fire proper door
+//			ec.trigger_field = spawn_field (ec.absmin,ec.absmax); // make a new trigger field around door
+//			ec.trigger_field.owner = ec; // tell trigger to fire this door - it will initially point at the source door that was copied
+			if (ec.button16 == system_hash) system_hash = system_hash + 1 + rint(random() * 3);
 		}
 //		else
 	
-		if (self.aiment.volume)
-		if (!self.aiment.mcode) // dont scale items that use volume for ammo limit
+		if (ec.volume)
+		if (!ec.mcode) // dont scale items that use volume for ammo limit
 		{
-			self.aiment.scale = self.aiment.volume * random();
-			if (self.aiment.scale < 1) self.aiment.scale = 1;
+			ec.scale = ec.volume * random();
+			if (ec.scale < 1) ec.scale = 1;
 		}
-//		if (self.aiment.wad == "copystatic")
+//		if (ec.wad == "copystatic")
 //		{
-//			self.aiment.think = copy_static;
-//			self.aiment.nextthink = time + 0.1 + random();
+//			ec.think = copy_static;
+//			ec.nextthink = time + 0.1 + random();
 //		}
 	}
 };
+
+void() func_copymod =
+{
+// place holder for - just wait
+};
+
 
 // fn(func_maphack) - quake hack function
 
@@ -1153,6 +1253,8 @@ targets:
 "target2"       "{n}"   - list of ents to randomly copy
 - will copy relative to 0,0,0 of maphack source
 - ents that have model blank and mdl will set new models to mdl
+
+button13 - system_hash id, for all things in this hack / belonging to this hack - note monsters can leave a hack
 */
 
 void() func_maphack =
@@ -1358,7 +1460,7 @@ void() func_maphack =
 	}
 
 
-	if (self.rotate_type > 0)
+	if (0) // <-test reset - self.rotate_type > 0)
 	{
 		self.aflag = 1;
 		if (self.rotate_type > 0.99)
@@ -1420,7 +1522,12 @@ void() func_maphack =
 	self.solid = SOLID_BSP; // map piece
 
 // copy all target1 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
+	mh = self;
 
+	self.button12 = system_hash; // id all parts of a hack
+	system_hash = system_hash + 1 + rint(random() * 3);
+
+/* deprecated - do this plus reg. search
 	if (self.mdl && self.mdl != null_string) // or maphack_copy goes nuts & makes 32767 ents & overloads server
 	{
 		if (!self.target1)
@@ -1434,6 +1541,7 @@ void() func_maphack =
 			self.weaponmodel = "start";
 		}
 	}
+*/
 
 	if (self.target1)
 	{
@@ -1441,19 +1549,28 @@ void() func_maphack =
 		self.dropent = self.chain;
 		while (self.dropent)
 		{
-			maphack_copy();
+			maphack_copy(self.dropent);
 			self.dropent = self.dropent.chain;
 		}
-// try deathtype search too if we set mdl to target1 - because some of the stuff uses targetname for quake func
-		if (self.deathtype == "start")
+// try deathtype search - because some stuff uses targetname for quake func
+		cnt_ent(self, "deathtype", self.target1);
+		self.dropent = self.chain;
+		while (self.dropent)
 		{
-			cnt_ent(self, "deathtype", self.target1);
-			self.dropent = self.chain;
-			while (self.dropent)
-			{
-				maphack_copy();
-				self.dropent = self.dropent.chain;
-			}
+			maphack_copy(self.dropent);
+			self.dropent = self.dropent.chain;
+		}
+	}
+
+// try deathtype search on mdl - this is per map chunk copy - i.e. for chunk maps/qh_0015.bsp copy all items that match that string in deathtype
+	if (self.mdl && self.mdl != null_string)
+	{
+		cnt_ent(self, "deathtype", self.mdl);
+		self.dropent = self.chain;
+		while (self.dropent)
+		{
+			maphack_copy(self.dropent);
+			self.dropent = self.dropent.chain;
 		}
 	}
 
@@ -1479,25 +1596,50 @@ void() func_maphack =
 */
 			if (self.dropent.rad_time < fabs(self.dropent.lefty))
 			{
-				maphack_copy();
+				maphack_copy(self.dropent);
+			}
+			else
+			if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
+			{
+// note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
+				self.aiment = self.chain;
+				while (self.aiment)
+				{
+					maphack_copy(self.aiment);
+					self.aiment = self.aiment.chain;
+				}							
 			}
 		self.dropent = self.dropent.chain;
 		}
-// try weaponmodel search too if we set mdl to target2 - because some of the stuff uses targetname for quake func
-		if (self.weaponmodel == "start")
+	}
+
+// try weaponmodel search on mdl - this is per map chunk copy
+	if (self.mdl && self.mdl != null_string)
+	{
+		cnt_ent(self, "weaponmodel", self.mdl);
+		self.dropent = self.chain;
+		while (self.dropent)
 		{
-			cnt_ent(self, "weaponmodel", self.target2);
-			self.dropent = self.chain;
-			while (self.dropent)
+			self.dropent.rad_time = random();
+			if (!self.dropent.lefty) self.dropent.lefty = 0.15;
+			if (self.dropent.rad_time < fabs(self.dropent.lefty))
+				maphack_copy(self.dropent);
+			else
+			if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
 			{
-				self.dropent.rad_time = random();
-				if (!self.dropent.lefty) self.dropent.lefty = 0.15;
-				if (self.dropent.rad_time < fabs(self.dropent.lefty))
-					maphack_copy();
-				self.dropent = self.dropent.chain;
+// note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
+				self.aiment = self.chain;
+				while (self.aiment)
+				{
+					maphack_copy(self.aiment);
+					self.aiment = self.aiment.chain;
+				}							
 			}
+			self.dropent = self.dropent.chain;
 		}
 	}
+
+	mh = world;
 
 // build trigger - otherwise this gets boring fast
 	if (self.spawnflags & 16)
@@ -1533,6 +1675,8 @@ void() func_maphack =
 
 
 // fade scenery into existance - at the cost of rendering engine efficiency
+/// note: cost is ridculous - deprecated for now
+/*
 	if (self.spawnflags & 1)
 	{
 		if (biome)
@@ -1546,6 +1690,7 @@ void() func_maphack =
 		self.think = maphack_poof;
 		self.nextthink = time + 0.2;
 	}
+*/
 };
 
 /*QUAKED func_mapday (.6 .1 .6) (-8 -8 -8) (8 8 8) 

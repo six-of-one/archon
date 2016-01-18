@@ -41,17 +41,19 @@ void () plat_spawn_inside_trigger =
 	trigger.enemy = self;
 
 // maphack conv
-	if (self.aiment)
-	if (!self.aiment.angles_y)
+	if (self.button12)
+//	if (!self.aiment.angles_y)
 	{
 		self.mins = self.absmin;
 		self.maxs = self.absmax;
 	}
+/*
 	else
 	{
-		self.mins = self.mins + self.origin; // fails rotate translate
+		self.mins = self.mins + self.origin; // fails rotate translate - have to use mangle_y test and 3 other - correctly positioned plats
 		self.maxs = self.maxs + self.origin;		
 	}
+*/
 	tmin = self.mins + '25 25 0';
 	tmax = self.maxs - '25 25 -8';
 	tmin_z = tmax_z - (self.pos1_z - self.pos2_z + 8);

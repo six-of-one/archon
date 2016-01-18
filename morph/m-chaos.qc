@@ -603,7 +603,7 @@ float() chaos_move_effect =
 				newmis.touch = SUB_Null;
 			}
 			else if (random() < 0.11) newmis.touch = GrenadeTouch;
-			if ((newmis.model == "progs/lavaball.mdl") && self.modelflags = EF_NOMODELFLAGS) // == "progs/snowball.mdl"
+			if ((newmis.model == "progs/lavaball.mdl") && self.modelflags == EF_NOMODELFLAGS) // == "progs/snowball.mdl"
 			{
 				if (random() < 0.5)
 					newmis.skin = SKSNOW;

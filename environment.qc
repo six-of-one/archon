@@ -913,6 +913,7 @@ void() rain_use =
 	
 	self.count = (self.pos2_x - self.pos1_x)*(self.pos2_y - self.pos1_y)/4096;
 
+#ifdef warning
 if (WARNING)
 {
 bprint("*** warning: \bprec min: ");
@@ -923,6 +924,7 @@ bprint("cnt: ");
 bprint(ftos(self.count));
 bprint("\n");
 }
+#endifdef
 
 	if (self.count < 1)
 	{

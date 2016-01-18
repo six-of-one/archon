@@ -195,8 +195,14 @@ void () trigger_multiple =
 
 	if (self.health)
 	{
+#ifdef warning
 		if (self.spawnflags & SPAWNFLAG_NOTOUCH)
-			objerror ("health and notouch don't make sense\n");
+			bprint(" *** warning:   trigger_multiple - health and notouch don't make sense\n");
+//			objerror ("health and notouch don't make sense\n");
+#endifdef
+// dont objerr - just fix it
+		if (self.spawnflags & SPAWNFLAG_NOTOUCH) self.spawnflags = self.spawnflags - SPAWNFLAG_NOTOUCH;
+
 		self.max_health = self.health;
 		self.th_die = multi_killed;
 		self.takedamage = DAMAGE_YES;
@@ -228,7 +234,7 @@ set "message" to text string
 */
 void () trigger_once =
 {
-// Cataboligne - 4.21.11 - triggerss not in mod maps
+// Cataboligne - 4.21.11 - triggers not in mod maps
 	if (notmod(self)) return;
 
 	self.wait = -1;
@@ -346,11 +352,13 @@ TELEPORT TRIGGERS
 float PLAYER_ONLY	 = 1;
 float T_SILENT	 = 2;
 float T_RANDOM = 4;
-float T_STEALTH = 8;
+float T_STEALTH = 8; // use both stealh & silent for invisible tele - add nondir for a good illusion of transit
+// idea: positional transit relative to a point around trigger (info_notnull) added to destination point - so walking on the left side of a hallway would stay on the left instead of centering
 //float NONDIR = 16; // Note: zerstorer used this for something - ref: dd
 float T_NODEATH = 32;
-float ALT_TARGET = 64;
+//float ALT_TARGET = 64;
 //float NOVEL = 128; // dont add velocity - archon moves especially
+
 
 void () play_teleport =
 {
@@ -519,10 +527,41 @@ void () teleport_touch =
 		if (!t) return;
 	}
 	else
+	if (self.aflag == 666) // system_hash targeting for maphack
+	{
+		if (self.stack16 == null_string) self.stack16 = "info_teleport_destination";
+		if (self.spawnflags & 1024) t = t_rnd_target(self.stack16);
+		else
+		{
+			if (!self.button16) t = t_rnd_target(self.stack16);
+			else t = t_find_target(self.stack16);
+			if (!t) t = t_rnd_target(self.stack16);
+
+			if (t)
+			if (t.button16 && !self.button16) self.button16 = t.button16;
+			if (!t.button16)
+			{
+				self.button16 = t.button16 = system_hash;
+				system_hash = system_hash + 1 + rint(random() * 3);
+			}
+
+			if (self.spawnflags & 512)
+			{
+				self.cnt = self.cnt - 1;
+				if (self.cnt < 0)
+				{
+					self.button16 = 0;
+					self.cnt = 5 * random() + 10 * random() + 20 * random();
+				}
+			}			
+		}
+		if (!t) return; // failed!
+	}
+	else
 	{
 		targ = self.target;
 
-		if (self.spawnflags & ALT_TARGET) // Cataboligne - 11.2.12 - alternate target teleport, for the Castle
+		if (self.spawnflags & 64) //ALT_TARGET) // Cataboligne - 11.2.12 - alternate target teleport, for the Castle
 		{
 			e = find (world,targetname,self.path);
 			if (e)
@@ -618,8 +657,10 @@ void () info_teleport_destination =
 	self.angles = '0 0 0';
 	self.model = null_string;
 	self.origin = self.origin + '0 0 27';
-	if (!self.targetname)
-		objerror ("no targetname");
+#ifdef warning
+	if (!self.targetname)	bprint(" *** warning:   info_teleport_destination with no targetname\n");
+		//objerror ("no targetname");
+#endifdef
 };
 
 void () teleport_use =
@@ -658,6 +699,7 @@ void () trigger_teleport =
 	InitTrigger ();
 	self.touch = teleport_touch;
 	// find the destination
+	if (self.aflag != 666) // map hack teles have no target - done by hash
 	if (!self.target)
 	{
 #ifdef warning

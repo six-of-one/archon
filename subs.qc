@@ -190,6 +190,41 @@ void() DelayThink =
 	remove(self);
 };
 
+// maphack targeting
+
+
+entity(string src) t_rnd_target =
+{
+	if (src == null_string) src = "targetname"; // just so a search for null string does not cause havoc - this search will likely fail
+
+	self.count = cnt_ent(self, "targetname", src);
+
+	self.rad_time = rint(random() * self.count);
+	self.dropent = self.chain;
+	while(self.dropent)
+	{
+		self.rad_time = self.rad_time - 1;
+		if (self.rad_time < 0) return(self.dropent);
+		self.dropent = self.dropent.chain;
+	}
+	return(self.dropent);
+};
+
+entity(string src) t_find_target =
+{
+	if (src == null_string) src = "targetname";
+
+	cnt_ent(self, "targetname", src);
+
+	self.dropent = self.chain;
+	while(self.dropent)
+	{
+		if (self.button16 == self.dropent.button16) return(self.dropent);
+		self.dropent = self.dropent.chain;
+	}
+	return(self.dropent);
+};
+
 /*
 ==============================
 SUB_UseTargets
@@ -227,6 +262,9 @@ void() SUB_UseTargets =
 		t.message = self.message;
 		t.killtarget = self.killtarget;
 		t.target = self.target;
+// maphack
+		t.stack16 = self.stack16;
+		t.button16 = self.button16;
 		return;
 	}
 	
@@ -261,6 +299,34 @@ void() SUB_UseTargets =
 //
 // fire targets
 //
+	if (self.aflag == 666 && (self.classname != "trigger_teleport"))
+	{
+		if (!self.button16) return;
+		act = activator;
+		t = t_find_target(self.stack16);
+		do
+		{
+			if (!t)
+			{
+				return;
+			}
+			stemp = self;
+			otemp = other;
+			self = t;
+			other = stemp;
+			if (self.use != SUB_Null)
+			{
+				if (self.use)
+					self.use ();
+			}
+			self = stemp;
+			other = otemp;
+			activator = act;
+			while (t && t.button16 != self.button16) t = t.chain; // TEST: is this an infinite loop ??
+		} while (1);
+		
+	}
+	else
 	if (self.target)
 	{
 		act = activator;
