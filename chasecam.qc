@@ -420,9 +420,9 @@ void () cam_deathview =
 	if (self.wait < time + 3  && self.owner.model != ""  && self.owner.solid == SOLID_NOT) // once corpse settles, dont let player move it
 	{
 		CopyToBodyQue (self.owner);
-		self.owner.model = "";		
+		self.owner.model = "";
 	}
-	
+
 
 	self.owner.classname = OBSERVER;
 	PK_SetCurrentAmmoOnly(self.owner);

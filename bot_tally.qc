@@ -156,7 +156,8 @@ float (entity e) healthweight =
 	return(weight);
 };
 
-float (entity e) nailweight =
+float () nailweight =
+//float (entity e) nailweight =
 {
 	local float weight;
 	weight = (WANT - 1);
@@ -174,7 +175,8 @@ float (entity e) nailweight =
 	return(weight);
 };
 
-float (entity e) shellweight =
+//float (entity e) shellweight =
+float () shellweight =
 {
 	local float weight;
 	weight = (WANT - 1);
@@ -192,7 +194,8 @@ float (entity e) shellweight =
 	return(weight);
 };
 
-float (entity e) cellweight =
+//float (entity e) cellweight =
+float () cellweight =
 {
 	local float weight;
 	weight = WANT;
@@ -203,7 +206,8 @@ float (entity e) cellweight =
 	return(weight);
 };
 
-float (entity e) rocketweight =
+//float (entity e) rocketweight =
+float () rocketweight =
 {
 	local float weight;
 	weight = WANT;
@@ -214,7 +218,8 @@ float (entity e) rocketweight =
 	return(weight);
 };
 
-float (entity e) rlauncherweight =
+//float (entity e) rlauncherweight =
+float () rlauncherweight =
 {
 	local float weight;
 	weight = (WANT + 2);
@@ -225,7 +230,8 @@ float (entity e) rlauncherweight =
 	return(weight);
 };
 
-float (entity e) lightningweight =
+//float (entity e) lightningweight =
+float () lightningweight =
 {
 	local float weight;
 	weight = (WANT + 2);
@@ -236,7 +242,8 @@ float (entity e) lightningweight =
 	return(weight);
 };
 
-float (entity e) glauncherweight =
+//float (entity e) glauncherweight =
+float () glauncherweight =
 {
 	local float weight;
 	weight = (WANT + 1);
@@ -247,12 +254,14 @@ float (entity e) glauncherweight =
 	return(weight);
 };
 
-float (entity e) nailgunweight =
+//float (entity e) nailgunweight =
+float () nailgunweight =
 {
 	return(WANT);
 };
 
-float (entity e) supernailweight =
+//float (entity e) supernailweight =
+float () supernailweight =
 {
 	local float weight;
 	weight = (WANT + 1);
@@ -263,7 +272,8 @@ float (entity e) supernailweight =
 	return(weight);
 };
 
-float (entity e) ssgweight =
+//float (entity e) ssgweight =
+float () ssgweight =
 {
 	return(WANT);
 };
@@ -420,7 +430,8 @@ void () updategrenade =
 	self.grenadelen = self.pendinglen;
 };
 
-float (entity e) dont_weight =
+////float (entity e) dont_weight =
+float () dont_weight =
 {
 	return(DONT_WANT);
 };

@@ -1763,7 +1763,8 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 	bq.model = e.model;
 	bq.modelindex = e.modelindex;
 	bq.frame = e.frame;
-	bq.rune_flag = e.rune_flag;  // corpse have runes - when gibable, they will be protected by resist
+// this makes no sense as runes under 2 get tossed on death, and respawn under 1
+//	bq.rune_flag = e.rune_flag;  // corpse have runes - when gibable, they will be protected by resist
 
 // needs testing - this was failing on cthon & lavabomb skin 1
 	bq.colormap = e.colormap; // player colors till disconnect - changes when changed live
@@ -1793,6 +1794,8 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 
 void (entity e) CopyToBodyQue =
 {
+	if ((e.model == "") || (e.model == "progs/null.mdl")) return;
+
 	if (PK_100 || Q_100)
 	{
 		if (!bodyque_head || !bodyque_first)

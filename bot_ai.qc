@@ -1415,7 +1415,7 @@ void (float dist) ai_botgetGoody =
 	}
 	if (self.flags & FL_SWIM)
 	{
-		if (waterupdown (dist))
+		if (waterupdown ())
 		{
 			return ;
 		}

@@ -259,7 +259,7 @@ void() CheckWaterLevels =
 					else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT)
 					{
 						T_Damage (e,world,world,e.health + 10); //e.th_die(); // note: swim monsters dont set splash - have to damage for accounting - see random monsters
-						remove(self);
+						remove(e);
 					}
 					else if (e.class_select == "class_bot" || e.classname == "player")
 					{

@@ -300,7 +300,8 @@ float (vector middle) checkLanding =
 	return (0);
 };
 
-float (float dist) JumpUpToPush =
+//float (float dist) JumpUpToPush =
+float () JumpUpToPush =
 {
 	local float len;
 	local vector botxy;
@@ -412,7 +413,7 @@ float (float vz, float dist, float imagine) Bot_tryjump =
 		{
 			if (diffz < 0)
 			{
-				if (JumpUpToPush (dist))
+				if (JumpUpToPush ())
 				{
 					return (1);
 				}
@@ -592,7 +593,8 @@ float (float vz, float dist, float imagine) Bot_tryjump =
 	return(Botjump (jumpv));
 };
 
-float (float dist) waterupdown =
+//float (float dist) waterupdown =
+float () waterupdown =
 {
 	local float wlevel;
 	local float dis;
@@ -655,7 +657,7 @@ void (float dist) strafemove =
 	local float rnd;
 	if (self.flags & FL_SWIM)
 	{
-		if (waterupdown (dist))
+		if (waterupdown ())
 		{
 			return ;
 		}

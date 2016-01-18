@@ -445,7 +445,8 @@ void () q100_ClientKill =
 	respawn ();
 };
 
-float (vector v) CheckSpawnPoint =
+//float (vector v) CheckSpawnPoint =
+float () CheckSpawnPoint =
 {
 	return FALSE;
 };

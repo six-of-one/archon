@@ -2146,6 +2146,8 @@ void() e_weap_Attack =
 
 void(float recurse, vector p1, vector p2, entity from, float damage) LightningDamage_x =
 {
+	local float f;
+	f = recurse;
 	LightningDamage (p1, p2, from, damage);
 };
 
