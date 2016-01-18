@@ -200,3 +200,369 @@ void () item_health =
 			self.volume = Q_MEGA_MAX;
 	}
 };
+
+// inventory display & control
+
+float IT_BULLETS = 4096;
+float IT_SLUGS = 8192;
+float IT_GAS = 16384;
+
+float am_type;
+string pk_pr;
+
+void(entity e, float am, string pr) eweap_am =
+{
+	local string f;
+//	if (am_type == am) return;
+//	am_type = am;
+
+
+	if (am == AMMO_BULLETS && !(am_type & IT_BULLETS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.ammo_bullet));
+		sprint(e, " bullets");
+		am_type = am_type | IT_BULLETS;
+	}
+	else if (am == AMMO_SHELLS && !(am_type & IT_SHELLS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.ammo_shells));
+		sprint(e, " shells");
+		am_type = am_type | IT_SHELLS;
+	}
+	else if (am == AMMO_CELLS && !(am_type & IT_CELLS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.ammo_cells));
+		sprint(e, " cells");
+		am_type = am_type | IT_CELLS;
+	}
+	else if (am == AMMO_ROCKETS && !(am_type & IT_ROCKETS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.ammo_rockets));
+		f = " rockets";
+		if (EWEAP)
+		if (EWEAP.vwepmdl == "progs/vw_q2_hgr.mdl")
+			f = " grenades";
+
+		sprint(e, f);
+		if (f == " rockets")
+			am_type = am_type | IT_ROCKETS;
+	}
+	else if (am == AMMO_GRENADES && !(am_type & IT_ROCKETS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.ammo_rockets));
+		sprint(e, " grenades");
+		am_type = am_type | IT_ROCKETS;
+	}
+	else if (am == AMMO_NAILS && !(am_type & IT_NAILS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.ammo_nails));
+		sprint(e, " nails");
+		am_type = am_type | IT_NAILS;
+	}
+	else if (am == AMMO_SLUGS && !(am_type & IT_SLUGS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.ammo_slug));
+		sprint(e, " slugs");
+		am_type = am_type | IT_SLUGS;
+	}
+	else if (am == AMMO_GAS && !(am_type & IT_GAS))
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.ammo_gaspr));
+		sprint(e, " lbs gas pressure");
+		am_type = am_type | IT_GAS;
+	}
+	else if (am == PK_IT_GRAPGUN && e.pk_items & am)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, "Harpoon gun\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_AIRGUN && e.pk_items & am)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, "Air cannon\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_CLIGHT && e.pk_items & am)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, "Chain Thunderbolt cannon");
+		eweap_am(self, AMMO_CELLS, "   -> ");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_GRAVITYWELL && e.pk_gravitywellammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_gravitywellammo));
+		sprint(e, " gravity well");
+		if (e.pk_gravitywellammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_TURRET && e.pk_turretammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_turretammo));
+		sprint(e, " turret");
+		if (e.pk_turretammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_CANPAB && e.pk_canpabammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_canpabammo));
+		sprint(e, " pork and beans can");
+		if (e.pk_canpabammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PK_IT_BEARTRAP && e.pk_beartrapammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_beartrapammo));
+		sprint(e, " bear trap");
+		if (e.pk_beartrapammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == 4096 && e.pk_explode_ammo > 0) // shells dont have a PK_IT # - jacking this one for the inventory fn
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pk_explode_ammo));
+		sprint(e, " explode shell");
+		if (e.pk_explode_ammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PKPLUS_IT_EGO && e.pkplus_egoammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pkplus_egoammo));
+		sprint(e, " ego");
+		if (e.pkplus_egoammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PKPLUS_IT_TOMB && e.pkplus_tombammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pkplus_tombammo));
+		sprint(e, " tomb");
+		if (e.pkplus_tombammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PKPLUS_IT_ACTOR && e.pkplus_actorammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pkplus_actorammo));
+		sprint(e, " actors mask");
+		if (e.pkplus_actorammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+	else if (am == PKPLUS_IT_PHONE && e.pkplus_phoneammo > 0)
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.pkplus_phoneammo));
+		sprint(e, " cellular phone tele-hack");
+		if (e.pkplus_phoneammo > 1) sprint(e, "s");
+		sprint(self, "\n");
+		pk_pr = "";
+	}
+/*	else if (am == )
+	{
+		if (pr != "") sprint(e, pr);
+		sprint(e, ftos(e.));
+		sprint(e, " t");
+		if (e. > 1) sprint(e, "s");
+	}*/
+};
+
+// ammo with no wep
+
+void() loose_ammo =
+{
+	local string pr;
+
+	pr = "-\nammo:\n";
+
+	if (self.ammo_shells  && !(am_type & IT_SHELLS))
+	{
+		eweap_am(self, AMMO_SHELLS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_cells  && !(am_type & IT_CELLS))
+	{
+		eweap_am(self, AMMO_CELLS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_nails  && !(am_type & IT_NAILS))
+	{
+		eweap_am(self, AMMO_NAILS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_rockets  && !(am_type & IT_ROCKETS))
+	{
+		eweap_am(self, AMMO_ROCKETS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_bullet  && !(am_type & IT_BULLETS))
+	{
+		eweap_am(self, AMMO_BULLETS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_slug  && !(am_type & IT_SLUGS))
+	{
+		eweap_am(self, AMMO_SLUGS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+	if (self.ammo_gaspr  && !(am_type & IT_GAS))
+	{
+		eweap_am(self, AMMO_GAS, pr);
+		sprint(self, "\n");
+		pr = "";
+	}
+};
+
+void(float wp) q1_inv_print =
+{
+	if (wp == IT_AXE) sprint(self, "War Axe\n");
+	else if (wp == IT_SHOTGUN)
+	{
+		sprint(self, "Pump shotgun");
+		eweap_am(self, AMMO_SHELLS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_SUPER_SHOTGUN)
+	{
+		sprint(self, "Double barrel shotgun");
+		eweap_am(self, AMMO_SHELLS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_NAILGUN)
+	{
+		sprint(self, "Fletchet (nail) gun");
+		eweap_am(self, AMMO_NAILS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_SUPER_NAILGUN)
+	{
+		sprint(self, "High rate Fletchet (nail) gun");
+		eweap_am(self, AMMO_NAILS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_GRENADE_LAUNCHER)
+	{
+		sprint(self, "Grenade launcher");
+		eweap_am(self, AMMO_GRENADES, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_ROCKET_LAUNCHER)
+	{
+		sprint(self, "Rocket launcher");
+		eweap_am(self, AMMO_ROCKETS, "   -> ");
+		sprint(self, "\n");
+	}
+	else if (wp == IT_LIGHTNING)
+	{
+		sprint(self, "Thunderbolt cannon");
+		eweap_am(self, AMMO_CELLS, "   -> ");
+		sprint(self, "\n");
+	}
+
+	else if (wp == IT_ARMOR3) sprint(self, "Body armor (code red)\n");
+	else if (wp == IT_ARMOR2) sprint(self, "Combat armor (code yellow)\n");
+	else if (wp == IT_ARMOR1) sprint(self, "Jacket armor (code green)\n");
+	else if (wp == IT_KEY2) sprint(self, "a Gold key\n");
+	else if (wp == IT_KEY1) sprint(self, "a Silver key\n");
+	else if (wp == IT_SUPERHEALTH) sprint(self, "Mega health!\n");
+	else if (wp == IT_QUAD) sprint(self, "Quad damage\n");
+	else if (wp == IT_INVULNERABILITY) sprint(self, "Pentagram power\n");
+	else if (wp == IT_SUIT) sprint(self, "Hazmat protection suit\n");
+	else if (wp == IT_INVISIBILITY) sprint(self, "Ring of shadows\n");
+//	else if (wp == IT_) sprint(self, "\n");
+};
+
+
+// handle player inventory impulses
+
+// 52 = list inv + drop item
+// 53 = drop mode
+
+void() inventory =
+{
+	local float f, k, IT_DET;
+	local entity e;
+
+// detect items for title header print
+	IT_DET = IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3 | IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD | IT_SUPERHEALTH;
+	am_type = 0;
+	if (self.impulse == 52)
+	{
+		sprint(self, "\n* Inventory *\n");
+		sprint(self, "-\nWeapons:\n");
+		f = 1;
+		while (f <= IT_QUAD)
+		{
+			e = world;
+			if (f <= IT_LIGHTNING)
+				e = vchk(f, 0, self.vwepent);
+			if (e)
+			{
+				if (e.eweapon)
+				{
+					EWEAP = e;
+					sprint(self, e.netname);
+					eweap_am(self, e.lip, "   -> ");
+					sprint(self, "\n");
+					EWEAP = world;
+				}
+				else
+					if (self.items & f) q1_inv_print(f);
+			}
+			else
+				if (self.items & f) q1_inv_print(f);
+
+			if (f == IT_LIGHTNING) 
+				f = IT_AXE;
+			else
+				f = f * 2;
+			if (f == IT_ARMOR1)
+			{
+				if (PK_INV)
+				{
+					pk_pr = "-\npainkeep Items:\n";
+					k = 2;
+					while (k < 8192)
+					{
+						eweap_am(self, k, pk_pr);
+						k = k * 2;
+					}
+				}
+				loose_ammo();
+				if (self.items & IT_DET)
+					sprint(self, "-\nItems:\n");
+			}
+		}
+		if (self.rune_flag) sprint(self, "-\nRunes of power\n");
+	}
+
+	am_type = 0;
+}

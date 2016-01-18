@@ -42,10 +42,11 @@ float Q2_DEF_BLAST			= 5;
 
 float Q2_BARREL_BLAST		= 150;
 
-float Q2_POWER_WAIT			= 30;
-
 void() q2_precache =
 {
+	Q2_POWER_WAIT = RSP_TIME;
+	Q2_POWER_TIME = POW_TIME;
+
 //	precache_model ("");
 //	precache_sound ("");
 
@@ -185,6 +186,7 @@ void() q2_ammo_bullets =
 
 	self.lip = AMMO_BULLETS;
 	self.currentammo = Q2_DEF_BULLETS_BOX;
+	self.wait = RSP_TIME;
 
 //	self.classname = "ammo_bullets";
 	setmodel (self, "progs/q2_bullets.mdl");
@@ -202,6 +204,7 @@ void() q2_ammo_rockets =
 
 	self.lip = AMMO_ROCKETS;
 	self.currentammo = Q2_DEF_ROCKETS_LG;
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_rockets.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
@@ -219,6 +222,7 @@ void() q2_ammo_shells =
 
 	self.lip = AMMO_SHELLS;
 	self.currentammo = Q2_DEF_SHELLS;
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_shells.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
@@ -235,6 +239,7 @@ void() q2_ammo_cells =
 
 	self.lip = AMMO_CELLS;
 	self.currentammo = Q2_DEF_CELLPAK;
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_cellbox.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
@@ -251,6 +256,7 @@ void() q2_ammo_slugs =
 
 	self.lip = AMMO_SLUGS;
 	self.currentammo = Q2_DEF_SLUGS;
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_slugs.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
@@ -291,14 +297,14 @@ void() q2_ammo_grenades =
 //	self.aflag = IGN_INV; // ignore inventory bit
 	self.currentammo = Q2_DEF_BLAST;
 	self.items = IT_GRENADE_LAUNCHER;
-	self.lip = AMMO_ROCKETS;
+	self.lip = AMMO_GRENADES;
 	self.attack_finished = 0.5;
 	self.dmg = 125;
 	self.dodmg = 165; // splash
 	self.dmg_save = 1;
 	self.dmg_take = 6; // fuse timer
 	self.style = FL_MELEE_WEP;
-
+	self.wait = RSP_TIME;
 
 // appearances
 	setmodel (self, "progs/q2_grenades.mdl");
@@ -335,6 +341,7 @@ void () q2_weapon_bfg =
 	self.dmg = 200;
 	self.dodmg = 500; // splash
 	self.dmg_save = 50;
+	self.wait = RSP_TIME;
 
 // appearances
 	setmodel (self, "progs/q2_bfg.mdl");
@@ -368,6 +375,7 @@ void () q2_weapon_railgun =
 	self.dmg = 100;
 	self.dmg_save = 1;
 	self.dmg_take = 1; // shot cnt
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_rail.mdl");
 	self.weaponmodel = "progs/v_q2_rail.mdl";
@@ -398,6 +406,7 @@ void () weapon_hyperblaster =
 	self.dmg = 20;
 	self.dmg_save = 1;
 	self.dmg_take = 1; // shot cnt
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_hyperb.mdl");
 	self.weaponmodel = "progs/v_q2_hbl.mdl";
@@ -427,6 +436,7 @@ void() q2_weapon_rocketlauncher =
 	self.dmg = 100;
 	self.dodmg = 120; // splash
 	self.dmg_save = 1;
+	self.wait = RSP_TIME;
 
 // appearances
 	setmodel (self, "progs/q2_rocketl.mdl");
@@ -452,11 +462,12 @@ void () q2_weapon_grenadelauncher =
 // stats
 	self.currentammo = Q2_DEF_BLAST;
 	self.items = IT_GRENADE_LAUNCHER;
-	self.lip = AMMO_ROCKETS;
+	self.lip = AMMO_GRENADES;
 	self.attack_finished = 0.9;
 	self.dmg = 120;
 	self.dodmg = 160; // splash
 	self.dmg_save = 1;
+	self.wait = RSP_TIME;
 
 // appearances
 	setmodel (self, "progs/q2_gl.mdl");
@@ -489,6 +500,7 @@ void () weapon_chaingun =
 	self.dmg_save = 1;
 	self.dmg_take = 1;
 	self.punchangle = ' 0.03 0.03 0';
+	self.wait = RSP_TIME;
  
 	setmodel (self, "progs/q2_chain.mdl");
 	self.weaponmodel = "progs/v_q2_chg.mdl";
@@ -515,6 +527,7 @@ void() q2_mg_base =
 	self.dmg_save = 1;
 	self.dmg_take = 1;
 	self.punchangle = ' 0.025 0.025 0';
+	self.wait = RSP_TIME;
 
 	self.netname = "Machine Gun";
 
@@ -557,6 +570,7 @@ void () q2_weapon_supershotgun =
 	self.dmg_save = 2;
 	self.dmg_take = 20; // shot cnt
 	self.punchangle = ' 0.14 0.08 0'; // bullet spread out -- TDO: get q2 value, this is q1
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_dblshot.mdl");
 	self.weaponmodel = "progs/v_q2_shot2.mdl";
@@ -586,6 +600,7 @@ void () q2_weapon_shotgun =
 	self.dmg_save = 1;
 	self.dmg_take = 12; // shot cnt
 	self.punchangle = ' 0.04 0.04 0'; // bullet spread out -- TDO: get q2 value, this is q1
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_shotgun.mdl");
 	self.weaponmodel = "progs/v_q2_shot.mdl";
@@ -615,6 +630,7 @@ void () q2_weapon_blaster =
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
 	self.style = FL_MELEE_WEP;
+	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_blaster.mdl");
 	self.weaponmodel = "progs/v_q2_blst.mdl";
@@ -638,6 +654,7 @@ void() q2_item_health_small =
 	self.healamount = Q2_DEF_HBOTTLE;
 	self.healtype = HEAL_BOT;
 	self.volume = -1; // max add
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -652,6 +669,7 @@ void() q2_item_health =
 	self.healamount = Q2_DEF_HFIRSTAID;
 	self.healtype = HEAL_NORM;
 	self.volume = 100; // max add
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -666,6 +684,7 @@ void() q2_item_health_large =
 	self.healamount = Q2_DEF_HMEDKIT;
 	self.healtype = HEAL_NORM;
 	self.volume = 100; // max add
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -681,6 +700,7 @@ void() q2_item_health_mega =
 	self.healamount = Q2_DEF_HMEGATUBE;
 	self.healtype = HEAL_MEGA;
 	self.volume = -1; // max add
+	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -691,6 +711,7 @@ void() q2_misc_explobox =
 	misc_explodbox_set(self, "progs/q2_barrel.mdl", Q2_BARREL_BLAST, 80, MOVETYPE_NONE);
 //	self.noise = "doom/dsbarexp.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
+	self.wait = RSP_TIME;
 //	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -704,7 +725,9 @@ void() q2_item_armor_body =
 	self.netname = "Body armor";
 	self.volume = 200; // max add
 	self.style = Q2_ARM_TBDY;
+	self.items = IT_ARMOR3;
 	self.currentammo = Q2_ARM_BODY; // 100 units
+	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -718,7 +741,9 @@ void() q2_item_armor_combat =
 	self.netname = "Combat armor";
 	self.volume = 100; // max add
 	self.style = Q2_ARM_TCMB;
+	self.items = IT_ARMOR2;
 	self.currentammo = Q2_ARM_CMBT; // 50 units
+	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -732,7 +757,9 @@ void() item_armor_jacket =
 	self.netname = "Jacket armor";
 	self.volume = 50; // max add
 	self.style = Q2_ARM_TFLK;
+	self.items = IT_ARMOR1;
 	self.currentammo = Q2_ARM_FLAK; // 25 units
+	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -746,7 +773,9 @@ void() q2_item_armor_shard =
 	self.netname = "Armor shard";
 	self.volume = -1; // max add
 	self.style = Q2_ARM_TFLK;
+	self.items = IT_ARMOR1;
 	self.currentammo = Q2_ARM_SHRD; // 2 units
+	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -761,6 +790,7 @@ void() item_power_shield =
 	self.volume = -1;
 	self.style = 0;
 	self.currentammo = 0;
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -775,6 +805,7 @@ void() item_power_screen =
 	self.volume = -1;
 	self.style = 0;
 	self.currentammo = 0;
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -786,6 +817,8 @@ void() item_silencer =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Silencer";
+	self.wait = Q2_POWER_WAIT;
+	self.dmgtime = Q2_POWER_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -799,6 +832,7 @@ void() item_invulnerability =
 	setmodel (self, "progs/q2_inv.mdl");
 	self.netname = "Invulnerability";
 	self.wait = Q2_POWER_WAIT;
+	self.dmgtime = Q2_POWER_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -810,7 +844,8 @@ void() q2_item_enviro =
 	setmodel (self, "progs/q2_envirosuit.mdl");
 	self.delay = POW_TIME;
 	self.netname = "Environmental Suit";
-	self.wait = D_POWER_WAIT;
+	self.wait = Q2_POWER_WAIT;
+	self.dmgtime = Q2_POWER_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -822,7 +857,8 @@ void() q2_item_quad =
 	setmodel (self, "progs/q2_quad.mdl");
 	self.delay = POW_TIME;
 	self.netname = "Quad Damage";
-	self.wait = D_POWER_WAIT;
+	self.wait = Q2_POWER_WAIT;
+	self.dmgtime = Q2_POWER_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -837,6 +873,7 @@ void() item_adrenaline =
 	self.healamount = Q2_DEF_HMEGATUBE;
 	self.healtype = HEAL_NORM;
 	self.volume = 100; // max add
+	self.wait = Q2_POWER_WAIT;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -848,6 +885,7 @@ void() item_bandolier =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Bandolier";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -865,6 +903,7 @@ void() item_pack =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Ammo Pack";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -876,6 +915,8 @@ void() item_breather =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Re-breather";
+	self.wait = Q2_POWER_WAIT;
+	self.dmgtime = Q2_POWER_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -887,6 +928,7 @@ void() key_pyramid =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Pyramid Key";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -898,6 +940,7 @@ void() key_power_cube =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Power Cube";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -909,6 +952,7 @@ void() key_pass =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Pass Key";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -920,6 +964,7 @@ void() key_data_cd =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Data CD";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -931,6 +976,7 @@ void() key_data_spinner =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Data Spinner";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -942,6 +988,7 @@ void() key_airstrike_target =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Airstrike Target";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -954,6 +1001,7 @@ void() key_blue_key =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Blue Key";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -966,6 +1014,7 @@ void() key_red_key =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Red Key";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };
@@ -977,6 +1026,7 @@ void() key_commander_head =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Commanders Head";
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 };

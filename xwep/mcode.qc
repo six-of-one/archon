@@ -1694,9 +1694,13 @@ void() barrel_explode =
 
 	self.mdl = self.model;
 	self.solid = SOLID_NOT;
+
 //	if (self.classname == "chaos_item" && random() > CI_EXPLBOX_RES)
 //		self.think = SUB_Remove;
 //	else
+	if (self.th_stand != SUB_Null)
+		self.th_stand();
+	else
 	if (EXPLBOX_RESP)
 	{
 		self.nextthink = time + RSP_TIME;
@@ -1776,6 +1780,7 @@ void(entity e, string md, float dm, float hl, float mt) misc_explodbox_set =
 	else
 		e.currentammo = 100;
 
+	e.th_stand = SUB_Null; // used for doing things besides regen
 	e.th_die = barrel_explode;
 	e.takedamage = DAMAGE_AIM;
 	e.noise = "weapons/r_exp3.wav";
@@ -1848,7 +1853,6 @@ void() rnd_pack_ammo =
 {
 	local float f, k;
 
-
 // clear old values - there may be some items this musses up (like doom & q2 packs? - I think not)
 	self.ammo_nails = self.ammo_rockets = self.ammo_cells = self.ammo_bullet = self.ammo_slug = self.ammo_gaspr = 0;
 	self.pk_gravitywellammo = self.pk_turretammo = self.pk_canpabammo = self.pk_beartrapammo = self.pk_explode_ammo = 0;
@@ -1864,9 +1868,10 @@ void() rnd_pack_ammo =
 	else if (f == 5) self.ammo_slug = 20 * k;
 	else if (f == 6) self.ammo_gaspr = 100 * k;
 
+	if (!Q_99)
 	if (random() < 0.3)
 	{
-		f = rint(random() * 7);
+		f = rint(random() * 10);
 		k = rint(random() * 2) + 1;
 		if (f == 0) self.pk_gravitywellammo = 1;
 		else if (f == 1) self.pk_turretammo = k;
@@ -1877,7 +1882,7 @@ void() rnd_pack_ammo =
 		else if (f == 6) self.pkplus_phoneammo = 1;
 		else if (f == 7) self.pk_canpabammo = 1;
 
-		f = rint(random() * 7);
+		f = rint(random() * 13);
 		k = rint(random() * 2) + 1;
 		if (f == 0) self.pk_gravitywellammo = 1;
 		else if (f == 1) self.pk_turretammo = k;
@@ -1892,12 +1897,12 @@ void() rnd_pack_ammo =
 
 void() fn_bpack_seq;
 
-// 		- may want to set wait to -666 for map loaded pack spawner
-//			- delay != 0, ammo set by map fn, dont randomize
+//  - may want to set wait to -666 for map loaded pack spawner
+// - delay != 0, ammo set by map fn, dont randomize
+// - small chance of an exploding pack
 
 void() fn_backpack =
 {
-	local entity e;
 	if (!self.ammo_shells) self.ammo_shells = 5; // so pack gets made
 
 	if (self.wait != -666) // rndized map item
@@ -1906,7 +1911,7 @@ void() fn_backpack =
 // hide converted item - its now a pack spawner
 		self.touch = SUB_Null;
 		setmodel (self,"");
-		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, time + 120, fn_bpack_seq, SUB_Null, self, world);
+		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, 120, fn_bpack_seq, SUB_Null, self, world);
 	}
 	else
 	{
@@ -1916,14 +1921,14 @@ void() fn_backpack =
 		self.nextthink = newmis.nextthink;
 	}
 
+	DropBackpack();
+
 	if (random() < 0.0666)
 	{
-		e = spawn();
-		misc_explodbox_set(e, "progs/backpack.mdl", 10 + random() * 20, 5 + random() * 10, MOVETYPE_NONE);
-		e.touch = barrel_explode;
+		misc_explodbox_set(newmis, "progs/backpack.mdl", 10 + random() * 20, 5 + random() * 10, MOVETYPE_TOSS);
+		newmis.touch = barrel_explode;
+		newmis.th_stand = SUB_Remove; // dont want to regen
 	}
-	else
-		DropBackpack();
 };
 
 // so items from rndize can keep spawning packs

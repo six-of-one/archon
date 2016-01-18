@@ -39,6 +39,14 @@ void() d_weapon_touch =
 		self.classname == "weapon_grenadelauncher" || self.classname == "weapon_rocketlauncher" ||
 		self.classname == "d_weapon_rocketlauncher" || self.classname == "w_weapon_mortar")
 	{
+	if (self.noise4 == Q3_DET)
+	{
+		if (other.ammo_rockets > self.currentammo)
+			other.ammo_rockets = other.ammo_rockets + 1;
+		else
+			other.ammo_rockets = self.currentammo;
+	}
+	else
 	other.ammo_rockets = other.ammo_rockets + self.currentammo; // TDO: ammo type fn
 	camc = other.ammo_rockets;
 	}
@@ -48,6 +56,14 @@ void() d_weapon_touch =
 		self.classname == "c_weapon_reggun" ||
 		self.classname == "q3_weapon_shotgun")
 	{
+	if (self.noise4 == Q3_DET)
+	{
+		if (other.ammo_shells > self.currentammo)
+			other.ammo_shells = other.ammo_shells + 1;
+		else
+			other.ammo_shells = self.currentammo;
+	}
+	else
 	other.ammo_shells = other.ammo_shells + self.currentammo;
 	camc = other.ammo_shells;
 	}
@@ -57,6 +73,14 @@ void() d_weapon_touch =
 					|| self.classname == "weapon_chaingun"
 					|| self.classname == "w_weapon_pistol")
 	{
+	if (self.noise4 == Q3_DET)
+	{
+		if (other.ammo_bullet > self.currentammo)
+			other.ammo_bullet = other.ammo_bullet + 1;
+		else
+			other.ammo_bullet = self.currentammo;
+	}
+	else
 	other.ammo_bullet = other.ammo_bullet + self.currentammo;
 	camc = other.ammo_bullet;
 	}
@@ -66,12 +90,28 @@ void() d_weapon_touch =
 		self.classname == "d_weapon_bfg" || self.classname == "q2_weapon_bfg" ||
 		self.classname == "weapon_plasmagun")
 	{
+	if (self.noise4 == Q3_DET)
+	{
+		if (other.ammo_cells > self.currentammo)
+			other.ammo_cells = other.ammo_cells + 1;
+		else
+			other.ammo_cells = self.currentammo;
+	}
+	else
 	other.ammo_cells = other.ammo_cells + self.currentammo;
 	camc = other.ammo_cells;
 	}
 	else if (self.classname == "q2_weapon_railgun" || self.classname == "q3_weapon_railgun" ||
 		self.classname == "weapon_railgun")
 	{
+	if (self.noise4 == Q3_DET)
+	{
+		if (other.ammo_slug > self.currentammo)
+			other.ammo_slug = other.ammo_slug + 1;
+		else
+			other.ammo_slug = self.currentammo;
+	}
+	else
 	other.ammo_slug = other.ammo_slug + self.currentammo;
 	camc = other.ammo_slug;
 	}
@@ -128,7 +168,7 @@ void() d_weapon_touch =
 		e.dmg_take = self.dmg_take;
 		e.punchangle = self.punchangle;
 		e.aflag = camc;
-		e.style = self.style;
+		e.style = self.style; // melee flag
 
 		e.netname = self.netname;
 //		e.mdl = self.mdl; - invisible
