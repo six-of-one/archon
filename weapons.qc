@@ -1611,7 +1611,17 @@ void () W_WeaponFrame =
 			self.aiment.button0 = TRUE;
 	}
 
-	doom_pistol_spread(self.button0); // Cataboligne - 9.12.11 - because doom has a burger king pistol with better acurracy on a single shot aspect
+//	doom_pistol_spread(self.button0); // Cataboligne - 9.12.11 - because doom has a burger king pistol with better acurracy on a single shot aspect
+// de looping
+	if (self.eweapon)
+	if (self.eweapon.vwepmdl == "progs/vw_d_pistol.mdl")
+	{
+		if (!self.button0)
+			self.eweapon.bulletspread = ' 0.0 0.0 0';	
+		else
+			self.eweapon.bulletspread = ' 0.02 0.02 0'; // button held down - accuracy level
+	}
+
 };
 
 /*

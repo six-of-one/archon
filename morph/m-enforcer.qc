@@ -288,7 +288,21 @@ void(entity attacker, float damage)	player_enf_pain =
 	}
 };
 
-// void() enf_die = using this fn
+// have to wrap for dead throw
+
+void() player_enf_die =
+{
+	local float gib;
+
+	if (self.health < -35 || (!XENV && pointcontents(self.origin) == CONTENT_LAVA)) gib = TRUE;
+
+// enforcer morphs need to dead throw
+	if (DEAD_THROW)
+	if ((DEAD_THROW & 16) || !gib)
+		DeadThrowWeps(self, self.origin); // dont have a pack - take ammo from self
+
+	enf_die();
+};
 
 /*
 		+---------------------------------------+
@@ -348,7 +362,7 @@ void(float silent) player_enforcer_become =
 	self._stand = player_enf_stand;
 	self._run = player_enf_run;
 	self._pain = player_enf_pain;
-	self._die = enf_die;
+	self._die = player_enf_die;
 	self._jump = SUB_Null;
 	self._jump2 = SUB_Null;
 	self._attack = player_enf_atk;

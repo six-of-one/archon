@@ -1323,6 +1323,7 @@ void () PlayerPreThink =
 
 	if (intermission_running)
 	{
+		if (find(world,classname,"viswep")) vw_remove();
 		IntermissionThink ();	// otherwise a button could be missed between
 		return;					// the think tics
 	}

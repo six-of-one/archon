@@ -22,7 +22,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 		{
 			remove(e);
 			e = world;
-			vw_chain(other);
+			vw_chain(other); // removed existing weps
 		}
 		e = vload(other, nw);
 	}
@@ -102,7 +102,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 void() x_weapon_touch =
 {
 	local	float best, new, oldw, camc, ign;
-	local	entity e;
+	local	entity e, sv;
 	local float leave;
 	local string cls;
 
@@ -121,20 +121,38 @@ void() x_weapon_touch =
 		return;
 	}
 
+	new = self.items; // what weap slot does it go in, by bit - ie, the old q1 IT_* weapon bits, which control the slot position
+
 	if (deathmatch == 2 || deathmatch == 3 || coop)
-		leave = 1;
+		leave = 1; // if we are ignoring, dont leave
 	else
 		leave = 0;
 
-// IDEA: always leave if we have this - this borks replacables!
+	ign = FALSE;
+	e = vchk(new, self.pk_currentitem, other.vwepent); // see if we have this item / slot filled
+	if (self.aflag == IGN_INV) // flag says we can ignore existing weps
+	{
+		if (e)
+		if (e.mdl != self.vwepmdl)
+		{
+			ign = TRUE; // not the same vwep and replaceable - load a diff vwep
+			leave = 0; // this overrides because its a diff wep than what we have
+		}
+	}
+
+// NOTE: this almost has to be done by ammo type (x wep .lip) with exception of  q1 weps
+	if (e)
+	if (e.mdl == self.vwepmdl) ign = ! leave; // same wep - can get ammo, if not leaving
+
+	if (e && !ign) return; // cant replace -> cant get this, not compatible
+
 	if (leave && (other.items & self.items))	return;
-	new = self.items;
 
 // if the player was using his best weapon, change up to the new one if better
-	e = self;
+	sv = self;
 	self = other;
 	best = W_BestWeapon ();
-	self = e;
+	self = sv;
 
 	cls = self.classname;
 //	if (cls == "dyn_item")
@@ -276,16 +294,7 @@ void() x_weapon_touch =
 //			return;
 	}
 
-	ign = FALSE;
-	e = vchk(new, self.pk_currentitem, other.vwepent);
-	if (self.aflag == IGN_INV)
-	{
-		if (e)
-		if (e.mdl != self.vwepmdl) ign = TRUE; // not the same vwep and replaceable - load a diff vwep
-	}
-
-	if (!e || ign)
-		e = x_wep_store(e, new, camc);
+	e = x_wep_store(e, new, camc);
 
 	sprint (other,"You got the ");
 	sprint (other,self.netname);

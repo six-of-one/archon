@@ -653,6 +653,14 @@ void() pk_liveupd =
 // bots
 	if (BOTFREEZE != cvar("sv_c_botfreeze")) bot_froze(world);
 
+	f = cvar("saved1");
+
+	if (f == 268226) // frik botcam toggle code
+	{
+		BOTCAM = fabs(1 - BOTCAM); // NOTE: frik code does NOT verify the state of cam if toggled off with this
+		cvar_set("saved1", "0"); // cant clear outside test, used for too much dev prints
+	}
+		
 	noway_below = cvar("sv_bot_noway_below"); // no bot waypoints below this
 	noway_above = cvar("sv_bot_noway_above"); // bot bot waypoints above this
 
@@ -1196,6 +1204,7 @@ void() pk_srvcmd_set =
 	XENV = FALSE;
 	WARNING = FALSE;
 	BOTFREEZE = 0;
+	BOTCAM = 0;
 
 	SV_FALLEN = 1;
 	SV_HOLDING = 1;

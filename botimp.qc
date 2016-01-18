@@ -116,6 +116,13 @@ void () observer =
 			e.enemy = self;
 		}
 	}
+
+	if (self.vwepent)
+	{
+		vw_chain(self);
+		viswep_ld(self, -2);
+	}
+	
 	cam_startdeathview(); // get a cam ent
 	set_viewport(self, self); // dont really need death view
 

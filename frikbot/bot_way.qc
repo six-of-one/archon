@@ -751,11 +751,12 @@ void() ClearRouteTable =
 
 void() ClearMyRoute =
 {
-	local float flag;
+	local float flag, sf;
 	local entity t;
 
 	flag = ClientBitFlag(self.b_clientno);
 
+	sf = 0;
 	t = way_head;
 	while (t)
 	{
@@ -763,9 +764,8 @@ void() ClearMyRoute =
 		t = t._next;
 		if (t == way_head) // looped around - Cataboligne 10.5.11 - added loop safety
 		{
-	local float sf;
 			sf = sf  + 1;
-			if (sf > 100) return;
+			if (sf > 33) return;
 		}
 	}
 };

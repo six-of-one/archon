@@ -107,13 +107,24 @@ void() CheckWaterLevels =
 
 	cc_frame = framecount; // call only once per frame
 
+// run every other frame if enhanced
+	if (ENHANCED)
+	if (cc_frame & 1) return;
+
 	mv = 0 - cvar("sv_maxvelocity");
 
 	e = find(world, water_notify, "yes");
 
 	while (e != world)
 	{
-		if (inWater(e) != e.inwater)
+// bit of fn above - delooped
+		pcc = pc = pointcontents(e.origin + ' 0 0 2'); // special for item test - see InWater fn code
+
+		if (!(pc == CONTENT_WATER || pc == CONTENT_SLIME || pc == CONTENT_LAVA))
+			pc = NOT_IN_WATER;
+
+//		if (inWater(e) != e.inwater) // de-looping this call - this is call heavy
+		if (pc != e.inwater)
 		{
 			if (e.classname == "drop")
 			{
@@ -129,6 +140,7 @@ void() CheckWaterLevels =
 				e.inwater = pc;
 
 				// Remove turrets and beartraps if they fall into the lava
+				if (!ENHANCED || ((cc_frame & 3) == 3))
 				if (pc == CONTENT_LAVA)
 				{
 					if (e.classname == "beartrap")
@@ -160,7 +172,8 @@ void() CheckWaterLevels =
 					else if (e.classname == "tomb") // Cataboligne 8.12.9 purify - pk artifacts
 					{
 						e.think = tombdie;
-						e.nextthink = (time + 0.1);
+						if (ENHANCED) e.velocity = v0; // stop on surface
+						e.nextthink = (time + 0.1 + random() );
 					}
 				}
 			}
@@ -170,104 +183,107 @@ void() CheckWaterLevels =
 
 // suspect shot stuff is from bots fallen out & not returned yet
 
- 		if (pcc == CONTENT_SOLID || (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv))
+		if ((cc_frame & 15) == 15) // dont run these every frame, or even every 14th frame
 		{
-			if (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv)
+			if (pcc == CONTENT_SOLID || (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv))
 			{
-				if (e.flags & FL_ITEM)
+				if (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv)
 				{
-					if (e.wait > -888)
+					if (e.flags & FL_ITEM)
 					{
-						e.wait = -888;
-	//					bprint("*** warning: falling item hit -2011 vel*_z (terminal) - ");
-	//					bprint(item_ident(e));
-	//					bprint("\n");
+						if (e.wait > -888)
+						{
+							e.wait = -888;
+		//					bprint("*** warning: falling item hit -2011 vel*_z (terminal) - ");
+		//					bprint(item_ident(e));
+		//					bprint("\n");
+						}
+						if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
+						{
+							e.think = ip_checkForMovement;
+							e.nextthink = time + random() * 4;
+							e.hook = TRUE;
+						}
+						else if (e.ip_orgOrigin != v0) // put items back now
+						{
+							e.wait = e.wait - 1;
+							if (e.wait < -891) e.movetype = MOVETYPE_NONE; // drastic but neccesary if a bounding box seems to cut into a wall / solid because item keeps falling after every reset
+							e.ip_orgOrigin_z = e.ip_orgOrigin_z + 3;
+							setorigin (e, e.ip_orgOrigin);
+							e.velocity = v0;
+	//						e.think = ip_checkForMovement;
+	//						e.nextthink = time + CFM_TIME;
+							if (WARNING)
+							{
+								bprint("*** warning: falling item reset - ");
+								bprint(item_ident(e));
+								if (e.movetype == MOVETYPE_NONE) bprint(" - FROZEN");
+								bprint("\n");
+							}
+						}
 					}
-					if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
+					else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT)
 					{
-						e.think = ip_checkForMovement;
-						e.nextthink = time + random() * 4;
-						e.hook = TRUE;
+						T_Damage (e,world,world,e.health + 10); //e.th_die(); // note: swim monsters dont set splash - have to damage for accounting - see random monsters
+						remove(self);
 					}
-					else if (e.ip_orgOrigin != v0) // put items back now
+					else if (IROBOT(e) || e.classname == "player")
 					{
-						e.wait = e.wait - 1;
-						if (e.wait < -891) e.movetype = MOVETYPE_NONE; // drastic but neccesary if a bounding box seems to cut into a wall / solid because item keeps falling after every reset
-						e.ip_orgOrigin_z = e.ip_orgOrigin_z + 3;
-						setorigin (e, e.ip_orgOrigin);
-						e.velocity = v0;
-//						e.think = ip_checkForMovement;
-//						e.nextthink = time + CFM_TIME;
+						if (!e.portal_busy) // no action if under influence of portal contols
+						{
+							if (SV_FALLEN == 1)
+							if (e.duration < time)
+							{
+								e.duration = time + 2; // debounce
+								if (e.model == "progs/cthon.mdl") lavacthon_blobme(e); // re-blob cthon
+								f = spawn ();
+								f.owner = e;
+								f.think = phone_teleport;
+								f.nextthink = (time + 0.2);
+								if (!IROBOT(e)) centerprint(e, "You have fallen from grace - by grace you are restored!\n");
+							}
+							else if (SV_FALLEN == 2)
+							{
+								f = spawn();
+								f.classname = "CDM"; // Cataboligne - 2.20.11 - customized death messages
+								f.netname = " fell from grace.";
+								f.deadflag = 1; // use name
+								f.frags = 0;
+								e.armorvalue = 0;
+								e.invincible_finished = 0; // turn off invincible
+								T_Damage(e, e, f, e.health + 10);
+								remove(f);
+							}
+						}
+					}
+					else if (e.classname != "player")
+					{
 						if (WARNING)
 						{
-							bprint("*** warning: falling item reset - ");
+							bprint("*** warning: removed falling item - ");
 							bprint(item_ident(e));
-							if (e.movetype == MOVETYPE_NONE) bprint(" - FROZEN");
 							bprint("\n");
 						}
+						if (e.classname == "turret") remove(e.turret_base);
+						remove(e); // remove all else
 					}
-				}
-				else if (e.flags & FL_MONSTER && e.solid != SOLID_NOT)
-				{
-					T_Damage (e,world,world,e.health + 10); //e.th_die(); // note: swim monsters dont set splash - have to damage for accounting - see random monsters
-					remove(self);
-				}
-				else if (IROBOT(e) || e.classname == "player")
-				{
-					if (!e.portal_busy) // no action if under influence of portal contols
-					{
-						if (SV_FALLEN == 1)
-						if (e.duration < time)
-						{
-							e.duration = time + 2; // debounce
-							if (e.model == "progs/cthon.mdl") lavacthon_blobme(e); // re-blob cthon
-							f = spawn ();
-							f.owner = e;
-							f.think = phone_teleport;
-							f.nextthink = (time + 0.2);
-							if (!IROBOT(e)) centerprint(e, "You have fallen from grace - by grace you are restored!\n");
-						}
-						else if (SV_FALLEN == 2)
-						{
-							f = spawn();
-							f.classname = "CDM"; // Cataboligne - 2.20.11 - customized death messages
-							f.netname = " fell from grace.";
-							f.deadflag = 1; // use name
-							f.frags = 0;
-							e.armorvalue = 0;
-							e.invincible_finished = 0; // turn off invincible
-							T_Damage(e, e, f, e.health + 10);
-							remove(f);
-						}
-					}
-				}
-				else if (e.classname != "player")
-				{
-					if (WARNING)
-					{
-						bprint("*** warning: removed falling item - ");
-						bprint(item_ident(e));
-						bprint("\n");
-					}
-					if (e.classname == "turret") remove(e.turret_base);
-					remove(e); // remove all else
 				}
 			}
-		}
 
-		if (RUNE_NOWAY) // outside noway bounds checks
-		if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
-		{
-			now = FALSE;
-			if (noway_below)
-			if (e.origin_z < noway_below) now = TRUE;
-			if (noway_above)
-			if (e.origin_z > noway_above) now = TRUE;
-			if (now)
+			if (RUNE_NOWAY) // outside noway bounds checks
+			if ( (e.map  == "rune" && e.classname == "item_sigil") && RUNES)
 			{
-				e.think = ip_checkForMovement;
-				e.nextthink = time + random() * 4;
-				e.hook = TRUE;
+				now = FALSE;
+				if (noway_below)
+				if (e.origin_z < noway_below) now = TRUE;
+				if (noway_above)
+				if (e.origin_z > noway_above) now = TRUE;
+				if (now)
+				{
+					e.think = ip_checkForMovement;
+					e.nextthink = time + random() * 4;
+					e.hook = TRUE;
+				}
 			}
 		}
 

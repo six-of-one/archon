@@ -364,6 +364,13 @@ void () cam_deathview =
 {
 	self.nextthink = time + 0.1;
 
+	if (self.vwepent)
+	{
+		vw_chain(self);
+		viswep_ld(self, -2);
+		if (WARNING) bprint(" *** WARNING: viswep found in cam_deathview, should not be so.\n");
+	}
+
 // wait for fry model to end before cam tests
 	if (self.owner.model == "progs/fryguy.mdl") return;
 
@@ -1048,7 +1055,6 @@ void() bot_renew =
 	// QC has already initiated all death processes
 void () dead_cam_set =
 {
-	viswep_ld(self, -2);
 
 //	if (DARKPLACES || chaos)
 //	{

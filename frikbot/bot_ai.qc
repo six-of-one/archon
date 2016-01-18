@@ -604,7 +604,7 @@ the bot finds things it wants to kill/grab.
 // 30 - 50 bot will consider this a target worth changing course for
 // 50 - 90 bot will hunt these as vital items
 
-// *!* Make sure you add code to bot_check_lost to remove the target *!*
+// *!* Make sure you add code to bot_check_lost to remove the target *!* --- this seems to be if you add new stuff not covered by the types below - item, monster, player, waypoint
 
 float(entity thing) priority_for_thing =
 {
@@ -612,16 +612,21 @@ float(entity thing) priority_for_thing =
 	thisp = 0;
 	// This is the most executed function in the bot. Careful what you do here.
 
-	if ((thing.flags & FL_ITEM) && thing.model != string_null && thing.search_time < time)
+	if (thing.flags & FL_ITEM) //  && thing.model != string_null && thing.search_time < time) // Cataboligne - pre tested now
 	{
 		// ugly hack
                 if (thing._last != self)
                         thisp = 20;
 
 
+// rune server - Cataboligne - 10.11.11
+		if (RUNES && thing.map  == "rune" &&  thing.classname == "item_sigil")
+			thisp = 80;
+// end rune support
+
 // painkeep hub support - Cataboligne - 9.29.9
 
-		if (thing.classname == "hub_teleport" && ! Q_100 && !Q_99)
+		else if (thing.classname == "hub_teleport" && ! Q_100 && !Q_99)
 			thisp = 75;
 		else if (thing.classname == "hub_custom" && ! Q_100 && !Q_99)
 			thisp = 75;
@@ -688,34 +693,34 @@ float(entity thing) priority_for_thing =
 				thisp = 50;
 		}
 	}
-	else if ((thing.flags & FL_MONSTER) && thing.health > 0)
+	else if (thing.flags & FL_MONSTER) // && thing.health > 0) // Cataboligne - pre tested now
 		thisp = 45;
 	else if (thing.classname == "player" || thing.classname == "pk*bot")			// Cataboligne - 4.27.10 - pk*bot mods, frik hunts pk
-	{ 
-		if (thing.health > 0)
-		{
-			if (thing == self)
-				return 0;
-			else
-			{
+	{
+//		if (thing.health > 0) // Cataboligne - pre tested now
+//		{
+//			if (thing == self)
+//				return 0;
+//			else
+//			{
 				if (thing.items & IT_INVISIBILITY) //FIXME
 					thisp = 2;
 				else if (coop)
 				{
 					thisp = 100;
-					if (thing.target1_.classname == "player" || thing.target1_.classname == "pk*bot")			// Cataboligne - 4.27.10 - pk*bot mods, frik hunts pk
+					if (thing.target1_.classname == "player")// || thing.target1_.classname == "pk*bot")			// Cataboligne - 4.27.10 - pk*bot mods, dont need pk here - this is a human search
 						if (!thing.target1_.ishuman)
 							return 0;
 				}
 				else if (teamplay && thing.team == self.team)
 				{
 					thisp = 100;
-					if (thing.target1_.classname == "player" || thing.target1_.classname == "pk*bot")			// Cataboligne - 4.27.10 - pk*bot mods, frik hunts pk
+					if (thing.target1_.classname == "player" || thing.target1_.classname == "pk*bot")			// Cataboligne - 4.27.10 - pk*bot mods, exclude team bots
 						return 0;
 				}
 				else thisp = 30;
-			}
-		}
+//			}
+//		}
 	}
 	else if (thing.classname == "waypoint")
 	{
@@ -724,8 +729,9 @@ float(entity thing) priority_for_thing =
 		else if (thing.b_aiflags & AI_AMBUSH)
 			thisp = 30;
 	}
-	if (pointcontents(thing.origin) < -3)
-		return 0;
+
+//	if (pointcontents(thing.origin) < -3) // Cataboligne - pre tested now
+//		return 0;
 	if (thisp)
 	{
 		if (thing.current_way)
@@ -754,17 +760,37 @@ void(float scope) bot_look_for_crap =
 	bestp = 1;
 	while(foe)
 	{
-		thatp = priority_for_thing(foe);
-		if (thatp)
-			if (!scope)
-				if (!sisible(foe))
-					thatp = 0;
-		if (thatp > bestp)
+// Cataboligne - 10.11.11 - pre check things that are all priority is interested in - dont call for the other stuffs
+//														this duplicates the code in priority, but will cut down on a loop heavy call set
+	local float f;
+
+		f = FALSE; // no way!
+		if (foe != self)
+		if (pointcontents(foe.origin) >= -3) //< -3) - in water or empty, exclude lava, slime, sky
+		if ((foe.flags & FL_ITEM) && foe.model != string_null && foe.search_time < time) f = TRUE;
+		else if (foe.classname == "waypoint") f = TRUE;
+		else if (foe.health > 0)
 		{
-			bestp = thatp;
-			best = foe;
-			dist = vlen(self.origin - foe.origin);
+			if (foe.classname == "player" || foe.classname == "pk*bot") f = TRUE;
+			else if (foe.flags & FL_MONSTER) f = TRUE;
 		}
+
+		if (f)
+// end pre checks
+		{
+			thatp = priority_for_thing(foe);
+			if (thatp)
+				if (!scope)
+					if (!sisible(foe))
+						thatp = 0;
+			if (thatp > bestp)
+			{
+				bestp = thatp;
+				best = foe;
+				dist = vlen(self.origin - foe.origin);
+			}
+		}
+		
 		foe = foe.chain;
 	}
 	if (best == world)
@@ -904,8 +930,9 @@ void() BotAI =
 	if (random() < 0.96) return;
 
 	if (self.health < 1)
-	{ 
+	{
 		if (time > 15)
+		if (inHubMap)
 		if (bot_vote(0.7)) return;
 
 		if (time < 20)						// Cataboligne - 2.27.11 - spawn frag bork fix
@@ -918,7 +945,8 @@ void() BotAI =
 		self.button2 = 0;
 		self.keys = 0;
 		self.b_aiflags = 0;
-		ClearMyRoute();
+		if (self.button11 < 2) ClearMyRoute(); // clear route a few times then stop
+		self.button11 = self.button11 + 1;
 		self.target1_ = self.target2_ = self.target3 = self.target4 = self.enemy = world;
 		self.last_way = world;
 		return;
@@ -948,6 +976,7 @@ void() BotAI =
 
 	self.button2 = 0;
 	self.button0 = 0;
+	self.button11 = 0;
 	
 
 	// target1_ is like goalentity in normal Quake monster AI.

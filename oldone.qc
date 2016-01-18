@@ -148,7 +148,13 @@ void() finale_1 =
 		setorigin (pl, pos.origin);
 		pl = find (pl, classname, "player");
 	}	
+
+// Cataboligne - 10.11.11 - remove visweps
 	
+	if (find(world,classname,"viswep")) vw_remove();
+// end viswep
+
+
 	// make fake versions of all players as standins, and move the real
 	// players to the intermission spot
 	

@@ -94,6 +94,7 @@ string ADMINIMPULSE			= "float2\n"; // load the impulse
 string ADMINTIME				= "float3\n"; // load the time out
 string ADMINMAPCMD			= "_mapcmd\n"; // append to mapname for alias cmd
 float BOTFREEZE;							// if true stop bots cold
+float BOTCAM;								// turning off frikbot botcam - 268226 in saved1 to turn on
 float NODECOR;								// sv decor controls
 void (entity e) bot_froze;
 void(float tm) th_bot_changeParms; // save bot parms to cvar or parm*
@@ -1020,7 +1021,7 @@ float d_reps_base				= 57005000; // heh heh - DEAD+
 void() d_rep_set;
 void() player_saw1;
 void() player_bfg1;
-void(float cn) doom_pistol_spread;
+//void(float cn) doom_pistol_spread;
 
 float DOOM_BFG 				= 66603;
 float DOOM_BFG_TRACE			= 1024; // IDEA: adjust by doom to quake dist adjust for maps ?
@@ -1156,6 +1157,8 @@ void() viswep_pkbot;
 void() viswep_post;
 void() viswep_togl;
 void() viswep_pre;
+entity(entity e) vw_chain;
+void() vw_remove;
 void(entity vh, float cd) viswep_ld;
 float(string wpm) ver_weaponmodel;
 

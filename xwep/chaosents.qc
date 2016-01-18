@@ -442,6 +442,9 @@ void() health_touch =
 
 		if (deathmatch == 1 || deathmatch == 3)		// deathmatch 2 is the silly old rules
 		{
+			if (self.wait)
+				self.nextthink = time + self.wait;
+			else
 			self.nextthink = time + 20;
 			self.think = SUB_regen;
 		}

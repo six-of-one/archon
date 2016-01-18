@@ -1602,6 +1602,7 @@ void() DropBackpack =
 		newmis.eweapon.wad = "packwep";
 		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
 		newmis.eweapon.model = "";
+		newmis.eweapon.owner = newmis;
 		newmis.netname = newmis.eweapon.netname;
 		newmis.eweapon.items = self.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
 																						  // had to do this because laser cannon was getting wrong weapon value & not selectable

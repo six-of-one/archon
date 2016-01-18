@@ -227,7 +227,7 @@ void () item_megahealth_rot =
 
 	if (other.health > other.max_health * other.health_modifier) // Cataboligne - 9.18.11 - morphic
 	{
-		self.duration = self.duration - 1; // for drop inv
+		self.duration = self.duration - 1; // for drop inv - TDO: have to find this ent & set
 		other.health = other.health - 1;
 		self.nextthink = time + 1;
 		return ;
@@ -239,7 +239,10 @@ void () item_megahealth_rot =
 
 	if (deathmatch == 1 || deathmatch == 3)	// deathmatch 2 is silly old rules // *pk more dm modes
 	{
-		self.nextthink = time + 20; // NOTE: ignores poss x diff like q3
+		if (self.wait) // because all x item megas use this
+			self.nextthink = time + self.wait;
+		else
+		self.nextthink = time + 20;
 		self.think = SUB_regen;
 	}
 };

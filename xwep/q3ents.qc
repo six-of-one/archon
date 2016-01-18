@@ -1752,7 +1752,7 @@ void() q3_art_shell =
 			self.enemy.vwepent = world;
 			remove(self.enemy);
 		}
-		vw_chain(self.owner);
+		vw_chain(self.owner); // removed artifact shell
 		remove(self);
 		return;
 	}
@@ -1770,7 +1770,7 @@ void() regen_shell_exp =
 			self.enemy.vwepent = world;
 			remove(self.enemy);
 		}
-		vw_chain(self.owner);
+		vw_chain(self.owner); // removed artifact shell
 		self.owner.volume = 0;
 		remove(self);
 		return;
@@ -2087,7 +2087,7 @@ void() player_q3held =
 		{
 			e.vwepent = world;
 			remove(e);
-			vw_chain(self);
+			vw_chain(self); // removed holdable ent
 		}
 
 		self.weapon = W_BestWeapon();

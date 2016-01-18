@@ -128,54 +128,65 @@ float(entity e) mk_pkbits =
 	return(nbits);
 };
 
+// remove all vw ents - intermission, finale
+
+void() vw_remove =
+{
+	local entity f;
+	f = find(world,classname,"viswep");
+	while (f)
+	{
+		setattachment(f, world, ""); // clear attachs - in case
+		remove(f);
+		f = find(f,classname,"viswep");
+	}
+};
+
 // fn(vw_chain) - chain up viswep for an ent, rebuild vwepent list(s)
 
 // e - ent we want viswep for
 
 entity(entity e) vw_chain =
 {
-	local entity f, c, ch;
+	local entity f, c, ch, dcl, pr;
 	local float rck, sf;
 
 	c = world;
 	ch = e;
 	f = find(world,classname,"viswep");
-	sf = 50;
+//	sf = 50;
 	rck = FALSE;
 
-	while (f && sf > 0)
+	while (f) // && sf > 0)
 	{
-		if (f.owner.deadflag || f.owner.classname == OBSERVER || f.owner.view_ofs == '0 0 0' || f.owner.model == "") // wep found with non owner - should not happen
+		if (f.owner.deadflag || f.owner.classname == OBSERVER) // wep found with non owner - should not EVAR happen...evar!
 		{
-//			f.model = "";
-			setattachment(f, world, ""); // clear attachs
+//if (cvar("saved1") == -556)
+if (1)
+{
+bprint("------------------- ** vw_chain found no carry player with vweps (clearing):  ");
+bprint(f.netname);
+bprint("\n");
+}
+			f.owner.vwepent = world;
 			f.vwepent = world;
+			setattachment(f, world, ""); // clear attachs
 			if (f.wad != "packwep") // pack deal
-				remove(f);
-			rck = TRUE;
+				remove(f);				
+			else
+				f.owner = world; // should never - when converted this should be fixed
 		}
 		else
 		if (f.owner == e)
 		{
 			if (!c) c = f;
-//			else
-//			{
-//				ch.chain = f; // NOTE: use vwepent?
-//			}
-				// chain up any viswep with owner = world
 			if (ch) ch.vwepent = f; // this becomes a list rebuild
 			ch = f;
-//			ch.eweapon = ch; // found when relinking eweapons were wrong
 			f.vwepent = world; // unlink old stuff
 		}
 
 		f = find(f,classname,"viswep");
-
-		if (!f && rck) // do a recheck because we failed owner deleted some vw
-		{
-			f = find(world,classname,"viswep");
-			sf = sf - 1;
-		}
+//		sf = sf - 1;
 	}
 	return (c);
 };
@@ -376,7 +387,7 @@ void(entity e, float pkbt) vwep_firecary =
 	if (pkbits & pkbt) return; // e' still got one
 
 	e.weaponmodel = ""; // for morphs that dont make vwep from pki
-	vw_chain(e);
+	vw_chain(e); // fired carryable, pre chain
 	f = vchk(IT_AXE, pkbt, e.vwepent);
 
 	if (f)
@@ -384,7 +395,7 @@ void(entity e, float pkbt) vwep_firecary =
 		f.vwepent = world;
 		setattachment(f, world, "");
 		remove(f);
-		vw_chain(e);
+		vw_chain(e); // cary item removed - rechain
 	}
 };
 
@@ -406,10 +417,14 @@ void(entity e, float cd) viswep_ld =
 	pr = e;
 	rmv = at = pkts = bts = 0;
 
-	pkbits = mk_pkbits(e);
-
 	if (cd < 0)
 	{
+		if (e) // because we may come here with self = first viswep ent
+		{
+			if (e.classname != "viswep") // NOTE: if cond fails, we have a viswep left!
+				e.vwepent = world;
+		}
+
 		while (tr)
 		{
 			pr = tr;
@@ -419,12 +434,6 @@ void(entity e, float cd) viswep_ld =
 			pr.vwepent = world;
 			if (pr.wad != "packwep") // pack deal
 				remove(pr);
-		}
-		if (e) // because we may come here with self = first viswep ent
-		{
-			vw_chain(e);
-			if (e.classname != "viswep") // NOTE: if cond fails, we have a viswep left!
-				e.vwepent = world;
 		}
 
 
@@ -436,6 +445,8 @@ void(entity e, float cd) viswep_ld =
 		return;
 	}
 	
+	pkbits = mk_pkbits(e);
+
 // have items & check for inventory
 	while (tr)
 	{
@@ -504,7 +515,7 @@ void(entity e, float cd) viswep_ld =
 		if (pr) tr = pr;
 		else if (tr) tr = tr.vwepent;
 	}
-	if (rmv) vw_chain(e);
+	if (rmv) vw_chain(e); // removed something during viswep_ld - add / check
 
 	if (VW_ARMOR)
 	if (e.armortype && !at)
@@ -531,8 +542,7 @@ void(entity e, float cd) viswep_ld =
 	f = 1;
 	while ( f & pkweps && f < 8388609 )
 	{
-		if (!self.mask_x & CB_GREMLIN)
-		if (!self.mask_x & CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
+		if (!self.mask_x & (CB_GREMLIN | CB_HUMAN)) return; // CHECK: back - will any morph ever have pki vws?
 
 		if ((pkbits & f) && !(pkts & f))
 		if (!(f == PK_IT_AXE && (e.builtin & IT_AXE)  )) // dont load axe for builtin wep 1
@@ -590,7 +600,7 @@ void() viswep_post =
 //	if (!self.flags & FL_CLIENT) return;
 	self.vw_frame = framecount;
 
-	vw_chain(self);
+//	vw_chain(self);
 
 														// NOTE: check this vs. invisibility for norm & morphs
 	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0' || self.model == "") //(self.admin && self.admin != USER_MENU)) //intermission_running)
@@ -683,7 +693,7 @@ void() viswep_post =
 	local vector vofs, vang; // gremlin vwep offsets
 
 	if (vhead)
-		{
+	{
 		if (vhead.owner) // Cataboligne - 10.10.11 - REMOVE: interim - world is getting viswframe set to this val
 			vhead.owner.viswframe = -1; // NOTE: remove to use visframe code anywhere - ? what does this mean ?
 		else
@@ -691,7 +701,7 @@ void() viswep_post =
 		vang = v_forward;
 		vang_z = 0;
 //		makevectors(vang);
-		}
+	}
 
 //	vhead.owner.eweapon = world;
 	dwep = vhead.owner.weapon; // active wep, or pulled
@@ -1014,6 +1024,7 @@ void(entity e, string md, entity p) DeadThrew =
 		newmis.noise = e.noise;
 		newmis.eweapon.wad = "packwep";
 		newmis.eweapon.model = "";
+		newmis.eweapon.owner = newmis;
 		newmis.eweapon.think = 
 		newmis.eweapon.touch = SUB_Null;
 		newmis.eweapon.nextthink = -1;
@@ -1128,7 +1139,7 @@ void(entity pack, vector v1) DeadThrowWeps =
 
 		if (!e) return; // ran off end of card
 
-		if (pack)
+		if (pack && (!pack.flags & FL_CLIENT))
 		{
 			if (e.wad != "packwep") // pack deal
 			{

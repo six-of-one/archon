@@ -1398,7 +1398,7 @@ float(float cn) bot_vote =
 	if (self.map != "") return(TRUE); // voted
 	if (self.classname != "player" && self.classname != "pk*bot") return(FALSE); // not eligible
 	if (self.netname == "") return(FALSE); // who are you?
-	if (!inHubMap) return(FALSE); // not on hub
+//	if (!inHubMap) return(FALSE); // not on hub
 
 	if (random() < (0.12 * cn))													// copy cat - bot copies some players vote
 	{

@@ -496,6 +496,7 @@ float() botcam =
 
 void() botcam_u = 
 {
+	if (!BOTCAM) return;
 
 	// sloppy cycling code
 	if (self.classname != "botcam")
@@ -631,7 +632,18 @@ float () BotPreFrame =
 		if (self.switch_wallhug)
 			ClientFixRankings();
 		if (self.classname == "botcam")
-			return TRUE;
+		{
+			if (!BOTCAM ) // cam toggle off for server - force exit
+			{
+				msg_entity = self;
+				WriteByte (MSG_ONE,5);
+				WriteEntity (MSG_ONE, self);
+				PutClientInServer();
+				return TRUE;
+			}
+			else
+				return TRUE;
+		}
 	}
 	if (self.b_frags != self.frags)
 	{
@@ -660,10 +672,11 @@ float () BotPostFrame =
 		if (waypoint_mode > WM_LOADED)
 			bot_menu_display();
 
-	if (self.admin || (serverflags & UNRESTRICTED)) // *pk - admin restriction on bot controls
-	if (self.impulse)
-		BotImpulses();
+		if (self.admin || (serverflags & UNRESTRICTED)) // *pk - admin restriction on bot controls
+		if (self.impulse)
+			BotImpulses();
 
+		if (BOTCAM)
 		if (botcam())
 			return TRUE;
 	}

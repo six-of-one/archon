@@ -872,6 +872,7 @@ void() d_weapon_chaingun =
 
 // cn is button0 state - if held, accuracy decreases - may need to add other weps
 
+/* deprecated for de loop
 void(float cn) doom_pistol_spread =
 {
 	if (!self.eweapon) return;
@@ -884,6 +885,7 @@ void(float cn) doom_pistol_spread =
 			self.eweapon.bulletspread = ' 0.02 0.02 0'; // button held down - accuracy level
 	}
 }
+*/
 
 void() d_weapon_pistol =
 {

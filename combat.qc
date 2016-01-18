@@ -115,8 +115,12 @@ void(entity targ, entity attacker) Killed =
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;
 
+	if (self.vwepent) vw_chain(self); // re chain any vweps before death - which can throw weps
+
 	monster_death_use ();
 	self.th_die ();
+
+	if (self.vwepent) viswep_ld(self, -2); // still have visweps
 
 	if (self.ishuman) // Cataboligne 9.19.11 - monsters were calling - just never saw because werent using dp cam
 		dead_cam_set(); // Cataboligne 9.11.3 purify - chase cam
