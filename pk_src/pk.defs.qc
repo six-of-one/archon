@@ -9,7 +9,7 @@ float chaos;									// detect customized glquake engine - has cvars compiled
 float CHAOS_ENG				= 10100010110111; // chaos engine id
 float DARKPLACES;								// for detecting darkplaces
 float GENERATIONS;							// exclude xtra elements
-float ULOKW, ULOKD, ULOK2, ULOK3;		// unlock codes
+float ULOKW, ULOKD, ULOK2, ULOK3, ULOKHL;		// unlock codes
 float LOK_STRICT				= 1; 			// lock deal
 float XTR_SAVED1				= 1195724115; // saved1 test val 
 // end engines

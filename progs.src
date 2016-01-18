@@ -129,6 +129,8 @@ xwep/quantum.qc
 xwep/q2ents.qc
 // support for q3 maps in darkplaces
 xwep/q3ents.qc
+// support for half life maps in darkplaces
+xwep/hlents.qc
 xwep/chaosents.qc
 xwep/inventory.qc
 xwep/mc_disambig.qc

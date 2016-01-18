@@ -1709,6 +1709,7 @@ void() item_breather =
 	if (!GENERATIONS)
 	if (noxtr_item_control(self, TRUE, ""))
 	{
+		self.classname = "item_artifact_envirosuit";
 		return;
 	}
 

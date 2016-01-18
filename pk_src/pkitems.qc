@@ -28,10 +28,10 @@
  * item_painkeep_expshells
  *
  pkplus
-*  item_pkplus_ego
-*  item_pkplus_tomb
-*  item_pkplus_actor
-*  item_pkplus_phone
+ *  item_pkplus_ego
+ *  item_pkplus_tomb
+ *  item_pkplus_actor
+ *  item_pkplus_phone
  */
 
 

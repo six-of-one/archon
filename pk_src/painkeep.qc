@@ -47,6 +47,8 @@ void() PK_init =
 		ULOKW = ULOKD = ULOK2 = ULOK3 = TRUE;
 	}
 
+	ULOKHL = FALSE; // place holder - HL stuff not supported yet - Cataboligne 10.12.12
+
 	if (!DARKPLACES) // may not use all this - dp auto precaches
 	{
 		if (ULOKW) wolf_precache();
@@ -1272,10 +1274,12 @@ void() pk_srvcmd_set =
 	GENERATIONS = 0; // this bad code - non dp enabled engines (or eng w/o glq mod) cant run x!  (see hack below...)
 	ULOKW = ULOKD = ULOK2 = ULOK3 = FALSE;
 
-	if (world.aflag == IT0_WQ1) ULOKW = TRUE;
-	if (world.aflag == IT1_WQ1) ULOKD = TRUE;
-	if (world.aflag == IT3_WQ1) ULOK2 = TRUE;
-	if (world.aflag == IT4_WQ1) ULOK3 = TRUE;
+	if (world.worldtype == IT0_WQ1) ULOKW = TRUE;
+	if (world.worldtype == IT1_WQ1) ULOKD = TRUE;
+	if (world.worldtype == IT3_WQ1) ULOK2 = TRUE;
+	if (world.worldtype == IT4_WQ1) ULOK3 = TRUE;
+
+	ULOKHL = FALSE; // place holder - HL stuff not supported yet - Cataboligne 10.12.12
 
 // score deal
 

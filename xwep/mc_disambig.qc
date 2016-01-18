@@ -128,6 +128,8 @@ void () weapon_supershotgun =
 	q100_weapon_supershotgun();
 };
 
+// NOTE: hl support requires mod here
+
 void () weapon_shotgun =
 {
 	if (world.wad == "q2.wad")
