@@ -1076,7 +1076,7 @@ entity() dyn_rndloc =
 	{
 		if (!e.chain) e = world;
 // 11.12.13 - dont pick out of bounds origins
-#ifdef warning
+#ifdef warningb
 		else if (noway_below && (e.chain.origin_z < noway_below)) {
 					if (WARNING & 8192)
 					{
@@ -1121,10 +1121,10 @@ entity() dyn_rndloc =
 					}
 			e.chain = e.chain.chain;
 			}
-		else if (e.chain.v_angle_z)  {
+		else if (e.chain.movement_z)  {
 					if (WARNING & 8192)
 					{
-						bprint("*** warning: dyn_rndloc - skipped (v_angle - map_hack source ent) - ");
+						bprint("*** warning: dyn_rndloc - skipped (movement_z - map_hack source ent) - ");
 						bprint(item_ident(e.chain));
 						bprint(" v: ");
 						bprint(vtos(e.chain.origin));
@@ -1133,7 +1133,7 @@ entity() dyn_rndloc =
 			e.chain = e.chain.chain;
 			}
 #else
-		else if (e.chain.v_angle_z) e.chain = e.chain.chain; // ignore map_hack source ents
+		else if (e.chain.movement_z) e.chain = e.chain.chain; // ignore map_hack source ents
 		else if (noway_below && (e.chain.origin_z < noway_below)) e.chain = e.chain.chain;
 		else if (noway_above && (e.chain.origin_z > noway_above)) e.chain = e.chain.chain;
 // 11.15.13 - and dont pick solid origins

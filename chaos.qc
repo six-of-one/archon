@@ -953,8 +953,8 @@ void(entity es) maphack_copy =
 // set new thing origin from - hack (or model) org, copied ent org about '0 0 0' + offset org stored in hack or model
 // offset from stored copies can be in: biome or func_model (or any other master item) or in individual copies
 // --- make sure not to double offset this way
-		setorigin(ec, mh.origin + ec.finaldest + mh.v_angle + ec.v_angle);
-		ec.v_angle = v0; // so it can locate random spawns
+		setorigin(ec, mh.origin + ec.finaldest + mh.movement + ec.movement);
+		ec.movement = v0; // so it can locate random spawns to copied ents
 
 #ifdef warning
 																			if (WARNING & 65536)
@@ -1094,6 +1094,7 @@ void(entity es) maphack_copy =
 						if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
 						{
 // note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
+							cnt_ent(self, "deathtype", self.dropent.event);
 							self.aiment = self.chain;
 							while (self.aiment)
 							{
@@ -1602,6 +1603,7 @@ void() func_maphack =
 			if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
 			{
 // note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
+				cnt_ent(self, "deathtype", self.dropent.event);
 				self.aiment = self.chain;
 				while (self.aiment)
 				{
@@ -1628,6 +1630,7 @@ void() func_maphack =
 			if (self.dropent.event) // a rnd chance item that didnt could have an alternate item set that appears
 			{
 // note: the event sequence targeted by deathtype must be a UNIQUE id set, apart from all other target1 / target2
+				cnt_ent(self, "deathtype", self.dropent.event);
 				self.aiment = self.chain;
 				while (self.aiment)
 				{

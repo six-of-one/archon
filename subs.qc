@@ -322,7 +322,8 @@ void() SUB_UseTargets =
 			self = stemp;
 			other = otemp;
 			activator = act;
-			while (t && t.button16 != self.button16) t = t.chain; // TEST: is this an infinite loop ??
+			t = t.chain;
+			while (t && t.button16 != self.button16) t = t.chain;
 		} while (1);
 		
 	}
