@@ -122,7 +122,7 @@ void() launch_horn =
 	}
 
 	// set the air blast timeout
-	self.AIRG_BlastTimeout = time + 1.5; // 1 1/2 secounds...
+	self.AIRG_BlastTimeout = time + 1.5; // 1 1/2 rels...
 
 	// set the AirBlast origin & angle
 	self.AIRG_BlastOrigin = self.origin;
@@ -220,7 +220,7 @@ void(float firstBlast) horn_airblast =
 	// movement is based on the distance from the center of the shot.
 	local float strength;
 //	strength = 1000;  // full power of weapon
-	// decreased cas of the "constant" blast for 2 secounds...
+	// decreased cas of the "constant" blast for 2 rels...
 	strength = 300; // 500 old
 
 	// Maximum damage that can be incurred by the AirFist.  The actual entity's

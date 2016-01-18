@@ -646,7 +646,8 @@ void() morph_cube =
 #ifdef testset
 			if (time > 24) self.mask_x = MORPH_ARCHON;
 #else
-			if (time > 240) self.mask_x = MORPH_ARCHON;
+// no random archon morph device until 3 humans have morphed
+			if (time > 240 && (morphs > 3)) self.mask_x = MORPH_ARCHON;
 #endifdef
 			else r = r + 1;
 		}
@@ -1487,13 +1488,13 @@ void(float cmd, float pls) polymorph_check =
 
 		self.mask_x = cb_morph(cmd);
 
+		if (self.deadflag) return;
+
 		self.alpha = 1;				// clear any prev state set - i.e. chaos
 		self.skin = 0; 				// clear damage - note also clear suits
 		if (WALKSOUND) sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);
 		morph_sound_off();
 		self._summon = SUB_Null;
-
-		if (self.deadflag) return;
 
 		if (cmd == IMP_MCHAOS) player_chaos_become();
 		else if (cmd == IMP_MORDER) player_order_become();
@@ -1526,6 +1527,20 @@ void(float cmd, float pls) polymorph_check =
 		{
 			player_human_become();
 			if (self.cnt != self.morphy) set_defaults(self); // becoming human from other form - get defaults
+		}
+
+// archon spirit release logic
+// note: first 3 morphs counted must be from human form - makes it hard for 1 or 2 players to become an archon without disconnect
+		if (self.cnt != self.morphy)
+		{
+// this counts forced polymorphs - but those cant happen until there is an archon
+// code to detect a forced poly spell
+//			if (trace_ent.eweapon.mcode == -666)
+			if (morphs > 3)
+				morphs = morphs + 1;
+			else
+			if (self.cnt > 9 && self.cnt < 16) // was human
+				morphs = morphs + 1;
 		}
 
 // tell everyone about the change - idea, hud_message ?

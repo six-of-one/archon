@@ -370,6 +370,7 @@ float () CheckDropPath =
 
 void () NewCarriedPath =
 {
+
 // dont make paths out of bounds
 	if (noway_below)
 	if (self.origin_z < noway_below) return;

@@ -867,7 +867,7 @@ void() bot_fixer =
 						e.button16 = -666000;
 					}
 // had to put this back in - bot inactivity is still happening
-					else if (bot_fix.cnt < 1) // note: this only checks frags on 14 sec loop - need a longer range check for this
+					else if (bot_fix.cnt < 1) // note: this only checks frags on 14 rel loop - need a longer range check for this
 					{
 					f = spawn();
 					f.classname = "bot_fixer";

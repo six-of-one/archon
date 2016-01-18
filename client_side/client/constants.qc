@@ -110,6 +110,7 @@ float STAT_WSUIT 					= 49; // enh powers
 float STAT_X_ITEMS 				= 50; // enh powers
 float STAT_XP 						= 51; // xp for stuff
 float STAT_DEADFLAG 				= 52; // for bones
+float STAT_SILENCE 				= 53; // for bones
 
 //float STAT_STK1 	= 50; // string data
 //float STAT_STK2 	= 51; // string data

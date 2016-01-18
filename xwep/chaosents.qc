@@ -96,6 +96,17 @@ void() chaos_precache =
 
 	precache_model ("progs/tall_ball.mdl");
 
+// map hack
+
+// base map
+	precache_model ("maps/x4_1.bsp");
+// room segs
+	precache_model ("maps/x4_2.bsp");
+	precache_model ("maps/x4_3.bsp");
+	precache_model ("maps/x4_4.bsp");
+	precache_model ("maps/x4_5.bsp");
+	precache_model ("maps/x4_6.bsp");
+
 //	flamer_precache();
 };
 
@@ -1070,9 +1081,77 @@ void() monster_silhouette =
 };
 
 
+// quoth dummys
 
+void() monster_defender =
+{
+};
 
+void() monster_eliminator =
+{
+};
 
+void() monster_gug =
+{
+};
+
+void() monster_drole =
+{
+};
+
+void() monster_bob =
+{
+};
+
+void() monster_pyro =
+{
+};
+
+void() monster_sentinel =
+{
+};
+
+void() monster_edie =
+{
+};
+
+void() monster_ogre_flak =
+{
+};
+
+void() monster_voreling =
+{
+};
+
+void() monster_polyp =
+{
+};
+
+void() monster_death_knight =
+{
+};
+
+void() monster_death_guard =
+{
+};
+
+void() monster_death_lord =
+{
+};
+
+void() monster_gaunt =
+{
+};
+
+void() monster_vermis =
+{
+};
+
+void() monster_army_rocket =
+{
+	self.spawnflags = self.spawnflags | 8;
+	monster_army(0);
+};
 
 
 

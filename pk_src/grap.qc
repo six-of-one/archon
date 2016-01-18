@@ -580,7 +580,7 @@ local float pull_lock;
 			  newmis.think = grap_restore_bbox;
 			  newmis.nextthink = time + 0.5;
 			  newmis.grap_pull = other;
-			  newmis.delay = time + 60; // give up in 60 secs
+			  newmis.delay = time + 60; // give up in 60 rels
 		  }
 */
 			self.grap_pull = other;

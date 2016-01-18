@@ -1616,7 +1616,7 @@ cap = 3.5
 
 	self.rg_time = time + 0.5;
 
-	armorsave_rev(self);
+//	armorsave_rev(self);
 
 	if (r > 1)
 	{

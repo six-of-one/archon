@@ -101,7 +101,7 @@ void() SetChangeParms =
 	if (self.archon > 65535) self.archon = 65535; // cap - largest amount var will hold
 
 	parm2 = self.health + ceil(self.archon) * 256;
-	armorsave_rev(self);
+//	armorsave_rev(self);
 //	parm3 = self.armorvalue; // put in parm9
 	parm4 = self.ammo_shells;
 
@@ -741,6 +741,10 @@ void () CheckPowerups =
 	if (self.health <= 0)
 		return;
 
+/*
+
+// armorsave was removed when power armors were added to HUD - 6/11/14
+
 	if (self.class_select == "class_player")
 	if (self.x_items & X_PWR_ARMOR_ON || self.x_items & X_PWR_SCREEN_ON)
 	{
@@ -755,6 +759,7 @@ void () CheckPowerups =
 	}
 	else
 		armorsave_rev(self);
+*/
 
 // invisibility
 	if (self.invisible_finished)

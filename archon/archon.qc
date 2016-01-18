@@ -413,7 +413,7 @@ void(entity e) power_drain =
 	newmis.wait = 1;
 	newmis.lefty = 0.2 + random() * 0.4; // percent to drain this time
 	newmis.count = e.archon * newmis.lefty;
-	newmis.archon = 1 + random() * 5; // points drained per sec
+	newmis.archon = 1 + random() * 5; // points drained per rel
 	newmis.netname = e.netname;
 	if (newmis.netname == null_string) newmis.netname = "Unknown target";
 

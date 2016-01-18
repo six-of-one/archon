@@ -310,6 +310,9 @@ bprint("\n");*/
 // return 2^rl, bounded by 2^0 (lowest bit, 1) to 2^23 (highest bit, 8388608)
 
 /*  code table:
+
+return val		rl
+------------------
 1					0
 2					1
 4					2
@@ -445,7 +448,69 @@ void() func_model =
 	if (self.map != "move") self.map = "nonmove";
 };
 
+// fn(func_maphack) - quake hack function
 
+// like nethack - random quake level rooms, v1.0
+
+// state - map segment to load as model
+
+/*QUAKED func_maphack (.6 .1 .6) (-8 -8 -8) (8 8 8)
+--------  CAT  -------
+Chaos Mod MK II
+
+Select a random map segment for quake hack mode maps
+
+map segment:
+
+"mean" 			"#"		- start number - 2 default
+"stdev" 		"#"		- randomize - 4 default
+"count" 		"#"		- prefer this segment number - 0 default
+"cnt" 		    "#"		- preference percent for "count" - 0.3 default
+"map"			"{name}"	- use this named segment
+"delay"			"#"		- reset after delay rels if "map" not set
+
+*/
+
+void() func_maphack =
+{
+	if (self.map)
+	{
+		self.mdl = self.map;
+		setmodel (self,self.mdl);
+		self.delay = 0;
+		return;
+	}
+
+	if (!self.mean) self.mean = 2;
+	if (!self.stdev) self.stdev = 4;
+	if (!self.cnt) self.cnt = 0.5;
+
+	self.state = self.mean + rint(self.stdev * random());
+
+	if (self.count)
+	if (self.cnt < random())
+		self.state = self.count;
+
+	if (self.state > 6) self.state = 6; // NOTE: hard coded max segment
+
+	if (self.state == 1) self.mdl = "maps/x4_1.bsp";
+	if (self.state == 2) self.mdl = "maps/x4_2.bsp";
+	if (self.state == 3) self.mdl = "maps/x4_3.bsp";
+	if (self.state == 4) self.mdl = "maps/x4_4.bsp";
+	if (self.state == 5) self.mdl = "maps/x4_5.bsp";
+	if (self.state == 6) self.mdl = "maps/x4_6.bsp";
+
+	if (self.delay > 0) // idea: fade replace? solidify floor while changing?
+	{
+		self.nextthink = time + self.delay;
+		self.think = func_maphack;
+	}
+
+	setmodel (self,self.mdl);
+//	self.model = self.mdl;
+
+	self.solid = SOLID_BSP; // map piece
+};
 
 // fn(loop_sound) - play a sound looped until stopped by remove, halt or search_time exceeded
 // fn(loop_play) - plays loop sounds at given interval self.

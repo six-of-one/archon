@@ -572,7 +572,7 @@ void() hub_control_use =
 //	self.owner.nextthink = time + 0.1;
 //};
 
-void(float maxplayers, float votecast, float timemins, float timesec) playerVotesTimeLeft =
+void(float maxplayers, float votecast, float timemins, float timerel) playerVotesTimeLeft =
 {
 	msg_entity = self;
 	WriteByte(MSG_ONE, SVC_CENTERPRINT);
@@ -614,7 +614,7 @@ void(float maxplayers, float votecast, float timemins, float timesec) playerVote
 
 	WriteBFloat(MSG_ONE, timemins);
 
-	if (timesec < 10)
+	if (timerel < 10)
 	{
 		// ':0'
 		WriteB3(MSG_ONE, 12346);
@@ -625,7 +625,7 @@ void(float maxplayers, float votecast, float timemins, float timesec) playerVote
 		WriteB3(MSG_ONE, 58);
 	}
 
-	WriteBFloat(MSG_ONE, timesec);
+	WriteBFloat(MSG_ONE, timerel);
 	WriteByte(MSG_ONE, 0);
 };
 
@@ -1055,7 +1055,7 @@ void(string mapName) findAndPrintMapName =
 	}
 };
 
-void(float maxplayers, float votecast, float timemins, float timesec) playerIntermissionVotesTimeLeft =
+void(float maxplayers, float votecast, float timemins, float timerel) playerIntermissionVotesTimeLeft =
 {
 	msg_entity = self;
 	WriteByte(MSG_ONE, SVC_CENTERPRINT);
@@ -1201,7 +1201,7 @@ void(float maxplayers, float votecast, float timemins, float timesec) playerInte
 
 	WriteBFloat(MSG_ONE, timemins);
 
-	if (timesec < 10)
+	if (timerel < 10)
 	{
 		// ':0'
 		WriteB3(MSG_ONE, 12346);
@@ -1212,7 +1212,7 @@ void(float maxplayers, float votecast, float timemins, float timesec) playerInte
 		WriteB3(MSG_ONE, 58);
 	}
 
-	WriteBFloat(MSG_ONE, timesec);
+	WriteBFloat(MSG_ONE, timerel);
 
 	// '										 '
 	WriteB3(MSG_ONE, 2105376);

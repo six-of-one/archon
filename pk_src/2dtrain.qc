@@ -168,6 +168,12 @@ void() func_train_2d =
 	self.classname = "train";
 
 	setmodel (self, self.model);
+
+
+// Cataboligne - 6.3.14 - prelim for altarbeta floaty rock clouds deal
+	if (self.spawnflags & 16)
+		setmodel (self,self.mdl);
+
 	setsize (self, self.mins , self.maxs);
 	setorigin (self, self.origin);
 

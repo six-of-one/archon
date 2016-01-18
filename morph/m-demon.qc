@@ -439,7 +439,7 @@ void() player_demon_impulse =
 		}
 		else
 		{
-			self.volume = -150; // potential cost - its 1 pt per 1/10 sec
+			self.volume = -150; // potential cost - its 1 pt per 1/10 rel
 //			if (self.items & IT_INVULNERABILITY)
 //				sprint(self, "Fiendish onslaught of DOOM!");
 //			else

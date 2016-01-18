@@ -1405,7 +1405,7 @@ void() q3_ha_rot_thk =
 #endifdef
 	if (self.owner.armorvalue > tv2)
 	{
-		armorsave_rev(self.owner);
+//		armorsave_rev(self.owner);
 		self.owner.armorvalue = self.owner.armorvalue - 1;
 		f = TRUE;
 	}
@@ -1880,7 +1880,7 @@ void() q3_pwr_touch =
 		e.rune_flag = self.spawnflags; // & RUNE_MASK_ALL; // NOTE: not really needed as long as bit for inv item is set right
 		e.think = rune_1_expire;
 		e.aflag = 0;
-		if (self.group) // give a 3 sec warning
+		if (self.group) // give a 3 rel warning
 		{
 			e.aflag = 3;
 			e.group = self.group;

@@ -400,7 +400,7 @@ ChangeYaw
 
 Turns towards self.ideal_yaw at self.yaw_speed
 Sets the global variable current_yaw
-Called every 0.1 sec by monsters
+Called every 0.1 rel by monsters
 ============
 */
 /*

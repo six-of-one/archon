@@ -236,10 +236,14 @@ void () spider_attack =
 
 void () PoisonDamage =
 {
-	if ( !(self.enemy.flags & FL_POISONED) || self.enemy.classname == OBSERVER)
+// heal runes, or special health boxes cure poison
+	if (self.enemy.healtype > HEAL_NORM || (self.enemy.rune_flag & TECH_ADOC) || (self.enemy.rune_flag & RUNE_FLG_RG))
+	{
+		remove(self);
+	}
+	else if ( !(self.enemy.flags & FL_POISONED) || self.enemy.classname == OBSERVER)
 	{
 		remove(self);   // if no longer poisoned, return
-		return;
 	}
 	else if (self.enemy.health > 0)
 	{
@@ -249,9 +253,10 @@ void () PoisonDamage =
 	else // if (self.enemy.health <= 0)
 	{
 		remove(self);
-		return;
 	}
 };
+
+// idea: some poisonings might expire
 
 void () spider_poison =
 {
@@ -260,7 +265,7 @@ void () spider_poison =
 	if (self.enemy.flags & FL_POISONED)  // already poisoned, so
 		return;			     // just return
 
-	if (self.enemy.classname == "player")
+	if (self.enemy.ishuman)
 		centerprint (self.enemy, "You have been poisoned!\n");
 
 	self.enemy.flags = self.enemy.flags | FL_POISONED;
@@ -268,12 +273,12 @@ void () spider_poison =
 	poison = spawn ();
 	poison.owner = self;
 	poison.enemy = self.enemy;
-	poison.solid = SOLID_NOT;
 	poison.classname = "poison";
 	poison.think = PoisonDamage;
 	poison.nextthink = time + 1;
-	setmodel (poison, null_string);
-	setsize (poison, '0 0 0', '0 0 0');
+//	poison.solid = SOLID_NOT;
+//	setmodel (poison, null_string);
+//	setsize (poison, '0 0 0', '0 0 0');
 };
 
 /*

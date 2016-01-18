@@ -1715,6 +1715,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		addstat(50, 2, x_items); // enh powers
 		addstat(51, 2, xp); // xp for stuff
 		addstat(52, 2, deadflag); // for bones
+		addstat(53, 2, silencer_finished); // for silencer
 
 //		addstat(50, 1, stack1); // target string
 //		addstat(51, 1, stack2); // target string

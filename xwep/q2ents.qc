@@ -907,7 +907,7 @@ void () weapon_chaingun =
 	self.currentammo = 50;
 	self.lip = AMMO_BULLETS;
 	self.volume = Q2_MAX_BULLETS;
-	self.attack_finished = 0.05; // 20 per then 40 per 1 sec later
+	self.attack_finished = 0.05; // 20 per then 40 per 1 rel later
 	self.dmg = 6;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
@@ -2228,6 +2228,10 @@ void() func_q2_telepart =
 
 // fn() - reverse armorsave value so real armor can be manipulated
 
+/*
+
+// armorsave was removed when power armors were added to HUD - 6/11/14
+
 void(entity e) armorsave_rev =
 {
 	if (!e) return;
@@ -2239,6 +2243,7 @@ void(entity e) armorsave_rev =
 		e.armorsave = 0;
 	}
 };
+*/
 
 // return damage saved based on power armor settings and damage done
 
@@ -2249,7 +2254,7 @@ float(entity e, entity f, float dm) power_armor =
 	pdmg = dm;
 	pwr = e.ammo_cells;
 
-	armorsave_rev(e);
+//	armorsave_rev(e);
 
 	if (e.health < 0) return 0;
 	if (pwr < 1) return 0;

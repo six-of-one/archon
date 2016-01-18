@@ -665,7 +665,7 @@ float(float pow) bar_scale =
 
 // has_* - once a mapcode item is detected, this allows holstered view
 float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left, explflg;
-float inv, quad, ring, suit, xplast, xpltime, deadtime, conrate;
+float inv, quad, ring, suit, silencio, xplast, xpltime, deadtime, conrate;
 
 // hud special messaging system for cfg scripts
 float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
@@ -684,7 +684,7 @@ void() Sbar_DrawInventory =
 	ALPHA_LOW = ibar_alpha * 0.4;
 
 	float casting, converting, f, k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
-	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag;
+	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag, silence;
 	vector pwr_step, wep_step, pk_wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v, clr;
 
 	float healflash, hicof, armorflash, armicof, flashclv;
@@ -757,6 +757,7 @@ void() Sbar_DrawInventory =
 	slugs = GetStat_FLOAT_TRUNCATED(STAT_AMSLUG);
 	gas = GetStat_FLOAT_TRUNCATED(STAT_AMGAS);
 	wsuit = GetStat_FLOAT_TRUNCATED(STAT_WSUIT);
+	silence = GetStat_FLOAT_TRUNCATED(STAT_SILENCE);
 
 	cl_items = GetStat_FLOAT_TRUNCATED(STAT_ITEMS);
 	x_items = GetStat_FLOAT_TRUNCATED(STAT_X_ITEMS);
@@ -818,6 +819,7 @@ void() Sbar_DrawInventory =
 	if (!cl_items & IT_SUIT) suit = 0;
 	if (!cl_items & IT_QUAD) quad = 0;
 	if (!cl_items & IT_INVULNERABILITY) inv = 0;
+	if (!silence) silencio = 0;
 
 if (ibar_flag)
 {
@@ -1990,6 +1992,51 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				cnt_left = pwr_step_y;
 				pwr_step_y = pwr_step_y + 27;
 			}
+
+		}
+
+// power armors
+		if (x_items & X_PWR_ARMOR)
+		if (! x_items & X_PWR_SCREEN_ON)
+		{
+			armorflash = 1;
+			armicof = 1;
+			if (x_items & X_PWR_ARMOR_ON)
+			{
+				if (cells < autocvar_hud_flash_numeral) armorflash = flasher;
+				if (cells < autocvar_hud_flash_icon) armicof = flasher;
+				DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb_parmor", ALPHA_FULL * armicof, 0.19);
+				DrawAmmo(clr, pwr_step + '27 -10 0', cells, ALPHA_FULL * armorflash);
+			}
+			else
+				DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb_parmor0", ALPHA_FULL * armicof, 0.19);
+
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 27;
+		}
+
+		if (x_items & X_PWR_SCREEN)
+		if (! x_items & X_PWR_ARMOR_ON)
+		{
+			armorflash = 1;
+			armicof = 1;
+			if (x_items & X_PWR_SCREEN_ON)
+			{
+				if (cells < autocvar_hud_flash_numeral) armorflash = flasher;
+				if (cells < autocvar_hud_flash_icon) armicof = flasher;
+				DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb_pscreen", ALPHA_FULL * armicof, 0.19);
+				DrawAmmo(clr, pwr_step + '27 -10 0', cells, ALPHA_FULL * armorflash);
+				cnt_left = pwr_step_y;
+				pwr_step_y = pwr_step_y + 27;
+			}
+			else
+			if (! x_items & X_PWR_ARMOR)
+			{
+				DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb_pscreen0", ALPHA_FULL * armicof, 0.19);
+				cnt_left = pwr_step_y;
+				pwr_step_y = pwr_step_y + 27;
+			}
+			
 		}
 	}
 
@@ -2046,13 +2093,26 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 27;
 		}
+
+// silencio
+
+		if (silence > time)
+		{
+			if (!silencio) silencio = time + 30;
+			else if ((silencio - time) > 0) DrawAmmo('0 0 0', pwr_step + '27 -8 0', ceil(silencio - time), ALPHA_MEDIUM * flasher);
+			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
+			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_silence",    ALPHA_FULL, 0.2);
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 27;
+		}
+
 //		DrawInventory('60 48 0', "gfx/sb_invuln", IT_INVULNERABILITY, 0, ALPHA_MEDIUM, 1.5);
 	}
 
 // ammo pack deal
 	if (rune_flag & RUNE_AMMO)
 	{
-		DrawInventoryAmmo(pwr_step, "gfx/rune_pack", ALPHA_FULL, 0.25);
+		DrawInventoryAmmo(pwr_step, "gfx/rune_pack", ALPHA_FULL, 0.24);
 		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 30;
 	}

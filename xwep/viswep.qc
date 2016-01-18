@@ -646,15 +646,86 @@ void() viswep_post =
 //	qld = FALSE;
 
 	if (!vhead)
+	{
+// IMP: needs blocked for non wep carry morphs
 		viswep_ld(self, 1);
+#ifdef warning
+		if (WARNING & 32768)
+		{
+			if ((self.endtime < time) || vhead)
+			{
+				bprint("    *** warning: qld = TRUE - no chain");
+				if (vhead) bprint(" - made a chain !");
+				bprint("\n");
+				self.endtime = time + 2;
+			}
+		}
+#endifdef
+	}
 	else
 	{
 		if (self.items & qweps != vhead.items) qld = TRUE;
+
+
+#ifdef warning
+		if (WARNING & 32768)
+		{
+			if (qld)
+			{
+				bprint("    *** warning: qld = TRUE - items: ");
+				bprint(ftos(self.items & qweps));
+				bprint(" - v_items: ");
+				bprint(ftos(vhead.items));
+			}
+			else
+			if (vhead.armorvalue != self.armortype)
+			if (VW_ARMOR)
+				bprint("    *** warning: qld = TRUE - vw_armor");
+		}
+#endifdef
+
+
 		if (!qld && vhead.armorvalue != self.armortype) qld = VW_ARMOR; // if vw armor display - update on armor changes
 
-		if (vhead.pk_items != pkbits || qld) viswep_ld(self, 1);
+
+#ifdef warning
+		if (WARNING & 32768)
+		{
+			if (vhead.pk_items != pkbits)
+			{
+				if (qld)
+				{	
+					bprint(" - pkbits: ");
+					bprint(ftos(pkbits));
+					bprint(" - v_pk_items: ");
+					bprint(ftos(vhead.pk_items));
+					bprint("\n");
+				}
+				else
+				{	
+					bprint("    *** warning: qld = TRUE");
+					bprint(" - pkbits: ");
+					bprint(ftos(pkbits));
+					bprint(" - v_pk_items: ");
+					bprint(ftos(vhead.pk_items));
+					bprint("\n");
+				}
+			}
+			else
+			if (qld)
+				bprint("\n");
+		}
+#endifdef
+
+
+		if (vhead.pk_items != pkbits || qld)
+		if (vhead.rad_time < time)
+		{
+			viswep_ld(self, 1);
+			vhead.rad_time = time + 0.2;
+		}
 	}
-	
+
 	if (!self.mask_x & CB_HUMAN) // because non humans dont have vwepents for pki - test never happens below
 		if (self.pkprevweapon != self.pk_currentitem) PK_SetCurrentAmmo();
 

@@ -413,7 +413,7 @@ void() chaos_mdlchg =
 
 // NOTE - spawn Must (MUST) be called before changing origin if items are moved, so a think can restore them from solids
 
-// runs tests for 4 rels every .5 sec.  if all checks are non-solid test is removed
+// runs tests for 4 rels every .5 rel.  if all checks are non-solid test is removed
 // other wise self.owner is teleported to a random level location
 // self.oldorigin - test for monster movement from ai_run
 
@@ -1381,8 +1381,8 @@ float FL_FPART					= 65536; // particle field
 */
 
 float fwalk_dist					= 12; // field move velocity max | rnd jump origin additive
-float lf_per						= 0.06; // chance per sec of light field
-float pf_per						= 0.05; // chance per sec of particle field
+float lf_per						= 0.06; // chance per rel of light field
+float pf_per						= 0.05; // chance per rel of particle field
 float pf_len						= 5.0; // avg field 5 rels
 float pf_dev						= 1.5; // +- 1.5
 float pf_exc						= 17.0; // exceptional fields are longer
@@ -1525,7 +1525,7 @@ puddle (lava + acid)
 
 */
 string beam_hum;
-float CBURST						= 0.04; // chance of chaos burst per sec
+float CBURST						= 0.04; // chance of chaos burst per rel
 float CBQUAKE						= 0.05; // chance of chaos beam quake
 float CBTELEP						= 0.03; // chance of chaos beam teleport
 float CBEXCH						= 0.05; // chance of chaos beam exchange
@@ -1610,7 +1610,7 @@ if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0
 				if (autocvar_hud_vampire_target == null_string) // IMP: more archon shields - ps
 				{
 					power_drain(archon_high);
-					newmis.archon = 6 + random() * 6 + random() * 6; // per sec drain
+					newmis.archon = 6 + random() * 6 + random() * 6; // per rel drain
 					newmis.spawnflags = 1; // varmpire rune power drain
 					stuffcmd(self, "hud_vampire_target \"");
 					stuffcmd(self, newmis.netname);
@@ -2307,7 +2307,7 @@ void() thing_imprisoned =
 		self.enemy.think = SUB_Null; // for bots & monsters
 		self.enemy.event = "imprisoned";
 
-		if (self.ltime < time) // only fire this every 3 secs
+		if (self.ltime < time) // only fire this every 3 rels
 		{
 			self.ltime = time + 3;
 			self.button4 = self.button4 - 3;

@@ -3049,7 +3049,7 @@ count: if not 0 spawn this many items and go away
 delay: if not 0 wait this long and spawn another ent.
        you might want random locations for this
 
-mean: time to dynamic removal - 180 sec default
+mean: time to dynamic removal - 180 rel default
 stdev: deviation from removal time
 
 --- monster bits ---

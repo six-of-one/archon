@@ -560,7 +560,7 @@ void() painkeep_touch =
 	if (other.admin != -1) // USER-MENU
 		return; // *pk - admin - no collecting stuff
 
-// note: the only thing this really does is prevent running the entire touch code for things that are not picked up on the first touch more than once per sec for players / bots
+// note: the only thing this really does is prevent running the entire touch code for things that are not picked up on the first touch more than once per rel for players / bots
 	if (other.duration > time) return; // note: snything that sets player duration could fsck here
 
 	if (other.eweapon)
@@ -602,7 +602,7 @@ void() painkeep_touch =
 		return;
 	}
 	
-	other.duration = time + 1; // only hit touch 1 per sec for uncollected items - only set for players
+	other.duration = time + 1; // only hit touch 1 per rel for uncollected items - only set for players
 
 
 
@@ -620,7 +620,12 @@ if (!self.mask_x)
 // morphic
 	f = FALSE; // dont exit
 
-	if ((self.mcode == MC_QUANTUM) && !other.ishuman) f = TRUE; // no quamtum for bots
+//	if ((self.mcode == MC_QUANTUM) && !other.ishuman) f = TRUE; // didnt work, some quantum had MC == 107, which is wrong
+	if (self.model == "progs/m_quantum.mdl")
+	{
+		self.mcode = MC_QUANTUM;
+		if (!other.ishuman) f = TRUE; // no quamtum for bots
+	}
 	if (!self.mask_x & other.mask_x) f = TRUE; // morph cant collect
 	if ((other.mask_x & CB_GREMLIN) &&  (other.builtin & self.items)) f = TRUE; // gremlin trying to replace builtin, even if he can collect
 //	if (self.pk_currentitem & PK_IT_CARY)  f = FALSE; // all can get pki (but cthon)
@@ -715,7 +720,7 @@ bprint(" and pk_touch is (void) 0 | SUB_Void - reloading\n");
 	else
 	if (self.pk_touch != painkeep_touch) // all items route through here - handle special cases, other touch fns & return
 	{
-		armorsave_rev(other); // get armor if power on
+//		armorsave_rev(other); // get armor if power on
 		if (self.pk_touch == ammo_touch) self.pk_touch = pk_ammo_touch; // new fn for ammo collections
 
 

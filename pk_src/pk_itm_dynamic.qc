@@ -856,7 +856,7 @@ float(float cn, entity e, string op) ammo_con =
 // fn(dyn_rem) - remove a dynamic item after a timeout
 // fn(dyn_rndloc) - get a random location to spawn an item dynamically
 
-// really should be client side coding - server could set an indicator, and think to remove in 3 secs, while client makes fade happen
+// really should be client side coding - server could set an indicator, and think to remove in 3 rels, while client makes fade happen
 
 void() remove_fade =
 {

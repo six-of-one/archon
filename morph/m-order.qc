@@ -297,7 +297,7 @@ void() player_order_attack =
 					if (autocvar_hud_vampire_target == null_string)
 					{
 						power_drain(self.enemy);
-						newmis.archon = 6 + random() * 6 + random() * 6; // per sec drain
+						newmis.archon = 6 + random() * 6 + random() * 6; // per rel drain
 						newmis.spawnflags = 1; // varmpire rune power drain
 						stuffcmd(self, "hud_vampire_target \"");
 						stuffcmd(self, newmis.netname);

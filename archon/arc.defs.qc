@@ -47,11 +47,12 @@ float pkvl; // for indicator
 												// & 4096 - archon ops
 												// & 8192 - looped ops
 												// & 16384 - dead threw / viswep
+												// & 32768 - vw_load
 												// & 262144 - block some repeating warnings
 //
 // control over test code
 
-#define testset
+//#define testset
 
 #ifdef testset
 #else
@@ -1175,8 +1176,10 @@ entity telesnd; // teleport sound effect (dest) global - so holdable can change 
 float IMP_PARM					= 55;
 float(entity e, entity f, float dm) power_armor;
 void() power_armor_impulse;
-.float armorsave; // save armor value for power armor flipping value
-void(entity e) armorsave_rev;
+
+// armorsave was removed when power armors were added to HUD - 6/11/14
+//.float armorsave; // save armor value for power armor flipping value
+//void(entity e) armorsave_rev;
 
 float X_PWR_ARMOR				= 1;
 float X_PWR_SCREEN			= 2;
@@ -1365,7 +1368,7 @@ float q2_bfg_shot; // indicates damage from q2 bfg shot - may not get used, radi
 float Q2_BFG 					= 66604;
 float Q2_BFG_TRACE			= 1000;
 float Q2_BFG_LASER			= 256;
-float Q2_BFG_LASER_DMG		= 5; // 5 pts every 10th sec
+float Q2_BFG_LASER_DMG		= 5; // 5 pts every 10th rel
 
 .float silencer_finished; // q2 silencer
 float Q2_SILENCE; // value of silence as percentage of original volume

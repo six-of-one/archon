@@ -364,7 +364,7 @@ float CK_PLAGUE_RND			= 0.1; // chance to fight plague per round - cumulative
 float CK_PLAGUE_TIME			= 2; // time before retouch on bodies / heads
 float CK_PLAGUE_ZGIB			= 0.3; // chance zombie gibs / head are plagued
 float CK_PLAGUE_GIB			= 0.1; // chance regular gibs / head are plagued
-float TM_PLAGUE				= 1; // round defined for think - 1 sec
+float TM_PLAGUE				= 1; // round defined for think - 1 rel
 float MAX_PLAGUE_TIME		= 300; // total plague time 5 mins
 
 void() PlagueTouch;
@@ -391,7 +391,8 @@ void() ZombiePlague =
 			self.enemy.healtype = -1; // box has limited chances if it fails
 	}
 
-	if (self.enemy.healtype > HEAL_NORM || self.enemy.deadflag) // stopped by any special heal - IDEA includes d_berserk and q2_adrenaline
+	if (self.enemy.healtype > HEAL_NORM || self.enemy.deadflag || // stopped by any special heal - IDEA includes d_berserk and q2_adrenaline
+		self.enemy.rune_flag & TECH_ADOC || self.enemy.rune_flag & RUNE_FLG_RG)
 	{
 //		self.enemy.healtype = -1; box stops all plague ents
 		remove(self);
@@ -529,8 +530,8 @@ void() player_ZombieFireGrenade =
 
 // fn(cloudkill) - think fn for cloudkill effects
 
-// .dmg - damage per sec
-// .dmg_save - random damage per sec
+// .dmg - damage per rel
+// .dmg_save - random damage per rel
 //. dmg_take - falloff range ala scraggs pain field
 // .distance - cloud size / range - IDEA volume that fills a space?
 // .cnt, .lip - particle thickness / random thickness
@@ -594,7 +595,7 @@ void() cloudkill =
 		if (!self.lip) self.lip = 10 * random();
 		self.state = 210 + random() * self.lip;
 		self.count = 201;
-		if (self.search_time < time) // didnt set a time - come up with some random life span ~ 60 sec to 150 sec +
+		if (self.search_time < time) // didnt set a time - come up with some random life span ~ 60 rel to 150 rel +
 		{
 			self.search_time = time + 60 + random() * self.lip + random() * self.cnt;
 			if (random() < 0.15) self.search_time = self.search_time + 60 + 30 * random();
@@ -606,7 +607,7 @@ void() cloudkill =
 			if (random() < 0.3) self.distance = self.distance + random() * random() * 120;
 		}
 		if (self.rad_time < 30) self.rad_time = 60 + random() * 30; // time before instant death checked
-		if (!self.lefty) self.lefty = 0.02; // 2% chance to die per sec beyond above
+		if (!self.lefty) self.lefty = 0.02; // 2% chance to die per rel beyond above
 	}
 
 	if (self.state < 0)
@@ -702,7 +703,7 @@ void() cloudkill =
 	else
 	while (head && f > 0)
 	{
-		self.wait = 5; // dmg once per sec.
+		self.wait = 5; // dmg once per rel.
 		if (head != self)
 		if (head.solid == SOLID_SLIDEBOX || head.netname == "Crate")  // BLOODCHECK - this is one for sure that we might want FL_CLIENT, FL_MONSTER so its more inclusive
 		{
@@ -826,25 +827,41 @@ void() player_zombie_attc12 = [ $attc12, player_stand1 ] { player_ZombieFireGren
 /*
  new zombie attacks to balance morph battle
 
-	plague shot - the gift that keeps giving, causes random dmg 0-5 per sec. after hit, until dead or mega healed
+	plague shot - the gift that keeps giving, causes random dmg 0-5 per rel. after hit, until dead or mega healed
 			IDEA - humans / gremlins could rise as zombies if killed this way - transformation process
 
 	tracer gib - large twitching gib shot out - will shoot 10 pt dmg flesh blobs and anyone the zombie attacks
 			like sentry it will run out of health, can be blasted to small gibblets, max 3 useable every so often
 
 	cloudkill - decomposing body releases massive cloud of noxious gases - knocked down for 1 - 2 min after
-			any breathing morph in cloud loses 5-10 pts per sec.  wont affect lavablob, chaos
+			any breathing morph in cloud loses 5-10 pts per rel.  wont affect lavablob, chaos
 			chance of instant death after short time (2 min +)
 */
+.float cloud_rep;
 
 void() player_zombie_attack =
 {
 	local entity p;
 	local float f;
 
+// intermediary fix for cloud loop crash - only allow limited firings
+// 6 shots for bots, 30 per human players per server load
+// we now just auto switch weps to plague meat when done with clouds
+
+	if (!self.ishuman)
+	{
+		if (self.cloud_rep > 6) //f = TRUE;
+			self.weapon = IT_SUPER_SHOTGUN;
+	}
+	else
+	{
+		if (self.cloud_rep > 29) //f = TRUE;
+			self.weapon = IT_SUPER_SHOTGUN;
+	}
+
 	if (self.weapon != IT_AXE || tot_cloud >= 3)
 	{
-		self.attack_finished=time+10; // note: trick to put finish time into fire frames - ISSUE: dont work with rune haste!
+		self.attack_finished = time + 10; // note: trick to put finish time into fire frames - ISSUE: dont work with rune haste!
 		if(random()>0.66) player_zombie_atta1();
 		else if(random()>0.5) player_zombie_attb1();
 		else player_zombie_attc1();
@@ -860,6 +877,7 @@ void() player_zombie_attack =
 //	if (!self.trigger_field || self.trigger_field.classname != "cloudkill" || ( (self.trigger_field.state < CLOUD2_STATE) && (vlen(self.origin - self.trigger_field.origin) > MIN_CLOUD_DIST) ) )
 		if (f)
 		{
+			self.cloud_rep = self.cloud_rep + 1;
 			tot_cloud = tot_cloud + 1;
 			self.trigger_field = p = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "cloudkill", null_string, SUB_Null, 0.2,cloudkill, SUB_Null, self, world);
 			p.dmg = 2;

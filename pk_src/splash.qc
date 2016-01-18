@@ -254,7 +254,7 @@ void() CheckWaterLevels =
 				}
 // note: melt items in lava goes here - non dyn / runes have to be reset after melt
 //				tomb can be melted
-			}	
+			}
 		}
 
 // fall from grace - stuff in void checks

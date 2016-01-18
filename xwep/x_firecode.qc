@@ -29,10 +29,9 @@ entity(entity e, float nw, float camcc) x_wep_store =
 		{
 			remove(e);
 			e = world;
-			vw_chain(other); // removed existing weps
+			vw_chain(other);
 		}
-		e = vload(other, nw); // FIX: vector ?
-//		if (!e) e = vload(other, nw);
+		e = vload(other, nw);
 	}
 
 	e.eweapon = e;
@@ -1687,7 +1686,7 @@ void() player_chain0   = [$lightfatt1, player_chain0]
 
 	if (self.tomb_time & 1) chain_fire_fr();
 
-	if (self.tomb_time > 40) div = 2.25; // double fire rate after 20 shots (in 1 sec)
+	if (self.tomb_time > 40) div = 2.25; // double fire rate after 20 shots (in 1 rel)
 
 	if (self.eweapon)
 	{

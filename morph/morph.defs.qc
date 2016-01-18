@@ -12,6 +12,7 @@
 
 // tell server to allow morphs
 
+float morphs; // count of morphs that have happened - first 3 counted have to be from humans
 float MORPHIC; // if 1 allow morphs and morphing, if > 1 - spawn this many morph cubes -1 (so 2 makes 1 cube)
 
 float MORPH_CUBE_TIME; // time to spawn & respawn cubes

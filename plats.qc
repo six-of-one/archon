@@ -420,6 +420,7 @@ sounds:
 float TRAIN_TOUCH = 1;
 float TRAIN_TELEPORTER = 2;
 float TRAIN_LIGHT = 8;
+// 16 - spec a bsp model in mdl
 
 void() func_train =
 {	
@@ -500,6 +501,11 @@ void() func_train =
 
 	self.th_weight = platweight;
 	setmodel (self,self.model);
+
+// Cataboligne - 6.3.14 - prelim for altarbeta floaty rock clouds deal
+	if (self.spawnflags & 16)
+		setmodel (self,self.mdl);
+
 	setsize (self,self.mins,self.maxs);
 	setorigin (self,self.origin);
 
