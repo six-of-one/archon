@@ -95,18 +95,18 @@ void(entity e) pkplus_item_control =
 	if (e.classname == "func_make") return; // override
 
 // no sense in working removed items or constantly rndize items
-	if (cvar("pk_place_item") == 1)
+	if (cvar("it_place_item") == 1)
 	if (e.think == pic_restore_item) // still check dynamics and live map ents
 		return;
 
 // if pk_art is turned off, this hijacks the items rndize think and force thinks it
 	if (!PK_ART)
-	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3) // when turning on - this should never get here
+	if (cvar("it_place_item") == 2 || cvar("it_place_item") == 3) // when turning on - this should never get here
 	{
 //		if (!PK_ART)
 //		{
-//			if (cvar("pk_place_item_reload")) // turning off & in rndize_item control
-	//		if (cvar("pk_place_item_reload") < 60) return;
+//			if (cvar("it_place_item_reload")) // turning off & in rndize_item control
+	//		if (cvar("it_place_item_reload") < 60) return;
 //			{
 				local entity k;
 				k = find(world,classname,"rndize_item");
@@ -187,11 +187,11 @@ void() pkplus_item_control_loop =
 	local entity e;//, sv;
 
 // note: disabled - if rndize makes any that get clobbered we want to restore them
-//	if (cvar("pk_place_item") != 0)
+//	if (cvar("it_place_item") != 0)
 //		return;
 
 	if (PK_ART)
-	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
+	if (cvar("it_place_item") == 2 || cvar("it_place_item") == 3)
 	{
 		e = find(world, event, "pkpitem"); // looking for rndize_* control ents for pkp items
 		while (e)
@@ -213,7 +213,7 @@ void() pkplus_item_control_loop =
 	}
 
 // additional search if rndize active - look for any pk item randomly turned into a pkplus item
-	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
+	if (cvar("it_place_item") == 2 || cvar("it_place_item") == 3)
 	if (!PK_ART)
 	{
 		e = find(world, event, "pkpitem");

@@ -474,6 +474,10 @@ void() Sbar_DrawInventory =
 	string wep_sg, wep_ssg, wep_nail, wep_snail, wep_gren, wep_rock, wep_light, wep_mj, wep_prox, wep_laser, wep_harp, wep_airgun, wep_clg, wep_axe, wep_pnail;
 	string target1, target2, instr;
 
+	var string autocvar_hud_vampire_target = "";
+	var string autocvar_hud_target1 = "";
+	var string autocvar_hud_target2 = "";
+
 // active (drawn in hand) weapon icons
 	wep_axe = "gfx/inv2_axe";
 	wep_sg = "gfx/inv2_shotgun";
@@ -508,8 +512,9 @@ void() Sbar_DrawInventory =
 	rune_flag = GetStat_FLOAT_TRUNCATED(STAT_RUNEFLAG);
 
 	volspec = GetStat_FLOAT_TRUNCATED(STAT_VOL);
-	target1 = GetStat_STRING(STAT_STK1);
-	target2 = GetStat_STRING(STAT_STK2);
+
+	target1 = autocvar_hud_target1; //GetStat_STRING(STAT_STK1);
+	target2 = autocvar_hud_target2; //GetStat_STRING(STAT_STK2);
 
 // pk data
 	pk_inv = GetStat_FLOAT_TRUNCATED(STAT_PKINV);
@@ -793,16 +798,31 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 	if (ibar_flag)
 	{
+		k = 1;
+		huds = 0;
+		if (cl_items & IT_INVISIBILITY) k = 0.2;
 		if (morph == CHAR_Q)
-			Sbar_DrawString(pwr_step + wep_step + woff, "Marine", ALPHA_FULL, '7 7 0','0.5 0.7 1');
+		{
+			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/face1", ALPHA_FULL * k, 0.85);
+			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Marine", ALPHA_FULL, '7 7 0','0.5 0.7 1');
+			huds = 6;
+		}
 		else if (morph == CHAR_D)
-			Sbar_DrawString(pwr_step + wep_step + woff, "UAC Marine", ALPHA_FULL, '7 7 0','0.16 0.2 0.29');
+		{
+			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/dm_face", ALPHA_FULL * k, 0.11);
+			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "UAC Marine", ALPHA_FULL, '7 7 0','0.16 0.2 0.29');
+			huds = 6;
+		}
 		else if (morph == CHAR_Q2)
 			Sbar_DrawString(pwr_step + wep_step + woff, "Space Marine", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 		else if (morph == CHAR_Q3)
 			Sbar_DrawString(pwr_step + wep_step + woff, "Sarge", ALPHA_FULL, '7 7 0','0.5 0.7 1');
 		else if (morph == CHAR_PK)
-			Sbar_DrawString(pwr_step + wep_step + woff, "Pain Killer", ALPHA_FULL, '7 7 0','0.2 0.2 1');
+		{
+			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/pk_face", ALPHA_FULL * k, 0.11);
+			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Pain Killer", ALPHA_FULL, '7 7 0','0.2 0.2 1');
+			huds = 6;
+		}
 		else if (morph == CHAR_W)
 			Sbar_DrawString(pwr_step + wep_step + woff, "Blaskowitz", ALPHA_FULL, '7 7 0','0.7 0.7 0.7');
 		else if (morph == IMP_MENF)
@@ -1023,6 +1043,19 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			if (currentweap == IT_SHOTGUN)
 				Sbar_DrawString(pwr_step + wep_step + woff + '50 0 0', "| Claws", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 		}
+		else if (morph == IMP_MCHAOS)
+		{
+			DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/chaos", ALPHA_FULL * k, 0.11);
+			Sbar_DrawString(pwr_step + wep_step + woff + '25 0 0', "Archon Chaos", ALPHA_FULL, '7 7 0','1.5 0.1 0.1');
+			huds = 6;
+		}
+		if (huds == 6) // drew a face
+		{
+			if (cl_items & IT_INVULNERABILITY)
+				DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/face_red", ALPHA_FULL * k, 0.11);
+			if (cl_items & IT_QUAD)
+				DrawInventoryAmmo(pwr_step + wep_step + '0 4 0', "gfx/face_blue", ALPHA_FULL * k, 0.11);
+		}
 	}
 
 	if (ibar_flag > 1)
@@ -1206,6 +1239,14 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			pwr_step_y = pwr_step_y + 20;
 		}
 
+		if (autocvar_hud_vampire_target != "")
+		{
+			Sbar_DrawString(pwr_step + '20 -5 0' + woff, "Vampire target:", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+			Sbar_DrawString(pwr_step + '130 -5 0' + woff, autocvar_hud_vampire_target, ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			cnt_left = pwr_step_y;
+			pwr_step_y = pwr_step_y + 14;
+		}
+
 		if (currentweap != IT_AXE) // casting spells
 		{
 			if (plevel > 0)
@@ -1301,7 +1342,13 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						else
 						{
 							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Activate power: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-							Sbar_DrawString(pwr_step + '130 -5 0' + woff, rune_power(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							if (pk_bt == RUNE_FLG_RS) DrawInventoryAmmo(pwr_step + '130 4 0', "gfx/rune_res", ALPHA_FULL, 0.18);
+							else if (pk_bt == RUNE_FLG_DM) DrawInventoryAmmo(pwr_step + '130 4 0', "gfx/rune_dmg", ALPHA_FULL, 0.18);
+							else if (pk_bt == RUNE_FLG_HS) DrawInventoryAmmo(pwr_step + '130 4 0', "gfx/rune_hst", ALPHA_FULL, 0.18);
+							else if (pk_bt == RUNE_VAMPIRE) DrawInventoryAmmo(pwr_step + '130 4 0', "gfx/rune_vmp", ALPHA_FULL, 0.18);
+							else DrawInventoryAmmo(pwr_step + '130 2 0', "gfx/reticle.spr_0", ALPHA_FULL, 0.038);
+							Sbar_DrawString(pwr_step + '158 -5 0' + woff, rune_power(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							pwr_step_y = pwr_step_y + 4;
 						}
 						instr = "*FIRE - cast rune power spell";
 					}

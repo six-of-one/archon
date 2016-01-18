@@ -504,7 +504,7 @@ void(float silent) player_demon_become =
 //	if(!deathmatch)
 //		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
-		setsize (self, '-16 -16 -20', '16 16 24');
+		setsize (self, '-16 -16 -24', '16 16 20');
 	self.health = self.health * MDEMON_HEALMOD / self.health_modifier;
 	self.health_modifier = MDEMON_HEALMOD;
 	makevectors(self.v_angle);

@@ -63,7 +63,7 @@ void() monster_zombie2 =
 
 	setmodel (self, "progs/zombie2.mdl");
 
-	setsize (self, '-4 -16 -93', '7 2 1');
+//	setsize (self, '-4 -16 -93', '7 2 1');
 
 	self.movetype = MOVETYPE_NONE;
 	self.frame = 22;
@@ -105,7 +105,7 @@ void() monster_zombie3 =
 
 	setmodel (self, "progs/zombie3.mdl");
 
-	setsize (self, '-4 -16 -93', '7 2 1');
+//	setsize (self, '-4 -16 -93', '7 2 1');
 
 	self.movetype = MOVETYPE_NONE;
 	self.frame = 46;

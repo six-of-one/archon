@@ -1164,7 +1164,7 @@ void(entity lb, float mvt, vector avl, vector vel, string snd) lavaball_large =
 	newmis.frame = LAVA_LGFRAME;
 	newmis.skin = LAVA_LGSKIN;
 	newmis.view_ofs = ' 0 0 -4';
-	setsize(newmis, '-14 -14 -14', ' 14 14 14');
+	setsize(newmis, '-16 -16 -16', ' 16 16 16');
 	newmis.dest_y = 32;
 	newmis.dmg = 100;
 	newmis.wait = NOFLY; // these wont make launchers

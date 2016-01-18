@@ -360,7 +360,8 @@ if (ign != A_MONSTER)
 
 	setmodel (self, "progs/blarg.mdl");
 
-	setsize (self, '-16 -35 -24', '16 35 20');
+//	setsize (self, '-16 -35 -24', '16 35 20');
+	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 	self.health = 180;
 
 	self.th_stand = blarg_stand1;

@@ -21,7 +21,7 @@
 
 void(entity e, string l0, string l1, string l2, string l3, string l4, string l5, string l6, string t0) loop_var =
 {
-	e.noise = l0;			// store access value of "pk_cyc_{*}" parm loop vars in set of .string ent fields
+	e.noise = l0;			// store access value of "it_cyc_{*}" parm loop vars in set of .string ent fields
 	e.noise1 = l1;			// so same loop think can run all cyc vars
 	e.noise2 = l2;
 	e.noise3 = l3;
@@ -112,7 +112,7 @@ void() loopcyc_think =
 	local entity e;
 	local string mmc;
 
-	svm = cvar("pk_cyc_master");
+	svm = cvar("it_cyc_master");
 	f = cvar(self.noise);
 	rp = cvar(self.noise1);
 	self.cnt = dr = rn = FALSE;
@@ -154,7 +154,7 @@ e.button12 = 65536+random();
 
 		if (!e.scode) e.scode = e.mcode;
 		if (!self.cnt) self.cnt = e.mcode;
-		if (cvar("pk_cyc_halt") || rn)
+		if (cvar("it_cyc_halt") || rn)
 		{
 			lc_item_call_save(e, item_by_mcode(e.scode));
 		}
@@ -200,7 +200,7 @@ e.button12 = 65536+random();
 				e = e.theowner;
 		}
 
-		if (!dr && !e && cvar("pk_cyc_dyn"))
+		if (!dr && !e && cvar("it_cyc_dyn"))
 		{
 			e = find( world, event, "dynamic_item");	
 			dr = TRUE;
@@ -279,7 +279,7 @@ void(entity e) init_loopcyc =
 	{
 		while (sf > 0 || fr)
 		{
-			if (!cvar("pk_cyc_master") || fr)
+			if (!cvar("it_cyc_master") || fr)
 			{
 				if (!e.theowner)
 				{
@@ -303,7 +303,7 @@ void(entity e) init_loopcyc =
 				else
 					s2 = sr.theowner = find( sr, classname, cl);
 
-		//		if (cvar("pk_cyc_dyn") && !sr) cl = "dyn_item"; // include dynamics - must have 1 reg item to start loop.
+		//		if (cvar("it_cyc_dyn") && !sr) cl = "dyn_item"; // include dynamics - must have 1 reg item to start loop.
 				}
 				if (fr)
 				{
@@ -366,83 +366,83 @@ void() start_loopcyc =
 	self.nextthink = time + 15; // recheck every 10 secs?
 
 // no sense in cycling removed items or constantly rndize items
-	if (cvar("pk_place_item") == 1) return;
-	if (cvar("pk_place_item") == 2 && cvar("pk_place_item_reload")) return;
+	if (cvar("it_place_item") == 1) return;
+	if (cvar("it_place_item") == 2 && cvar("it_place_item_reload")) return;
 	
-	if (!find(world, noise, "pk_cyc_lg_0"))
+	if (!find(world, noise, "it_cyc_lg_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_lg_0", "pk_cyc_lg_1", "pk_cyc_lg_2", "pk_cyc_lg_3", "pk_cyc_lg_4", "pk_cyc_lg_5", "pk_cyc_lg_6", "pk_cyc_lg_t");
+	loop_var(e, "it_cyc_lg_0", "it_cyc_lg_1", "it_cyc_lg_2", "it_cyc_lg_3", "it_cyc_lg_4", "it_cyc_lg_5", "it_cyc_lg_6", "it_cyc_lg_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_rl_0"))
+	if (!find(world, noise, "it_cyc_rl_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_rl_0", "pk_cyc_rl_1", "pk_cyc_rl_2", "pk_cyc_rl_3", "pk_cyc_rl_4", "pk_cyc_rl_5", "pk_cyc_rl_6", "pk_cyc_rl_t");
+	loop_var(e, "it_cyc_rl_0", "it_cyc_rl_1", "it_cyc_rl_2", "it_cyc_rl_3", "it_cyc_rl_4", "it_cyc_rl_5", "it_cyc_rl_6", "it_cyc_rl_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_gl_0"))
+	if (!find(world, noise, "it_cyc_gl_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_gl_0", "pk_cyc_gl_1", "pk_cyc_gl_2", "pk_cyc_gl_3", "pk_cyc_gl_4", "pk_cyc_gl_5", "pk_cyc_gl_6", "pk_cyc_gl_t");
+	loop_var(e, "it_cyc_gl_0", "it_cyc_gl_1", "it_cyc_gl_2", "it_cyc_gl_3", "it_cyc_gl_4", "it_cyc_gl_5", "it_cyc_gl_6", "it_cyc_gl_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_sng_0"))
+	if (!find(world, noise, "it_cyc_sng_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_sng_0", "pk_cyc_sng_1", "pk_cyc_sng_2", "pk_cyc_sng_3", "pk_cyc_sng_4", "pk_cyc_sng_5", "pk_cyc_sng_6", "pk_cyc_sng_t");
+	loop_var(e, "it_cyc_sng_0", "it_cyc_sng_1", "it_cyc_sng_2", "it_cyc_sng_3", "it_cyc_sng_4", "it_cyc_sng_5", "it_cyc_sng_6", "it_cyc_sng_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_ng_0"))
+	if (!find(world, noise, "it_cyc_ng_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_ng_0", "pk_cyc_ng_1", "pk_cyc_ng_2", "pk_cyc_ng_3", "pk_cyc_ng_4", "pk_cyc_ng_5", "pk_cyc_ng_6", "pk_cyc_ng_t");
+	loop_var(e, "it_cyc_ng_0", "it_cyc_ng_1", "it_cyc_ng_2", "it_cyc_ng_3", "it_cyc_ng_4", "it_cyc_ng_5", "it_cyc_ng_6", "it_cyc_ng_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_ssg_0"))
+	if (!find(world, noise, "it_cyc_ssg_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_ssg_0", "pk_cyc_ssg_1", "pk_cyc_ssg_2", "pk_cyc_ssg_3", "pk_cyc_ssg_4", "pk_cyc_ssg_5", "pk_cyc_ssg_6", "pk_cyc_ssg_t");
+	loop_var(e, "it_cyc_ssg_0", "it_cyc_ssg_1", "it_cyc_ssg_2", "it_cyc_ssg_3", "it_cyc_ssg_4", "it_cyc_ssg_5", "it_cyc_ssg_6", "it_cyc_ssg_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_pkw_0"))
+	if (!find(world, noise, "it_cyc_pkw_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_pkw_0", "pk_cyc_pkw_1", "pk_cyc_pkw_2", "pk_cyc_pkw_3", "pk_cyc_pkw_4", "pk_cyc_pkw_5", "pk_cyc_pkw_6", "pk_cyc_pkw_t");
+	loop_var(e, "it_cyc_pkw_0", "it_cyc_pkw_1", "it_cyc_pkw_2", "it_cyc_pkw_3", "it_cyc_pkw_4", "it_cyc_pkw_5", "it_cyc_pkw_6", "it_cyc_pkw_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_pkc_0"))
+	if (!find(world, noise, "it_cyc_pkc_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_pkc_0", "pk_cyc_pkc_1", "pk_cyc_pkc_2", "pk_cyc_pkc_3", "pk_cyc_pkc_4", "pk_cyc_pkc_5", "pk_cyc_pkc_6", "pk_cyc_pkc_t");
+	loop_var(e, "it_cyc_pkc_0", "it_cyc_pkc_1", "it_cyc_pkc_2", "it_cyc_pkc_3", "it_cyc_pkc_4", "it_cyc_pkc_5", "it_cyc_pkc_6", "it_cyc_pkc_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_art_0"))
+	if (!find(world, noise, "it_cyc_art_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_art_0", "pk_cyc_art_1", "pk_cyc_art_2", "pk_cyc_art_3", "pk_cyc_art_4", "pk_cyc_art_5", "pk_cyc_art_6", "pk_cyc_art_t");
+	loop_var(e, "it_cyc_art_0", "it_cyc_art_1", "it_cyc_art_2", "it_cyc_art_3", "it_cyc_art_4", "it_cyc_art_5", "it_cyc_art_6", "it_cyc_art_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_ammo_0"))
+	if (!find(world, noise, "it_cyc_ammo_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_ammo_0", "pk_cyc_ammo_1", "pk_cyc_ammo_2", "pk_cyc_ammo_3", "pk_cyc_ammo_4", "pk_cyc_ammo_5", "pk_cyc_ammo_6", "pk_cyc_ammo_t");
+	loop_var(e, "it_cyc_ammo_0", "it_cyc_ammo_1", "it_cyc_ammo_2", "it_cyc_ammo_3", "it_cyc_ammo_4", "it_cyc_ammo_5", "it_cyc_ammo_6", "it_cyc_ammo_t");
 	init_loopcyc(e);
 	}
 
-	if (!find(world, noise, "pk_cyc_itm_0"))
+	if (!find(world, noise, "it_cyc_itm_0"))
 	{
 	e = spawn();
-	loop_var(e, "pk_cyc_itm_0", "pk_cyc_itm_1", "pk_cyc_itm_2", "pk_cyc_itm_3", "pk_cyc_itm_4", "pk_cyc_itm_5", "pk_cyc_itm_6", "pk_cyc_itm_t");
+	loop_var(e, "it_cyc_itm_0", "it_cyc_itm_1", "it_cyc_itm_2", "it_cyc_itm_3", "it_cyc_itm_4", "it_cyc_itm_5", "it_cyc_itm_6", "it_cyc_itm_t");
 	init_loopcyc(e);
 	}
 };

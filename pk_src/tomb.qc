@@ -274,7 +274,7 @@ void () tomb_launch =
 	tomb.pk_currentitem = PKPLUS_IT_TOMB;
 	tomb.weapon = IT_AXE;
 	setmodel (tomb,"progs/tomb2.mdl");
-	setsize (tomb,'-16 -16 -1','16 16 44');
+	setsize (tomb,'-16 -16 0','16 16 44');
 	tomb.skin = 1;
 	setorigin (tomb,self.origin);
 	makevectors (self.angles);

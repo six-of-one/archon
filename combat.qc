@@ -172,26 +172,41 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	if (targ.mask_x & MORPH_ARCHON)
 	{
 // runes take portion of damage & reduce archon power of an attacked Archon - before multipliers
+		save = 0;
+		take = 0;
 		if ((attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & TECH_AMP))
 		{
-				// IMP: magic shield goes here - prevent archon power loss but reduce shield power
-				targ.archon = targ.archon - (damage * 0.25); // reduce by 1/4 damage
+			save = 0.25;
+			take = 2; // possibly amplify next rune
+			if (targ.rune_flag & RUNE_FLG_RS) save = 0.125;
 		}
 
 		if (attacker.rune_flag & RUNE_VAMPIRE)
 		{
-				// IMP: magic shield goes here - prevent archon power loss but reduce shield power
-				save = damage * 0.25;
-				take = targ.archon - save; // reduce by 1/4 damage
-				if (take < 0) // IMP: *** - de-archon at this point
-				{
-					save = save + take;
-					take = 0;
-				}
-				targ.archon = take;
-				attacker.archon = attacker.archon + save; // add points to attackers
+			if (take) save = save * take;
+			take = damage * save;
+			if ((targ.archon - take) < 0) // cant add negative pts
+			{
+				take = (targ.archon - take) + take;
+			}
+			if (targ.armorvalue > 0) attacker.archon = attacker.archon + take; // add points to attackers
 		}
 
+// magic shield goes here - prevent archon power loss but reduce shield power
+
+		if (targ.armorvalue)
+		{
+			targ.armorvalue = targ.armorvalue - (damage * save);
+			if (targ.armorvalue < 0) targ.armorvalue = 0; // shield gone
+		}
+		else
+		{
+			if ((damage * save) > 1)
+			if ((time & 3) == 3)
+				stuffcmd(targ, "hud_message \"WARNING: Archon power loss ***\"\n");
+
+			targ.archon = targ.archon - (damage * save);
+		}
 		if (attacker.archon < 0) de_archon(attacker);
 		return;
 	}
@@ -227,10 +242,13 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		damage = damage/2;
 		T_Damage (attacker,targ,targ,damage); // ha - back damage
 		empathy_dmg = 0;
-		if (attacker.mask_x & MORPH_ARCHON) // empathy shield drains archon pts when Archon attacks an player protected by it
+		if (attacker.mask_x & MORPH_ARCHON) // empathy shield drains archon pts when Archon attacks a player protected by it
 		{
+			empathy_dmg = 0.25;
+			if (attacker.rune_flag & RUNE_FLG_RS) empathy_dmg = 0.125;
 			// IMP: magic shield goes here - prevent archon power loss but reduce shield power
-			attacker.archon = attacker.archon - (damage * 0.25); // reduce by 1/4 of the 1/2 damage just set
+			attacker.archon = attacker.archon - (damage * empathy_dmg); // reduce by 1/4 of the 1/2 damage just set
+			empathy_dmg = 0;
 		}
 	}
 

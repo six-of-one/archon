@@ -169,8 +169,7 @@ void() turret_dropTurret =
 //		setmodel (turret, "progs/turtop.mdl"); -- remove model
 	setmodel (turret, "progs/turtop2.mdl"); // removed orange barrel flare - looks wrong with variety
 
-	setsize (turret, '-15 -14 -18', '21 7 10');
-//	setorigin (turret, self.origin + self.view_ofs);
+//	setsize (turret, '-16 -16 -16', '16 16 16');
 	setorigin (turret, self.origin);
 
 
@@ -206,7 +205,7 @@ void() turret_dropTurret =
 
 	setmodel(turret.turret_base, "progs/turstand.mdl");
 //	setsize(turret.turret_base, '-15 -14 -18', '9 14 1');
-	setsize (turret, '-5 -5 -18', '5 5 1');
+//	setsize (turret, '-5 -5 -18', '5 5 1');
 //	setorigin (turret.turret_base, self.origin + self.view_ofs);
 	setorigin (turret.turret_base, self.origin);
 
@@ -920,8 +919,9 @@ void() turret_checkIfCanBeSolid =
 		self.solid = SOLID_BBOX;
 
 	  // make correct size
-		setsize(self, '-15 -14 -18', '21 7 10');
-		setsize(self.turret_base, '-15 -14 -18', '9 14 1');
+//		setsize(self, '-15 -14 -18', '21 7 10');
+		setsize(self, '-12 -12 -24', '12 12 12');
+//		setsize(self.turret_base, '-15 -14 -18', '9 14 1');
 	}
 };
 

@@ -1529,6 +1529,8 @@ void(entity e) print_chain = // TEST fn - print out linked chain of ents
         }
 };
 
+entity archon_high;
+
 entity(entity hent, float flg) rnd_list =
 {
         local float rc, r1;
@@ -1537,13 +1539,18 @@ entity(entity hent, float flg) rnd_list =
         sel = s2 = world;
         rc = 0.3;
         sr = hent;
+			archon_high = world;
  //       set_CLE("calderashard", null_string, null_string, null_string, null_string, null_string, null_string);
         while (sr) // count stuff
                 {
                 if (move_check(sr, 15999 | 128)) //T_BLAST | T_IGNHELD)) // FIX - remove move_check failures from chain?
-                        {
-                        if (list_test(sr, flg)) rc = rc + 1;
-                        }
+						{
+                        if (list_test(sr, flg))
+								{
+									rc = rc + 1;
+									if (sr.archon > archon_high.archon) archon_high = sr; // get archon pts high scorer
+								}
+                  }
                 sr = sr.chain;
                 }
         sr = hent;

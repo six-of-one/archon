@@ -41,7 +41,7 @@ void(entity e) de_archon =
 	else if (self.state == IMP_MORDER) self.state = IMP_MHUMAN;
 	polymorph_check(self.state, 0);
 
-	self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", "", SUB_Null, 10, de_archon_thk, SUB_Null, self, world);
+	self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10, de_archon_thk, SUB_Null, self, world);
 	self = newmis;
 };
 
@@ -55,7 +55,7 @@ void() archon_nodule =
 	if (!self.archon) self.archon = 20 + crandom() * 5;
 
 	setmodel (self, self.model);
-	setsize (self,'-8 -8 -12','8 8 12');
+	setsize (self,'-8 -8 -8','8 8 8');
 	self.mins_z = self.mins_z - floor(random() * 4) * 4;
 	self.mask_x = MORPH_ALL + MORPH_ARCHON;
 	self.class_select = "x_item";
@@ -83,7 +83,7 @@ void() archon_nodule_rnd =
 		god_particle = self;
 		self.netname = "\bGod Particle\b";
 		setmodel (self,"progs/nodule110110110.bsp");
-		setsize (self,'-16 -16 -20','16 16 16');
+		setsize (self,'-16 -16 -24','16 16 16');
 		self.scale = 0.35;
 		self.modelflags = self.modelflags | 1; // rocket light
 		self.archon = 4500 + crandom() * 500;	// almost an archon
@@ -117,6 +117,34 @@ void() archon_nodule_rnd =
 	}
 };
 
+
+// archon varmpire power
+
+void() archon_vampire_thk =
+{
+	self.aflag = 0;
+	if (self.enemy.bolt_target) self.aflag = 1;
+	if (self.count <= 0) self.aflag = 1;
+	if (self.enemy.archon <= 0) self.aflag = 1;
+	if (self.enemy.solid == SOLID_NOT) self.aflag = 1;
+	if (self.takedamage == DAMAGE_NO) self.aflag = 1;
+	if (!((self.enemy.rune_flag & RUNE_FLG_RS) && (self.enemy.mask_x & MORPH_ARCHON))) self.aflag = 1;
+	if (! self.owner.rune_flag & RUNE_VAMPIRE) self.aflag = 1;
+
+	if (self.aflag)
+	{
+		stuffcmd(self.owner, "hud_vampire_target \"");
+		stuffcmd(self.owner, "\"\n");
+		remove(self);
+		return;
+	}
+
+	self.nextthink = time + 1;
+
+	self.owner.archon = self.owner.archon + self.archon;
+	self.enemy.archon = self.enemy.archon - self.archon;
+	self.count = self.count - self.archon;
+};
 
 // archon arena block think ops
 

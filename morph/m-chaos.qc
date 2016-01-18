@@ -1406,8 +1406,8 @@ void(float sel, vector torg) spawn_chaos_monster =
 	{
 		norm_z = norm_z + 2;
 		gsf = gsf - 1;
-	}	
-	if (gsf < 250 && gsf > 0) setorigin(self.charmer, norm);
+	}
+	if (gsf < 250 && gsf > 0) setorigin(self.charmer, norm + '0 0 22');
 };
 
 /*
@@ -1447,6 +1447,7 @@ void() chaos_beam =
 	local vector org, ep;
 	local entity rent, e, f;
 	local float f1;
+	var string autocvar_hud_vampire_target;
 
 //	if (x3 == world) x3 = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, 0, v0, v0, v0, v0, v0, "chaos_item", "progs/chaos_b2.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world); // TEST
 	if (self.aflag & FL_CSB) return;
@@ -1477,7 +1478,7 @@ void() chaos_beam =
 	ep = trace_endpos;
 	if (trace_ent == world) ep = trace_endpos - (v_forward * (32 + (64 * random())) ); // move burst away from wall
 
-	if (chaos == CHAOS_ENG) cvar_set("findnonsolid","1");
+//	if (chaos == CHAOS_ENG) cvar_set("findnonsolid","1");
 
 // fire beam
 	if (self.classname == "player") beam4(org, trace_endpos, LT_CHAOS);
@@ -1496,6 +1497,49 @@ void() chaos_beam =
 	{
 		e = findradius(ep, 64 + random() * 64);
 		rent = rnd_list(e, 0); // any random ent in beam strike range
+
+		if (self.rune_flag & RUNE_VAMPIRE)
+		if (archon_high != self)
+		if (archon_high.archon > 0.2)
+		{
+			if (archon_high.archon > 500)
+			{
+				if (autocvar_hud_vampire_target == null_string) // IMP: more archon shields - ps
+				{
+					newmis = spawn();
+					newmis.owner = self;
+					newmis.enemy = archon_high;
+					newmis.think = archon_vampire_thk;
+					newmis.nextthink = time + 1;
+
+					newmis.lefty = 0.2 + random() * 0.4; // percent to drain this time
+					newmis.count = archon_high.archon * newmis.lefty;
+					newmis.archon = 1 + random() * 5; // points drained per sec
+
+					newmis.netname = archon_high.netname;
+					if (newmis.netname == "") newmis.netname = "Unknown target";
+					stuffcmd(self, "hud_vampire_target \"");
+					stuffcmd(self, newmis.netname);
+					stuffcmd(self, "\"\n");
+				}
+			}
+			else
+			{
+				f1 = 0;
+				if (random() < 0.5)
+				if (archon_high.archon < 10)
+					f1 = archon_high.archon / 2;
+				else
+				{
+					f1 = archon_high.archon * 0.2;
+					f1 = f1 * (random() + 0.5);
+					if (f1 > 100) f1 = 10 + random() * 50;
+					if (!archon_high) f1 = random() * 6;
+				}
+				self.archon = self.archon + f1;
+				archon_high.archon = archon_high.archon - f1;
+			}
+		}
 	}
 
 /* no volcano yet
@@ -1613,12 +1657,12 @@ void() chaos_beam =
 		else sprint(self, rent.classname);
 		newline(self);
 		}
-	else if (random() < CBSUMMON)
-		{
+//	else if (random() < CBSUMMON)
+//		{
 		if (rent == world) rent = rnd_list(e, 0);
 		if (rent == world) return;
 		spawn_chaos_monster(0, rent.origin);
-		}
+//		}
 
 																						if (trace_ent != world) if (WARNING) { bprint("beam hit "); bprint(trace_ent.classname); newline(world); }
 
@@ -1771,7 +1815,7 @@ void() poly_monster =
 	self.flags = FL_ONGROUND; // strips of item flags, etc
 	self.touch = SUB_Null;
 	self.spawnflags = 0;
-	if (self.map == "rune") self.map = ""; // rune server has to make a new rune now!
+	if (self.map == "rune") self.map = null_string; // rune server has to make a new rune now!
 	item_call(trace_ent.stack3);
 
 	self.class_select = trace_ent.stack4;
@@ -1851,6 +1895,7 @@ void() rune_powers =
 	}
 	else
 	if (!self.rune_flag)
+	if (self.archon > 1500)
 	{
 		self.rune_flag = self.rune_flag | self.pk_beartrapammo;
 		self.archon = self.archon - self.pk_explode_ammo;
@@ -1921,7 +1966,7 @@ void() spell_target =
 	}
 	if (self.weapon == IT_SUPER_SHOTGUN)
 	{
-		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; }
+		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_init; self.bolt_target = self; }
 		if (self.ammo_nails == 5) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 3; self.th_melee = poly_init; if (self.bolt_target == self) self.bolt_target = world; }
 		if (self.ammo_nails == 7) { self.pk_explode_ammo = 30; self.pkplus_actorammo = 19; self.th_melee = poly_monster; if (self.bolt_target == self) self.bolt_target = world; } // repeat last monster poly
 		if (self.ammo_nails == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 0; self.th_melee = transmogrify; if (self.pk_beartrapammo == 0 || random() < 0.7) self.pk_beartrapammo = rnd_bit_mask(1023); } // repeat last monster poly
@@ -1962,6 +2007,11 @@ void() player_chaos_attack =
 				self.bolt_target.bolt_target.scale = self.bolt_target.bolt_target.scale * 1.2;
 				self.enemy = world;
 				self.stack2 = null_string;
+				stuffcmd(self, "hud_target1 \"");
+				stuffcmd(self, self.stack1);
+				stuffcmd(self, "\"\n");
+				stuffcmd(self, "hud_target2 \"");
+				stuffcmd(self, "\"\n");
 			}
 		}
 		else
@@ -2156,6 +2206,10 @@ void() clear_spell =
 	self.pkplus_actorammo = 65536; // if a spell is active it needs reset
 	self.th_melee = SUB_Null;
 	self.stack1 = self.stack2 = null_string;
+	stuffcmd(self, "hud_target1 \"");
+	stuffcmd(self, "\"\n");
+	stuffcmd(self, "hud_target2 \"");
+	stuffcmd(self, "\"\n");
 	self.mcode = -666; // archon casting spell
 };
 
@@ -2327,6 +2381,11 @@ void() archon_target =
 		if (trace_ent.netname) self.stack1 = trace_ent.netname;
 		self.enemy = world;
 		self.stack2 = null_string;
+		stuffcmd(self, "hud_target1 \"");
+		stuffcmd(self, self.stack1);
+		stuffcmd(self, "\"\n");
+		stuffcmd(self, "hud_target2 \"");
+		stuffcmd(self, "\"\n");
 		return;
 	}
 
@@ -2337,6 +2396,9 @@ void() archon_target =
 	trace_ent.bolt_target.scale = trace_ent.bolt_target.scale * 0.8;
 	self.stack2 = "Acquired 2";
 	if (trace_ent.netname) self.stack2 = trace_ent.netname;
+	stuffcmd(self, "hud_target2 \"");
+	stuffcmd(self, self.stack2);
+	stuffcmd(self, "\"\n");
 };
 
 /*
@@ -2420,22 +2482,22 @@ void() player_chaos_impulse =
 
 	if (self.impulse == 2) // spell list 1 - teleports
 	{
+		if (!self.ammo_shells) self.ammo_shells = 3; // teleport
 		if (self.weapon == IT_SHOTGUN) // loop thru spell set
 		{
-			if (!self.ammo_shells) self.ammo_shells = 3; // teleport
-			else if (self.ammo_shells == 3) self.ammo_shells = 5; // tele swap
+			if (self.ammo_shells == 3) self.ammo_shells = 5; // tele swap
 			else if (self.ammo_shells == 5) self.ammo_shells = 7;
 			else if (self.ammo_shells == 7) self.ammo_shells = 11;
 			else if (self.ammo_shells == 11) self.ammo_shells = 3;
 		}
 		self.weapon = IT_SHOTGUN;
 	}
-	if (self.impulse == 3) // spell list 2 - polymorph self
+	if (self.impulse == 3) // spell list 2 - polymorph, transmogrify
 	{
+		if (!self.ammo_nails) self.ammo_nails = 3;
 		if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
 		{
-			if (!self.ammo_nails) self.ammo_nails = 3;
-			else if (self.ammo_nails == 3) self.ammo_nails = 5;
+			if (self.ammo_nails == 3) self.ammo_nails = 5;
 			else if (self.ammo_nails == 5)
 			{
 				if (self.pk_beartrapammo & 421887) // skip if no valid bit
@@ -2455,10 +2517,10 @@ void() player_chaos_impulse =
 	}
 	if (self.impulse == 4) // spell list 3
 	{
+		if (!self.ammo_rockets) self.ammo_rockets = 3;
 		if (self.weapon == IT_NAILGUN) // loop thru spell set
 		{
-			if (!self.ammo_rockets) self.ammo_rockets = 3;
-//			else if (self.ammo_rockets == 3) self.ammo_rockets = 5;
+//			if (self.ammo_rockets == 3) self.ammo_rockets = 5;
 //			else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
 //			else if (self.ammo_rockets == 7) self.ammo_rockets = 11;
 //			else if (self.ammo_rockets == 11) self.ammo_rockets = 13;
@@ -2466,8 +2528,9 @@ void() player_chaos_impulse =
 //			else if (self.ammo_rockets == 17) self.ammo_rockets = 19;
 //			else if (self.ammo_rockets == 19) self.ammo_rockets = 23;
 //			else if (self.ammo_rockets == 23) self.ammo_rockets = 29;
-			else if (self.ammo_rockets == 11) self.ammo_rockets = 3;
+//			else if (self.ammo_rockets == 11) self.ammo_rockets = 3;
 		}
+//		if ((self.archon < 1500) && self.ammo_rockets == 3) self.ammo_rockets = 5;
 		self.weapon = IT_NAILGUN;
 	}
 	else if (self.impulse == IMP_MSIGHT)

@@ -279,6 +279,7 @@ void () weapon_airfist =
 	self.pk_currentitem = PK_IT_AIRGUN;
 	self.netname = "AirFist";
 	self.touch = painkeep_weapon_touch;
+	self.pk_touch = painkeep_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	//setsize (self, '-15 -9 25', '17 9 43');
 	StartItem ();
@@ -305,6 +306,7 @@ void () weapon_chainlg =
 	self.pk_currentitem = PK_IT_CLIGHT;
 	self.netname = "Chain Thunderbolt";
 	self.touch = painkeep_weapon_touch;
+	self.pk_touch = painkeep_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
@@ -324,6 +326,7 @@ void () weapon_grapgun =
 	setmodel (self,"progs/g_harp.mdl");
 	self.pk_currentitem = PK_IT_GRAPGUN;
 	self.netname = "Harpoon Gun";
+	self.pk_touch = painkeep_touch;
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
@@ -335,6 +338,7 @@ void () weapon_grapgun =
 
 void() pk_dyn_touch =
 {
+	if (self.solid != SOLID_NOT) return; // cubes not taken
 	if (self.event != "dynamic_item") return;
 	pk_ditems = pk_ditems - 1;
 	remove(self);
@@ -664,7 +668,7 @@ if (self.theowner != other) // debounce
 	}
 
 //	if (self.pk_touch == (void()) 0)
-	if (self.pk_touch == SUB_Void)
+	if ((self.pk_touch == SUB_Void) || !self.pk_touch)
 	{
 		if (WARNING)
 		{
@@ -917,6 +921,7 @@ void () item_painkeep_gwell =
 	setmodel (self,"progs/cubsmall.mdl");
 	self.netname = "Gravity Well";
 	self.pk_items = PK_IT_GRAVITYWELL;
+	self.pk_touch = painkeep_touch;
 	//setsize (self, '-32 -32 -32', '32 32 32');
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL; // everyone can have pk specials
@@ -935,8 +940,10 @@ void () item_painkeep_turret =
 	setmodel (self,"progs/tpower.mdl");
 	self.netname = "AutoSentry";
 	self.pk_items = PK_IT_TURRET;
+	self.pk_touch = painkeep_touch;
 
-	setsize (self,'-7 -7 -7','4 7 21');
+//	setsize (self,'-7 -7 -7','4 7 21');
+	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL;
 	StartItem ();
 
@@ -961,6 +968,7 @@ void () item_painkeep_can =
 	setmodel (self,"progs/beans.mdl");
 	self.netname = "Can of pork and beans";
 	self.pk_items = PK_IT_CANPAB;
+	self.pk_touch = painkeep_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL;
 	StartItem ();
@@ -978,6 +986,7 @@ void () item_painkeep_beartrap =
 	setmodel (self,"progs/bearpick.mdl");
 	self.netname = "Bear Trap";
 	self.pk_items = PK_IT_BEARTRAP;
+	self.pk_touch = painkeep_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	self.mask_x = MORPH_ALL;
 	StartItem ();

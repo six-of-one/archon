@@ -2069,7 +2069,7 @@ void() item_flight =
 
 	if (self.class_select == null_string) self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
-	self.mask_x = CB_GREMLIN | (MORPH_ALL - MORPH_FLY); // flyers dont get goody
+	self.mask_x = CB_GREMLIN | (MORPH_ALL - ( MORPH_ALL & MORPH_FLY)); // flyers dont get goody
 
 	self.archon = ARCHON_ART;
 };

@@ -965,7 +965,6 @@ void(entity e, float tm, void() rmv) dyn_remove =
 	f.netname = e.netname; // in case of hash fail
 	f.target1 = e.classname;
 	f.enemy = e;
-	e.goalentity = f; // back pointer for god particle, etc
 
 	f.button13 = e.button13 = system_hash;
 	system_hash = system_hash + 1 + rint(random() * 5);
@@ -1224,9 +1223,9 @@ void() item_control_menu =
 	local string m;
 	local entity e;
 
-	k = cvar("pk_tog_mcode") - MC_SHOTGUN;
+	k = cvar("it_tog_mcode") - MC_SHOTGUN;
 	if (k == -2) k = 7; // pki menu code = 99 or 2 less than MC_SHOTGUN (1 less than axe)
-	else if (k < 1 || k > 16) k = cvar("pk_tog_itemmenu");
+	else if (k < 1 || k > 16) k = cvar("it_tog_itemmenu");
 	else if (k  > 6) k = k + 1;
 
 	if (k > 0)
@@ -1342,8 +1341,8 @@ bprint("\n");
 		}
 	}
 
-	cvar_set("pk_tog_mcode", "0");
-	cvar_set("pk_tog_itemmenu", "0");
+	cvar_set("it_tog_mcode", "0");
+	cvar_set("it_tog_itemmenu", "0");
 };
 
 
@@ -1495,7 +1494,7 @@ void(string cb) cube_handle =
 		cbd = MORPH_CUBE_DV;
 	}
 	else
-	if (cb == "pk_crates")
+	if (cb == "it_crates")
 	{
 		cv = cvar(cb);
 		cbnet = "pk_crate_maker";
@@ -1552,7 +1551,10 @@ void(string cb) cube_handle =
 		}
 		bprint("***  ");
 		bprint(cn);
-		bprint(" will spawn on this map - keep an eye out\n");
+		bprint(" will spawn on this map");
+		bprint(world.group);
+		world.group = "\n";
+
 	}
 	if (cv <= 0) // turned off - remove them all
 	{
@@ -1590,7 +1592,7 @@ void() place_item_control;
 void() rndize_restore =
 {
 	self.nextthink = time + 10 + random() * 10;
-	if (cvar("pk_place_item") < 2)
+	if (cvar("it_place_item") < 2)
 	{
 		self.nextthink = time + 0.1;
 		self.think = rndize_item;
@@ -1612,7 +1614,7 @@ void() rndize_item =
 	d = MC_PK_RNDITM;
 	if (PK_ART) d = MC_PKP_RNDITM;
 
-	if (self.owner.mcode && cvar("pk_place_item") == 3) // total rndize across all map items! - not recommend except for total chaos
+	if (self.owner.mcode && cvar("it_place_item") == 3) // total rndize across all map items! - not recommend except for total chaos
 	{
 		f = MC_TOT - 2;
 		self.owner.mcode = MC_SUPER_SHOTGUN + rint(random() * f);
@@ -1662,7 +1664,7 @@ void() rndize_item =
 			bprint(ftos(self.owner.mcode));
 			bprint(" - no change\n");
 		}
-		if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
+		if (cvar("it_place_item") == 2 || cvar("it_place_item") == 3)
 		{
 			self.nextthink = time + 10 + random() * 10;
 			self.think = rndize_restore;
@@ -1676,10 +1678,10 @@ void() rndize_item =
 
 // IDEA: could have a chaos mod vector go thru here for chaos effects
 
-	self.cnt = cvar("pk_place_item_reload"); // randomize every so often
+	self.cnt = cvar("it_place_item_reload"); // randomize every so often
 
 //	bprint("*** rndize item: ");
-	if (cvar("pk_place_item") == 0)
+	if (cvar("it_place_item") == 0)
 	{
 //		bprint("admin turned off & exiting randomize items & restoring\n");
 		self.owner.wad = item_by_mcode(self.owner.scode);
@@ -1687,7 +1689,7 @@ void() rndize_item =
 		pic_tsk = 0;
 	}
 	else
-	if (cvar("pk_place_item") == 1)
+	if (cvar("it_place_item") == 1)
 	{
 		place_item_control();
 		remove(self);
@@ -1715,14 +1717,14 @@ void() rndize_item =
 void() pic_restore_item =
 {
 	self.nextthink = time + 10 + random() * 10;
-	if (cvar("pk_place_item") == 0)
+	if (cvar("it_place_item") == 0)
 	{
 		pic_tsk = 0;
 		self.wad = item_by_mcode(self.scode);
 		item_call(self.wad);
 	}
 	else
-	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
+	if (cvar("it_place_item") == 2 || cvar("it_place_item") == 3)
 	{
 		place_item_control();
 	}
@@ -1741,7 +1743,7 @@ void() place_item_control =
 	if (!self.mcode) self.mcode = pk_mcode(null_string, self); // put map code on ent
 	if (!self.scode) self.scode = self.mcode;
 
-	if (cvar("pk_place_item") == 1) // NOTE: something chaos will not be in control of
+	if (cvar("it_place_item") == 1) // NOTE: something chaos will not be in control of
 	{
 		pic_tsk = 1;
 		setmodel(self, null_string);
@@ -1755,7 +1757,7 @@ void() place_item_control =
 		self.nextthink = time + 10 + random() * 10;
 		return;
 	}
-	else if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
+	else if (cvar("it_place_item") == 2 || cvar("it_place_item") == 3)
 	{
 		local entity e;
 		e = spawn();

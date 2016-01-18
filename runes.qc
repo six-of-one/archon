@@ -1306,7 +1306,7 @@ void() run_runes =
 				if (e.rune_flag & 2) e.archon = e.archon - 3; // 3 pts - damage
 				else if (e.rune_flag & 1) e.archon = e.archon - 5; // 5 pts - resist
 				else if (e.rune_flag & 4) e.archon = e.archon - 10; // 10 pts - haste
-				else if (e.rune_flag & 64) e.archon = e.archon - 12; // 12 pts - vampire
+				else if (e.rune_flag & 64) e.archon = e.archon - 20; // 20 pts - vampire
 			}
 			else
 			{
@@ -1497,7 +1497,7 @@ void() run_runes =
 		}
 	}
 
-	if (autocvar_pk_runemap) // display rune info on console (network - all players see this)
+	if (autocvar_it_runemap) // display rune info on console (network - all players see this)
 	{
 		stuffcmd(self, "con_notify 22\n"); // for this op
 		stuffcmd(self, "con_notifytime 10\n");
@@ -1537,8 +1537,7 @@ void() run_runes =
 		bprint("\n");
 		if (nonserver_rune_found)
 			bprint("* non server Runes are loaded on this map.\n\n");
-//		cvar_set("pk_runemap", "0"); // ideally want a stuffcmd, but this is called from a think - no idea which player set this.
-		autocvar_pk_runemap = 0;
+//		cvar_set("it_runemap", "0"); // ideally want a stuffcmd, but this is called from a think - no idea which player set this.
 	}
 
 };

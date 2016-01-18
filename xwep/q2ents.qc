@@ -1308,7 +1308,7 @@ void() q2_misc_explobox =
 	self.netname = "Barrel";
 	if (self.class_select == null_string) self.class_select = "q2_item";
 	misc_explodbox_set(self, "progs/q2_barrel.mdl", Q2_BARREL_BLAST, 80, MOVETYPE_NONE);
-	setsize (self, '-14 -14 0', '14 14 42');
+	setsize (self, '-16 -16 0', '16 16 40');
 	self.frame = 0;
 //	self.noise = "doom/dsbarexp.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -2086,14 +2086,14 @@ void() hand_grenade_thk =
 	{
 		if (!self.owner.eweapon)
 		{
-			sprint(self.owner, "\n\nHand grenade disarmed.\n");
+			stuffcmd(self.owner, "hud_message \"Hand grenade disarmed\"");
 			centerprint(self.owner, null_string);
 			remove(self);
 			return;
 		}
 		if (self.owner.eweapon.mdl != self.target)
 		{
-			sprint(self.owner, "\n\nHand grenade disarmed.\n");
+			stuffcmd(self.owner, "hud_message \"Hand grenade disarmed\"");
 			centerprint(self.owner, null_string);
 			remove(self);
 			return;
@@ -2137,8 +2137,8 @@ void() X_FireHandGrenade =
 		if (snd == null_string) snd = "q2_snd/hgrent1a.wav";
 		EWEAP.noise2 = null_string;
 // more throw power the longer held
-		f = 6 / (self.enemy.endtime - time) * HGREN_VEL;
-		if (f > 600) f = 600;
+		f = 6 / (self.enemy.endtime - time) * HGREN_VEL * 2;
+		if (f > 800) f = 800;
 		fire_missile(f, MOVETYPE_BOUNCE, FL_GRN | FL_PUNCH | FL_USEAMMO | FL_RUNEHST, RM_SKY | PF_LAVA, self.origin, ' 0 0 0', "grenade", "progs/vw_q2_hgr.mdl", snd, GrenadeTouch, 10 + 60 * random(),  GrenadeExplode, GrenadeExplode);
 		self.enemy.owner = newmis;
 		newmis.frame = 107; //169 + floor(random() * 5.3);

@@ -69,7 +69,7 @@ string sites					= "alias sites \"echo website  http://www.moddb.com/mods/chaos-
 // **************************************
 
 var float autocvar_no_auto = 0;	// allow everything to be turned off without re-launching defaults
-var float autocvar_pk_runemap = 0;  // if true print rune data to console
+var float autocvar_it_runemap = 0;  // if true print rune data to console
 
 // **************************************
 // Developer section
@@ -592,9 +592,10 @@ float FL_TR_DOOM				= 2; // 	"			"		"		doom	"
 float FL_TR_QUAKE				= 4; //		"			"		"		quake	"
 float FL_TR_Q2					= 8; //		"			"		"		q2		"
 float FL_TR_Q3					= 16; //	"			"		"		q3		"
-float FL_TR_RANDIN			= 32; // randomize in gen
-float FL_TR_RANDOM			= 64; // total random
-float FL_TR_REMOVE			= 128; // remove these items
+float FL_TR_MELEE				= 32; // "			"		"		melee items
+float FL_TR_RANDIN			= 64; // randomize in gen
+float FL_TR_RANDOM			= 128; // total random
+float FL_TR_REMOVE			= 256; // remove these items
 
 float NO_PI;					// dont let item_call call place_item
 

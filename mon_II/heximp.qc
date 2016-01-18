@@ -417,7 +417,7 @@ void() heximp_stone =
 	self.nextthink = time + 0.1;
 };
 
-/*QUAKED monster_heximp (1 0 0) (-16 -16 2) (16 16 34) Ambush Statue Sitting
+/*QUAKED monster_heximp (1 0 0) (-16 -16 2) (16 16 32) Ambush Statue Sitting
 
 a Hexen 2 imp
 
@@ -465,7 +465,7 @@ if (ign != A_MONSTER)
 
  setmodel (self, "progs/heximp.mdl");
 
- setsize ( self, '-16 -16 0', '16 16 34');
+ setsize ( self, '-16 -16 0', '16 16 32');
  self.health = 60;
 
 	if (self.spawnflags & SPAWN_STONE) // Stone Imp

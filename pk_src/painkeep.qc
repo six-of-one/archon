@@ -772,24 +772,6 @@ void() pk_liveupd =
 	if (find(world,class_select,"class_bot")) // at least one bot
 		bot_fixer();
 
-// toggle for q1 def item translation
-/*
-	if (PK-100 || Q-100) - never runs this
-	if (TR_Q1QRY == 0)
-	if (TR_Q1DEF != cvar("pk_tr_q1def"))
-	{
-		TR_Q1DEF = cvar("pk_tr_q1def");
-		f = 0;
-		if (TR_Q1DEF) f = FL_TR_QUAKE;				/// NOTE: TR_ALL overrides this setting
-		master_item_control_loop("wolf_item", f);
-		master_item_control_loop("doom_item", f);
-		master_item_control_loop("q2_item", f);
-		master_item_control_loop("q3_item", f);
-		master_item_control_loop("pkplus_item", f);
-		master_item_control_loop("hip_item", f);
-		master_item_control_loop("x_item", f);
-	}
-*/	
 
 // cam stuff
 	DCAMTO = cvar("sv_cam_timeout");
@@ -905,39 +887,39 @@ void() pk_liveupd =
 	FFW_LIMIT = cvar("sv_pl_ffwlimit");
 
 // defaults - set on respawn or server entry
-	DEF_HEALTH = cvar("pk_def_health");
-	DEF_ARMOR = cvar("pk_def_armor");
-	DEF_ITEMS = cvar("pk_def_items");
-	DEF_PK_ITEMS = cvar("pk_def_pkitems");
-	DEF_WEAPON = cvar("pk_def_weapon");
+	DEF_HEALTH = cvar("it_def_health");
+	DEF_ARMOR = cvar("it_def_armor");
+	DEF_ITEMS = cvar("it_def_items");
+	DEF_PK_ITEMS = cvar("it_def_pkitems");
+	DEF_WEAPON = cvar("it_def_weapon");
 
-	DEF_AMMO_BULLETS = cvar("pk_def_ammo_bullets");
-	DEF_AMMO_SHELLS = cvar("pk_def_ammo_shells");
-	DEF_AMMO_CELLS = cvar("pk_def_ammo_cells");
-	DEF_AMMO_ROCKETS = cvar("pk_def_ammo_rockets");
-	DEF_AMMO_NAILS = cvar("pk_def_ammo_nails");
-	DEF_AMMO_SLUGS = cvar("pk_def_ammo_slugs");
-	DEF_AMMO_GAS = cvar("pk_def_ammo_gas");
+	DEF_AMMO_BULLETS = cvar("it_def_ammo_bullets");
+	DEF_AMMO_SHELLS = cvar("it_def_ammo_shells");
+	DEF_AMMO_CELLS = cvar("it_def_ammo_cells");
+	DEF_AMMO_ROCKETS = cvar("it_def_ammo_rockets");
+	DEF_AMMO_NAILS = cvar("it_def_ammo_nails");
+	DEF_AMMO_SLUGS = cvar("it_def_ammo_slugs");
+	DEF_AMMO_GAS = cvar("it_def_ammo_gas");
 
-	DEF_X_ITEMS = cvar("pk_def_x_items");
+	DEF_X_ITEMS = cvar("it_def_x_items");
 // wep inits
-	INIT_CON = cvar("pk_init_con");
-	CHAR_CON = cvar("pk_char_con");
+	INIT_CON = cvar("it_init_con");
+	CHAR_CON = cvar("it_char_con");
 
-	INIT_0_W = cvar("pk_init_0_wolf");
-	INIT_1_D = cvar("pk_init_1_doom");
-	INIT_2_Q = cvar("pk_init_2_quake");
-	INIT_3_PK = cvar("pk_init_3_pk");
-	INIT_4_Q2 = cvar("pk_init_4_q2");
-	INIT_5_Q3 = cvar("pk_init_5_q3");
-	INIT_6_HP = cvar("pk_init_6_hip");
-	INIT_7 = cvar("pk_init_7");
+	INIT_0_W = cvar("it_init_0_wolf");
+	INIT_1_D = cvar("it_init_1_doom");
+	INIT_2_Q = cvar("it_init_2_quake");
+	INIT_3_PK = cvar("it_init_3_pk");
+	INIT_4_Q2 = cvar("it_init_4_q2");
+	INIT_5_Q3 = cvar("it_init_5_q3");
+	INIT_6_HP = cvar("it_init_6_hip");
+	INIT_7 = cvar("it_init_7");
 
 // q1 ammo
-	Q1_SHELLAMMO_MAX				= cvar("q1_shellammo_max");
-	Q1_NAILAMMO_MAX					= cvar("q1_nailammo_max");
-	Q1_ROCKETAMMO_MAX				= cvar("q1_rocketammo_max");
-	Q1_CELLAMMO_MAX					= cvar("pk_cellammo_max");
+	Q1_SHELLAMMO_MAX				= cvar("it_max_shellammo");
+	Q1_NAILAMMO_MAX					= cvar("it_max_nailammo");
+	Q1_ROCKETAMMO_MAX				= cvar("it_max_rocketammo");
+	Q1_CELLAMMO_MAX					= cvar("it_max_cellammo");
 
 // item ammo levels - NOTE: limit to what can be carried tween levels is fixed! (at 3) - CHECK: tween levels storage code - as 4 could be 0, 5 -> 1, etc - any over 3 should be 3
 	PK_GRAVITYWELLAMMO_MAX	= cvar("pk_max_gravitywellammo");
@@ -960,9 +942,9 @@ void() pk_liveupd =
 		IMP_DROPI =  0;
 
 // x ammos
-	PK_BULLETAMMO_MAX				= cvar("pk_bulletammo_max");
-	PK_SLUGAMMO_MAX					= cvar("pk_slugammo_max");
-	PK_GASAMMO_MAX						= cvar("pk_gasammo_max");
+	PK_BULLETAMMO_MAX				= cvar("it_max_bulletammo");
+	PK_SLUGAMMO_MAX					= cvar("it_max_slugammo");
+	PK_GASAMMO_MAX						= cvar("it_max_gasammo");
 
 	PK_MAX_LIVENT = cvar("pk_max_livent");
 
@@ -972,7 +954,7 @@ void() pk_liveupd =
 	DEAD_XPACK = cvar("sv_dead_xpack");
 	DEAD_GIBPACK = cvar("sv_dead_gibpack");
 
-	X_CHGLVL = cvar("pk_xchgl");
+	X_CHGLVL = cvar("it_xchgl");
 
 	Q2_SILENCE = cvar("q2_silence");
 
@@ -1067,7 +1049,7 @@ void() pk_liveupd =
 	}
 
 // pk cubes
-	PK_CUBE_TIME = cvar("pk_cubes_time"); // TDO: doesnt reset existing makers
+	PK_CUBE_TIME = cvar("it_cubes_time"); // TDO: doesnt reset existing makers
 
 	if (PK_CUBE_TIME < 0)
 	{
@@ -1086,10 +1068,10 @@ void() pk_liveupd =
 
 // crates - use cube timing, but lasts twice as long
 	if (time > 5) // for msg
-	if (PK_CRATE  != cvar("pk_crates")) 
+	if (PK_CRATE  != cvar("it_crates")) 
 	{
-		cube_handle("pk_crates");
-		PK_CRATE = cvar("pk_crates");
+		cube_handle("it_crates");
+		PK_CRATE = cvar("it_crates");
 	}
 
 
@@ -1133,8 +1115,8 @@ void() pk_liveupd =
 	if (PKPLUS_TOMB_TIME != cvar("pk_tomb_time")) PK_TOMB_SET = FALSE;
 
 // others
-	LASER_FLY = cvar("pk_laser_fly"); 
-	LASER_BOUNCE = cvar("pk_laser_bounce");
+	LASER_FLY = cvar("sv_c_laser_fly"); 
+	LASER_BOUNCE = cvar("sv_c_laser_bounce");
 
 // map translations
 	check_translate();
@@ -1153,7 +1135,7 @@ void() pk_liveupd =
 
 	POW_TIME = cvar("sv_c_pow_time");
 
-	EXPLBOX_RESP = cvar("pk_explbox_resp");
+	EXPLBOX_RESP = cvar("it_explbox_resp");
 
 // artifacts
 	if (PK_ART  != cvar("sv_pk_art"))
@@ -1231,7 +1213,7 @@ void() pk_liveupd =
 	}
 
 
-	if (cvar("pk_mapcode")) // print list of map codes available to console
+	if (cvar("it_mapcode")) // print list of map codes available to console
 	{
 		local string cl;
 		f = 1;
@@ -1251,22 +1233,22 @@ void() pk_liveupd =
 				bprint("  -  (bv: ");
 				bprint(ftos(bit_mcode(f, world)));
 				bprint(")\n");
-				if (cvar("pk_mapcode") == 2) bprint("\n");			// extra visibility - harder to read on game screen, but great for bash console view
-				else if (cvar("pk_mapcode") == 4) bprint("-----------------------------------------------------------------------------\n"); 
+				if (cvar("it_mapcode") == 2) bprint("\n");			// extra visibility - harder to read on game screen, but great for bash console view
+				else if (cvar("it_mapcode") == 4) bprint("-----------------------------------------------------------------------------\n"); 
 			}
 			f = f + 1;
 		}
 		bprint("map mode = ");
 		bprint(MAP_MODE);
 		bprint("\n");
-		cvar_set("pk_mapcode", "0");
+		cvar_set("it_mapcode", "0");
 	}
 
-	if (cvar("pk_make")) // create item at random location if map code valid
+	if (cvar("it_make")) // create item at random location if map code valid
 	{
-		fn_make(cvar("pk_make"), v0, null_string);
+		fn_make(cvar("it_make"), v0, null_string);
 //		cvar_set("saved1", ftos(cvar("saved1") + 1)); // TEST
-		cvar_set("pk_make", "0");
+		cvar_set("it_make", "0");
 	}
 
 	item_control_menu();
@@ -1280,7 +1262,7 @@ void() pk_monitor =
 
 // place item controls - wait for PIC_TO to do this
 // 		not done in live update because we dont want it to fire off right after a map load when things are settling down
-	if (pic_tsk != cvar("pk_place_item"))
+	if (pic_tsk != cvar("it_place_item"))
 	if (!pic_tsk) // only init loop when it was intially off - every loop call starts more control ents
 		place_item_control_loop();
 
@@ -1529,7 +1511,9 @@ void() pk_srvcmd_set =
 	PK_CUBE = 0;
 	PK_CUBE_TIME = 60;
 	PK_CUBE_DV = 0;
-	
+
+	world.group = " - keep an eye out\n";
+
 // map translations
 
 	TR_Q1DEF = 1;
@@ -1594,7 +1578,7 @@ void() pk_srvcmd_set =
 	INIT_6_HP = 0;
 	INIT_7 = 0;
 
-// q1 ammo
+// 		 ammo
 	Q1_SHELLAMMO_MAX				= 100;
 	Q1_NAILAMMO_MAX					= 200;
 	Q1_ROCKETAMMO_MAX				= 100;
@@ -1695,8 +1679,8 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		addstat(47, 2, ammo_slug); // enh ammos
 		addstat(48, 2, ammo_gaspr); // enh ammos
 
-		addstat(50, 1, stack1); // target string
-		addstat(51, 1, stack2); // target string
+//		addstat(50, 1, stack1); // target string
+//		addstat(51, 1, stack2); // target string
 
 		addstat(64, 2, volume);
 		addstat(65, 2, morphy);

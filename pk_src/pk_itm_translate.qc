@@ -5,8 +5,10 @@
  * file: pk_itm_translate.qc
  *
  * date: 6/17/10
+ * date: 10.2.13 - add melee weapon only mode
  *
- * qc - support archon 1.0 uber map item translation
+ * qc 
+ *    - support archon 1.0 uber map item translation
  *    - support painkeep 2.0 map item translation
  *
  */
@@ -117,6 +119,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_chainlg"); // IDEA: poss. dynamo?
 		if (TR == FL_TR_Q2) return("q2_weapon_bfg");
 		if (TR == FL_TR_Q3) return("q3_weapon_bfg");
+		if (TR == FL_TR_MELEE) return("item_painkeep_gwell");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -174,6 +177,7 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR == FL_TR_Q2) return("q2_weapon_railgun");
 		if (TR == FL_TR_Q3) return("q3_weapon_railgun");
+		if (TR == FL_TR_MELEE) return("c_weapon_deepsleep");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -185,6 +189,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_rocketlauncher");
 		if (TR == FL_TR_Q2) return("q2_weapon_rocketlauncher");
 		if (TR == FL_TR_Q3) return("q3_weapon_rocketlauncher");
+		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -196,6 +201,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_grenadelauncher");
 		if (TR == FL_TR_Q2) return("q2_weapon_grenadelauncher");
 		if (TR == FL_TR_Q3) return("q3_weapon_grenadelauncher");
+		if (TR == FL_TR_MELEE) return("q2_ammo_grenades");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -207,6 +213,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_lightning");
 		if (TR == FL_TR_Q2) return("weapon_hyperblaster");
 		if (TR == FL_TR_Q3) return("weapon_plasmagun");
+		if (TR == FL_TR_MELEE) return("d_weapon_saw");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -218,6 +225,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_supernailgun");
 		if (TR == FL_TR_Q2) return("weapon_chaingun");
 		if (TR == FL_TR_Q3) return("q3_weapon_machinegun");
+		if (TR == FL_TR_MELEE) return("item_painkeep_beartrap");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -245,6 +253,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_supershotgun");
 		if (TR == FL_TR_Q2) return("q2_weapon_supershotgun");
 		if (TR == FL_TR_Q3) return("q3_weapon_shotgun");
+		if (TR == FL_TR_MELEE) return("item_pkplus_ego");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -275,6 +284,7 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR == FL_TR_Q2) return("q2_weapon_shotgun");
 		if (TR == FL_TR_Q3) return("q3_weapon_shotgun"); // IDEA: need bg code here?
+		if (TR == FL_TR_MELEE) return("item_painkeep_can");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -289,6 +299,7 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR == FL_TR_Q2) return("q2_blaster");
 		if (TR == FL_TR_Q3) return("weapon_gauntlet");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcw);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -303,6 +314,7 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR == FL_TR_Q2) return("q2_weapon_blaster");
 		if (TR == FL_TR_Q3) return("weapon_gauntlet");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -352,6 +364,7 @@ string(entity e, float TR) map_trans =
 		{
 			return("weapon_grapplinghook");
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -364,6 +377,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_shells");
 		if (TR == FL_TR_Q2) return("q2_ammo_shells");
 		if (TR == FL_TR_Q3) return("q3_ammo_shells");
+		if (TR == FL_TR_MELEE) return("item_pkplus_tomb");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -375,6 +389,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_shells_lg");
 		if (TR == FL_TR_Q2) return("q2_ammo_shells");
 		if (TR == FL_TR_Q3) return("q3_ammo_shells");
+		if (TR == FL_TR_MELEE) return("weapon_airfist");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -386,6 +401,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_cells_lg");
 		if (TR == FL_TR_Q2) return("q2_ammo_cells");
 		if (TR == FL_TR_Q3) return("q3_ammo_cells");
+		if (TR == FL_TR_MELEE) return("item_pkplus_phone");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -397,6 +413,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_cells");
 		if (TR == FL_TR_Q2) return("q2_ammo_cells");
 		if (TR == FL_TR_Q3) return("q3_ammo_cells");
+		if (TR == FL_TR_MELEE) return("item_painkeep_gwell");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -412,6 +429,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_rockets");
 		if (TR == FL_TR_Q2) return("q2_ammo_rockets");
 		if (TR == FL_TR_Q3) return("q3_ammo_rockets");
+		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -423,6 +441,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_rockets_lg");
 		if (TR == FL_TR_Q2) return("q2_ammo_rockets");
 		if (TR == FL_TR_Q3) return("q3_ammo_rockets");
+		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -434,6 +453,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_rockets");
 		if (TR == FL_TR_Q2) return("q2_ammo_grenades");
 		if (TR == FL_TR_Q3) return("q3_ammo_grenades");
+		if (TR == FL_TR_MELEE) return("q2_ammo_grenades");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -445,6 +465,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_spikes");
 		if (TR == FL_TR_Q2) return("q2_ammo_bullets");
 		if (TR == FL_TR_Q3) return("q3_ammo_bullets");
+		if (TR == FL_TR_MELEE) return("item_painkeep_beartrap");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -456,6 +477,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_spikes_lg");
 		if (TR == FL_TR_Q2) return("q2_ammo_bullets");
 		if (TR == FL_TR_Q3) return("q3_ammo_bullets");
+		if (TR == FL_TR_MELEE) return("item_painkeep_beartrap");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -508,6 +530,7 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR == FL_TR_Q2) return("q2_ammo_slugs");
 		if (TR == FL_TR_Q3) return("q3_ammo_slugs");
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -543,6 +566,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+		if (TR == FL_TR_MELEE) return("c_weapon_shovel");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -555,6 +579,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_health_mega");
 		if (TR == FL_TR_Q2) return("q2_item_health_mega");
 		if (TR == FL_TR_Q3) return("q3_item_health_mega");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -566,6 +591,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_health");
 		if (TR == FL_TR_Q2) return("q2_item_health_large");
 		if (TR == FL_TR_Q3) return("q3_item_health_large");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -577,6 +603,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_health_15");
 		if (TR == FL_TR_Q2) return("q2_item_health");
 		if (TR == FL_TR_Q3) return("q3_item_health");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -622,6 +649,7 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR == FL_TR_Q2) return("q2_item_health_small");
 		if (TR == FL_TR_Q3) return("q3_item_health_small");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -677,6 +705,7 @@ string(entity e, float TR) map_trans =
 		}
 		if (TR == FL_TR_Q2) return("q2_item_armor_shard");
 		if (TR == FL_TR_Q3) return("q3_item_armor_shard");
+		if (TR == FL_TR_MELEE) return("q2_ammo_grenades");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -699,6 +728,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_armorInv");
 		if (TR == FL_TR_Q2) return("q2_item_armor_body");
 		if (TR == FL_TR_Q3) return("q3_item_armor_body");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -721,6 +751,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_armor2");
 		if (TR == FL_TR_Q2) return("q2_item_armor_combat");
 		if (TR == FL_TR_Q3) return("q3_item_armor_combat");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -742,6 +773,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_armor1");
 		if (TR == FL_TR_Q2) return("item_armor_jacket");
 		if (TR == FL_TR_Q3) return("q3_item_armor_combat");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -765,6 +797,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_artifact_super_damage");
 		if (TR == FL_TR_Q2) return("q2_item_quad");
 		if (TR == FL_TR_Q3) return("q3_item_quad");
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -801,6 +834,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -823,6 +857,8 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_artifact_invisibility");
 		if (TR == FL_TR_Q2) return("item_silencer");
 		if (TR == FL_TR_Q3) return("item_invis");
+		if (TR == FL_TR_MELEE)
+		if (random() < 0.5) return("weapon_mjolnir");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -845,6 +881,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_artifact_envirosuit");
 		if (TR == FL_TR_Q2) return("q2_item_enviro");
 		if (TR == FL_TR_Q3) return("q3_item_enviro");
+//		if (TR == FL_TR_MELEE) return("item_pkplus_actor");
 		if (TR == FL_TR_RANDIN) return(mcd);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -920,6 +957,7 @@ string(entity e, float TR) map_trans =
 			e.mdl = e.model;
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -932,6 +970,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key2_0");
 		if (TR == FL_TR_Q2) return("key_red_key");
 		if (TR == FL_TR_Q3) return(null_string);
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -943,6 +982,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key1_0");
 		if (TR == FL_TR_Q2) return("key_blue_key");
 		if (TR == FL_TR_Q3) return(null_string);
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -954,6 +994,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key2_2");
 		if (TR == FL_TR_Q2) return("key_pyramid");
 		if (TR == FL_TR_Q3) return(null_string);
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -965,6 +1006,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key1_2");
 		if (TR == FL_TR_Q2) return("key_power_cube");
 		if (TR == FL_TR_Q3) return(null_string);
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -976,6 +1018,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key2_1");
 		if (TR == FL_TR_Q2) return("key_data_cd");
 		if (TR == FL_TR_Q3) return(null_string);
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -987,6 +1030,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key1_1");
 		if (TR == FL_TR_Q2) return("key_data_spinner");
 		if (TR == FL_TR_Q3) return(null_string);
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1006,6 +1050,7 @@ string(entity e, float TR) map_trans =
 			else
 				return("q3_weapon_bfg");
 		}
+		if (TR == FL_TR_MELEE) return("c_weapon_deepsleep");
 		if (TR == FL_TR_RANDIN) return(mcw);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1023,6 +1068,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_shotgun");
 		if (TR == FL_TR_Q2) return("q2_weapon_supershotgun");
 		if (TR == FL_TR_Q3) return("q3_weapon_railgun");
+		if (TR == FL_TR_MELEE) return("c_weapon_deepsleep");
 		if (TR == FL_TR_RANDIN) return(mcw);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1089,6 +1135,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcq3);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1156,6 +1203,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1223,6 +1271,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+		if (TR == FL_TR_MELEE) return("item_painkeep_gwell");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1236,6 +1285,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_nailgun");
 		if (TR == FL_TR_Q2) return("q2_weapon_machinegun");
 		if (TR == FL_TR_Q3) return("q3_weapon_railgun");
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
 		if (TR == FL_TR_RANDIN) return(mcw);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1248,6 +1298,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key2");
 		if (TR == FL_TR_Q2) return("key_red_key");
 		if (TR == FL_TR_Q3) return("RMV");
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1259,6 +1310,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key1");
 		if (TR == FL_TR_Q2) return("key_blue_key");
 		if (TR == FL_TR_Q3) return("RMV");
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1323,6 +1375,7 @@ string(entity e, float TR) map_trans =
 			}
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1386,6 +1439,7 @@ string(entity e, float TR) map_trans =
 			}
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1399,6 +1453,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_nailgun");
 		if (TR == FL_TR_Q2) return("q2_weapon_machinegun");
 		if (TR == FL_TR_Q3) return("q3_weapon_machinegun");
+		if (TR == FL_TR_MELEE) return("weapon_airfist");
 		if (TR == FL_TR_RANDIN) return(mcw);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1436,6 +1491,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1502,6 +1558,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1562,6 +1619,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1574,6 +1632,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_health_mega");
 		if (TR == FL_TR_Q2) return("item_adrenaline");
 		if (TR == FL_TR_Q3) return("q3_item_health_mega");
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1632,6 +1691,7 @@ string(entity e, float TR) map_trans =
 			else if (TR_NOT == FL_NOTRN_RNDANY) return(mcg);
 			return(null_string);
 		}
+//		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1644,6 +1704,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key2_0");
 		if (TR == FL_TR_Q2) return("key_commander_head");
 		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1655,6 +1716,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key1_0");
 		if (TR == FL_TR_Q2) return("key_pass");
 		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1666,6 +1728,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_key2_2");
 		if (TR == FL_TR_Q2) return("key_airstrike_target");
 		if (TR == FL_TR_Q3) return("RMV");
+		if (TR == FL_TR_MELEE) return(mcg);
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1679,6 +1742,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("weapon_lightning");
 		if (TR == FL_TR_Q2) return("weapon_hyperblaster");
 		if (TR == FL_TR_Q3) return("q3_weapon_lightning");
+		if (TR == FL_TR_MELEE) return("d_weapon_saw");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1690,6 +1754,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_cells_lg");
 		if (TR == FL_TR_Q2) return("q2_ammo_cells");
 		if (TR == FL_TR_Q3) return("ammo_lightning");
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1701,6 +1766,7 @@ string(entity e, float TR) map_trans =
 		if (TR == FL_TR_QUAKE) return("item_cells_lg");
 		if (TR == FL_TR_Q2) return("q2_ammo_cells");
 		if (TR == FL_TR_Q3) return("ammo_bfg");
+		if (TR == FL_TR_MELEE) return("item_painkeep_gwell");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1772,6 +1838,7 @@ string(entity e, float TR) map_trans =
 			e.spawnflags = e.rune_flag;
 			return("item_regen");
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1843,6 +1910,7 @@ string(entity e, float TR) map_trans =
 			e.spawnflags = e.rune_flag;
 			return("item_haste");
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1917,6 +1985,7 @@ string(entity e, float TR) map_trans =
 			e.spawnflags = e.rune_flag;
 			return("item_flight");
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -1965,6 +2034,7 @@ string(entity e, float TR) map_trans =
 		{
 			return("holdable_medkit");
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -2013,6 +2083,7 @@ string(entity e, float TR) map_trans =
 		{
 			return("holdable_teleporter");
 		}
+//		if (TR == FL_TR_MELEE) return("item_painkeep_turret");
 		if (TR == FL_TR_RANDIN) return(mcg);
 		if (TR == FL_TR_RANDOM) return(mcg);
 		if (TR >= FL_TR_REMOVE) return("RMV");
@@ -2025,10 +2096,12 @@ string(entity e, float TR) map_trans =
 	}
 	else if (e.scode == MC_HIP_LASERCAN)
 	{
+		if (TR == FL_TR_MELEE) return("item_painkeep_gwell");
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_HIP_PROXGUN)
 	{
+		if (TR == FL_TR_MELEE) return("q2_ammo_grenades");
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_HIP_WETSUIT)
@@ -2047,6 +2120,7 @@ string(entity e, float TR) map_trans =
 /// chaos
 	else if (e.scode == MC_REGGUN)
 	{
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_TALLBALL)
@@ -2059,14 +2133,24 @@ string(entity e, float TR) map_trans =
 	}
 	else if (e.scode == MC_C_FLAMER)
 	{
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_C_AGAS)
 	{
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 	else if (e.scode == MC_C_AGAS_LG)
 	{
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
+		if (TR >= FL_TR_REMOVE) return("RMV");
+	}
+
+/// pk - for melee
+	else if (e.scode == MC_PULSE_NAILGUN)
+	{
+		if (TR == FL_TR_MELEE) return("weapon_mjolnir");
 		if (TR >= FL_TR_REMOVE) return("RMV");
 	}
 
@@ -2131,7 +2215,7 @@ void(entity e, float trv) master_item_control =
 
 	if (XMOD)			// turned back on - come here from loop
 	{
-		if (cvar("pk_place_item") == 1) return;
+		if (cvar("it_place_item") == 1) return;
 		if (e.wad == "q1")
 		{
 			hide_item (e);
@@ -2239,12 +2323,12 @@ float(entity e, float q1ck, string itm) noxtr_item_control =
 
 void() set_translate =
 {
-	TR_WOLF = fabs(cvar("pk_tr_wolf" ));
-	TR_DOOM = fabs(cvar("pk_tr_doom" ));
-	TR_QUAKE = fabs(cvar("pk_tr_quake" ));
-	TR_Q2 = fabs(cvar("pk_tr_q2" ));
-	TR_Q3 = fabs(cvar("pk_tr_q3" ));
-	TR_ALL = fabs(cvar("pk_tr_all" ));
+	TR_WOLF = fabs(cvar("it_tr_wolf" ));
+	TR_DOOM = fabs(cvar("it_tr_doom" ));
+	TR_QUAKE = fabs(cvar("it_tr_quake" ));
+	TR_Q2 = fabs(cvar("it_tr_q2" ));
+	TR_Q3 = fabs(cvar("it_tr_q3" ));
+	TR_ALL = fabs(cvar("it_tr_all" ));
 };
 
 string(float tr) tran_str =
@@ -2254,8 +2338,9 @@ string(float tr) tran_str =
 	if (tr == FL_TR_QUAKE) return("Quake");
 	if (tr == FL_TR_Q2) return("Quake 2");
 	if (tr == FL_TR_Q3) return("Quake 3");
+	if (tr == FL_TR_MELEE) return("Melee");
 	if (tr == FL_TR_RESTORE) return("Restoring");
-	if (tr == FL_TR_RANDIN) return("Random genre");
+	if (tr == FL_TR_RANDIN) return("Random in genre");
 	if (tr == FL_TR_RANDOM) return("any Random item");
 	if (tr == FL_TR_REMOVE) return("code = removing");
 	return("null - removing");
@@ -2267,10 +2352,10 @@ void() check_translate =
 {
 	local float tr_all_fire;
 
-		if (DOOM_ALPHA != cvar("pk_doom_alpha"))
+		if (DOOM_ALPHA != cvar("it_doom_alpha"))
 		{
 			local entity e;
-			DOOM_ALPHA = cvar("pk_doom_alpha"); // set doom alpha level - intended to be loaded by server cfg
+			DOOM_ALPHA = cvar("it_doom_alpha"); // set doom alpha level - intended to be loaded by server cfg
 			e = find(world,class_select,"doom_item");
 			while (e)
 			{
@@ -2279,14 +2364,14 @@ void() check_translate =
 			}
 		}
 
-	TR_NOT = cvar("pk_tr_not");
+	TR_NOT = cvar("it_tr_not");
 
-	if (cvar("pk_place_item") != 1)
+	if (cvar("it_place_item") != 1)
 	{
 		tr_all_fire = 0;
-		if (TR_ALL != cvar("pk_tr_all" ))
+		if (TR_ALL != cvar("it_tr_all" ))
 		{
-			TR_ALL = fabs(cvar("pk_tr_all" ));
+			TR_ALL = fabs(cvar("it_tr_all" ));
 			if (!TR_ALL) TR_ALL = FL_TR_RESTORE; // turned off & we need restore controls
 			tr_all_fire =  TR_ALL;
 
@@ -2301,9 +2386,9 @@ void() check_translate =
 			master_item_control_loop("x_item", tr_all_fire);
 		}
 
-		if (TR_WOLF != cvar("pk_tr_wolf" ) || tr_all_fire)
+		if (TR_WOLF != cvar("it_tr_wolf" ) || tr_all_fire)
 		{
-			TR_WOLF = fabs(cvar("pk_tr_wolf" ));
+			TR_WOLF = fabs(cvar("it_tr_wolf" ));
 			if (!TR_WOLF) TR_WOLF = FL_TR_RESTORE; // turned off & we need restore controls
 
 			if (WARNING)
@@ -2316,9 +2401,9 @@ void() check_translate =
 			master_item_control_loop("wolf_item", TR_WOLF);
 		}
 
-		if (TR_DOOM != cvar("pk_tr_doom" ) || tr_all_fire)
+		if (TR_DOOM != cvar("it_tr_doom" ) || tr_all_fire)
 		{
-			TR_DOOM = fabs(cvar("pk_tr_doom" ));
+			TR_DOOM = fabs(cvar("it_tr_doom" ));
 			if (!TR_DOOM) TR_DOOM = FL_TR_RESTORE; // turned off & we need restore controls
 
 			if (WARNING)
@@ -2331,9 +2416,9 @@ void() check_translate =
 			master_item_control_loop("doom_item", TR_DOOM);
 		}
 
-		if (TR_QUAKE != cvar("pk_tr_quake" ) || tr_all_fire)
+		if (TR_QUAKE != cvar("it_tr_quake" ) || tr_all_fire)
 		{
-			TR_QUAKE = fabs(cvar("pk_tr_quake" ));
+			TR_QUAKE = fabs(cvar("it_tr_quake" ));
 			if (!TR_QUAKE) TR_QUAKE = FL_TR_RESTORE; // turned off & we need restore controls
 
 			if (WARNING)
@@ -2346,9 +2431,9 @@ void() check_translate =
 			master_item_control_loop("quake_item", TR_QUAKE);
 		}
 
-		if (TR_Q2 != cvar("pk_tr_q2" ) || tr_all_fire)
+		if (TR_Q2 != cvar("it_tr_q2" ) || tr_all_fire)
 		{
-			TR_Q2 = fabs(cvar("pk_tr_q2" ));
+			TR_Q2 = fabs(cvar("it_tr_q2" ));
 			if (!TR_Q2) TR_Q2 = FL_TR_RESTORE; // turned off & we need restore controls
 
 			if (WARNING)
@@ -2361,9 +2446,9 @@ void() check_translate =
 			master_item_control_loop("q2_item", TR_Q2);
 		}
 
-		if (TR_Q3 != cvar("pk_tr_q3" ) || tr_all_fire)
+		if (TR_Q3 != cvar("it_tr_q3" ) || tr_all_fire)
 		{
-			TR_Q3 = fabs(cvar("pk_tr_q3" ));
+			TR_Q3 = fabs(cvar("it_tr_q3" ));
 			if (!TR_Q3) TR_Q3 = FL_TR_RESTORE; // turned off & we need restore controls
 
 			if (WARNING)
@@ -2378,54 +2463,36 @@ void() check_translate =
 		set_translate();
 	}
 
-	if (cvar("pk_translate"))
+	if (cvar("it_translate"))
 	{
-		bprint("\nMap translation bits\n{\n");
-		bprint(ftos(FL_TR_WOLF));
-		bprint("  - translate item to Wolf\n");
-		bprint(ftos(FL_TR_DOOM));
-		bprint("  - translate item to Doom\n");
-		bprint(ftos(FL_TR_QUAKE));
-		bprint("  - translate item to Quake\n");
-		bprint(ftos(FL_TR_Q2));
-		bprint("  - translate item to Quake 2\n");
-		bprint(ftos(FL_TR_Q3));
-		bprint("  - translate item to Quake 3\n");
-		bprint(ftos(FL_TR_RANDIN));
-		bprint("  - randomize these items in genre\n");
-		bprint(ftos(FL_TR_RANDOM));
-		bprint("  - randomize these items totally\n");
-		bprint(ftos(FL_TR_REMOVE));
-		bprint("  - remove these items\n");
-		bprint(ftos(-1));
-		bprint("  - internal restore - not selectable\n");
-		bprint("}\n\n");
+// NOTE: if any FL_TR_* global are changed, translate_bits.cfg will need updated!
+		localcmd("exec cfg/menu/translate_bits.cfg");
 
-		bprint("Map translation vars\n{\n");
-		bprint("var: pk_tr_all = ");
+		bprint("\nMap translation vars\n{\n");
+		bprint("var: it_tr_all = ");
 		bprint(ftos(TR_ALL));
 		bprint(" - overrides all other settings\n");
-		bprint("var: pk_tr_wolf = ");
+		bprint("var: it_tr_wolf = ");
 		bprint(ftos(TR_WOLF));
 		bprint("\n");
-		bprint("var: pk_tr_doom = ");
+		bprint("var: it_tr_doom = ");
 		bprint(ftos(TR_DOOM));
 		bprint("\n");
-		bprint("var: pk_tr_quake = ");
+		bprint("var: it_tr_quake = ");
 		bprint(ftos(TR_QUAKE));
 		bprint("\n");
-		bprint("var: pk_tr_q2 = ");
+		bprint("var: it_tr_q2 = ");
 		bprint(ftos(TR_Q2));
 		bprint("\n");
-		bprint("var: pk_tr_q3 = ");
+		bprint("var: it_tr_q3 = ");
 		bprint(ftos(TR_Q3));
 		bprint("\n");
-		bprint("var: pk_tr_not = ");
+		bprint("var: it_tr_not = ");
 		bprint(ftos(TR_NOT));
 		bprint(" - action for items with no direct translation:\n                0 = no change, 1 = remove, 2 = best guess, 3 = randomize in genre, 4 = randomize to any \n");
-		bprint("var: pk_tr_q1def = ");
+		bprint("var: it_tr_q1def = ");
 		bprint(ftos(TR_Q1DEF));
-		bprint(" - pk_100 or q_100 and no alt q1 items on non quake map - 0 = remove, 1 = translate to quake\n");
+		bprint(" - items with no q1 equivalent - 0 = remove, 1 = guestimate translation\n");
 		bprint("}\n\n");
 
 		if (TR_ALL || TR_Q3 || TR_Q2 || TR_QUAKE || TR_DOOM || TR_WOLF)
@@ -2433,13 +2500,14 @@ void() check_translate =
 			if (TR_ALL)
 			{
 				bprint("ALL: translating every item to: ");
-				if (TR_ALL == FL_TR_WOLF) bprint("Wolfenstien\n");
-				if (TR_ALL == FL_TR_DOOM) bprint("Doom\n");
-				if (TR_ALL == FL_TR_QUAKE) bprint("Quake\n");
-				if (TR_ALL == FL_TR_Q2) bprint("Quake 2\n");
-				if (TR_ALL == FL_TR_Q3) bprint("Quake 3\n");
-				if (TR_ALL == FL_TR_RANDIN) bprint("in genre random item!\n");
-				if (TR_ALL == FL_TR_RANDOM) bprint("any random item!\n");
+				if (TR_ALL == FL_TR_WOLF) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
+				if (TR_ALL == FL_TR_DOOM) { bprint(tran_str(FL_TR_DOOM)); bprint("\n"); }
+				if (TR_ALL == FL_TR_QUAKE) { bprint(tran_str(FL_TR_QUAKE)); bprint("\n"); }
+				if (TR_ALL == FL_TR_Q2) { bprint(tran_str(FL_TR_Q2)); bprint("\n"); }
+				if (TR_ALL == FL_TR_Q3) { bprint(tran_str(FL_TR_Q3)); bprint("\n"); }
+				if (TR_ALL == FL_TR_MELEE) { bprint(tran_str(FL_TR_MELEE)); bprint("\n"); }
+				if (TR_ALL == FL_TR_RANDIN) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
+				if (TR_ALL == FL_TR_RANDOM) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
 				if (TR_ALL == FL_TR_REMOVE) bprint("Nothing! - all items are removed, uh have fun!\n");
 				if (TR_Q3 || TR_Q2 || TR_QUAKE || TR_DOOM || TR_WOLF)
 					bprint("\n *** Warning: all other translations are overridden by ALL\n\n");
@@ -2448,65 +2516,70 @@ void() check_translate =
 			{
 				if (TR_ALL) bprint("ALL overrides - ");
 				bprint("Translating wolf items to: ");
-				if (TR_WOLF == FL_TR_WOLF) bprint("Wolfenstien - DOH!\n");
-				if (TR_WOLF == FL_TR_DOOM) bprint("Doom\n");
-				if (TR_WOLF == FL_TR_QUAKE) bprint("Quake\n");
-				if (TR_WOLF == FL_TR_Q2) bprint("Quake 2\n");
-				if (TR_WOLF == FL_TR_Q3) bprint("Quake 3\n");
-				if (TR_WOLF == FL_TR_RANDIN) bprint("Random Wolfenstien\n");
-				if (TR_WOLF == FL_TR_RANDOM) bprint("any random item\n");
+				if (TR_WOLF == FL_TR_WOLF) { bprint(tran_str(FL_TR_WOLF)); bprint(" - DOH!\n"); }
+				if (TR_WOLF == FL_TR_DOOM) { bprint(tran_str(FL_TR_DOOM)); bprint("\n"); }
+				if (TR_WOLF == FL_TR_QUAKE) { bprint(tran_str(FL_TR_QUAKE)); bprint("\n"); }
+				if (TR_WOLF == FL_TR_Q2) { bprint(tran_str(FL_TR_Q2)); bprint("\n"); }
+				if (TR_WOLF == FL_TR_Q3) { bprint(tran_str(FL_TR_Q3)); bprint("\n"); }
+				if (TR_WOLF == FL_TR_MELEE) { bprint(tran_str(FL_TR_MELEE)); bprint("\n"); }
+				if (TR_WOLF == FL_TR_RANDIN) { bprint("Random "); bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
+				if (TR_WOLF == FL_TR_RANDOM) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
 				if (TR_WOLF == FL_TR_REMOVE) bprint("Nothing! - all wolf items are removed!\n");
 			}
 			if (TR_DOOM)
 			{
 				if (TR_ALL) bprint("ALL overrides - ");
 				bprint("Translating doom items to: ");
-				if (TR_DOOM == FL_TR_WOLF) bprint("Wolfenstien\n");
-				if (TR_DOOM == FL_TR_DOOM) bprint("Doom - DOH!\n");
-				if (TR_DOOM == FL_TR_QUAKE) bprint("Quake\n");
-				if (TR_DOOM == FL_TR_Q2) bprint("Quake 2\n");
-				if (TR_DOOM == FL_TR_Q3) bprint("Quake 3\n");
-				if (TR_DOOM == FL_TR_RANDIN) bprint("Random Doom\n");
-				if (TR_DOOM == FL_TR_RANDOM) bprint("any random item\n");
+				if (TR_DOOM == FL_TR_WOLF) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
+				if (TR_DOOM == FL_TR_DOOM) { bprint(tran_str(FL_TR_DOOM)); bprint(" - DOH!\n"); }
+				if (TR_DOOM == FL_TR_QUAKE) { bprint(tran_str(FL_TR_QUAKE)); bprint("\n"); }
+				if (TR_DOOM == FL_TR_Q2) { bprint(tran_str(FL_TR_Q2)); bprint("\n"); }
+				if (TR_DOOM == FL_TR_Q3) { bprint(tran_str(FL_TR_Q3)); bprint("\n"); }
+				if (TR_DOOM == FL_TR_MELEE) { bprint(tran_str(FL_TR_MELEE)); bprint("\n"); }
+				if (TR_DOOM == FL_TR_RANDIN) { bprint("Random "); bprint(tran_str(TR_DOOM)); bprint("\n"); }
+				if (TR_DOOM == FL_TR_RANDOM) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
 				if (TR_DOOM == FL_TR_REMOVE) bprint("Nothing! - all doom items are removed!\n");
 			}
 			if (TR_QUAKE)
 			{
 				if (TR_ALL) bprint("ALL overrides - ");
 				bprint("Translating quake items to: ");
-				if (TR_QUAKE == FL_TR_WOLF) bprint("Wolfenstien\n");
-				if (TR_QUAKE == FL_TR_DOOM) bprint("Doom\n");
-				if (TR_QUAKE == FL_TR_QUAKE) bprint("Quake - DOH!\n");
-				if (TR_QUAKE == FL_TR_Q2) bprint("Quake 2\n");
-				if (TR_QUAKE == FL_TR_Q3) bprint("Quake 3\n");
-				if (TR_QUAKE == FL_TR_RANDIN) bprint("Random Quake\n");
-				if (TR_QUAKE == FL_TR_RANDOM) bprint("any random item\n");
+				if (TR_QUAKE == FL_TR_WOLF) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
+				if (TR_QUAKE == FL_TR_DOOM) { bprint(tran_str(FL_TR_DOOM)); bprint("\n"); }
+				if (TR_QUAKE == FL_TR_QUAKE) { bprint(tran_str(FL_TR_QUAKE)); bprint(" - DOH!\n"); }
+				if (TR_QUAKE == FL_TR_Q2) { bprint(tran_str(FL_TR_Q2)); bprint("\n"); }
+				if (TR_QUAKE == FL_TR_Q3) { bprint(tran_str(FL_TR_Q3)); bprint("\n"); }
+				if (TR_QUAKE == FL_TR_MELEE) { bprint(tran_str(FL_TR_MELEE)); bprint("\n"); }
+				if (TR_QUAKE == FL_TR_RANDIN) { bprint("Random "); bprint(tran_str(TR_QUAKE)); bprint("\n"); }
+				if (TR_QUAKE == FL_TR_RANDOM) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
 				if (TR_QUAKE == FL_TR_REMOVE) bprint("Nothing! - all quake items are removed!\n");
 			}
 			if (TR_Q2)
 			{
 				if (TR_ALL) bprint("ALL overrides - ");
 				bprint("Translating quake 2 items to: ");
-				if (TR_Q2 == FL_TR_WOLF) bprint("Wolfenstien\n");
-				if (TR_Q2 == FL_TR_DOOM) bprint("Doom\n");
-				if (TR_Q2 == FL_TR_QUAKE) bprint("Quake\n");
-				if (TR_Q2 == FL_TR_Q2) bprint("Quake 2 - DOH!\n");
-				if (TR_Q2 == FL_TR_Q3) bprint("Quake 3\n");
-				if (TR_Q2 == FL_TR_RANDIN) bprint("Random Quake 2\n");
-				if (TR_Q2 == FL_TR_RANDOM) bprint("any random item\n");
+				if (TR_Q2 == FL_TR_WOLF) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
+				if (TR_Q2 == FL_TR_DOOM) { bprint(tran_str(FL_TR_DOOM)); bprint("\n"); }
+				if (TR_Q2 == FL_TR_QUAKE) { bprint(tran_str(FL_TR_QUAKE)); bprint("\n"); }
+				if (TR_Q2 == FL_TR_Q2) { bprint(tran_str(FL_TR_Q2)); bprint(" - DOH!\n"); }
+				if (TR_Q2 == FL_TR_Q3) { bprint(tran_str(FL_TR_Q3)); bprint("\n"); }
+				if (TR_Q2 == FL_TR_MELEE) { bprint(tran_str(FL_TR_MELEE)); bprint("\n"); }
+				if (TR_Q2 == FL_TR_RANDIN) { bprint("Random "); bprint(tran_str(TR_Q2)); bprint("\n"); }
+				if (TR_Q2 == FL_TR_RANDOM) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
 				if (TR_Q2 == FL_TR_REMOVE) bprint("Nothing! - all quake 2 items are removed!\n");
 			}
 			if (TR_Q3)
 			{
 				if (TR_ALL) bprint("ALL overrides - ");
 				bprint("Translating quake 3 items to: ");
-				if (TR_Q3 == FL_TR_WOLF) bprint("Wolfenstien\n");
-				if (TR_Q3 == FL_TR_DOOM) bprint("Doom\n");
-				if (TR_Q3 == FL_TR_QUAKE) bprint("Quake\n");
-				if (TR_Q3 == FL_TR_Q2) bprint("Quake 2\n");
-				if (TR_Q3 == FL_TR_Q3) bprint("Quake 3 - DOH!\n");
-				if (TR_Q3 == FL_TR_RANDIN) bprint("Random Quake 3\n");
-				if (TR_Q3 == FL_TR_RANDOM) bprint("any random item\n");
+				if (TR_Q3 == FL_TR_WOLF) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
+				if (TR_Q3 == FL_TR_DOOM) { bprint(tran_str(FL_TR_DOOM)); bprint("\n"); }
+				if (TR_Q3 == FL_TR_QUAKE) { bprint(tran_str(FL_TR_QUAKE)); bprint("\n"); }
+				if (TR_Q3 == FL_TR_Q2) { bprint(tran_str(FL_TR_Q2)); bprint("\n"); }
+				if (TR_Q3 == FL_TR_Q3) { bprint(tran_str(FL_TR_Q3)); bprint(" - DOH!\n"); }
+				if (TR_Q3 == FL_TR_MELEE) { bprint(tran_str(FL_TR_MELEE)); bprint("\n"); }
+				if (TR_Q3 == FL_TR_RANDIN) { bprint("Random "); bprint(tran_str(TR_Q3)); bprint("\n"); }
+				if (TR_Q3 == FL_TR_RANDOM) { bprint(tran_str(FL_TR_WOLF)); bprint("\n"); }
 				if (TR_Q3 == FL_TR_REMOVE) bprint("Nothing! - all quake 3 items are removed!\n");
 			}
 			if (TR_WOLF == FL_TR_WOLF ||
@@ -2517,15 +2590,14 @@ void() check_translate =
 				)	bprint(" *** Warning: Translatng one or more sets to themselves - this is feeble and pointless.\n");
 
 			if (RUNES) bprint(" *** Warning: Translate will not affect or create runes.\n");
-			if (cvar("pk_place_item") == 1) bprint(" *** Warning: Items removed Translate has no effect.\n");
+			if (cvar("it_place_item") == 1) bprint(" *** Warning: Items removed Translate has no effect.\n");
 		}
 		else
 			bprint("No translations set\n");
 	bprint("\n");
 	}
 
-	cvar_set("pk_translate", "0");
-
+	cvar_set("it_translate", "0");
 };
 
 /*

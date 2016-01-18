@@ -98,8 +98,8 @@ float STAT_AMBUL = 46; // enh ammos
 float STAT_AMSLUG = 47; // enh ammos
 float STAT_AMGAS = 48; // enh ammos
 
-float STAT_STK1 = 50; // string data
-float STAT_STK2 = 51; // string data
+//float STAT_STK1 = 50; // string data
+//float STAT_STK2 = 51; // string data
 
 float STAT_VOL = 64; // track morph cost or chaos level
 float STAT_MORPH = 65; // track morph cost or chaos level

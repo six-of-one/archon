@@ -394,16 +394,9 @@ void() x_item_touch =
 	if (self.classname == "archon_nodule") // non Archon only get 10% of nodules
 	{
 		if (self == god_particle)
-		{
-			if (self.goalentity.classname == "dyn_removal")
-				remove(self.goalentity);
-//				self.button13 = self.goalentity.button13; // usual remove if touch fails to
 			god_particle = world;
-		}
-		else
-		if (!other.mask_x & MORPH_ARCHON)
+		else if (!other.mask_x & MORPH_ARCHON)
 			other.archon = other.archon - self.archon * 0.9;
-
 	}
 
 	if (self.noise != null_string)
