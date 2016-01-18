@@ -100,7 +100,8 @@ float (float lMean, float lStDev) meantime;
 
 .entity next; // for the linked list of lightning - Cataboligne - 4.29,11 - moved to pk_defs 
 
-// env
+
+// env stuff - part of chaos engine env effects - mostly unused
 
 /// *** DUMMY SECTION - IDEA: move to better location later on
 
@@ -182,6 +183,8 @@ string(entity e, float s) getsurfacetexture;
 float(entity e, vector p) getsurfacenearpoint;
 vector(entity e, float s, vector p) getsurfaceclippedpoint;
 // end specials
+
+// end env section
 
 
 // runes
@@ -401,6 +404,9 @@ float MLT_LAVA					= 2048;	// melt in lava
 float PF_LAVA					= 1048576;
 */
 
+
+// inventory flags
+
 float DROP_ALLOW; // inv bits player is allowed to drop
 
 float IGN_INV 					= 66600;
@@ -417,6 +423,8 @@ float NO_BUBBLES				= -1; // this ent wont make bubbles
 float FL_VANM					= 131072; // vmodel animation in progress
 
 float EF_FULLBRIGHT			= 512;
+
+// end inventorys
 
 
 //DP_SV_MODELFLAGS_AS_EFFECTS
@@ -438,6 +446,8 @@ float MF_ZOMGIB  				= 32; // small blood trail
 float MF_TRACER2 				= 64; // orange split trail
 float MF_TRACER3 				= 128; // purple trail
 
+
+// heal codes
 
 float HEAL_ROT					= 1;
 float HEAL_NORM				= 2;
@@ -480,6 +490,11 @@ string MAP_MODE; // genre of loaded map (if detected) Q quake (default), Q2 quak
 
 float DEF_X_ITEMS; // x bit flags
 
+// end defaults
+
+
+// inits - by genre and map
+
 float INIT_CON; // control flag
 
 float INIT_0_W;
@@ -500,6 +515,9 @@ float FL_INIT_PKO				= 32; // pk items added only when genre is pk
 //float FL_INIT_ADD				= 32; // add to initial weaps -- deprecated, happens when DEF_REMWEP is false
 //float FL_INIT_REP				= 64; // replaces initial weaps -- handled by DEF_REMWEP now
 
+// end inits
+
+
 .float ammo_bullet;
 .float ammo_slug;
 .float ammo_gaspr;
@@ -508,6 +526,9 @@ float FL_INIT_PKO				= 32; // pk items added only when genre is pk
 float PK_BULLETAMMO_MAX;
 float PK_SLUGAMMO_MAX;
 float PK_GASAMMO_MAX;
+
+
+// extra item flags & code
 
 .float x_items; // extra weapon item control - pwr armors / extended keys / etc
 void() x_item_touch;
@@ -555,12 +576,18 @@ float X_D_VIS					= 32768;
 
 float X_INV						= 57331; ///  1101111111110011
 
+// end extra items
+
+
 // q3 goodies
 
 //float X_Q3_HTEL				= 65536;
 //float X_Q3_HMED				= 131072;
 
 //float X_INV						= 253939; ///  111101111111110011    --- 57331; //  1101111111110011
+
+
+// vars x weapon things
 
 void(entity e, float trv) master_item_control;
 void(string tri, float trv) master_item_control_loop;
@@ -583,7 +610,6 @@ float ROCKET_FUSE;
 float WEPHUM; // weapons hum
 float HUMLOCAL					= -41200855;    // taking local control, dont override by auto
 
-
 // from chaos mod - flamer & flame stuff
 
 float FL_FLARE					= 8192; //entity is a flare starter
@@ -605,6 +631,11 @@ void() flame_check;
 void() slime_flare;
 void() flamer_precache;
 
+// end x weaps section
+
+
+// genre section - weps, items, maps etc.
+
 // hip
 
 float IT_MJOLNIR				= 128;
@@ -617,9 +648,13 @@ void() wchg2_weapon_touch;
 
 // doom
 
-string DOOM_DET				= "doom/dsitembk.wav"; // against	self.noise4
+string DOOM_DET				= "doom/dsitembk.wav"; // vs.	self.noise4
 float D_POWER_WAIT; // seconds major doom powers need to respawn - norm 30
 float D_POWER_TIME; // seconds of power supply
+
+float DOOR_2S					= -6; // for doors that have a separate open and close sound - like doom / wolf doors, vs. self.sounds
+void() door_sounds_wd;
+void() button_sounds_d;
 
 float DOOM_ALPHA;
 void(entity e, float mc) doom_alpha_tran;
@@ -674,6 +709,9 @@ void() q3_bob_height;
 // hipnotic
 
 .float wetsuit_finished; // used by hip wetsuit & q2 rebreather
+
+// end genre section
+
 
 void() inventory;
 

@@ -1193,7 +1193,7 @@ POW_TIME = 30;
 		registercvar("sv_c_rune_random", "0"); // runes will have random powers
 		registercvar("sv_c_rune_set", "0");
 		registercvar("sv_c_rune_allowrule1multi", "0"); // if true more than 1 rune can be gotten in rule 1
-		registercvar("sv_c_rune_rule1sfx", "1"); // if true and multi 3 & 4 runes in 1 player have side effects
+		registercvar("sv_c_rune_rule1sfx", "1"); // if true and multi 3 & 4 runes in rule 1 have side effects
 
 		registercvar("sv_c_rsp_time", "30");
 		registercvar("sv_c_pow_time", "30"); // artifact power time

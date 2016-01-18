@@ -291,6 +291,7 @@ void(string cls) item_call =
 
 	else if (cls == "w_ammo_gas") w_ammo_gas();
 	else if (cls == "w_ammo_clip") w_ammo_clip();
+	else if (cls == "w_ammo_rock") w_ammo_rock();
 	else if (cls == "w_item_pack") w_item_pack();
 
 	else if (cls == "w_art_facesphere") w_art_facesphere();

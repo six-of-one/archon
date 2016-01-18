@@ -684,7 +684,7 @@ void() viswep_post =
 
 
 
-				local vector v1, v2, v3, v4, vp;
+				local vector v1, v2, v3, v4;
 
 				v1 = vhead.owner.angles;
 				v1_x = 0 - v1_x; // must reverse pitch for proper position from v_fwd calc
@@ -740,42 +740,14 @@ void() viswep_post =
 					if (vhead.mdl == "progs/vw_harp.mdl" && vhead.owner.grap_cornerchainNext != world && (vhead.owner.frame - gremlin_frame_adjust)< 11) // $pain1
 					{
 						grap_frame_adjust = VW_HARP_FRADJ;
-						local entity e, corner, cf;
-						local float vl;
-						vp = grap_vw_adj(vhead.owner) + vhead.owner.origin; // point of rope start - end of harp gun
-						e = vhead.owner.grap_cornerchainNext; // harpoon itself
-						cf = findradius(vhead.owner.origin, 255);
-						vl = 256;
-						while (cf)
+						local entity e;
+						e = vhead.owner.grap_cornerchainNext.enemy; // harpoon itself -> last rope seg
+						if (e)
 						{
-							if (cf.classname == "HarpoonRope")
-							if (vlen (vhead.owner.origin - cf.origin) < vl)
-							{
-								corner = cf;
-								vl = vlen (vhead.owner.origin - cf.origin);
-							}
-							cf = cf.chain;
+							v3 = grap_vw_adj(vhead.owner) + vhead.owner.origin; // point of rope start - end of harp gun
+							v1 = normalize(e.origin - v3); // dir to move rope piece
+							setorigin(e, v3 + (v1 * 18));
 						}
-						if (!corner) // crap - have to trust last rope from harpoon chain
-						{
-							corner = e.grap_ropechainPrev;
-							while (corner.grap_ropechainPrev)
-								corner = corner.grap_ropechainPrev;
-						}
-
-//						v1 = normalize(e.origin - vhead.owner.origin); // dir to move rope piece
-						v1 = normalize(corner.origin - vp); // dir to move rope piece
-						if (!e.enemy)
-						{
-							e.enemy = spawn();
-							setmodel(e.enemy, "progs/harprope.mdl");
-							e.enemy.classname = "HarpoonRopePoint";
-							e.enemy.enemy = e;
-							e.enemy.owner = vhead.owner;
-						}
-						v2 = vhead.owner.origin + vp;
-						setorigin(e.enemy, vp + (v1 * 18));
-						e.enemy.angles = corner.angles; // angles of rope segs - last rope seg before player of this harp
 					}
 					vofs = ' 0 0 0';
 					if (vhead.owner.viswframe > -1) vframe = vhead.owner.viswframe;
@@ -1974,8 +1946,8 @@ void() vw_config =
 //				setmodel(vv.vwepent, "progs/vw_shovel.mdl");
 //				setmodel(vv.vwepent, "progs/vw_q2_rock2.mdl");
 //				setmodel(vv.vwepent, "progs/vw_airgun2b.mdl");
-				setmodel(vv.vwepent, "progs/barrel2.mdl");
-				vv.vwepent.skin = 2;
+				setmodel(vv.vwepent, "maps/vs_vent_main_.bsp");
+//				vv.vwepent.skin = 2;
 //				setmodel(vv.vwepent, "progs/bit.mdl");
 				setorigin(vv.vwepent, self.origin);
 				vv.vwepent.viswframe = 1; // get / save data for this var slot

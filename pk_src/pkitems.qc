@@ -52,6 +52,23 @@ void () SUB_regen =
 	pk_item_position();  // *pk - reposition moved items (horn & harp effects) on respawn
 };
 
+void() thinkpr =
+{
+bprint(self.netname);
+
+remove(self);	
+};
+
+void(string g) tbprint =
+{
+	local entity e;
+	
+	e = spawn();
+	e.netname = g;
+	e.think = thinkpr;
+	e.nextthink = time + 10;
+};
+
 void () PlaceItem =
 {
 	local float f;
@@ -65,11 +82,18 @@ void () PlaceItem =
 
 	if (Q_100 || PK_100) // TDO: include hip_item & x_item when xlates are available
 	{
+tbprint("*** - q100 mode in place item...\n");
 		f = 0;
 		if (TR_Q1QRY > 0)
 		{
 			TR_Q1QRY = 0;
-			if (find(world,wad,"q1")) TR_Q1QRY = -1; // map was designed for dual items - remove only
+			if (find(world,wad,"q1")) {TR_Q1QRY = -1; // map was designed for dual items - remove only
+
+
+tbprint("*** - wad q1 item found in q100 translate code...\n");
+}
+
+
 		}
 		if (TR_Q1DEF && (TR_Q1QRY == 0)) f = FL_TR_QUAKE;
 		if (self.class_select == "wolf_item") master_item_control(self, f);
@@ -1469,8 +1493,9 @@ void() pk_placeitem =
 
 	if (!PK_100 && !Q_100)
 	{
-		if (self.wad == "q1") master_item_control(self, 0);
-		else if ((TR_ALL || TR_WOLF) && self.class_select == "wolf_item")  master_item_control(self, TR_WOLF);
+		if (self.wad == "q1") master_item_control(self, 0); // TEST: comment for q1 item comparison
+		else 
+					if ((TR_ALL || TR_WOLF) && self.class_select == "wolf_item")  master_item_control(self, TR_WOLF);
 		else if ((TR_ALL || TR_DOOM) && self.class_select == "doom_item")  master_item_control(self, TR_DOOM);
 		else if ((TR_ALL || TR_QUAKE) && self.class_select == "quake_item")  master_item_control(self, TR_QUAKE);
 		else if ((TR_ALL || TR_Q2) && self.class_select == "q2_item")  master_item_control(self, TR_Q2);

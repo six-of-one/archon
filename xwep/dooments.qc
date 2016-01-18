@@ -146,10 +146,6 @@ void() doom_precache =
 	precache_sound ("doom/dsitembk.wav");
 	precache_sound ("doom/dswpnup.wav");
 	precache_sound ("doom/dsgetpow.wav");
-	precache_sound ("doom/dsdorcls.wav");
-	precache_sound ("doom/dsdoropn.wav");
-	precache_sound ("doom/dsbdcls.wav");
-	precache_sound ("doom/dsbdopn.wav");
 	precache_sound ("doom/dspstart.wav");
 	precache_sound ("doom/dspstop.wav");
 	precache_sound ("doom/gibs.wav");
@@ -176,8 +172,6 @@ void() doom_precache =
 	precache_sound ("wolf/pickup_gn.wav");
 	precache_sound ("wolf/pickup_gdy.wav");
 	precache_sound ("wolf/w_resp.wav");
-	precache_sound ("wolf/door_opn.wav");
-	precache_sound ("wolf/door_cls.wav");
 
 
 };
@@ -1294,6 +1288,27 @@ void() w_ammo_clip =
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
 
+// FIX: need ammo model
+
+void() w_ammo_rock =
+{
+	item_rockets();
+	self.touch = pk_ammo_touch;
+
+	self.lip = AMMO_ROCKETS;
+	self.volume = W_MAX_ROCKETS;
+	self.currentammo = 5;
+	self.wait = RSP_TIME;
+
+	setmodel (self, "progs/w_mortar.mdl");
+//	setmodel (self, "progs/w_amort.mdl");
+	self.noise = "wolf/pickup_am.wav";
+	self.noise4 = "wolf/w_resp.wav";
+	self.netname = "Mortars";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
 void() w_ammo_gas =
 {
 	item_spikes();
@@ -1564,7 +1579,7 @@ void() player_sawu6 = [$shotatt6, player_stand1] { };
 
 // specials, decor
 
-void() d_bloody_mess =
+void() ddecor_bloody_mess =
 {
 // for now
 	if (!DARKPLACES)
@@ -1579,7 +1594,14 @@ void() d_bloody_mess =
 	self.movetype = MOVETYPE_TOSS;
 };
 
-void() d_dead_player =
+// prev version - needs deprecation
+
+void() d_bloody_mess =
+{
+	d_bloody_mess();
+};
+
+void() ddecor_dead_player =
 {
 // for now
 	if (!DARKPLACES)
@@ -1594,7 +1616,14 @@ void() d_dead_player =
 	self.movetype = MOVETYPE_TOSS;
 };
 
-void() d_pool_flesh_blood =
+// prev version - needs deprecation
+
+void() d_dead_player =
+{
+	ddecor_dead_player();
+};
+
+void() ddecor_pool_flesh_blood =
 {
 // for now
 	if (!DARKPLACES)
@@ -1608,3 +1637,92 @@ void() d_pool_flesh_blood =
 	self.movetype = MOVETYPE_TOSS;
 };
 
+// prev version - needs deprecation
+
+void() d_pool_flesh_blood =
+{
+	ddecor_pool_flesh_blood();
+};
+
+
+// wolf decor
+
+void() wdecor_chand_grn =
+{
+	precache_model("progs/w_dcr_changrn2.mdl");
+	setmodel(self,"progs/w_dcr_changrn2.mdl");
+	self.movetype = MOVETYPE_NONE;	
+};
+
+/*
+		+---------------------------------------+
+		|  Aux code - Doom                     | SEC-HEAD
+		+---------------------------------------+
+*/
+
+// fn(door_sounds_wd) - handle door sounds for doom / wolf
+
+// if map genre doom or wolf and no door sounds, use defaults.  mapped doors will only need to set alt sounds
+
+void() door_sounds_wd =
+{
+
+	if (self.sounds == 0)
+	if (self.noise1 == "" || self.noise1 == "misc/null.wav")
+	if (self.noise2 == "" || self.noise2 == "misc/null.wav")
+	{
+/*
+		precache_sound ("doom/dsdorcls.wav");
+		precache_sound ("doom/dsdoropn.wav");
+		precache_sound ("doom/dsbdcls.wav");
+		precache_sound ("doom/dsbdopn.wav");
+		precache_sound ("wolf/door_opn.wav");
+		precache_sound ("wolf/door_cls.wav");
+*/
+		if (MAP_MODE == "W")
+		{
+			self.sounds = DOOR_2S;
+			self.noise1 = "wolf/door_cls.wav";
+			self.noise2 = "wolf/door_opn.wav";
+		}
+		if (MAP_MODE == "D")
+		{
+			self.sounds = DOOR_2S;
+			self.noise1 = "doom/dsdorcls.wav";
+			self.noise2 = "doom/dsdoropn.wav";
+		}
+	}
+
+	if (self.noise1 != "") precache_sound (self.noise1);
+	if (self.noise2 != "") precache_sound (self.noise2);
+	if (self.noise3 != "") precache_sound (self.noise3);
+	if (self.noise4 != "") precache_sound (self.noise4);
+
+};
+
+// fn(button_sounds_d) - handle button sounds for doom
+
+void() button_sounds_d =
+{
+
+	if (self.sounds == 0)
+	if (self.noise == "")
+	{
+//		precache_sound ("doom/dsdorcls.wav");
+//		precache_sound ("doom/dsdoropn.wav");
+/*
+		if (MAP_MODE == "W")
+		{
+			self.sounds = DOOR_2S;
+		}
+*/
+		if (MAP_MODE == "D")
+		{
+			self.sounds = DOOR_2S;
+			self.noise = "doom/dsswtchn.wav";
+		}
+	}
+
+	if (self.noise != "") precache_sound (self.noise);
+
+};

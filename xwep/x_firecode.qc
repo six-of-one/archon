@@ -1923,6 +1923,7 @@ bprint(".\n");
 
 
 
+/* TESTING - illuminate doom bfg beams from player loc, show last frame of killed ents
 	if (e.count == 0)
 	{
 		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, e.origin, v0, v0, v0, v0, "", e.model, SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
@@ -1949,7 +1950,7 @@ bprint(".\n");
 		v1 = v1 + v2;
 		i = i - 1;
 	}
-
+*/
 
 if (cvar("saved1") == -777)
 {

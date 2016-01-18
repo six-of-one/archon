@@ -59,6 +59,8 @@ void () door_blocked =
 
 void () door_hit_top =
 {
+	if (self.sounds != DOOR_2S)				// cataboligne - 6.28.11 --- wolf / doom doors
+
 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_TOP;
 	if (self.spawnflags & DOOR_TOGGLE)
@@ -69,12 +71,18 @@ void () door_hit_top =
 
 void () door_hit_bottom =
 {
+	if (self.sounds != DOOR_2S)				// cataboligne - 6.28.11 --- wolf / doom doors
+
 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_BOTTOM;
 };
 
 void () door_go_down =
 {
+	if (self.sounds == DOOR_2S)				// cataboligne - 6.28.11 --- wolf / doom doors
+		sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	else
+
 	sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	if (self.max_health)
 	{
@@ -504,6 +512,9 @@ void () func_door =
 		self.noise1 = "doors/ddoor2.wav";
 		self.noise2 = "doors/ddoor1.wav";
 	}
+
+	
+	door_sounds_wd();				// cataboligne - 6.28.11 wolf / doom doors
 
 
 	SetMovedir ();

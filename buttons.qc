@@ -31,6 +31,9 @@ void () button_done =
 
 void () button_return =
 {
+	if (self.sounds == DOOR_2S)				// cataboligne - 6.29.11 --- wolf / doom buttons - return sound
+		sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+
 	self.state = STATE_DOWN;
 	SUB_CalcMove (self.pos1,self.speed,button_done);
 	self.frame = 0;			// use normal textures
@@ -104,6 +107,10 @@ When a button is touched, it moves some distance in the direction of it's angle,
 void () func_button =
 {
 local float		gtemp, ftemp;
+
+
+	button_sounds_d();				// cataboligne - 6.28.11 doom buttons
+
 
 	if (self.sounds == 0)
 	{

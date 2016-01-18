@@ -193,63 +193,10 @@ void() grap_releaseHarpoon =
 	}
 };
 
-// fn(grap_maintain_point) - remove any points not attached to a harpoon
-
-// self = player updating harp rope
-
-void() grap_maintain_point =
-{
-	local entity ch, f, corner, e;
-	local vector v1, v2, vp;
-	local float vl;
-
-	f = ch = spawn();
-	corner = ch.chain = world;
-	cnt_ent_next = TRUE;
-	cnt_ent(ch, "classname", "HarpoonRopePoint");
-	ch = ch.next;
-	while (ch)
-	{
-		if (!ch.enemy) remove(ch);
-		else if (ch.enemy.classname != "Harpoon") remove(ch);
-		else if (ch.enemy.enemy != ch) remove(ch);
-		else if (ch.owner.deadflag) remove(ch);
-		else if (ch.owner == self) // valid - update it
-		{
-			vp = grap_vw_adj(ch.owner) + ch.owner.origin; // point of rope start - end of harp gun
-			e = findradius(ch.owner.origin, 255);
-			vl = 256;
-			while (e)
-			{
-				if (e.classname == "HarpoonRope")
-				if (vlen (ch.owner.origin - e.origin) < vl)
-				{
-					corner = e;
-					vl = vlen (ch.owner.origin - e.origin);
-				}
-				e = e.chain;
-			}
-			if (!corner) // crap - have to trust last rope from harpoon chain
-			{
-				corner = ch.enemy.grap_ropechainPrev;
-				while (corner.grap_ropechainPrev)
-					corner = corner.grap_ropechainPrev;
-			}
-
-			v1 = normalize(corner.origin - vp); // dir to move rope piece
-			v2 = ch.owner.origin + vp;
-			setorigin(ch, vp + (v1 * 18));
-			ch.angles = corner.angles; // angles of rope segs - last rope of this harp
-		}
-		ch = ch.next;
-	}
-	remove(f);
-};
-
 float() grap_maintainRope =
 {
 	local entity corner;
-	local vector cornerOrigin, v1;
+	local vector cornerOrigin, v1, v3;
 	local float totalLength,sf;
 
 	totalLength = 0;
@@ -280,7 +227,7 @@ float() grap_maintainRope =
 	corner = self;
 // Cataboligne - 4.4.11 - start point of rope at end of harpoon gun, new vw calc
   	if (!PK_100)
-		v1 = cornerOrigin = corner.origin + grap_vw_adj(corner);
+		v3 = cornerOrigin = corner.origin + grap_vw_adj(corner);
 	else
 		cornerOrigin = corner.origin + '0 0 16';
 
@@ -297,21 +244,19 @@ float() grap_maintainRope =
 		cornerOrigin = corner.origin;
 	}
 
-// Cataboligne - 4.4.11 - 
-// TEST - attempt to move closeset seg fwd if backing past start point
+// Cataboligne - 4.4.11 - set closest seg to start point
   	if (!PK_100)
 	{
-		grap_maintain_point(); // remove unhooked points (due to rope movement)
 		corner = self.grap_cornerchainNext.grap_ropechainPrev;
 		while (corner.grap_ropechainPrev)
 			corner = corner.grap_ropechainPrev;
-		if (vlen(v1 - corner.origin) < 40)
+		if (corner)
 		{
-			v1 = normalize(corner.origin - v1);
-			corner.origin = corner.origin + (v1 * 16);
+			v1 = normalize(corner.origin - v3);
+			setorigin(corner, v3 + (v1 * 18));
 		}
 	}
-	
+
 	return totalLength;
 };
 
@@ -878,9 +823,6 @@ void(entity grapOwner) grap_remove =
 	  }
 
 	  grap_removeRope(f);
-// Cataboligne - 4.4.11 - remove harpoon positioner rope at start point
-	  if (f.enemy) remove (f.enemy);
-
 	  remove(f);
 	}
 
@@ -943,6 +885,9 @@ entity(entity ropeOwner) grap_createRope =
 
 	// add to the end of the chain...
 	ropeOwner.grap_ropechainPrev = rope;
+
+// Cataboligne - 4.29.11 - harpoon gun rope point - last segment made is rope point, mark it
+	rope.grap_owner.grap_cornerchainNext.enemy = rope;
 
 	return rope;
 };
