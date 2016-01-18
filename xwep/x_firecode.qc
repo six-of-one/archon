@@ -885,7 +885,7 @@ void (float shotcount, float pdmg, vector dir, vector spread) X_FireBullets =
 {
 	local vector direction;
 	local vector src;
-	local float ddmg
+	local float ddmg;
 
 	makevectors (self.v_angle);
 
@@ -930,23 +930,26 @@ void () X_FireHitscan =
 	d = EWEAP.dmg_save; // ammo to fire
 	t = EWEAP.dmg_take; // shots to fire
 
-	f = f - ammo_con(d, self, ""); // use ammo
-	if (f < 0)
+	if (EWEAP.lip != AMMO_NONE)
 	{
-		d = d + f; // only can fire this many
-		f = 0;
-		t = EWEAP.dmg_take * (d / EWEAP.dmg_save); // pellets or bullets we get to shoot due to reduced ammo
-	}
+		f = f - ammo_con(d, self, ""); // use ammo
+		if (f < 0)
+		{
+			d = d + f; // only can fire this many
+			f = 0;
+			t = EWEAP.dmg_take * (d / EWEAP.dmg_save); // pellets or bullets we get to shoot due to reduced ammo
+		}
 
-	if (!ammo_con(EWEAP.weapon, self, "wpck"))
-	if (d < 1) // NOTE: can this ever happen?
-	{
-		self.weapon = W_BestWeapon ();
-		if (!Q_100 && !Q_99) self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
-		W_SetCurrentAmmo ();
-		if (self.classname == "pk*bot")
-			self.think = self.th_run;
-		return ;
+		if (!ammo_con(EWEAP.weapon, self, "wpck"))
+		if (d < 1) // NOTE: can this ever happen?
+		{
+			self.weapon = W_BestWeapon ();
+			if (!Q_100 && !Q_99) self.pk_currentitem = W_BestPKWeapon(); // *pk - set best wep
+			W_SetCurrentAmmo ();
+			if (self.classname == "pk*bot")
+				self.think = self.th_run;
+			return ;
+		}
 	}
 
 	if (EWEAP.lip == AMMO_SHELLS)
@@ -961,6 +964,8 @@ void () X_FireHitscan =
 
 	X_FireBullets (t, EWEAP.dmg, dir, EWEAP.bulletspread);
 
+// deepsleep hack - NOTE: uses v_up & v_right set by previous call
+	if (EWEAP.mdl == "progs/vw_deepsleep.mdl") X_DeepSleepBlst(dir, trace_endpos, ' 0.2 0.2 0', EWEAP.target);
 };
 
 
@@ -1133,8 +1138,8 @@ void() player_pistol1 =
 		EWEAP = self.eweapon;
 		SuperDamageSound();
 		if (EWEAP.mdl == "progs/vw_deepsleep.mdl")
-			X_FireBlaster();
-		else
+			sound (self, CHAN_WEAPON, EWEAP.noise3, 1, ATTN_NORM);
+
 		if (EWEAP.mdl == "progs/vw_q2_blst.mdl")
 			X_FireBlaster();
 		else

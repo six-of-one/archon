@@ -1104,6 +1104,8 @@ void() X_FireRailgun;
 void() player_mgchg1;
 void() player_pistol1;
 
+void(vector dir1, vector end1, vector bspread, string snd1) X_DeepSleepBlst;
+
 float SPIKE_VEL					= 1000; // IMP: make these cvar? port to other code
 float DEF_VEL						= 600;
 float ROCKET_VEL					= 1000;

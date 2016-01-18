@@ -63,6 +63,8 @@ void() chaos_precache =
 	precache_sound ("sound/flm/airhiss1.wav");
 	precache_sound ("sound/reggun/fire.wav");
 	precache_sound ("sound/reggun/fire4.wav");
+	precache_sound ("sound/deepsleep/fire.wav");
+	precache_sound ("sound/deepsleep/hit.wav");
 
 // shovel test
 	precache_model ("progs/m_shovel.mdl");
@@ -219,6 +221,65 @@ string() cds_killmsg2 =
 	return "\n";
 };
 
+// deepsleep blast effect at target point
+void() DeepSleepBlst_tht =
+{
+	local float f, k;
+
+//	f = rint(2 + random());
+
+//	while (f > 0)
+//	{
+	k = 2 + random() * 4; // some depth
+	self.finaldest = (self.origin + crandom() * self.bulletspread_x * self.pos2 + crandom() * self.bulletspread_y * self.pos1) - self.movedir * k;
+
+
+if (WARNING)
+{
+bprint("\b *** deepsleep blast org: ");
+bprint(vtos(self.finaldest));
+bprint("\n");
+}
+
+
+	WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST,TE_GUNSHOT);
+	WriteCoord (MSG_BROADCAST,self.finaldest_x);
+	WriteCoord (MSG_BROADCAST,self.finaldest_y);
+	WriteCoord (MSG_BROADCAST,self.finaldest_z);
+//		f = f - 1;
+//	}
+
+	if (self.noise)
+	{
+		sound (self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);
+		self.noise = "";
+	}
+
+	self.cnt = self.cnt - 1;
+	if (self.cnt < 0) remove(self);
+	else
+	self.nextthink = time + 0.03;
+};
+
+void(vector dir1, vector end1, vector bspread, string snd1) X_DeepSleepBlst =
+{
+	local entity e;
+
+	e = spawn();
+	e.think = DeepSleepBlst_tht;
+	e.nextthink = time + 0.03;
+	e.cnt = 5 + 5 * random();
+	e.owner = EWEAP;
+// located
+	e.origin = end1;
+	e.movedir = dir1;
+	e.bulletspread = bspread;
+	e.pos1 = v_up;
+	e.pos2 = v_right;
+	e.noise = snd1;
+};
+
 void () c_weapon_deepsleep =
 {
 	q100_weapon_supershotgun();
@@ -238,6 +299,7 @@ void () c_weapon_deepsleep =
 	self.dmg = 30;
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
+	self.bulletspread = ' 0.03 0.03 0';
 	self.style = FL_MELEE_WEP;
 	self.wait = RSP_TIME;
 
@@ -246,8 +308,8 @@ void () c_weapon_deepsleep =
 	setmodel (self, "progs/g_deepsleep.mdl");
 	self.weaponmodel = "progs/v_q2_blst.mdl";
 	self.vwepmdl = "progs/vw_deepsleep.mdl";
-	self.noise3 = "q2_snd/blastf1a.wav";
-	self.target = "q2_snd/lashit.wav";
+	self.noise3 = "sound/deepsleep/fire.wav";
+	self.target = "sound/deepsleep/hit.wav";
 
 	self._killmsg = cds_killmsg;
 	self._killmsg2 = cds_killmsg2;

@@ -1940,3 +1940,194 @@ float(string mp) rogue_map =
 
 	return(FALSE);
 };
+
+
+
+// chaos morph and beam support
+
+
+
+
+// fn(chaos_particle) - chaos particle field effect
+// org - origin
+// rn - range
+// pr - percent chance
+// col - fixed color
+
+vector cparticle_lorg;
+
+void(vector org, float rn, float pr, float col) chaos_particle =
+{
+	local vector p1;
+	local float cl;
+
+	p1_x = (random() - 0.5) * random() * rn;
+	p1_y = (random() - 0.5) * random() * rn;
+	p1_z = (random() - 0.5) * random() * rn * 0.9;
+	cparticle_lorg = org + p1;
+	cl = col;
+	if (cl < 0) cl = random() * 255;
+
+	if (self.morphy == IMP_MWRAITH)
+	{
+		if (col == 12 || col == 251)
+			particle (org + p1, ' 0 0 0', cl, 3);
+		else
+			particle (org + p1, ' 0 0 0', cl, 15);
+	}
+	else
+		if (random() < pr) particle (org + p1, ' 0 0 0', cl, random() * 25); // IDEA - restrict colors?
+};
+
+
+// fn(chaos_mdlsize) - set sizes for certain models
+
+void(entity e) chaos_mdlsize =
+{
+	local vector vmin, vmax;
+	if (!e) return;
+
+	vmin = vmax = v0;
+	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -16'; vmax = ' 16 16 16'; }
+	else if (e.model == "progs/lavaball.mdl" || e.model == "progs/snowball.mdl")
+	{
+		if (e.frame == 0 || e.frame == 5)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
+		if (e.frame == 1 || e.frame == 6)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
+		if (e.frame == 2 || e.frame == 3 ||
+			  e.frame == 7 || e.frame == 8)			{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+		if (e.frame == 4 || e.frame == 9)			{ vmin = '-1 -1 -1'; vmax = ' 1 1 1'; }
+	}
+	else if (e.model == "progs/grenade.mdl")
+	{
+		if (e.frame == 0)								{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; } // reg grenade
+		if (e.frame == 1 || e.frame == 6)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; } // telespheres
+		if (e.frame == 2 || e.frame == 7)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
+		if (e.frame == 3 || e.frame == 4 ||
+			  e.frame == 8 || e.frame == 9)			{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+		if (e.frame == 5 || e.frame == 10)		{ vmin = '-1 -1 -1'; vmax = ' 1 1 1'; }
+	}
+	else if (e.model == "progs/proxbomb.mdl")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+	else if (e.model == "progs/hook.mdl")			{ vmin = '-5 -5 -5'; vmax = ' 5 5 5'; }
+	else if (e.model == "progs/v_spike.mdl")		{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
+//	else if (e.model == "progs/ejbatt.mdl")		{ vmin = '-2 -2 -6'; vmax = ' 2 2 4'; }
+	else if (e.model == "progs/s_bubble.spr")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+	else if (e.model == "progs/chaos_b2.mdl")	{ vmin = '-16 -16 -24'; vmax = ' 16 16 40'; }
+	if (vmin != v0 && vmax != v0) setsize(e, vmin, vmax);
+};
+
+// fn(chaos_bomb_rndmdl) - random model for chaos bomb
+// if e == world return model string, else set model / sizes
+
+string(entity e) chaos_bomb_rndmdl =
+{
+	local string s1;
+	local float r1;
+	r1 = floor(random() * 17.3);
+
+	s1 = "progs/teleport.mdl";
+	if (r1 > 15) s1 = "progs/gas.mdl";
+	else if (r1 > 13) s1 = "progs/grenade.mdl";
+	else if (r1 > 10) s1 = "maps/b_exbox2.bsp";
+	else if (r1 > 8) s1 = "maps/b_rock0.bsp";
+//	else if (r1 > 7) s1 = "progs/ejbatt.mdl";
+	else if (r1 > 5) s1 = "progs/proxbomb.mdl";
+	else if (r1 > 3) s1 = "progs/hook.mdl";
+	else if (r1 > 2) s1 = "progs/v_spike.mdl";
+	if (e)
+	{
+		setmodel(e, s1);
+	}
+	return(s1);
+};
+
+// fn(chaos_bomb) - explode a chaos thrown item shooting variable wep missiles
+// fn(RND_Spike) - create random spikes for chaos bomb
+// fn(RND_Damage) - random damage for explosives (just because 10 random grenades from a betty are pretty damn dangerous for anything nearby)
+
+float RND_frame;
+float RND_skin;
+float RND_maxdmg; // set to CBOMB_DEF_MAX if > 0 this is the max damage all explosives from bomb can cause
+
+void() RND_Spike =
+{
+	if (newmis)
+	{
+		newmis.frame = RND_frame;
+		newmis.skin = RND_skin;
+	}
+};
+
+void() RND_Damage =
+{
+	local float dm;
+
+	if (newmis)
+	{
+		dm = CBOMB_DEF_DMG + random() * DUD_DEF_DMG; // 10 + rnd * 20
+		if (RND_maxdmg >= 0) // in use if not < 0
+		{
+			if (dm > RND_maxdmg) dm = RND_maxdmg;
+			RND_maxdmg = RND_maxdmg - dm;
+			if (RND_maxdmg < 0) RND_maxdmg = 0;
+		}
+		newmis.dmg = dm;
+	}
+};
+
+// for the obit
+
+void(float ox) W_FireSpikes;
+void() W_FireGrenade;
+void() W_FireRocket;
+void () W_FireLightning;
+void(float fl) fire_laser1;
+
+void() W_FireClusterRock =
+{
+	W_FireRocket();
+	newmis.classname = "cluster_bomb";
+};
+
+void() W_FireClusterGren =
+{
+	W_FireGrenade();
+	newmis.classname = "cluster_bomb";	
+};
+
+void() chaos_bomb =
+{
+	local float r1;
+	local void() wfire, vspk;
+
+	if (self.aflag == MOVETYPE_BOUNCE) // the bouncing part of betty, she is a bad ass too
+	{
+		self.nextthink = time + 0.1 + random() * 0.4; // time to bounce
+		self.velocity_z = 200 + 200 * random();
+		if (random() < 0.5)
+		{
+			self.velocity_x = 50 * crandom();
+			self.velocity_y = 50 * crandom();
+		}
+		self.aflag = 0; // return call does bomb out
+		return;
+	}
+	r1 = floor(random() * 8.6);
+	wfire = W_FireSpikes;
+	vspk = SUB_Null;
+	if (self.weapon == IMP_MOGRE) { wfire = W_FireClusterGren; r1 = 5; }
+	else if (r1 > 7) wfire = fire_laser1;
+//	else if (r1 > 6) wfire = fire_cbolt; // IMP: put back in for chaos morph
+	else if (r1 > 5) { wfire = W_FireClusterGren; vspk = RND_Damage; }
+	else if (r1 > 5) { wfire = W_FireClusterRock; vspk = RND_Damage; }
+	else if (r1 > 4) wfire = W_FireLightning;
+	if (r1 < 4) vspk = RND_Spike;
+
+	RND_frame = random() * 7.4;
+	RND_skin = random() * 3.4;
+	RND_maxdmg = CBOMB_DEF_MAX;
+	
+// really just a fancy bouncing betty
+	fire_burst (wfire, self.origin + ' 0 0 30', 0, 0, "", "", 0, 3, 8, ' 120 0 0', ' 300 360 360', vspk, FL_ANGADR | FL_VELRND | FL_FRCORG | FL_NEWSELF | FL_OWNOWN, world);
+	RND_maxdmg = 0; // reset
+	remove(self);
+};

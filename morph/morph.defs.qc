@@ -294,9 +294,11 @@ float CB_CYBER						= 8388608;
 // code numbers - store in .morphy
 // cant use 1, 2, 4, 8, 16, 32, 64, 128 ... etc
 
+float IMP_MIN						= 6;
+float IMP_MAX						= 99;
+
 float IMP_MCHAOS					= 6;	// string STI_MCHAOS			= "impulse 6";
 float IMP_MORDER					= 7;	// string STI_MORDER			= "impulse 7";
-//float USE_PULSE_SPIKES			= -257368;
 //Techs:
 float IMP_MHUMAN					= 12;	// string STI_MHUMAN			= "impulse 12"; // NOTE: char_q - standard quake guy
 

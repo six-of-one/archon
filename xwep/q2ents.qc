@@ -2165,7 +2165,9 @@ void() q2_blaster_thk =
 void() X_FireBlaster =
 {
 	fire_laser1(FL_PUNCH);
-	setmodel(newmis, "progs/null.mdl");
+	setmodel(newmis, "progs/laser_m.mdl");
+	newmis.frame = 11;
+	newmis.skin = 0;
 	newmis.nextthink = time + 0.1;
 	newmis.think = q2_blaster_thk;
 	newmis.effects = EF_DIMLIGHT;
