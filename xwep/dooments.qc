@@ -455,7 +455,7 @@ void() d_weapon_bfg =
 	self.dmg = DOOM_BFG_DMG;
 //	self.dodmg = 128; // splash
 	self.dmg_save = 40;
-	self.punchangle = ' 0.45 0.45 0'; // for traces ?
+	self.punchangle = ' 0.6 0.3 0'; // for traces ?
 	self.wait = RSP_TIME;
 
 // appearances

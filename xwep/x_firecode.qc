@@ -926,6 +926,7 @@ void () Plasma_MissileTouch =
 {
 	local vector org;
 	local string mon, snd;
+	local float bdm;
 
 	if (other == self.owner)
 	{
@@ -980,8 +981,23 @@ void () Plasma_MissileTouch =
 
 // some plasma may splash
 // don't do radius damage to the other, because all the damage was done in the impact
-	if (self.dodmg)
-		T_RadiusDamage (self, self.owner, self.dodmg, other);
+	bdm = self.dodmg;
+	if (!deathmatch)
+	if (self.delay == Q2_BFG) bdm = self.dmg; // because in SP dodmg is 500 for trace dmg - did this way in case values are modded
+
+	if (bdm)
+		T_RadiusDamage (self, self.owner, bdm, other);
+
+	if (self.enemy)
+	{
+		if (self.delay == DOOM_BFG) // activate trace dmg
+			self.enemy.nextthink = time + 0.2;
+		else if (self.delay == Q2_BFG)
+		{
+			self.enemy.nextthink = time + 0.01;
+			self.enemy.flags = Q2_BFG;
+		}
+	}
 
 	self.velocity = '0 0 0';
 //	move_stop(self, "");
@@ -995,7 +1011,7 @@ void () X_FireOnePlasma =
 {
 //	local vector org;
 	local string snd, pls, expl;
-	local float dm;
+	local float dm, dbfg;
 	vector org, bfwd;
 
 
@@ -1007,6 +1023,7 @@ bprint(EWEAP.netname);
 
 
 
+	dbfg = 0; // detect bfgs
 	dm = 15;
 	pls = "progs/d_plasma_sht.mdl";
 	expl = "doom/dsfirxpl.wav";
@@ -1019,7 +1036,12 @@ bprint(EWEAP.netname);
 		snd = EWEAP.noise3;
 		if (EWEAP.mdl == "progs/vw_d_bfg.mdl" || EWEAP.mdl == "progs/vw_q2_bfg.mdl") snd = "";
 		if (dm == DOOM_SHOT_DMG) dm = 5 * ceil(random() * 8);
-		else if (dm == DOOM_BFG_DMG) dm = 100 * ceil(random() * 8);
+		else if (dm == DOOM_BFG_DMG)
+		{
+			dm = 100 * ceil(random() * 8);
+			dbfg = DOOM_BFG;
+		}
+		if (EWEAP.noise4 == Q2_DET) dbfg = Q2_BFG; // splash detect
 		if (EWEAP.target1 != "") pls = EWEAP.target1;
 		if (EWEAP.target != "") expl = EWEAP.target;
 	}
@@ -1045,6 +1067,7 @@ bprint(EWEAP.netname);
 		pk_missile_splash(newmis); // *pk - splash & message setup
 
 		newmis.dmg = dm;
+		newmis.delay = dbfg; // tell missile its a bfg blast for init of trace dmg
 
 		if (EWEAP)
 		{
@@ -1271,7 +1294,8 @@ void() player_chain0   = [$lightfatt1, player_chain0]
 
 // target flags - in general dont allow targeting if the flag ind. test fails
 
-// = TFL_SELF | TFL_FENT | TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_CONT | TFL_RANGE | TFL_INVIS | TFL_INFR | TFL_PKLV | TFL_PLY | TFL_MON | TFL_INV;
+// assign line - cut / paste & remove unwanted flags
+// = TFL_SELF | TFL_FENT | TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_CONT | TFL_RANGE | TFL_INVIS | TFL_INFR | TFL_PKLV | TFL_PLY | TFL_MON | TFL_TR_IGM | TFL_IFR_NOZ | TFL_INV;
 
 float TFL_SELF			= 1;				// allow target self ent = actual self (projectiles / effects that could potentially target player / owner dont want to target self		 - allow self to be targeted
 float TFL_FENT			= 2;				// allow target f ent in fn call, should be player / owner																																						 - allow ent f  to be targeted
@@ -1283,10 +1307,12 @@ float TFL_RANGE		= 64;			// check target for range > r, (fail TRUE)													
 float TFL_INVIS			= 128;			// check to see if target is visible (player / ent invisibility via IT_INVIS & .items), (fail TRUE)																		 - dont allow invisibles to be targeted
 float TFL_INFR			= 256;			// check to see if target meets in front test with cht_if value, (fail FALSE)																													 - dont allow ents out of view cone to be targeted
 float TFL_PKLV			= 512;			// check to see if target is a pk live ent - fail if true (individualized by pk_livent_brk var below as shown if set), (fail TRUE)		 - dont allow pk live ents to be targeted
-float TFL_PLY				= 1024;		// check to see if target is a player / bot, (fail TRUE)																																								 - dont allow players to be targeted
-float TFL_MON			= 2048;		// check to see if target is a monster, (fail TRUE)																																									 - dont allow monsters to be targeted
+float TFL_PLY				= 1024;		// check to see if target is a player / bot, (fail TRUE)																																								 - dont allow players to be targeted				(invertable)
+float TFL_MON			= 2048;		// check to see if target is a monster, (fail TRUE)																																									 - dont allow monsters to be targeted			(invertable)
 
-float TFL_INV				= 4194304; // invert certain tests - only players or monsters, etc.
+float TFL_TR_IGM		= 1048576; // trace ignores monsters in LOS test
+float TFL_IFR_NOZ	= 2097152; // in front ignores z components
+float TFL_INV				= 4194304; // invert certain tests - only players or monsters, etc.																																							 - invert certain flags to return the opposite result
 
 float cht_if; // in front range 0 - 1 fraction, believed to be radius cone around vector of self.v_angle
 float pk_livent_brk; // painkeep live ent breakdown according to item flags as follows:
@@ -1298,16 +1324,19 @@ float pk_livent_brk; // painkeep live ent breakdown according to item flags as f
 float PKPLUS_IT_CORPSE			= 1024; // special - corpse has health, can takedmg, can be targeted
 
 // targeting fn - IDEA: move?
+// 		- tests to see if an ent can be targeted by an attack / effect under various conditions - maybe chaos vector
+
+// self - MUST be targeting entity - MUST MUST MUST!
 
 // e - test ent
 // f - self ent, firing ent / projectile, or player / owner
 // r - range to test if flag set
 // flg - flags control tests
 
-float(entity e, entity f, float r, float flg) can_has_target =
+float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 {
 	local float k;
-	local vector  v;
+	local vector v, corg;
 
 	if (!e) return(FALSE); // cant target world
 	if (e.classname == "turret_base") return(FALSE); // never target these - not valide
@@ -1318,11 +1347,27 @@ float(entity e, entity f, float r, float flg) can_has_target =
 	if ((floor(e.health) < 1) && (flg & TFL_HEAL)) return(FALSE);
 	if ((!e.takedamage) && (flg & TFL_TKDMG)) return(FALSE);
 
+	corg = cht_org;
+	if (cht_org == v0) corg = self.origin;
+
 	if ((flg & TFL_TRACE) || (flg & TFL_CONT))
 	{
-		traceline(self.origin, e.origin, TRUE, self); // LOS and content boundary
+		if (flg & TFL_TR_IGM) k = TRUE; // ignore (see thru) monsters
+		traceline(corg, e.origin, k, self); // LOS and content boundary
 		if (flg & TFL_TRACE)
 		{
+
+
+if (trace_fraction < 1)
+{
+bprint(" *** trace fail ent (");
+bprint(item_ident(e));
+bprint(") - frac = ");
+bprint(ftos(trace_fraction));
+bprint(".\n");
+}
+
+
 			if (trace_fraction < 1) return(FALSE);
 		}
 		if (flg & TFL_CONT)
@@ -1333,7 +1378,7 @@ float(entity e, entity f, float r, float flg) can_has_target =
 
 	if (flg & TFL_RANGE)
 	{
-		k = vlen(e.origin - self.origin);
+		k = vlen(e.origin - corg);
 		if (k > r) return(FALSE);
 	}
 
@@ -1342,20 +1387,41 @@ float(entity e, entity f, float r, float flg) can_has_target =
 	if ((flg & TFL_INFR) && (cht_if > 0))
 	{
 		makevectors (self.v_angle);
-		v = normalize (e.origin - self.origin);
+		v = e.origin - corg;
+
+		if (flg & TFL_IFR_NOZ) // ignore z value of height (doom eh...) - use a circular check (ceil to floor) instead of cone
+		{
+			v_forward_z = 0;
+			v_z = 0;
+		}
+
+		v_forward = normalize(v_forward);
+		v = normalize(v);
+
 		k = v * v_forward;
 
 		if (k <= cht_if)
 		{
 
 
-
-bprint(" *** cht_if fail = ");
+/*
+bprint(" *** cht_if fail ent (");
+bprint(item_ident(e));
+bprint(") = ");
 bprint(ftos(k));
 bprint(" <= ");
 bprint(ftos(cht_if));
-bprint(" (check val).\n");
-
+bprint(" (check val), ");
+bprint(vtos(self.v_angle));
+bprint(" - shot v_ang, ");
+bprint(vtos(v_forward));
+bprint(" - v_fwd, ");
+bprint(vtos(v));
+bprint(" - v, ");
+//bprint(vtos(self.owner.v_angle));
+//bprint(" - owner v_ang, ");
+bprint(".\n");
+*/
 
 
 			cht_if = 0; // always cleared - always needs set
@@ -1363,13 +1429,22 @@ bprint(" (check val).\n");
 		}
 
 
-
-bprint(" *** cht_if sucess = ");
+/*
+bprint(" *** cht_if sucess ent (");
+bprint(item_ident(e));
+bprint(") = ");
 bprint(ftos(k));
 bprint(" > ");
 bprint(ftos(cht_if));
-bprint(" (check val).\n");
-
+bprint(" (check val), ");
+bprint(vtos(self.v_angle));
+bprint(" - shot v_ang, ");
+bprint(vtos(v_forward));
+bprint(" - v_fwd, ");
+bprint(vtos(v));
+bprint(" - v, ");
+bprint(".\n");
+*/
 
 
 	}
@@ -1400,28 +1475,51 @@ bprint(" (check val).\n");
 	if ((e.flags & FL_CLIENT) && (flg & TFL_PLY)) return(FALSE);
 	if ((e.flags & FL_MONSTER) && (flg & TFL_MON)) return(FALSE);
 
-
-
-bprint(" *** can_has_target accepted = ");
-bprint(item_ident(e));
-bprint(".\n");
-
-
-
-
-
 	return(TRUE);
 };
 
 // bfg doom & q2
 
+// sequence targets
+
+// returns count targ, self.theowner = ent list chained by .theowner
+
+float(vector sorg, float srd, float sfl, float sifr) bfg_targ_seq =
+{
+	local float k;
+	local entity e, tl;
+
+	k = 0;
+	e = findradius(sorg, srd); // find things to dmg in fire cone
+
+	while (e)
+	{
+		cht_if = sifr;
+		if (can_has_target(e, self.owner, sorg, 0, sfl))
+		{
+			k = k + 1;
+			if (!self.theowner) self.theowner = tl = e;
+			else { tl.theowner = e; tl = e; }
+		}
+		e = e.chain;
+	}
+
+	return(k);
+};
+
 // traces for bfg weaps - q2 is different
+
+
+
+float bdm;
+
+
+
 
 void() bfg_trace_thk =
 {
-	local float f, k, tr, bfl, bfl2, sf;
-	vector org;
-	local entity e, tl;
+	local float f, j, k, k2, tr, bfl, sf, ifr;
+	local entity e, tl, t2;
 
 
 /*
@@ -1435,81 +1533,99 @@ bprint(".\n");
 	{
 		self.nextthink = time + (self.flags / 2) - 0.2;
 		self.flags = DOOM_BFG;
+bdm = 0;
 		return;
 	}
 	else if (self.flags == 0.87)
 	{
-		self.flags = Q2_BFG;
-		self.cnt = 30 + random() * 15; // 30 - 45 traces - TDO: get real info on this too
+		self.flags = Q2_BFG_LASER;
+bdm = 0;
 	}
 
 	if (self.flags == Q2_BFG)
 	{
-		if (self.enemy.alpha < 1) // shot going away
-		{
-			remove(self);
-			return;
-		}
-		tr = floor(random() * 3);
-		e = findradius(self.enemy.origin, Q2_BFG_TRACE); // find things to dmg in fire radius
-		if (tr)
+		self.flags = Q2_BFG;
+		
+	}
+	if (self.flags == Q2_BFG_LASER)
+	{
+		e = findradius(self.enemy.origin, Q2_BFG_LASER); // find things to laser dmg in fire radius
+		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM;
 		while (e)
 		{
-			
+			if (can_has_target(e, self.owner, self.enemy.origin, 0, bfl)){
+				T_Damage (e,self,self.owner,Q2_BFG_LASER_DMG);
+
+
+
+
+local vector v1, v2;
+local float i, m;
+local entity g;
+
+	v1 = e.origin - self.enemy.origin;
+	m = vlen(v1) * 0.01;
+	v2 = normalize(v1) * m;
+	v1 = self.enemy.origin;
+	i = 100;
+	while (i > 0)
+	{
+		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/beambit.spr", SUB_Remove, 0.1, SUB_Remove, SUB_Null, self, world);
+		if (g)
+		{
+			g.alpha = 0.7;
+		}
+		v1 = v1 + v2;
+		i = i - 1;
+	}
+
+
+fts.dmg_take = fts.dmg_take + Q2_BFG_LASER_DMG;
+bdm = bdm + Q2_BFG_LASER_DMG;
+
+bprint("*** q2 bfg laser hit = ");
+bprint(item_ident(e));
+bprint(", for dmg = ");
+bprint(ftos(Q2_BFG_LASER_DMG));
+bprint(".\n");
+
+}
+
+
+
 			e = e.chain;
 		}
-		if (self.cnt < 1)
-			remove(self);
-		else
-			self.nextthink = time + 0.2;
+		self.nextthink = time + 0.1;
 		return;
 	}
 
+// NOTE: this is not the way doom bfg tracers are really done - they are fanned out over an arc interval:   an = mo->angle - ANG90/2 + ANG90/40*i; where (i=0 ; i<40 ; i++), mo is dir of bfg shot
 	if (self.flags == DOOM_BFG)
 	{
-		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_PKLV | TFL_PLY | TFL_MON | TFL_INV;
-		bfl2 = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR;
-		k = 0;
+		k = j = 0;
+		ifr = self.origin_x;
 		tr = 40;
-		self.theowner = world;
+		self.theowner = tl = world;
 //		makevectors (self.angles);
 		self.v_angle = self.angles;
-		org = self.owner.origin; // where ever the player is .38 secs after ball was launched
-		tl = e = findradius(org, DOOM_BFG_TRACE); // find things to dmg in fire cone
-		while (e) // && k < tr)
-		{
-			cht_if = self.origin_x;
-			if (can_has_target(e, self.owner, 0, bfl))
-			{
-				k = k + 1;
-				if (!self.theowner) self.theowner = tl = e;
-				else { tl.theowner = e; tl = e; }
-			}
-			e = e.chain;
-		}
-		e = tl;
+		self.origin = self.owner.origin; // where ever the player is .38 secs after ball hits or expires
 
+//		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_PLY | TFL_MON | TFL_INV | TFL_TR_IGM | TFL_IFR_NOZ; // only monsters & players
+		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_INFR | TFL_PLY | TFL_MON | TFL_TR_IGM | TFL_IFR_NOZ;		// no players or monsters - all other hittable things
 
+		k = bfg_targ_seq(self.origin, DOOM_BFG_TRACE, bfl, ifr);
 
-if (!self.theowner) bprint("*** doom bfg - no players / monsters to target.\n");
-
-
-
-		if (!self.theowner) // found no players or monsters
-		while (e) // && k < tr)
-		{
-			cht_if = self.origin_x;
-			if (can_has_target(e, self.owner, 0, bfl2))
-			{
-				k = k + 1;
-				if (!self.theowner) self.theowner = tl = e;
-				else { tl.theowner = e; tl = e; }
-			}
-			e = e.chain;
-		}
 		tl = self.theowner;
+
+
+
+// test - list ents
+
+
+
+
 		sf = 400;
-		if (k && tl)
+		if (tl)
 		while (tr > 0 && sf > 0)
 		{
 			f = rint(random() * k);
@@ -1519,16 +1635,19 @@ if (!self.theowner) bprint("*** doom bfg - no players / monsters to target.\n");
 				e = e.theowner;
 				f = f - 1;
 			}
-			f = 49 + ceil(36 * random());
+			j = 16;
+			f = 0;
+			while (j > 0) // new calc based on revised faq - making bfg even more deadly
+			{
+				f = f + ceil(random() * 8); // add d8 up 16 times
+				j = j - 1;
+			}
+//			f = 49 + ceil(36 * random());
 			if (e.health > 0)
 			{
 				T_Damage (e,self,self.owner,f);
 
 
-
-local vector v1, v2;
-local float i, m;
-local entity g;
 
 	if (e.count == 0)
 	{
@@ -1540,11 +1659,11 @@ local entity g;
 		e.count = e.count + 2;
 
 
-	v1 = e.origin - org;
+	v1 = e.origin - self.origin;
 	m = vlen(v1) * 0.025;
 	v2 = normalize(v1) * m;
-	v1 = org;
-	v1_z = org_z + e.count;
+	v1 = self.origin;
+	v1_z = self.origin_z + e.count;
 	i = 40;
 	while (i > 0)
 	{
@@ -1564,7 +1683,6 @@ bprint(", for dmg = ");
 bprint(ftos(f));
 bprint(".\n");
 
-local float bdm;
 fts.dmg_take = fts.dmg_take + f;
 bdm = bdm + f;
 
@@ -1576,14 +1694,91 @@ bdm = bdm + f;
 			}
 			sf = sf - 1;
 		}
+
+// if traces left & second list give it some shots
+		sf = 400;
+		if (t2 && tr > 0)
+		while (tr > 0 && sf > 0)
+		{
+			f = rint(random() * k2);
+			e = t2;
+			while (f > 0 && e.theowner)
+			{
+				e = e.theowner;
+				f = f - 1;
+			}
+			j = 16;
+			f = 0;
+			while (j > 0) // new calc based on revised faq - making bfg even more deadly
+			{
+				f = f + ceil(random() * 8); // add d8 up 16 times
+				j = j - 1;
+			}
+//			f = 49 + ceil(36 * random());
+			if (e.health > 0)
+			{
+				T_Damage (e,self,self.owner,f);
+
+
+
+
+	if (e.count == 0)
+	{
+		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, e.origin, v0, v0, v0, v0, "", e.model, SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
+		g.frame = e.frame;
+		e.count = 1;
+	}
+	else
+		e.count = e.count + 2;
+
+
+	v1 = e.origin - self.origin;
+	m = vlen(v1) * 0.025;
+	v2 = normalize(v1) * m;
+	v1 = self.origin;
+	v1_z = self.origin_z + e.count;
+	i = 40;
+	while (i > 0)
+	{
+		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/beambit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
+		if (g)
+		{
+			g.alpha = 0.5;
+		}
+		v1 = v1 + v2;
+		i = i - 1;
+	}
+
+
+bprint("*** doom bfg beam hit = ");
+bprint(item_ident(e));
+bprint(", for dmg = ");
+bprint(ftos(f));
+bprint(".\n");
+
+fts.dmg_take = fts.dmg_take + f;
+bdm = bdm + f;
+
+
+
+
+
+				tr = tr - 1;
+			}
+			sf = sf - 1;
+		}
+
+
+bprint(", beams fired = ");
+bprint(ftos(40 - tr));
+
+
 	}
 
 
 
 
 
-bprint(", beams fired = ");
-bprint(ftos(40 - tr));
 bprint(", beams dmg = ");
 bprint(ftos(bdm));
 bprint(".\n");
@@ -1595,11 +1790,24 @@ fts.dmg = fts.dmg + bdm;
 	remove(self);
 };
 
+/*
+
+NOTES:
+- q2 bfg does not obey quad except for direct dmg
+- doom bfg may not exclude ents hidden behind larger ents (seems like stuff is killed behind shambler...)
+- doom bfg should prob. start with closer ents & work its way out instead of beaming rays to rnd targets
+- 1st & 2nd list deal should maybe be 1 list
+- in front check is aware of z - doom bfg ignored most vertical diffs
+- doom bfg rays are not cast same as in doom
+
+*/
+
 // NOTE: this code may not be obeying haste rune effect - that might be ok
 
 void() player_bfg1   = [$lightfatt1, player_bfg1]
 {
 	local entity e;
+	local float f;
 
 	if (self.weaponframe == 0)
 	{
@@ -1633,8 +1841,11 @@ void() player_bfg1   = [$lightfatt1, player_bfg1]
 	newmis.skin = 1;
 	newmis.effects = EF_BRIGHTLIGHT | EF_BRIGHTFIELD;
 
-	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.punchangle, v0, v0, self.v_angle, v0, "", "", SUB_Null, 0.2, bfg_trace_thk, SUB_Null, self, world);
-	e.enemy = newmis; // q2
+	f = 0.2;
+	if (EWEAP.noise4 == DOOM_DET) f = ROCKET_FUSE; // ball flight time max - doom starts think here to get data but it gets activated by plasma hit logic
+	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.punchangle, v0, v0, self.v_angle, v0, "", "", SUB_Null, f, bfg_trace_thk, SUB_Null, self, world);
+	e.enemy = newmis; // q2 - fires lasers from ball
+	newmis.enemy = e; // trace blast
 
 	EWEAP = world;
 	player_shot2();

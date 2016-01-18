@@ -339,7 +339,8 @@ void () q2_weapon_bfg =
 	self.lip = AMMO_CELLS;
 	self.attack_finished = 2;
 	self.dmg = 200;
-	self.dodmg = 500; // splash
+	self.dodmg = 200; // splash & trace
+	if (!deathmatch) self.dodmg = 500; // splash & trace
 	self.dmg_save = 50;
 	self.wait = RSP_TIME;
 
