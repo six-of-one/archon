@@ -2572,7 +2572,20 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 
 			if (!MORPH_FREE)
 			if (self.state == self.morphy)
+			{
 				self.archon = self.archon - e.archon; // bot archon pts
+#ifdef morph_pwr
+				morphs = morphs + e.archon;
+
+
+bprint("------------------- ** WARNING - bot morphed apts = ");
+bprint(ftos(e.archon));
+bprint("\n");
+
+
+
+#endifdef
+			}
 
 			remove(e);
 			cube_rearm();

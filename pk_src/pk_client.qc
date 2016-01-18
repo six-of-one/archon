@@ -187,10 +187,11 @@ void() DecodeLevelParms =
 		if (world.model == "maps/qstart.bsp") SetNewParms_PK();
 	}
 //	bot_skinDecode();
-	if (parm3) set_xweap(self, parm3);
+	self.items = 0;
+	if (parm3) set_xweap(self, parm3); // .items must be set after this - gets checked to see if we have one already
 	self.mcode = parm3;
 
-	self.items = parm1;
+	self.items = self.items | parm1; // set_xweap if called set items bits
 	self.health = parm2 & 255;
 	if (!self.archon) self.archon = ceil((parm2 &  16776960 ) / 256);
 	self.ammo_shells = parm4;

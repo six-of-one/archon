@@ -546,13 +546,9 @@ void() W_FireFlamer =
 		return;
 	}
 
-	EWEAP = self.eweapon;
-
 	self.chaosweptime = 0;
-	ominous_hum(EWEAP.noise3, EWEAP.chaosweptime);
+	ominous_hum(self.eweapon.noise3, self.eweapon.chaosweptime);
 	spawn_napalm(self.origin + v_forward * VWX_FLAMER + v_right * VWY_FLAMER + v_up * VWZ_FLAMER); // fire, fire, heheheh!
-
-	EWEAP = world;
 };
 
 // fn(flamer_pull) - drop | pull vmodel framing

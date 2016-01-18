@@ -376,7 +376,7 @@ string(float mb) rune_power =
 // Sbar_DrawInventory
 //-----------------------------------------------------------------------------
 
-float items, items2, currentweap, cammo, mcode, archon;
+float items, items2, currentweap, cammo, mcode, archon, no_ammo;
 float rune_flag, dmg_flare;
 float pk_inv, pk_wep;
 
@@ -533,6 +533,7 @@ void(vector valor, string pic1, string pic2, float itemnum, float scale, float s
 
 // live ammo count for drawn weapon
 			if ((mcode == MC_HIP_MJOLNIR) && (cammo > 14) || ! inf_ammo_wep(mcode))
+			if (!itemnum & no_ammo) // morph built in no ammo coding
 			if (cammo > 0) DrawAmmo('0.3 0.3 1', v + y + '-24 4 0', ceil(cammo), ALPHA_FULL * awepflash);
 			awicof = awicofset;
 
@@ -1527,13 +1528,15 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				mn = substring(mapname, 5, strlen(mapname));
 				m2 = substring(mn, 0, strlen(mn) - 4);
 // translator
-// maker supplied a map_cv cvar - format {mapname}_cv in a cfg file - which the server runs for each map ~/cfg/map/{mapname}.cfg
+// maker supplied a map_ cvar - format map_{mapname} in a cfg file - which the server runs for each map ~/cfg/map/{mapname}.cfg
+// could also place them in any cfg file, like info.cfg
 // example: dm1
 // in ~/cfg/map/dm1.cfg
-// set dm1_cv "Place of Two Deaths"
-				mn = strcat(m2, "_cv"); // attempt to find a conversion cvar
+// set map_dm1 "Place of Two Deaths"
+				mn = strcat("map_", m2); // attempt to find a conversion cvar
 // a few of our favorites
 				if (cvar_string(mn) != "") m2 = cvar_string(mn);
+				else if (m2 == "arc_hub") m2 = "Archon Hub";
 				else if (m2 == "ac1") m2 = "Ariochs Castle";
 				else if (m2 == "chv") m2 = "Chaos Heaven";
 				else if (m2 == "chv_2") m2 = "Chaos Heaven [mk II]";
@@ -1637,6 +1640,8 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 /// morph ident and weapon / spell description and special status items
 
+	no_ammo = 0;
+
 	if (ibar_flag)
 	{
 		k = 1;
@@ -1718,6 +1723,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			if (currentweap == IT_AXE)
 			if (pk_wep == PK_IT_AXE)
 				Sbar_DrawString(pwr_step + wep_step + woff + '85 0 0', "| Laser bolt", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE;
 		}
 		else if (morph == IMP_MOGRE)
 		{
@@ -1732,6 +1738,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '59 0 0', "| Grenades", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			if (currentweap == IT_ROCKET_LAUNCHER)
 				Sbar_DrawString(pwr_step + wep_step + woff + '59 0 0', "| Cluster Grenades", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
 		}
 		else if (morph == IMP_MHKNIGHT)
 		{
@@ -1748,6 +1755,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '105 0 0', "| Focused spikes", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			if (currentweap == IT_ROCKET_LAUNCHER)
 				Sbar_DrawString(pwr_step + wep_step + woff + '105 0 0', "| Explosive spikes *", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
 		}
 		else if (morph == IMP_MSHALR)
 		{
@@ -1792,6 +1800,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '59 0 0', "| Magic spikes", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			if (currentweap == IT_ROCKET_LAUNCHER)
 				Sbar_DrawString(pwr_step + wep_step + woff + '59 0 0', "| Spike Bomb", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE | IT_SUPER_NAILGUN | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
 		}
 		else if (morph == IMP_MSHAMBLR)
 		{
@@ -1804,6 +1813,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '85 0 0', "| Claws", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			if (currentweap == IT_LIGHTNING)
 				Sbar_DrawString(pwr_step + wep_step + woff + '85 0 0', "| Lightning", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE | IT_LIGHTNING;
 		}
 		else if (morph == IMP_MDEMON)
 		{
@@ -1862,6 +1872,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						Sbar_DrawString(pwr_step + wep_step + woff + '65 0 0', "| RAGE", ALPHA_FULL, '7 7 0','1 0.1 0.1');
 				}
 			}
+			no_ammo = IT_AXE | IT_SHOTGUN | IT_GRENADE_LAUNCHER;
 		}
 		else if (morph == IMP_MWIZARD)
 		{
@@ -1878,6 +1889,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '65 0 0', "| Focused spikes", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			if (currentweap == IT_ROCKET_LAUNCHER)
 				Sbar_DrawString(pwr_step + wep_step + woff + '65 0 0', "| Explosive spikes *", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
 		}
 		else if (morph == IMP_MZOMBIE)
 		{
@@ -1894,6 +1906,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '66 0 0', "| Plague flesh", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			if (currentweap == IT_NAILGUN)
 				Sbar_DrawString(pwr_step + wep_step + woff + '66 0 0', "| Gib fountain", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
 		}
 		else if (morph == IMP_MCTHON)
 		{
@@ -1931,6 +1944,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					Sbar_DrawString(pwr_step + wep_step + woff + '91 0 0', "| Lava bombs *", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			}
 			huds = 6;
+			no_ammo = IT_AXE | IT_NAILGUN | IT_ROCKET_LAUNCHER;
 		}
 		else if (morph == IMP_MSCOURGE)
 		{
@@ -1947,6 +1961,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '83 0 0', "| Lasrs", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			if (currentweap == IT_GRENADE_LAUNCHER)
 				Sbar_DrawString(pwr_step + wep_step + woff + '83 0 0', "| Proximity bombs", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE | IT_SHOTGUN;
 		}
 		else if (morph == IMP_MGREMLIN_F || morph == IMP_MGREMLIN_L)
 		{
@@ -1961,6 +1976,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				Sbar_DrawString(pwr_step + wep_step + woff + '75 0 0', "| Bite", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			if (currentweap == IT_SHOTGUN)
 				Sbar_DrawString(pwr_step + wep_step + woff + '75 0 0', "| Claws", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			no_ammo = IT_AXE | IT_SHOTGUN;
 		}
 
 		if (!deadflag)

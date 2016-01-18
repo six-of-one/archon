@@ -878,10 +878,10 @@ void() archon_power =
 
 	if (self.target)
 	{
-		self.aiment = find (world, targetname, self.target); // make the hole follow bmodel
+		self.aiment = find (world, targetname, self.target);
 		if (self.aiment)
 		{
-			self.movetype = 12; //MOVETYPE_FOLLOW; // make the hole follow
+			self.movetype = 12; //MOVETYPE_FOLLOW;
 			self.solid = SOLID_NOT; // always non-solid
 			self.punchangle = self.aiment.angles; // the original angles of bmodel
 			self.view_ofs = self.origin - self.aiment.origin; // relative origin

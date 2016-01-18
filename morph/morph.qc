@@ -570,19 +570,27 @@ void() morph_cube_use =
 	polymorph_check(self.state, 0);
 
 	if ((c.mcode != -666) && MORPH_FREE)
+	{
 		self.archon = c.height;
+		c.archon = c.archon / 6; // dont count full pnts on morph free
+	}
 	else
 	if (c.button0 != self.morphy) // failed morph - restore points, does this ever need any verification?
 	{
 		self.archon = c.height;
+		c.archon = 0;
 	}
 	else if (trace_ent) // an Archon force polymorping another player / bot
 	{
 // note: order descriptor here??
-		centerprint3(self, "You have been polymorphed by chaos into: ", polymorph_id(self.morphy),null_string); // TEST:
+		centerprint3(self, "You have been polymorphed by an Archon into: ", polymorph_id(self.morphy),null_string); // TEST:
 		cube_rearm(); // does a few things, incase they are in cubes, spells or menus
 		self = trace_ent;
 	}
+
+#ifdef morph_pwr
+	morphs = morphs + c.archon;
+#endifdef
 
 	self.impulse = 0;
 	remove(c);
@@ -645,12 +653,27 @@ void() morph_cube =
 		if (!r)
 		{
 #ifdef testset
+// test condition - spawn archon morph dev after 24 rels
 			if (time > 24) self.mask_x = MORPH_ARCHON;
-#else
-// no random archon morph device until 3 humans have morphed
-			if (time > 240 && (morphs > 3)) self.mask_x = MORPH_ARCHON;
+			else
 #endifdef
-			else r = r + 1;
+
+#ifdef morph_pwr
+// no random archon morph device until 3300 archon pts expended on morphing
+			if (time > 240 && (morphs > 3300))
+			{
+				self.mask_x = MORPH_ARCHON;
+				morphs = 500 + random() * 1000; // set back - limit archon morph devs made
+			}
+			else
+#endifdef
+
+#ifdef morph_cnt
+// no random archon morph device until 3 (different player / bot) humans have morphed
+			if (time > 240 && (morphs > 3)) self.mask_x = MORPH_ARCHON;
+			else
+#endifdef
+			r = r + 1;
 		}
 //		if ((r < 3) && ULOK2) self.mask_x = MORPH_STROG;
 //		else if ((r == 3) && ULOKD) self.mask_x = MORPH_HELLION;
@@ -1553,11 +1576,13 @@ void(float cmd, float pls) polymorph_check =
 // this counts forced polymorphs - but those cant happen until there is an archon
 // code to detect a forced poly spell
 //			if (trace_ent.eweapon.mcode == -666)
+#ifdef morph_cnt
 			if (morphs > 3)
 				morphs = morphs + 1;
 			else
-			if (self.cnt > 9 && self.cnt < 16) // was human
+			if (self.cnt > 9 && self.cnt < 16) // only count was human till we hit 3
 				morphs = morphs + 1;
+#endifdef
 		}
 
 // tell everyone about the change - idea, hud_message ?

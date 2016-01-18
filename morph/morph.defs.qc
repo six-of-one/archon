@@ -12,7 +12,16 @@
 
 // tell server to allow morphs
 
-float morphs; // count of morphs that have happened - first 3 counted have to be from humans
+// morph_pwr enables code that counds morph power used - at 3200, an archon spirit is spawned after 4 mins
+#define morph_pwr
+
+// morph_cnt counts unique (different players) morphs from base human - > 3 enables an archon spirit spawn after 4 mins
+//define morph_cnt
+
+float morphs; // count of -
+// morph_pwr - accumulated archon power expended on morphs
+// morph_cnt - morphs that have happened - first 3 counted have to be from humans
+
 float MORPHIC; // if 1 allow morphs and morphing, if > 1 - spawn this many morph cubes -1 (so 2 makes 1 cube)
 
 float MORPH_CUBE_TIME; // time to spawn & respawn cubes

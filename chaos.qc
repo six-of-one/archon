@@ -840,7 +840,7 @@ void() copy_static =
 };
 */
 
-// hide far away hacks, check every 10 secs
+// hide far away hacks, check every 10 rels
 
 entity maphack_hide;
 float autocvar_sv_c_hackdist = 10000;

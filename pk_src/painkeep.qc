@@ -464,7 +464,7 @@ void() q_startmap =
 {
 	if (self.map == "start") // trying to load start.bsp - fix/hack
 	{
-		if (world.model == "maps/e1m7.bsp" && world.message == "The House of Chthon") // qualify these ? - some custom load might rename other maps to q1 names
+		if (world.model == "maps/e1m7.bsp" && world.message == "The House of Chthon")
 		{
 			self.map = "qstart";
 		}

@@ -340,6 +340,7 @@ void () changelevel_touch =
 
 	nextmap = self.map;
 
+	if (st_pk_hub) // check cvar to turn off hub
 	if (pk_flags & PK_SF_HUB) // *pk - using voting / hub system - nextmap is always hub
 #ifdef enhanced
 		nextmap = "arc_hub";

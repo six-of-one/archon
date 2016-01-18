@@ -201,6 +201,7 @@ float() check_custom_hub =
 
 	if (custom_hub_loaded) //pk_flags & PK_HUB2)
 	{
+		if (!st_pk_hub) return FALSE; // turned off by cvar
 //		pk_flags = pk_flags - (pk_flags & PK_HUB2);
 //		admin_sv_cfg();
 		if (pk_flags & PK_SF_HUB)

@@ -1227,6 +1227,7 @@ void() pk_special_impulse =
 
 
 // called from various - diverts from BestWeapon
+// NOTE: xweps - CHECK this
 
 float() PK_BestWeapon =
 {
