@@ -1332,23 +1332,28 @@ void() effect_affect =
 
 // fn(IS_MISSILE) - ent is a flying missile object (FMO)
 
+// class finder
+// gr fire_missile *|grep -o " \".*\","|cut -d "," -f -1|sort -u
+
 float(entity e) IS_MISSILE =
 {
 	local float f;
 	f = FALSE;
 
 	if (e.classname == "spike") f = TRUE;
-	else if (e.classname == "pulse_spike") f = TRUE;
+//	else if (e.classname == "pulse_spike") f = TRUE;
 	else if (e.classname == "grenade") f = TRUE;
 	else if (e.classname == "missile") f = TRUE;
 	else if (e.classname == "laser") f = TRUE;
+	else if (e.classname == "plasma") f = TRUE;
 	else if (e.classname == "proximity_grenade") f = TRUE;
 	else if (e.classname == "fireballwep") f = TRUE;
 	else if (e.classname == "lavaspike") f = TRUE;
 	else if (e.classname == "fireballmissle") f = TRUE;
 	else if (e.classname == "wizspike") f = TRUE;
 	else if (e.classname == "knightspike") f = TRUE;
-	else if (e.classname == "zombyflesh") f = TRUE;
+//	else if (e.classname == "zombyflesh") f = TRUE;
+	else if (e.classname == "gib_tracer") f = TRUE;
 //	else if (e.classname == "fireball") f = TRUE;
 //	else if (e.classname == "calderashard") f = TRUE;
 	return(f);

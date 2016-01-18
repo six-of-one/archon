@@ -449,6 +449,9 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 	newmis = chaos_spawn(mvt, SOLID_BBOX, 0, ct, fmorg, v0, v0, v0, v0, cname, md, tch, tht, thk, thd, self, world);
 	if (!newmis) return; // fail
 
+	if (e) newmis.weapon = e.weapon; // obit ident
+	if (IS_MISSILE(newmis)) newmis.class_select = "class_missile"; // heh heh - short cut
+
 	vdir = vdr;
 	if (vdr == v0)
 	{
@@ -1295,7 +1298,7 @@ bprint(EWEAP.netname);
 		org = self.origin + v_forward * VWX_PLASMA + v_right * VWY_PLASMA + v_up * VWZ_PLASMA; // Cataboligne - 9.30.9 - true position fire point
 	}
 
-	fire_missile(PLASMA_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH | FL_USEAMMO | FL_AIM1K | FL_RUNEHST, RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", pls, snd, Plasma_MissileTouch, ROCKET_FUSE * 3,  Plasma_MissileFuseOut, plasmaexplode1);
+	fire_missile(PLASMA_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH | FL_USEAMMO | FL_AIM1K | FL_RUNEHST, RM_SKY | PF_LAVA, org, ' 0 0 0', "plasma", pls, snd, Plasma_MissileTouch, ROCKET_FUSE * 3,  Plasma_MissileFuseOut, plasmaexplode1);
 
 	if (newmis)
 	{
@@ -2232,14 +2235,14 @@ bprint(") pl_ bfg1\n");
 
 
 
-
+	newmis.classname = "bfg_ball";
 	newmis.frame = 0;
 	newmis.skin = 1;
 	newmis.effects = EF_BRIGHTLIGHT | EF_BRIGHTFIELD;
 
 	f = 0.2;
 	if (EWEAP.noise4 == DOOM_DET) f = ROCKET_FUSE; // ball flight time max - doom starts think here to get data but it gets activated by plasma hit logic
-	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.bulletspread, v0, v0, self.v_angle, v0, "", "", SUB_Null, f, bfg_trace_thk, SUB_Null, self, world);
+	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.bulletspread, v0, v0, self.v_angle, v0, "bfg_laser", "", SUB_Null, f, bfg_trace_thk, SUB_Null, self, world);
 	e.eweapon = EWEAP;
 	e.enemy = newmis; // q2 - fires lasers from ball
 	newmis.enemy = e; // trace blast
@@ -2333,6 +2336,7 @@ if (cvar("saved1") == -777)
 	if (rune_haste(e.attack_finished / 2))
 		self.attack_finished = time + e.attack_finished;
 
+	if (e._attack != (void ()) 0)
 	if (e._attack != SUB_Null) {e._attack();
 
 
@@ -2351,7 +2355,20 @@ fts.cnt = fts.cnt + 1;
 		return;
 	}
 
+	if (e._fr_attack != (void ()) 0)
 	if (e._fr_attack != SUB_Null) e._fr_attack();
+
+
+
+	if (e._attack == (void ()) 0 || e._attack == SUB_Null)
+	if (e._fr_attack == (void ()) 0 || e._fr_attack == SUB_Null)
+	{
+		bprint(" --- useless eweap item:  ");
+		bprint(item_ident(e));
+		bprint("\n");
+	}
+
+
 
 	if (e.duration == SND_OVER)
 	if (e.noise3 != "")

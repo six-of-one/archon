@@ -2187,7 +2187,8 @@ void() painkeep_cube_use =
 		d = pk_mcode(self.wad, world);
 
 
-
+if (cvar("saved1") == -555)
+{
 bprint(" *** cube / crate made =  (");
 //bprint(item_ident(self));
 bprint(self.wad);
@@ -2196,7 +2197,7 @@ bprint(ftos(d));
 bprint(" - r: ");
 bprint(self.event);
 bprint(")\n");
-
+}
 
 
 
@@ -2217,11 +2218,13 @@ bprint(")\n");
 
 
 
+if (cvar("saved1") == -555)
+{
 bprint(" *** cube / crate made =  (");
 //bprint(item_ident(self));
 bprint(self.classname);
 bprint(")\n");
-
+}
 
 		item_call(self.wad);
 
@@ -2283,9 +2286,12 @@ bprint(")\n");
 
 
 
+if (cvar("saved1") == -555)
+{
 bprint(" *** cube done self =  (");
 bprint(item_ident(self));
 bprint(")\n");
+}
 
 
 };
@@ -2341,7 +2347,11 @@ void() cube_touch =
 	if (MORPH_LOCK) // already morphed and morph lock is engaged - hit impulse 50 to clear
 	if (self.wad == "morph_cube")
 	if (other.state)
-		return;
+	{
+		if (other.ishuman) return;
+		else if (random() > 0.08) return;
+	}
+	other.state = other.morphy;
 
 	if (other.eweapon) // other has a cube and is touching different one
 	{
@@ -2413,8 +2423,14 @@ void() cube_touch =
 			painkeep_cube_use();
 		else if (self.eweapon.wad == "morph_cube")
 		{
-			self.lefty = rnd_bit_mask(self.eweapon.mask_x);
-			self.state = cb_morph(self.lefty);
+			local float sf;
+			sf = 17;
+			while ((self.state == self.morphy) && (sf > 0))
+			{
+				self.lefty = rnd_bit_mask(self.eweapon.mask_x);
+				self.state = cb_morph(self.lefty);
+				sf = sf - 1;
+			}
 			polymorph_check(self.state, 0);
 			remove(e); // chaos vector - was not removing a cube
 			cube_rearm();

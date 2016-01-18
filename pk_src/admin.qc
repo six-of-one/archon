@@ -1460,6 +1460,7 @@ void() Admin_mainmenu =
 						"  13:  server friction     \n"
 						"  22:  map control         \n"
 						"  23:  bot control         \n"
+						"  24:  painkeep control    \n"
 						"  25:  item control        \n"
 						"  26:  monster control     \n"
 						"  30:  kick players        \n"

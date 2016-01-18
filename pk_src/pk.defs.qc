@@ -73,6 +73,7 @@ float pk_ditems;							// count painkeep items for dyn_items code
 float PK_DYNTO;							// timeout in 120 secs
 float PK_DYNRAD				= 8000;	// dynamic radius search 8000 units
 void(entity e, float tm) dyn_remove;
+float REMOVE_DV 				= 30; // some deviation to spread things out
 
 float PK_ADMIN;							// allow admin - set this to 0 to completely disable all admin
 float pk_adminimp;						// impulse set in admin.cfg to access admin commands, defaults to 255

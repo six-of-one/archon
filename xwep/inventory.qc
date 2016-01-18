@@ -90,6 +90,8 @@ spawn_infot(2, "set bits = ", "",  "",  "",  " -- items: ", wbt, 0, 0, 0, v0, e.
 	{
 		xwep_fakeload (tr, 0, 0, ssc, wbt);
 		e.items = e.items | tr.items;
+		if (! e.pk_items & tr.pk_currentitem)
+			e.pk_items = e.pk_items | tr.pk_currentitem;
 		set_xw_defammo(tr, e); // make sure we have ammo
 
 
@@ -122,15 +124,15 @@ void (entity e) xw_parm =
 
 	if (X_CHGLVL)
 	if (e.eweapon)
-		e.mcode = e.eweapon.mcode;
+		e.mcode = e.eweapon.mcode; // last unholstered eweap kept over lvl change
 
 	while (tr)
 	{
 		if (tr != e.eweapon)
-		{			
+		{
 			if (tr.netname == "Grappling hook") e.scode = e.scode | 512; // special - grapples
 			else
-			if (tr.mcode) e.scode = e.scode | (tr.weapon & 254); // only clear std weps - must have axe & shotgun on new level
+			if (tr.eweapon) e.scode = e.scode | (tr.weapon & 254); // only clear std weps - must have axe & shotgun on new level
 		}
 		tr = tr.vwepent;
 	}

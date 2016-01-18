@@ -1275,7 +1275,7 @@ void() pk_srvcmd_set =
 	S_MONSTER_WAIT = 30; //60; // min wait till we respawn a dead mosnter
 	S_MONSTER_DEV = 10;
 
-	C_MONSTER_WAIT = 30;// 80; // how long till we spawn another random mosnter
+	C_MONSTER_WAIT = 60;// 80; // how long till we spawn another random mosnter
 	C_MONSTER_DEV = 20;
 	C_MONSTER_CNT = 0;
 

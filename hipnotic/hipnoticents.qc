@@ -169,6 +169,16 @@ slot		weapon
 
 */
 
+string(entity targ, entity attacker) mjolnir_killmsg =
+{
+		return " was slammed by ";
+};
+
+string(entity targ, entity attacker) mjolnir_killmsg2 =
+{
+	return "'s hammer\n";
+};
+
 
 /*QUAKED weapon_mjolnir (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -209,6 +219,9 @@ void() weapon_mjolnir =
 	self.noise2 = "weapons/thors_hammer/mjolslap.wav";
 	self.noise3 = "weapons/thors_hammer/mjolhit.wav";
 	self.target = "weapons/thors_hammer/mjoltink.wav";
+
+	self._killmsg = mjolnir_killmsg;
+	self._killmsg2 = mjolnir_killmsg2;
 
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();

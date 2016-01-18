@@ -138,6 +138,7 @@ void(vector org, vector vec, float light1, string sd) HIP_LaunchLaser =
 {
 	fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, FL_CTHONF, RM_SKY, org, vec, "laser", "progs/laser_m.mdl", sd, HIP_LaserTouch, 0, HIP_LaserThink, SUB_Null);
 // stuff for laser cannon only
+	newmis.weapon = -256; // not defined, so this
 	newmis.angles = vectoangles(newmis.velocity);
 	newmis.oldorigin = newmis.velocity;
 	newmis.speed = LASERCAN_VEL;

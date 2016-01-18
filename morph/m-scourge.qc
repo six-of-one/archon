@@ -460,7 +460,7 @@ float (entity p, float heala, float ign) player_scourge_armor =
 string(entity targ, entity attacker) player_scourge_killmsg = {
 	if (attacker.weapon == SEL_SCRGTAIL)
 		return " was stung by ";
-	else if  (attacker.weapon & IT_GRENADE_LAUNCHER)
+	else if  (attacker.weapon & IT_GRENADE_LAUNCHER) // FIX: no worky
 		{
 		if (random() < 0.8)
 			return " was bombed by ";

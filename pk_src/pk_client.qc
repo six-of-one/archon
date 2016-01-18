@@ -34,14 +34,14 @@ void () q100_CheckPowerups;
 
 void() SetNewParms_PK =
 {
-	parm1 = IT_SHOTGUN | IT_AXE;
+	parm1 = 0; // IT_SHOTGUN | IT_AXE;
 	parm2 = 100;
-	parm4 = 25;
+	parm4 = -25;
 	parm3 = parm5 = parm6 = parm7 = parm9 = 0;
 	parm8 = 1;
 	parm16 = MOTDTIME + 1;
 
-	parm10 = parm11 = 0;
+	parm10 = parm11 = parm12 = 0;
 	if(self.pk_items & PK_IT_EXTRADISP)
 	{
 		parm16 = parm16 | PK_IT_EXTRADISP;
@@ -54,7 +54,7 @@ void() SetNewParms_PK =
 	cam_parms(2);
 };
 
-// called from SetChangeParms - saves off pk parms for level change
+// called from engine - saves off pk parms for level change
 
 void() SetChangeParms =
 {
@@ -81,9 +81,9 @@ void() SetChangeParms =
 
 	// code xweaps - return poss map code for parm & clear items
 
-	parm12 = self.mcode; //xw_parm(self); - NOTE: borks bot_changeparms under other engines (non dp) above which uses parm12
+	parm3 = self.mcode;
 
-	if (self.scode & 512) // had a grapple - zip out bit
+	if (self.scode & 512) // had a grapple - zip out bit, so an xwep grap doesnt become a pk grapgun
 	{
 		self.scode = self.scode - 512;
 		self.pk_items = self.pk_items - (self.pk_items & PK_IT_GRAPGUN);
@@ -98,23 +98,34 @@ void() SetChangeParms =
 		self.health = 100;
 	if (self.health < 50)
 		self.health = 50;
+
 	parm1 = self.items;
 	parm2 = self.health;
 	armorsave_rev(self);
-	parm3 = self.armorvalue;
+//	parm3 = self.armorvalue; // put in parm9
+	parm4 = self.ammo_shells;
+
+/* cant do here - if died, doesnt have gun yet
 	if (self.ammo_shells < 25)
-		parm4 = 25;
-	else
-		parm4 = self.ammo_shells;
+	if (self.mask_x & CB_HUMAN) // only humans get 25 shell ammo depot deal
+	{
+		if (self.items & (IT_SHOTGUN | IT_SUPER_SHOTGUN))
+			parm4 = 25;
+	}
+*/
+
 	parm5 = self.ammo_nails;
 	parm6 = self.ammo_rockets;
 	parm7 = self.ammo_cells;
 	parm8 = self.weapon;
-	parm9 = self.armortype * 100;
+	parm9 = (self.armortype * 100) + (self.armorvalue * 256);
 	parm10 = parm11 = parm16 = 0;
 
 	parm10 = PK_IT_AXE | self.pk_items;
+
 // recode so *bot can have vars for skill level save - provide max inventory of 15 for mod expansion, current max is 3 on most except for explode ammo
+
+// there are 2 more 2 bit sets above phone ammo - v * 1048576, v * 4194304
 
 	parm11 = self.pk_explode_ammo + ((self.pk_turretammo & 3) * 16) + ((self.pk_canpabammo & 3) * 64) + ((self.pk_beartrapammo & 3) * 256) + ((self.pk_gravitywellammo & 3) * 1024)
 
@@ -126,7 +137,7 @@ void() SetChangeParms =
 	parm16 = self.msgcount | 256; // | (self.pk_items & PK_IT_EXTRADISP);
 };
 
-// called from SetNewParms - clears pk parms
+// called from vars - clears pk parms
 
 void() SetNewParms =
 {
@@ -136,17 +147,17 @@ void() SetNewParms =
 		return;
 	}
 
-	parm1 = IT_SHOTGUN | IT_AXE;
+	parm1 = 0; // IT_SHOTGUN | IT_AXE;
 	parm2 = 100;
 	parm3 = 0;
-	parm4 = 25;
+	parm4 = -25;
 	parm5 = 0;
 	parm6 = 0;
 	parm7 = 0;
 	parm8 = 1;
 	parm9 = 0;
 
-	parm10 = parm11 = 0;
+	parm10 = parm11 = parm12 = 0;
 // do hub message.
 	parm16 = 256;
 
@@ -159,13 +170,13 @@ void() SetNewParms =
 
 // Cataboligne 2.18.11 - set defaults code
 	if (!Q_100 && !PK_100)
-		parm6 = -6;
+		parm6 = -6; // no rockets anyway, so we use this to call default func
 
 // Cataboligne 9.11.3 purify - chase cam
 	cam_parms(2);
 };
 
-// called from DecodeLevelParms - restores pk parms on new level
+// called from PCIS - restores pk parms on new level
 
 
 void() DecodeLevelParms = 
@@ -176,6 +187,7 @@ void() DecodeLevelParms =
 		return;
 	}
 
+	if (!deathmatch || !ENHANCED) // Cataboligne - enhanced code - dont do this in DM
 	if (serverflags)
 	{
 		if (world.model == "maps/start.bsp" && !inHubMap) // Cataboligne - 5.19.10 - q1 SP hack for using forced dyn items
@@ -183,19 +195,20 @@ void() DecodeLevelParms =
 		if (world.model == "maps/qstart.bsp") SetNewParms();
 	}
 //	bot_skinDecode();
-	if (parm12) set_xweap(self, parm12);
-	self.mcode = parm12;
+	if (parm3) set_xweap(self, parm3);
+	self.mcode = parm3;
 
 	self.items = parm1;
 	self.health = parm2;
-	self.armorvalue = parm3;
 	self.ammo_shells = parm4;
 	self.ammo_nails = parm5;
 	if (parm6 > 0) self.ammo_rockets = parm6;
 	else self.ammo_rockets = 0;
 	self.ammo_cells = parm7;
 	self.weapon = parm8;
-	self.armortype = parm9 * 0.01;
+
+	self.armorvalue = ceil((parm9 &  16776960 ) / 256); // maxfl - 255
+	self.armortype = (parm9 & 255) * 0.01;
 
 	self.pk_items = parm10 | (parm16 & PK_IT_EXTRADISP); // fix PK mode false map to PK mode true map
 	self.pk_explode_ammo = parm11 & 15;
@@ -227,7 +240,19 @@ void() DecodeLevelParms =
 		else self.morphy = set_char_num(MAP_MODE);
 //		if (self.class_select != "class_bot") parm15 = self.morphy; // never save this for bots
 	}
+	if (PK_100) self.morphy = IMP_MHUMAN;
+
 	self.mask_x = cb_morph(self.morphy);
+
+	if (self.mask_x & CB_HUMAN)
+	{
+		 self.items = self.items | IT_SHOTGUN | IT_AXE; // make sure humans have def weps before calling def
+
+		if (self.ammo_shells < 25)
+		{
+			self.ammo_shells = 25;
+		}
+	}
 
 	self.x_items = 0; // clear prior to defaults - cant clear again after that, and giveway must be added
 // NOTE: *** morphy MUST be set prior to this call!
@@ -589,6 +614,12 @@ void() PutClientInServer =
 
 //	self.morphy = IMP_MGREMLIN_F; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
+
+	if (self.ammo_shells < 0) // stop the morph ammo factory - morphs do not start with 25 shells
+	{
+		if (self.mask_x & CB_HUMAN) self.ammo_shells = 0 - self.ammo_shells;
+		else self.ammo_shells = 0;
+	}
 
 	W_SetCurrentAmmo (); // moved for m0rphic
 	player_stand1 ();
@@ -2014,7 +2045,7 @@ Att = attacker;
 			if (targ == attacker)
 			{
 				// killed self
-				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_GRAVITYWELL)
+				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_GRAVITYWELL) // TDO: non enhanced for all these
 				{
 //					bprint (" visits another dimension\n");
 					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n","",""," visits another dimension\n"));
@@ -2040,6 +2071,8 @@ Att = attacker;
 					bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n","",""," tries to put the pin back in\n"));
 				else if (inflictor.classname == "missile")
 					bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n","",""," becomes bored with life\n"));
+				else if (inflictor.classname == "laser")
+					bprint(rnd_string(' 90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n","",""," self cremated\n"));
 
 //				if (curwep_mapcode(targ, 0) == MC_GRAVITY)
 //				else if (inflictor.classname == "gravity_armed")
@@ -2060,7 +2093,7 @@ Att = attacker;
 					bprint(rnd_string(' 90.0 60.0 60.0'," blew his own ass to hell\n"," forgot to check the safety\n","",""," didnt run fast enough\n"));
 
 				else if (inflictor.classname == "proximity_grenade")
-					bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n","",""," tested the prox grenade motion sensor\n"));
+					bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n","",""," tested the prox grenades motion sensor\n"));
 
 				else if (inflictor.classname == "ball_lightning")
 					bprint(rnd_string(' 90.0 60.0 60.0'," felt the shaft of the ball lightning\n"," didnt respect the power of the dynamo\n","",""," hung around to watch\n"));
@@ -2091,6 +2124,7 @@ Att = attacker;
 					}
 
 					if (attacker._killmsg != SUB_Null) // morphicide
+					if (attacker.weapon & attacker.builtin) // make sure its not a reg or xwep kill
 					{
 						deathstring = attacker._killmsg(targ, attacker);
 						deathstring2 = attacker._killmsg2(targ, attacker);
@@ -2153,21 +2187,77 @@ Att = attacker;
 // TDO: all fire & forget
 
 //MED 11/18/96
-            if (inflictor.classname == "proximity_grenade") // TDO:TDO: CHECK - vet this code here - maybe below with turret, as all ffw might be
-               {
-               bprint (targ.netname);
-               if (random()<0.5)
-                  bprint (" got too friendly with ");
-               else
-                  bprint (" did the rhumba with ");
-               bprint (attacker.netname);
-               bprint ("'s bomb\n");
-               return;
-               }
+            if (inflictor.classname == "proximity_grenade")
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" got too friendly with ");
+					else
+						bprint (" did the rhumba with ");
+					bprint (attacker.netname);
+					bprint ("'s bomb\n");
+					return;
+				}
 
-				// For the correct death messages
+            if (inflictor.classname == "laser" || inflictor.classname == "plasma")
+				{
+					bprint (targ.netname);
+
+					if (!ENHANCED || random() < 0.8)
+					if (inflictor.weapon == -256) // laser cannon secret code
+					{
+						if (random()<0.5)
+							bprint (" was toasted by ");
+						else
+							bprint (" was radiated by ");
+						bprint (attacker.netname);
+						bprint ("'s laser\n");
+						return;
+					}
+
+					if (random()<0.5)
+						bprint (" was radiated by ");
+					else if (random()<0.5)
+						bprint (" was melted by ");
+					else
+						bprint (" felt the lumnous heat from ");
+					bprint (attacker.netname);
+					if (random()<0.2)
+						bprint ("'s hot light\n");
+					else
+						bprint ("'s laser\n");
+					return;
+				}
+
+            if (inflictor.classname == "bfg_ball")
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" was erased by ");
+					else
+						bprint (" got smashed by ");
+
+					bprint (attacker.netname);
+					bprint ("'s BFG blast\n");
+					return;
+				}
+
+            if (inflictor.classname == "bfg_laser")
+				{
+					bprint (targ.netname);
+					if (random()<0.5)
+						bprint (" was melted by ");
+					else
+						bprint (" felt the lumnous heat from ");
+
+					bprint (attacker.netname);
+					bprint ("'s BFG lasers\n");
+					return;
+				}
+
 				//rnum = attacker.weapon;
-				rnum = inflictor.weapon;
+				// For the correct death messages
+				rnum = inflictor.weapon; // set when wep fired
 
 				if (rnum == IT_AXE)
 				{
@@ -2186,7 +2276,7 @@ Att = attacker;
 						if (targ.health < -40)
 						{
 							deathstring = " was gibbed by ";
-						deathstring2 = "'s wind!\n" ;
+							deathstring2 = "'s wind!\n" ;
 						}
 						else
 						{
@@ -2256,6 +2346,7 @@ Att = attacker;
 
 				if (attacker._killmsg != (void ()) 0)
 				if (attacker._killmsg != SUB_Null) // morphic kill
+				if (attacker.weapon & attacker.builtin) // make sure its not a reg or xwep kill
 				{
 					deathstring = attacker._killmsg(targ, attacker);
 					if (attacker._killmsg2 != (void ()) 0)
@@ -2348,28 +2439,6 @@ Att = attacker;
 						deathstring2 = "'s discharge\n";
 					else
 						deathstring2 = "'s shaft\n";
-				}
-//MED
-/* TDO: eweapon death msg generic
-
-            if (rnum == IT_LASER_CANNON)
-				{
-               if (random()<0.5)
-                  {
-                  deathstring = " was toasted by ";
-                  }
-               else
-                  {
-                  deathstring = " was radiated by ";
-                  }
-               deathstring2 = "'s laser\n";
-				}
-*/
-//MED
-            if (rnum == IT_MJOLNIR)
-				{
-               deathstring = " was slammed by ";
-               deathstring2 = "'s hammer\n";
 				}
 
 				if (deathstring2 == "" && deathstring == "") // no wep kill msg, how strange - use defaults

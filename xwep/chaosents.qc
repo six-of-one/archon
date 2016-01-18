@@ -207,13 +207,16 @@ void(entity ve, float camct, float mcd, string spf, float islot) xwep_fakeload =
 		self.event = "dynamic_item"; // stop item_call from doing a bunch of stuff - if not removed this will spawn the item somewhere
 		item_call(spt);
 		self.think = SUB_Remove;
-		self.nextthink = time + 0.1;
+		self.nextthink = time + 10;
+		self.event = ""; // so pk_mcode will give us valid mcode
+		self.mcode = pk_mcode(spt, self); // put map code on ent
+
+		if (camct < 1) camctp = -0.5;
+		else camctp = 0 - camct;
+
+		x_wep_store(ve, islot, camctp);
 	}
 
-	if (camct < 1) camctp = -0.5;
-	else camctp = 0 - camct;
-
-	x_wep_store(ve, islot, camctp);
 /*
 TEST: more testing before removeal
 		ve.eweapon = ve;

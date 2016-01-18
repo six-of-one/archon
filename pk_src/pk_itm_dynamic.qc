@@ -835,7 +835,7 @@ void() dyn_rem =
 		remove(self.enemy);
 	}
 	remove(self);
-	pk_ditems = pk_ditems - 1; // this is meaningless
+	pk_ditems = pk_ditems - 1; // this is really meaningless
 }
 
 // setup an item for removal
@@ -843,7 +843,7 @@ void() dyn_rem =
 // e - remove this ent
 // tm - time to live
 
-float REMOVE_DV = 30; // some deviation to spread things out
+//float REMOVE_DV = 30; // some deviation to spread things out
 
 void(entity e, float tm) dyn_remove =
 {

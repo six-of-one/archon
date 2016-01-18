@@ -1564,6 +1564,7 @@ string(float itm, entity e) swep_id =
 void() DropBackpack =
 {
 	local entity e;
+	local float bkt;
 
 	if (Q_100)
 	{
@@ -1584,6 +1585,8 @@ void() DropBackpack =
 	newmis.items = self.weapon;
 	newmis.pk_items = 0;
 
+	bkt = BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
+
 	if (self.eweapon && (DEAD_XPACK == 1)) // xweap was unholstered - see if it goes in pack
 	{
 		newmis.eweapon = self.eweapon;
@@ -1594,6 +1597,7 @@ void() DropBackpack =
 		newmis.eweapon.items = self.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
 																						  // had to do this because laser cannon was getting wrong weapon value & not selectable
 		xwep_ammo(newmis.eweapon, self);
+		dyn_remove(newmis.eweapon, bkt + REMOVE_DV + 1); // set up an eventual remove if pack uncollected
 	}
 	else
 
@@ -1648,7 +1652,7 @@ void() DropBackpack =
 	setsize (newmis, '-16 -16 0', '16 16 56');
 	newmis.touch = BackpackTouch;
 
-	newmis.nextthink = time + BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
+	newmis.nextthink = time + bkt;
 	newmis.think = SUB_Remove;
 	AddToSplash(newmis); // *pk - splash tossed items
 

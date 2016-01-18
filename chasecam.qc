@@ -309,6 +309,7 @@ void () cam_deathmove =
 		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta
 		self.owner.takedamage = DAMAGE_NO;
 		self.owner.health = 1; // hack so engine will let you move cam
+		if (self.owner.crosshair_sv > 0) crosshair_off(self.owner);
 	}
 
 // observers are very poor - no possesions
@@ -414,7 +415,7 @@ if (PR_VIEWPC) bprint ("--------------- non_viewport: cam dview\n");
 
 	self.owner.health = 1; //hack so engine doesnt tilt view
 
-	crosshair_off(self.owner);
+//	crosshair_off(self.owner);
 };
 
 // fn(cam_startdeathview) - died and didnt have chasecam on

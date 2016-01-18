@@ -45,6 +45,8 @@ float C_MONSTER_DEV;
 float C_MONSTER_CNT;	// random monster total
 float monster_rnd_cnt; // random monsters on level
 
+float MONSTER_NOWAY	= 1; // if true kill monsters out of noway bounds - excludes flyers
+
 void() lavaball_shot;
 void(entity e) chaos_mdlsize;
 

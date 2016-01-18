@@ -208,10 +208,14 @@ void () respawnBot;
 
 void() annihilate =
 {
+	local float f;
 
 	self.nextthink = time + 0.1;
 
-	if (IS_MISSILE(self))
+	if (self.class_select == "class_missile") f = TRUE;
+	else if (IS_MISSILE(self)) f = TRUE;
+
+	if (f)
 	{
 		self.angles = vectoangles(normalize(self.dest1) * -1); // point missiles at sphere
 	}
@@ -282,8 +286,11 @@ if (WARNING)
 
 float(entity g) annihilation_check =
 {
-	float t;
+	float t,f;
 	t = TRUE;
+
+	if (g.class_select == "class_missile") f = TRUE;
+	else if (IS_MISSILE(g)) f = TRUE;
 
 	if (g == world) t = FALSE;
 	else if (g == sphere_a) t = FALSE;
@@ -294,7 +301,7 @@ float(entity g) annihilation_check =
 	else if (g.flags & FL_CLIENT && g.health <= 0) t = FALSE;
 	else if (g.flags & FL_CLIENT && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_CLI) t = FALSE;
 	else if (g.classname == "viswep" && g.owner != world) t = FALSE; // viswep held by player
-	else if (! IS_MISSILE(g) && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
+	else if (! f && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
 	else if (vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON) t = FALSE;
 	else if (g.model == "progs/null.mdl") t = FALSE;
 	else if (g.solid == SOLID_TRIGGER && g.movetype == MOVETYPE_NONE) t = FALSE;

@@ -119,7 +119,6 @@ void () observer =
 	cam_startdeathview(); // get a cam ent
 	set_viewport(self, self); // dont really need death view
 
-
 	bprint ("set_viewport: observer\n");
 
 

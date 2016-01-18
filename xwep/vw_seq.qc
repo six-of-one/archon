@@ -82,6 +82,7 @@ void (float v_frm) vw_melee_base =
 	vv_a_000 = v0;
 	vv_x_000 = v0;
 
+	if (cvar("saved1") == -999)
 	if (v_frm < 37 || v_frm > 106)
 	{
 		bprint("___melee vw - out of current bounds:  ");
@@ -895,6 +896,7 @@ void (float v_frm) vw_range_runfired =
 	vv_a_000 = v0;
 	vv_x_000 = v0;
 
+	if (cvar("saved1") == -999)
 	if (v_frm < 0 || v_frm > 5)
 	{
 		bprint("___range vw ( run fired ) - out of current bounds:  ");
@@ -956,6 +958,7 @@ void (float v_frm) vw_range_base =
 	vv_a_000 = v0;
 	vv_x_000 = v0;
 
+	if (cvar("saved1") == -999)
 	if (v_frm < 0 || v_frm > 58)
 	{
 		bprint("___range vw - out of current bounds:  ");

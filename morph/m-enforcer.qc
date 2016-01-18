@@ -78,29 +78,59 @@ void() m_precache_enforcer =
 		|  attack code                          | SEC-HEAD
 		+---------------------------------------+
 */
+void()	player_enf_atk;
+void()	player_enf_atk4;
 
 void(float stat) player_enforcer_fire =
 {
 	local float fr;
 	self.effects = self.effects | EF_MUZZLEFLASH;
-	fr = TRUE;
-	if (!self.eweapon)
-	{
-		if (self.weapon == IT_LIGHTNING) W_FireLightning();
-		else if (self.weapon == IT_ROCKET_LAUNCHER) W_FireRocket();
-		else if (self.weapon == IT_GRENADE_LAUNCHER) W_FireGrenade();
-		else if (self.weapon == IT_SUPER_SHOTGUN) W_FireSuperShotgun();
-		else if (self.weapon == IT_SHOTGUN) W_FireShotgun();
-		else fr = FALSE;
-		if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
-		if (fr) return;
-	}
+	fr = 0;
+
+	if (self.eweapon) fr = self.frame;
 	else
+	if (self.weapon == IT_LIGHTNING) fr = self.frame; // W_FireLightning();
+	else if (self.weapon == IT_ROCKET_LAUNCHER) fr = self.frame; // W_FireRocket();
+	else if (self.weapon == IT_GRENADE_LAUNCHER) fr = self.frame; // W_FireGrenade();
+	else if (self.weapon == IT_SUPER_SHOTGUN) fr = self.frame; // W_FireSuperShotgun();
+	else if (self.weapon == IT_SHOTGUN) fr = self.frame; // W_FireShotgun();
+
+	if (fr)
 	{
-		if (self.eweapon.mcode == MC_HIP_LASERCAN) HIP_FireLaser(stat);
-		else if (self.eweapon._attack != SUB_Null) self.eweapon._attack();
-		else fr = FALSE;
-		if (fr) return;	
+		if (!self.eweapon)
+		{
+			if (self.weapon == IT_LIGHTNING)
+			{
+				if (self.ammo_cells > 1)
+				{
+					W_FireLightning();
+					self.currentammo = self.ammo_cells = self.ammo_cells - 1;
+					if (self.button0) player_enf_atk4();
+				}
+				else self.weapon = IT_AXE;
+				return;
+			}
+			if (self.weapon != IT_AXE) // use a normal wep
+			{
+				self._attack = SUB_Null;
+				W_Attack();
+				self._attack = player_enf_atk;
+			}
+			if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
+			self.frame = fr;
+			return;
+		}
+		else
+		{
+			if (self.eweapon.mcode == MC_HIP_LASERCAN) HIP_FireLaser(stat);
+			else if (self.eweapon._attack != SUB_Null) self.eweapon._attack();
+			else fr = FALSE;
+			if (fr)
+			{
+				self.frame = fr;
+				return;
+			}
+		}
 	}
 
 	fire_enflaser();
@@ -177,6 +207,11 @@ void()	player_enf_atk11	=[	$attack7,	player_enf_atk12	] {};
 void()	player_enf_atk12	=[	$attack8,	player_enf_atk13	] {};
 void()	player_enf_atk13	=[	$attack9,	player_enf_atk14	] {};
 void()	player_enf_atk14	=[	$attack10,	player_stand1	] {};
+
+void() player_enf_atk =
+{
+	if ((self.frame < $attack1) || (self.frame > $attack10)) player_enf_atk1();
+}
 
 void()	player_enf_paina1	=[	$paina1,	player_enf_paina2	] {};
 void()	player_enf_paina2	=[	$paina2,	player_enf_paina3	] {};
@@ -308,7 +343,7 @@ void(float silent) player_enforcer_become =
 	self._die = enf_die;
 	self._jump = SUB_Null;
 	self._jump2 = SUB_Null;
-	self._attack = player_enf_atk1;
+	self._attack = player_enf_atk;
 	self._impulse = player_enf_impulse;
 //	self._can_get_p = SUB_False;
 	self._killmsg = player_enf_killmsg;

@@ -764,18 +764,21 @@ void(entity e, float all) morph_clearparms =
 	e.stack1 = e.stack2 = e.stack3 = e.stack4 = e.stack5 = e.stack6 = e.stack7 = e.stack8 = e.stack9 = e.stack10 = e.stack11 = e.stack12 = e.stack13 = e.stack14 = e.stack15 = e.stack16 = "";
 
 // Cataboligne - 9.15.11 - moved from chasecam
-	if (all) // morph change will retain these
+	if (all) // dead or observer - rip it all out
 	{
 		e.flags = FL_CLIENT | FL_ONGROUND | FL_JUMPRELEASED; // default, need to clear drop pull & such
 		e.invincible_time = e.super_damage_finished = e.radsuit_finished = e.wetsuit_finished = e.invisible_finished = e.invincible_finished =
 		e.empathy_finished = 0;
-		e.effects = 0;
+		e.effects = 0; // chaos vector for dead camers
 		e.group = ""; // for specials
 	}
+	else // morph change will retain these
+	{
+		e.items = e.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY);
+	}
 
-	f = e.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY);
-	e.skin = e.items = e.builtin = 0;
-	if (!all) e.items = f; // maintain powers
+	e.skin = e.builtin = 0; // e.items = 
+
 
 // remove items & ammos
 	e.weapon = e.currentammo = e.ammo_shells = e.ammo_nails = e.ammo_rockets = e.ammo_cells = 0;
@@ -1105,6 +1108,9 @@ void(float silent) player_human_become =
 	if (self.morphy == CHAR_PK) setmodel(self, "progs/plyr_pk.mdl");
 	if (self.morphy == CHAR_Q3) setmodel(self, "progs/plyr_q3.mdl");
 	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
+
+//	self.items =  self.items | IT_SHOTGUN | IT_AXE; // cant do - may have already set defaults
+
 };
 
 void(float cmd, float pls) polymorph_check =
@@ -1413,9 +1419,11 @@ void() random_monster =
 		return;
 	}
 
-	local float f;
+	local float f, mc;
 	local entity e,c;
-	self.nextthink = time + C_MONSTER_WAIT * random() + C_MONSTER_DEV * crandom();
+	f = 1;
+	if (random() < 0.4) f = random();
+	self.nextthink = time + C_MONSTER_WAIT * f + C_MONSTER_DEV * crandom();
 /*
 	if (!C_MONSTER)
 	{
@@ -1543,12 +1551,34 @@ bprint("\n");
 			f = f + DEAD_BODYTIME * 4; // hang around much longer in sp / coop
 			if (e.event != "dyn_monster") f = 0; // respawnable monsters are seen by this if dead - dont remove
 		}
+
 		if (f)
 		if (e.health <= 0)
 		{
 			e.think = SUB_Remove;
 			e.nextthink = f + time;
-		}		
+		}
+
+	local float now;
+
+		now = FALSE;
+		if (MONSTER_NOWAY) // clear monsters beyond noway bounds for a level
+		if (e.health > 0)
+		if (e.event == "dyn_monster") // dont remove regular or respawn monsters
+		if (e.movetype == MOVETYPE_STEP)
+		{
+			if (noway_below)
+			if (e.origin_z < noway_below) now = TRUE;
+			if (noway_above)
+			if (e.origin_z > noway_above) now = TRUE;
+			if (now)
+			{
+				T_Damage (e,world,world,e.health + 10);
+				remove(e);
+			}
+		}
+		
+		if (!now) mc = mc + 1;
 		e = find(e, class_select, "class_monster");
 	}
 };
