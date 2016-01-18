@@ -174,6 +174,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	damage_attacker = attacker;
 
 // Archons dont use health - no damage & no additive - 9.19.13
+	if (targ.flags & FL_CLIENT)
 	if (targ.mask_x & MORPH_ARCHON)
 	{
 // runes take portion of damage & reduce archon power of an attacked Archon - before multipliers

@@ -1081,7 +1081,281 @@ void() monster_silhouette =
 };
 
 
-// quoth dummys
+// quantlet things
+
+/*QUAKED monster_generator (1 0 0) (-27 -27 0) (27 27 60) RESPAWN DM
+-------- QNTL --------
+You must set the key "target" to a sequence of targets that start matching "targetname".
+
+Flags:
+spawnflags: 1 = respawn, 2 = appears in DM
+
+"mask"
+if more than one bit is set monsters will be selected randomly
+default - 2053
+
+mask_x:
+
+ARMY			= 1
+FISH			= 2
+KNIGHT			= 4
+DOG				= 8
+DEMON			= 16
+ENF				= 32
+HKNIGHT			= 64
+OGRE			= 128
+SHALR			= 256
+SHAMBL			= 512
+SCRAG			= 1024
+ZOMBY			= 2048
+CTHON			= 4096 // boss
+TARBABY			= 8192
+SCOURGE			= 16384
+SHUBS			= 32768
+SVORE			= 65536 // super vore
+GREMLIN			= 131072
+VOMIT			= 262144 // guy id left out
+
+mask_y:
+
+BLARG			= 1
+RAPTOR			= 2
+SPIDER			= 4
+MANGA			= 8
+BOSSMAN			= 16
+
+Keys:
+"target" - should point to a spawn point sequence
+"health" - health for generator - defaults to 100, -1 health = can not be shot
+"max_health" - if set give any generted monster this health, otherwise default
+"targetname" - if set generator will only be fired by a trigger
+"speed" - if not targeted, generate a monster every {#} seconds
+"delay" - if set pause for wait seconds after generating for delay seconds
+ - if negative, slow down generation to count %
+"count" - slow down if delay is negative - generate 1 in this many - default 1 in 4
+"wait" - length of delay pause, -1 to stop
+"volume" - generate this many health pts of monsters then stop
+"solid" - make solid, 2 = BBOX, 4 = BSP - recommended
+"model" - select a generator image -
+"scale" - resize generator, monsters, healths
+
+"progs/generator.bsp"
+"progs/generator2.bsp"
+"progs/generator3.bsp"
+"progs/generator3L.bsp"
+"progs/gen2_l1.bsp"
+"progs/gen2_l2.bsp"
+"progs/gen2_l3.bsp"
+*/
+
+// make a monster
+
+void() generator_fire =
+{
+	if (self.volume < 0) return;
+
+	if (!self.targetname)
+		self.nextthink = time + self.speed;
+
+// pausing or slowing
+	if (self.super_time > time)
+	{
+		self.rad_time = 0;
+		if (self.delay > 0) return;
+		else
+		{
+			self.aflag = self.aflag + 1;
+			if (self.aflag < self.count) return;
+			self.aflag = 0;
+		}
+	}
+	else
+	if (self.delay)
+	{
+		if (!self.rad_time) self.rad_time = time + fabs(self.delay);
+		if (self.rad_time < time) self.super_time = time + self.wait;
+	}
+
+// location
+	if (self.target)
+		self.cnt = cnt_ent(self, "targetname", self.target);
+
+	self.jump_flag = 66;
+
+	while (self.jump_flag > 0)
+	{
+		self.dropent = self.chain;
+		self.dmg = rint(random() * self.cnt);
+		while (self.dmg > 1)
+		{
+			self.dmg = self.dmg - 1;
+			if (self.dropent.chain) self.dropent = self.dropent.chain;
+		}
+		trace_ent = findradius(self.dropent.origin + '0 0 16', 20); // try to avoid a telefrag
+		if (!trace_ent) self.jump_flag = -1;
+		self.jump_flag = self.jump_flag - 1;
+	}
+
+	if (trace_ent)
+	if (random() < 0.8) return;
+
+	if (!self.dropent)
+		self.dest1 = self.origin + '0 64 0';
+	else
+		self.dest1 = self.dropent.origin;
+
+// monster id
+	self.lefty = MON_FUNC_REG;
+
+	self.cnt = rnd_bit_mask(self.mask_x);
+	if (!self.cnt && self.mask_y)
+	{
+		self.cnt = rnd_bit_mask(self.mask_y);
+		self.lefty = MON_FUNC_II;
+	}
+	else
+	if (self.cnt && self.mask_y)
+	if (random() < 0.33)
+	{
+		self.cnt = rnd_bit_mask(self.mask_y);
+		self.lefty = MON_FUNC_II;
+	}
+
+	if (!self.cnt) self.cnt = 1;
+
+	self.weaponmodel = monster_id(self.cnt, self.lefty);
+
+	if (self.weaponmodel == null_string)
+	{
+		self.weaponmodel = "monster_army";
+#ifdef warning
+		if (WARNING & 4)
+		{
+			bprint("*** WARNING - generator spawn assign fail - making soldier\n");
+			bprint("*** Assign bit: ");
+			bprint(ftos(self.cnt));
+			bprint(" - make mode: ");
+			bprint(ftos(self.lefty));
+			bprint("\n");
+		}
+#endifdef
+	}
+
+	self.dropent = spawn();
+
+	setorigin(self.dropent, self.dest1 + '0 0 4');
+	spawn_tdeath(self.dropent.origin, self.dropent);
+
+	self.dropent.event = "dyn_monster";
+	self.dropent.msgcount = 0.2; // wake up faster
+	self.dropent.wad = self.weaponmodel;
+	item_call_save(self.dropent, self.weaponmodel);
+
+	if (self.max_health) self.dropent.health = self.max_health;
+	self.dropent.health = self.dropent.health * self.scale;
+	self.dropent.scale = self.scale;
+
+	if (self.volume)
+	{
+		self.volume = self.volume - self.dropent.health;
+		if (self.volume < 1) self.volume = -1;
+	}
+};
+
+// IDEA: pop sound option, or explosion
+
+void() gen_killed =
+{
+	self.targetname = ""; // un target
+	self.think = remove_fade;
+	remove_fade();
+};
+
+void(float ign) monster_generator =
+{
+if (ign != A_MONSTER) // map monster has no ign
+{
+	if (M_MONSTER < 0)
+	{
+		self.think = remove_monster;
+		self.nextthink = time + 2 + (random() * REMOVE_MON_SPREAD);
+		return;
+	}
+	
+	if (deathmatch)
+	if (!self.spawnflags & 2) // apearing in dm
+	{
+		if (R_MONSTER)
+			remove(self);
+		return;
+	}
+
+	precache_model ("progs/gen2_l1.bsp");
+}
+// fix model fsck up - models do not want to recompile
+	self.origin_z = self.origin_z + 24;
+// defaults
+	if (!self.scale < 0.1) self.scale = 1;
+	if (!self.health) self.health = 100;
+	if (!self.speed) self.speed = 2;
+	if (!self.count) self.count = 4;
+//	if (!self.delay) self.delay = 120;
+	if (!self.wait) self.wait = 20;
+	if (!self.mask) self.mask_x = 2053;
+	if (!self.model)
+	{
+		setmodel(self, "progs/gen2_l1.bsp");
+		if (!self.solid) self.solid = SOLID_BBOX;
+	}
+	else
+		setmodel(self, self.model);
+
+	self.health = self.health * self.scale;
+
+	if (self.health > 0)
+	{
+		self.takedamage = DAMAGE_YES;
+		self.th_die = gen_killed;
+	}
+
+	self.archon = 2 * self.health;
+
+	self.use = generator_fire;	
+
+	self.think = generator_fire;
+
+	if (!self.targetname) // not targeted - think
+		self.nextthink = time + self.speed;
+
+//		speed_monster(CSLOW, "monster_ogre", self.origin);
+};
+
+// quoth dummys & stuff
+
+/*QUAKED func_wall (0 .5 .8) ?
+This is just a solid wall if not inhibitted
+*/
+
+void () func_detail =
+{
+// Cataboligne - 4.11.11 - walls not in mod maps
+	if (notmod(self)) return;
+
+	self.angles = '0 0 0';
+	self.movetype = MOVETYPE_PUSH;	// so it doesn't get pushed by anything
+	self.solid = SOLID_BSP;
+	self.use = func_wall_use;
+	setmodel (self,self.model);
+};
+
+/*QUAKED ambient_generalpurpose (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void () ambient_generalpurpose =
+{
+	precache_sound (self.noise);
+	ambientsound (self.origin, self.noise, 1, ATTN_STATIC);
+};
+
 
 void() monster_defender =
 {

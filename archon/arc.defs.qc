@@ -122,11 +122,11 @@ float XTR_SAVED1				= 1195724115; // saved1 test val
 // **************************************
 
 // version info - at 1.1 - KEEP up to date! - note: files = admin.cfg, archon.txt, readme.txt, alias_codes.txt, cvar.txt
-string vers						= "alias version \"echo quake-c: chaos archon (beta) 1.1\"\n"; // these are displayed prior to the darkplaces internal cmd, which then runs - very cool
-string stats					= "alias status \"echo code:     chaos archon (beta) 1.1\"\n";
-string vmotd					= "\\/ersion \b1\b.\b1\b.\b0b\b\n\n";
+string vers						= "alias version \"echo quake-c: chaos archon (beta) 1.2\"\n"; // these are displayed prior to the darkplaces internal cmd, which then runs - very cool
+string stats					= "alias status \"echo code:     chaos archon (beta) 1.2\"\n";
+string vmotd					= "\\/ersion \b1\b.\b2\b.\b0b\b\n\n";
 string motd2					= "\n\n[\\/\b1\b.\b1\b.\b0b\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
-string infobver				= "infobar 10 \"you are playing: Archon 1.1 beta\"\n";
+string infobver				= "infobar 10 \"you are playing: Archon 1.2 beta\"\n";
 
 // web sites
 string vweb						= "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n";
@@ -780,6 +780,12 @@ float MC_Q3_HOLDTELE;
 //
 // **************************************
 
+entity biome; // world building
+
+void(entity from, entity to) copyentity = #400;
+//description:
+//copies all data in the entity to another entity.
+
 //float WORLD_NOWAY				= 1; // use world min & max for noway bounds if sv_ bounds not set
 
 .float xp; // experience points
@@ -803,7 +809,8 @@ float DUD_DEF_DMG				= 20; // defualt base damage for a dud explosive that blow
 
 // inventory flags
 
-.string stack1, stack2, stack6; // here for specials
+// here for specials
+.string stack1, stack2, stack3, stack4, stack5, stack6, stack7, stack8, stack9, stack10, stack11, stack12, stack13, stack14, stack15, stack16;
 
 float WEP_ITEM_MASK			= 255; // mask of range weapon bits in .items
 float PK_ITEM_MASK			= 4094; // mask off non items bits

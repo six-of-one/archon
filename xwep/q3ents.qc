@@ -2418,6 +2418,35 @@ void () q3_trigger_push =
 	}
 };
 
+/*QUAKED misc_model (1 0 1) (-16 -16 -24) (16 16 32)
+--------  CAT  -------
+Chaos Mod MK II
+
+prototype a model for viewing on test levels
+
+-------- KEYS --------
+usual parms: origin, model, angle, skin, solid (2 blocking)
+
+"model"         "filename" - model to load
+
+run frames:
+
+"count" 		"#"		- first frame
+"state" 		"#"		- last frame loops to first
+"delay" 		"#"		- frame display time - default = 0.1 sec
+"cnt" 		    "#"		- first skin
+"dmg"   		"#"		- last skin - > 0 loop to first, < 0 reverse loop (inclusive)
+"map"			"move"	- allow game items (grav well) to move this model
+
+-------- NOTES --------
+func_model wrapper
+*/
+
+void() misc_model =
+{
+	func_model();
+};
+
 /*		q3 ---
 	QUAKED misc_teleporter_dest (1 .5 .25) (-32 -32 -24) (32 32 -16)
 

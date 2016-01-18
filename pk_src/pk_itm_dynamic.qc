@@ -516,8 +516,9 @@ void(string cls) item_call =
 
 	if (self.event == "dyn_monster" || self.class_select == "class_monster")
 	{
+		if (!self.msgcount) self.msgcount = 2 + random(); // wake up timer - for generators
 		if (self.stack1 != "no_monster_wakey")
-		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, 2 + random(), random_monster_wakey, SUB_Null, self, world);
+		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", null_string, SUB_Null, self.msgcount, random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 
 		total_monsters = t_monsters  + 1; // the "real" bump

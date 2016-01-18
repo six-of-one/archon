@@ -2309,6 +2309,7 @@ float(entity o) BlastProof =
 // Cataboligne @12.25.7 - mod for morphs, added monsters
 	else if (o.classname == "monster_shambler") d = 0.5;	// mostly immune
 	else if (o.classname == "monster_cyber") d = 0.5;	// mostly immune
+	else if (o.classname == "monster_generator") d = 0.20;	// almost fully immune
 /* deprecated (already even!) until needed
 	else if (o.map == "blastproof_0") d = 0;	// code config blast proofer - 4 levels
 	else if (o.map == "blastproof_.25") d = 0.25;

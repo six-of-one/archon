@@ -238,6 +238,8 @@ bprint(".\n");
 //		i = i + 1;
 //		i = vlen(v1 - trace_endpos);
 		i = pointcontents(v1);
+// open maps need dist limit
+		if (vlen(v1 - org) > 3072) i = CONTENT_SOLID;
 	}
 /*
 bprint(" cn = ");
