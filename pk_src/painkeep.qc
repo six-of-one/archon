@@ -1264,6 +1264,9 @@ void() pk_srvcmd_set =
 	DEF_AMMO_SLUGS = 0;
 	DEF_AMMO_GAS = 0;
 
+	D_ARMOR_MAX = Q_ARMOR_MAX;
+	Q2_ARMOR_MAX = Q_ARMOR_MAX;
+
 	DEF_X_ITEMS = 0;
 
 	INIT_CON = 0;

@@ -542,7 +542,15 @@ float HEAL_MEGA				= 3;
 float HEAL_BOT					= 4; // doom health bottle - ignore normal max, no rot
 float HEAL_SOUL				= 5; // doom health: soul, mega spheres - 200 max, no rot
 
+float Q_MEGA_MAX				= 250; // max you can ever have in q100
+float Q_NORM_MAX				= 100; // standard max health
+float Q_ARMOR_MAX				= 200; // standard max armor
+float D_ARMOR_MAX;
+float Q2_ARMOR_MAX;
+float(float ehm, float hv) morph_healmax;
 
+float SPC_HEAL_MOD			= 0.25; // how much a special heal (mega, etc) lets its max expand for morphs with heal mod > 1
+											  // so if max heal is 200, and the mod is 3.0, the max is 1.75 * 200 = 350
 // defaults
 
 void(entity e) set_defaults;

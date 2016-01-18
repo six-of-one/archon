@@ -1479,8 +1479,19 @@ void() PK_Attack =
 		}
 		else if (self.pk_currentitem == PK_IT_CANPAB)
 		{
-			if (self.health > 249)
+			float smax;
+			if (PK_100) smax = 299; // 249 + 50 subbed off below
+			else smax = morph_healmax(self.health_modifier, Q_MEGA_MAX);
+			if (self.health > (smax - 50) ) // for PK100 this val is 249
+			{
+				if (!PK_100)
+				{
+					sprint(self, "You have plenty of health, item not used...\n");
+					self.attack_finished = time + 0.5; // dont auto fire next item selected
+					pk_cycleObjects();
+				}
 				return;
+			}
 
 			// Open can of pork & beans
 // COPB_START

@@ -1201,6 +1201,17 @@ void () Plasma_MissileTouch =
 	plasmaexplode1 ();
 };
 
+// because q3 map skys dont touch bfg balls - they fuse out, and q2 leaves laser trace thinks
+void() bfg_trace_thk;
+
+void() Plasma_MissileFuseOut =
+{
+	if (self.enemy)
+	if (self.enemy.think == bfg_trace_thk) // get rid of q2 bfg trace think on fuse out - otherwise it hangs around doing wierd shit - NOTE: chaos mod vector?
+		remove(self.enemy);
+
+	Plasma_MissileTouch();
+};
 
 void () X_FireOnePlasma =
 {
@@ -1256,7 +1267,7 @@ bprint(EWEAP.netname);
 		org = self.origin + v_forward * VWX_PLASMA + v_right * VWY_PLASMA + v_up * VWZ_PLASMA; // Cataboligne - 9.30.9 - true position fire point
 	}
 
-	fire_missile(PLASMA_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH | FL_USEAMMO | FL_AIM1K | FL_RUNEHST, RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", pls, snd, Plasma_MissileTouch, ROCKET_FUSE,  plasmaexplode1, Plasma_MissileTouch);
+	fire_missile(PLASMA_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH | FL_USEAMMO | FL_AIM1K | FL_RUNEHST, RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", pls, snd, Plasma_MissileFuseOut, ROCKET_FUSE * 3,  plasmaexplode1, Plasma_MissileTouch);
 
 	if (newmis)
 	{
@@ -2185,6 +2196,15 @@ void() player_bfg1   = [$lightfatt1, player_bfg1]
 	SuperDamageSound();
 	X_FireOnePlasma();
 
+
+
+bprint(" *** firing eweap (");
+bprint(item_ident(self));
+bprint(") pl_ bfg1\n");
+
+
+
+
 	newmis.frame = 0;
 	newmis.skin = 1;
 	newmis.effects = EF_BRIGHTLIGHT | EF_BRIGHTFIELD;
@@ -2259,9 +2279,10 @@ self.think = f_rmv;
 void() e_weap_Attack =
 {
 	local entity e;
+	local float c;
 
 	EWEAP = e = self.eweapon;
-
+	if (e._attack == painkeep_cube_use) c = TRUE;
 
 
 // TESTING
@@ -2296,6 +2317,11 @@ fts.cnt = fts.cnt + 1;
 
 
 
+	if (c) // dont let cube making a weap fire anything
+	{
+		EWEAP = world;
+		return;
+	}
 
 	if (e._fr_attack != SUB_Null) e._fr_attack();
 

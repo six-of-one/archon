@@ -227,7 +227,7 @@ void() d_item_healthbottle =
 
 	self.healamount = D_DEF_HBOTTLE;
 	self.healtype = HEAL_BOT;
-	self.volume = 200; // max add
+	self.volume = D_SOUL_MAX; // max add
 	self.wait = RSP_TIME;
 
 //	setmodel(self, "progs/d_bottle.mdl");
@@ -260,7 +260,7 @@ void() d_item_healthmedkit =
 	self.netname = "Medkit";
 	self.healamount = D_DEF_HMEDKIT;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
@@ -287,7 +287,7 @@ void() d_item_healthstimpak =
 	self.netname = "Stimpak";
 	self.healamount = D_DEF_HSTIMPAK;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
@@ -312,7 +312,7 @@ void() d_item_spiritarmor =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Spirit armor";
-	self.volume = 200; // max add
+	self.volume = D_ARMOR_MAX; // max add
 //	self.skin = 0;
 	self.style = D_ARM_TBLU;
 	self.currentammo = ARM_SPIRIT;
@@ -346,7 +346,7 @@ void() d_item_armorgreen =
 	self.netname = "Security armor";
 	self.style = D_ARM_TGRN;
 	self.currentammo = D_ARM_GRN; // 100 units
-	self.volume = 100; // max add
+	self.volume = D_ARMOR_MAX / 2; // max add
 	self.items = IT_ARMOR1;
 
 	self.wait = RSP_TIME;
@@ -375,7 +375,7 @@ void() d_item_armorblue =
 	self.netname = "Combat armor";
 	self.style = D_ARM_TBLU;
 	self.currentammo = D_ARM_BLUE; // 200 units
-	self.volume = 200; // max add
+	self.volume = D_ARMOR_MAX; // max add
 	self.items = IT_ARMOR2;
 
 	self.wait = RSP_TIME;
@@ -1123,6 +1123,7 @@ void() d_art_berserker =
 	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
+// blue thingy
 void() d_art_soulsphere =
 {
 	q100_item_health();
@@ -1138,7 +1139,7 @@ void() d_art_soulsphere =
 
 	self.healamount = D_DEF_SOULSPH;
 	self.healtype = HEAL_SOUL;
-	self.volume = 200; // max add
+	self.volume = D_SOUL_MAX; // max add
 	self.wait = D_POWER_WAIT;
 
 //	setmodel(self, "progs/d_spheres.mdl");
@@ -1152,6 +1153,7 @@ void() d_art_soulsphere =
 	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
+// brown thingy
 void() d_art_megasphere =
 {
 // armor
@@ -1169,7 +1171,7 @@ void() d_art_megasphere =
 // heal
 	self.healamount = 200;
 	self.healtype = HEAL_SOUL;
-	self.volume = 200; // max add - done by armor as well, ok they are same max
+	self.volume = self.healamount; // because mega bangs health & armor to 200, they are not additive - this limit is for both!, armor maxes at volume too
 	self.wait = D_POWER_WAIT;
 
 //	setmodel(self, "progs/d_spheres.mdl");
@@ -1859,6 +1861,7 @@ void() w_art_facesphere =
 	self.healamount = 100;
 	self.ammo_bullet = 25; // doh - special
 	self.healtype = HEAL_SOUL; // normally max 100, but we need to accomodate +1 life
+	self.volume = Q_MEGA_MAX; // just for limit
 	self.wait = D_POWER_WAIT;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
@@ -1885,7 +1888,7 @@ void() w_heal_medkit =
 	self.netname = "Medkit";
 	self.healamount = D_DEF_HMEDKIT;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
@@ -1910,7 +1913,7 @@ void() w_heal_food =
 	self.netname = "Plate of Food";
 	self.healamount = 10;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
@@ -1937,7 +1940,7 @@ void() w_heal_dogfood =
 	self.netname = "Dog Food";
 	self.healamount = 4;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";

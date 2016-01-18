@@ -177,11 +177,16 @@ void() Demon_MeleeAttack =
 /*QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 
 */
-void() monster_demon1 =
+void(float ign) monster_demon1 =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_DEMON)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model ("progs/demon.mdl");
@@ -193,6 +198,7 @@ void() monster_demon1 =
 	precache_sound ("demon/dpain1.wav");
 	precache_sound ("demon/idle1.wav");
 	precache_sound ("demon/sight2.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

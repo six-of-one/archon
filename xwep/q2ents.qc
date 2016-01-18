@@ -1007,7 +1007,7 @@ void() q2_item_health =
 	self.netname = "First Aid";
 	self.healamount = Q2_DEF_HFIRSTAID;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1032,7 +1032,7 @@ void() q2_item_health_large =
 	self.netname = "Medkit";
 	self.healamount = Q2_DEF_HMEDKIT;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1057,7 +1057,7 @@ void() q2_item_health_mega =
 	self.netname = "Mega health";
 	self.healamount = Q2_DEF_HMEGATUBE;
 	self.healtype = HEAL_MEGA;
-	self.volume = -1; // max add
+	self.volume = Q_MEGA_MAX;
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1375,7 +1375,7 @@ void() item_adrenaline =
 
 	self.healamount = Q2_DEF_HMEGATUBE;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	self.wait = Q2_POWER_WAIT;
 
 	setmodel(self, "progs/q2_adrenaline.mdl");

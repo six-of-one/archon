@@ -263,14 +263,12 @@ TEST: more testing before removeal
 
 // from chaos mod
 
-float Q_MEGA_MAX = 250;
-
 // T_Heal: add health to an entity, limiting health to max_health
 // "ignore" will ignore max_health limit
 //
 float (entity e, float healamount6, float ignore) T_Heal =
 {
-	local float heala;
+	local float heala, f;
 
 	if (Q_100 || PK_100)
 	{
@@ -284,11 +282,18 @@ float (entity e, float healamount6, float ignore) T_Heal =
 //		return 0;
 
 	heala = ceil (healamount6);
+	f = e.health; // for healable armor creatures where health > max due to bonuses & bottles
 
-	if (!player_scourge_armor(e,heala,ignore) && (!ignore) && (e.health >= e.max_health * e.health_modifier))
+	if (player_scourge_armor(e,heala,ignore)) // armor healed
 	{
-		return 0;
+		if (f >= (e.max_health * e.health_modifier) )
+		{
+			e.health = f; // because heal armor bumps health down to compensate for part of heal being dedicated to armor
+			return 1;
+		}
 	}
+	else
+		if ( (!ignore) && (e.health >= e.max_health * e.health_modifier)) return 0;
 
 	e.health = e.health + heala;
 //	if ((!ignore) && (e.health >= e.max_health))
@@ -313,11 +318,30 @@ float (entity e, float healamount6, float ignore) T_Heal =
 };
 
 // Cataboligne - 9.9.11 - tweak to prevent multiple health rots on 1 avatar
+float Test, Smd;
+
+// special max calc for morphs
+
+// ehm - ents .health_modifier
+// hv - healh .volume
+
+float(float ehm, float hv) morph_healmax =
+{
+	local	float smd, smax;
+
+	if (ehm > 1.0)
+		Smd = smd = 1 + (SPC_HEAL_MOD * ehm); // we dont just let morphs get mega heal volumes * health mod, which would be a max of 2000 for a super tank
+	if (smd < 1) smd = 1;
+	smax = hv - Q_NORM_MAX; // what can be added by a healer - maximum
+//			if (smax < 100) smax = 100;
+	Test = smax = (Q_NORM_MAX * ehm) + (smax * smd); // morph adjusted max
+	return (smax);
+}
 
 //float() health_touch =
 void() health_touch =
 {
-	local	float amount;
+	local	float amount, smax;
 	local	string	s1;
 
 	if (Q_100 || PK_100)
@@ -328,7 +352,7 @@ void() health_touch =
 
 	amount = 0;
 
-	if (other.state == IMP_MWRAITH) return; //(TRUE); // wraith never get health -- TDO: check state
+	if (other.state == IMP_MWRAITH) return; //(TRUE); // wraith never get health -- TDO: check state field for wraiths
 
 	Q3_HAH_TMP = other.health;
 	Q3_HAA_TMP = other.armorvalue;
@@ -336,33 +360,18 @@ void() health_touch =
 	if (self.healtype > HEAL_NORM) // Soul, Mega, health bottle  Ignore max_health...
 	{
 		if (self.volume > 0)
-		if (other.health >= self.volume * other.health_modifier)
-			return;
-/*
-		if (self.healtype == HEAL_MEGA) // Megahealth
-		if (other.health >= Q_MEGA_MAX * 1)
-			return;
-	
-		if (self.healtype == HEAL_SOUL)
-		if (other.health >= D_SOUL_MAX * 1) return;
-*/
+		{
+			smax = morph_healmax(other.health_modifier, self.volume);
+			if (other.health >= smax) //self.volume * smd) //other.health_modifier)
+				return;
+		}
+
 		if (!T_Heal(other, self.healamount, 1))
 			return; //(TRUE);
 
-		if (self.volume > 0)
-		if (other.health >= self.volume * other.health_modifier)
-			other.health = self.volume * other.health_modifier;
-/*
-		if (self.healtype == HEAL_MEGA) // Megahealth
-		if (other.health >= Q_MEGA_MAX * 1)
-			other.health = Q_MEGA_MAX * 1;
-
-		if (self.healtype == HEAL_SOUL)
-		if (other.health >= D_SOUL_MAX * 1) // CHECK: this is a 2 * max limiter
-			other.health = D_SOUL_MAX * 1;
-*/
-//		if (other.health >= D_SOUL_MAX * other.health_modifier) // check: this is a 2 * max limiter
-//			other.health = D_SOUL_MAX * other.health_modifier;
+		if (self.volume > 0) // cap here because we cant in T_heal
+		if (other.health >= smax) 
+			other.health = smax;
 	}
 	else
 	{
@@ -467,6 +476,10 @@ void() x_pwr_touch =
 			return;
 	if (other.health <= 0)
 		return ;
+
+	if (self.netname == "Mega Sphere")
+	if ( (other.health > morph_healmax(other.health_modifier, self.volume)) || (other.armorvalue > self.currentammo) )
+		return;
 
 	if (self.class_select == "q3_item") // for holdables - since they use pk slots, tho the corollary of collecting a pk item is not tested
 	if (self.pk_currentitem) // 'es already got one...wot?  'e sais 'yve already got one.  already got a Grail?
@@ -592,7 +605,7 @@ bprint("\n");
 		e.enemy.mdl = e.enemy.model;
 		e.enemy.skin = Q3_SH_QUAD;
 		e.think = q3_art_shell;
-		e.nextthink = time + POW_TIME - 1;
+		e.nextthink = time + t - 1; //POW_TIME - 1;
 		if (self.items == IT_SUIT)
 			e.enemy.skin = Q3_SH_ENV;
 		if (self.items == IT_QUAD)

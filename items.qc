@@ -148,6 +148,7 @@ void () q100_item_health =
 			self.noise = "items/r_item2.wav";
 			self.healamount = 100;
 			self.healtype = HEAL_MEGA; // Cataboligne - 9.8.11 - needed to play nice with q100 / pk100 translate from other genre
+			self.volume = Q_MEGA_MAX; // Cataboligne - 9.20.11 - for chaos mod code
 		}
 		else
 		{

@@ -1398,7 +1398,7 @@ void() q3_item_health =
 
 	self.healamount = Q3_HEALMD_A;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	if (!self.wait) self.wait = RSP_TIME * 1.1666;
 
 	setmodel(self, "progs/q3_health.mdl");
@@ -1428,7 +1428,7 @@ void() q3_item_health_large =
 
 	self.healamount = Q3_HEALLG_A;
 	self.healtype = HEAL_NORM;
-	self.volume = 100; // max add
+	self.volume = Q_NORM_MAX; // max add
 	if (!self.wait) self.wait = RSP_TIME * 1.1666;
 
 	setmodel(self, "progs/q3_health.mdl");
@@ -1800,10 +1800,8 @@ void() player_q3held =
 
 	if (!self.eweapon) return; // nothing to fire apparently
 
-bprint("got here \n");
-
 	if (self.eweapon.pk_currentitem == PK_IT_CANPAB)
-	if (self.health < 100)
+	if (self.health < 100 * self.health_modifier)
 	{
 		other = self;
 		T_Heal(other, 100, 0); // first get 100

@@ -979,8 +979,21 @@ float(entity e, float hl) morph_heal =
 
 entity random_monster_spawn;
 
+// need think to wake them up because *monster_start_go has to happen
+void() random_monster_wakey =
+{
+	local entity f;
+
+	f = self;
+	self = self.owner;
+	FoundTarget();
+	remove(f);
+};
+
 void() random_monster =
 {
+	local vector v;
+
 	C_MONSTER = cvar("sv_monster_rnd");
 	C2_MONSTER = cvar("sv_monster_rnd2");
 
@@ -1024,7 +1037,9 @@ void() random_monster =
 	if (!C_MONSTER) return; // whoops - nothing to do - this shouldnt happen...of course
 
 	f = 100;
+	self.cnt = rnd_bit_mask(C_MONSTER);
 	if (self.cnt < 1) self.cnt = 1;
+//	else self.cnt = self.cnt * 2;
 	while ( (! self.cnt & C_MONSTER) && (f > 0) )
 	{
 		self.cnt = self.cnt * 2;
@@ -1037,16 +1052,19 @@ void() random_monster =
 		return;
 	}
 
+	f = self.cnt;
 	self = spawn();
-	self.wad = monster_id(self.cnt, TRUE); // get spawn func
-	
+	self.wad = monster_id(f, TRUE); // get spawn func
+
 	self.classname = "dyn_monster";
 	item_call(self.wad);
 	e = dyn_rndloc();
-	setorigin(self, e.origin);
-	item_eject(self, ' 200 200 360');
+	v = e.origin;
+	v_z = v_z + 30 - fabs(e.mins_z); // has to move up enough to account for monsters feet at -24
+	setorigin(self, v);
 
-	if (WARNING)
+
+	if (WARNING) // dont normally post random monster info
 	{
 		bprint("*** Random monster spawned: ");
 		bprint(self.wad);

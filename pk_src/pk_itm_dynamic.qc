@@ -458,7 +458,8 @@ void(string cls) item_call =
 	{
 		self.class_select = self.classname; // find it later - can set class_select because *_start does
 		self.classname = scls; // for death messages, morph checks
-		FoundTarget(); // make 'em run around
+//		FoundTarget(); // make 'em run around - cant be done here
+		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2, random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 		return;
 	}

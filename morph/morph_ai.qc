@@ -587,29 +587,33 @@ local float	rsnd;
 void() FoundTarget =
 {
 	if (!Q_100)
-	if (morph_clichk(self.enemy)) return; // we used to be friends, so others wont wake or see...
 
-	if (self.enemy.classname == "player")
+	if (self.enemy)
 	{
-		if (self.charmed)
+		if (morph_clichk(self.enemy)) return; // we used to be friends, so others wont wake or see...
+
+		if (self.enemy.classname == "player")
 		{
-			if ((self.charmer == self.enemy) || (self.charmer == self.enemy.charmer))
+			if (self.charmed)
+			{
+				if ((self.charmer == self.enemy) || (self.charmer == self.enemy.charmer))
+				{
+					self.enemy = world;
+					return;
+				}
+			}
+
+	// let other monsters see this monster for a while
+			sight_entity = self;
+			sight_entity_time = time;
+		}
+		else if (self.charmed)
+		{
+			if ((self.charmer == self.enemy.charmer))
 			{
 				self.enemy = world;
 				return;
 			}
-		}
-
-// let other monsters see this monster for a while
-		sight_entity = self;
-		sight_entity_time = time;
-	}
-	else if (self.charmed)
-	{
-		if ((self.charmer == self.enemy.charmer))
-		{
-			self.enemy = world;
-			return;
 		}
 	}
 	

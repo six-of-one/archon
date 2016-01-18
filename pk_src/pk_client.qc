@@ -209,6 +209,8 @@ void() DecodeLevelParms =
 	self.msgcount = (parm16 & 255);
 
 	self.morphy = parm15;
+	if (!cb_morph(self.morphy)) self.morphy = IMP_MHUMAN; // should NEVER happen?!  TDO: char_con deal
+	self.mask_x = cb_morph(self.morphy);
 
 // NOTE: *** morphy MUST be set prior to this call!
 	if (parm6 == -6) set_defaults(self); // only done on respawn or spawn where we are clearing parms because of dead
@@ -540,11 +542,13 @@ void() PutClientInServer =
 
 	if (self.health_modifier <= 0) self.health_modifier = MHUMAN_HEALMOD;
 
-	if (!cb_morph(self.morphy)) self.morphy = IMP_MHUMAN; // should NEVER happen?!  TDO: char_con deal
+	if  (cvar("anode")) 
+	{
+		self.morphy = IMP_MANODEX;
+		stuffcmd(self, "exec anode.cfg");
+	}
 
-	if  (cvar("anode")) self.morphy = IMP_MANODEX;
-
-	self.morphy = IMP_MSHALR; // TEST:
+//	self.morphy = IMP_MSHALR; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
 
 	W_SetCurrentAmmo (); // moved for m0rphic

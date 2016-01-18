@@ -1110,6 +1110,18 @@ void() Admin_monsterbits =
 	}
 
 	bprint("\b--------------------------------\n");
+	bprint("Control bits set: ");
+	bit_print(MONSTER_MASK, pk_monster_set);
+	bprint("\n\nlist contol set:\n");
+	f = 1;
+	while (f < MONSTER_MASK)
+	{
+		it = monster_id(f, 0);
+		if (f & pk_monster_set) { bprint(it); bprint("\n"); }
+		f = f * 2;
+	}
+
+	bprint("\b--------------------------------\n");
 	if (!mn) self.wad = "\nNo monster controls set.";
 };
 

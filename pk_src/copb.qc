@@ -8,9 +8,14 @@
 
 void() copb_eatCan =
 {
+	float smax;
+	smax = morph_healmax(self.health_modifier, Q_MEGA_MAX);
+	
 	// allow above 100...
 	other = self;
 	T_Heal(other, 100, 1);
+
+	if (self.health > smax) self.health = smax; // bound to max
 
 	self.copb_timeout = time + POW_TIME;
 	self.search_time = time + (random() * 2);

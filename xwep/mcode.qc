@@ -1958,7 +1958,7 @@ void() painkeep_cube_use =
 		}
 	}
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
-	if (1) d = MC_SUPER_NAILGUN; // TEST:
+	if (1) d = MC_Q2_BFG; // TEST:
 
 	if (c.wad == "pk_cube")
 		c.wad = item_by_mcode(d);
@@ -2002,19 +2002,29 @@ void() painkeep_cube_use =
 			chaos_teleport(self.origin, "", world);
 			newmis.origin_z = newmis.origin_z + 20 + random() * 30;
 			remove(self);
-			return;
 		}
-		f = 4 + random() * 4;
-		while (f > 0)
+		else
 		{
-			W_FireGrenade(); // uses ammo, but we dont care here
-			item_eject(newmis, ' 400 400 400');
-			f = f - 1;
+			f = 4 + random() * 4;
+			while (f > 0)
+			{
+				W_FireGrenade(); // uses ammo, but we dont care here
+				item_eject(newmis, ' 400 400 400');
+				f = f - 1;
+			}
 		}
 		remove(self);
 	}
 // IDEA: tele-sphere, portal, explosive regular item, nail bomb, chaos effect
 	self = sv;
+
+
+
+bprint(" *** cube done self =  (");
+bprint(item_ident(self));
+bprint(")\n");
+
+
 };
 
 //:-( cube owner didnt open it

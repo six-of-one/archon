@@ -175,7 +175,7 @@ float(float fb, float rb) bit_cnt =
 // op - operation
 // df - default return value
 
-float BIT_HIGH = 8388608;
+float BIT_HIGH = 8388608; // start here and go down till we find first on bit
 float BIT_LOW = 1;
 
 float (float bt, float msk, float op, float df) return_bit =

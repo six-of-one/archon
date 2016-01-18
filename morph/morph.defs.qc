@@ -55,6 +55,7 @@ float MONSTER_MASK; // all monster bits
 float pk_monster_set; // admin var to store bits for setting monster values
 
 string(float mb, float mode) monster_id;
+void() random_monster_wakey;
 
 float CB_M_ARMY					= 1;
 float CB_M_FISH					= 2;

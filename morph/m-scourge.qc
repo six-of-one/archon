@@ -365,7 +365,7 @@ float (entity p, float heala, float ign) player_scourge_armor =
 		{
 			p.armortype = ARM_SCRG; // better armor at higher classes
 			p.items = p.items - (p.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
-//			if (self.morphnum != IS_SCOURGE) p.mode_y = p.mode_y - (p.mode_y & (IV_ARM1 | IV_ARM2 | IV_ARM3)) + IV_ARM1;
+
 			if (ign == GIVEARMOR) p.armorvalue = ceil(heala);
 		}
 		if (ign == GIVEARMOR) return TRUE;

@@ -166,6 +166,7 @@ morph/m-shalra.qc
 morph/m-enforcer.qc
 morph/m-anode.qc
 
+anode.qc
 
 bot.qc
 bot_func.qc
