@@ -1576,7 +1576,7 @@ void() d_bloody_mess =
 	setmodel(self,"progs/md2/marine_squished.md2");
 //	setorigin(self, self.origin + ' 0 0 -8');
 	self.frame = 9;
-//	self.movetype = MOVETYPE_TOSS;
+	self.movetype = MOVETYPE_TOSS;
 };
 
 void() d_dead_player =
@@ -1591,6 +1591,20 @@ void() d_dead_player =
 	setmodel(self,"progs/md2/marine.md2");
 //	setorigin(self, self.origin + ' 0 0 -8');
 	self.frame = 146;
-//	self.movetype = MOVETYPE_TOSS;
+	self.movetype = MOVETYPE_TOSS;
+};
+
+void() d_pool_flesh_blood =
+{
+// for now
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/blood.md2");
+	setmodel(self,"progs/md2/blood.md2");
+	self.frame = 9;
+	self.movetype = MOVETYPE_TOSS;
 };
 

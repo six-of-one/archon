@@ -55,6 +55,40 @@ void() c_weapon_reggun =
 	if (self.class_select == "") self.class_select = "x_item";
 };
 
+void() c_weapon_shovel =
+{
+	weapon_axe();
+	self.netname = "Shovel";
+
+	self.touch = x_weapon_touch;
+	self._attack = SUB_Null;
+	self._fr_attack = fire_axe;
+
+	self.currentammo = 0;
+	self.aflag = IGN_INV; // swap with axe
+	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_AXE; // axe replacement
+	self.lip = AMMO_NONE;
+	self.attack_finished = 0.5;
+	self.dmg = 15;
+	self.dmg_save = 0;
+	self.style = FL_MELEE_WEP;
+	self.wait = RSP_TIME;
+
+//	setmodel (self, "progs/m_shovel.mdl");
+	setmodel (self, "progs/shovel.md3"); // TESTING
+	self.weaponmodel = "progs/v_axe.mdl";
+	self.vwepmdl = "progs/vw_shovel.mdl";
+	self.vv_draw = vw_melee_base;
+
+//	self.noise1 = "weapons/ax1.wav"; // missed
+	self.noise3 = "player/axhit2.wav"; // hit wall &| solid
+//	self.noise4 = "zombie/z_hit.wav"; // hit flesh
+
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "x_item";
+};
+
 // fn(xwep_fakeload) - extra weapon fake load - carried something between levels and it doesnt exist on new level
 
 // self - map weapon ent (fake loaded) NOTE: code does not load for self! 

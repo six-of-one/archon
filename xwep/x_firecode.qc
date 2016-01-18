@@ -133,6 +133,7 @@ void() x_weapon_touch =
 	camc = other.ammo_gaspr;
 	}
 	else if (self.classname == "d_weapon_saw" ||
+		self.classname == "c_weapon_shovel" ||
 		self.classname == "q2_weapon_blaster" ||
 		self.classname == "w_weapon_knife")
 	{
