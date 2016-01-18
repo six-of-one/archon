@@ -680,6 +680,15 @@ void(entity e) set_defaults =
 {
 	local float ic, i0;
 
+// here in case chase cam code doesnt get run - setnewparms may not hit these
+	e.eweapon = world;
+	e.pkprevweapon = e.pklastweapon = e.prevweapon = e.lastweapon = 0;
+
+	e.x_items = 0;
+	e.ammo_bullet = e.ammo_slug = e.ammo_gaspr = e.ammo_hgrenade = 0;
+	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
+	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;
+
 	if (Q_100 || PK_100) return;
 
 	if (DEF_HEALTH) e.health = fabs(DEF_HEALTH);

@@ -133,6 +133,8 @@ void() q2_precache =
 	precache_sound ("q2_snd/damage.wav");
 	precache_sound ("q2_snd/protect.wav");
 	precache_sound ("q2_snd/airout.wav");
+	precache_sound ("q2_snd/telep1.wav");
+	precache_sound ("q2_snd/telehum.wav");
 
 // heal
 	precache_sound ("q2_snd/s_health.wav");
@@ -1244,6 +1246,18 @@ void() X_FireBlaster =
 	newmis.nextthink = time + 0.1;
 	newmis.think = q2_blaster_thk;
 	newmis.effects = EF_DIMLIGHT;
+};
+
+void() q2_teleport_particles =
+{
+	local vector v1;
+
+	v1_x = crandom() * 18;
+	v1_y = crandom() * 18;
+	v1_z = crandom() * 8;
+	self.velocity_z = 300 + crandom() * 50;
+	particle (self.origin + v1, self.velocity, 234, 22);
+	self.nextthink = time + 0.1;
 };
 
 // return damage saved based on power armor settings and damage done

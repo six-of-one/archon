@@ -1407,6 +1407,7 @@ void() player_chain0   = [$lightfatt1, player_chain0]
 		self.nextthink = time + 0.2;
 };
 
+
 // target flags - in general dont allow targeting if the flag ind. test fails
 
 // assign line - cut / paste & remove unwanted flags
@@ -1441,7 +1442,7 @@ float PKPLUS_IT_CORPSE			= 1024; // special - (tomb genned) corpse has health, c
 // targeting fn - IDEA: move?
 // 		- tests to see if an ent can be targeted by an attack / effect under various conditions - maybe chaos vector
 
-// self - MUST be targeting entity - MUST MUST MUST!
+// self - MUST be targeting entity (for v_angle & origin if not supplied) - MUST MUST MUST!
 
 // e - test ent
 // f - self ent, firing ent / projectile, or player / owner
@@ -1465,6 +1466,23 @@ float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 	local float k;
 	local vector v, corg;
 
+
+/*
+//TESTING
+bprint("can has: ");
+bprint(item_ident(e));
+bprint(" --- ");
+if (f) 
+	bprint(item_ident(f));
+else bprint(" 2nd ent world");
+bprint(" -e org =  ");
+	bprint(vtos(e.origin));
+bprint(" -corg =  ");
+	bprint(vtos(cht_org));
+bprint(" \n");
+*/
+
+
 	if (!e) return(FALSE); // cant target world
 	if (e.classname == "turret_base") return(FALSE); // never target these - not valide
 	if (e.classname == "chase_cam") return(FALSE); // nope
@@ -1475,7 +1493,11 @@ float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 	if ((!e.takedamage) && (flg & TFL_TKDMG)) return(FALSE);
 
 	corg = cht_org;
-	if (cht_org == v0) corg = self.origin;
+	if (cht_org == v0)
+	{
+		if (f) corg = f.origin;
+		else corg = self.origin;
+	}
 
 	if ((flg & TFL_TRACE) || (flg & TFL_CONT))
 	{
@@ -1485,10 +1507,10 @@ float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 		{
 
 
-if (0)
+if (WARNING)
 if (trace_fraction < 1)
 {
-bprint(" *** trace fail ent (");
+bprint(" *** CHT: trace fail ent (");
 bprint(item_ident(e));
 bprint(") - frac = ");
 bprint(ftos(trace_fraction));
@@ -1514,7 +1536,15 @@ bprint(".\n");
 
 	if ((flg & TFL_INFR) && (cht_if > 0))
 	{
-		makevectors (self.v_angle);
+		if (self.classname == "player" || IROBOT(self))
+			makevectors (self.v_angle);
+		else if (e.classname == "player" || IROBOT(e))
+			makevectors (e.v_angle);
+		else if (f.classname == "player" || IROBOT(f))
+			makevectors (f.v_angle);
+		else
+			makevectors (self.v_angle);
+
 		v = e.origin - corg;
 
 		if (flg & TFL_IFR_NOZ) // ignore z value of height (doom eh...) - use a circular check (ceil to floor) instead of cone
