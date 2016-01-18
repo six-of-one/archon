@@ -1566,6 +1566,12 @@ void() rune_regen =
 	if (self.rg_time > time)
 		return;
 
+#ifdef enhanced
+// dont regen for absurd large health + armor
+	if (self.health + self.armorvalue > 450) // ablrgh - 10.12.14
+		return;	
+#endifdef
+
 	r = cvar("sv_c_rune");
 
 	f = 5;
@@ -1638,6 +1644,8 @@ cap = 3.5
 		return;
 	}
 
+// apparently rules 1 regens armor as well - to the armors allowed max
+
 //	if (self.target2 != "progs/q3_art.mdl") // apparently q3 doesnt regen armor
 	if (!stack_search(self, "item_regen")) // apparently q3 doesnt regen armor
 	if (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3))
@@ -1652,7 +1660,7 @@ cap = 3.5
 			self.armorvalue = 100;
 		else
 			RegenerationSound();
-	}
+	} 
 };
 
 // IMP: other suck head issues

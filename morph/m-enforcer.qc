@@ -80,6 +80,7 @@ void() m_precache_enforcer =
 */
 void()	player_enf_atk;
 void()	player_enf_atk4;
+void()	player_enf_atk7;
 
 void(float stat) player_enforcer_fire =
 {
@@ -123,8 +124,14 @@ void(float stat) player_enforcer_fire =
 		else
 		{
 			if (self.eweapon.mcode == MC_HIP_LASERCAN) HIP_FireLaser(stat);
-			else if (self.eweapon._attack != SUB_Null) self.eweapon._attack();
+			else
+			if (self.eweapon)
+			{
+				e_weap_Attack();
+				if (self.eweapon._fr_attack) self.think = player_enf_atk7;
+			}
 			else fr = FALSE;
+
 			if (fr)
 			{
 				self.frame = fr;

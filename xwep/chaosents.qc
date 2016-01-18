@@ -505,6 +505,18 @@ void() health_touch =
 
 	if (self.healtype > HEAL_NORM) // Soul, Mega, health bottle  Ignore max_health...
 	{
+#ifdef enhanced
+// dont get inf or mega health for absurd large health + armor
+	if (self.volume != -1)
+	if (other.health + other.armorvalue > 450) // ablrgh - 10.12.14
+		return;
+
+// dont get inf or mega health for absurdly even larger health + armor
+	if (other.health_modifier > 2.0)
+	if (other.health + other.armorvalue > 550) // ablrgh - 10.12.14
+		return;	
+#endifdef
+
 		if (self.volume > 0)
 		{
 			smax = morph_healmax(other.health_modifier, self.volume);

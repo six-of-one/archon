@@ -467,6 +467,11 @@ void(string cls) item_call =
 	else if (cls == "archon_power") archon_power();
 
 // monsters - random spawns
+	else if (cvar("nomonsters")) // engine cvar - no monsters - we obey
+	{
+		if (f) remove(f);
+		return;		
+	}
 	else if (cls == "monster_army") monster_army(A_MONSTER);
 	else if (cls == "monster_boss") monster_boss(A_MONSTER);
 	else if (cls == "monster_demon1") monster_demon1(A_MONSTER);

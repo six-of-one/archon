@@ -2650,8 +2650,14 @@ void() make_vessel =
 	else // if (self.pk_beartrapammo & 3)
 	{
 		newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, 0, v0, '-8 -8 -8', '8 8 8', v0, v0, null_string, "progs/nodule11.mdl", SUB_Null, 0, SUB_Null, SUB_Null, self, world);
-		if (self.pk_beartrapammo == 4) setmodel(newmis, self.bolt_target.model);
-		if (self.pk_beartrapammo == 2) setmodel(newmis, "progs/tomb2.mdl");
+//		if (self.pk_beartrapammo == 4) setmodel(newmis, self.bolt_target.model);
+		if (self.pk_beartrapammo == 4)
+		{
+			setmodel(newmis, self.stack5); // stack5 - because targeted things can go away
+			newmis.skin = self.bolt_target.skin;
+			newmis.frame = self.bolt_target.frame;
+		}
+		else if (self.pk_beartrapammo == 2) setmodel(newmis, "progs/tomb2.mdl");
 		else newmis.skin = 1;
 		setorigin(newmis, self.bolt_targetNext.origin - v_forward * 15);
 		newmis.scale = 0.8;
@@ -2659,6 +2665,7 @@ void() make_vessel =
 		if (self.bolt_target.flags & FL_MONSTER) newmis.scale = 0.5;
 		newmis.aflag = -6; // a "made" vessel 
 		self.bolt_target = newmis;
+		self.stack5 = null_string;
 	}
 
 // just in case - chaoses mode 2 has a target, other mods make a vessel and point in code above
@@ -2760,6 +2767,7 @@ void() player_chaos_attack =
 				self.th_missile();
 				archon_target_clear(self.bolt_target);
 				self.bolt_target = self.enemy;
+				self.stack5 = self.bolt_target.model; // for make vessel
 				self.stack1 = self.stack2;
 				self.bolt_target.bolt_target.scale = self.bolt_target.bolt_target.scale * 1.2;
 				self.enemy = world;
@@ -3262,6 +3270,7 @@ void() archon_target =
 	if (!self.bolt_target)
 	{
 		self.bolt_target = trace_ent;
+		self.stack5 = self.bolt_target.model; // for make vessel
 		archon_target_clear(self.enemy);
 		self.stack1 = "Acquired 1";
 		if (trace_ent.netname) self.stack1 = trace_ent.netname;

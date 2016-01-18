@@ -209,7 +209,11 @@ void() player_ogre_shoot3 = [ $shoot3, player_ogre_shoot4 ]
 //		if (self.eweapon.weapon == MC_THUNDER) W_FireLightning();
 //		else if (self.eweapon.weapon == MC_LASERCAN) HIP_FireLaser(stat);
 //		else
-		if (self.eweapon._attack != SUB_Null) self.eweapon._attack();
+		if (self.eweapon)
+		{
+			e_weap_Attack();
+			if (self.eweapon._fr_attack) self.think = player_ogre_shoot4;
+		}
 		else fr = FALSE;
 		if (fr) return;	
 	}

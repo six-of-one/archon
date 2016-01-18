@@ -277,6 +277,18 @@ void () armor_touch =
 	if (other.classname != "player")
 			return;
 
+#ifdef enhanced
+// dont get std armor for absurd large health + armor
+	if (self.volume != -1)
+	if (other.health + other.armorvalue > 450) // ablrgh - 10.12.14
+		return;
+
+// dont get inf armor for absurdly even larger health + armor
+	if (other.health_modifier > 2.0)
+	if (other.health + other.armorvalue > 650) // ablrgh - 10.12.14
+		return;	
+#endifdef
+
 	if (self.classname == "item_armor1")
 	{
 		type = 0.3;
