@@ -137,34 +137,6 @@ void(float fl) fire_laser1 =
 		if (EWEAP.target != "") newmis.noise3 = EWEAP.target;
 	}
 
-
-
-
-// TESTING
-if (cvs1 == -777)
-{
-bprint(" *** eweap ");
-bprint(EWEAP.netname);
-
-bprint(", hit dmg = ");
-bprint(ftos(newmis.dmg));
-bprint(", splash dmg = ");
-bprint(ftos(EWEAP.dodmg));
-fts.dmg_take = fts.dmg_take + newmis.dmg;
-fts.dmg_save = fts.dmg_save + 1;
-
-
-bprint(", tot dmg = ");
-bprint(ftos(newmis.dmg+EWEAP.dodmg));
-bprint(".\n");
-fts.dmg = fts.dmg + newmis.dmg+EWEAP.dodmg;
-fts.cnt = fts.cnt + 1;
-}
-
-
-
-
-
 };
 
 // fn(fire_enflaser) - where the enforcers gun fires a laser - here because this is an inventory item

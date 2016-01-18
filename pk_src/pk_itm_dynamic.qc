@@ -1095,7 +1095,7 @@ void() dyn_item =
 	if (self.classname != "dyn_spawner")
 	{
 		self.classname = "dyn_spawner";
-		self.nextthink = time + 7;// TEST: 40 + 20 * crandom(); // PIC_TO
+		self.nextthink = time + 40 + 20 * crandom(); // PIC_TO
 		self.count = 4 + 4 * random();
 		if (DYN_FORCE || DYN_ARTFR_ONLY) self.count = pk_ditems + DYN_FORCE_CNT;
 		if (!DYN_FORCE && !DYN_ARTFR && pk_ditems > 6)

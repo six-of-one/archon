@@ -186,25 +186,6 @@ void() pk_run_frames =
 		}
 	}
 
-// TEST: runner speed
-if (cvs1 == -888)
-
-if (vlen(self.velocity) > 50)
-//if (vlen(self.velocity) > cvar("sv_maxspeed") + 2)
-//if (time & 3 == 0)
-{
-bprint("run --- speedlimit: ");
-bprint(ftos(cvar("sv_maxspeed")));
-bprint("  - movecode: ");
-bprint(vtos(self.movement));
-
-bprint("  - haste speed: ");
-bprint(ftos(vlen(self.velocity)));
-bprint("\n");
-}
-
-
-
 	if (self._run != SUB_Null)
 	{
 		self._run();

@@ -76,19 +76,6 @@ void(entity e) MakeSplash =
 		}
 		else
 		{
-
-
-
-// TEST: demo
-if (DEMO)
-if (e.classname == "player" && !dmove)
-{
-	dmove = 1;
-	e.movetype = 0;
-}
-
-
-
 			setmodel(newent, "progs/s_splash.spr");
 			newent.think = e.splash_func;
 		}
@@ -136,6 +123,12 @@ void() CheckWaterLevels =
 		if (!(pc == CONTENT_WATER || pc == CONTENT_SLIME || pc == CONTENT_LAVA))
 			pc = NOT_IN_WATER;
 
+// need an extra rune test - they dont always vacate lava
+		if (pc == CONTENT_LAVA)
+		if (e.map  == "rune" && e.classname == "item_sigil")
+		if (!e.hook)
+			e.inwater = 0;
+
 //		if (inWater(e) != e.inwater) // de-looping this call - this is call heavy
 		if (pc != e.inwater)
 		{
@@ -153,7 +146,7 @@ void() CheckWaterLevels =
 				e.inwater = pc;
 
 				// Remove turrets and beartraps if they fall into the lava
-				if (!ENHANCED || ((cc_frame & 3) == 2))
+//				if (!ENHANCED || ((cc_frame & 3) == 2)) // was failing rune mover
 				if (pc == CONTENT_LAVA)
 				{
 					if (e.classname == "beartrap")
@@ -172,15 +165,9 @@ void() CheckWaterLevels =
 						if (e.think != fade_relocate) // not already moving
 						{
 							e.think = ip_checkForMovement; // note - if for any reason rune isnt in checkfor, this code puts it there
-							e.nextthink = time + random() * 4;
+							if ( (e.nextthink > time + 6) || (e.nextthink <= 0) )
+								e.nextthink = time + random() * 4;
 							e.hook = TRUE;
-				/*
-							e.think = SUB_Remove;
-							e.nextthink = time + 0.1;
-							rune_count = cnt_ent(world, "map", "rune") - 1;
-							f = find(world,classname,"rune_maker");
-							if (f) f.nextthink = time + 10 + random() * 60;
-				*/
 						}
 					}
 					else if (e.classname == "tomb") // Cataboligne 8.12.9 purify - pk artifacts
@@ -222,7 +209,8 @@ void() CheckWaterLevels =
 							if (e.think != fade_relocate) // not already moving
 							{
 								e.think = ip_checkForMovement;
-								e.nextthink = time + random() * 4;
+								if ( (e.nextthink > time + 6) || (e.nextthink <= 0) )
+									e.nextthink = time + random() * 4;
 								e.hook = TRUE;
 							}
 						}

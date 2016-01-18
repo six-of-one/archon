@@ -7,222 +7,6 @@ Cataboligne 3.29.8
 
 */
 
-// demo messages
-float dmsg_cnt, dmsg_togl, dmove;
-
-float DEMO = 0; // set to one for recording demos with text below
-
-void() demo_msg =
-{
-	if (world.model == "maps/end.bsp" && dmsg_cnt < 25) dmsg_cnt = 25;
-
-	if (dmsg_togl) // turn off msg
-	{
-		dmsg_togl = 0;
-		stuffcmd(self, "noadmin_centertime\n");
-		centerprint(self, "");
-		return;
-	}
-
-	stuffcmd(self, "admin_centertime\n");
-	if (dmsg_cnt == 0)
-		centerprint(self, "What the? Quake...ONE!  Again?! Arg.");
-	if (dmsg_cnt == 1)
-		centerprint(self, "Hrm, whats this?  Crates.  Lets see, trusty axe, check!");
-	if (dmsg_cnt == 2)
-		centerprint(self, "Now, what do we have here?");
-	if (dmsg_cnt == 3)
-		centerprint(self, "Chain Thunderbolt - cool, love the Painkeep");
-	if (dmsg_cnt == 4)
-		centerprint(self, "Red armor - my favorite");
-	if (dmsg_cnt == 5)
-		centerprint(self, "Aw yeah.");
-	if (dmsg_cnt == 6)
-		centerprint(self, "Portal apparatus.  That is...different.");
-	if (dmsg_cnt == 7)
-	{
-		centerprint(self, "Gotta open 'er up then.");
-		dmsg_togl = 1;
-	}
-
-	if (dmsg_cnt == 8)
-		centerprint(self, "INSTRUCTIONS:");
-	if (dmsg_cnt == 9)
-		centerprint(self, "Select mode, target wall area, engage fire to activate.");
-	if (dmsg_cnt == 10)
-		centerprint(self, "Be aware of environmental hazards\nCAUTION: quantum tunnels have associated risk.");
-	if (dmsg_cnt == 11)
-		centerprint(self, "Huh?");
-	if (dmsg_cnt == 12)
-		centerprint(self, "Mode: 1 - quantum tunneling...sounds iffy to me");
-	if (dmsg_cnt == 13)
-		centerprint(self, "Mode: 2 - entry / exit portal.  Eww.  Dont even want to know.");
-	if (dmsg_cnt == 14)
-		centerprint(self, "Mode: 3 - select random teleport.  WHAT?\nRandom freaking teleports got us in this mess!");
-	if (dmsg_cnt == 15)
-		centerprint(self, "Mode: 4 - portal telefrag.  Now we're talkin.");
-	if (dmsg_cnt == 16)
-		centerprint(self, "Mode: 5 - multi portal telefrag.\nGonna have to try that after they work the bugs out.");
-	if (dmsg_cnt == 17)
-	{
-		centerprint(self, "Enough of this, lets go try this baby out on Shubbers.");
-		dmsg_togl = 1;
-	}
-	if (dmsg_cnt == 18)
-		centerprint(self, "First, a little test, heh heh.");
-	if (dmsg_cnt == 19)
-		centerprint(self, "Cripes!");
-	if (dmsg_cnt == 20)
-		centerprint(self, "Figures.  Live human subject then, <SIGH>.");
-	if (dmsg_cnt == 21)
-		centerprint(self, "Ha, cool!");
-	if (dmsg_cnt == 22)
-	{
-		centerprint(self, "Right, off we go.  We'll see about this quantum tunnel.");
-		dmsg_togl = 1;
-	}
-	if (dmsg_cnt == 23)
-	{
-		centerprint(self, "Hrm, doesnt seem to work on rune gates.");
-		dmsg_togl = 1;
-	}
-	if (dmsg_cnt == 24)
-		centerprint(self, "Ah ha, ye old tunnel to shubs lair.\nRunes Shmunes, who needs em?");
-	if (dmsg_cnt == 25)
-	{
-		centerprint(self, "A verticle drop into stinky water - \nbet a quid there's rot fish down here.");
-		dmsg_togl = 1;
-	}
-	if (dmsg_cnt == 26)
-	{
-		centerprint(self, "Told ya so.");
-		stuffcmd(self, "noadmin_centertime\n");
-	}
-	if (dmsg_cnt == 27)
-	{
-		centerprint(self, "Ladies & gents, introducing, the one the only\nShub NIggurath herself.  Right, telefrag time.");
-		dmsg_togl = 1;
-	}
-	if (dmsg_cnt == 28)
-		centerprint(self, "Target Acquired - got you locked in my sights shubs.");
-	if (dmsg_cnt == 29)
-	{
-		centerprint(self, "Doink - portal open...and...");
-		dmsg_togl = 1;
-	}
-	if (dmsg_cnt == 30)
-	{
-		centerprint(self, "...BAM.");
-		stuffcmd(self, "noadmin_centertime\n");
-	}
-
-
-	dmsg_cnt = dmsg_cnt + 1;
-};
-
-// think stat package - try to track down heavy think periods
-
-.float thkw;
-.float lastthink;
-float cvs1;
-
-void() think_stat =
-{
-	local entity e;
-	local float f, p, b, i, m, u, w, s1;
-
-	self.nextthink = time + 0.033;
-
-	if (cvs1 > -553) // not active
-	{
-		self.nextthink = time + 5;
-		return;
-	}
-
-	if (self.attack_finished > time) 
-	{
-		e = findradius(world.origin, 300000);
-		while(e)
-		{
-			if (e.lastthink != e.nextthink) e.thkw = e.thkw + 1;
-			e.lastthink = e.nextthink;
-			e = e.chain;
-		}
-		return;
-	}
-	self.attack_finished = time + 1;
-
-	if (cvs1 == -554) 		bprint("^												^^ ents:  ");
-
-
-	b = i = m = p = u = w = // nw = 
-	f = 0;
-	e = findradius(world.origin, 300000);
-	while(e)
-	{
-		if (e != self)
-		if (e.think != (void ()) 0)
-		if (e.nextthink > time)
-		if (e.nextthink <= time + 1)
-		{
-			f = f +1;
-			if (e.class_select == "class_bot") b = b + 1;
-			else if (e.class_select == "class_monster") m = m + 1;
-			else if (e.flags & FL_ITEM) i = i + 1;
-			else u = u + 1;
-//			if (!e.thkw) nw = nw + 1;
-			w = w + e.thkw;
-
-			if (e.thkw > 16)
-			if (cvs1 == -557)
-			{
-				bprint("^																				^^ Think weight > 16: ");
-				bprint(item_ident(e));
-				bprint(" - wt: ");
-				bprint(ftos(e.thkw));
-				bprint("\n");
-			}
-			e.thkw = 0;
-/*
-			if (e.lastthink != e.nextthink)
-			{
-				wa = e.nextthink - e.lastthink;
-				if (wa < 0.11) w = w + 8; // firing every 10th or less
-				else if (wa < 0.3) w = w + 6;
-				else if (wa < 0.52) w = w + 4;
-				else if (wa < 1.1) w = w + 2; 
-				else w = w + 1;
-			}
-			else nw = nw + 1; // no weight, lt & nt same
-			e.lastthink = e.nextthink;
-*/
-			}
-		if (cvs1 == -554)
-		{
-			bprint(item_ident(e));
-			bprint(" ");
-		}
-		e = e.chain;
-	}
-	if (cvs1 == -554) bprint("\n");
-	if (f)
-	{
-		bprint("^											^^ Thinking next rel:  ");
-		bprint(ftos(f));
-		bprint(" -- wgt: ");
-		bprint(ftos(w));
-		bprint(" -- bot: ");
-		bprint(ftos(b));
-		bprint(" -- mon: ");
-		bprint(ftos(m));
-		bprint(" -- itm: ");
-		bprint(ftos(i));
-		bprint(" -- oth: ");
-		bprint(ftos(u));
-		bprint("\n");
-	}
-}
-
 // precache all PK items here - relocated from world.qc
 
 void() PK_init =
@@ -232,7 +16,7 @@ void() PK_init =
 	DARKPLACES = cvar("pr_checkextension"); // check for dp engine
 
 // info strings set by server - these only work on the server
-	localcmd("alias version \"echo quake-c: chaos archon alpha 3.0\"\n");
+	localcmd("alias version \"echo quake-c: chaos archon alpha 1.0\"\n");
 	localcmd("alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
 	localcmd("alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
 	localcmd("alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
@@ -287,11 +71,6 @@ void() PK_init =
 	}
 
 	local entity e;
-
-// TEST: think stats
-	e = spawn();
-	e.think = think_stat;
-	e.nextthink = time + 1;
 
 	if (PK_ADMIN)
 	{
@@ -393,6 +172,8 @@ void() PK_init =
 		localcmd("unalias blvl bmap\n"); // unalias - not needed
 	}
 
+	bot_lvlreload = world;
+
 // drop inventory allows serverflags runes to be thrown out - must follow players to new levels if they were collected
 
 	if (!RUNES)
@@ -409,7 +190,8 @@ void() PK_init =
 	rune_new_map = FALSE;
 
 // fix major altarbeta clipping problem on some rocks
-
+// NOTE: this could be put in ent file as func_model
+	
 	if (world.model == "maps/altarbeta.bsp")
 	{
 		e = spawn();
@@ -874,13 +656,13 @@ void() pk_liveupd =
 // bots
 	if (BOTFREEZE != cvar("sv_c_botfreeze")) bot_froze(world);
 
-	cvs1 = 
 	f = cvar("saved1");
 
 	if (f == 268226) // frik botcam toggle code
 	{
 		BOTCAM = fabs(1 - BOTCAM); // NOTE: frik code does NOT verify the state of cam if toggled off with this
 		cvar_set("saved1", "0"); // cant clear outside test, used for too much dev prints
+		f = 0;
 	}
 		
 	noway_below = cvar("sv_bot_noway_below"); // no bot waypoints below this
@@ -1139,6 +921,7 @@ void() pk_liveupd =
 	DM_MONSTER = FALSE;
 	if (find(world,class_select,"class_monster")) DM_MONSTER = TRUE;
 
+	HUB_MONSTER = cvar("sv_monster_hub");
 	S_MONSTER = cvar("sv_monster_resp");
 	S_MONSTER_II = cvar("sv_monster_resp2");
 	if (S_MONSTER & MONSTER_MASK)
@@ -1189,6 +972,25 @@ void() pk_liveupd =
 		cube_handle("pk_crates");
 		PK_CRATE = cvar("pk_crates");
 	}
+
+
+//server defaulter - if no specials set
+
+	if (deathmatch)
+	{
+		f = cvar("no_auto");
+		if (!f) // test auto-launch
+		{
+			cvar_set("no_auto", "1"); // only test once
+			if (!PK_CRATE && !PK_CUBE && !MORPHIC && !RUNES)
+			if (!S_MONSTER && !S_MONSTER_II && !C_MONSTER && !C_MONSTER_II && !M_MONSTER && !M_MONSTER_II)
+			{
+				localcmd("typical\n"); // run typical alias
+				localcmd("default_hub\n"); // load default hub
+			}
+		}
+	}
+
 
 // turrets
 	if (PK_TUR_AMMO != cvar("pk_tur_ammo") || 
@@ -1520,7 +1322,7 @@ void() pk_srvcmd_set =
 // morphic
 	MORPH_CUBE_TIME = 120;
 	MORPH_CUBE_DV = 40;
-	MORPHIC = 0; // TEST: 2;
+	MORPHIC = 0; // def: 2 ?
 	morph_setup();
 
 	M_MONSTER = 0;
@@ -1690,6 +1492,8 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 						"260":"261":"262":"263":"264":"265":"266":"267":"268":"269":"270":"271":"272":"273":"274":"275":"276":"277":"278":"279":
 						"280":"281":"282":"283":"284":"285":"286":"287":"288":"289":"290":"291":"292":"293":"294":"295":"296":"297":"298":"299":
 						"300":"301":"302":"303":"304":"305":"306":"307":"308":"309":"310":"311":"312":"313":"314":"315":"316":"317":"318":"319":
+/*
+current max is 312, move lines out of comment as needed
 						"320":"321":"322":"323":"324":"325":"326":"327":"328":"329":"330":"331":"332":"333":"334":"335":"336":"337":"338":"339":
 						"340":"341":"342":"343":"344":"345":"346":"347":"348":"349":"350":"351":"352":"353":"354":"355":"356":"357":"358":"359":
 						"360":"361":"362":"363":"364":"365":"366":"367":"368":"369":"370":"371":"372":"373":"374":"375":"376":"377":"378":"379":
@@ -1723,7 +1527,9 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 						"920":"921":"922":"923":"924":"925":"926":"927":"928":"929":"930":"931":"932":"933":"934":"935":"936":"937":"938":"939":
 						"940":"941":"942":"943":"944":"945":"946":"947":"948":"949":"950":"951":"952":"953":"954":"955":"956":"957":"958":"959":
 						"960":"961":"962":"963":"964":"965":"966":"967":"968":"969":"970":"971":"972":"973":"974":"975":"976":"977":"978":"979":
-						"980":"981":"982":"983":"984":"985":"986":"987":"988":"989":"990":"991":"992":"993":"994":"995":"996":"997":"998":"999";
+						"980":"981":"982":"983":"984":"985":"986":"987":"988":"989":"990":"991":"992":"993":"994":"995":"996":"997":"998":"999"
+*/
+;
 
 // not an enabled / wise engine - we must return now, no live server controls are possible and we are running on defaults
 
@@ -1739,7 +1545,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 	if (DARKPLACES) // reg under darkplaces - chaos engine has pre-reg
 	{
 // server controls
-		registercvar("anode", "0"); // set true when testing anode
+		registercvar("no_auto", "0"); // allow everything to be turned off without re-launching defaults
 
 		registercvar("sv_xtras", "0"); // set true when xtra
 		registercvar("sv_dmstart", "0");
@@ -1816,12 +1622,13 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_pk_cmap", "0"); // admin setup custom maps - activate server map loop via pknextmap aliases
 
 // morphic
-		registercvar("sv_morph", "0"); // TEST: 4");
-		registercvar("sv_morph_time", "30"); // TEST: "120");
-		registercvar("sv_morph_dv", "5"); // TEST: "40");
+		registercvar("sv_morph", "0");
+		registercvar("sv_morph_time", "60");
+		registercvar("sv_morph_dv", "10");
 //		registercvar("cl_morph", "12"); // client ident
 
 // dm monsters
+		registercvar("sv_monster_hub", "0"); // if true monsters will spawn on hub vote maps
 		registercvar("sv_monster_map", "0"); // bit mask to allow map monsters in dm
 		registercvar("sv_monster_rnd", "0"); // bit mask to allow random spawned monsters in dm
 		registercvar("sv_monster_cnt", "0"); // # of random monster to spawn
@@ -1834,9 +1641,9 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 // things dealing with the dead
 
 		registercvar("sv_dead_xpack", "1"); // 0 = no xweap in pack (std op), 1 = include extra weapon held in pack, 2 = no weaps at all, just ammo, 3 = no packs (no applicable to monsters)
-		registercvar("sv_dead_throw", "4");// TEST: "0"); // 0 = no weps thrown, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 4 = throw weaps, all worky, 8 = randomize throwing (every wep is not thrown), 16 = throw weps when gibbed
-		registercvar("sv_dead_throw_pki", "1");// TEST: "0"); // 0 = no painkeep items thrown - all in pack, 1 = throw painkieep items, 2 = pain keep items gone
-		registercvar("sv_dead_throw_armor", "1");// TEST: "0"); // 0 = no armor tossed, 1 = throw armor
+		registercvar("sv_dead_throw", "4"); // 0 = no weps thrown, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 4 = throw weaps, all worky, 8 = randomize throwing (every wep is not thrown), 16 = throw weps when gibbed
+		registercvar("sv_dead_throw_pki", "1"); // 0 = no painkeep items thrown - all in pack, 1 = throw painkieep items, 2 = pain keep items gone
+		registercvar("sv_dead_throw_armor", "1"); // 0 = no armor tossed, 1 = throw armor
 		registercvar("sv_dead_gibpack", "1"); // 0 = dont throw a back pack when gibbed, 1 = throw back pack always, 2 = throw packs in singleplayer
 		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at the ready weapon
 

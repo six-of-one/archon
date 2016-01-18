@@ -490,13 +490,13 @@ void() pk_plcfg =
 				q3_bob_height();
 		}
 // web site segment
-		stuffcmd(self, "alias version \"echo quake-c: chaos archon alpha 3.0\"\n");
+		stuffcmd(self, "alias version \"echo quake-c: chaos archon alpha 1.0\"\n");
 		stuffcmd(self, "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
 		stuffcmd(self, "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n");
 		stuffcmd(self, "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
 		stuffcmd(self, "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
 
-		stuffcmd(self, "infobar 30 \"you are playing: Archon 3.1 alpha\"\n");
+		stuffcmd(self, "infobar 30 \"you are playing: Archon 1.0 alpha\"\n");
 	}
 };
 
@@ -602,29 +602,7 @@ void() PutClientInServer =
 
 	if (self.health_modifier <= 0) self.health_modifier = MHUMAN_HEALMOD;
 
-	if  (cvar("anode"))
-//	if (1) // TEST:
-	{
-		self.morphy = IMP_MANODEX;
-		stuffcmd(self, "exec anode.cfg\n");
-	}
-	else
-		stuffcmd(self, "exec archon.cfg\n");
-
-//	self.morphy = IMP_MGREMLIN_F; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
-
-
-
-// TEST:demo
-if (DEMO)
-{
-	self._summon = demo_msg;
-	stuffcmd(self, "cd stop\n");
-	stuffcmd(self, "notest\n");
-}
-
-
 
 	if (self.ammo_shells < 0) // stop the morph ammo factory - morphs do not start with 25 shells
 	{
@@ -1144,7 +1122,8 @@ void () WaterMove =
 		if (surfnum >= 0)
 		{
 			f = FALSE;
-	
+
+// NOTE: this doesnt seem to work the same  way - excised liquit is allowing swimming /etc.			
 			surface = getsurfacetexture(world, surfnum);
 			if (surface == "*teleport") f = TRUE; // teleport is not water, cant swim. cant drown
 			if (surface == "*teleport2") f = TRUE;
@@ -1158,14 +1137,6 @@ void () WaterMove =
 
 			if (f)
 			{
-
-
-// TEST:
-//bprint("*** excised water: ");
-//bprint(surface);
-//bprint("\n");
-
-
 
 				self.watertype = self.waterlevel = 0;
 				self.flags = self.flags - (self.flags & FL_INWATER);
@@ -1538,20 +1509,6 @@ void () PlayerPostThink =
 		}
   }
 
-	if (self.movetarget.model == "progs/anode_x.mdl")
-	{
-		if (intermission_running || self.view_ofs == '0 0 0')
-		{
-			self.movetarget.model = "";
-		}
-		else
-		{
-			self.movetarget.angles_x = 0; // - self.angles_x;
-			setorigin(self.movetarget, self.origin);
-			self.movetarget.angles_y = self.angles_y; // relative angles
-		}
-	}
-
 	if (self.vw_frame != framecount)
 		viswep_post(); // Cataboligne - 9.26.9 - viswep code link - always have to run this for 1 player + pk*bots deal
 
@@ -1682,8 +1639,9 @@ void () PlayerPostThink =
 // PK_DUTYCHECKING_START
 	if (self.pk_dutychecking == 0)
 	{
-		bolt_checkTargets();
-
+		if (self.bolt_target || self.bolt_targetNext || ((self.bolt_changeModelTimeout < time) && (self.weaponmodel == "progs/v_cl_on.mdl")) )
+			bolt_checkTargets();
+	
 		CheckPowerups ();
 
 		if (self.copb_timeout)
@@ -1705,7 +1663,8 @@ void () PlayerPostThink =
 	}
 	else if (time > self.pk_dutychecking)
 	{
-		bolt_checkTargets();
+		if (self.bolt_target || self.bolt_targetNext || ((self.bolt_changeModelTimeout < time) && (self.weaponmodel == "progs/v_cl_on.mdl")) )
+			bolt_checkTargets();
 
 		CheckPowerups ();
 
@@ -1903,29 +1862,12 @@ void(entity e) noenvcide =
 */
 
 // called from killed - updated client obit for pk items
-entity Infl, Targ, Att;
 
 void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 {
 	local	float rnum;
 	local	string deathstring, deathstring2;
 	rnum = random();
-
-
-
-//TEST:
-Infl = inflictor;
-Targ = targ;
-Att = attacker;
-
-if (cvs1 == -556)
-{
-bprint("\nInflicitor was:");
-bprint(item_ident(inflictor));
-bprint("\n");
-}
-
-
 
 	if (attacker.classname == "bot_fix") return;
 
@@ -2233,7 +2175,7 @@ bprint("\n");
 			}
 			else
 			{
-				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below - this includes monsters! - NOTE: anode_x vector...
+				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below - this includes monsters! 
 
 				if (attacker.frags > high_score) high_score = attacker.frags; // secretly for bot morph decision making
 

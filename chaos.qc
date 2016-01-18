@@ -592,9 +592,9 @@ float(string surf, vector v, entity e) sky_touch =
 
 // new sky contents code
 
-	if (surfnum >= 0 || surf != "")
+	if (surfnum2 >= 0 || surf != "")
 	{
-		if (surf == "") last_texture = getsurfacetexture(world, surfnum);
+		if (surf == "") last_texture = getsurfacetexture(world, surfnum2);
 		else last_texture = surf;
 		if (last_texture == "sky1" || last_texture == "sky4" || last_texture == "sky0" || last_texture == "sky2" || last_texture == "sky6") t = TRUE;
 		else if (last_texture == "skydark") t = TRUE;
@@ -659,102 +659,6 @@ string(vector wt, string rs1, string rs2, string rs3, string rs4, string rs5) rn
 	return sl;
 };
 
-// fn(info_think) - think to display various info
-
-// TESTING
-float zz;
-
-void () info_think =
-{
-	if (self.button0 || self.lefty) 
-	{
-		bprint(self.noise);
-		bprint(ftos(self.button0));
-		bprint("\n");
-	}
-	else if (self.noise) bprint(self.noise);
-
-	if (self.button1 || self.lefty) 
-	{
-		bprint(self.noise1);
-		bprint(ftos(self.button1));
-		bprint("\n");
-	}
-	else if (self.noise1) bprint(self.noise1);
-
-	if (self.button2 || self.lefty)
-	{
-		bprint(self.noise2);
-		bprint(ftos(self.button2));
-		bprint("\n");
-	}
-	else if (self.noise2) bprint(self.noise2);
-
-	if (self.items || self.lefty)
-	{
-		bprint(self.noise3);
-		bprint(ftos(self.items));
-		bprint("\n");
-	}
-	else if (self.noise3) bprint(self.noise3);
-
-	if (self.weapon || self.lefty)
-	{
-		bprint(self.noise4);
-		bit_print(MAXFL, self.weapon);
-		bprint("\n");
-	}
-	else
-	if (self.pos1 != v0 || self.lefty) 
-	{
-		bprint(self.noise4);
-		bprint(vtos(self.pos1));
-		bprint("\n");
-	}
-	else if (self.noise4) bprint(self.noise4);
-
-	if (self.target) bprint(self.target);
-	if (self.target1) bprint(self.target1);
-	if (self.target2) bprint(self.target2);
-
-	remove(self);
-};
-
-float info_ttime;
-
-void(float tm, string l1, string l2, string l3, string l4, string l5, float f1, float f2, float f3, float f4, vector v1, float bp) spawn_infot =
-{
-	local entity e;
-	local float t;
-
-	if (!WARNING) return;
-
-	if (tm < 0)
-		e.lefty = TRUE; // print zeros
-
-	e = spawn();
-	if (l1) e.noise = l1;
-	if (l2) e.noise1 = l2;
-	if (l3) e.noise2 = l3;
-	if (l4) e.noise3 = l4;
-	if (l5) e.noise4 = l5;
-
-	if (f1) e.button0 = f1;
-	if (f2) e.button1 = f2;
-	if (f3) e.button2 = f3;
-	if (f4) e.items = f4;
-	if (v1 != v0) e.pos1 = v1;
-	if (bp) e.weapon = bp;
-
-	e.think = info_think;
-	t = time + fabs(tm);
-	if (t <= info_ttime) t = info_ttime + 1;
-	e.nextthink = t;
-	info_ttime = t;
-}
-
-
-// spawn_infot(1, "", "",  "",  "",  "", 0, 0, 0, 0, v0, 0);
 
 /*QUAKED trigger_hurt_switch (.5 .5 .5) ? START_OFF
 Switchable - when target is called .touch will toggle
@@ -877,12 +781,6 @@ void () trigger_hurt_switch =
 
 float(entity e) notmod =
 {
-
-
-// TESTING
-//	if (cvs1 == 17 || cvar("saved1") == -999) return(FALSE); // allow test
-
-
 
 	if (e.wad == "!mod" || e.netname == "!mod")
 	{
@@ -1058,6 +956,215 @@ void() th_arcarn =
 	}
 	
 };
+
+// archon_fader - fade archon colors for floor
+
+void() archon_fader =
+{
+	local entity t;
+
+	t = find (world, targetname, self.target);
+
+	if (self.delay <= 0) self.delay = 0.05; // default - 20 steps - note: really all need to be the same
+	if (self.wait <= 0) self.wait = 10; // default - 60 secs per color
+	if (self.cnt <= 0) self.cnt = 0.1; // default - tenth per alpha seq
+
+	if (t.delay <= 0) t.delay = 0.05;
+	if (t.wait <= 0) t.wait = 10;
+	if (t.cnt <= 0) t.cnt = 0.1;
+
+	if ((self.alpha >= 1) && !t) // cycle 1 color
+	{
+		self.alpha = 1;
+		self.nextthink = time + self.wait;
+		self.delay = 0 - self.delay;
+	}
+	else
+	if (self.alpha <= 0)
+	{
+		self.alpha = 0.001; // cant set alpha at 0 - engine displays full tex
+		if (t)
+		{
+			 t.alpha = 1;
+			t.nextthink = time + t.wait;
+			t.think = archon_fader;
+		}
+		else // no targets - cycle this color
+		{
+			self.nextthink = time + self.wait;
+			self.delay = 0 - self.delay;
+		}
+	}
+	else
+	{
+		self.alpha = self.alpha - self.delay;
+		if (t) t.alpha = t.alpha + self.delay;
+		self.nextthink = time + self.cnt;
+	}
+};
+
+
+// cause the map load wont set this correctly
+
+void() archon_fadeinit =
+{
+	self.alpha = 0.001;	
+};
+
+
+float arc_pwr_item;
+
+// change points spray color
+// make items for points
+
+void() archon_powerclr =
+{
+	local float f;
+	local entity e;
+
+	if (self.attack_finished < time)
+	{
+		self.attack_finished = time + 10 + random() * 5;
+		f = rint(random() * 4.3);
+		if (!f) self.cnt = 74;
+		else if (f == 1) self.cnt = 210;
+		else if (f == 2) self.cnt = 146;
+		else if (f == 3) self.cnt = 194;
+		else if (f == 4) 
+		{
+			f = rint(random() * 31.4);
+			self.cnt = 2 + (f * 8);
+		}
+	}
+
+	f  = (self.search_time < time);
+	if (f) self.search_time = time + 5 + random() * 5;
+
+	e = findradius(self.origin, 38);
+	while (e && f)
+	{
+		if (e.flags & FL_CLIENT) f = FALSE;
+		if (e.flags & FL_ITEM)
+		if (e.button14 == self.owner.button14) f = FALSE;
+		e = e.chain;
+	}
+
+	if (f) // no players & we dont have an item here - make one
+	{
+		e = self;
+		self = spawn(); // temp ent
+		self.origin = e.owner.origin;
+		self.delay = self.count = 0;
+		self.wait = MC_SUPER_SHOTGUN + rint(random() * 6.4); // weps & poss quad
+		if (random() < 0.4) self.wait = -3;
+		else
+		if (random() < 0.2) self.wait = -1;
+
+		self.spawnflags = 2 | 8; // respawn on item - + spawnflag for old dynamic remove
+		func_make();
+		newmis.velocity = v0; // stop eject
+		newmis.button14 = e.owner.button14;
+
+// make ammo for weps - can only be gotten one time
+		if (newmis.items & IT_SUPER_SHOTGUN)
+		{
+			self.wait = MC_ASHELLS_LG;
+			if (random() < 0.22)
+				self.wait = MC_AEXPLSH;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+		}
+		else if (newmis.items & (IT_SUPER_NAILGUN | IT_NAILGUN))
+		{
+			self.wait = MC_ANAILS_LG;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+	}
+		else if (newmis.items & (IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER))
+		{
+			self.wait = MC_AROCKETS_LG;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+		}
+		else if (newmis.items & IT_LIGHTNING || newmis.pk_currentitem == PK_IT_CLIGHT)
+		{
+			self.wait = MC_ACELLS_LG;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+			func_make();
+			newmis.punchangle = MED_BOUNCE_NOW;
+		}
+
+		remove(self);
+		self = e;
+	}
+};
+
+void() archon_power =
+{
+	local entity e;
+
+	e = chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "archon_powerclr", "", SUB_Null, 1, q2_teleport_particles, archon_powerclr, self, world);
+	e.cnt = 74;
+// dont always make items
+	if (random() < 0.4)
+		e.search_time = time + 3 + random() * 5;
+
+
+// unique id for each point
+	if (!arc_pwr_item) arc_pwr_item = 4000 + rint(10 * random());
+	self.button14 = arc_pwr_item;
+	arc_pwr_item = arc_pwr_item + 1 + rint(random() * 6);
+
+// TDO: sounds, powers
+};
+
+// touching a point when it activates
+
+void(entity e) archon_point_heal =
+{
+// heal level
+	e.health_modifier = 0.6;
+	e.healtype = 2;
+	if (random() < 0.5)
+	{
+		e.health_modifier = 0.8;
+		e.healtype = 3 + rint(0.33 + random());
+	}
+	else
+	if (random() < 0.15)
+	{
+		e.health_modifier = 1;
+		e.healtype = 4 + rint(0.33 + random());
+	}
+	
+};
+
+// TDO: other effects - proof against magic spell attack too
+
+void() archon_power_touch =
+{
+	if (!other.healtype) archon_point_heal(other);
+
+	if (activator.health < (activator.max_health * activator.health_modifier * other.health_modifier)) // health < points mod
+		T_Heal(activator,other.healtype + rint(0.33 + random()), 0);
+};
+
+void() archon_power_act =
+{
+	self.model = "";
+	self.solid = SOLID_NOT;
+	self.use = archon_power_touch;
+};
+
 
 // func_arcarn - archon arena blocks
 

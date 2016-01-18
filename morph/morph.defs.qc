@@ -36,6 +36,7 @@ float S_MONSTER; // bit mask of monsters to respawn when dead (map monsters only
 float C_MONSTER; // bit mask of monsters to spawn randomly
 float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent - if 0 save for a live control update loop that can recreate the monster
 float DM_MONSTER;	// true if any option allows monsters in dm
+float HUB_MONSTER;	// true if monsters will appear on hub maps
 
 // timings
 float S_MONSTER_WAIT; // min wait till we respawn a dead mosnter
@@ -216,8 +217,6 @@ float CB_SCOURGE					= 524288;
 float CB_IMP						= 2097152;
 float CB_ARACHN					= 4194304; // mode bits = 4 modes
 float CB_CYBER						= 8388608;
-// anode
-float CB_ANODEX					= 1048576;
 
 
 // code numbers - store in .morphy
@@ -225,7 +224,6 @@ float CB_ANODEX					= 1048576;
 
 float IMP_MCHAOS					= 6;	// string STI_MCHAOS			= "impulse 6";
 float IMP_MORDER					= 7;	// string STI_MORDER			= "impulse 7";
-float IMP_MANODEX					= 9;	// string STI_MANODEX		= "impulse 9";
 //float USE_PULSE_SPIKES			= -257368;
 //Techs:
 float IMP_MHUMAN					= 12;	// string STI_MHUMAN			= "impulse 12"; // NOTE: char_q - standard quake guy
@@ -287,7 +285,6 @@ float HEADSKN_Q3					= 3; // 5;
 void(float silent) player_scourge_become;
 void(float silent) player_shalrath_become;
 void(float silent) player_enforcer_become;
-void(float silent) player_anode_become;
 void(float silent) player_demon_become;
 void(float silent) player_zombie_become;
 void(float silent) player_hknight_become;

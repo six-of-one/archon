@@ -109,8 +109,6 @@ float(float sel) cb_morph =
 	else if (sel == IMP_MIMP)			return(CB_IMP);
 	else if (sel == IMP_MCYBER)		return(CB_CYBER);
 	else if (sel == IMP_MARACHN)		return(CB_ARACHN);
-//anode:
-	else if (sel == IMP_MANODEX)		return(CB_ANODEX);
 
 // bit masks to morphic
 
@@ -143,8 +141,6 @@ float(float sel) cb_morph =
 	else if (sel == CB_IMP)				return(IMP_MIMP);
 	else if (sel == CB_CYBER)			return(IMP_MCYBER);
 	else if (sel == CB_ARACHN)			return(IMP_MARACHN);
-//anode:
-	else if (sel == CB_ANODEX)			return(IMP_MANODEX);
 
 	return 0; // failed - IMP_* &| CB_* not recognized
 };
@@ -477,7 +473,8 @@ void() morph_cube =
 	}
 
 
-// TEST:
+// TEST: until rest of morphs ready
+// TDO: level access - perhaps by server xp, diff masks
 self.mask_x = MORPH_MONSTER;
 
 
@@ -537,23 +534,27 @@ void(float r1, string sn, float lts ) morph_sound =
 
 void(string ws, float rtime ) morph_walksound =
 {
-	float fgr;
+	float fgr, hubvt;
 
 	fgr = self.flags & FL_ONGROUND;
 	if (self.morphy == IMP_MGREMLIN_F && self._stand == gremlin_hover) fgr = TRUE;
 
-	if (WALKSOUND && ((self.cnt < time) || !fgr))
-		{
+// voted on a hub - turn off walk sounds
+// note: gremlin spawning uses .map var
+	if (inHubMap && self.map != "") hubvt = TRUE;
+
+	if (WALKSOUND && ((self.cnt < time) || !fgr) || hubvt)
+	{
 		sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);
 // supertank hack - need a better method - ignore flag or some such
-		if ( (!fgr && !(self.morphy == IMP_MSUPTANK) ) || intermission_running)
+		if ( (!fgr && !(self.morphy == IMP_MSUPTANK) ) || intermission_running || hubvt)
 			return;
 		else
-			{
+		{
 			sound (self, CHAN_BODY, ws, 0.6, ATTN_NORM);
 			self.cnt = time + rtime;
-			}
 		}
+	}
 };
 
 
@@ -1094,7 +1095,7 @@ float(string mm) set_char_num =
 // polymorph other - set self to correct player after impulse call from spell caster
 // check morph allow bits prior to switch
 
-// TEST:ING
+
 void(float silent) player_human_become = 
 {
 	if (self.class_select == "class_player")
@@ -1207,7 +1208,6 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MGREMLIN_F) player_gremlin_become(pls);
 		else if (cmd == IMP_MGREMLIN_L) player_gremlin_become(pls);
 
-		else if (cmd == IMP_MANODEX) player_anode_become(pls);
 		else player_human_become(pls);
 	/*
 		else if (cmd == IMP_MIMP) player_imp_become(pls);
@@ -1496,21 +1496,14 @@ void() random_monster =
 		e = find(e, class_select, "class_monster");
 	}
 
+	if (inHubMap && !HUB_MONSTER) return; // no monsters on hub vote map
+	
 	if (C_MONSTER_CNT > 0)
 	if (mc != monster_rnd_cnt)
 	{
 		if (monster_rnd_cnt >= C_MONSTER_CNT)
 		if (mc < monster_rnd_cnt)
 		{
-
-
-bprint(" --------- monster count total fail:  ");
-bprint(ftos(mc));
-bprint(" != master: ");
-bprint(ftos(monster_rnd_cnt));
-bprint("\n");
-
-
 			monster_rnd_cnt = mc;
 		}
 	}
@@ -1586,24 +1579,6 @@ bprint("\n");
 
 		self.event = "dyn_monster";
 		item_call(self.wad);
-
-if (cvs1 == -555)
-{
-bprint("spawning: ");
-bprint(item_ident(self));
-bprint(" - wad: ");
-bprint(self.wad);
-bprint(" - cnt: ");
-bprint(ftos(monster_rnd_cnt));
-bprint(" - limit: ");
-bprint(ftos(C_MONSTER_CNT));
-bprint(" - f: ");
-bprint(ftos(f));
-bprint(" - M: ");
-bprint(ftos(M));
-bprint("\n");
-}
-
 
 		if ((f >= 1) && (M == MON_FUNC_II)) f = 0;
 		if ( (c.cnt >= 1) && random() < C_MONSTER_II_RND)

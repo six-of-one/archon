@@ -31,19 +31,10 @@ void() chase_cam_precache =
 };
 
 //original chasecam.qc
-float PR_VIEWPC = 1; // set to 1 to show viewport changes - leaving this test in for significance of viewport hijacks
 
 void( entity m_e, entity v_e) set_viewport =
 {
 	if (m_e.class_select == "class_bot") return; // no bots
-
-
-if (PR_VIEWPC)
-{
-bprint ("set_viewport:  in call - ent = ");
-bprint(item_ident(m_e));
-bprint ("\n");
-}
 
 	msg_entity = m_e;                         // target of message
 	WriteByte (MSG_ONE, SVC_SETVIEWPORT);
@@ -229,12 +220,6 @@ void( float opt ) Remove_chase_cam =
 	// set view-point back to normal
 	set_viewport( self.owner, self.owner);
 
-
-	
-if (PR_VIEWPC) bprint ("set_viewport: remove cam\n");
-
-
-
 	setmodel( self, "" );
 	self.velocity = '0 0 0';
 
@@ -277,11 +262,6 @@ void () cam_deathmove =
 
 	if (self.owner.solid != SOLID_NOT) // respawned
 	{
-
-
-if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
-
-
 		remove( self);
 		return;
 	}
@@ -389,17 +369,6 @@ if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
 		setorigin(self.owner, self.origin);
 		set_viewport(self.owner, self.owner); // back to moving players own ent, cams off
 
-
-
-if (PR_VIEWPC)
-{
-bprint ("set_viewport: deathmove -- model was: ");
-bprint (self.owner.model);
-bprint ("\n");
-}
-
-
-
 		sprint(self.owner,"your spirit is free!\n");
 	}
 
@@ -431,12 +400,6 @@ void () cam_deathview =
 
 // FIXED - viewport restore here
 //		set_viewport(self.owner, self.owner); // test this
-
-
-
-if (PR_VIEWPC) bprint ("--------------- non_viewport: cam dview\n");
-
-
 
 		remove( self);
 		return;
@@ -516,13 +479,6 @@ void() cam_startdeathview =
 	e.dest = '0 0 0' - v_forward; // save forward direction, used in cam_deathview
 
 	set_viewport( self, e);
-
-
-
-if (PR_VIEWPC) bprint ("set_viewport: cam start dview\n");
-
-
-
 };
 
 
@@ -562,13 +518,6 @@ void() Keep_cam_chasing_owner =
 		if (intermission_running)
 		{
 			set_viewport( self.owner, self.owner);
-
-
-
-if (PR_VIEWPC) bprint ("set_viewport: intermix\n");
-
-
-
 			remove( self );
 		}
 		else
@@ -583,13 +532,6 @@ if (PR_VIEWPC) bprint ("set_viewport: intermix\n");
 			{
 				self.owner.view_ofs_z = -1;
 				set_viewport( self.owner, self);
-
-
-
-if (PR_VIEWPC) bprint ("set_viewport: deadcam in keep chasing\n");
-
-
-
 			}
 		}
 		return;
@@ -645,21 +587,6 @@ if (PR_VIEWPC) bprint ("set_viewport: deadcam in keep chasing\n");
 	// pulling forward on a down aim
 	dir = v_forward;
 
-
-/*
-   bprint(  "cam org = " );
-   bprint(  vtos(self.origin) );
-   bprint(  "\n" );
-
-local string s1;
-   bprint(  "\n\n f_f = " );
-   s1 = ftos( f_f );
-   bprint(  s1 );
-   bprint(  " ------ c-o = " );
-   s1 = ftos( vlen(self.origin - self.owner.origin));
-   bprint(  s1 );
-   bprint(  "\n" );
-*/
 
 	// increment fade-back variable
 	self.ammo_shells = self.ammo_shells + 4.5;
@@ -837,13 +764,6 @@ local string s1;
 //			self.owner.view_ofs_z = 22;
 			self.owner.view_ofs_z =  morph_chasecam_fpv(self.owner); // Cataboligne 9.19.3 - morph chasecam return to FPV
 			set_viewport( self.owner, self.owner);
-
-
-
-if (PR_VIEWPC) bprint ("set_viewport: temp disab restore\n");
-
-
-
 		}
 	}
 	else
@@ -853,13 +773,6 @@ if (PR_VIEWPC) bprint ("set_viewport: temp disab restore\n");
 			self.skin = 0;
 			self.owner.view_ofs_z = -1;
 			set_viewport( self.owner, self);
-
-
-
-if (PR_VIEWPC) bprint ("set_viewport: temp disable \n");
-
-
-
 		}
 	}
 
@@ -1083,32 +996,6 @@ void(float sel) cam_parms =
 	}
 };
 
-
-// fn(bot_renew) - do button push for bots on think or call
-// because bots, like sandmen __ALWAYS__ go to carosel to renew.
-
-// NOTE: does this need to be in a bot file?
-
-/*
-
-// deprecated - just respawn below because its no longer a cam op deal
-
-void() bot_renew =
-{
-		self.health = -1;
-		self.deadflag = DEAD_RESPAWNABLE;
-//		self.think = SUB_Remove;
-//		self.nextthink = time + 0.2; // Cat - fixed 4.4.10 - these were not removing for frikbot
-
-//	setorigin(self.owner, self.oldorigin);
-//		self.velocity = ' 0 0 0';
-		if (!intermission_running) 
-		{
-			self.think = respawn;
-			self.nextthink = time + 0.5 + random() * 5;
-		}
-}
-*/
 
 	// prevent internal C from tilting the view after
 	// QC has already initiated all death processes

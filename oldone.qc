@@ -232,13 +232,6 @@ void() finale_4 =
 	// start the end text
 	WriteByte (MSG_ALL, SVC_FINALE);
 
-
-if (DEMO)
-	WriteString (MSG_ALL, "Congratulations and well done! You have\nbeaten the hideous Shub-Niggurath, and\n\nwait a sec...where did the crates \ncome from on the difficulty selection\n map? (nevermind the map itself!)\n\nAh - the Chaos Archon Mod!\n\nhttp://www.moddb.com/mods/\bchaos-archon\b/");	
-else
-
-
-
 	WriteString (MSG_ALL, "Congratulations and well done! You have\nbeaten the hideous Shub-Niggurath, and\nher hundreds of ugly changelings and\nmonsters. You have proven that your\nskill and your cunning are greater than\nall the powers of Quake. You are the\nmaster now. Id Software salutes you.");
 
 // put a player model down

@@ -59,60 +59,6 @@ void(entity ve, float camct, float mcd, string spf, float islot) xwep_fakeload =
 		remove(self);
 	}
 
-/*
-TEST: more testing before removeal
-		ve.eweapon = ve;
-		ve._attack = self._attack;
-		ve._fr_attack = self._fr_attack;
-		ve.vv_draw = self.vv_draw;
-		ve.vv_holster = self.vv_holster;
-		ve.vwepmdl = self.vwepmdl; // for pack / dthrow weps
-//		ve.touch = self.touch;
-
-		ve.weapon = ve.items = self.items;
-		if (self.items == IT_AXE) ve.pk_currentitem = self.pk_currentitem; // replacing the axe
-		ve.x_items = self.x_items;
-		ve.currentammo = self.currentammo;
-		ve.lip = self.lip;
-		ve.attack_finished = self.attack_finished;
-		ve.dmg = self.dmg;
-		ve.dodmg = self.dodmg;
-		ve.dmg_save = self.dmg_save;
-		ve.dmg_take = self.dmg_take;
-		ve.bulletspread = self.bulletspread;
-		ve.aflag = camct;
-		ve.style = self.style; // melee flag
-		ve.lefty = self.lefty; // misc data
-//		ve.cnt = self.cnt; // vw skinnage
-		if (self.mcode) ve.mcode = self.mcode; // for pack touch deal
-
-		ve.netname = self.netname;
-//		ve.mdl = self.mdl; - invisible
-		setmodel (ve, self.vwepmdl);
-		ve.mdl = ve.model;
-		if (!VW)
-		{
-			if (!(ve.weapon == IT_AXE && ve.pk_currentitem == PK_IT_AXE)) // any axe replacement
-			if (ve.mdl != "progs/vw_q2_hgr.mdl")
-			if (ve.mdl != "progs/vw_axe.mdl" && ve.mdl != "progs/vw_mjolnir.mdl")
-				setmodel (ve, VW_DEFGUN);
-		}
-		if (self.skin) ve.skin = self.skin;
-		ve.weaponmodel = self.weaponmodel;
-		ve.chaosweptime = self.chaosweptime;
-		ve.endtime = self.endtime;
-		ve.duration = self.duration;
-		ve.noise = self.noise;
-		ve.noise2 = self.noise2;
-		ve.noise3 = self.noise3;
-		ve.noise4 = self.noise4;
-		ve.target = self.target; // missile strike snd
-		ve.target1 = self.target1; // missile models
-// hooks
-		ve.target2 = self.target2;
-		ve.targetname = self.targetname;
-		ve.killtarget = self.killtarget;
-*/
 	self = sv;
 }
 
@@ -171,11 +117,6 @@ void(entity e, float smc) set_xweap =
 	if (!e) return;
 	wbt = valid_wep_mcode(smc); // make sure this is a valid weapon & get inv. bit
 
-
-// TESTING
-spawn_infot(2, "set bits = ", "",  "",  "",  " -- items: ", wbt, 0, 0, 0, v0, e.items);
-
-
 	if (!wbt || wbt & e.items) return; // no bit or already got one - IDEA: code an axe swap ??
 
 	if ((smc >= MC_AXE && smc <= MC_THUNDER) || smc == MC_HIP_MJOLNIR) // NOTE: q1 weapon map codes MUST be sequential for condition here
@@ -193,16 +134,6 @@ spawn_infot(2, "set bits = ", "",  "",  "",  " -- items: ", wbt, 0, 0, 0, v0, e.
 		if (! e.pk_items & tr.pk_currentitem)
 			e.pk_items = e.pk_items | tr.pk_currentitem;
 		set_xw_defammo(tr, e); // make sure we have ammo
-
-
-
-// TESTING
-spawn_infot(2, "x item bits = ", " -- x wep = ",  "",  "",  " -- items: ", tr.items, tr.weapon, 0, 0, v0, e.items);
-spawn_infot(1, "vwepent:  ", tr.netname,  "\nmapcode: ",  "",  "", 0, 0, smc, 0, v0, 0);
-zz=3;
-
-
-
 	}
 
 };
@@ -249,7 +180,6 @@ void(entity e, float bl) xw_bit_loop =
 	{
 		b = bl & f;
 		mc = wepbit_mcode(b, MAP_MODE);
-//spawn_infot(-2, "xwbitloop bit call = ", "mask  = ",  " -- map code: ",  "",  "bits sent = ", b, f, mc, 0, v0, bl);
 		if (mc)
 			set_xweap(e, mc);
 		f = f * 2;

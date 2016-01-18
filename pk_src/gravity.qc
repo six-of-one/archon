@@ -131,35 +131,14 @@ void() gravity_pull =
 	while (e)
 	{
 
-
-
-// TESTING
-if (WARNING)
-{
-
-if (!grav_visible(e))
-	{
-		bprint("--- failed grav pull: ");
-		bprint(item_ident(e));
-		bprint(", by visible\n");
-	}
-
-if (!pk_art_movshot_ck(e, "grav"))
-	{
-		bprint("--- failed grav pull: ");
-		bprint(item_ident(e));
-		bprint(", by pk_art_movshot\n");
-	}
-
-}
-
 		gFal = TRUE; // fail check for ext dist items
 		if (gExt) // sgw - laser range test
 		{
 			if (vlen(e.origin - self.origin) > gDist)
 			{
 // idea: sgw - chance to teleport out of range in range
-//if (e != self.owner) //TEST:
+//if (e != self.owner) // idea: should not target owner ?
+
 				if (random() < 0.366)
 				if (can_has_target(e, self, self.origin, 0, sgl)) // check LOS to grav
 				{
@@ -178,7 +157,7 @@ if (!pk_art_movshot_ck(e, "grav"))
 			else // in range - other tests
 			{
 // idea: sgw - grim flakes
-//if (1) // TEST:
+
 				if (random() < 0.45)
 				{
 					v1 = v0;
@@ -348,6 +327,7 @@ void() drop_gravity =
 	setmodel(gravity, "progs/cube.mdl");
 	// TODO get acurate sizing
 	setsize(gravity, '-32 -32 -32', '32 32 32');
+	newmis.alpha = 1; // has to be set for norm ops to work right
 
 	/*
 	gravity.think = gravity_explode;

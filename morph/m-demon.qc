@@ -202,19 +202,6 @@ void() player_demon_explode =
 		else
 		k = random() * 100 + (sv.health * f) + sv.armorvalue;
 
-
-
-if (cvs1 == -556)
-{
-bprint("---- demon boom init tot dmg: ");
-bprint(ftos(k));
-bprint(" - * ");
-bprint(ftos(f));
-bprint("\n");
-}
- 
- 
-
 		if (sv.items & IT_INVULNERABILITY)
 		{
 			bprint("\n\n\n\nRune Powered - ");
@@ -224,17 +211,6 @@ bprint("\n");
 			if ((sv.rune_flag & RUNE_FULL) && (sv.rune_flag & TECH_MASK_ALL)) f = 1;
 			k = k * (5 + f);
 
-
-if (cvs1 == -556)
-{
-bprint("---- demon super boom tot dmg: ");
-bprint(ftos(k));
-bprint(" - * ");
-bprint(ftos(f + 5));
-bprint("\n");
-} 
- 
-			
  			e = findradius(self.origin, DEMONBOOM_RADIUS);
 			while (e)
 			{
@@ -258,20 +234,6 @@ bprint("\n");
 					k = k -  e.health * v;
 
 					T_Damage(e, self, self.owner, f);
-
-
-if (cvs1 == -556)
-{
-bprint("---- demon boom super dmg: ");
-bprint(ftos(f));
-bprint(" - to ");
-bprint(item_ident(e));
-bprint(" - pts left: ");
-bprint(ftos(k));
-bprint("\n");
-}
- 
- 
 				}
 				e = e.chain;
 			}

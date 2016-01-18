@@ -199,19 +199,6 @@ void() bot_saveData =
 			{
 				pk12 = (pk12 + ((offset * e.skil) & (offset * 3)));
 
-
-
-if (WARNING)
-{
-	bprint("\n*** dp/c change parms: bot (");
-	bprint(e.netname);
-	bprint(") skill (");
-	bprint(ftos(e.skil));
-	bprint(") stored (");
-	bprint(ftos(pk12));
-	bprint(") \n");
-}
-
 				offset = (offset * 4);
 			}
 		}
@@ -233,19 +220,6 @@ if (WARNING)
 		}
 		e = find (e,classname,"pk*bot");
 	}
-
-
-
-if (WARNING)
-{
-	bprint("\n*** bot data set - p12 (");
-	bprint(ftos(pk12));
-	bprint(") p13 (");
-	bprint(ftos(pk13));
-	bprint(") \n");
-}
-
-
 
 	cvar_set("sv_bot_pk", ftos(pk12));
 	cvar_set("sv_bot_pktm", ftos(pk13));
@@ -285,19 +259,6 @@ void() bot_changeParms =
 			{
 //				parm12 = (parm12 + (((offset * e.skil) * 10) & (offset * 31)));
 				parm12 = (parm12 + ((offset * e.skil) & (offset * 3)));
-
-
-
-if (WARNING)
-{
-	bprint("\n*** std change parms: bot (");
-	bprint(e.netname);
-	bprint(") skill (");
-	bprint(ftos(e.skil));
-	bprint(") stored (");
-	bprint(ftos(parm12));
-	bprint(") \n");
-}
 
 				offset = (offset * 4);
 			}
@@ -914,16 +875,6 @@ void() bot_wakey =
 	if (self.owner.button16 == -666000) // make sure bot didnt respawn or change state
 	if (self.owner.class_select == "class_bot")
 	{
-
-
-if (cvs1 == -555)
-{
-bprint("------------------- ** bot woken  ");
-//bprint(item_ident(e));
-bprint(self.owner.netname);
-bprint("\n");
-}
-
 		self.owner.button16 = self.owner.frags;
 		self.owner.button15 = self.owner.health;
 		if (self.owner.classname == "pk*bot")
@@ -950,17 +901,6 @@ void() bot_fixed =
 		self.owner.armorvalue = 0;
 		self.owner.invincible_finished = 0;
 		T_Damage (self.owner,world,bot_fix,self.owner.health + 10);
-
-
-if (cvs1 == -555)
-{
-bprint("------------------- ** bot fixed  ");
-//bprint(item_ident(e));
-bprint(self.owner.netname);
-bprint("\n");
-}
-
-
 	}
 	remove(self);
 }
@@ -978,13 +918,6 @@ void() bot_fixer =
 
 	if (!BOT_FIXED || (bot_fix && !e) || (intermission_running) )
 	{
-
-
-
-bprint("bot fix removed\n");
-
-
-
 		remove(self);
 		bot_fix = world;
 		return;
@@ -1027,30 +960,10 @@ bprint("bot fix removed\n");
 						f.nextthink = time + 2 + random() * 5;
 						f.owner = e;
 						e.button16 = -666000;
-
-if (cvs1 == -556)
-{
-bprint("------------------- ** bot waking  ");
-//bprint(item_ident(e));
-bprint(e.netname);
-bprint("\n");
-}
-
-
 					}
 // had to put this back in - bot inactivity is still happening
 					else if (bot_fix.cnt < 1) // note: this only checks frags on 14 sec loop - need a longer range check for this
 					{
-
-
-if (cvs1 == -556)
-{
-bprint("------------------- ** bot fixing  ");
-bprint(e.netname);
-//bprint(item_ident(e));
-bprint("\n");
-}
-
 					f = spawn();
 					f.classname = "bot_fixer";
 					f.think = bot_fixed;
@@ -1102,19 +1015,6 @@ void() Bot_Melee =
 					SpawnBlood (e.origin, '0 0 0', 20);
 					T_Damage (e,self,self,20 + random() * 10);
 					f = FALSE;
-
-
-
-if (cvs1 == -556)
-{
-bprint(" --------- bot special melee attack:: ");
-bprint(self.netname);
-bprint(" - hit - ");
-bprint(e.netname);
-bprint("\n");
-}
-
-
 				}
 			}
 			e = e.chain;

@@ -150,9 +150,6 @@ void() turret_dropTurret =
 		else if (turret.state == 16) turret.dmg = 33.3;
 	}
 
-// TEST: - REMOVE
-//	turret.dmg = cvar("saved1");
-
 // set direction
 	turret.angles = self.angles;
 	turret.v_angle = self.v_angle;

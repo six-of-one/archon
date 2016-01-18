@@ -2,6 +2,8 @@
 // bot consts & protos
 // **************************************
 
+entity bot_lvlreload; // Cataboligne - make sure bots continue after level ends
+
 float MSG_UPDATENAME			= 13;
 float MSG_UPDATEFRAGS		= 14;
 float MSG_UPDATECOLORS		= 17;

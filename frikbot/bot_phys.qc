@@ -586,10 +586,6 @@ void() SV_FlyMove =
 
 	if (!self.flags & FL_CLIENT && self.class_select != "class_bot")
 	{
-		bprint("======= FSCK: non bot in SV_FlyMove -- ");
-//		bprint(item_ident(self));
-		eprint(self);
-		bprint("\n");
 		return;
 	}
 	if (self.phys_obj == world)
@@ -651,9 +647,6 @@ void() SV_Physics_Client =
 {
 	if (self.class_select != "class_bot") //return; // why do we need this test?
 {
-bprint("===*=== FSCK: non bot in SV_Physics_Client -- ");
-bprint(item_ident(self));
-bprint("\n");
 		return;
 }
 

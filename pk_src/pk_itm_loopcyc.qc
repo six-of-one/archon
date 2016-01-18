@@ -227,15 +227,10 @@ void(entity e) init_loopcyc =
 				e.killtarget = cl;
 				fr = f1;
 				e.wait = -666; // so we dont master server these!
-bprint("switch list to: ");
-bprint(cl);
-bprint("\n");
 			}
 		}
 		e.delay = f1;
 		cl = item_by_mcode(f1);
-bprint("first item: ");
-bprint(cl);
 	}
 	if (cl == "")
 	{
@@ -284,18 +279,12 @@ bprint(cl);
 				{
 					f1 = loop_next(e, f1);
 					cl = item_by_mcode(f1);
-if (f1 != fr)
-{
-bprint(", next item: ");
-bprint(cl);
-}
 					if (f1 == fr) fr = 0; // done drop out
 					else s2 = sr;
 				}
 			}
 			sf = sf - 1;
 		}
-bprint("\n");
 	}
 	else // create a series of random cycle items
 	{

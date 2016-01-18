@@ -891,15 +891,6 @@ void() rune_maker =
 			if (rune_count >= RUNE_CNT || self.cnt > 4 || tm > 60)
 			if (f < rune_count)
 			{
-
-
-bprint(" --------- rune count total not matched:  ");
-bprint(ftos(f));
-bprint(" != master: ");
-bprint(ftos(rune_count));
-bprint("\n");
-
-
 				self.cnt = 0;
 				rune_count = f;
 				rune_map = rm; // need rebuilt rune map too

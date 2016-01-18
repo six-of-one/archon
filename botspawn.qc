@@ -50,25 +50,6 @@ void () initBotLevel =
 	NOISEQUEUE = noisetarget ();
 	num = ((serverflags & BOTS) / 16);
 
-
-
-// TESTING
-if (0)
-if (WARNING)
-{
-bprint("Entry: initBotLevel: ");
-bprint(ftos(cvar("sv_bot_pk")));
-bprint(" - passed vals pk12:  ");
-bprint(ftos(self.cnt));
-bprint("  pk13:  ");
-bprint(ftos(self.count));
-bprint("  num:  ");
-bprint(ftos(num));
-bprint("\n");
-}
-
-
-
 	serverflags = serverflags - (serverflags & BOTS) - (serverflags & INITLEVEL);
 	NUMBOTS = 0;
 	NUMPATHS = 0;
@@ -89,25 +70,6 @@ bprint("\n");
 //			c_skill = ((0.1 * (parm12 & (offset * 31))) / offset);
 			f = c_skill = ((self.cnt & (offset * 3)) / offset);
 		}
-
-
-
-// TESTING
-if (WARNING)
-{
-bprint(" --- adding - skill: ");
-bprint(ftos(c_skill));
-bprint(" - f: ");
-bprint(ftos(f));
-bprint(" - I: ");
-bprint(ftos(i));
-bprint("  - num:  ");
-bprint(ftos(num));
-bprint(" - make test: ");
-bprint(ftos(num || (i && f > 0)));
-bprint("\n");
-}
-
 
 		offset = (offset * 4);
 		if (num || (i && f > 0))

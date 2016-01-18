@@ -71,6 +71,7 @@ void () W_FireAxe =
 	if (trace_ent.takedamage)
 	{
 		trace_ent.axhitme = 1;
+		if (trace_ent.netname != "Crate") // ick: hack - handle in spawnblood, recode to pass ent
 		SpawnBlood (org, '0 0 0', 20);
 		T_Damage (trace_ent,self,self,20);
 	}
@@ -238,6 +239,7 @@ void (float damage, vector dir) TraceAttack =
 
 	if (trace_ent.takedamage)
 	{
+		if (trace_ent.netname != "Crate") // ick: hack - handle in spawnblood, recode to pass ent, include doors & triggers
 		SpawnBlood (org, vel*0.2, damage);
 		AddMultiDamage (trace_ent,damage);
 	}
@@ -1454,68 +1456,6 @@ void () QuadCheat =
 	{
 		if (deathmatch || coop)	b_launch(1);
 		else bprint("*** warning: botmatch attempted in single player!\n");
-	}
-// TEST:
-
-	setmodel(self, self.model);
-	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
-
-	if (cvar("saved1") == -555) // simple bot watch
-	if (find(world, class_select,"class_bot")|| find(world, map,"rune"))
-	{
-		if (!self.enemy) // simple bot watch
-		{
-			self.enemy = find(world, class_select,"class_bot");
-			if (!self.enemy) 
-				self.enemy = find(world, map,"rune");
-			if (self.enemy) 
-			{
-				set_viewport( self, self.enemy);
-				bprint(" --- *** view:  ");
-				bprint(self.enemy.netname);
-				bprint("\n");
-			}
-		}
-		else
-		if (self.enemy.map == "rune")
-		{
-			self.enemy = find(self.enemy, map,"rune");
-			if (self.enemy)
-			{
-				set_viewport( self, self.enemy);
-				bprint(" --- rune view:  ");
-				bprint(self.enemy.netname);
-				bprint("\n");
-			}
-			else
-			{
-				set_viewport( self, self);
-				bprint(" --- *** view: home ");
-				bprint("\n");
-			}
-			
-		}
-		else
-		{
-			self.enemy = find(self.enemy, class_select,"class_bot");
-			if (self.enemy)
-			{
-				set_viewport( self, self.enemy);
-				bprint(" --- bot view:  ");
-				bprint(self.enemy.netname);
-				bprint("\n");
-			}
-			else
-			{
-				self.enemy = find(world, map,"rune");
-				if (!self.enemy)
-				{
-					set_viewport( self, self);
-					bprint(" --- *** view: home ");
-					bprint("\n");
-				}
-			}
-		}
 	}
 
 	if (deathmatch || coop)

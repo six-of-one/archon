@@ -3698,7 +3698,7 @@ void() wdecor_floorlamp =
 	setmodel(self,"progs/w_dcr_floorlmp.mdl");
 
 	self.solid = SOLID_BSP;
-//	if (self.spawnflags & NOBLOCK) // TEST: - restore later
+	if (self.spawnflags & NOBLOCK)
 		self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_NONE;	
 	sv_decor(self);

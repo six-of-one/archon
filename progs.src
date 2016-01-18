@@ -187,9 +187,6 @@ morph/m-hknigh.qc
 morph/m-ogre.qc
 morph/m-shambl.qc
 morph/m-gremlin.qc
-morph/m-anode.qc
-
-anode.qc
 
 bot.qc
 bot_func.qc

@@ -443,6 +443,15 @@ void() hub_control_use =
 	// get highest counting map
 	highest = getHighestWithoutRandom();
 
+// there is one + bot(s) - make sure they do a level reload, may not be any humans
+	if (find(world, class_select, "class_bot"))
+	{
+		e = spawn();
+		e.classname = "bot_hubreload";
+		e.think = GotoNextMap;
+		e.nextthink = time + 60 + (random() * 20);
+	}
+
 	// error
 	if (highest == world)
 	{
@@ -771,6 +780,10 @@ void() hub_control =
 	else if (world.model == "maps/hub3.bsp")
 	{
 		self.map = "hub3";
+	}
+	else if (world.model == "maps/arc_hub.bsp") // Cataboligne - 10.25.11 - added archon hub
+	{
+		self.map = "arc_hub";
 	}
 	if (self.map)
 	{
@@ -1217,12 +1230,11 @@ void() WaitForVotesThink =
 	// next think
 	self.nextthink = time + 0.1;
 
-// note for self - this is wrong
-//	localcmd("cl_bob 0\n"); // stop bob so voted view isnt borked
-	stuffcmd(self, "cl_bob 0\n"); // stop bob so voted view isnt borked
-
 	if (self.messagetimeout < time)
 	{
+		sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM); // turn off walk sounds
+		stuffcmd(self, "cl_bob 0\n"); // stop bob so voted view isnt borked
+
 		if (self.attack_state)
 		{
 			if (self.laststattime < time)

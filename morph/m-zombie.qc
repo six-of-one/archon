@@ -633,15 +633,6 @@ void() cloudkill =
 	clc = 0; // cloud blob cound
 	dist = (self.cnt + random() * self.lip) * mult;
 
-
-if (cvs1 == -555)
-{
-bprint("cloud loop: ");
-bprint(ftos(dist));
-bprint("\n");
-}
-
-
 	while (dist > 0) // particle effects cloud
 	{
 		dist = dist - 1;

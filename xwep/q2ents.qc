@@ -832,10 +832,7 @@ void() q2_weapon_rocketlauncher =
 // appearances
 	setmodel (self, "progs/q2_rocketl.mdl");
 	self.weaponmodel = "progs/v_q2_rl.mdl";
-//	self.vwepmdl = "progs/vw_q2_rock.mdl";
-// TESTING
-	self.vwepmdl = "progs/vw_q2_rock2.mdl";
-	self.vv_draw = vw_range_base;
+	self.vwepmdl = "progs/vw_q2_rock.mdl";
 
 	self.noise = "q2_snd/w_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
@@ -2169,23 +2166,30 @@ void() q2_teleport_particles =
 {
 	local vector v1;
 
+	if (!self.cnt)
+		self.cnt = 192;
+
 	v1_x = crandom() * 18;
 	v1_y = crandom() * 18;
 	v1_z = crandom() * 6;
 	self.velocity_z = 200 + crandom() * 50;
-	particle (self.origin + v1, self.velocity, 192, 4);
+	particle (self.origin + v1, self.velocity, self.cnt, 4);
 
 	v1_x = crandom() * 18;
 	v1_y = crandom() * 18;
 	v1_z = 16 + crandom() * 6;
 	self.velocity_z = 200 + crandom() * 50;
-	particle (self.origin + v1, self.velocity, 192, 4);
+	particle (self.origin + v1, self.velocity, self.cnt, 4);
 
 	v1_x = crandom() * 18;
 	v1_y = crandom() * 18;
 	v1_z = 32 + crandom() * 6;
 	self.velocity_z = 200 + crandom() * 50;
-	particle (self.origin + v1, self.velocity, 192, 4);
+	particle (self.origin + v1, self.velocity, self.cnt, 4);
+
+	if (self.th_die != SUB_Null)
+   if (self.th_die != (void()) 0)
+		self.th_die();
 
 	self.nextthink = time + 0.05;
 };
@@ -2258,19 +2262,6 @@ float(entity e, entity f, float dm) power_armor =
 // not doing this - if armor was on & more cells are gotten its stays on till turned off
 //		e.x_items = e.x_items - (e.x_items & X_PWR_ARM_MASK); // turn off armor - out of cells
 	}
-
-
-
-if (WARNING)
-{
-	bprint("\n*** warning: power armor saved (");
-	bprint(ftos(save));
-	bprint(") pts damage out of (");
-	bprint(ftos(dm));
-	bprint(") damage\n\n");
-}
-
-
 
 	return(save);
 };

@@ -1702,11 +1702,11 @@ void() AdminCommands =
 		}
 		else
 		{
-			if (self.path == "fraglimit ") // TEST:
+			if (self.path == "fraglimit ")
 			if (NOEXIT_SAVEFRAG > -1)
 				NOEXIT_SAVEFRAG = self.admin_input;
 
-			if (self.path == "timelimit ") // TEST:
+			if (self.path == "timelimit ")
 			if (NOEXIT_SAVETIME > -1)
 				NOEXIT_SAVETIME = self.admin_input;
 

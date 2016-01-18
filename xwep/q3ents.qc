@@ -2376,7 +2376,7 @@ To make a jump pad, place this entity at the highest point of the jump and targe
 
 void() target_position =
 {
-	setmodel(self, "progs/hook.mdl");
+//	setmodel(self, "progs/hook.mdl");
 };
 
 /*QUAKED q3_trigger_push (.5 .5 .5) ? PUSH_ONCE

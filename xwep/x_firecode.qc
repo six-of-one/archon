@@ -55,14 +55,6 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.th_melee = SUB_Null;
 	if (self.th_melee != (void ()) 0) e.th_melee = self.th_melee; // multi modes
 
-
-
-// TEST: demo
-if (DEMO)
-if (self.classname == "weapon_portal") e.mcode = MC_PORTAL;
-
-
-
 // alt fire modes
 	if (self._alt_fire != (void ()) 0) e._alt_fire = self._alt_fire; // multi modes
 	else self._alt_fire = e._alt_fire = SUB_Null;
@@ -154,7 +146,12 @@ void() x_weapon_touch =
 	if (e)
 	if (e.mdl == self.vwepmdl) ign = ! leave; // same wep - can get ammo, if not leaving
 
-	if (e && !ign) return; // cant replace -> cant get this, not compatible
+	if (e && !ign)
+	{
+		if (self.classname == "q2_ammo_grenades") // can still get q2 gren as ammo
+			pk_ammo_touch();
+		return; // cant replace -> cant get this, not compatible
+	}
 
 	if (leave && (other.items & self.items))	return;
 
@@ -548,44 +545,6 @@ void() melee_hit =
 	traceline (source, source + v_forward * dm, FALSE, self);
 
 
-
-
-
-// TESTING
-if (cvs1 == -777)
-{
-bprint(" *** eweap ");
-bprint(EWEAP.netname);
-}
-
-
-// TESTING
-	dm = EWEAP.dmg;
-	if (dm == DOOM_ML_DMG) dm = 10 * ceil(random() * 2);
-
-
-
-
-if (cvs1 == -777)
-{
-bprint(", hit dmg = ");
-bprint(ftos(dm));
-//bprint(", splash dmg = ");
-//bprint(ftos(EWEAP.dodmg));
-fts.dmg_take = fts.dmg_take + dm;
-fts.dmg_save = fts.dmg_save + 1;
-
-
-bprint(", tot dmg = ");
-bprint(ftos(dm));
-bprint(".\n");
-fts.dmg = fts.dmg + dm;
-fts.cnt = fts.cnt + 1;
-}
-
-
-
-
 	if (trace_fraction == 1.0)
 		return;
 
@@ -811,36 +770,9 @@ void () X_MissileTouch =
 		return ;
 	}
 
-
-if (cvs1 == -777)
-{
-if (self.eweapon) {
-bprint(" *** eweap ");
-bprint(self.eweapon.netname);
-}
-else
-bprint(" *** missile (?) ");
-}
-
-
 	if (!self.dmg) self.dmg = 100 + random() * 20;
 	else if (self.dmg == DOOM_ROCK_DMG) self.dmg = 20 * ceil(random() * 8);
 	if (!self.dodmg) self.dodmg = 120;
-
-
-
-// TESTING
-if (cvs1 == -777)
-{
-bprint(", hit dmg = ");
-bprint(ftos(self.dmg));
-bprint(", splash dmg = ");
-bprint(ftos(self.dodmg));
-fts.dmg_take = fts.dmg_take + self.dmg;
-fts.dmg_save = fts.dmg_save + 1;
-}
-
-
 
 	if (other.health)
 	{
@@ -852,20 +784,6 @@ fts.dmg_save = fts.dmg_save + 1;
 	// don't do radius damage to the other, because all the damage
 	// was done in the impact
 	T_RadiusDamage (self,self.owner,self.dodmg,other);
-
-
-
-
-// TESTING
-if (cvs1 == -777)
-{
-bprint(", tot dmg = ");
-bprint(ftos(self.dmg+self.dodmg));
-bprint(".\n");
-fts.dmg = fts.dmg + self.dmg+self.dodmg;
-}
-
-
 
 //	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
 	self.origin = self.origin - 8*normalize(self.velocity);
@@ -900,26 +818,7 @@ void (float shotcount, float pdmg, vector dir, vector spread) X_FireBullets =
 	ClearMultiDamage ();
 	while (shotcount > 0)
 	{
-		if (pdmg == DOOM_SHOT_DMG) {ddmg = 5 * ceil(random() * 3);
-
-
-
-// TESTING
-if (cvs1 == -777)
-{
-bprint(", bdmg = ");
-bprint(ftos(ddmg));
-}
-
-}
-if (cvs1 == -777)
-{
-tdmg = tdmg + ddmg;
-fts.dmg_take = fts.dmg_take + ddmg;
-fts.dmg_save = fts.dmg_save + 1;
-}
-
-
+		if (pdmg == DOOM_SHOT_DMG) ddmg = 5 * ceil(random() * 3);
 
 		direction = dir + crandom()*spread_x*v_right + crandom()*spread_y*v_up;
 
@@ -941,17 +840,6 @@ void () X_FireHitscan =
 {
 	local vector dir;
 	local float f, d, t;
-
-
-
-// TESTING - fire rates
-if (cvs1 == -777)
-{
-bprint(" *** eweap ");
-bprint(EWEAP.netname);
-tdmg = 0;
-}
-
 
 	self.punchangle_x = -2 * EWEAP.dmg_save;
 	cam_punch(); // Cataboligne - 6.26.10 - because of fire from frames call
@@ -993,21 +881,6 @@ tdmg = 0;
 		dir = aim (self,100000);
 
 	X_FireBullets (t, EWEAP.dmg, dir, EWEAP.bulletspread);
-
-
-
-
-// TESTING
-if (cvs1 == -777)
-{
-bprint(", tot dmg = ");
-bprint(ftos(tdmg));
-bprint(".\n");
-fts.dmg = fts.dmg + tdmg;
-if (fts.eweapon._attack == SUB_Null) fts.cnt = fts.cnt + 1;
-}
-
-
 
 };
 
@@ -1395,18 +1268,6 @@ void () X_FireOnePlasma =
 	local float dm, dbfg;
 	vector org, bfwd;
 
-
-
-
-// TESTING
-if (cvs1 == -777)
-{
-bprint(" *** eweap ");
-bprint(EWEAP.netname);
-}
-
-
-
 	dbfg = 0; // detect bfgs
 	dm = 15;
 	pls = "progs/d_plasma_sht.mdl";
@@ -1467,31 +1328,6 @@ bprint(EWEAP.netname);
 		}
 	}
 //	sound (self, CHAN_WEAPON, snd, 1, ATTN_NORM);
-
-
-
-
-
-// TESTING
-if (cvs1 == -777)
-{
-bprint(", hit dmg = ");
-bprint(ftos(dm));
-bprint(", splash dmg = ");
-bprint(ftos(EWEAP.dodmg));
-fts.dmg_take = fts.dmg_take + dm;
-fts.dmg_save = fts.dmg_save + 1;
-
-
-bprint(", tot dmg = ");
-bprint(ftos(dm+EWEAP.dodmg));
-bprint(".\n");
-fts.dmg = fts.dmg + dm+EWEAP.dodmg;
-fts.cnt = fts.cnt + 1;
-}
-
-
-
 
 };
 
@@ -1748,38 +1584,10 @@ float PKPLUS_IT_CORPSE			= 1024; // special - (tomb genned) corpse has health, c
 // flg - flags control tests
 
 
-
-
-// test
-float chtt;
-
-
-
-
-
-
-
 float(entity e, entity f, vector cht_org, float r, float flg) can_has_target =
 {
 	local float k;
 	local vector v, corg;
-
-
-/*
-//TESTING
-bprint("can has: ");
-bprint(item_ident(e));
-bprint(" --- ");
-if (f) 
-	bprint(item_ident(f));
-else bprint(" 2nd ent world");
-bprint(" -e org =  ");
-	bprint(vtos(e.origin));
-bprint(" -corg =  ");
-	bprint(vtos(cht_org));
-bprint(" \n");
-*/
-
 
 	if (!e) return(FALSE); // cant target world
 	if (e.classname == "turret_base") return(FALSE); // never target these - not valide
@@ -1931,18 +1739,6 @@ bprint(".\n");
 	if ((e.flags & FL_CLIENT) && (flg & TFL_PLY)) return(FALSE);
 	if ((e.flags & FL_MONSTER) && (flg & TFL_MON)) return(FALSE);
 
-
-
-if (chtt)
-{
-bprint(" *** cht found ent (");
-bprint(item_ident(e));
-bprint(")\n");
-}
-
-
-
-
 	return(TRUE);
 };
 
@@ -1977,48 +1773,24 @@ float(vector sorg, float srd, float sfl, float sifr) bfg_targ_seq =
 
 // traces for bfg weaps - q2 is different
 
-
-
-float bdm;
-
-
-
-
 void() bfg_trace_thk =
 {
 	local float f, j, k, kl, tr, bfl, sf, ifr;
 	local entity e, tl;
 
-
-/*
-bprint("*** * bfg pre beam think code = ");
-bprint(ftos(self.flags));
-bprint(".\n");
-*/
-
-
 	if (self.flags == 0.768) // doom bfg
 	{
 		self.nextthink = time + (self.flags / 2) - 0.2;
 		self.flags = DOOM_BFG;
-bdm = 0;
 		return;
 	}
 	else if (self.flags == 0.87)
 	{
 		self.flags = Q2_BFG_LASER;
-chtt = bdm = 0;
 	}
 
 	if (self.flags == Q2_BFG) // ball struck, do ray damage at end of travel
 	{
-
-
-
-tr = 0;
-chtt = 1;
-
-
 
 		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM ;		// all hittable things
 		k = bfg_targ_seq(self.enemy.origin, Q2_BFG_TRACE, bfl, 0); // find things to dmg in beam radius
@@ -2034,78 +1806,14 @@ chtt = 1;
 					f = f * (Q2_BFG_LASER / k);
 				}
 
-
-
-chtt = 0;
 local vector v1, v2;
 local float i, m;
 local entity g;
-
-/*
-	v1 = e.origin - self.enemy.origin;
-	m = vlen(v1) * 0.01;
-	v2 = normalize(v1) * m;
-	v1 = self.enemy.origin;
-	i = 100;
-	while (i > 0) // beam from ball
-	{
-		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/bfgbit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
-		if (g)
-		{
-			g.alpha = 0.7;
-		}
-		v1 = v1 + v2;
-		i = i - 1;
-	}
-	g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, e.origin, v0, v0, v0, v0, "", e.model, SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
-	g.frame = e.frame;
-
-	v1 = e.origin - self.owner.origin;
-	m = vlen(v1) * 0.01;
-	v2 = normalize(v1) * m;
-	v1 = self.owner.origin;
-	i = 100;
-	while (i > 0) // beam from player
-	{
-		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/beambit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
-		if (g)
-		{
-			g.alpha = 0.5;
-		}
-		v1 = v1 + v2;
-		i = i - 1;
-	}
-*/
-
-
-tr = tr + 1;
-if (cvs1 == -777)
-{
-bprint("*** q2 bfg beam hit = ");
-bprint(item_ident(e));
-bprint(", for dmg = ");
-bprint(ftos(f));
-bprint(".\n");
-}
-
-//fts.dmg_take = fts.dmg_take + f;
-//bdm = bdm + f;
-
-
 
 				T_Damage (e,self,self.owner,f);
 				}
 				e = e.theowner;
 			}
-
-
-
-if (cvs1 == -777)
-{
-bprint(", beams fired = ");
-bprint(ftos( tr));
-}
-
 
 
 	}
@@ -2129,54 +1837,13 @@ bprint(ftos( tr));
 				T_Damage (e,self,self.owner,Q2_BFG_LASER_DMG);
 
 				v1 = e.origin - self.enemy.origin;
-/*	
-				m = 2; //vlen(v1) * 0.02;
-				v2 = normalize(v1) * m;
-				v1 = self.enemy.origin;
-				i = vlen(v1) / m;
 
-if (cvs1 == -777)
-{
-bprint(" --- laser vln = ");
-bprint(ftos(vlen(v1)));
-bprint(" - cnt = ");
-bprint(ftos(i));
-bprint(".\n");
-}
-
-				if (self.cnt & 1)
-				while (i > 0)
-				{
-					g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/bfgbit.spr", SUB_Remove, 0.1, SUB_Remove, SUB_Null, self, world);
-					if (g)
-					{
-						g.alpha = 0.55;
-					}
-					v1 = v1 + v2;
-					i = i - 1;
-				}
-*/
 				g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.enemy.origin, v0, v0, vectoangles(v1), v0, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
 				i = vlen(v1);
 				i = floor(i / 32);
 				if (i > 63) i = 63;
 				g.frame = i;
 				g.skin = 1;
-
-if (cvs1 == -777)
-{
-fts.dmg_take = fts.dmg_take + Q2_BFG_LASER_DMG;
-bdm = bdm + Q2_BFG_LASER_DMG;
-}
-
-/*
-bprint("*** q2 bfg laser hit = ");
-bprint(item_ident(e));
-bprint(", for dmg = ");
-bprint(ftos(Q2_BFG_LASER_DMG));
-bprint(".\n");
-*/
-
 
 			}
 			e = e.chain;
@@ -2233,55 +1900,6 @@ bprint(".\n");
 			{
 				T_Damage (e,self,self.owner,f);
 				if (e.health <= 0) kl = kl - 1;
-
-
-
-/* TESTING - illuminate doom bfg beams from player loc, show last frame of killed ents
-	if (e.count == 0)
-	{
-		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, e.origin, v0, v0, v0, v0, "", e.model, SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
-		g.frame = e.frame;
-		e.count = 1;
-	}
-	else
-		e.count = e.count + 2;
-
-
-	v1 = e.origin - self.origin;
-	m = vlen(v1) * 0.025;
-	v2 = normalize(v1) * m;
-	v1 = self.origin;
-	v1_z = self.origin_z + e.count;
-	i = 40;
-	while (i > 0)
-	{
-		g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, v1, v0, v0, v0, v0, "", "progs/bfgbit.spr", SUB_Remove, 3000, SUB_Remove, SUB_Null, self, world);
-		if (g)
-		{
-			g.alpha = 0.5;
-		}
-		v1 = v1 + v2;
-		i = i - 1;
-	}
-*/
-
-if (cvs1 == -777)
-{
-bprint("*** doom bfg beam hit = ");
-bprint(item_ident(e));
-bprint(", for dmg = ");
-bprint(ftos(f));
-bprint(".\n");
-}
-
-//fts.dmg_take = fts.dmg_take + f;
-//bdm = bdm + f;
-
-
-
-
-
-				tr = tr - 1;
 			}
 			if (kl < 1) // killed everything on current list - try to retarget
 			{
@@ -2292,39 +1910,7 @@ bprint(".\n");
 			sf = sf - 1;
 		}
 
-
-
-if (cvs1 == -777)
-{
-bprint(", beams fired = ");
-bprint(ftos(40 - tr));
-}
-
-
-
 	}
-
-// fake it for fire rate stats
-if (self.flags == Q2_BFG)
-{
-if (cvs1 == -777) fts.dmg_take = fts.dmg_take + 40 * 200;
-bdm = bdm + 40 * 200;
-}
-else 	if (self.flags == DOOM_BFG)
-{
-if (cvs1 == -777) fts.dmg_take = fts.dmg_take + 40 * 128;
-bdm = bdm + 40 * 128;
-}
-
-
-if (cvs1 == -777)
-{
-bprint(", beams dmg = ");
-bprint(ftos(bdm));
-bprint(".\n");
-fts.dmg = fts.dmg + bdm;
-}
-
 
 
 	remove(self);
@@ -2379,14 +1965,6 @@ void() player_bfg1   = [$lightfatt1, player_bfg1]
 	SuperDamageSound();
 	X_FireOnePlasma();
 
-
-
-bprint(" *** firing eweap (");
-bprint(item_ident(self));
-bprint(") pl_ bfg1\n");
-
-
-
 	newmis.classname = "bfg_ball";
 	newmis.frame = 0;
 	newmis.skin = 1;
@@ -2423,40 +2001,6 @@ void() X_Fire3BFG =
 };
 
 
-
-// TESTING
-void() f_rmv =
-{
-bprint(".\n");
-bprint("fire counter reset.\n");
-bprint(".\n");
-	fts = world;
-	remove(self);
-};
-
-void() f_test =
-{
-bprint(".\n");
-bprint(".\n");
-bprint(".\n");
-bprint(self.message);
-bprint(self.eweapon.netname);
-bprint(", rpm = ");
-bprint(ftos(self.cnt));
-bprint(", tot dmg = ");
-bprint(ftos(self.dmg));
-bprint(", hit dmg = ");
-bprint(ftos(self.dmg_take));
-bprint(", avg dmg per = ");
-bprint(ftos(self.dmg_take / self.dmg_save));
-bprint(".\n");
-bprint(".\n");
-bprint(".\n");
-bprint(".\n");
-self.nextthink = time + 20;
-self.think = f_rmv;
-};
-
 // fire any eweapon
 
 void() e_weap_Attack =
@@ -2468,38 +2012,11 @@ void() e_weap_Attack =
 	if (e._attack == painkeep_cube_use) c = TRUE;
 
 
-// TESTING
-if (cvs1 == -777)
-	if (!fts) // testing - rpm
-	{
-		fts = spawn();
-		if (fts)
-		{
-			fts.think = f_test;
-			fts.nextthink = time + 60;
-		}
-		fts.message = "*** Weapon: ";
-		fts.eweapon = EWEAP;
-		fts.dmg = fts.cnt = 0;
-	}
-
-
-
 	if (rune_haste(e.attack_finished / 2))
 		self.attack_finished = time + e.attack_finished;
 
 	if (e._attack != (void ()) 0)
-	if (e._attack != SUB_Null) {e._attack();
-
-
-
-// TESTING
-if (cvs1 == -777)
-fts.cnt = fts.cnt + 1;
-}
-
-
-
+	if (e._attack != SUB_Null) e._attack();
 
 	if (c) // dont let cube making a weap fire anything
 	{
@@ -2509,18 +2026,6 @@ fts.cnt = fts.cnt + 1;
 
 	if (e._fr_attack != (void ()) 0)
 	if (e._fr_attack != SUB_Null) e._fr_attack();
-
-
-
-	if (e._attack == (void ()) 0 || e._attack == SUB_Null)
-	if (e._fr_attack == (void ()) 0 || e._fr_attack == SUB_Null)
-	{
-		bprint(" --- useless eweap item:  ");
-		bprint(item_ident(e));
-		bprint("\n");
-	}
-
-
 
 	if (e.duration == SND_OVER)
 	if (e.noise3 != "")

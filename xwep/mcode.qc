@@ -25,7 +25,7 @@ float ITEM_SET2				= 1047552; // allows multiplexing of 2 x 1023 bit values in 1
 // q1 wep ids
 float MC_AXE;
 float MC_SHOTGUN;
-float MC_SUPER_SHOTGUN; // - 101 to get item override menu #
+//float MC_SUPER_SHOTGUN; // - 101 to get item override menu #
 float MC_NAILGUN;
 float MC_SUPER_NAILGUN;
 float MC_GRENADEL;
@@ -56,13 +56,13 @@ float MC_KEY2;
 
 // ammo ids
 float MC_ASHELLS;
-float MC_ASHELLS_LG;
+//float MC_ASHELLS_LG;
 float MC_ANAILS;
-float MC_ANAILS_LG;
+//float MC_ANAILS_LG;
 float MC_AROCKETS;
-float MC_AROCKETS_LG;
+//float MC_AROCKETS_LG;
 float MC_ACELLS;
-float MC_ACELLS_LG;
+//float MC_ACELLS_LG;
 
 // boom!
 float MC_EXPLOD1;
@@ -110,7 +110,7 @@ float MC_BEARTRAP;
 float MC_GRAVITY;
 float MC_SENTRY;
 float MC_CANOBEANS;
-float MC_AEXPLSH;
+//float MC_AEXPLSH;
 // pk plus
 float MC_TOMB;
 float MC_EGO;
@@ -2078,8 +2078,6 @@ void() painkeep_cube_use =
 			}
 		}
 	}
-//	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
-//	if (1) d = MC_GRAVITY; // TEST:
 
 	if (crate)
 	{
@@ -2147,7 +2145,7 @@ void() painkeep_cube_use =
 			self = c; // temp ent
 			self.delay = self.count = 0;
 			self.wait = crate.wait;
-			self.spawnflags = 2 | (crate.spawnflags & 4); // no respawn on item - + spawnflag for dynamic remove
+			self.spawnflags = (crate.spawnflags & 4); // no respawn on item - + spawnflag for dynamic remove
 			func_make();
 			d = pk_mcode(newmis.wad, world);
 			if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL)
@@ -2183,25 +2181,9 @@ void() painkeep_cube_use =
 	self.style = 0; // so we arent making a melee wep out of a range wep
 //	item_translate(self, FL_TR_RANDOM);
 	if (random() > 0.15 || crate) // crates always give goody
-//	if (0) // TEST:
 	{
 		self.pk_touch = painkeep_touch;
 		d = pk_mcode(self.wad, world);
-
-
-if (cvs1 == -555)
-{
-bprint(" *** cube / crate made =  (");
-//bprint(item_ident(self));
-bprint(self.wad);
-bprint(" - #: ");
-bprint(ftos(d));
-bprint(" - r: ");
-bprint(self.event);
-bprint(")\n");
-}
-
-
 
 		if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL) // cause barrels are special
 		{
@@ -2219,18 +2201,8 @@ bprint(")\n");
 
 		item_call(self.wad);
 
-
-
-if (cvs1 == -555)
-{
-bprint(" *** cube / crate made =  (");
-//bprint(item_ident(self));
-bprint(self.classname);
-bprint(")\n");
-}
-
 		if (self.classname == "item_painkeep_gwell")
-//		if (random() < 0.333) // TEST: restore
+		if (random() < 0.333)
 		{
 			self.skin = 1; // super gravity well
 			self.frame = 1;
@@ -2308,16 +2280,6 @@ bprint(")\n");
 	}
 // IDEA: tele-sphere, portal, explosive regular item, nail bomb, chaos effect
 	self = sv;
-
-
-
-if (cvs1 == -555)
-{
-bprint(" *** cube done self =  (");
-bprint(item_ident(self));
-bprint(")\n");
-}
-
 
 };
 
@@ -2433,6 +2395,8 @@ void() cube_touch =
 		other.state = other.morphy;
 		if (other.class_select == "class_player")
 		{
+			stuffcmd(other, "exec hook_release.cfg\n"); // make sure they have wheel select here
+
 			other.impulse = 10; // display first item
 			self.lefty = 8388608; // start bit will be 1
 			stuffcmd(other, "usergamma\n");
@@ -2916,7 +2880,7 @@ void(float mc, vector vo, string wd) fn_make =
 		self = sv;
 
 	}
-	else //if (WARNING)
+	else if (WARNING)
 	{
 		bprint("\b *** fn_make: map code or func call with no item translation:\n");
 		bprint(" -------------->  ");
@@ -2930,7 +2894,7 @@ void(float mc, vector vo, string wd) fn_make =
 	}
 };
 
-/*QUAKED func_make (0 .5 .8) (-8 -8 -8) (8 8 8) RNDLOC RESPAWN REMOVE
+/*QUAKED func_make (0 .5 .8) (-8 -8 -8) (8 8 8) RNDLOC RESPAWN REMOVE OLREM
 --------  CAT  --------
 Cataboligne - 6.13.10
 
@@ -2939,8 +2903,9 @@ spawn a mapcode item
 RNDLOC (spawnflags = 1) - use a random location
 RESPAWN - items created will respawn, unless monsters
 REMOVE - remove this item with dyn_remove
+OLREM - use old remove, even if not a monster
 
-wait: any valid mapcode - see mcode.qc for details
+wait: any valid mapcode - see mcode.qc for details, or one of these special values
       -1 - spawn a random q1 ent, ignores runes if server on
       -2 - spawn any random q1 ent
       -3 - spawn a random pk ent, ignores plus if turned off
@@ -3014,6 +2979,7 @@ void() func_make =
 	f = MC_RNDITM - 2;
 	if (RUNES && self.wait == -1) f = MC_NR_RNDITM - 2; // dont rndize runes if server on
 //	if (self.wait == -1 || self.wait == -2) 
+	if (self.wait <=0)
 		d = MC_SUPER_SHOTGUN + rint(random() * f); // now default
 
 	if (!Q_99)
@@ -3083,12 +3049,12 @@ void() func_make =
 		pk_ditems = pk_ditems + 1; // do here because call already made
 	}
 
-	if (self.spawnflags & 4)
+	if (self.spawnflags & 12)
 	{
 		f = self.mean;
 		if (!f) f = PK_DYNTO;
 
-		if (newmis.class_select == "class_monster")
+		if (newmis.class_select == "class_monster" || (self.spawnflags & 8))
 			dyn_remove(newmis, f + (crandom() * self.stdev), dyn_rem); // monsters think & have to go old style
 		else
 			dyn_remove(newmis, f + (crandom() * self.stdev), SUB_Null);

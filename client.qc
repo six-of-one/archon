@@ -256,6 +256,16 @@ When the player presses attack or jump, change to the next level
 */
 void () IntermissionThink =
 {
+// there is one + bot(s) - make sure they do a level reload, may not be any humans
+	if (!bot_lvlreload)
+	if (find(world, class_select, "class_bot"))
+	{
+		bot_lvlreload = spawn();
+		bot_lvlreload.classname = "bot_lvlreload";
+		bot_lvlreload.think = GotoNextMap;
+		bot_lvlreload.nextthink = time + 60 + (random() * 20);
+	}
+
 	stuffcmd( self, "fov 110\n" ); // special intermission view - lock pov
 	if (time < intermission_exittime)
 		return ;

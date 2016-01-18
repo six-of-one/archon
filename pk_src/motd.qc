@@ -15,7 +15,7 @@ void() connectmessage =
 // = http://www.moddb.com/downloads/generations-w-d-q-v10-alpha
 // = http://www.moddb.com/mods/chaos-archon/
 	
-	Line3 = "\\/ersion \b3\b.\b0a\b\n\n";
+	Line3 = "\\/ersion \b1\b.\b0a\b\n\n";
 	Line5 = "\nsee:           \nhttp://www.moddb.com/mods/";
 //	Line5 = "\nsee:           \nhttp://www.moddb.com/downloads/";
 	Line7 = "\n              for details";
@@ -39,92 +39,92 @@ if (self.classname == "player" && self.class_select != "class_bot")
 	    sprint(self,"Humans Only Please\n");
 	  }
 
-	  centerprint7(self, "W\n", "\nT\n", Line3,"\b=*\n",Line5,"\b*\b",Line7);
+	  centerprint7(self, "W\n", "\n#\n", Line3,"\b=*\n",Line5,"\b*\b",Line7);
 	}
 	else if (self.msgcount == 2)
 	{
-	  centerprint7(self, "We\n", "\nT\n", Line3,"\b-=*\n",Line5,"\bc*\b",Line7);
+	  centerprint7(self, "We\n", "\n# \n", Line3,"\b-=*\n",Line5,"\bc*\b",Line7);
 	}
 	else if (self.msgcount == 3)
 	{
-	  centerprint7(self, "Wel\n", "\nTe\n", Line3,"\b_-=*\n",Line5,"\bch*\b",Line7);
+	  centerprint7(self, "Wel\n", "\n# 6\n", Line3,"\b_-=*\n",Line5,"\bch*\b",Line7);
 	}
 	else if (self.msgcount == 4)
 	{
-	  centerprint7(self, "Welc\n", "\nTe\n", Line3,"\b_-=\b*\n",Line5,"\bcha*\b",Line7);
+	  centerprint7(self, "Welc\n", "\n# 6 \n", Line3,"\b_-=\b*\n",Line5,"\bcha*\b",Line7);
 	}
 	else if (self.msgcount == 5)
 	{
-	  centerprint7(self, "Welco\n", "\nTea\n", Line3,"\b_-=\b* \n",Line5,"\bchao*\b",Line7);
-	}
-	else if (self.msgcount == 5)
-	{
-	  centerprint7(self, "Welcom\n", "\nTea\n", Line3,"\b_-=\b* C\n",Line5,"\bchaos*\b",Line7);
+	  centerprint7(self, "Welco\n", "\n# 6 P\n", Line3,"\b_-=\b* \n",Line5,"\bchao*\b",Line7);
 	}
 	else if (self.msgcount == 6)
 	{
-	  centerprint7(self, "Welcome\n", "\nTeam\n", Line3,"\b_-=\b* Ca\n",Line5,"\bchaos|\b",Line7);
+	  centerprint7(self, "Welcom\n", "\n# 6 Pr\n", Line3,"\b_-=\b* C\n",Line5,"\bchaos*\b",Line7);
 	}
 	else if (self.msgcount == 7)
 	{
-	  centerprint7(self, "Welcome \n", "\nTeam\n", Line3,"\b_-=\b* Cat\n",Line5,"\bchaos/\b",Line7);
+	  centerprint7(self, "Welcome\n", "\n# 6 Pro\n", Line3,"\b_-=\b* Ca\n",Line5,"\bchaos|\b",Line7);
 	}
 	else if (self.msgcount == 8)
 	{
-	  centerprint7(self, "Welcome t\n", "\nTeam E\n", Line3,"\b_-=\b* Cata\n",Line5,"\bchaos-\b",Line7);
+	  centerprint7(self, "Welcome \n", "\n# 6 Prod\n", Line3,"\b_-=\b* Cat\n",Line5,"\bchaos/\b",Line7);
 	}
 	else if (self.msgcount == 9)
 	{
-	  centerprint7(self, "Welcome to\n", "\nTeam E\n", Line3,"\b_-=\b* Catab\n",Line5,"\bchaos\\\b",Line7);
+	  centerprint7(self, "Welcome t\n", "\n# 6 Produ\n", Line3,"\b_-=\b* Cata\n",Line5,"\bchaos-\b",Line7);
 	}
 	else if (self.msgcount == 10)
 	{
-	  centerprint7(self, "Welcome to \n", "\nTeam Ev\n", Line3,"\b_-=\b* Catabo\n",Line5,"\bchaos|\b",Line7);
+	  centerprint7(self, "Welcome to\n", "\n# 6 Produ\n", Line3,"\b_-=\b* Catab\n",Line5,"\bchaos\\\b",Line7);
 	}
 	else if (self.msgcount == 11)
 	{
-	  centerprint7(self, "Welcome to Ð\n", "\nTeam Ev\n", Line3,"\b_-=\b* Catabol\n",Line5,"\bchaos*\b",Line7);
+	  centerprint7(self, "Welcome to \n", "\n# 6 Produc\n", Line3,"\b_-=\b* Catabo\n",Line5,"\bchaos|\b",Line7);
 	}
 	else if (self.msgcount == 12)
 	{
-	  centerprint7(self, "Welcome to Ða\n", "\nTeam Evo\n", Line3,"\b_-=\b* Cataboli\n",Line5,"\bchaos-*\b",Line7);
+	  centerprint7(self, "Welcome to A\n", "\n# 6 Produc\n", Line3,"\b_-=\b* Catabol\n",Line5,"\bchaos*\b",Line7);
 	}
 	else if (self.msgcount == 13)
 	{
-	  centerprint7(self, "Welcome to Ðai\n", "\nTeam Evo\n", Line3,"\b_-=\b* Catabolig\n",Line5,"\bchaos-a*\b",Line7);
+	  centerprint7(self, "Welcome to Ar\n", "\n# 6 Product\n", Line3,"\b_-=\b* Cataboli\n",Line5,"\bchaos-*\b",Line7);
 	}
 	else if (self.msgcount == 14)
 	{
-	  centerprint7(self, "Welcome to Ðain\n", "\nTeam Evol\n", Line3,"\b_-=\b* Catabolign\n",Line5,"\bchaos-ar*\b",Line7);
+	  centerprint7(self, "Welcome to Arc\n", "\n# 6 Product\n", Line3,"\b_-=\b* Catabolig\n",Line5,"\bchaos-a*\b",Line7);
 	}
 	else if (self.msgcount == 15)
 	{
-	  centerprint7(self, "Welcome to ÐainË\n", "\nTeam Evol\n", Line3,"\b_-=\b* Cataboligne\n",Line5,"\bchaos-arc*\b",Line7);
+	  centerprint7(self, "Welcome to ArcH\n", "\n# 6 Producti\n", Line3,"\b_-=\b* Catabolign\n",Line5,"\bchaos-ar*\b",Line7);
 	}
 	else if (self.msgcount == 16)
 	{
-	  centerprint7(self, "Welcome to ÐainËe\n", "\nTeam Evolv\n", Line3,"\b_-=*\b Cataboligne\n",Line5,"\bchaos-arch*\b",Line7);
+	  centerprint7(self, "Welcome to ArcHo\n", "\n# 6 Productio\n", Line3,"\b_-=\b* Cataboligne\n",Line5,"\bchaos-arc*\b",Line7);
 	}
 	else if (self.msgcount == 17)
 	{
-	  centerprint7(self, "Welcome to ÐainËee\n", "\nTeam Evolv\n", Line3,"\b_-=\b* Cataboligne\n",Line5,"\bchaos-archo*\b",Line7);
+	  centerprint7(self, "Welcome to ArcHon\n", "\n# 6 Productio\n", Line3,"\b_-=*\b Cataboligne\n",Line5,"\bchaos-arch*\b",Line7);
 	}
 	else if (self.msgcount == 18)
 	{
-	  centerprint7(self, "Welcome to ÐainËeep\n", "\nTeam Evolve\n", Line3,"\b_-=*\b Cataboligne\n",Line5,"\bchaos-archon*\b",Line7);
+	  centerprint7(self, "Welcome to  ArcHon\n", "\n# 6 Production\n", Line3,"\b_-=\b* Cataboligne\n",Line5,"\bchaos-archo*\b",Line7);
 	}
 	else if (self.msgcount == 19)
 	{
-	  centerprint7(self, "Welcome to ÐainËeep!\n", "\nTeam Evolve\n", Line3,"\b_-=\b* Cataboligne\n",Line5,"\bchaos-archon/\b",Line7);
+	  centerprint7(self, "Welcome to ArcHon\n", "\n# 6 Production\n", Line3,"\b_-=*\b Cataboligne\n",Line5,"\bchaos-archon*\b",Line7);
 	}
+//	else if (self.msgcount == 19)
+//	{
+//	  centerprint7(self, "Welcome to ArcHon!\n", "\nTeam Evolve\n", Line3,"\b_-=\b* Cataboligne\n",Line5,"\bchaos-archon/\b",Line7);
+//	}
 	else if (self.msgcount <= 20)
 	{
-	  centerprint7(self, "Welcome to ÐainËeep!\n", "\nTeam Evolve\n", Line3,"\b_-=*\b Cataboligne\n",Line5,"chaos-archon/",Line7);
+	  centerprint7(self, "Welcome to ArcHon!\n", "\n# 6 Production\n", Line3,"\b_-=*\b Cataboligne\n",Line5,"chaos-archon/",Line7);
 	}
 	else if (self.msgcount > 20 && (time & 1))
-	  centerprint7(self, "Welcome to ÐainËeep!\n", "\nTeam Evolve\n", Line3,"\b_-=\b* Cataboligne\n",Line5,"\bchaos-archon/\b",Line7);
+	  centerprint7(self, "Welcome to ArcHon!\n", "\n# 6 Production\n", Line3,"\b_-=\b* Cataboligne\n",Line5,"\bchaos-archon/\b",Line7);
 	else
-	  centerprint7(self, "Welcome to ÐainËeep!\n", "\nTeam Evolve\n", Line3,"\b_-=*\b Cataboligne\n",Line5,"chaos-archon/",Line7);
+	  centerprint7(self, "Welcome to ArcHon!\n", "\n# 6 Production\n", Line3,"\b_-=*\b Cataboligne\n",Line5,"chaos-archon/",Line7);
 }
 
 	if ((time & 3) == 3) self.msgcount = self.msgcount + 1;
@@ -156,7 +156,7 @@ void() updateStatusDisplay =
 	if (self.hubstartupmessage > time)
 	{
 // web site promo
-		Line3 = "\n\n[\\/\b3\b.\b0a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
+		Line3 = "\n\n[\\/\b1\b.\b0a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
 // heh heh - scroll wheel of pain!
 		if ((time & 3) == 0) Line5 = "|";
 		else if ((time & 3) == 1) Line5 = "\\";

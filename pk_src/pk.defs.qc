@@ -273,6 +273,16 @@ void() flyer_move; // fly rune for now
 
 // **************************************
 
+// archon items
+
+float MC_SUPER_SHOTGUN; // - 101 to get item override menu #
+float MC_ASHELLS_LG;
+float MC_ANAILS_LG;
+float MC_AROCKETS_LG;
+float MC_ACELLS_LG;
+float MC_AEXPLSH;
+
+
 void() func_make;
 
 // item override admin
@@ -380,7 +390,7 @@ float CON_CYC					= 2097152; // cycle selected bits in thier group
 float CON_CHAOS				= 2490368; // item chaos it all 3 control bits set
 // excluding inf_ammo from run bits
 float CON_RUN					= 3014656; //4063232; // any control bit CON_* entries above - used by autorun
-float CYC_TIME					= 60; // TEST: - 240; // seconds for cycle base - 4 mins +|- 2 mins
+float CYC_TIME					= 80; // test: - 240; // seconds for cycle base - 4 mins +|- 2 mins
 
 float IT_ARMOR_BITS;
 
@@ -428,8 +438,6 @@ float NO_PI;					// dont let item_call call place_item
 // end translations
 
 
-// TEST: remove
-entity fts; // fire test
 
 // missile code flags
 float FL_PUNCH					= 2;				// use punchangle for weapon fire
@@ -472,7 +480,7 @@ float DEAD_THROW_ARMOR;
 float DEAD_THROW_PKI;
 float DEAD_THROW_LIVERND	= 0.5; // chance a dead threw wep is touchable under rule 2
 float DEAD_THROW_CNTRND		= 0.5; // chance a dead threw wep is NOT under rule 8
-float DEAD_THROW_TIME		= 240;// TEST: 66; // time (in secs) a deadthrew wep hangs around
+float DEAD_THROW_TIME		= 110;// test: 66; // time (in secs) a deadthrew wep hangs around
 float DEAD_THROW_ARTIFACT	= 1; // if true when dead, any artifacts will be tossed out as inventory dropped
 
 float IT_ARTIFACT = 7929856; // for detecting arts in items - used by rune id & dead drop
@@ -480,7 +488,7 @@ float IT_ARTIFACT = 7929856; // for detecting arts in items - used by rune id & 
 float DEAD_XPACK;
 float DEAD_GIBPACK;
 
-float DEAD_BODYCOUNT			= 8; // TEST: 48; // number of bodies (+1) in bodyque loop, if 0 bodies spawn (no que) and use timeout below
+float DEAD_BODYCOUNT			= 28; // test: 48; // number of bodies (+1) in bodyque loop, if 0 bodies spawn (no que) and use timeout below
 float DEAD_BODYTIME			= 120; // how long non que corpse hang around
 
 vector MED_BOUNCE				= ' 210 210 320'; // medium bounce for dead thrown stuff - idea: factor in dead body velo
@@ -697,7 +705,7 @@ string EARTHQUAKE				= "earthquake"; // select things we want to shake up
 float QUAKE_RUBBLE			= 0.17; // chance of rubble when skaking loose debris
 float QUAKE_RUBBLE_PER		= 0.04; // chance of rubble percent per richter
 float RUBBLE_DMGDEF			= 10; // default damage from hot rubble
-float RUBBLE_TIME				= 15; // TEST: 45; // time for rubble to hang around
+float RUBBLE_TIME				= 15; // test: 45; // time for rubble to hang around
 float RUBBLE_TDEV				= 15; // dev time on rubble
 float RUBBLE_BLASTRAD		= 48; // distance from explosion to look for rubble to blast
 float EXPLODE_RUBBLE			= 0.6; // chance of rubble from explosion
@@ -1054,6 +1062,7 @@ void() q2_item_health;
 void() X_FireHandGrenade;
 void() X_FireBlaster;
 void()	player_q2hgr1;
+void() q2_teleport_particles;
 
 float q2_bfg_shot; // indicates damage from q2 bfg shot - may not get used, radius is already 1/2 dmg
 float Q2_BFG 					= 66604;
@@ -1173,8 +1182,6 @@ float VW; // viswep support - set to 0 to return to generic gun / axe
 float VW_ARMOR; // viswep armor support - eventually admin controlled & cvar
 float VW_HOLSTER; // viswep - show holstered weps when true
 
-// config new vw by code
-void() vw_config;
 
 // Cataboligne - projectile / cartridge fire(d) positioning - 9.30.9
 

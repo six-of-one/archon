@@ -1369,17 +1369,6 @@ void() BackpackTouch =
 	if (self.netname != "Bandolier" && self.netname != "Ammo Pack") // handled a pack load up - dont want remove or wep chg
 	{
 
-
-
-if (WARNING)
-{
-bprint("\b *** warning: pack touch q1 ret for: ");
-bprint(item_ident(self));
-bprint("\n");
-}
-
-
-
 // remove the backpack, change self to the player
 	remove(self);
 	self = other;
@@ -1724,6 +1713,7 @@ void() ip_checkForMovement =
 		if (self.map == "rune" && RUNES && self.classname == "item_sigil")// && self.delay > -1)  // !chaos
 		{
 			rune_relocate();
+			if (self.think == fade_relocate) return; // its gone
 		}
 		else
 		if (self.ip_orgOrigin != v0)
@@ -1749,6 +1739,14 @@ void() ip_checkForMovement =
 void() pk_item_position =
 {
 	self.owner = world;
+
+// Cataboligne - 10.25.11 - special so we can bounce some regular things once - here cause item_call on non dyn goes thru sub_regen
+	if (self.punchangle == MED_BOUNCE_NOW)  // bounce it now
+	{
+		item_eject(self, MED_BOUNCE);
+		self.punchangle = anti_bounce;
+		return;
+	}
 
 	self.think = ip_checkForMovement;
 	self.nextthink = time + CFM_TIME;
