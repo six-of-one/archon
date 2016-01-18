@@ -129,6 +129,7 @@ void () q100_item_health =
 	self.touch = health_touch;
 
 	self.archon = ARCHON_ITEM;
+	self.netname = "Health";
 
 	if (self.spawnflags & H_ROTTEN)
 	{
@@ -373,6 +374,7 @@ void () armor_touch =
 
 void () item_armor1 =
 {
+	self.netname = "Armor";
 	self.touch = armor_touch;
 	precache_model ("progs/armor.mdl");
 	setmodel (self,"progs/armor.mdl");
@@ -390,6 +392,7 @@ void () item_armor1 =
 
 void () item_armor2 =
 {
+	self.netname = "Armor";
 	self.touch = armor_touch;
 	precache_model ("progs/armor.mdl");
 	setmodel (self,"progs/armor.mdl");
@@ -407,6 +410,7 @@ void () item_armor2 =
 
 void () item_armorInv =
 {
+	self.netname = "Armor";
 	self.touch = armor_touch;
 	precache_model ("progs/armor.mdl");
 	setmodel (self,"progs/armor.mdl");

@@ -382,7 +382,7 @@ void() player_order_impulse =
 		if (self.model == "progs/chaos_b2.mdl") self.skin = 4;
 	}
 
-	if (self.impulse == 1) // spell list - attacks
+	if (self.impulse == 1) // spell list 0 - attacks
 	{
 		if (self.weapon == IT_AXE)
 		{

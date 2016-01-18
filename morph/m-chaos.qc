@@ -1971,6 +1971,17 @@ void() poly_monster =
 
 void() poly_init =
 {
+// cant cast this spell during bursts
+	if (self.ammo_nails == 3) // poly self
+	if (self.height == IMP_MCHAOS) // chaos
+	if (self.aflag & 16)  // during a burst
+	{
+		self.pk_explode_ammo = -6; // cancelled
+		self.ammo_nails = 5; // switch to next allowed poly spell - rotate will skip blocked spells
+		self.attack_finished = time + 0.6;
+		return;
+	}
+
 	other = self;
 	self = spawn(); // tricky - we "make" a hidden morph cube
 	morph_cube();
@@ -2023,6 +2034,14 @@ void() transmogrify =
 		self.modelindex_morph = self.modelindex;
 		self.archon = self.archon - self.pk_explode_ammo;
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+		return;
+	}
+// cant cast this spell during bursts
+	if (self.aflag & 16) 
+	{
+		self.pk_explode_ammo = -6; // cancelled - we hope
+		self.ammo_nails = 5; // switch to next allowed poly spell - rotate will skip blocked spells
+		self.attack_finished = time + 0.6;
 		return;
 	}
 	chaos_mdlsel(self.pk_beartrapammo);
@@ -2534,15 +2553,16 @@ void() archon_time_flow =
 
 // soul vessels
 
-
+.entity arcvess;
 
 void() make_vessel =
 {
 	self.rune_flag = self.rune_flag | RUNE_VESS;
-	self.bolt_target.archon = self.pk_explode_ammo;
-	self.bolt_target.theowner = self;
+
+	self.arcvess = self.bolt_target;
+	self.bolt_target.pk_explode_ammo = self.pk_explode_ammo;
+	self.bolt_target.arcvess = self; // back ref
 	self.bolt_target.effects = self.bolt_target.effects | EF_DIMLIGHT;
-	self.bolt_target.killtarget = "vessel"; // dont assign any targetnames the value 'vessel' now
 
 	self.archon = self.archon - self.pk_explode_ammo;
 	self.attack_finished = time + 1; //debounce
@@ -2550,36 +2570,43 @@ void() make_vessel =
 	self.ammo_shells = 7; // select def spell
 	self.weapon = IT_AXE;
 	clear_spell();
+	self.pk_explode_ammo = 0;
 };
 
 void() remove_vessel =
 {
-	self.rune_flag = self.rune_flag - (self.rune_flag & RUNE_VESS);
-	self.attack_finished = time + 1; //debounce
-
-	self.enemy = find(world, killtarget,"vessel"); // find all vessels - may allow more than one later
-	while (self.enemy)
+	if (self.arcvess)
 	{
-		if (self.enemy.theowner = self)
-		{
-			self.bolt_target = self.enemy;
-			self.archon = self.archon + self.bolt_target.archon;
-			self.bolt_target.archon = 2 + random() * 50;
-			self.bolt_target.theowner = world;
-			self.bolt_target.effects = self.bolt_target.effects - (self.bolt_target.effects & EF_DIMLIGHT);
-			self.bolt_target.killtarget = null_string;
-		}
-		self.enemy = find(self.enemy, killtarget,"vessel");
+		self.archon = self.archon + self.arcvess.pk_explode_ammo - self.pk_explode_ammo;
+		self.arcvess.pk_explode_ammo = 0;
+		self.arcvess.effects = self.arcvess.effects - (self.arcvess.effects & EF_DIMLIGHT);
+		self.arcvess.arcvess = world;		
+		self.arcvess = world;		
 	}
-
-	if (self.bolt_target) self.archon = self.archon - self.pk_explode_ammo;
+	self.rune_flag = self.rune_flag - (self.rune_flag & RUNE_VESS);
+	self.items = self.builtin = IT_AXE | IT_SHOTGUN;
 
 	self.ammo_shells = 7; // select def spells
 	self.ammo_bullet = 3;
 	self.weapon = IT_AXE;
 	clear_spell();
+	self.pk_explode_ammo = 0;
 };
 
+void() add_vessel =
+{
+	if (self.ammo_bullet == 17)
+	{
+		self.pk_explode_ammo = -500;
+		if (self.arcvess.pk_explode_ammo < 3000) self.ammo_bullet = 15;
+	}
+
+	self.arcvess.pk_explode_ammo = self.arcvess.pk_explode_ammo + self.pk_explode_ammo;
+	self.archon = self.archon - self.pk_explode_ammo;
+
+	self.pk_explode_ammo = 500;
+	self.attack_finished = time + 1; //debounce
+}
 
 // setup spells
 
@@ -2914,7 +2941,10 @@ void() spell_target =
 		if (self.ammo_bullet == 5) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_maketele; }
 		if (self.ammo_bullet == 7) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
 		if (self.ammo_bullet == 11) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
+// arc vessel spells
 		if (self.ammo_bullet == 13) { self.pk_explode_ammo = 200; self.pkplus_actorammo = 0; self.th_melee = remove_vessel; }
+		if (self.ammo_bullet == 15) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; }
+		if (self.ammo_bullet == 17) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; } // note - this adds 500 to archon pts
 	}
 	if (self.weapon == IT_LIGHTNING)
 	{
@@ -3174,14 +3204,6 @@ void() player_chaos_impulse =
 
 //	morph_impulse();
 
-	if (self.aflag & 16) // no morph during star bursts
-	{
-		self.items = self.items - (self.items & IT_SUPER_SHOTGUN);
-	}
-	else
-	if (self.rune_flag & RUNE_VESS) // inv flag for vessel
-		self.items = self.items | IT_SUPER_SHOTGUN;	
-
 	if (self.impulse == 1)
 		self.weapon = IT_AXE;
 	else if (self.impulse == 10)
@@ -3257,13 +3279,21 @@ void() player_chaos_impulse =
 			{
 				if (self.ammo_nails == 3) self.ammo_nails = 5;
 				else if (self.ammo_nails == 5) self.ammo_nails = 7;
-				else if (self.ammo_nails == 7) self.ammo_nails = 11;
+				else if (self.ammo_nails == 7)
+				{
+					self.ammo_nails = 11;
+					if (self.aflag & 16) self.ammo_nails = 5; // no self changes during bursts
+				}
 	//			else if (self.ammo_nails == 11) self.ammo_nails = 13;
 	//			else if (self.ammo_nails == 13) self.ammo_nails = 17;
 	//			else if (self.ammo_nails == 17) self.ammo_nails = 19;
 	//			else if (self.ammo_nails == 19) self.ammo_nails = 23;
 	//			else if (self.ammo_nails == 23) self.ammo_nails = 29;
-				else if (self.ammo_nails == 11) self.ammo_nails = 3;
+				else if (self.ammo_nails == 11)
+				{
+					self.ammo_nails = 3;
+					if (self.aflag & 16) self.ammo_nails = 5;
+				}
 
 				if (self.ammo_nails == 11)
 				{
@@ -3300,8 +3330,13 @@ void() player_chaos_impulse =
 				else if (self.ammo_bullet == 5) self.ammo_bullet = 7;
 				else if (self.ammo_bullet == 7) self.ammo_bullet = 11;
 				else if (self.ammo_bullet == 11) self.ammo_bullet = 13; // remove the soul vessel
-//				else if (self.ammo_bullet == 13) self.ammo_bullet = 15;
-				else if (self.ammo_bullet == 13) self.ammo_bullet = 3;
+				else if (self.ammo_bullet == 13) self.ammo_bullet = 15; // add 500 pts to soul vessel
+				else if (self.ammo_bullet == 15)
+				{
+					self.ammo_bullet = 17; // move 500 pts from soul vessel back to archon power
+					if (self.arcvess.pk_explode_ammo < 2500) self.ammo_bullet = 3; // skip if remove would take vessel below 2000
+				}
+				else if (self.ammo_bullet == 17) self.ammo_bullet = 3;
 
 				if (self.ammo_bullet == 7)
 				{
@@ -3358,6 +3393,8 @@ void() player_chaos_impulse =
 			self.weapon = IT_SHOTGUN;
 		}
 	}
+
+	self.items = self.builtin; // here because it changes
 
 	if (self.impulse == IMP_MSIGHT)
 		morph_sound(2, self.msight, 3);							// let player morphs "talk"

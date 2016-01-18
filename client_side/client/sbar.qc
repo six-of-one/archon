@@ -2120,7 +2120,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 	if (arcvessel) // show that archon has a vessel
 	{
-		DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/arcvess", ALPHA_FULL, 0.11);
+		DrawInventoryAmmo(pwr_step + '12 0 0', "gfx/arcvess", ALPHA_FULL, 0.11);
 		cnt_left = pwr_step_y;
 		pwr_step_y = pwr_step_y + 27;
 	}
@@ -2434,8 +2434,18 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					instr = "*FIRE - cast create spell";
 					if (bullets == 13)
 					{
-						Sbar_DrawString('220 40 0' + woff, "Remove SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						instr = "*FIRE - recover power from SOUL vessel";
+						Sbar_DrawString('250 40 0' + woff, "Remove SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						instr = "*FIRE - recover all power from SOUL";
+					}
+					if (bullets == 15)
+					{
+						Sbar_DrawString('170 40 0' + woff, "Add 500 points to SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (explodeshot) instr = "*FIRE - Increase SOUL power";
+					}
+					if (bullets == 17)
+					{
+						Sbar_DrawString('140 40 0' + woff, "Return 500 points from SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (explodeshot) instr = "*FIRE - Reduce SOUL power";
 					}
 				}
 				if (currentweap == IT_LIGHTNING) // spell list 1 - poly
