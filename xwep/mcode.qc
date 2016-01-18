@@ -1698,7 +1698,9 @@ void() barrel_explode =
 //	if (self.classname == "chaos_item" && random() > CI_EXPLBOX_RES)
 //		self.think = SUB_Remove;
 //	else
-	if (self.th_stand != SUB_Null)
+	if (deathmatch == 2 || deathmatch == 4)
+		SUB_Remove();
+	else if (self.th_stand != SUB_Null)
 		self.th_stand();
 	else
 	if (EXPLBOX_RESP)

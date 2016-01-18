@@ -33,6 +33,11 @@ float D_DEF_ROCKETS_LG		= 5;
 float D_DEF_ROCKETS_SM		= 1;
 float D_DEF_BLAST				= 2;
 
+float D_MAX_BULLETS			= 200;	// max val without pack / rune
+float D_MAX_SHELLS			= 50;
+float D_MAX_ROCKETS			= 50;
+float D_MAX_CELLS				= 300;
+
 float D_BARREL_BLAST			= 128;
 
 // should be RSP_TIME
@@ -40,9 +45,13 @@ float D_BARREL_BLAST			= 128;
 float DOOM_ML_DMG				= -1666665; // tell code to calculate doom melee damage - d2 * 10 per hit
 float DOOM_SHOT_DMG			= -1666666; // tell code to calculate doom bullet damage - d3 * 5 per shot
 float DOOM_ROCK_DMG			= -1666667; // tell code to calculate doom rocket damage - 
-float DOOM_BFG_DMG				= -1666669; // tell code to calculate doom bfg damage -  d8 * 100 + traces + ??
+float DOOM_BFG_DMG			= -1666669; // tell code to calculate doom bfg damage -  d8 * 100 + traces + ??
 
 float W_DEF_BULLETS_CLIP	= 8;
+
+float W_MAX_BULLETS			= 199;	// max val without pack / rune
+float W_MAX_ROCKETS			= 99;
+float W_MAX_GAS				= 99;
 
 float SAWLEN					= 80; // lenght saw can attack
 
@@ -210,6 +219,8 @@ void() d_item_healthmedkit =
 {
 	q100_item_health();
 	setmodel(self, "progs/heal_medkit.mdl");
+	self.frame = 0;
+	self.skin = 0;
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Health Medikit";
@@ -299,6 +310,7 @@ void() d_ammo_ammobox =
 	self.lip = AMMO_BULLETS;
 	self.currentammo = D_DEF_BULLETS_BOX;
 	self.wait = RSP_TIME;
+	self.volume = D_MAX_BULLETS;
 
 	setmodel (self, "progs/d_ammobox.mdl");
 	self.noise = "doom/dsitemup.wav";
@@ -316,6 +328,7 @@ void() d_ammo_clip =
 	self.lip = AMMO_BULLETS;
 	self.currentammo = D_DEF_BULLETS_CLIP;
 	self.wait = RSP_TIME;
+	self.volume = D_MAX_BULLETS;
 
 	setmodel (self, "progs/d_clip.mdl");
 	self.noise = "doom/dsitemup.wav";
@@ -333,6 +346,7 @@ void() d_ammo_1rocket =
 	self.lip = AMMO_ROCKETS;
 	self.currentammo = D_DEF_ROCKETS_SM;
 	self.wait = RSP_TIME;
+	self.volume = D_MAX_ROCKETS;
 
 	setmodel (self, "progs/d_1rocket.mdl");
 	self.noise = "doom/dsitemup.wav";
@@ -350,6 +364,7 @@ void() d_ammo_rockbox =
 	self.lip = AMMO_ROCKETS;
 	self.currentammo = D_DEF_ROCKETS_LG;
 	self.wait = RSP_TIME;
+	self.volume = D_MAX_ROCKETS;
 
 	setmodel (self, "progs/d_rockbox.mdl");
 	self.noise = "doom/dsitemup.wav";
@@ -367,6 +382,7 @@ void() d_ammo_4shell =
 	self.lip = AMMO_SHELLS;
 	self.currentammo = D_DEF_SHELLS;
 	self.wait = RSP_TIME;
+	self.volume = D_MAX_SHELLS;
 
 	setmodel (self, "progs/d_4shell.mdl");
 	self.noise = "doom/dsitemup.wav";
@@ -384,6 +400,7 @@ void() d_ammo_shellbox =
 	self.lip = AMMO_SHELLS;
 	self.currentammo = D_DEF_SHELLBOX;
 	self.wait = RSP_TIME;
+	self.volume = D_MAX_SHELLS;
 
 	setmodel (self, "progs/d_shellbox.mdl");
 	self.noise = "doom/dsitemup.wav";
@@ -401,6 +418,7 @@ void() d_ammo_cellbox =
 	self.lip = AMMO_CELLS;
 	self.currentammo = D_DEF_CELLBOX;
 	self.wait = RSP_TIME;
+	self.volume = D_MAX_CELLS;
 
 	setmodel (self, "progs/d_cellbox.mdl");
 	self.noise = "doom/dsitemup.wav";
@@ -418,6 +436,7 @@ void() d_ammo_cellpack =
 	self.lip = AMMO_CELLS;
 	self.currentammo = D_DEF_CELLPAK;
 	self.wait = RSP_TIME;
+	self.volume = D_MAX_CELLS;
 
 	setmodel (self, "progs/d_cellpack.mdl");
 	self.noise = "doom/dsitemup.wav";
@@ -452,6 +471,7 @@ void() d_weapon_bfg =
 	self.currentammo = D_DEF_BFG;
 	self.items = IT_LIGHTNING;
 	self.lip = AMMO_CELLS;
+	self.volume = D_MAX_CELLS;
 	self.attack_finished = 2;
 	self.dmg = DOOM_BFG_DMG;
 //	self.dodmg = 128; // splash
@@ -485,6 +505,7 @@ void() d_weapon_rocketlauncher =
 	self.currentammo = D_DEF_BLAST;
 	self.items = IT_ROCKET_LAUNCHER;
 	self.lip = AMMO_ROCKETS;
+	self.volume = D_MAX_ROCKETS;
 	self.attack_finished = 0.6;
 	self.dmg = DOOM_ROCK_DMG;
 	self.dodmg = 128; // splash
@@ -518,6 +539,7 @@ void() d_weapon_chaingun =
 	self.items = IT_SUPER_NAILGUN;
 	self.currentammo = D_DEF_CHAING;
 	self.lip = AMMO_BULLETS;
+	self.volume = D_MAX_BULLETS;
 	self.attack_finished = 0.11;
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 1;
@@ -550,6 +572,7 @@ void() d_weapon_pistol =
 	self.currentammo = 25;
 	self.items = IT_NAILGUN; // IT_AXE; // testing
 	self.lip = AMMO_BULLETS;
+	self.volume = D_MAX_BULLETS;
 	self.attack_finished = 0.4;
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 1;
@@ -617,6 +640,7 @@ void() d_weapon_shotgun =
 	self.currentammo = D_DEF_SHOTG;
 	self.items = IT_SHOTGUN;
 	self.lip = AMMO_SHELLS;
+	self.volume = D_MAX_SHELLS;
 	self.attack_finished = 1;
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_take = 7; // shot cnt
@@ -647,6 +671,7 @@ void() d_weapon_supershotgun =
 	self.currentammo = D_DEF_SHOTG;
 	self.items = IT_SUPER_SHOTGUN;
 	self.lip = AMMO_SHELLS;
+	self.volume = D_MAX_SHELLS;
 	self.attack_finished = 1.6667;
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 2;
@@ -678,6 +703,7 @@ void() d_weapon_plasma =
 	self.currentammo = D_DEF_PLASMAG;
 	self.items = IT_LIGHTNING;
 	self.lip = AMMO_CELLS;
+	self.volume = D_MAX_CELLS;
 	self.attack_finished = 0.083;
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 1;
@@ -699,6 +725,12 @@ void() d_weapon_plasma =
 void() d_item_pack =
 {
 	item_shells();
+	self.netname = "Ammo Pack";
+
+	self.touch = x_pack_touch;
+	self.pk_items =
+	self.items = 0; // must be for bp touch call
+	self.rune_flag = RUNE_AMMO;
 	self.ammo_bullet = 10;
 	self.ammo_shells = 4;
 	self.ammo_rockets = 1;
@@ -706,9 +738,9 @@ void() d_item_pack =
 	self.wait = RSP_TIME;
 
 	setmodel(self, "progs/d_pack.mdl");
+	self.skin = 0;
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
-	self.netname = "Ammo Pack";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -935,6 +967,7 @@ void() w_weapon_machinegun =
 	self.currentammo = 6;
 	self.items = IT_NAILGUN;
 	self.lip = AMMO_BULLETS;
+	self.volume = W_MAX_BULLETS;
 	self.attack_finished = 0.16667; // 6 per
 	self.dmg = 10;
 	self.dmg_save = 1;
@@ -960,6 +993,7 @@ void() w_chg_base =
 	self.items = IT_SUPER_NAILGUN;
 	self.currentammo = 6;
 	self.lip = AMMO_BULLETS;
+	self.volume = W_MAX_BULLETS;
 	self.attack_finished = 0.087; // 11.5 per
 	self.dmg = 10;
 	self.dmg_save = 1;
@@ -1011,6 +1045,7 @@ void() w_weapon_mortar =
 	self.currentammo = 5; // W_DEF_BLAST;
 	self.items = IT_ROCKET_LAUNCHER;
 	self.lip = AMMO_ROCKETS;
+	self.volume = W_MAX_ROCKETS;
 	self.attack_finished = 0.8;
 	self.dmg = 120;
 	self.dodmg = 120;
@@ -1044,6 +1079,7 @@ void() w_weapon_flamer =
 	self.currentammo = 20;
 	self.items = IT_GRENADE_LAUNCHER;
 	self.lip = AMMO_GAS;
+	self.volume = W_MAX_GAS;
 	self.attack_finished = 0.1;
 	self.dmg = 10;
 	self.dmg_save = 1;
@@ -1076,6 +1112,7 @@ void() w_weapon_pistol =
 	self.currentammo = 6;
 	self.items = IT_NAILGUN; // IT_AXE; // testing
 	self.lip = AMMO_BULLETS;
+	self.volume = W_MAX_BULLETS;
 	self.attack_finished = 0.465; // 2.15 per
 	self.dmg = 10;
 	self.dmg_save = 1;
@@ -1135,6 +1172,7 @@ void() w_ammo_clip =
 	self.touch = pk_ammo_touch;
 
 	self.lip = AMMO_BULLETS;
+	self.volume = W_MAX_BULLETS;
 	self.currentammo = W_DEF_BULLETS_CLIP;
 	self.wait = RSP_TIME;
 
@@ -1144,6 +1182,28 @@ void() w_ammo_clip =
 	self.netname = "Clip";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
+void() w_item_pack =
+{
+	item_shells();
+	self.netname = "Ammo Pack";
+
+	self.touch = x_pack_touch;
+	self.pk_items =
+	self.items = 0; // must be for bp touch call
+	self.rune_flag = RUNE_AMMO;
+	self.ammo_bullet = 20;
+	self.ammo_rockets = 5;
+	self.ammo_gaspr = 96; // 2; - not alot, wolf flamer must have operated diff, used 2 x 48 lbs cylanders
+	self.wait = RSP_TIME;
+
+	setmodel(self, "progs/d_pack.mdl");
+	self.skin = 1;
+	self.noise = "wolf/pickup_am.wav";
+	self.noise4 = "doom/dsitembk.wav";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "doom_item";
 };
 
 void() w_art_facesphere =
@@ -1158,6 +1218,23 @@ void() w_art_facesphere =
 	self.ammo_bullet = 25; // doh - special
 	self.healtype = HEAL_SOUL; // normally max 100, but we need to accomodate +1 life
 	self.wait = D_POWER_WAIT;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
+void() w_heal_medkit =
+{
+	q100_item_health();
+	setmodel(self, "progs/heal_medkit.mdl");
+	self.frame = 1;
+	self.skin = 1;
+	self.noise = "wolf/pickup_gdy.wav";
+	self.noise4 = "doom/dsitembk.wav";
+	self.netname = "Health Medikit";
+	self.healamount = D_DEF_HMEDKIT;
+	self.healtype = HEAL_NORM;
+	self.volume = 100; // max add
+	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
@@ -1262,6 +1339,8 @@ void() wchg2_weapon_touch =
 	if (e)
 	if (e.eweapon)
 	{
+		if (deathmatch == 3 || deathmatch == 2 || coop) return; // too easy in dm 2 / 3 / coop - not allowed for now
+
 		if (! (other.items & IT_LIGHTNING))
 		if (e.eweapon.mdl == "progs/vw_w_chaing.mdl") // IDEA: do for other akimbos
 		{

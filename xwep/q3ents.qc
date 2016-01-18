@@ -45,6 +45,15 @@ float Q3_GREN_AMMO			= 5;
 float Q3_SHOT_AMMO			= 10;
 float Q3_BULLET_AMMO			= 50;
 
+float Q3_MAX_BULLETS			= 200;	// max val without pack / rune
+float Q3_MAX_SHELLS			= 200;
+float Q3_MAX_ROCKETS			= 200;
+float Q3_MAX_CELLS			= 200;
+//float Q3_MAX_BFG				= 200;
+//float Q3_MAX_LIGHTNING		= 200;
+float Q3_MAX_SLUGS			= 200;
+float Q3_MAX_GRENADES		= 200;
+
 float Q3_ARM_RED				= 100;
 float Q3_ARM_YEL				= 50;
 float Q3_ARM_SHARD			= 5;
@@ -238,7 +247,8 @@ void () q3_weapon_bfg =
 
 	self.items = IT_LIGHTNING;
 	self.currentammo = 200; // 20 - adj =10 cells per shot -- using cell ammo for now
-	self.lip = AMMO_CELLS;
+	self.lip = AMMO_BFG; // cells
+	self.volume = Q3_MAX_CELLS;
 	self.attack_finished = 0.2;
 	self.dmg = 100;
 	self.dodmg = 120;
@@ -285,6 +295,7 @@ void() weapon_plasmagun =
 	self.items = IT_NAILGUN;
 	self.currentammo = 50;
 	self.lip = AMMO_CELLS;
+	self.volume = Q3_MAX_CELLS;
 	self.attack_finished = 0.1; // 10 per
 	self.dmg = 20;
 	self.dodmg = 15;
@@ -316,6 +327,7 @@ void() q3_mg_base =
 	self.items = IT_SUPER_NAILGUN;
 	self.currentammo = 100;
 	self.lip = AMMO_BULLETS;
+	self.volume = Q3_MAX_BULLETS;
 	self.attack_finished = 0.1; // 10 per
 	self.dmg = 7;
 	self.dmg_save = 1;
@@ -371,6 +383,7 @@ void() q3_weapon_shotgun =
 	self.currentammo = Q3_SHOT_AMMO;
 	self.items = IT_SUPER_SHOTGUN;
 	self.lip = AMMO_SHELLS;
+	self.volume = Q3_MAX_SHELLS;
 	self.attack_finished = 1;
 	self.dmg = 10;
 	self.dmg_save = 2;
@@ -413,6 +426,7 @@ void() q3_weapon_rocketlauncher =
 	self.currentammo = 10;
 	self.items = IT_ROCKET_LAUNCHER;
 	self.lip = AMMO_ROCKETS;
+	self.volume = Q3_MAX_ROCKETS;
 	self.attack_finished = 0.8;
 	self.dmg = 100;
 	self.dodmg = 120; // splash
@@ -461,6 +475,7 @@ void () q3_weapon_grenadelauncher =
 	self.currentammo = 10;
 	self.items = IT_GRENADE_LAUNCHER;
 	self.lip = AMMO_GRENADES;
+	self.volume = Q3_MAX_GRENADES;
 	self.attack_finished = 0.8;
 	self.dmg = 100;
 	self.dodmg = 150; // splash
@@ -570,7 +585,8 @@ void () q3_weapon_lightning =
 
 	self.currentammo = 100;
 	self.items = IT_LIGHTNING;
-	self.lip = AMMO_CELLS;
+	self.lip = AMMO_LIGHTNING; // really cells
+	self.volume = Q3_MAX_CELLS;
 	self.attack_finished = 0.1; // TDO: separate from q1 lg fire
 	self.dmg = 8;
 	self.dmg_save = 1;
@@ -616,6 +632,7 @@ void () q3_weapon_railgun =
 	self.currentammo = Q3_SLUG_AMMO;
 	self.items = IT_LIGHTNING;
 	self.lip = AMMO_SLUGS;
+	self.volume = Q3_MAX_SLUGS;
 	self.attack_finished = 1.5;
 	self.dmg = 100;
 	self.dmg_save = 1;
@@ -661,6 +678,7 @@ void() q3_ammo_bullets =
 	self.netname = "Bullets";
 
 	self.lip = AMMO_BULLETS;
+	self.volume = Q3_MAX_BULLETS;
 	self.currentammo = Q3_BULLET_AMMO;
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
@@ -690,6 +708,7 @@ void() q3_ammo_grenades =
 	self.netname = "Grenades";
 
 	self.lip = AMMO_GRENADES;
+	self.volume = Q3_MAX_GRENADES;
 	self.currentammo = Q3_GREN_AMMO;
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
@@ -718,7 +737,8 @@ void() ammo_lightning =
 	self.touch = pk_ammo_touch;
 	self.netname = "Cells";
 
-	self.lip = AMMO_CELLS;
+	self.lip = AMMO_LIGHTNING; // cells
+	self.volume = Q3_MAX_CELLS;
 	self.currentammo = Q3_ELEX_AMMO;
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
@@ -739,7 +759,8 @@ void() ammo_bfg =
 	self.touch = pk_ammo_touch;
 	self.netname = "Cells";
 
-	self.lip = AMMO_CELLS; // FIX
+	self.lip = AMMO_BFG; // cells - amount adjusted to fire proper count of bfg shots
+	self.volume = Q3_MAX_CELLS;
 	self.currentammo = Q3_BFG_AMMO;
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
@@ -768,6 +789,7 @@ void() q3_ammo_shells =
 	self.netname = "Shells";
 
 	self.lip = AMMO_SHELLS;
+	self.volume = Q3_MAX_SHELLS;
 	self.currentammo = Q3_SHOT_AMMO;
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
@@ -797,6 +819,7 @@ void() q3_ammo_rockets =
 	self.netname = "Rockets";
 
 	self.lip = AMMO_ROCKETS;
+	self.volume = Q3_MAX_ROCKETS;
 	self.currentammo = Q3_ROCK_AMMO;
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
@@ -826,6 +849,7 @@ void() q3_ammo_cells =
 	self.netname = "Cells";
 
 	self.lip = AMMO_CELLS;
+	self.volume = Q3_MAX_CELLS;
 	self.currentammo = Q3_CELL_AMMO;
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
@@ -857,6 +881,7 @@ void() q3_ammo_slugs =
 	self.netname = "Slugs";
 
 	self.lip = AMMO_SLUGS;
+	self.volume = Q3_MAX_SLUGS;
 	self.currentammo = Q3_SLUG_AMMO;
 	if (!self.wait) self.wait = RSP_TIME * 1.333;
 
@@ -1283,7 +1308,7 @@ void() item_flight =
 //	self.classname = "item_sigil";
 //	self.spawnflags = rune_bit_code(0, RUNE_FLG_FLT);
 //	item_sigil();
-	item_pack(); // FIX: placeholder only
+	item_spikes(); // FIX: placeholder only
 	self.netname = "Flight";
 
 	if (!self.wait) self.wait = Q3_POWER_WAIT;

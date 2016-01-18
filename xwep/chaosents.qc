@@ -166,11 +166,9 @@ void() health_touch =
 	{
 //	set_respawn();
 
-// oh what dorky code below
-		if (deathmatch != 2)		// deathmatch 2 is the silly old rules
+		if (deathmatch == 1 || deathmatch == 3)		// deathmatch 2 is the silly old rules
 		{
-			if (deathmatch)
-				self.nextthink = time + 20;
+			self.nextthink = time + 20;
 			self.think = SUB_regen;
 		}
 	}
@@ -223,12 +221,10 @@ void() x_pwr_touch =
 	if (deathmatch)
 	{
 		self.mdl = self.model;
-
-		if (self.wait)
-			self.nextthink = time + self.wait;
-		else
-			self.nextthink = time + RSP_TIME * 2;
-
+//		if (self.wait)
+//			self.nextthink = time + self.wait;
+//		else
+		self.nextthink = time + RSP_TIME * 2; // = 60 default
 		self.think = SUB_regen;
 	}
 
@@ -287,6 +283,197 @@ void() x_pwr_touch =
 	}
 };
 
+// x ammo pack touch & bounds
+
+void() x_pack_touch =
+{
+	if (other.classname != "player") // pk - this is where the grap can grab stuff
+	{
+		grap_checkIfGrap();
+		return;
+	}
+	if (other.health <= 0)
+		return;
+
+// detect pack type
+	other.target1 = self.model; // cant use noise4 DET_ because of bandolier in q2
+	if (self.model == "progs/d_pack.mdl")
+	if (self.skin == 1)
+		other.target1 = "progs/w_pack.mdl"; // id wolf pack
+
+	other.rune_flag = other.rune_flag | self.rune_flag; // RUNE_AMMO show pack bounds - will default to doom op if no .target1 value
+
+	BackpackTouch();
+
+	if (self.noise != "")
+		sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM); // default is q1 pack grab snd - in bp code
+
+	self.model = string_null;
+	self.solid = SOLID_NOT;
+	if (deathmatch == 1 || deathmatch == 3)
+	{
+		self.nextthink = time + RSP_TIME;
+		self.think = SUB_regen;
+	}
+
+	activator = other;
+	SUB_UseTargets();				// fire all targets / killtargets
+
+};
+
+/*
+
+other - must be player !!
+self - ammo box if am > 0
+
+am > 0 = return boundary for a given ammo type
+
+bound according to .target1 val
+
+ - progs/d_pack.mdl - or blank - doom values
+ - progs/q2_bando.mdl - q2 banodlier values
+ - progs/q2_pack.mdl - q2 pack values
+
+q1 defs
+	SHELLAMMO_MAX				= 100;
+	NAILAMMO_MAX					= 200;
+	ROCKETAMMO_MAX			= 100;
+	CELLAMMO_MAX					= 200; // pk amount - q1 = 100
+
+	BULLETAMMO_MAX			= 200;
+	SLUGAMMO_MAX					= 50;
+	GASAMMO_MAX						= 400;
+*/
+
+float(float am) bound_ammo_pack =
+{
+	local float sh_mx, nl_mx, rk_mx, cl_mx, bl_mx, sl_mx, gs_mx;
+
+// defaults set by server op
+	bl_mx	= PK_BULLETAMMO_MAX;
+	sh_mx	= Q1_SHELLAMMO_MAX;
+	rk_mx	= Q1_ROCKETAMMO_MAX;
+	cl_mx	= Q1_CELLAMMO_MAX;
+	sl_mx	= PK_SLUGAMMO_MAX;
+	nl_mx	= Q1_NAILAMMO_MAX;
+	gs_mx	= PK_GASAMMO_MAX;
+
+	if (SV_AMMO_MAX != 2) // master override check - turns off all ammo limit bounds increases, even the ammo rune
+	if (other.rune_flag & RUNE_AMMO)
+	{
+// defaults - doom if no other settings - TDO: default to rune values once determined
+		bl_mx	= 400;
+		sh_mx	= 100;
+		rk_mx	= 100;
+		cl_mx	= 600;
+
+		if (other.target1 == "progs/w_pack.mdl")
+		{
+			bl_mx	= 299;
+
+
+
+if (WARNING)
+{
+bprint("\b *** warning: wolf pack values set\n");
+}
+
+
+
+		}
+		else if (other.target1 == "progs/q2_pack.mdl")
+		{
+			bl_mx	= 300;
+			sh_mx	= 200;
+			rk_mx	= 100;
+			cl_mx	= 300;
+			sl_mx	= 100;
+
+
+
+if (WARNING)
+{
+bprint("\b *** warning: q2 pack values set\n");
+}
+
+
+
+		}
+		else if (other.target1 == "progs/q2_bando.mdl")
+		{
+			bl_mx	= 250;
+			sh_mx	= 150;
+			rk_mx	= 50;
+			cl_mx	= 250;
+			sl_mx	= 75;
+
+
+
+if (WARNING)
+{
+bprint("\b *** warning: q2 band values set\n");
+}
+
+
+
+		}
+		else
+
+
+
+if (WARNING)
+{
+bprint("\b *** warning: doom pack values set\n");
+}
+
+
+
+
+	}
+
+
+// return value for ammo type - ammo touch fn needs this
+	if (am)
+	{
+		if (! (other.rune_flag & RUNE_AMMO))
+		if (!SV_AMMO_MAX)
+		{
+// genre limits - set by spawn fn
+			if (self.volume) return(self.volume);
+		}
+//		if (SV_AMMO_MAX != 2) // because inf ammo is going to be a chaos thing for the most part
+		if (self.volume == -1) return(MAX_AMMO); // inifinte volume item
+// standard limits + rune / pack effect
+		if (am == AMMO_BULLETS) return(bl_mx);
+		if (am == AMMO_SHELLS) return(sh_mx);
+		if (am == AMMO_CELLS) return(cl_mx);
+		if (am == AMMO_ROCKETS) return(rk_mx);
+		if (am == AMMO_GRENADES) return(rk_mx);
+		if (am == AMMO_SLUGS) return(sl_mx);
+		if (am == AMMO_GAS) return(gs_mx);
+		if (am == AMMO_NAILS) return(nl_mx);
+		return(DEF_AMMO); // oops - couldnt figure type
+	}
+
+// do bounds
+	if (other.ammo_shells > sh_mx)
+		other.ammo_shells = sh_mx;
+	if (other.ammo_nails > nl_mx)
+		other.ammo_nails = nl_mx;
+	if (other.ammo_rockets > rk_mx)
+		other.ammo_rockets = rk_mx;
+	if (other.ammo_cells > cl_mx)
+		other.ammo_cells = cl_mx;
+// new ammo
+	if (other.ammo_bullet > bl_mx)
+		other.ammo_bullet = bl_mx;
+	if (other.ammo_slug > sl_mx)
+		other.ammo_slug = sl_mx;
+	if (other.ammo_gaspr > gs_mx)
+		other.ammo_gaspr = gs_mx;
+
+	return(0);
+};
 
 // inventory display & control
 
@@ -635,11 +822,14 @@ void() inventory =
 					}
 				}
 				loose_ammo();
+				if (self.rune_flag & RUNE_AMMO)
+				if (self.target1 != "ammorune")
+					sprint(self, "Ammo Pack\n");
 				if (self.items & IT_DET)
 					sprint(self, "-\nItems:\n");
 			}
 		}
-		if (self.rune_flag) sprint(self, "-\nRunes of power\n");
+		if (self.rune_flag & RUNE_MASK_ALL) sprint(self, "-\nRunes of power\n");
 	}
 
 	am_type = 0;

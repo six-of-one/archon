@@ -12,7 +12,7 @@ void() d_weapon_touch =
 	local	entity e;
 	local float leave;
 
-	if (other.classname != "player") // *bot
+	if (other.classname != "player") // *bot - done in master touch fn
 	{
 		grap_checkIfGrap();
 		return ;
@@ -225,9 +225,6 @@ void() d_weapon_touch =
 	self.solid = SOLID_NOT;
 	if (deathmatch == 1)
 	{
-		if (self.wait)
-			self.nextthink = time + self.wait;
-		else
 		self.nextthink = time + RSP_TIME;
 		self.think = SUB_regen;
 	}

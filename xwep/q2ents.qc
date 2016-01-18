@@ -40,6 +40,13 @@ float Q2_DEF_HGRN				= 5;
 //float Q2_DEF_ROCKETS_SM		= 5;
 float Q2_DEF_BLAST			= 5;
 
+float Q2_MAX_BULLETS			= 200;	// max val without pack / rune
+float Q2_MAX_SHELLS			= 100;
+float Q2_MAX_ROCKETS			= 50;
+float Q2_MAX_CELLS			= 200;
+float Q2_MAX_SLUGS			= 50;
+float Q2_MAX_GRENADES		= 50;
+
 float Q2_BARREL_BLAST		= 150;
 
 void() q2_precache =
@@ -190,6 +197,7 @@ void() q2_ammo_bullets =
 	self.lip = AMMO_BULLETS;
 	self.currentammo = Q2_DEF_BULLETS_BOX;
 	self.wait = RSP_TIME;
+	self.volume = Q2_MAX_BULLETS;
 
 //	self.classname = "ammo_bullets";
 	setmodel (self, "progs/q2_bullets.mdl");
@@ -208,6 +216,7 @@ void() q2_ammo_rockets =
 	self.lip = AMMO_ROCKETS;
 	self.currentammo = Q2_DEF_ROCKETS_LG;
 	self.wait = RSP_TIME;
+	self.volume = Q2_MAX_ROCKETS;
 
 	setmodel (self, "progs/q2_rockets.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
@@ -226,6 +235,7 @@ void() q2_ammo_shells =
 	self.lip = AMMO_SHELLS;
 	self.currentammo = Q2_DEF_SHELLS;
 	self.wait = RSP_TIME;
+	self.volume = Q2_MAX_SHELLS;
 
 	setmodel (self, "progs/q2_shells.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
@@ -243,6 +253,7 @@ void() q2_ammo_cells =
 	self.lip = AMMO_CELLS;
 	self.currentammo = Q2_DEF_CELLPAK;
 	self.wait = RSP_TIME;
+	self.volume = Q2_MAX_CELLS;
 
 	setmodel (self, "progs/q2_cellbox.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
@@ -260,6 +271,7 @@ void() q2_ammo_slugs =
 	self.lip = AMMO_SLUGS;
 	self.currentammo = Q2_DEF_SLUGS;
 	self.wait = RSP_TIME;
+	self.volume = Q2_MAX_SLUGS;
 
 	setmodel (self, "progs/q2_slugs.mdl");
 	self.noise = "q2_snd/am_pkup.wav";
@@ -301,6 +313,7 @@ void() q2_ammo_grenades =
 	self.currentammo = Q2_DEF_BLAST;
 	self.items = IT_GRENADE_LAUNCHER;
 	self.lip = AMMO_GRENADES;
+	self.volume = Q2_MAX_GRENADES;
 	self.attack_finished = 0.5;
 	self.dmg = 125;
 	self.dodmg = 165; // splash
@@ -340,6 +353,7 @@ void () q2_weapon_bfg =
 	self.currentammo = 50;
 	self.items = IT_LIGHTNING;
 	self.lip = AMMO_CELLS;
+	self.volume = Q2_MAX_CELLS;
 	self.attack_finished = 2;
 	self.dmg = 200;
 	self.dodmg = 200; // splash & trace
@@ -375,6 +389,7 @@ void () q2_weapon_railgun =
 	self.currentammo = Q2_DEF_SLUGS;
 	self.items = IT_LIGHTNING;
 	self.lip = AMMO_SLUGS;
+	self.volume = Q2_MAX_SLUGS;
 	self.attack_finished = 1.5;
 	self.dmg = 100;
 	self.dmg_save = 1;
@@ -406,6 +421,7 @@ void () weapon_hyperblaster =
 	self.currentammo = Q2_DEF_HYBERB;
 	self.items = IT_LIGHTNING;
 	self.lip = AMMO_CELLS;
+	self.volume = Q2_MAX_CELLS;
 	self.attack_finished = 0.1;
 	self.dmg = 20;
 	self.dmg_save = 1;
@@ -436,6 +452,7 @@ void() q2_weapon_rocketlauncher =
 	self.currentammo = Q2_DEF_BLAST;
 	self.items = IT_ROCKET_LAUNCHER;
 	self.lip = AMMO_ROCKETS;
+	self.volume = Q2_MAX_ROCKETS;
 	self.attack_finished = 1.25;
 	self.dmg = 100;
 	self.dodmg = 120; // splash
@@ -499,6 +516,7 @@ void () weapon_chaingun =
 	self.items = IT_SUPER_NAILGUN;
 	self.currentammo = 50;
 	self.lip = AMMO_BULLETS;
+	self.volume = Q2_MAX_BULLETS;
 	self.attack_finished = 0.05; // 20 per then 40 per 1 sec later
 	self.dmg = 6;
 	self.dmg_save = 1;
@@ -526,6 +544,7 @@ void() q2_mg_base =
 	self.items = IT_NAILGUN;
 	self.currentammo = 50;
 	self.lip = AMMO_BULLETS;
+	self.volume = Q2_MAX_BULLETS;
 	self.attack_finished = 0.1; // 10 per
 	self.dmg = 8;
 	self.dmg_save = 1;
@@ -569,6 +588,7 @@ void () q2_weapon_supershotgun =
 	self.currentammo = Q2_DEF_SHOTG	;
 	self.items = IT_SUPER_SHOTGUN;
 	self.lip = AMMO_SHELLS;
+	self.volume = Q2_MAX_SHELLS;
 	self.attack_finished = 1;
 	self.dmg = 6;
 	self.dmg_save = 2;
@@ -599,6 +619,7 @@ void () q2_weapon_shotgun =
 	self.currentammo = Q2_DEF_SHOTG	;
 	self.items = IT_SHOTGUN;
 	self.lip = AMMO_SHELLS;
+	self.volume = Q2_MAX_SHELLS;
 	self.attack_finished = 1;
 	self.dmg = 4;
 	self.dmg_save = 1;
@@ -905,6 +926,12 @@ void() item_bandolier =
 	item_spikes();
 	self.netname = "Bandolier";
 
+	self.touch = x_pack_touch;
+	self.pk_items =
+	self.items = 0; // must be for bp touch call
+	self.rune_flag = RUNE_AMMO;
+	self.ammo_bullet = 50;
+	self.ammo_shells = 10;
 	self.wait = RSP_TIME;
 
 	setmodel(self, "progs/q2_bando.mdl");
@@ -919,6 +946,10 @@ void() item_pack =
 	item_spikes();
 	self.netname = "Ammo Pack";
 
+	self.touch = x_pack_touch;
+	self.pk_items =
+	self.items = 0; // must be for bp touch call
+	self.rune_flag = RUNE_AMMO;
 	self.ammo_bullet = 50;
 	self.ammo_shells = 10;
 	self.ammo_rockets = 10; // 5; // includes 5 grenades
