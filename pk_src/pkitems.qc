@@ -89,7 +89,7 @@ void () PlaceItem =
 	self.sscode = sid_code[(int)(self.mcode - 100) * %4];
 	if (!self.scode) self.scode = self.mcode;
 
-	if (Q_100 || PK_100) // || !GENERATIONS) // TDO: include hip_item & x_item when xlates are available
+	if (Q_100 || PK_100) // || !GENERATIONS)
 	{
 		f = 0;
 		if (TR_Q1QRY > 0)
@@ -1546,7 +1546,7 @@ void() DropBackpack =
 	setsize (newmis, '-16 -16 0', '16 16 56');
 	newmis.touch = BackpackTouch;
 
-	newmis.nextthink = time + 120;	// remove after 2 minutes - TDO: cvar + stdev
+	newmis.nextthink = time + BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
 	newmis.think = SUB_Remove;
 	AddToSplash(newmis); // *pk - splash tossed items
 
@@ -1572,41 +1572,12 @@ void() ip_regen =
 
 void() ip_checkForMovement =
 {
-	local entity e;
-	local vector v1;
 
 	if (self.solid != SOLID_NOT)
  {
 	if (self.map == "rune" && RUNES && self.classname == "item_sigil")// && self.delay > -1)  // !chaos
 	{
-		self.cnt = self.cnt + 1;
-		self.delay = self.delay + 1;
-		if (self.cnt > self.count || self.delay > RUNE_MOVE) // not touched in 2 - 6 mins or > 10 mins
-		{
-			if (self.delay > RUNE_MOVE) // reload val
-			{
-				RUNE_MOVE = 10 + rint(random() * 2.5 + random() * 2.5);
-				self.delay = 0;
-			}
-			e = dyn_rndloc();
-			if (!e) e = findradius(world.origin, 256000);
-			if (e)
-			{
-				v1 = e.origin + ' 0 0 4';
-				if (e.flags & FL_ITEM) // randomize away from other map items
-					v1 = stdv_rndloc(e.origin + ' 0 0 4', 50, 100);
-				setorigin(self, v1);
-				self.ip_orgOrigin = self.origin;
-				self.count = 2 + random() * 3.8; // reset for new location
-				self.cnt = 0;
-
-				bprint("\b*** RUNE relocating: ");
-				bprint(self.netname);
-				bprint(" near: ");
-				bprint(e.classname);
-				bprint("\n");
-			}
-		}
+		rune_relocate();
 	}
 	else
 	if (self.ip_orgOrigin != v0)

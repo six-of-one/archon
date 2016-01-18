@@ -51,6 +51,8 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.lefty = self.lefty; // misc data
 	if (self.mcode) e.mcode = self.mcode; // for pack touch deal
 //		e.cnt = self.cnt; // vw skinnage
+	e.th_melee = SUB_Null;
+	if (self.th_melee != (void ()) 0) e.th_melee = self.th_melee; // multi modes
 
 	e.netname = self.netname;
 //		e.mdl = self.mdl; - invisible

@@ -103,7 +103,7 @@ entity( vector pos, string stain, void() thk, float ttm ) placestain =
 //   setmodel( new, "progs/s_bullet.spr" );
    setmodel( new, stainv );
    setsize (new, '0 0 0', '0 0 0');
-	if (stainv == "progs/s_rlspg.spr" || stainv == "progs/s_plspg.spr") new.scale = 8;
+	if (stainv == "progs/s_rlspg.spr" || stainv == "progs/s_plspg.spr") new.scale = 8; // TDO: redo sprites & get rid of scale
 	new.alpha = 1;
 
    norm = trace_plane_normal;

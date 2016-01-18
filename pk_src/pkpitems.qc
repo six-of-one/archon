@@ -88,19 +88,34 @@ void(entity e) pkplus_item_control =
 	if (e.classname == "func_make") return; // override
 
 // no sense in working removed items or constantly rndize items
-	if (cvar("pk_place_item") == 1) return;
-	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
+	if (cvar("pk_place_item") == 1)
+	if (e.think == pic_restore_item) // still check dynamics and live map ents
+		return;
+
+	if (!PK_ART)
+	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3) // when turning on - this should never get here
 	{
-		if (cvar("pk_place_item_reload"))
-		if (cvar("pk_place_item_reload") < 60) return;
-		if (!PK_ART)
-		{
-			e.class_select = "";
-			e.classname = "";
-		}
+//		if (!PK_ART)
+//		{
+//			if (cvar("pk_place_item_reload")) // turning off & in rndize_item control
+	//		if (cvar("pk_place_item_reload") < 60) return;
+//			{
+				local entity k;
+				k = find(world,classname,"rndize_item");
+				while (k)
+				{
+					if (k.owner == e)
+					{
+						k.wad = "pkpitem"; // so we can find when art back on
+						k.think = rndize_item;
+						k.nextthink = time + random() * 5; // force quick re-think to rndize again
+					}
+					k = find(k,classname,"rndize_item");
+				}			
+//			}
+//		}
 		return;
 	}
-// TDO: fix where rndize once made pkplus and they got turned off - re-rndize them
 
 	if (PK_ART) // turned back on - come here from loop
 	{
@@ -154,6 +169,30 @@ void(entity e) pkplus_item_control =
 
 // twiddled after map load
 
+float pkp_sc; // search code
+string pkp_str; // search string
+
+void() find_pkpitems =
+{
+	local entity e;
+	local float k;
+
+	pkp_str = ftos(pkp_sc);
+	e = find(world,sscode,pkp_str);
+	while (!e && pkp_sc)
+	{
+		pkp_sc  = pkp_sc  + 1;
+		if (pkp_sc > MC_MASK) pkp_sc = 0;
+		if (pkp_sc)
+		{
+			pkp_str = ftos(pkp_sc);
+			e = find(world,sscode,pkp_str);
+		}
+	}
+};
+
+// only called when pk_art toggled
+
 void() pkplus_item_control_loop =
 {
 	local entity e, sv;
@@ -163,12 +202,50 @@ void() pkplus_item_control_loop =
 //	if (cvar("pk_place_item") != 0)
 //		return;
 
-	sr = "pkplus_item";
-	e = find(world,class_select,sr);
+
+	if (PK_ART)
+	{
+		if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
+		{
+			sr = "pkpitem";
+			e = find(world,wad,sr); // looking for rndize_* control ents for pkp items
+			while (e)
+			{
+				e.owner.mcode = MC_TOMB + rint(random() * 3);
+				e.owner.wad = item_by_mcode(e.owner.mcode);
+				item_call_save(e.owner, e.owner.wad);
+				e.wad = "";
+				e = find(world,wad,sr);
+			}
+			return;
+		}
+	
+		pkp_str = "pkplus_item";
+		e = find(world,class_select,pkp_str);
+		while (e)
+		{
+			pkplus_item_control(e);
+			e = find(e,class_select,pkp_str);
+		}
+		return;
+	}
+
+	pkp_sc = MC_TOMB;
+	find_pkpitems();
+	e = find(world,sscode,pkp_str);
 	while (e)
 	{
 		pkplus_item_control(e);
-		e = find(e,class_select,sr);
+		e = find(e,sscode,pkp_str);
+		if (!e)
+		{
+			pkp_sc = pkp_sc + 1;
+			if (pkp_sc <= MC_MASK)
+			{
+				find_pkpitems();
+				e = find(world,sscode,pkp_str);
+			}
+		}
 	}
 };
 

@@ -1303,13 +1303,12 @@ void() th_saver =
 			spot = find(world, targetname, self.target);
 		}
 
-// if no target, teleport player to a random spawn
+// if no target, teleport player to a random loc
 		if (!spot)
 		{
-			spot = PK_SelectSpawnPoint (); // *pk - get a spawn point, pk style 
+			spot = find_tdest(FL_RSTELE | FL_RSSTART | FL_ITEM, "");
 			ClearSpawnPoint(spot); // *pk
 		}
-// TDO: add item location randomizer when chaos teleport done
 
 		if (!spot) // FAILED!
 		{
@@ -1737,3 +1736,308 @@ void(vector lorg1, vector lorg2) seq_bolt =
 };
 
 
+
+
+// returns entity for target - behavior:
+
+// cls - if non null look for this classname and pick a random one
+// fl - flags that control fn
+// FL_ITEM		include items - if FL_RSEVEN is not set, code will favor item dests 10 %
+// FL_RSTELE	include teleports - if FL_RSEVEN is not set, code will favor teleport destinations 60%
+// FL_RSSTART	include all player starts - if FL_RSEVEN is not set code will favor these only 30%
+// FL_NOTARGET	include only classname specified in fn call
+// FL_RSRNG		find_tdest - find closest range among selections - IDEA - FL_ZPREF - prefer near z level to closer up / down
+// FL_RSEVEN	chances are equal for any destination
+// FL_RSALL		select tele, start, & items evenly
+// 0				try teleport dest, if none try starts
+
+entity(float rd, entity e) find_tselect =
+{
+	local float r;
+	r = floor(random() * rd);
+																								if (WARNING)
+																								if (FALSE) {
+																									bprint("find_dest random: ");
+																									bprint(ftos(r));
+																									bprint(" unit selected - ent: ");
+																									bprint(e.classname);
+																									bprint(" \n"); }
+	while (r > 0)
+	{
+		r = r - 1;
+		if (e.chain) e = e.chain;
+	}
+	return(e);
+};
+
+
+entity(float fl, string clsn) find_tdest =
+{
+	local entity p, tl, st, it, cl;
+	local float rng, sf, ctl, cst, cit, ccl;
+
+	if (!self) return(world); // CHECK: is this needed?
+
+	p =  tl = st = it = cl = world;
+	ctl = cst = cit = ccl = 0;
+	rng = (fl & FL_RSEVEN) | (fl & FL_RSRNG); // closest or even chance - make one big chain
+
+	if ((fl & FL_RSTELE) || (fl < 1))
+	{
+		tl = self;
+		ctl = cnt_ent(tl, "classname",  "info_teleport_destination");
+		if (rng) while (tl.chain) tl = tl.chain;
+		else tl = self.chain;
+	}
+
+	if ((fl & FL_RSSTART) || ( fl < 1))
+	{
+		if (rng && tl != world) st = tl;
+		else st = self;
+		cst = cnt_ent(st, "classname",  "info_player_start");
+		while (st.chain) st = st.chain;
+		cst = cst + cnt_ent(st, "classname",  "info_player_coop");
+		while (st.chain) st = st.chain;
+		cst = cst + cnt_ent(st, "classname",  "info_player_deathmatch");
+		if (rng) while (st.chain) st = st.chain;
+		else st = self.chain;
+	}
+
+	if (fl & FL_ITEM)
+	{
+		if (rng && st != world) it = st;
+		else it = self;
+		cit = cnt_ent(it, "class_select", "class_ammo"); // chain all this up if found
+		while (it.chain) it = it.chain;
+		cit = cit + cnt_ent(it, "classname", "item_armor1");
+		while (it.chain) it = it.chain;
+		cit = cit + cnt_ent(it, "classname", "weapon_supershotgun");
+		while (it.chain) it = it.chain;
+		cit = cit + cnt_ent(it, "classname", "weapon_nailgun");
+		while (it.chain) it = it.chain;
+		cit = cit + cnt_ent(it, "class_select", "class_health");
+		it = self.chain;
+	}
+
+	if (clsn != "")
+	{
+		if (rng && it != world) cl = it;
+		else cl = self;
+		if (clsn ==  "class_monster")
+			ccl = cnt_ent(cl, "class_select", clsn);
+		else
+			ccl = cnt_ent(cl, "classname", clsn);
+		cl = self.chain;
+	}
+//																																								if (FALSE) print_chain(self.chain);
+
+	if (fl & FL_RSRNG)
+	{
+		sf = (ctl + cst + cit + ccl) * 2;
+		tl = p = self.chain;
+		rng = MAXFL;
+		while (p && sf > 0)
+			{
+				sf = sf - 1;
+				if (vlen(self.origin - p.origin) < rng)
+				{
+					rng = vlen(self.origin - p.origin) ;
+					tl = p;
+				}
+				p = p.chain;
+			}
+		if (tl) return(tl); // select close range - takes priority over even flag
+	}
+
+	if (fl & FL_RSEVEN)
+	{
+		p = find_tselect(ctl + cst + cit + ccl, self.chain); // select among all things randomly
+		if (p) return(p);
+	}
+
+	rng = random();
+
+	p = world;
+	if (ctl)
+	if (rng < 0.6 || fl < 1 || !(cst + cit)) // select a teleport dest
+	{
+		p = find_tselect(ctl, tl);
+		if (p) return(p);
+	}
+
+	if (cst)
+	if (rng < 0.9 || fl < 1 || !cit) // select a player start
+	{
+		p = find_tselect(cst, st);
+		if (p) return(p);
+	}
+
+	if (ccl)
+	{
+		p = find_tselect(ccl, cl); // select among classname clsn
+		if (p) return(p);
+	}
+
+	if (cit)
+		p = find_tselect(cit, it); // select an item from approved list
+
+	return(p);
+
+/*
+																								if (DEVMSG)
+																								if (FALSE) {
+																									bprint("find_dest selected: ");
+																									bprint(p.classname);
+																									bprint(", ");
+																									bprint(vtos(p.origin));
+																									bprint("\n"); }
+*/
+};
+
+// IDEA - nemesis of sphere annihilation | something similar to sphere bomb
+
+// self is player, gr is telesphere
+void() teleport_touch;
+
+/*
+float(entity gr) chaos_teleport_grab =
+{
+	if (!gr) return(FALSE);
+	if (random() < CHAOS_GRAB_TELE) return (FALSE); // got it...heh heh, or it has you
+
+	gr.enemy = self;
+	other = self;
+	self = gr;
+	teleport_touch(); // got teleported
+	self = self.enemy; // back to us
+	return(TRUE);
+};
+*/
+
+void(vector torg, string trgname, entity trgent) chaos_teleport =
+{
+//	local entity tel;
+
+// IDEA - get trigger field size from model sizes
+	// physical ent - because trigger has no mdl
+	newmis = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0,  torg, '-12 -12 -12', ' 12 12 12', v0, v0, "chaos_teleport_icon", "progs/sphere_annihilation.mdl", SUB_Null, 2, sphere_annihilation_move, SUB_Null, self, world);
+	newmis.oldorigin = torg;
+	newmis.aflag = -1; //stable
+//	newmis.grab_callback = chaos_teleport_grab;
+
+// trigger
+	newmis.trigger_field = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0,  torg , '-16 -16 -16', ' 16 16 16', v0, v0, "chaos_teleport", "progs/sphere_annihilation.mdl", SUB_Null, 4, trigger_teleport, SUB_Null, self, world);
+//	newmis.frame = needs think fn
+	newmis.skin = 1; //animated skin group
+// locate target
+	newmis.trigger_field.movetarget = world;
+	if (trgname) newmis.trigger_field.movetarget = find (world, targetname, trgname);
+	else if (trgent) newmis.trigger_field.movetarget = trgent;
+
+	if (!newmis.trigger_field.movetarget) newmis.trigger_field.movetarget = find_tdest(0, "");
+
+	newmis.aiment = loop_sound(self, CHAN_WEAPON,"alt_ambience/hum1.wav", 0.9, ATTN_NORM, 3.62, torg, 0, LOOPFOREVER);
+};
+
+
+// fn(IS_MISSILE) - ent is a flying missile object (FMO)
+
+float(entity e) IS_MISSILE =
+{
+	local float f;
+	f = FALSE;
+
+	if (e.classname == "spike") f = TRUE;
+	else if (e.classname == "pulse_spike") f = TRUE;
+	else if (e.classname == "grenade") f = TRUE;
+	else if (e.classname == "missile") f = TRUE;
+	else if (e.classname == "laser") f = TRUE;
+	else if (e.classname == "proximity_grenade") f = TRUE;
+	else if (e.classname == "fireballwep") f = TRUE;
+	else if (e.classname == "lavaspike") f = TRUE;
+	else if (e.classname == "fireballmissle") f = TRUE;
+	else if (e.classname == "wizspike") f = TRUE;
+	else if (e.classname == "knightspike") f = TRUE;
+	else if (e.classname == "zombyflesh") f = TRUE;
+//	else if (e.classname == "fireball") f = TRUE;
+//	else if (e.classname == "calderashard") f = TRUE;
+	return(f);
+};
+
+
+// new body que - builds que on the fly
+
+void() InitBodyQue;
+void(entity ent) q100_CopyToBodyQue;
+entity bodyque_first; // start up pointer
+entity bodyque_head;
+float body_cnt;
+
+void (entity e) CopyToBodyQue =
+{
+	if (PK_100 || Q_100)
+	{
+		if (!bodyque_head || !bodyque_first)
+		{
+			InitBodyQue(); // set *100 before any corpse made
+			bodyque_first = bodyque_head;
+		}
+		else
+		if (!bodyque_head.owner) bodyque_head.owner = bodyque_first; // poss q100 turned on before loop was complete - TEST:
+		q100_CopyToBodyQue(e);
+		return;
+	}
+
+	if (DEAD_BODYCOUNT < 1)
+	{
+		bodyque_head = spawn(); // make one each time
+		bodyque_head.think = SUB_Remove;
+		bodyque_head.nextthink = time + DEAD_BODYTIME + random() * 30;
+		bodyque_head.classname = "bodyque";
+	}
+	else
+	if (body_cnt < DEAD_BODYCOUNT)
+	{
+		if (bodyque_head)
+		{
+			bodyque_head.owner = spawn(); // next in linx
+			bodyque_head = bodyque_head.owner;
+		}
+		else
+			bodyque_first = bodyque_head = spawn(); // make first one
+
+		bodyque_head.classname = "bodyque";
+		body_cnt = body_cnt + 1;
+	}
+	else
+	{
+		if (!bodyque_head.owner)
+			bodyque_head.owner = bodyque_first; // make loop
+		else
+			bodyque_head = bodyque_head.owner; // cycle loop
+	}
+
+	bodyque_head.angles = e.angles;
+	bodyque_head.model = e.model;
+	bodyque_head.modelindex = e.modelindex;
+	bodyque_head.frame = e.frame;
+	bodyque_head.colormap = e.colormap; // player colors till disconnect - changes when changed live
+//	bodyque_head.clientcolors = e.clientcolors; // does nothing - colors happen thru the colormap, of which there are client slots count
+	bodyque_head.flags = FL_CLIENT;
+	bodyque_head.movetype = e.movetype;
+	bodyque_head.velocity = e.velocity;
+	bodyque_head.flags = 0;
+	bodyque_head.skin = e.skin; // *pk damage skins
+	setorigin (bodyque_head,e.origin);
+	setsize (bodyque_head,e.mins,e.maxs);
+
+/*
+// this actually sets colors for a given colormap = clientno + 1 (this example sets colors for colormap = 2)
+// to set a color map above 1 a listen server must be running
+
+	bodyque_head.b_clientno = 1;
+	bodyque_head.b_shirt = 9;
+	bodyque_head.b_pants = 10;
+	UpdateClient(bodyque_head);
+*/
+};

@@ -1926,7 +1926,7 @@ void() painkeep_cube_use =
 				f = rint(random() * 6);
 				if (f == 1) d = MC_HEALTHMEGA;
 				else if (f == 2) d = MC_ARMOR3;
-				else if (f == 3) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; }
+				else if (f == 3) { c.touch = SUB_Null; d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; }
 				else if (f == 4) d = MC_HOOK;
 				else if (f == 5)
 				{
@@ -1947,17 +1947,28 @@ void() painkeep_cube_use =
 			}
 		}
 	}
+//	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
 
 	c.wad = item_by_mcode(d);
 	self = c;
 	self.pk_touch = painkeep_touch;
 //	item_translate(self, FL_TR_RANDOM);
-	if (random() > 0.15)
+	if (0) // TEST: random() > 0.15)
 	{
+		if (d == MC_EXPLOD2 || d == MC_D_BARREL) // cause barrels are special
+		{
+//			self = spawn();
+			self.classname = "";
+			self.scode = -1; // item call tests this for making barrels
+			item_call(self.wad);
+			remove(c);
+			self = sv;
+			return;
+		}
 		item_call(self.wad);
 		if (self.ammo_cells < 0) self.currentammo = self.ammo_cells = self.currentammo + 30 + 50 * random();
 		if (self.ammo_shells < 0) self.currentammo = self.ammo_shells = self.currentammo + 30 + 30 * random();
-		self.punchangle = ' 110 110 180'; // for ejector
+		self.punchangle = ' 110 110 280'; // for ejector
 
 // pk cube fix - spawned something and fns are reversed
 		if (self.pk_touch == painkeep_touch)
@@ -1970,6 +1981,13 @@ void() painkeep_cube_use =
 	}
 	else
 	{
+		if (random() < 0.5)
+		{
+			chaos_teleport(self.origin, "", world);
+			newmis.origin_z = newmis.origin_z + 20 + random() * 30;
+			remove(self);
+			return;
+		}
 		f = 4 + random() * 4;
 		while (f > 0)
 		{
@@ -2156,10 +2174,50 @@ void (float ksv) item_keyX =
 	StartItem ();
 };
 
+// generate a string for key on an x_item door (if netname not set on door) based on map mode & x_item bit
+
+// for map mode door, self is door - .map is map mode code
+
+string(float xi) x_key_print =
+{
+	local float xxi;
+	local string drm;
+
+	if (self.classname == "door") drm = self.map;
+
+	xxi = xi;
+	if (MAP_MODE == "D" || drm == "D")
+	{
+		xxi = xi & X_D_KEY_BIT;
+		if (xxi & X_D_KEY_CRED) return ("Red card key");
+		if (xxi & X_D_KEY_CBLUE) return ("Blue card key");
+		if (xxi & X_D_KEY_CYEL) return ("Yellow card key");
+		if (xxi & X_D_KEY_SKRED) return ("Red Skull key");
+		if (xxi & X_D_KEY_SKBLUE) return ("Blue Skull key");
+		if (xxi & X_D_KEY_SKYEL) return ("Yellow Skull key");
+	}
+	if (MAP_MODE == "Q2" || drm == "Q2")
+	{
+		xxi = xi & X_Q2_KEY_BIT;
+		if (xxi & X_Q2_KEY_RED) return ("Red Key");
+		if (xxi & X_Q2_KEY_BLUE) return ("Blue Key");
+		if (xxi & X_Q2_KEY_PYRAMID) return ("Pyramid Key");
+		if (xxi & X_Q2_KEY_CUBE) return ("Power Cube");
+		if (xxi & X_Q2_KEY_PASS) return ("Pass Key");
+		if (xxi & X_Q2_KEY_AIRSTRK) return ("Airstrike Target");
+		if (xxi & X_Q2_KEY_DATACD) return ("Data CD");
+		if (xxi & X_Q2_KEY_CDSPIN) return ("Data Spinner");
+		if (xxi & X_Q2_KEY_CHEAD) return ("Commanders Head");
+	}
+	return("");
+};
 
 // TDO: expand fn - handle chaos items, non respawnables
 
 // fn_make - make an item from map code value
+
+// mc - map code
+// vo - location, will randomize if = v0
 
 
 void(float mc, vector vo) fn_make =
@@ -2171,56 +2229,56 @@ void(float mc, vector vo) fn_make =
 	sv = self;
 	sc = item_by_mcode(mc);
 
- if (sc != "")
- {
-	 v1 = vo;
-  if (vo == v0) // no origin sent, get random one around some other object
-  {	  
-	e = dyn_rndloc();
-	if (!e) e = findradius(world.origin, 256000);
-	if (!e) 
+	if (sc != "")
 	{
-		if (WARNING) bprint("*** warning: fn_make could not find a random (or any) location - giving up\n");
-		return; // crap - no location
+		v1 = vo;
+		if (vo == v0) // no origin sent, get random one around some other object
+		{	  
+		e = dyn_rndloc();
+		if (!e) e = findradius(world.origin, 256000);
+		if (!e) 
+		{
+			if (WARNING) bprint("*** warning: fn_make could not find a random (or any) location - giving up\n");
+			return; // crap - no location
+		}
+		v1 = e.origin + ' 0 0 16';
+		if (e.flags & FL_ITEM) // randomize away from other map items
+			v1 = stdv_rndloc(e.origin + ' 0 0 16', 50, 100);
+		}
+
+		self = spawn();
+
+		self.wad = sc;
+
+		setorigin(self, v1);
+		item_call(sc);
+
+		self.velocity_z = 300 + 100 * random();
+		self.velocity_x = -170 + (random() * 340);
+		self.velocity_y = -170 + (random() * 340);
+
+		if (self.map == "rune") self.map = ""; // rune server deal
+
+		bprint("\b*** fn_make item spawned: ");
+		bprint(self.wad);
+		if (e)
+		{
+		bprint(" near: ");
+		bprint(e.classname);
+		}
+		else
+		bprint(" on the map");
+		bprint("\n");
+
+		self = sv;
+
 	}
-	v1 = e.origin + ' 0 0 16';
-	if (e.flags & FL_ITEM) // randomize away from other map items
-		v1 = stdv_rndloc(e.origin + ' 0 0 16', 50, 100);
-  }
-
-	self = spawn();
-
-	self.wad = sc;
-
-	setorigin(self, v1);
-	item_call(sc);
-
-	self.velocity_z = 300 + 100 * random();
-	self.velocity_x = -170 + (random() * 340);
-	self.velocity_y = -170 + (random() * 340);
-
-	if (self.map == "rune") self.map = ""; // rune server deal
-
-	bprint("\b*** fn_make item spawned: ");
-	bprint(self.wad);
-	if (e)
+	else //if (WARNING)
 	{
-	bprint(" near: ");
-	bprint(e.classname);
-	}
-	else
-	bprint(" on the map");
-	bprint("\n");
-
-	self = sv;
-
- }
-	else
-	{
-	bprint("\b *** map code with no item translation:\n");
-	bprint(" -------------->  ");
-	bprint(ftos(mc));
-	bprint("\n");
+		bprint("\b *** fn_make: map code with no item translation:\n");
+		bprint(" -------------->  ");
+		bprint(ftos(mc));
+		bprint("\n");
 	}
 };
 

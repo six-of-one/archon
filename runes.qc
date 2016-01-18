@@ -236,7 +236,7 @@ void () rune_touch =
 	if (!deathmatch) rune_sigil_touch(); // map rune in sp must allow touch even if rules prevent getting rune
 
 	if (RUNES == 1)
-	if (!RUNE_AR1M)
+	if (!RUNE_AR1M) // allow rule 1 multiple runes
 	if (other.rune_flag)
 		return;
 
@@ -390,7 +390,7 @@ void() rune_maker =
 			self.count = 2 + random() * 3.8; // controls no-touch reposition code in check movement deal
 			self.delay = self.cnt = 0;
 
-			bprint("\b*** RUNE spawned: ");
+			bprint("\n\b*** RUNE spawned: ");
 			bprint(self.netname);
 			if (e)
 			{
@@ -399,9 +399,46 @@ void() rune_maker =
 			}
 			else
 			bprint(" on the map");
-			bprint("\n");
+			bprint("\n\n");
 
 			rune_count = rune_count + 1;
+		}
+	}
+};
+
+// relocation code - called by ip_checkForMovement
+
+void() rune_relocate =
+{
+	local entity e;
+	local vector v1;
+
+	self.cnt = self.cnt + 1;
+	self.delay = self.delay + 1;
+	if (self.cnt > self.count || self.delay > RUNE_MOVE) // not touched in 2 - 6 mins or > 10 mins
+	{
+		if (self.delay > RUNE_MOVE) // reload val
+		{
+			RUNE_MOVE = 10 + rint(random() * 2.5 + random() * 2.5);
+			self.delay = 0;
+		}
+		e = dyn_rndloc();
+		if (!e) e = findradius(world.origin, 256000);
+		if (e)
+		{
+			v1 = e.origin + ' 0 0 4';
+			if (e.flags & FL_ITEM) // randomize away from other map items
+				v1 = stdv_rndloc(e.origin + ' 0 0 4', 50, 100);
+			setorigin(self, v1);
+			self.ip_orgOrigin = self.origin;
+			self.count = 2 + random() * 3.8; // reset for new location
+			self.cnt = 0;
+
+			bprint("\n\b*** RUNE relocating: ");
+			bprint(self.netname);
+			bprint(" near: ");
+			bprint(e.classname);
+			bprint("\n\n");
 		}
 	}
 };
@@ -519,10 +556,10 @@ void() run_runes =
 				e.think = rune_maker;
 				e.nextthink = time + PIC_TO + 2 + 23 * random(); // do this well after items spawn - PIC_TO
 			}
-			bprint("***   Runes of power will spawn on this map - keep an eye out\n");
+			bprint("\n***   Runes of power will spawn on this map - keep an eye out\n");
 		}
 		else
-			bprint("***   Rune server - turned off an all spawned runes removed\n");
+			bprint("\n***   Rune server - turned off and all spawned runes removed\n");
 	}
 
  	if (RUNE_CNT != cvar("sv_c_rune_cnt"))
@@ -548,7 +585,7 @@ void() run_runes =
 
 	if (cvar("pk_runemap")) // display rune info on console (network - all players see this)
 	{
-		bprint("\bRunes:\n\n");
+		bprint("\n\bRunes:\n\n");
 		if (RUNES) bprint("Runes will appear in random locations\n");
 		else bprint("Rune server is deactivated\n"); // NOTE: runes can still appear on map from func_dyn, rndize
 		bprint("total rune count : ");

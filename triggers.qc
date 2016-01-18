@@ -464,9 +464,18 @@ void () teleport_touch =
 	else
 	spawn_tfog (other.origin);
 
-	t = find (world,targetname,self.target);
-	if (!t)
-		objerror ("couldn't find target");
+	if (self.classname == "chaos_teleport") // chaos teleport sets movetarget - Cataboligne 1.23.8
+	{
+		t = self.movetarget;
+		if (random() < self.aflag) self.movetarget = find_tdest(FL_RSALL, "");
+		if (!t) return;
+	}
+	else
+	{
+		t = find (world,targetname,self.target);
+		if (!t)
+			objerror ("couldn't find target");
+	}
 
 	if (PK) ClearSpawnPoint(t);
 // spawn a tfog flash in front of the destination
@@ -545,9 +554,27 @@ void () trigger_teleport =
 	self.touch = teleport_touch;
 	// find the destination
 	if (!self.target)
-		objerror ("no target");
+	{
+		if (Q_100 && Q_100_OBJERR) objerror ("no target");
+		if (!Q_100 && !PK_100)
+		{
+			self.classname = "chaos_teleport"; // chaos mod - select rnd target
+			self.movetarget = find_tdest(0, "");
+
+			precache_sound ("alt_ambience/hum1.wav");
+			o = (self.mins + self.maxs)*0.5;
+			ambientsound (o,"alt_ambience/hum1.wav",0.5,ATTN_STATIC);
+		}
+		else
+		{
+			if (WARNING) bprint("Teleporter - no target -- removed\n");
+			remove(self);
+			return;
+		}
+	}
 	self.use = teleport_use;
 
+	if (self.classname != "chaos_teleport")
 	if (!(self.spawnflags & SILENT))
 	{
 		precache_sound ("ambience/hum1.wav");

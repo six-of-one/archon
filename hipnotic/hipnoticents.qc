@@ -430,7 +430,7 @@ void() hip_item_ =
 	self.volume = -1; // max add
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == "") self.class_select = "hip_item";
 };
 
 void() hip_item_a =
@@ -446,7 +446,7 @@ void() hip_item_a =
 	self.currentammo = Q2_ARM_BODY; // 100 units
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
-	if (self.class_select == "") self.class_select = "q2_item";
+	if (self.class_select == "") self.class_select = "hip_item";
 };
 
 */

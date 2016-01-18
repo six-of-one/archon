@@ -46,7 +46,7 @@ void() chaos_precache =
 	precache_sound ("sound/reggun/fire4.wav");
 
 // shovel test
-	precache_model  ("progs/m_shovel.mdl");
+	precache_model ("progs/m_shovel.mdl");
 	precache_model ("progs/vw_shovel.mdl");
 
 // poral 1
@@ -57,6 +57,10 @@ void() chaos_precache =
 	precache_sound ("sound/portal/chargeup.wav");
 	precache_sound ("sound/portal/shdoff.wav");
 
+// spheres (tele / annihilate)
+
+	precache_model ("progs/sphere_annihilation.mdl");
+	precache_sound ("alt_ambience/hum1.wav");
 
 //	flamer_precache();
 };
@@ -875,7 +879,7 @@ void (entity e) xw_parm =
 		{			
 			if (tr.netname == "Grappling hook") e.scode = e.scode | 512; // special - grapples
 			else
-			if (tr.mcode) e.scode = e.scode | tr.weapon;
+			if (tr.mcode) e.scode = e.scode | (tr.weapon & 254); // only clear std weps - must have axe & shotgun on new level
 		}
 		tr = tr.vwepent;
 	}
@@ -913,7 +917,8 @@ void(entity e) set_defaults =
 	e.eweapon = world;
 	e.pkprevweapon = e.pklastweapon = e.prevweapon = e.lastweapon = 0;
 
-	e.x_items = 0;
+	e.x_items = x_item_dm_giveaway; // for door keys in dm - only set by doors in dm
+
 	e.ammo_bullet = e.ammo_slug = e.ammo_gaspr = e.ammo_hgrenade = 0;
 	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
 	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;

@@ -106,6 +106,7 @@ void(entity e) admin_clear =
 	e.takedamage = DAMAGE_AIM;	
 	e.wad = e.message = e.path = e.target = "";
 	e.enemy = world;
+	if (CAM_DEF == DPCAM_ON) cvar_set("chase_active", ftos(e.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
 };
 
 // clear | set these for players
@@ -1218,6 +1219,8 @@ void() AdminCommands =
 	local float e, f;
 	local string str;
 
+	if (cvar("chase_active") > 0) cvar_set("chase_active","0");
+
 	if (self.admin == 1)																// login
 	{
 		if (self.lefty != pk_admincode)
@@ -1392,7 +1395,14 @@ void() AdminCommands =
 		}
 		else
 		{
-// TDO: setting when under noexit default - turn off noexit & make setting
+			if (self.path == "fraglimit ") // TEST:
+			if (NOEXIT_SAVEFRAG > -1)
+				NOEXIT_SAVEFRAG = self.lefty;
+
+			if (self.path == "timelimit ") // TEST:
+			if (NOEXIT_SAVETIME > -1)
+				NOEXIT_SAVETIME = self.lefty;
+
 			localcmd(self.path);
 			localcmd(ftos(self.lefty));
 			localcmd("\n");
@@ -1993,6 +2003,8 @@ void() PK_AdminImpulse =
 	{
 		if (Q_100 | Q_99) return; // Cataboligne - 8.16.9 - quake compatability mode
 
+		if (cvar("chase_active") > 0) cvar_set("chase_active","0");
+
 		if (self.message == "")
 		{
 			stuffcmd(self, "usergamma\n");
@@ -2121,6 +2133,7 @@ void() PK_AdminImpulse =
 			{
 				self.admin = 6;
 				Admin_mainmenu();
+
 // IDEA: 5.19 go observer here, escape or fail dont go observer
 			}
 			else // login

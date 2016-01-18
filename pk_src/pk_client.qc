@@ -521,6 +521,10 @@ void() PutClientInServer =
 	{
 		makevectors (self.angles);
 		spawn_tfog (self.origin + v_forward*20);
+
+// Cataboligne - 9.13.11 - x_item giveaway for doors - only set by doors in dm
+
+		self.x_items = x_item_dm_giveaway;
 	}
 
 	spawn_tdeath (self.origin,self);

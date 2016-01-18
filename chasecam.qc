@@ -82,11 +82,13 @@ void( entity player_ent ) Chase_cam_setweapon =
 	{
 		self.weaponmodel = "";
 		cam_setbob("");
+		stuffcmd( self, CAM_FOV ); // moved here for dpcam
 	}
 	else
 	{
 		PK_SetCurrentAmmo();
 		cam_setbob(CL_BOBSET);
+		stuffcmd( self, STD_FOV );
 	}
 	self = e;
 };
@@ -117,13 +119,14 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 
 	Chase_cam_setweapon( cam_owner );
 
+
 	if (CAM_DEF == DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
 	{
 		cvar_set("chase_active", "1");
 		return;
 	}
 
-	stuffcmd( cam_owner, CAM_FOV );
+	cvar_set("chase_active", "0"); // make sure this is off
 
 	chase_cam = spawn();
 
@@ -163,9 +166,10 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 // secondary think for cam entities
 void() Reable_chase_cam =
 {
+	local float p;
+
 	self.nextthink = time + 0.1;
 
-	//if (self.owner.health <= 0)
 	if (self.owner.solid == SOLID_NOT)
 	{
 		//owner died in water, reset .cam_x flag for respawn
@@ -178,6 +182,11 @@ void() Reable_chase_cam =
 	if (self.owner.admin) return; // pk mods
 
 	if ((CHSCAM_NO_WATER == TRUE) & (self.owner.waterlevel != 0))
+		return;
+
+	p = pointcontents(self.owner.origin);
+	
+	if (p == CONTENT_SOLID) // fell out of level, etc
 		return;
 
 	self.owner.cam_x = self.owner.cam_x | CHSCAM_ON;
@@ -193,8 +202,6 @@ void() Reable_chase_cam =
 	self.ammo_shells = self.owner.cam_y / 3; // distance clipping
 	self.think = Keep_cam_chasing_owner;
 	//Start_chase_cam( self.owner, '0 0 0' );
-	//remove( self );
-
 };
 
 
@@ -204,8 +211,6 @@ void() Reable_chase_cam =
 // FALSE = remove view but keep alive with Reable_chase_cam();-
 void( float opt ) Remove_chase_cam =
 {
-	stuffcmd( self.owner, STD_FOV );
-
 	// turn off bit-flag-
 	self.owner.cam_x = self.owner.cam_x - (self.owner.cam_x & CHSCAM_ON);
 
@@ -283,7 +288,8 @@ void () cam_deathmove =
 	if (self.owner.frame || self.owner.effects || self.owner.weapon || self.owner.currentammo || self.owner.model != "progs/null.mdl")
 	{
 		self.owner.invincible_time = self.owner.super_damage_finished = self.owner.radsuit_finished = self.owner.invisible_finished = self.owner.invincible_finished = 0;
-		self.owner.effects = self.owner.items = 0; // self.owner.frame = 
+		self.owner.effects = self.owner.items = 0;
+// self.owner.frame = 0;
 //		self.owner.items = self.owner.items - (self.owner.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY));
 		self.owner.weapon = self.owner.currentammo = self.owner.ammo_shells = self.owner.ammo_nails = self.owner.ammo_rockets = self.owner.ammo_cells = 0;
 		self.owner.eweapon = world;
@@ -297,7 +303,6 @@ void () cam_deathmove =
 
 	if (self.owner.model != "progs/null.mdl")
 	{
-		CopyToBodyQue (self.owner);
 		setmodel(self.owner, "progs/null.mdl");
 		setsize (self.owner,'-4 -4 -4', ' 4 4 4');
 		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta
@@ -323,19 +328,7 @@ void () cam_deathview =
 {
 	self.nextthink = time + 0.1;
 
-	if (!self.wait && self.owner.model != "progs/null.mdl")
-	{
-		self.delay = 0;
-		self.wait = time + 4;
-		if (DCAMTO) self.delay = DCAMTO + time;
-	}
-
-	if (self.wait < time) // when timed out go to deathmove code
-	{
-		self.think = cam_deathmove;
-	}
-
-	if (self.owner.solid != SOLID_NOT)
+	if (self.owner.solid != SOLID_NOT) // hit respawn already
 	{
 
 // FIXED - viewport restore here
@@ -344,6 +337,25 @@ void () cam_deathview =
 		remove( self);
 		return;
 	}
+	else
+	if (!self.wait && self.owner.model != "progs/null.mdl")
+	{
+		self.delay = 0;
+		self.wait = time + 4;
+		if (DCAMTO) self.delay = DCAMTO + time;
+	}
+	else
+	if (self.wait < time) // when timed out go to deathmove code
+	{
+		self.think = cam_deathmove;
+	}
+	else
+	if (self.wait < time + 3  && self.owner.model != ""  && self.owner.solid == SOLID_NOT) // once corpse settles, dont let player move it
+	{
+		CopyToBodyQue (self.owner);
+		self.owner.model = "";		
+	}
+	
 
 	self.owner.classname = OBSERVER;
 	PK_SetCurrentAmmoOnly();
@@ -364,7 +376,7 @@ void () cam_deathview =
 			self.velocity = '0 0 0';
 	}
 
-	self.owner.health = 1;
+	self.owner.health = 1; //hack so engine doesnt tilt view
 };
 
 // fn(cam_startdeathview) - died and didnt have chasecam on
@@ -433,7 +445,6 @@ void() Keep_cam_chasing_owner =
 
 	if (self.owner.solid == SOLID_NOT)
 	{
-//		stuffcmd( self.owner, STD_FOV );
 
 		if (intermission_running)
 		{
@@ -465,6 +476,14 @@ void() Keep_cam_chasing_owner =
 
 // because non transparent vised water blocks cam traces
 	if ( (CHSCAM_NO_WATER == TRUE) & (self.owner.waterlevel != 0) )
+	{
+		Remove_chase_cam( FALSE );
+		return;
+	}
+	
+	cap = pointcontents(self.owner.origin);
+	
+	if (cap == CONTENT_SOLID) // fell out of level, etc
 	{
 		Remove_chase_cam( FALSE );
 		return;
@@ -869,32 +888,33 @@ void(float sel) cam_parms =
 	if (Q_100 || PK_100 || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
 
 	if (!sel)
-		{
+	{
 // holds current state of cam and targeter between levels
 		parm14 = self.cam_x + (self.cam_y & 255) * 256 + ((self.cam_z * 100) & 255) * 65536; // bit flags, cam distance, cam height
 //		parm15 = self.dest1_y;
-		}
+	}
 	else if (sel == 1)
-		{
+	{
 		self.cam_x = parm14 & 255;
 		self.cam_y = (parm14 & 65280)/256;
 		self.cam_z = ((parm14 & 16711680)/65536)  * 0.01;
 //		self.dest1_y = parm15;
 		if (CAM_DEF == DPCAM_ON)
 		{
-			cvar_set("chase_active", ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
+//			cvar_set("chase_active", ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
 			self.cam_y = cvar("chase_back");
 			self.cam_z = cvar("chase_up") / 100;
 		}
-		}
+		else cvar_set("chase_active","0"); // so it doesnt get left on changing parm between levels or something
+	}
 	else
-		{
+	{
 	// only reset if zeroed  (so DM/COOP respawns don't reset)
 		if (self.deadflag == DEAD_RESPAWNABLE)
 			parm14 = self.cam_x + (self.cam_y & 255) * 256 + ((self.cam_z * 100) & 255) * 65536; // bit flags, cam distance, cam height
 		else
 			parm14 = CAM_DEF + CAM_DIST * 256 + CAM_Z * 65536; // bit flags, cam distance, cam height
-		}
+	}
 };
 
 
@@ -936,6 +956,7 @@ void () dead_cam_set =
 //		if (chaos)
 //		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 //	}
+
 	if (CAM_DEF == DPCAM_ON) cvar_set("chase_active", "0");
 
 

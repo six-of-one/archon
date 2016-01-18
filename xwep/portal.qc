@@ -9,6 +9,9 @@
 
 float PORTAL_ONEWAY = 0; // set true for a one way portal
 float PORTAL_DEBOUNCE = 1; // debounce time in case we get a portal the player doesnt properly eject from
+float PORTAL_ALLOW = 1; // 0 - only allow players / monsters, 1 - allow all moving ents
+float PORTAL_M3START = 1; // if true - allow mode 3 portal to include player start positions
+float PORTAL_M3RND = 1; // if true - mode 3 portal picks random destinations every time
 
 // portals seem to dump players outside the level - this saves them
 
@@ -48,6 +51,7 @@ void () PortalTouch =
 	local entity e;
 	local float v;
 
+	if (!PORTAL_ALLOW) // NOTE: there do need to be qualifications on ANY mode
 	if (((other.classname != "player") && (other.classname != "pk*bot") || !(other.flags & FL_CLIENT)))
 	{
 		return;
@@ -59,22 +63,49 @@ void () PortalTouch =
 	if (self.ltime > time) // debounce delay
 		return;
 
-	makevectors (other.angles);
 
-	e = spawn(); // in case the portal dumps player outside level - this saves em;
-	e.owner = other;
-	e.origin = other.origin - v_forward * 64;
-	e.think = PortalSaver;
-	e.nextthink = time + 0.2;
-	e.attack_finished = time + 10;
+	if ((other.classname == "player") || (other.classname == "pk*bot") || (other.flags & FL_CLIENT))
+	{
+		makevectors (other.angles);
+		e = spawn(); // in case the portal dumps player outside level - this saves em;
+		e.owner = other;
+		e.origin = other.origin - v_forward * 64;
+		e.think = PortalSaver;
+		e.nextthink = time + 0.2;
+		e.attack_finished = time + 10;
+	}
 
 	v = vlen(other.velocity); // IDEA: cap this?
 	if (v < 48) v = 48;
 	if (self.classname == "portal_entrance")
 	{
+		if (self.target == "md3") // out thru tele - follow those rules
+		{
+			local vector org;
+			e = find_tdest(FL_RSTELE, "");
+			if (!e && PORTAL_M3START) e = find_tdest(FL_RSSTART, "");
+			if (!e) e = self.portal_exit; // failed - use one it opened with
+
+			if (PK) ClearSpawnPoint(e);
+			other.fixangle = 1;		// turn this way immediately
+			other.angles = e.mangle;
+			makevectors (e.mangle);
+			org = e.origin + 32 * v_forward;
+
+			spawn_tfog (org);		
+			spawn_tdeath (e.origin,other);
+			setorigin (other,e.origin);
+
+			other.teleport_time = time + 0.7;
+			other.bt_immune_time = time + BT_BUFFER; // *pk - beartrap
+			if (other.flags & FL_ONGROUND)
+				other.flags = other.flags - FL_ONGROUND;
+			other.velocity = v_forward * 300;
+			return;
+		}
 		if (self.portal_exit.mangle == ' 0 0 1')
 		{
-//			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back - IDEA: use entry angle & add vel_z
+//			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back
 			other.velocity_z = 150 + random() * 150;
 		}
 		else if (self.portal_exit.mangle != ' 0 0 -1') // out of ceiling
@@ -122,7 +153,7 @@ void () PortalThink =
 	{
 		if ((self.portal_opened && (self.classname == "portal_entrance")))
 		{
-			centerprint (self.master, "PORTAL expired\n");
+			centerprint (self.master, "PORTAL closed: xFF567c3E - expired\n");
 		}
 		self.master.portal_busy = FALSE;
 		self.master.portal_entrance = world;
@@ -162,8 +193,6 @@ void () PortalThink =
 	self.nextthink = (time + 0.1);
 };
 
-vector Test1, Test2;
-
 entity (vector pos, entity entrance) OpenPortalExit =
 {
 	local entity portal;
@@ -189,32 +218,6 @@ entity (vector pos, entity entrance) OpenPortalExit =
    norm_y = 0 - norm_y;
    portal.angles = vectoangles( norm );
 
-
-
-local entity e;
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, pos);
-makevectors(portal.mangle);
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, pos + trace_plane_normal * 10);
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, pos + trace_plane_normal * 20);
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, pos + trace_plane_normal * 30);
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, pos + trace_plane_normal * 40);
-e = spawn();
-setmodel(e, "progs/hook.mdl");
-setorigin(e, pos + trace_plane_normal * 50);
-
-
-
-
 	portal.touch = PortalTouch;
 	portal.attack_finished = entrance.attack_finished;
 	portal.nextthink = (time + 0.1);
@@ -233,7 +236,7 @@ void () PortalPathThink =
 	if ((self.attack_finished < time))
 	{
 		self.portal_entrance.portal_failed = TRUE;
-		centerprint (self.master, "PORTAL failed\n");
+		centerprint (self.master, "PORTAL failure: xFF8E1a99 - tunnel error\n");
 		self.master.portal_busy = FALSE;
 		remove (self);
 		return;
@@ -258,13 +261,33 @@ void () PortalPathThink =
 		self.portal_entrance.portal_opened = TRUE;
 		sound (self.portal_entrance, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
 		sound (self.portal_exit, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
-		centerprint (self.master, "PORTAL opened\n");
+		centerprint (self.master, "PORTAL: opened\n");
 		self.master.portal_busy = TRUE;
 		remove (self);
 		return;
 	}
 	self.think = PortalPathThink;
 	self.nextthink = (time + 0.1);
+};
+
+// Cataboligne - 9.12.11 - added mode3
+
+float () PortalExit3 =
+{
+	local entity portal;
+
+	portal = find_tdest(FL_RSTELE, "");
+	if (!portal && PORTAL_M3START) portal = find_tdest(FL_RSSTART, "");
+	if (!portal) return(FALSE);
+
+	self.portal_entrance.target = "md3";
+	self.portal_entrance.portal_exit = portal;
+	self.portal_entrance.portal_opened = TRUE;
+	sound (self.portal_entrance, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
+	sound (portal, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
+	centerprint (self, "PORTAL: opened\n");
+	self.portal_busy = TRUE;
+	return (TRUE);
 };
 
 // Cataboligne - 9.10.11 - added md2 - mode2
@@ -301,7 +324,7 @@ float (vector dir) PortalExit2 =
 	self.portal_entrance.portal_opened = TRUE;
 	sound (self.portal_entrance, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
 	sound (portal, CHAN_WEAPON, "weapons/shdoff.wav", 1, ATTN_NORM);
-	centerprint (self, "PORTAL opened\n");
+	centerprint (self, "PORTAL: opened\n");
 	self.portal_busy = TRUE;
 	return (TRUE);
 };
@@ -331,7 +354,7 @@ float (vector dir, float md2) PreparePortalEntrance =
 	org = (trace_endpos - (dir * 4));
 	portal = spawn ();
 	portal.master = self;
-	if (!md2) // mode2 - the fancy choose the second portal exit deal
+	if (md2 < 2) // mode2 - the fancy choose the second portal exit deal
 	{
 		tline = spawn ();
 		tline.master = self;
@@ -356,38 +379,11 @@ float (vector dir, float md2) PreparePortalEntrance =
 	portal.velocity = '0 0 0';
 	portal.avelocity = '0 0 0';
 
-	Test1 = norm = trace_plane_normal;
-	Test2 = portal.mangle = norm; //alize(org + (norm * -100) - org);
+	norm = trace_plane_normal;
+	portal.mangle = norm; //alize(org + (norm * -100) - org);
    norm_x = 0 - norm_x;
    norm_y = 0 - norm_y;
    portal.angles = vectoangles( norm );
-
-
-
-local entity e;
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, org);
-makevectors(portal.mangle);
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, org + portal.mangle * 10);
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, org + portal.mangle * 20);
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, org + portal.mangle * 30);
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, org + portal.mangle * 40);
-e = spawn();
-setmodel(e, "progs/hook.mdl");
-setorigin(e, org + portal.mangle * 50);
-
-
-
-
 
 	portal.classname = "portal_entrance";
 	portal.solid = SOLID_BBOX;
@@ -409,6 +405,9 @@ setorigin(e, org + portal.mangle * 50);
 	return (TRUE);
 };
 
+// IDEA: flee portal - pops up behind running player
+float PORTAL_MODE; // allow non wep mode+ portal fire
+
 void () W_FirePortal =
 {
 	local vector dir;
@@ -418,7 +417,9 @@ void () W_FirePortal =
 	local float success;
 	local float loop, f;
 
-	if (self.eweapon) f = self.eweapon.cnt; // TDO: mode for non wep portals?
+	if (self.eweapon) f = self.eweapon.cnt;
+	else f = PORTAL_MODE;
+	PORTAL_MODE = 0; // always clear this, one shot deal only - NOTE: this will need set on first & second entry for 2x portal
 
 	if (!f || !self.portal_entrance)
 	if (self.portal_busy)
@@ -446,12 +447,16 @@ void () W_FirePortal =
 
 	if ((trace_fraction != 1))
 	{
-		if (!f || !self.portal_busy)
+		if (f < 2 || !self.portal_busy)
 			success = PreparePortalEntrance (dir, f);
-		if (f && self.portal_busy) // open 2nd portal
+		if ((f == 2) && self.portal_busy) // open 2nd portal
 		{
-			success = PortalExit2 (dir);			
+			success = PortalExit2 (dir);
 			self.portal_entrance = world;
+		}
+		if (f == 4 && success)
+		{
+			success = PortalExit3();
 		}
 	}
 	if (success)
@@ -462,7 +467,7 @@ void () W_FirePortal =
 	{
 		self.portal_entrance = world;
 		self.portal_busy = FALSE;
-		centerprint (self, "Cannot open portal there\n");
+		centerprint (self, "PORTAL failure: xFFB78d15 - not open\n");
 	}
 };
 
@@ -517,11 +522,20 @@ void () player_portalstart5 = [ $shotatt6, player_run ]
 
 void() weap_portal_multi =
 {
-	self.eweapon.cnt = self.eweapon.cnt + 1;
-	if (self.eweapon.cnt > 2) self.eweapon.cnt = 0;
+	if (self.eweapon.cnt < 1) self.eweapon.cnt = 1;
+	self.eweapon.cnt = self.eweapon.cnt * 2;
+	if (self.eweapon.cnt > 4) self.eweapon.cnt = 1;
 	sprint(self, self.eweapon.netname);
-	sprint(self, " mode set to: ");
-	sprint(self, ftos(self.eweapon.cnt + 1)); // dont show mode 1 as 0
+	sprint(self, " mode set to");
+//	sprint(self, ftos(self.eweapon.cnt)); // dont show mode 1 as 0
+	sprint(self, " - ");
+
+	if (self.eweapon.cnt == 4)
+		sprint(self, "portal to teleport");
+	else if (self.eweapon.cnt == 2)
+		sprint(self, "2 portal");
+	else
+		sprint(self, "1 portal = tunelling");
 	sprint(self, "\n");
 	return;
 };
@@ -541,7 +555,7 @@ void() weapon_portal =
 	self.lip = AMMO_NONE;
 	self.attack_finished = 1;
 	self.dmg = 0;
-	self.dmg_save = 1;
+	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
 //	self.lefty = XW_MULTI + 1; // 2 mode wep
 	self.th_melee = weap_portal_multi;
@@ -557,3 +571,30 @@ void() weapon_portal =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 };
+
+
+/* vector test from origin along trace_plane_normal
+
+
+local entity e;
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org);
+makevectors(portal.mangle);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org + trace_plane_normal * 10);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org + trace_plane_normal * 20);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org + trace_plane_normal * 30);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org + trace_plane_normal * 40);
+e = spawn();
+setmodel(e, "progs/hook.mdl");
+setorigin(e, org + trace_plane_normal * 50);
+
+*/

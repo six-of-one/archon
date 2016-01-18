@@ -1195,14 +1195,16 @@ void() func_dynitem =
 
 // cube handler fn - called from server var loop
 
-void() pk_cube_handle =
+// fires off - pk_cubes, morphic cubes
+
+void(string cb) cube_handle =
 {
 	local entity e, p;
 	local float f;
 
 	if (PK_CUBE <= 0 && cvar("pk_cubes") > 0)
 	{
-		f =  cvar("pk_cubes");
+		f =  cvar(cb); //"pk_cubes");
 		if (WARNING)
 		if (f > 10) bprint("*** Warning - pk cube: making more than 10 cubes!\n");
 
@@ -1221,7 +1223,7 @@ void() pk_cube_handle =
 		}
 		bprint("***  Painkeep Cubes will spawn on this map - keep an eye out\n");
 	}
-	if (PK_CUBE > 0 && cvar("pk_cubes") <= 0)
+	if (PK_CUBE > 0 && cvar(cb) <= 0)
 	{
 		e = find(world,netname,"pk_cube_make");
 		while (e)
@@ -1244,7 +1246,7 @@ void() place_item_control;
 void() rndize_restore =
 {
 	self.nextthink = time + 10 + random() * 10;
-	if (cvar("pk_place_item") < 2 || self.owner.classname == "") // pkplus turned off & rndize once made some pkp items
+	if (cvar("pk_place_item") < 2)
 	{
 		self.nextthink = time + 0.1;
 		self.think = rndize_item;
@@ -1271,7 +1273,7 @@ void() rndize_item =
 		f = MC_TOT - 2;
 		self.owner.mcode = MC_SUPER_SHOTGUN + rint(random() * f);
 	}
-	else if (self.owner.mcode >= MC_AXE && self.owner.mcode < MC_Q1)
+	else if (self.owner.mcode >= MC_AXE && self.owner.mcode < MC_Q1) // NOTE: doesnt make q1 axe or shotgun
 	{
 		self.owner.mcode = MC_SUPER_SHOTGUN + rint(random() * f);
 	}
@@ -1382,7 +1384,7 @@ void() place_item_control =
 	if (self.sscode == "") self.sscode = sid_code[(int)(self.mcode - 100) * %4];
 	if (!self.scode) self.scode = self.mcode;
 
-	if (cvar("pk_place_item") == 1)
+	if (cvar("pk_place_item") == 1) // NOTE: something chaos will not be in control of
 	{
 		pic_tsk = 1;
 		setmodel(self, "");
@@ -1404,7 +1406,7 @@ void() place_item_control =
 		{
 			e.owner = self;
 			e.think = rndize_item;
-			e.nextthink = time + 5 + random() * 2;
+			e.nextthink = time + 3 + random() * 5;
 			e.classname = "rndize_item";
 		}
 		pic_tsk = 2;

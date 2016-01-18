@@ -117,70 +117,6 @@ float (float lMean, float lStDev) meantime;
 .entity next; // for the linked list of lightning - Cataboligne - 4.29,11 - moved to pk_defs 
 
 
-// env stuff - part of chaos engine env effects - mostly unused
-
-/// *** DUMMY SECTION - IDEA: move to better location later on
-
-//float FL_NOPART		= 8192; //no particles when melting
-
-float RMIN_SKY					= -60;	// removed from values returned
-float RMIN_LAVA				= -50;
-float RMIN_SLIME				= -40;
-float RMIN_WATER				= -30;
-
-float RM_SKY					= 1; // dummy(s) - just so we dont have to recode later
-//float RM_SKY					= 1;		// remove imm. if CONTENT_SKY
-float RM_WATER 				= 2;		// remove imm. if CONTENT_WATER
-float RM_SLIME 				= 4;		// remove imm. if CONTENT_SLIME
-float RM_LAVA					= 8;		// remove imm. if CONTENT_LAVA
-float CKO						= 16; 	// only check content, take no action - should not be used in cycle - negates timer
-float FLT_WATER				= 32; 	// float when in water
-float FLT_SLIME				= 64; 	// float in slime
-float FLT_LAVA					= 128;	// float in lava
-//float FLT_BOB					= 256;	// bob cycle while floating
-float FLT_IMM					= 512;	// no lift, just blink it there
-float MLT_SLIME				= 1024;	// melt in slime, ** time prior to melt in .wait
-float MLT_LAVA					= 2048;	// melt in lava
-//float MLT_WATER				= 4096;	// melt in water (what the hey, made of sugar?)
-//float MLT_IMM				= 8192;	// melt with no wait time - *** ISSUE: FL_NOPART code borks this, but its not implemented yet
-//float MLT_BLOW				= 16384;	// try to blow up explosives, dmg based on currentammo and mode_x - subflare spot
-//float FLT_SINK				= 32768;	// eventually sink the floaty, ** time in .delay
-
-/* deprecated - not used, ever
-float FRC_RESP					= 65536;	// force a respawn after .pausetime, if MLT_IMM, this will be instant
-float CLR_TOUCH				= 131072;// clear touch fn when first event occurs
-*/
-
-float CK_EARTHQUAKE			= 131072;// check if ent in earthquake range
-
-float PF_WATER					= 262144;// call .th_stand() every time in content
-float PF_SLIME					= 524288;
-float PF_LAVA					= 1048576;
-float PF_EMPTY					= 2097152;
-float SF_CHK					= 4194304;// call .th_walk() on sched above also
-float PF_SOLID		 			= 8388608;// solid check, for stopping things?
-
-float CTI_LAVA					= 1050776;// Lava flag indicated - RM_LAVA | CKO | FLT_LAVA | MLT_LAVA | PF_LAVA
-float CTI_WATER				= 262194;// Water flag indicated
-float CTI_SLIME				= 525396;// Slime flag indicated
-
-.float content_flag;
-
-.string quakeset // string search link all quakeable ents
-string EARTHQUAKE				= "earthquake"; // select things we want to shake up
-
-float QUAKE_RUBBLE			= 0.17; // chance of rubble when skaking loose debris
-float QUAKE_RUBBLE_PER		= 0.04; // chance of rubble percent per richter
-float RUBBLE_DMGDEF			= 10; // default damage from hot rubble
-float RUBBLE_TIME				= 15; // TEST: 45; // time for rubble to hang around
-float RUBBLE_TDEV				= 15; // dev time on rubble
-float RUBBLE_BLASTRAD		= 48; // distance from explosion to look for rubble to blast
-float EXPLODE_RUBBLE			= 0.6; // chance of rubble from explosion
-float RUBBLE_SHOT				= 0.07; // % chance a bullet hitting solid will release a mini rubble
-
-void(vector rorg, vector vel, float vibe, float rskn) rubble_debris;
-
-
 // DARKPLACES specials
 // wrap - fix fte broke ass shit
 
@@ -246,6 +182,10 @@ void() flyer_move; // fly rune for now
 
 // end runes
 
+// **************************************
+// advanced item controls
+
+// **************************************
 
 // item override admin
 float DYN_OVR;
@@ -395,7 +335,6 @@ float NO_PI;					// dont let item_call call place_item
 // TEST: remove
 entity fts; // fire test
 
-
 // missile code flags
 float FL_PUNCH					= 2;				// use punchangle for weapon fire
 float FL_2PUNCH				= 4;				// double punch
@@ -431,11 +370,6 @@ float IGN_INV 					= 66600;
 float FL_MELEE_WEP			= 66601;
 float SND_OVER					= 66602; // play eweapon sound over after fire call
 
-// multi mode weps
-
-float XW_MULTI					= 66660;
-float XW_MULTI_END			= 66680; // 20 modes defined here, loops at highest mode - 
-
 
 void() chaos_precache;
 
@@ -447,16 +381,22 @@ float FL_VANM					= 131072; // vmodel animation in progress
 
 float EF_FULLBRIGHT			= 512;
 
+float BACKPACK_TIME			= 120; // time for thrown packs to live
+float BACKPACK_TIME_DV		= 30; // deviation on time (+/-)
+
 // dead rules
 
 float DEAD_THROW;
 float DEAD_THROW_ARMOR;
 float DEAD_THROW_PKI;
-float DEAD_THROW_LIVERND = 0.5; // chance a dead threw wep is touchable under rule 2
-float DEAD_THROW_CNTRND = 0.5; // chance a dead threw wep is NOT under rule 8
-float DEAD_THROW_TIME = 240;// TEST: 66; // time (in secs) a deadthrew wep hangs around
+float DEAD_THROW_LIVERND	= 0.5; // chance a dead threw wep is touchable under rule 2
+float DEAD_THROW_CNTRND		= 0.5; // chance a dead threw wep is NOT under rule 8
+float DEAD_THROW_TIME		= 240;// TEST: 66; // time (in secs) a deadthrew wep hangs around
 float DEAD_XPACK;
 float DEAD_GIBPACK;
+
+float DEAD_BODYCOUNT			= 8; // TEST: 48; // number of bodies (+1) in bodyque loop, if 0 bodies spawn (no que) and use timeout below
+float DEAD_BODYTIME			= 120; // how long non que corpse hang around
 
 // here because deathrew needs to detect them before mcode
 float MC_HOOK; // CTF hook map item
@@ -474,7 +414,92 @@ float MC_Q3_HOLDTELE;
 //setting any of these will override the flags the model already has, to disable the model's flags without supplying any of your own you must use EF_NOMODELFLAGS.
 //idea: LordHavoc, Dresk - darkplaces implementation: LordHavoc
 
-// not used yet - chaos will want this
+// **************************************
+// chaos section
+
+// **************************************
+
+// env stuff - part of chaos engine env effects - mostly unused
+
+/// *** DUMMY SECTION - IDEA: move to better location later on
+
+//float FL_NOPART		= 8192; //no particles when melting
+
+float RMIN_SKY					= -60;	// removed from values returned
+float RMIN_LAVA				= -50;
+float RMIN_SLIME				= -40;
+float RMIN_WATER				= -30;
+
+float RM_SKY					= 1; // dummy(s) - just so we dont have to recode later
+//float RM_SKY					= 1;		// remove imm. if CONTENT_SKY
+float RM_WATER 				= 2;		// remove imm. if CONTENT_WATER
+float RM_SLIME 				= 4;		// remove imm. if CONTENT_SLIME
+float RM_LAVA					= 8;		// remove imm. if CONTENT_LAVA
+float CKO						= 16; 	// only check content, take no action - should not be used in cycle - negates timer
+float FLT_WATER				= 32; 	// float when in water
+float FLT_SLIME				= 64; 	// float in slime
+float FLT_LAVA					= 128;	// float in lava
+//float FLT_BOB					= 256;	// bob cycle while floating
+float FLT_IMM					= 512;	// no lift, just blink it there
+float MLT_SLIME				= 1024;	// melt in slime, ** time prior to melt in .wait
+float MLT_LAVA					= 2048;	// melt in lava
+//float MLT_WATER				= 4096;	// melt in water (what the hey, made of sugar?)
+//float MLT_IMM				= 8192;	// melt with no wait time - *** ISSUE: FL_NOPART code borks this, but its not implemented yet
+//float MLT_BLOW				= 16384;	// try to blow up explosives, dmg based on currentammo and mode_x - subflare spot
+//float FLT_SINK				= 32768;	// eventually sink the floaty, ** time in .delay
+
+/* deprecated - not used, ever
+float FRC_RESP					= 65536;	// force a respawn after .pausetime, if MLT_IMM, this will be instant
+float CLR_TOUCH				= 131072;// clear touch fn when first event occurs
+*/
+
+float CK_EARTHQUAKE			= 131072;// check if ent in earthquake range
+
+float PF_WATER					= 262144;// call .th_stand() every time in content
+float PF_SLIME					= 524288;
+float PF_LAVA					= 1048576;
+float PF_EMPTY					= 2097152;
+float SF_CHK					= 4194304;// call .th_walk() on sched above also
+float PF_SOLID		 			= 8388608;// solid check, for stopping things?
+
+float CTI_LAVA					= 1050776;// Lava flag indicated - RM_LAVA | CKO | FLT_LAVA | MLT_LAVA | PF_LAVA
+float CTI_WATER				= 262194;// Water flag indicated
+float CTI_SLIME				= 525396;// Slime flag indicated
+
+.float content_flag;
+
+.string quakeset // string search link all quakeable ents
+string EARTHQUAKE				= "earthquake"; // select things we want to shake up
+
+float QUAKE_RUBBLE			= 0.17; // chance of rubble when skaking loose debris
+float QUAKE_RUBBLE_PER		= 0.04; // chance of rubble percent per richter
+float RUBBLE_DMGDEF			= 10; // default damage from hot rubble
+float RUBBLE_TIME				= 15; // TEST: 45; // time for rubble to hang around
+float RUBBLE_TDEV				= 15; // dev time on rubble
+float RUBBLE_BLASTRAD		= 48; // distance from explosion to look for rubble to blast
+float EXPLODE_RUBBLE			= 0.6; // chance of rubble from explosion
+float RUBBLE_SHOT				= 0.07; // % chance a bullet hitting solid will release a mini rubble
+
+void(vector rorg, vector vel, float vibe, float rskn) rubble_debris;
+
+
+// flags for find_tdest making random selections
+//float FL_ITEM = 256; 					// include items - if FL_RSEVEN is not set, code will favor item dests 10 %
+float FL_RSTELE				= 512;	// include teleports - if FL_RSEVEN is not set, code will favor teleport destinations 60%
+float FL_RSSTART				= 1024;	// include all player starts - if FL_RSEVEN is not set code will favor these only 30%
+float FL_RSRNG					= 2048;	// find closest range among selections - IDEA - FL_ZPREF - prefer near z level to closer up / down
+float FL_RSEVEN				= 4096;	// chances are equal for any destination
+float FL_RSALL					= 5888; // select it all, chances even
+
+// telesphere stuff
+
+entity(float fl, string clsn) find_tdest;
+void() sphere_annihilation_move;
+void() trigger_teleport;
+
+float CHAOS_UNSTABLE_TELE; // base percent chance for unstable teleport to change targets
+
+// not used yet
 
 .float modelflags;
 .float clientcolors; //controls coloring on scoreboard (using a single number that contains pants and shirt colors (pants + shirt * 16, 0-255 potentially), so be sure to set it for a bot)
@@ -495,6 +520,8 @@ float MF_ZOMGIB  				= 32; // small blood trail
 float MF_TRACER2 				= 64; // orange split trail
 float MF_TRACER3 				= 128; // purple trail
 
+// end chaos
+
 
 // heal codes
 
@@ -511,7 +538,7 @@ void(entity e) set_defaults;
 
 float DEF_HEALTH;
 float DEF_ARMOR;
-float DEF_ATYPE = 0.3; // default armor is always lowest protection ?
+float DEF_ATYPE				= 0.3; // default armor is always lowest protection ?
 float DEF_ITEMS; // q1 standard bit flags
 float DEF_PK_ITEMS; // pk bit flags
 float DEF_WEAPON; // bit for wep slot - per genre char default action
@@ -519,8 +546,8 @@ float DEF_REMWEP				= 256; // bit set in def_weap - if normal defaults are set -
 float DEF_REMAMMO				= 512; // bit set in def_weap - if normal ammo set - remove it
 
 
-float PK_ITEM_MASK = 4094; // mask off non items bits
-float WEP_MASK = 4351; // mask off other items bits for def weap bits 1 + ... + 128 + 4096
+float PK_ITEM_MASK			= 4094; // mask off non items bits
+float WEP_MASK					= 4351; // mask off other items bits for def weap bits 1 + ... + 128 + 4096
 
 float DEF_AMMO_BULLETS; // initial ammo defaults if set
 float DEF_AMMO_SHELLS;
@@ -530,9 +557,15 @@ float DEF_AMMO_NAILS;
 float DEF_AMMO_SLUGS;
 float DEF_AMMO_GAS;
 
-float DEF_AMMO_BASE = 25; // if no ammo given for a default wep, this is it
+float DEF_AMMO_BASE			= 25; // if no ammo given for a default wep, this is it
 
+// **************************************
 // X (extra) weapon stuff
+
+// **************************************
+
+float ALT_FIRE_IMP			= 13; // impulse for alt fire
+
 
 float DEF_X_ITEMS; // x bit flags
 
@@ -579,6 +612,8 @@ float PK_GASAMMO_MAX;
 
 // extra item flags & code
 
+float x_item_dm_giveaway; // need to give everyone keys to doors in dm for x_item doors
+
 .float x_items; // extra weapon item control - pwr armors / extended keys / etc
 void() x_item_touch;
 void(entity e, float camct, float mcd, string spf, float islot) xwep_fakeload;
@@ -601,11 +636,14 @@ float X_PWR_SCREEN_ON		= 8;
 float X_PWR_ARM_INV			= 3; // pwr armor bits
 float X_PWR_ARM_MASK			= 12; // pwr armor on bits
 
+
+string(float xi) x_key_print;
+
 float X_BASE_KEY				= 48; // first two keys (bits 16 & 32 call key_touch) for translated items
 
 float X_D_KEY_BIT				= 1008; // any doom key bit - 1111110000
 
-float X_D_KEY_CRED			= 16; // TDO: special door code compares x_items, closeable key doors too
+float X_D_KEY_CRED			= 16;
 float X_D_KEY_CBLUE			= 32;
 float X_D_KEY_CYEL			= 64;
 float X_D_KEY_SKRED			= 128;
@@ -642,6 +680,8 @@ float X_INV						= 57331; ///  1101111111110011
 
 
 // vars x weapon things
+
+void() x_weapon_touch;
 
 void(entity e, float trv) master_item_control;
 void(string tri, float trv) master_item_control_loop;
@@ -720,9 +760,9 @@ void() doom_precache;
 
 float d_reps_base				= 57005000; // heh heh - DEAD+
 void() d_rep_set;
-void() x_weapon_touch;
 void() player_saw1;
 void() player_bfg1;
+void(float cn) doom_pistol_spread;
 
 float DOOM_BFG 				= 66603;
 float DOOM_BFG_TRACE			= 1024; // IDEA: adjust by doom to quake dist adjust for maps ?
@@ -1001,7 +1041,7 @@ string CAM_FOV					= "fov 80\n"; // field for cam view
 
 
 // **************************************
-// painkeep protos
+// painkeep protos - everything below this line
 
 // **************************************
 
@@ -1218,7 +1258,7 @@ float VW_HARP_FRADJ        = 20; // frame adjust from run / stand for a fired ha
 float PK_CUBE;
 float PK_CUBE_DIST			= 132; // must be this close to cube to open, heh heh
 float PK_CUBE_TIME; // freq of respawn
-void() pk_cube_handle;
+void(string cb) cube_handle;
 
 // can o p&b
 .float copb_timeout;

@@ -776,6 +776,21 @@ void() d_weapon_chaingun =
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
+// cn is button0 state - if held, accuracy decreases - may need to add other weps
+
+void(float cn) doom_pistol_spread =
+{
+	if (!self.eweapon) return;
+
+	if (self.eweapon.vwepmdl == "progs/vw_d_pistol.mdl")
+	{
+		if (!cn)
+			self.eweapon.punchangle = ' 0.0 0.0 0';	
+		else
+			self.eweapon.punchangle = ' 0.02 0.02 0'; // button held down - accuracy level
+	}
+}
+
 void() d_weapon_pistol =
 {
 //	d_rep_set();
@@ -808,7 +823,7 @@ void() d_weapon_pistol =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.punchangle = ' 0.01 0.01 0';
+	self.punchangle = ' 0.02 0.02 0';
 	self.style = FL_MELEE_WEP;
 	self.wait = RSP_TIME;
 
@@ -900,7 +915,7 @@ void() d_weapon_shotgun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_take = 7; // shot cnt
 	self.dmg_save = 1;
-	self.punchangle = ' 0.04 0.04 0'; // bullet spread out -- TDO: get doom value, this is q1
+	self.punchangle = ' 0.04 0.02 0'; // bullet spread out
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/d_shotgun.mdl");
@@ -3612,6 +3627,9 @@ void() wdecor_wellfull =
 
 // if map genre doom or wolf and no door sounds, use defaults.  mapped doors will only need to set alt sounds
 
+// self is door
+
+// TDO: q2 door sounds
 void() door_sounds_wd =
 {
 
@@ -3627,19 +3645,21 @@ void() door_sounds_wd =
 		precache_sound ("wolf/door_opn.wav");
 		precache_sound ("wolf/door_cls.wav");
 */
-		if (MAP_MODE == "W")
+		if (MAP_MODE == "W" || self.map == "W")
 		{
 			self.sounds = DOOR_2S;
 			self.noise1 = "wolf/door_cls.wav";
 			self.noise2 = "wolf/door_opn.wav";
 		}
-		if (MAP_MODE == "D")
+		if (MAP_MODE == "D" || self.map == "D")
 		{
 			self.sounds = DOOR_2S;
 			self.noise1 = "doom/dsdorcls.wav";
 			self.noise2 = "doom/dsdoropn.wav";
 		}
 	}
+
+//		self.noise3 = "doors/basetry.wav";
 
 	if (self.noise1 != "") precache_sound (self.noise1);
 	if (self.noise2 != "") precache_sound (self.noise2);

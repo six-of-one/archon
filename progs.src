@@ -9,6 +9,9 @@ pk_src/pk.defs.qc
 bot.defs.qc
 bot_tally.qc
 
+// morphic define
+morph/morph.defs.qc
+
 xwep/hook.defs.qc
 
 frikbot/map_dm1.qc
@@ -78,6 +81,7 @@ xwep/vw_seq.qc
 xwep/viswep.qc
 xwep/mcode.qc
 xwep/flyers.qc
+xwep/sphere_annihilation.qc
 
 // hipnotic
 
@@ -150,7 +154,9 @@ pk_src/actor.qc
 pk_src/phone.qc
 pk_src/pk_artifacts.qc
 
+// m0rphic
 
+morph/morph.qc
 
 bot.qc
 bot_func.qc

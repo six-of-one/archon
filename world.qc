@@ -373,7 +373,7 @@ BODY QUE
 ==============================================================================
 */
 
-entity bodyque_head;
+//entity bodyque_head;
 
 void () bodyque =
 {	// just here so spawn functions don't complain after the world
@@ -382,27 +382,23 @@ void () bodyque =
 
 void () InitBodyQue =
 {
-	local entity e;
-	local float f;
+	if (!Q_100 && !PK_100) return;
 
-	f = 15; // # of total visible dead bodies (- 1) for players - silly way to do this
-	e = bodyque_head = spawn ();
+	bodyque_head = spawn();
 	bodyque_head.classname = "bodyque";
-
-	while (f > 0)
-	{
-		bodyque_head.owner = spawn ();
-		bodyque_head.owner.classname = "bodyque";
-		bodyque_head = bodyque_head.owner;
-		f = f - 1;
-	}
-	bodyque_head.owner = e; // close loop
+	bodyque_head.owner = spawn();
+	bodyque_head.owner.classname = "bodyque";
+	bodyque_head.owner.owner = spawn();
+	bodyque_head.owner.owner.classname = "bodyque";
+	bodyque_head.owner.owner.owner = spawn();
+	bodyque_head.owner.owner.owner.classname = "bodyque";
+	bodyque_head.owner.owner.owner.owner = bodyque_head;
 };
 
 
 // make a body que entry for the given ent so the ent can be
 // respawned elsewhere
-void (entity ent) CopyToBodyQue =
+void (entity ent) q100_CopyToBodyQue =
 {
 	bodyque_head.angles = ent.angles;
 	bodyque_head.model = ent.model;
@@ -412,7 +408,6 @@ void (entity ent) CopyToBodyQue =
 	bodyque_head.movetype = ent.movetype;
 	bodyque_head.velocity = ent.velocity;
 	bodyque_head.flags = 0;
-	if (!Q_100) bodyque_head.skin = ent.skin; // *pk damage skins
 	setorigin (bodyque_head,ent.origin);
 	setsize (bodyque_head,ent.mins,ent.maxs);
 	bodyque_head = bodyque_head.owner;

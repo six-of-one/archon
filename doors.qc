@@ -238,11 +238,36 @@ void () door_touch =
 	if (other.classname == "pk*bot")
 		bot_touched ();
 
+// Cataboligne - 9.13.11 - implement x items (extra key) door code
+	if (self.x_items) // was set for door - check touch ent x_items
+	{
+		if ((self.x_items & other.x_items) != self.x_items)
+		{
+			local string sr;
+			sr = self.netname; // pre coded on map ent
+			if (!sr) sr = x_key_print(self.x_items);
+			if (!sr) sr = "special key";
+			centerprint3 (other, "You need the ", sr, ".");
+			sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+			return;
+		}
+
+//		other.x_items = other.x_items - (other.x_items & self.x_items); // these keep keys - doom doors.
+		if (self.wait < 0)
+		{
+			self.touch = SUB_Null;
+			if (self.enemy)
+				self.enemy.touch = SUB_Null;	// get paired door
+		}
+		door_use ();
+		return;
+	}
+
 // key door stuff
 	if (!self.items)
 		return ;
 
-// FIXME: blink key on player's status bar
+// TODO: blink key on player's status bar
 	if ((self.items & other.items) != self.items)
 	{
 		if (self.owner.items == IT_KEY1)
@@ -294,7 +319,7 @@ void () door_touch =
 		return ;
 	}
 
-	other.items = other.items - self.items;
+	other.items = other.items - (other.items & self.items);
 	self.touch = SUB_Null;
 	if (self.enemy)
 		self.enemy.touch = SUB_Null;	// get paired door
@@ -575,7 +600,12 @@ void () func_door =
 
 	if (self.items)
 		self.wait = -1;
-		
+
+// Cataboligne - 9.13.11 - x_item giveaway for doors
+	if (deathmatch)
+	if (self.x_items) x_item_dm_giveaway = x_item_dm_giveaway | self.x_items;
+	if (!self.items) self.items = self.x_items; // keys doors must have an items value - must be engine deal
+
 	self.touch = door_touch;
 	self.th_weight = doorweight;
 

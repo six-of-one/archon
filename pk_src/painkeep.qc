@@ -846,11 +846,20 @@ void() pk_liveupd =
 
 	Q2_SILENCE = cvar("q2_silence");
 
+// morphic
+	MORPH_CUBE_TIME = cvar("sv_morph_time");
+	MORPH_CUBE_DV = cvar("sv_morph_dv");
+	if (MORPHIC  != cvar("sv_morph")) 
+	{
+		cube_handle("sv_morph");
+		MORPHIC = cvar("sv_morph");
+	}
+
 // pk cubes
 	PK_CUBE_TIME = cvar("pk_cubes_time");
 	if (PK_CUBE  != cvar("pk_cubes")) 
 	{
-		pk_cube_handle();
+		cube_handle("pk_cubes");
 		PK_CUBE = cvar("pk_cubes");
 	}
 
@@ -1021,9 +1030,9 @@ void() pk_monitor =
 
 // place item controls - wait for PIC_TO to do this
 // 		not done in live update because we dont want it to fire off right after a map load when things are settling down
-	if (!Q_100)
+	if (!Q_100 && !PK_100)
 	if (pic_tsk != cvar("pk_place_item"))
-	if (!pic_tsk)
+	if (!pic_tsk) // only init loop when it was intially off - every loop call starts more control ents
 		place_item_control_loop();
 
 	self.nextthink = time + 3 + random();
@@ -1168,6 +1177,11 @@ void() pk_srvcmd_set =
 	PK_DYNTO = 120;
 	pic_tsk = 0;
 
+// morphic
+	MORPH_CUBE_TIME = 120;
+	MORPH_CUBE_DV = 40;
+	MORPHIC = 2;
+
 // pk cubes
 
 	PK_CUBE = 0;
@@ -1268,6 +1282,8 @@ void() pk_srvcmd_set =
 
 	X_CHGLVL = 1;
 
+	x_item_dm_giveaway = 0;
+
 // weps
 
 	GRENADE_VEL = 600;
@@ -1284,6 +1300,10 @@ void() pk_srvcmd_set =
 
 // pk artifacts
 	PK_ART = TRUE; // Cataboligne - 8.12.9 - pk artifacts support
+
+// chaos stuff
+
+CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 // sscode - so map codes can be entity stored and find(...) string searchable
 //			- nifty frikqcc compiler trick here - dont think this works with regular QC compilers
@@ -1417,6 +1437,11 @@ void() pk_srvcmd_set =
 		registercvar("sv_pk_hub", "1");
 		registercvar("sv_pk_duty", "0");
 		registercvar("sv_pk_cmap", "0"); // admin setup custom maps - activate server map loop via pknextmap aliases
+
+// morphic
+		registercvar("sv_morph", "2");
+		registercvar("sv_morph_time", "30"); // TEST: "120");
+		registercvar("sv_morph_dv", "5"); // TEST: "40");
 
 // things dealing with the dead
 
@@ -1565,7 +1590,7 @@ void() pk_srvcmd_set =
  		registercvar("pk_cyc_master", "0"); // if true no individual loops
 		registercvar("pk_cyc_halt", "0"); // if true halt all loops, restore original items (0 or 1)
 		registercvar("pk_cyc_dyn", "0"); // if true include dynamic items in loop change
-		registercvar("pk_place_item", "0"); // place_item will if this is:  1 - not load regular map items, 2 - randomize all items (at time < 5 secs)
+		registercvar("pk_place_item", "0"); // place_item will if this is:  1 - not load regular map items, 2 - randomize all items in genre (at time < 5 secs), 3 - randomize across all genre
 		registercvar("pk_place_item_reload", "0"); // reload place_item 2 deal every this cnt + this cnt * random
 		registercvar("pk_mapcode", "0"); // if true print mapcode item classname calls to console
 		registercvar("pk_make", "0"); // if set to valid map code, create item at player location
