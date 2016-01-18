@@ -39,6 +39,7 @@ float (entity targ) grav_visible =
 		return TRUE;
 
 // WATCH: keep an eye on this hack of a fix, until the "better" solution is available
+// this is for grabbing low sitting items that register as in solid - but are not
 	if (!f)
 	if (pointcontents (targ.origin) == CONTENT_SOLID) // IDEA: qualify as x weps as well?
 	if (trace_fraction > 0.65)

@@ -81,7 +81,11 @@ void(entity e) MakeSplash =
 
 // TEST: demo
 if (DEMO)
-if (e.classname == "player") e.movetype = 0;
+if (e.classname == "player" && !dmove)
+{
+	dmove = 1;
+	e.movetype = 0;
+}
 
 
 

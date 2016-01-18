@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Cataboligne - 10.23.11 archon compile
+
+# frikqcc compiler, rename to your flavor
+
+fqcc /O2
+
+# move to prog dir
+# mprg painkeep
+
+# does this - duplicate for your install
+# 'cp' ./progs.dat /home/Quake/quake/painkeep
+
+# put 'er in all the arc locations
+cp progs.dat /home/Quake/quake_0/archon
+cp progs.dat /home/Quake/qlnx/Resource/mods/_archon_a1_rel

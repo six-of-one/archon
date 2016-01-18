@@ -8,9 +8,9 @@ Cataboligne 3.29.8
 */
 
 // demo messages
-float dmsg_cnt, dmsg_togl;
+float dmsg_cnt, dmsg_togl, dmove;
 
-float DEMO = 1;
+float DEMO = 0; // set to one for recording demos with text below
 
 void() demo_msg =
 {
@@ -26,7 +26,7 @@ void() demo_msg =
 
 	stuffcmd(self, "admin_centertime\n");
 	if (dmsg_cnt == 0)
-		centerprint(self, "What the? Quake...ONE!  Arg.");
+		centerprint(self, "What the? Quake...ONE!  Again?! Arg.");
 	if (dmsg_cnt == 1)
 		centerprint(self, "Hrm, whats this?  Crates.  Lets see, trusty axe, check!");
 	if (dmsg_cnt == 2)
@@ -87,7 +87,7 @@ void() demo_msg =
 		dmsg_togl = 1;
 	}
 	if (dmsg_cnt == 24)
-		centerprint(self, "Ah ha, ye old tunnel to shubs lair.");
+		centerprint(self, "Ah ha, ye old tunnel to shubs lair.\nRunes Shmunes, who needs em?");
 	if (dmsg_cnt == 25)
 	{
 		centerprint(self, "A verticle drop into stinky water - \nbet a quid there's rot fish down here.");
@@ -1816,7 +1816,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_pk_cmap", "0"); // admin setup custom maps - activate server map loop via pknextmap aliases
 
 // morphic
-		registercvar("sv_morph", "4"); // TEST: 3"); // 2 cubes
+		registercvar("sv_morph", "0"); // TEST: 4");
 		registercvar("sv_morph_time", "30"); // TEST: "120");
 		registercvar("sv_morph_dv", "5"); // TEST: "40");
 //		registercvar("cl_morph", "12"); // client ident
@@ -1916,8 +1916,8 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 // pk items
 
-		registercvar("pk_crates", "1"); // TEST: "0"); // randomly spawn this many crates on a map
-		registercvar("pk_cubes", "1"); // TEST: "0"); // randomly spawn this many companion cubes on a map
+		registercvar("pk_crates", "0"); // randomly spawn this many crates on a map
+		registercvar("pk_cubes", "0"); // randomly spawn this many companion cubes on a map
 		registercvar("pk_cubes_time", "60"); // cube timeout - respawn every this many secs, if < 0 set 30% of val for deviation from time
 
 		registercvar("pk_bt_time", "90"); // time for beartraps to live

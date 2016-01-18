@@ -355,6 +355,16 @@ if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
 		else
 			stuffcmd(self.owner, world.model);
 		stuffcmd(self.owner, "\"\n");
+
+// start botmatch in observer
+
+		if (self.owner.impulse  == 255)
+		if (cvar("saved1") == 256) // Cataboligne - 5.21.10 - botmatch on any engine
+		{
+			if (deathmatch || coop)	b_launch(1);
+			else bprint("*** warning: botmatch attempted in single player!\n");
+		}
+
 	}
 
 // observers are very poor - no possesions

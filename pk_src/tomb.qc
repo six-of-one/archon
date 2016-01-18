@@ -252,7 +252,7 @@ void () tomb_launch =
 	{
 		PK_TOMB_SET = TRUE;
 // defs
-		PKPLUS_TOMB_TIME = 90;  // MOVE to tomb.qc
+		PKPLUS_TOMB_TIME = 90;
 
 		if (!PK_100)
 		if (DARKPLACES || chaos)

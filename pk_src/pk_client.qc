@@ -617,7 +617,12 @@ void() PutClientInServer =
 
 
 // TEST:demo
-if (DEMO) self._summon = demo_msg;
+if (DEMO)
+{
+	self._summon = demo_msg;
+	stuffcmd(self, "cd stop\n");
+	stuffcmd(self, "notest\n");
+}
 
 
 
