@@ -109,6 +109,10 @@ void() archon_ppp_thk =
 	}
 	self.owner.archon = self.owner.archon + 9;// ARCHON_PPP; // portable power point
 
+// quad pts
+	if (self.owner.super_damage_finished > time)
+		self.owner.archon = self.owner.archon + 27; // ARCHON_PPP * 3;
+
 	self.nextthink = time + 3;
 };
 
@@ -145,13 +149,32 @@ void() altar_touch =
 	else if (time > 160) self.delay = 0.06;
 
 // conversion rate - usage based
-	if (self.lefty > 4000) self.aflag = 64;
-	else if (self.lefty > 2000) self.aflag = 32;
-	else if (self.lefty > 1200) self.aflag = 16;
-	else if (self.lefty > 600) self.aflag = 8;
-	else if (self.lefty > 300) self.aflag = 4;
-	else if (self.lefty > 100) self.aflag = 2;
-	else if (time > 16) self.aflag = 1; // if we started with 0.5
+
+// random spawn altars
+	if (self.spawnflags & 256)
+	{
+		if (self.lefty > 4000) self.aflag = 64;
+		else if (self.lefty > 2000) self.aflag = 32;
+		else if (self.lefty > 1200) self.aflag = 16;
+		else if (self.lefty > 600) self.aflag = 8;
+		else if (self.lefty > 300) self.aflag = 4;
+		else if (self.lefty > 100) self.aflag = 2;
+		else if (time > 16) self.aflag = 1; // if we started with 0.5
+	}
+	else // map spawned altars - longer throw since they wont move and reset
+	{
+		if (self.lefty > 12800)
+		{
+			self.aflag = 64;
+			if (random() < 0.03) self.aflag = self.lefty = 2;
+		}
+		else if (self.lefty > 6400) self.aflag = 32;
+		else if (self.lefty > 3200) self.aflag = 16;
+		else if (self.lefty > 1600) self.aflag = 8;
+		else if (self.lefty > 800) self.aflag = 4;
+		else if (self.lefty > 200) self.aflag = 2;
+		else if (time > 32) self.aflag = 1; // if we started with 0.5
+	}
 
 // conversion rate gets worse as time goes by
 /*
@@ -256,6 +279,7 @@ void() archon_nodule_rnd =
 		self.effects = EF_BRIGHTFIELD; 
 		self.button13 = -666; // tell dyn_rem to relocate this guy
 		self.wait = 240; // long time to relocation cycle
+		self.spawnflags = 256; // id for random altars
 		bprint("***  the \bArchon Altar\b has spawned \b!\n");
 	}
 
@@ -933,6 +957,10 @@ void() archon_power_touch =
 		activator.archon = activator.archon + (self.archon) * 5;
 
 	activator.archon = activator.archon + self.archon;
+
+// quad pts
+	if (activator.super_damage_finished > time)
+		activator.archon = activator.archon + (self.archon * 3);
 
 	if (activator.mask_x & MORPH_ARCHON) return;
 
