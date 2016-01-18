@@ -2553,8 +2553,6 @@ void() archon_time_flow =
 
 // soul vessels
 
-.entity arcvess;
-
 void() make_vessel =
 {
 	self.rune_flag = self.rune_flag | RUNE_VESS;
@@ -2929,14 +2927,14 @@ void() spell_target =
 	}
 	if (self.weapon == IT_NAILGUN)
 	{
-		if (!self.ammo_rockets) self.ammo_rockets = 3;
+		if (!self.ammo_rockets) self.ammo_rockets = 7;
 		if (self.ammo_rockets == 3) { self.pk_explode_ammo = 20; self.pkplus_actorammo = 0; self.th_melee = rune_powers; }
 		if (self.ammo_rockets == 5) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_gwell; }
 		if (self.ammo_rockets == 7) { self.pk_explode_ammo = 5; self.pkplus_actorammo = 35; self.th_melee = monster_speed; if (self.bolt_target == self) self.bolt_target = world; }
 	}
 	if (self.weapon == IT_SUPER_NAILGUN)
 	{
-		if (!self.ammo_bullet) self.ammo_bullet = 3;
+		if (!self.ammo_bullet) self.ammo_bullet = 7;
 		if (self.ammo_bullet == 3) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 1; self.th_melee = archon_makepp; }
 		if (self.ammo_bullet == 5) { self.pk_explode_ammo = 50; self.pkplus_actorammo = 1; self.th_melee = archon_maketele; }
 		if (self.ammo_bullet == 7) { self.pk_explode_ammo = 10; self.pkplus_actorammo = 1; self.th_melee = archon_makeit; }
@@ -2944,7 +2942,7 @@ void() spell_target =
 // arc vessel spells
 		if (self.ammo_bullet == 13) { self.pk_explode_ammo = 200; self.pkplus_actorammo = 0; self.th_melee = remove_vessel; }
 		if (self.ammo_bullet == 15) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; }
-		if (self.ammo_bullet == 17) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; } // note - this adds 500 to archon pts
+		if (self.ammo_bullet == 17) { self.pk_explode_ammo = 500; self.pkplus_actorammo = 0; self.th_melee = add_vessel; } // note - this adds 500 to archon pts, reduces soul vessel by 500
 	}
 	if (self.weapon == IT_LIGHTNING)
 	{
@@ -3066,6 +3064,7 @@ void() archon_target =
 	}
 
 	if (trace_ent == god_particle) return; // dont allow spells on god particle -- TEST
+	if (trace_ent.pk_touch == altar_touch) return; // dont allow spells on archon altars -- TEST
 
 	if (self.pkplus_actorammo & 16)
 	if (trace_ent.flags & FL_CLIENT) return;
@@ -3270,11 +3269,19 @@ void() player_chaos_impulse =
 				else if (self.ammo_shells == 7) self.ammo_shells = 11;
 				else if (self.ammo_shells == 11) self.ammo_shells = 3;
 // 13 is blocked here - with no vessel, it activates as create vessel
+///		unless we choose to allow more than 1 vessel per archon
+
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_shells == 5) && self.arcvess.pk_explode_ammo < 2500) self.ammo_shells = 7;
 			}
 			self.weapon = IT_SHOTGUN;
 		}
 		if (self.impulse == 3) // spell list 2 - polymorph, transmogrify
 		{
+// during a burst - poly self & transmorg are out -- if arcvess pts < 3000 poly other is out, so skip
+			if ((self.aflag & 16) && self.arcvess.pk_explode_ammo < 3000)
+				self.impulse = 4;
+			else
 			if (self.weapon == IT_SUPER_SHOTGUN) // loop thru spell set
 			{
 				if (self.ammo_nails == 3) self.ammo_nails = 5;
@@ -3295,6 +3302,10 @@ void() player_chaos_impulse =
 					if (self.aflag & 16) self.ammo_nails = 5;
 				}
 
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_nails == 5) && self.arcvess.pk_explode_ammo < 3000) self.ammo_nails = 7;
+				if ((self.ammo_nails == 7) && self.arcvess.pk_explode_ammo < 3000) self.ammo_nails = 11;
+
 				if (self.ammo_nails == 11)
 				{
 					if (! self.pk_beartrapammo & 1023) self.pk_beartrapammo = 1;
@@ -3311,6 +3322,10 @@ void() player_chaos_impulse =
 				if (self.ammo_rockets == 3) self.ammo_rockets = 5;
 				else if (self.ammo_rockets == 5) self.ammo_rockets = 7;
 				else if (self.ammo_rockets == 7) self.ammo_rockets = 3;
+
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_rockets == 3) && self.arcvess.pk_explode_ammo < 4000) self.ammo_rockets = 5;
+				if ((self.ammo_rockets == 5) && self.arcvess.pk_explode_ammo < 5000) self.ammo_rockets = 7;
 
 				if (self.ammo_rockets == 7)
 				{
@@ -3338,6 +3353,11 @@ void() player_chaos_impulse =
 				}
 				else if (self.ammo_bullet == 17) self.ammo_bullet = 3;
 
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_bullet == 3) && self.arcvess.pk_explode_ammo < 6000) self.ammo_bullet = 5;
+				if ((self.ammo_bullet == 5) && self.arcvess.pk_explode_ammo < 5000) self.ammo_bullet = 7;
+				if ((self.ammo_bullet == 11) && self.arcvess.pk_explode_ammo < 3000) self.ammo_bullet = 13;
+
 				if (self.ammo_bullet == 7)
 				{
 					if (! self.pk_beartrapammo & 6377471) self.pk_beartrapammo = 1;
@@ -3359,6 +3379,12 @@ void() player_chaos_impulse =
 				else if (self.ammo_cells == 11) self.ammo_cells = 13;
 				else if (self.ammo_cells == 13) self.ammo_cells = 17;
 				else if (self.ammo_cells == 17) self.ammo_cells = 3;
+
+// not enough arc vessel power yet for some spells
+				if ((self.ammo_cells == 5) && self.arcvess.pk_explode_ammo < 5000) self.ammo_cells = 7;
+				if ((self.ammo_cells == 11) && self.arcvess.pk_explode_ammo < 4500) self.ammo_cells = 13;
+				if ((self.ammo_cells == 13) && self.arcvess.pk_explode_ammo < 6000) self.ammo_cells = 17;
+				if ((self.ammo_cells == 17) && self.arcvess.pk_explode_ammo < 7500) self.ammo_cells = 3;
 
 				if (self.ammo_cells == 3)
 				{
@@ -3475,9 +3501,9 @@ void() player_chaos_become =
 // spell init - done in target
 	self.ammo_shells = 7;
 	self.ammo_nails = 3;
-	self.ammo_rockets = 3;
+	self.ammo_rockets = 7;
 	self.ammo_cells = 3;
-	self.ammo_bullet = 3;
+	self.ammo_bullet = 7;
 	if (!self.pk_beartrapammo) self.pk_beartrapammo = 1;
 
 	self.pk_explode_ammo = 0; // spell cost

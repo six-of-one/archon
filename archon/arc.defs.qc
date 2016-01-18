@@ -203,6 +203,9 @@ entity god_particle;						// one special nodule worth buku points
 
 .float archon; // accumulates power
 
+.entity arcvess; // soul vessel link - store power / enable spells
+float RUNE_VESS						= 65536; // archon has made a soul vessel, now read as a rune
+
 float ARCHON_FRAG;				 		// points per frag
 float ARCHON_ITEM; 						// points per std item
 float ARCHON_ART; 						// points per artifact

@@ -2251,61 +2251,104 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			pwr_step_y = pwr_step_y + 14;
 		}
 
+var float autocvar_hud_spell_list = 0;
+vector sploff;
+
 		if (currentweap != IT_AXE) // casting spells
 		{
+// list spells in books in select order and place spell reticle on active spell
+
+			sploff = '0 0 0';
+//			if (autocvar_hud_spell_list > 0) sploff_y = autocvar_hud_spell_list * 21;
+
 //			if (plevel > 0)
 			if (casting)
 			{
 				if (currentweap == IT_SHOTGUN) // spell list 1 - teleports
 				{
+					if (autocvar_hud_spell_list > 0)
+					if (arcvessel)
+					{
+						Sbar_DrawString('314 40 0' + woff + sploff + '0 42 0', "Teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('280 40 0' + woff + sploff + '0 28 0', "Teleport swap", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('280 40 0' + woff + sploff + '0 14 0', "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (shells != 11) Sbar_DrawString('301 40 0' + woff + sploff, "Use beacon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+					else
+					{
+						Sbar_DrawString('280 40 0' + woff + sploff + '0 14 0', "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('244 40 0' + woff + sploff, "Create SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+
 					if (shells == 3)
 					{
-						Sbar_DrawString('314 40 0' + woff, "Teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 42 0';
+						else
+						Sbar_DrawString('314 40 0' + woff + sploff, "Teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - teleport target to reticle";
 					}
 					else if (shells == 5)
 					{
-						Sbar_DrawString('280 40 0' + woff, "Teleport swap", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 28 0';
+						else
+						Sbar_DrawString('280 40 0' + woff + sploff, "Teleport swap", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (target2) instr = "*FIRE - swap targets";
 					}
 					else if (shells == 7)
 					{
-						Sbar_DrawString('280 40 0' + woff, "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 14 0';
+						else
+						Sbar_DrawString('280 40 0' + woff + sploff, "Teleport self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (target2) instr = "*FIRE - teleport to reticle";
 					}
 					else if (shells == 11)
 					{
 						if (explodeshot == 20)
 						{
-							Sbar_DrawString('280 40 0' + woff, "Set beacon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('301 40 0' + woff + sploff, "Set beacon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							instr = "*FIRE - launch beacon";
 						}
 						else
 						{
-							Sbar_DrawString('248 40 0' + woff, "Teleport to beacon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('245 40 0' + woff + sploff, "Teleport to beacon", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							instr = "*FIRE - cast teleport spell";
 						}
 					}
 					else if (shells == 13)
 					{
-						Sbar_DrawString('280 40 0' + woff, "Create SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list < 1)
+						Sbar_DrawString('244 40 0' + woff + sploff, "Create SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (target2) instr = "*FIRE - Make target a SOUL vessel";
 					}
 //					else Sbar_DrawString('280 40 0', "Unknown Magic", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 				}
 				if (currentweap == IT_SUPER_SHOTGUN) // spell list 1 - poly
 				{
+					if (autocvar_hud_spell_list > 0)
+					{
+						Sbar_DrawString('271 40 0' + woff + sploff + '0 28 0', "Polymorph self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('264 40 0' + woff + sploff + '0 14 0', "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (morph == IMP_MCHAOS)
+							Sbar_DrawString('250 40 0' + woff + sploff, "Metamorphose self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						else
+							Sbar_DrawString('300 40 0' + woff + sploff, "Order form", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+
 					if (nails == 3)
 					{
-						Sbar_DrawString('260 40 0' + woff, "Polymorph self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 28 0';
+						else
+						Sbar_DrawString('271 40 0' + woff + sploff, "Polymorph self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (explodeshot == 24) // no creature cost can be this val
 							instr = "*FIRE - start polymorph selection";
 						else
-							instr = "*FIRE - cast polymorph spell";
+							instr = "ALT_FIRE - cast polymorph spell";
 					}
 					else if (nails == 5)
 					{
-						Sbar_DrawString('260 40 0' + woff, "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 14 0';
+						else
+						Sbar_DrawString('264 40 0' + woff + sploff, "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (explodeshot == 24) // no creature cost can be this val
 							instr = "*FIRE - start polymorph selection";
 						else
@@ -2326,7 +2369,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 18;
 
-						Sbar_DrawString('260 40 0' + woff, "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 14 0';
+						else
+						Sbar_DrawString('264 40 0' + woff + sploff, "Polymorph other", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (pk_bt > 0)
 						{
 							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "target becomes: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -2344,14 +2389,16 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 							cnt_left = pwr_step_y;
 							pwr_step_y = pwr_step_y + 18;
 
-							Sbar_DrawString('250 40 0' + woff, "Metamorphose self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							if (autocvar_hud_spell_list < 1)
+							Sbar_DrawString('250 40 0' + woff + sploff, "Metamorphose self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Archon becomes: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							Sbar_DrawString(pwr_step + '130 -5 0' + woff, transmogrify(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							instr = "*FIRE - cast transmogrify spell";
 						}
 						else
 						{
-							Sbar_DrawString('250 40 0' + woff, "Order form", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							if (autocvar_hud_spell_list < 1)
+							Sbar_DrawString('300 40 0' + woff + sploff, "Order form", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Choose other form", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 							instr = "*FIRE - cast transform spell";
 						}
@@ -2359,13 +2406,22 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				}
 				if (currentweap == IT_NAILGUN) // spell list 1 - poly
 				{
+					if (autocvar_hud_spell_list > 0)
+					{
+						Sbar_DrawString('292 40 0' + woff + sploff + '0 28 0', "Rune powers", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('286 40 0' + woff + sploff + '0 14 0', "Gravity well", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (rockets != 7) Sbar_DrawString('279 40 0' + woff + sploff, "Monster speed", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+
 					if (rockets == 3)
 					{
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 18;
 
-						Sbar_DrawString('290 40 0' + woff, "Rune powers", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 28 0';
+						else
+						Sbar_DrawString('292 40 0' + woff + sploff, "Rune powers", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (pk_bt == 4194304)
 						{
 							if (rune_flag) Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Expulse (remove rune)", ALPHA_FULL, '7 7 0','1 0.5 0.5');
@@ -2385,7 +2441,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					if (rockets == 5)
 					{
-						Sbar_DrawString('285 40 0' + woff, "Gravity well", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 14 0';
+						else
+						Sbar_DrawString('286 40 0' + woff + sploff, "Gravity well", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						rside_icon = "gfx/inv_gwell";
 						rside_scale = 0.18;
 						instr = "*FIRE - cast gravity well spell";
@@ -2397,25 +2455,46 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						pwr_step_y = pwr_step_y + 18;
 
 						if (pk_bt == 1)
-							Sbar_DrawString('275 40 0' + woff, "Monster faster", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('272 40 0' + woff + sploff, "Monster faster", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						else
-							Sbar_DrawString('275 40 0' + woff, "Monster slower", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('272 40 0' + woff + sploff, "Monster slower", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast monster speed spell";
 					}
 				}
 				if (currentweap == IT_SUPER_NAILGUN) // spell list 1 - poly
 				{
+					if (autocvar_hud_spell_list > 0)
+					{
+						Sbar_DrawString('244 40 0' + woff + sploff + '0 84 0', "Create power point", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('223 40 0' + woff + sploff + '0 70 0', "Create chaos teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('286 40 0' + woff + sploff + '0 56 0', "Create items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('223 40 0' + woff + sploff + '0 42 0', "Create painkeep items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('244 40 0' + woff + sploff + '0 28 0', "Remove SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('167 40 0' + woff + sploff + '0 14 0', "Add 500 points to SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('133 40 0' + woff + sploff, "Return 500 points from SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+
 					if (bullets == 3)
 					{
-						Sbar_DrawString('242 40 0' + woff, "Create power point", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 84 0';
+						else
+						Sbar_DrawString('244 40 0' + woff + sploff, "Create power point", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 					}
 					if (bullets == 5)
 					{
-						Sbar_DrawString('220 40 0' + woff, "Create chaos teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 70 0';
+						else
+						Sbar_DrawString('223 40 0' + woff + sploff, "Create chaos teleport", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 					}
 					if (bullets == 7)
 					{
-						Sbar_DrawString('282 40 0' + woff, "Create items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
+						if (autocvar_hud_spell_list > 0) sploff = '0 56 0';
+						else
+						Sbar_DrawString('286 40 0' + woff + sploff, "Create items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '60 -5 0' + woff, item_by_clbit(pk_bt, 1), ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						cnt_left = pwr_step_y;
@@ -2424,7 +2503,13 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					if (bullets == 11)
 					{
-						Sbar_DrawString('220 40 0' + woff, "Create painkeep items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						cnt_left = pwr_step_y;
+						pwr_step_y = pwr_step_y + 18;
+
+						if (autocvar_hud_spell_list > 0) sploff = '0 42 0';
+						else
+						Sbar_DrawString('223 40 0' + woff + sploff, "Create painkeep items", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "make: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '60 -5 0' + woff, item_by_clbit(pk_bt, 3), ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						cnt_left = pwr_step_y;
@@ -2434,42 +2519,62 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					instr = "*FIRE - cast create spell";
 					if (bullets == 13)
 					{
-						Sbar_DrawString('250 40 0' + woff, "Remove SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 28 0';
+						else
+						Sbar_DrawString('244 40 0' + woff + sploff, "Remove SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - recover all power from SOUL";
 					}
 					if (bullets == 15)
 					{
-						Sbar_DrawString('170 40 0' + woff, "Add 500 points to SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 14 0';
+						else
+						Sbar_DrawString('167 40 0' + woff + sploff, "Add 500 points to SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (explodeshot) instr = "*FIRE - Increase SOUL power";
 					}
 					if (bullets == 17)
 					{
-						Sbar_DrawString('140 40 0' + woff, "Return 500 points from SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list < 1)
+						Sbar_DrawString('133 40 0' + woff + sploff, "Return 500 points from SOUL vessel", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						if (explodeshot) instr = "*FIRE - Reduce SOUL power";
 					}
 				}
 				if (currentweap == IT_LIGHTNING) // spell list 1 - poly
 				{
+					if (autocvar_hud_spell_list > 0)
+					{
+						if (cells != 3) Sbar_DrawString('279 40 0' + woff + sploff + '0 70 0', "Heal / weaken", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('272 40 0' + woff + sploff + '0 56 0', "Imprison being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('280 40 0' + woff + sploff + '0 42 0', "Release being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('286 40 0' + woff + sploff + '0 28 0', "Summon being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						Sbar_DrawString('286 40 0' + woff + sploff + '0 14 0', "Banish being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (cells != 17) Sbar_DrawString('209 40 0' + woff + sploff, "Change the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+					}
+
 					if (cells == 3)
 					{
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "[ Select auxilliary options ]", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 18;
 
+						if (autocvar_hud_spell_list > 0) sploff = '0 70 0';
 						if (pk_bt == 1)
-							Sbar_DrawString('300 40 0' + woff, "Heal being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('300 40 0' + woff + sploff, "Heal being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						else
-							Sbar_DrawString('286 40 0' + woff, "Weaken being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('286 40 0' + woff + sploff, "Weaken being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast health spell";
 					}
 					if (cells == 5)
 					{
-						Sbar_DrawString('272 40 0' + woff, "Imprison being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 56 0';
+						else
+						Sbar_DrawString('272 40 0' + woff + sploff, "Imprison being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast imprison spell";
 					}
 					if (cells == 7)
 					{
-						Sbar_DrawString('280 40 0' + woff, "Release being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 42 0';
+						else
+						Sbar_DrawString('280 40 0' + woff + sploff, "Release being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast release spell";
 						if (target1) draw_targ = 1;
 					}
@@ -2479,7 +2584,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						cnt_left = pwr_step_y;
 						pwr_step_y = pwr_step_y + 18;
 
-						Sbar_DrawString('286 40 0' + woff, "Summon being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 28 0';
+						else
+						Sbar_DrawString('286 40 0' + woff + sploff, "Summon being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '22 -5 0' + woff, "Summon a: ", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						Sbar_DrawString(pwr_step + '90 -5 0' + woff, monster_id(pk_bt), ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						cnt_left = pwr_step_y;
@@ -2488,7 +2595,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					}
 					if (cells == 13)
 					{
-						Sbar_DrawString('286 40 0' + woff, "Banish being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+						if (autocvar_hud_spell_list > 0) sploff = '0 14 0';
+						else
+						Sbar_DrawString('286 40 0' + woff + sploff, "Banish being", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast banish spell";
 					}
 					if (cells == 17)
@@ -2498,16 +2607,16 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 						pwr_step_y = pwr_step_y + 18;
 
 						if (pk_bt == 2)
-							Sbar_DrawString('221 40 0' + woff, "Slow the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('223 40 0' + woff + sploff, "Slow the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						else
 						if (pk_bt == 4)
-							Sbar_DrawString('214 40 0' + woff, "Speed the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('216 40 0' + woff + sploff, "Speed the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						else
-							Sbar_DrawString('200 40 0' + woff, "Restore the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+							Sbar_DrawString('202 40 0' + woff + sploff, "Restore the flow of time", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 						instr = "*FIRE - cast time flow spell";
 					}
 				}
-				DrawInventoryAmmo('372 50 0', rside_icon, ALPHA_FULL, rside_scale);
+				DrawInventoryAmmo('372 50 0' + sploff, rside_icon, ALPHA_FULL, rside_scale);
 			}
 
 			if ((pk_mask & 2) || draw_targ) // spell requires targets

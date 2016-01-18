@@ -1268,6 +1268,13 @@ void () PlayerPreThink =
 
 	if (intermission_running)
 	{
+// if an archon (any player / bot) has a vessel, restore pts
+		if (self.arcvess)
+		{
+			self.pk_explode_ammo = 0;
+			remove_vessel();
+		}
+
 		if (find(world,classname,"viswep")) vw_remove();
 		IntermissionThink ();	// otherwise a button could be missed between
 		return;					// the think tics
