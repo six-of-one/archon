@@ -673,7 +673,7 @@ if (!self.mask_x)
 
 
 // testing touch select for morphs
-if (WARNING)
+if (1)
 //if (self.classname == "Backpack")
 {
 	bprint("---------------- ** WARNING - in touch: dont allow: ");
