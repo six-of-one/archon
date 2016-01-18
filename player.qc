@@ -427,11 +427,16 @@ void() player_die_ax1;
 void() DeathBubblesSpawn =
 {
 local entity	bubble;
+	if (self.classname != "bubblespawn")
 	if (self.owner.waterlevel != 3)
+	{
+		remove(self); // v1.09 bug fx - this logic left bubble spawners around
 		return;
+	}
 	bubble = spawn();
 	setmodel (bubble, "progs/s_bubble.spr");
-	setorigin (bubble, self.owner.origin + '0 0 24');
+//	setorigin (bubble, self.owner.origin + '0 0 24'); // mod: better way of doing this - moved 24 down below
+	setorigin (bubble, self.origin);
 	bubble.movetype = MOVETYPE_NOCLIP;
 	bubble.solid = SOLID_NOT;
 	bubble.velocity = '0 0 15';
@@ -453,7 +458,7 @@ void(float num_bubbles) DeathBubbles =
 local entity	bubble_spawner;
 
 	bubble_spawner = spawn();
-	setorigin (bubble_spawner, self.origin);
+	setorigin (bubble_spawner, self.origin + '0 0 24');
 	bubble_spawner.movetype = MOVETYPE_NONE;
 	bubble_spawner.solid = SOLID_NOT;
 	bubble_spawner.nextthink = time + 0.1;

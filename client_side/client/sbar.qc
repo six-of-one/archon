@@ -1304,84 +1304,15 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				if (!pself && (style == 3))
 				{
 					score_line(plnum, v);
-/*
-					cl1 = '0.2 0.2 1';
-					cl2 = '0.1 0.1 1';
-					plname = getplayerkey(plnum - 1, "name");
-					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
-					f = plscore = stof(getplayerkey(plnum - 1, "frags"));
-					while (f > 999)
-					{
-						f = floor(f / 10);
-						v_x = v_x - 7;
-					}
-					if (plscore > p3rd) DrawAmmo(cl2, v, plscore, ALPHA_FULL);
-					if (fraglimit) // frags to reach the limit
-					{
-						v_x = v_x - 24;
-						f = fraglimit - plscore;
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo('0.1 1 0.1', v, floor(fraglimit - plscore), ALPHA_FULL);
-						rfgl = TRUE;
-					}
-					if (autocvar_hud_frags_style & 16)
-					if (maxclients > 1)
-					if (topscore > plscore)
-					{
-						v_x = v_x - 24;
-						f = topscore - plscore;
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
-						rhs = TRUE;
-					}
-*/
 					v_y = v_y - 10;
 				}
-//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				plscore = stof(getplayerkey(p1 - 1, "frags"));
 // top score
 				if (plscore > p3rd)
 				{
 					score_line(p1, v);
-/*
-						plname = getplayerkey(p1 - 1, "name");
-					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0','1 0.4 0.4');
-					while (f > 999)
-					{
-						f = floor(f / 10);
-						v_x = v_x - 7;
-					}
-					DrawAmmo('1 0.1 0.1', v, plscore, ALPHA_FULL);
-					if (fraglimit)
-					{
-						f = fraglimit - plscore;
-						if (f < 4) fgl = floor(f); // show frags left at bottom
-						if (p1 == plnum)
-						{
-							v_x = v_x - 24;
-							while (f > 999)
-							{
-								f = floor(f / 10);
-								v_x = v_x - 7;
-							}
-							DrawAmmo('0.1 1 0.1', v, floor(fraglimit - plscore), ALPHA_FULL);
-							rfgl = TRUE;
-						}
-					}
-*/
 					v_y = v_y - 10;
 				}
-//				cl1 = '1 0.9 1';
-//				cl2 = '1 1 1';
-//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				k = k - 1;
 				if ((k > 0) && p2 > 0)
 				{
@@ -1389,326 +1320,52 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 					if (plscore > p3rd)
 					{
 						score_line(p2, v);
-
-/*
-						if (p2 == plnum) // on list, blue style name & score
-						{
-							cl1 = '0.2 0.2 1';
-							cl2 = '0.1 0.1 1';
-						}
-						plname = getplayerkey(p2 - 1, "name");
-						Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo(cl2, v, plscore, ALPHA_FULL);
-						if (p2 == plnum)
-						{
-							if (fraglimit)
-							{
-								v_x = v_x - 24;
-								f = fraglimit - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.1 1 0.1', v, floor(fraglimit - plscore), ALPHA_FULL);
-								rfgl = TRUE;
-							}
-							if (autocvar_hud_frags_style & 16)
-							if (maxclients > 1)
-							if (topscore > plscore)
-							{
-								v_x = v_x - 24;
-								f = topscore - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
-								rhs = TRUE;
-							}
-						}
-*/
 						v_y = v_y - 10;
 					}
 					k = k - 1;
 				}
-//				cl1 = '1 0.9 1';
-//				cl2 = '1 1 1';
-//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p3 > 0)
 				{
 					plscore = stof(getplayerkey(p3 - 1, "frags"));
 					if (plscore > p3rd)
 					{
 						score_line(p3, v);
-/*
-						if (p3 == plnum)
-						{
-							cl1 = '0.2 0.2 1';
-							cl2 = '0.1 0.1 1';
-
-						}
-						plname = getplayerkey(p3 - 1, "name");
-						Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo(cl2, v, plscore, ALPHA_FULL);
-						if (p3 == plnum)
-						{
-							if (fraglimit)
-							{
-								v_x = v_x - 24;
-								f = fraglimit - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.1 1 0.1', v, floor(fraglimit - plscore), ALPHA_FULL);
-								rfgl = TRUE;
-							}
-							if (autocvar_hud_frags_style & 16)
-							if (maxclients > 1)
-							if (topscore > plscore)
-							{
-								v_x = v_x - 24;
-								f = topscore - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
-								rhs = TRUE;
-							}
-						}
-*/
 						v_y = v_y - 10;
 					}
 					k = k - 1;
 				}
-//				cl1 = '1 0.9 1';
-//				cl2 = '1 1 1';
-//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p4 > 0)
 				{
 					plscore = stof(getplayerkey(p4 - 1, "frags"));
 					if (plscore > p3rd)
 					{
 						score_line(p4, v);
-/*
-						if (p4 == plnum)
-						{
-							cl1 = '0.2 0.2 1';
-							cl2 = '0.1 0.1 1';
-
-						}
-						plname = getplayerkey(p4 - 1, "name");
-						Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo(cl2, v, plscore, ALPHA_FULL);
-						if (p4 == plnum)
-						{
-							if (fraglimit)
-							{
-								v_x = v_x - 24;
-								f = fraglimit - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.1 1 0.1', v, floor(fraglimit - plscore), ALPHA_FULL);
-								rfgl = TRUE;
-							}
-							if (autocvar_hud_frags_style & 16)
-							if (maxclients > 1)
-							if (topscore > plscore)
-							{
-								v_x = v_x - 24;
-								f = topscore - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
-								rhs = TRUE;
-							}
-						}
-*/
 						v_y = v_y - 10;
 					}
 					k = k - 1;
 				}
-//				cl1 = '1 0.9 1';
-//				cl2 = '1 1 1';
-//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p5 > 0)
 				{
 					f = plscore = stof(getplayerkey(p5 - 1, "frags"));
 					if (plscore > p3rd)
 					{
 						score_line(p5, v);
-/*
-						if (p5 == plnum)
-						{
-							cl1 = '0.2 0.2 1';
-							cl2 = '0.1 0.1 1';
-
-						}
-						plname = getplayerkey(p5 - 1, "name");
-						Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo(cl2, v, plscore, ALPHA_FULL);
-						if (p5 == plnum)
-						{
-							if (fraglimit)
-							{
-								v_x = v_x - 24;
-								f = fraglimit - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.1 1 0.1', v, floor(fraglimit - plscore), ALPHA_FULL);
-								rfgl = TRUE;
-							}
-							if (autocvar_hud_frags_style & 16)
-							if (maxclients > 1)
-							if (topscore > plscore)
-							{
-								v_x = v_x - 24;
-								f = topscore - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
-								rhs = TRUE;
-							}
-						}
-*/
 						v_y = v_y - 10;
 					}
 					k = k - 1;
 				}
-//				cl1 = '1 0.9 1';
-//				cl2 = '1 1 1';
-//				v_x = (vid_conwidth / 2) + intoff_frags + autocvar_hud_frags_off;
 				if ((k > 0) && p6 > 0)
 				{
 					f = plscore = stof(getplayerkey(p6 - 1, "frags"));
 					if (plscore > p3rd)
 					{
 						score_line(p6, v);
-/*
-						if (p6 == plnum)
-						{
-							cl1 = '0.2 0.2 1';
-							cl2 = '0.1 0.1 1';
-						}
-						plname = getplayerkey(p6 - 1, "name");
-						Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo(cl2, v, plscore, ALPHA_FULL);
-						if (p6 == plnum)
-						{
-							if (fraglimit)
-							{
-								v_x = v_x - 24;
-								f = fraglimit - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.1 1 0.1', v, floor(fraglimit - plscore), ALPHA_FULL);
-								rfgl = TRUE;
-							}
-							if (autocvar_hud_frags_style & 16)
-							if (maxclients > 1)
-							if (topscore > plscore)
-							{
-								v_x = v_x - 24;
-								f = topscore - plscore;
-								while (f > 999)
-								{
-									f = floor(f / 10);
-									v_x = v_x - 7;
-								}
-								DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
-								rhs = TRUE;
-							}
-						}
-*/
 						v_y = v_y - 10;
 					}
 				}
 				if (!pself && (style == 2))
 				{
 					score_line(plnum, v);
-/*
-					cl1 = '0.2 0.2 1'; // idea: yellow ? (as in belly)
-					cl2 = '0.1 0.1 1';
-					plname = getplayerkey(plnum - 1, "name");
-					Sbar_DrawString(v + '28 -12 0', plname, ALPHA_FULL, '7 7 0',cl1);
-					f = plscore = stof(getplayerkey(plnum - 1, "frags"));
-					while (f > 999)
-					{
-						f = floor(f / 10);
-						v_x = v_x - 7;
-					}
-					if (plscore > p3rd) DrawAmmo(cl2, v, plscore, ALPHA_FULL);
-					if (fraglimit)
-					{
-						v_x = v_x - 24;
-						f = fraglimit - plscore;
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo('0.1 1 0.1', v, floor(fraglimit - plscore), ALPHA_FULL);
-						rfgl = TRUE;
-					}
-					if (autocvar_hud_frags_style & 16)
-					if (maxclients > 1)
-					if (topscore > plscore)
-					{
-						v_x = v_x - 24;
-						f = topscore - plscore;
-						while (f > 999)
-						{
-							f = floor(f / 10);
-							v_x = v_x - 7;
-						}
-						DrawAmmo('0.76 0.12 1', v, floor(topscore - plscore), ALPHA_FULL);
-					}
-*/
 					v_y = v_y - 10;
 				}
 				if (style)
