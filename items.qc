@@ -223,7 +223,7 @@ void () item_megahealth_rot =
 {
 	other = self.owner;
 
-	if (other.health > other.max_health)
+	if (other.health > other.max_health * other.health_modifier) // Cataboligne - 9.18.11 - morphic
 	{
 		other.health = other.health - 1;
 		self.nextthink = time + 1;

@@ -88,6 +88,8 @@ void() SetChangeParms =
 // remove items
 	self.items = self.items - (self.items & (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD | self.scode));
 
+	self.health = ceil(self.health / self.health_modifier); // morph back to human level
+
 // cap super health
 	if (self.health > 100)
 		self.health = 100;
@@ -540,9 +542,9 @@ void() PutClientInServer =
 
 	if (!cb_morph(self.morphy)) self.morphy = IMP_MHUMAN; // should NEVER happen?!  TDO: char_con deal
 
-	if  (cvar("anode"))
-		polymorph_check(IMP_MANODEX,IMP_MANODEX); // TEST:
-	else
+	if  (cvar("anode")) self.morphy = IMP_MANODEX;
+
+	self.morphy = IMP_MSHALR; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
 
 	player_stand1 ();

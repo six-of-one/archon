@@ -24,17 +24,19 @@ float MORPH_ANCIENT;
 void() morph_setup =
 {
 	MORPH_ARCHON = CB_CHAOS + CB_ORDER;
-	MORPH_MONSTER = CB_DEMON + CB_ENF + CB_HKNIGHT + CB_OGRE + CB_SHALR + CB_SHAMBL + CB_SCRAG + CB_ZOMBY + CB_CTHON + CB_GREMLIN +CB_SCOURGE;
+	MORPH_MONSTER = CB_DEMON + CB_ENF + CB_HKNIGHT + CB_OGRE + CB_SHALR + CB_SHAMBL + CB_SCRAG + CB_ZOMBY + CB_CTHON + CB_GREMLIN + CB_SCOURGE;
 //	MORPH_CASTLE = + ;
 	MORPH_HELLION = CB_IMP + CB_ARACHN + CB_CYBER;
 	MORPH_STROG = CB_GUNNEY + CB_TANK + CB_SUPTANK;
 //	MORPH_ARENA = + ;
-	MORPH_ANCIENT = CB_WRAITH + CB_DRAGON;
+	MORPH_ANCIENT = CB_DRAGON; // + CB_WRAITH;
 
 	MORPH_ALL = MORPH_ARCHON + MORPH_MONSTER + MORPH_HELLION + MORPH_STROG + MORPH_ANCIENT + CB_HUMAN;
 
 // these morph fly nativley
 	MORPH_FLY = CB_CHAOS + CB_ORDER + CB_SCRAG + CB_WRAITH + CB_DRAGON + CB_GREMLIN;
+// these morphs can always hook
+	MORPH_HOOK = CB_CHAOS + CB_CTHON + CB_ZOMBY + CB_SCOURGE; // + CB_GREMLIN;
 };
 
 
@@ -565,7 +567,33 @@ void(entity f, float all) morph_clearparms =
 
 void() morph_impulse =
 {
-	if (self.impulse == 10)
+	local float f;
+	if (self.impulse == 1) // select builtins with normal impulses
+	{
+		if (self.builtin & IT_AXE) self.weapon = IT_AXE;
+			// toggle through all the objects we have.
+		f = self.weapon;
+		if (f & self.builtin) pk_cycleObjects();
+
+		if (self.pk_currentitem == PK_IT_AXE) self.weapon = f; // go back to whatever
+		else PK_SetCurrentAmmo();
+	}
+	else if ((self.impulse == 2) && (self.builtin & IT_SHOTGUN))
+		self.weapon = IT_SHOTGUN;
+	else if ((self.impulse == 3) && (self.builtin & IT_SUPER_SHOTGUN))
+		self.weapon = IT_SUPER_SHOTGUN;
+	else if ((self.impulse == 4) && (self.builtin & IT_NAILGUN))
+		self.weapon = IT_NAILGUN;
+	else if ((self.impulse == 5) && (self.builtin & IT_SUPER_NAILGUN))
+		self.weapon = IT_SUPER_NAILGUN;
+	else if ((self.impulse == 6) && (self.builtin & IT_GRENADE_LAUNCHER))
+		self.weapon = IT_GRENADE_LAUNCHER;
+	else if ((self.impulse == 7) && (self.builtin & IT_ROCKET_LAUNCHER))
+		self.weapon = IT_ROCKET_LAUNCHER;
+	else if ((self.impulse == 8) && (self.builtin & IT_LIGHTNING))
+		self.weapon = IT_LIGHTNING;
+
+	else if (self.impulse == 10)
 		CycleWeaponCommand ();
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
@@ -718,3 +746,49 @@ void() morph_die =
 	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.view_ofs = '0 0 -8';
 };
+
+
+// fn(morph_heal) - check the max - 100 rule - high health level morphs get a boost when health is {scale} < MAX
+// operation - if morph with > 1.0 health modifier is more than {scaled} < max, health unit value is * health modifier
+
+// ck - entity to check
+// hl - health value
+
+// CHECK - balance in play, originally implemented because limited wep morphs were at a disadvantage
+
+float(entity e, float hl) morph_heal =
+{
+	local float hlb, hmx, hs;
+
+	if (!MAX100) return(0); // global off
+
+	if (e.health_modifier > 1.0)
+	{
+		hlb = (hl * e.health_modifier) - hl;			// boost - for 25 units, return 50 on a 3.0 mod, because orig fn adds in 25
+		hmx = e.max_health * e.health_modifier;	// max health for morph state
+		hs = (hmx * MH_HIGH) - (hmx * MH_LOW);					// scalor for health between .5 & .8
+
+		if (e.health < (hmx * MH_LOW))						// health is .5 of MAX or less, full health mod boost
+			return(hlb);									
+		else if (e.health < (hmx * MH_HIGH))				// health is .8 of MAX to .5 of MAX, scale health boost
+			return(hlb * (((hmx * MH_HIGH) - e.health) / hs ) );
+	}
+	return(0);													// health > .8 of MAX - no boost
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

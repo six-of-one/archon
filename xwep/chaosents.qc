@@ -326,7 +326,7 @@ void() health_touch =
 
 	amount = 0;
 
-//	if (other.state == IMP_MWRAITH) return(TRUE); // wraith never get health
+	if (other.state == IMP_MWRAITH) return; //(TRUE); // wraith never get health -- TDO: check state
 
 	Q3_HAH_TMP = other.health;
 	Q3_HAA_TMP = other.armorvalue;
@@ -364,10 +364,10 @@ void() health_touch =
 	}
 	else
 	{
-		amount = 0; //morph_heal(other, self.healamount); // Cataboligne - check max - 100 rule for morphs
+		amount = morph_heal(other, self.healamount); // Cataboligne - check max - 100 rule for morphs
 
 																							if (WARNING)
-																							if (FALSE & amount) {
+																							if (amount) {
 																								bprint("health boost scale: ");
 																								bprint(ftos(amount));
 																								bprint(", total: ");
@@ -388,10 +388,12 @@ void() health_touch =
 		Q3_HAA_TMP = 0;
 		q3_ha_rot(other, -1);
 	}
-//		if (other.flags & FL_ONFIRE)
-//		{
-//			if (self.healamount > 99) other.flags = other.flags - (other.flags & FL_ONFIRE); // any mega heal over 99 puts out fire
-//		}
+
+//	if (other.flags & FL_ONFIRE)
+//	{
+//		if (self.healamount > 99) other.flags = other.flags - (other.flags & FL_ONFIRE); // any mega heal over 99 puts out fire
+//	}
+
 	other.healtype = self.healtype; // fire, plague & continous health rot stop - Cataboligne 1.15.8
 
 	if (self.netname != "Mega Sphere")

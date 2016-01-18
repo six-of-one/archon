@@ -324,12 +324,6 @@ void() player_scourge_impulse =
 
 	morph_impulse();
 
-	if (self.impulse == 1)
-		self.weapon = SEL_SCRGTAIL;
-	else if (self.impulse == 2)
-		self.weapon = SEL_SCRGNAIL;
-
-
 // TDO: eweapon checks - can fire lasers & prox bombs
 // TDO: alt fire
 // TDO: quad & dmg runes increase nail fire (6 slots for runes, 8 slots for quad)

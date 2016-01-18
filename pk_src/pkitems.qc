@@ -789,6 +789,7 @@ void () item_painkeep_gwell =
 	self.pk_items = PK_IT_GRAVITYWELL;
 	//setsize (self, '-32 -32 -32', '32 32 32');
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can have pk specials
 	StartItem ();
 };
 
@@ -810,6 +811,7 @@ void () item_painkeep_turret =
 	self.pk_items = PK_IT_TURRET;
 
 	setsize (self,'-7 -7 -7','4 7 21');
+	self.mask_x = MORPH_ALL;
 	StartItem ();
 };
 
@@ -838,6 +840,7 @@ void () item_painkeep_can =
 	self.netname = "Can of pork and beans";
 	self.pk_items = PK_IT_CANPAB;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL;
 	StartItem ();
 };
 
@@ -858,6 +861,7 @@ void () item_painkeep_beartrap =
 	self.netname = "Bear Trap";
 	self.pk_items = PK_IT_BEARTRAP;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL;
 	StartItem ();
 };
 

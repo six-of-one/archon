@@ -1162,7 +1162,8 @@ void() q3_ha_rot_thk =
 	}
 
 	f = FALSE;
-	tv1 = tv2 = Q3_HA_MAX; // Cat - conflict fixes
+	tv1= Q3_HA_MAX  * self.owner.health_modifier; // Cat - conflict fixes - 9.18.11 - morphic adjust
+	tv2 = Q3_HA_MAX; // Cat - conflict fixes
 	if (self.health > Q3_HA_MAX) tv1 = self.health;
 	if (self.armorvalue > Q3_HA_MAX) tv2 = self.armorvalue;
 

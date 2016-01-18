@@ -1412,7 +1412,7 @@ void() PK_Attack =
 		return;
 	}
 
-	if (self.weapon == IT_AXE)
+	if (self.weapon == IT_AXE) // comment out so morphs can select pk items on any builtin weapon
 	{
 		if (self.pk_currentitem == PK_IT_AXE)
 		{
@@ -1742,7 +1742,7 @@ void() PK_ChangeWeapon =
 
 	if (self.eweapon) // multi mode test
 	if ((self.eweapon.weapon == fl) || (fl == IT_AXE && fl2 == PK_IT_CLIGHT && self.eweapon.weapon == IT_LIGHTNING)) // getting selected again
-	if (self.eweapon.th_melee != SUB_Null && self.eweapon.th_melee != (void ()) 0)
+	if (self.eweapon.th_melee != (void ()) 0)
 	{
 		self.eweapon.th_melee();
 	}

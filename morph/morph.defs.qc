@@ -18,6 +18,7 @@ float MORPH_CUBE_TIME; // time to spawn & respawn cubes
 float MORPH_CUBE_DV;
 float MORPH_FF;                             // true = allow morph friendly fire (ogre can hurt another ogre, etc.)
 float MORPH_FLY;
+float MORPH_HOOK; // morphs that have built in hook - mostly for jump & get stuck issues
 
 .float morphy; // morphic code number from list below
 .vector mask; // inventory a player can pickup by class - mask for item, class for player
@@ -39,6 +40,7 @@ float(entity chk) morph_clichk;
 void() morph_die;
 
 float(entity targ, float sdot, vector vang, vector vorg) infront;
+float(entity ck, float hl) morph_heal;
 
 
 .void() _stand;

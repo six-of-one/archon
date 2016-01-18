@@ -258,6 +258,7 @@ void () item_pkplus_ego =
 	self.netname = "EGO";
 	self.pk_items = PKPLUS_IT_EGO;
 	setsize (self,'-16 -16 -24','16 16 32');
+	self.mask_x = MORPH_ALL;
 	StartItem ();
 	if (self.class_select == "") self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
@@ -272,6 +273,7 @@ void () item_pkplus_tomb =
 	self.netname = "Tomb";
 	self.pk_items = PKPLUS_IT_TOMB;
 	setsize (self,'-16 -16 -24','16 16 32');
+	self.mask_x = MORPH_ALL;
 	StartItem ();
 	if (self.class_select == "") self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);
@@ -298,6 +300,7 @@ void () item_pkplus_phone =
 	self.netname = "Cellular Phone";
 	self.pk_items = PKPLUS_IT_PHONE;
 	setsize (self,'-16 -16 -24','16 16 32');
+	self.mask_x = MORPH_ALL;
 	StartItem ();
 	if (self.class_select == "") self.class_select = "pkplus_item";
 	if (!PK_ART) pkplus_item_control(self);

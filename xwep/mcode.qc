@@ -1966,6 +1966,7 @@ void() painkeep_cube_use =
 	self = c;
 	self.pk_touch = painkeep_touch;
 	self.class_select = ""; // for q3 holds
+	self.mask_x = 0; // reset
 //	item_translate(self, FL_TR_RANDOM);
 	if (random() > 0.15)
 //	if (0) // TEST:
