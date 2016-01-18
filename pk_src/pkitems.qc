@@ -76,12 +76,24 @@ void () painkeep_weapon_touch =
 		other.ammo_cells = other.ammo_cells + 30;
 		new = PK_IT_CLIGHT;
 	}
+	else if (self.classname == "weapon_pulsenail" || self.mcode == MC_PULSE_NAILGUN)
+	{
+		if (leave && (other.items & IT_NAILGUN))
+			return ;
+		hadammo = other.ammo_nails;
+		new = 0;
+		other.items = other.items | IT_NAILGUN; // special for this
+		other.ammo_nails = other.ammo_nails + 30;
+		PK_Deathmatch_Weapon (IT_AXE, IT_NAILGUN);
+	}
 	else
 	{
 		if (PK_100 && PK_100_OBJERR) objerror("painkeep_weapon_touch: unknown classname");
 		else
 		{
-			bprint("\n*** warning:\npainkeep_weapon_touch: unknown classname - ignoring\n\n");
+			bprint("\n*** warning:\npainkeep_weapon_touch: unknown classname (");
+			bprint(self.classname);
+			bprint(") - ignoring\n\n");
 			self.touch = SUB_Null;
 			return;
 		}
@@ -244,11 +256,10 @@ void() pk_ammo_touch =
 	bestpk = W_BestPKWeapon(); // *pk - best pk wep
 	self = sv;
 
-
 // shotgun
 	if (self.weapon == 1)
 	{
-		if (other.ammo_shells >= 100)
+		if (other.ammo_shells >= Q1_SHELLAMMO_MAX)
 			return;
 		other.ammo_shells = other.ammo_shells + self.aflag;
 	}
@@ -256,7 +267,7 @@ void() pk_ammo_touch =
 // spikes
 	if (self.weapon == 2)
 	{
-		if (other.ammo_nails >= 200)
+		if (other.ammo_nails >= Q1_NAILAMMO_MAX)
 			return;
 		other.ammo_nails = other.ammo_nails + self.aflag;
 	}
@@ -264,7 +275,7 @@ void() pk_ammo_touch =
 //	rockets
 	if (self.weapon == 3)
 	{
-		if (other.ammo_rockets >= 100)
+		if (other.ammo_rockets >= Q1_ROCKETAMMO_MAX)
 			return;
 		other.ammo_rockets = other.ammo_rockets + self.aflag;
 	}
@@ -272,7 +283,7 @@ void() pk_ammo_touch =
 //	cells
 	if (self.weapon == 4)
 	{
-		if (other.ammo_cells >= 200)
+		if (other.ammo_cells >= Q1_CELLAMMO_MAX)
 			return;
 		other.ammo_cells = other.ammo_cells + self.aflag;
 	}
@@ -456,9 +467,9 @@ void() painkeep_touch =
 	if (deathmatch != 2)
 	{
 		if (self.pk_items == PK_IT_GRAVITYWELL)
-			self.nextthink = time + 60*2;
+			self.nextthink = time + RSP_TIME * 2;
 		else
-			self.nextthink = time + 60;
+			self.nextthink = time + RSP_TIME;
 	}
 	self.think = SUB_regen;
 
@@ -672,8 +683,8 @@ void() pk_item_position_init =
 
 void() pk_bound_ammo =
 {
-	if (other.ammo_cells > 200)
-		other.ammo_cells = 200;
+	if (other.ammo_cells > Q1_CELLAMMO_MAX)
+		other.ammo_cells = Q1_CELLAMMO_MAX;
 
 	if (other.pk_gravitywellammo > PK_GRAVITYWELLAMMO_MAX)
 		other.pk_gravitywellammo = PK_GRAVITYWELLAMMO_MAX;
@@ -975,10 +986,16 @@ void() PK_DropBackpack =
 	AddToSplash(newmis); // *pk - splash tossed items
 };
 
+
 // called from PlaceItem - sorts many things now - happens 0.2 secs after map load
 
 void() pk_placeitem =
 {
+	if (0 && time < 5)
+	{
+		remove(self);
+		return;
+	}
 	if (self.classname != "dyn_item")
 	{
 		pk_item_position_init();
@@ -999,12 +1016,15 @@ void() pk_placeitem =
 
 // Cataboligne - added check here because new mode (not permanently PK & loaded a PK map can set PK mode after nailguns get loaded on map
 	if (PK)
+	if (self.wad == "")
 	if (self.classname == "weapon_nailgun" || self.weapon == IT_NAILGUN)
 	if (self.model == "progs/g_nail.mdl")
 	{
 		setmodel (self, "progs/g_fnail.mdl");
 		self.netname = "Pulse Rifle";
 	}
+
+	self.mcode = pk_mcode("", self); // put map code on ent
 };
 
 
@@ -1071,20 +1091,34 @@ string (float bt) ammo_by_bit =
 
 void(string cls) item_call =
 {
+	local string scls;
+	local float rd;
+
+	rd = random();
+	if (self.classname != "dyn_item") rd = 1;
+	
+	scls = cls;
 	if (cls == "weapon_supershotgun") weapon_supershotgun();
 	else if (cls == "weapon_nailgun") weapon_nailgun();
 	else if (cls == "weapon_supernailgun") weapon_supernailgun();
 	else if (cls == "weapon_grenadelauncher") weapon_grenadelauncher();
 	else if (cls == "weapon_rocketlauncher") weapon_rocketlauncher();
-	else if (cls == "weapon_lightning")
+	else if (self.classname == "dyn_item" && cls == "weapon_lightning")
 	{
 		if (PK) weapon_chainlg();
 		else weapon_lightning();
 	}
-	else if (cls == "item_shells") { if (random() < 0.5) self.spawnflags = WEAPON_BIG2; item_shells(); }
-	else if (cls == "item_spikes") { if (random() < 0.4) self.spawnflags = WEAPON_BIG2; item_spikes(); }
-	else if (cls == "item_rockets") { if (random() < 0.2) self.spawnflags = WEAPON_BIG2; item_rockets(); }
-	else if (cls == "item_cells") { if (random() < 0.8) self.spawnflags = WEAPON_BIG2; item_cells(); }
+	else if (cls == "weapon_lightning") weapon_lightning();
+	else if (cls == "item_shells") { if (rd < 0.5) self.spawnflags = WEAPON_BIG2; item_shells(); }
+	else if (cls == "item_spikes") { if (rd < 0.4) self.spawnflags = WEAPON_BIG2; item_spikes(); }
+	else if (cls == "item_rockets") { if (rd < 0.2) self.spawnflags = WEAPON_BIG2; item_rockets(); }
+	else if (cls == "item_cells") { if (rd < 0.8) self.spawnflags = WEAPON_BIG2; item_cells(); }
+
+	else if (cls == "item_shells_lg") { self.spawnflags = WEAPON_BIG2; item_shells(); scls = "item_shells"; }
+	else if (cls == "item_spikes_lg") { self.spawnflags = WEAPON_BIG2; item_spikes(); scls = "item_spikes"; }
+	else if (cls == "item_rockets_lg") { self.spawnflags = WEAPON_BIG2; item_rockets(); scls = "item_rockets"; }
+	else if (cls == "item_cells_lg") { self.spawnflags = WEAPON_BIG2; item_cells(); scls = "item_cells"; }
+
 	else if (cls == "item_artifact_invulnerability") item_artifact_invulnerability();
 	else if (cls == "item_artifact_super_damage") item_artifact_super_damage();
 	else if (cls == "item_artifact_envirosuit") item_artifact_envirosuit();
@@ -1092,13 +1126,26 @@ void(string cls) item_call =
 	else if (cls == "item_armor1") item_armor1();
 	else if (cls == "item_armor2") item_armor2();
 	else if (cls == "item_armorInv") item_armorInv();
-	else if (cls == "item_health_15") { self.spawnflags = H_ROTTEN; item_health(); }
+	else if (cls == "item_health_15") { self.spawnflags = H_ROTTEN; item_health(); scls = "item_health";}
 	else if (cls == "item_health") item_health();
-	else if (cls == "item_health_mega") { self.spawnflags = H_MEGA; item_health(); }
+	else if (cls == "item_health_mega") { self.spawnflags = H_MEGA; item_health(); scls = "item_health"; }
+
+	else if (cls == "item_key1") item_key1();
+	else if (cls == "item_key2") item_key2();
+
+	else if (cls == "item_sigil1") { self.spawnflags = 1; item_sigil(); scls = "item_sigil"; }
+	else if (cls == "item_sigil2") { self.spawnflags = 2; item_sigil(); scls = "item_sigil"; }
+	else if (cls == "item_sigil4") { self.spawnflags = 4; item_sigil(); scls = "item_sigil"; }
+	else if (cls == "item_sigil8") { self.spawnflags = 8; item_sigil(); scls = "item_sigil"; }
+
+//	else if (cls == "item_") item_();
+
 	else if (cls == "item_painkeep_gwell") item_painkeep_gwell();
 	else if (cls == "item_painkeep_turret") item_painkeep_turret();
 	else if (cls == "item_painkeep_beartrap") item_painkeep_beartrap();
 	else if (cls == "item_painkeep_expshells") item_painkeep_expshells();
+	else if (cls == "weapon_chainlg") weapon_chainlg();
+	else if (cls == "weapon_pulsenail") weapon_pulsenail();
 	else if (cls == "weapon_grapgun") weapon_grapgun();
 	else if (cls == "weapon_airfist") weapon_airfist();
 	else if (cls == "item_painkeep_can") item_painkeep_can();
@@ -1107,7 +1154,7 @@ void(string cls) item_call =
 	self.mdl = self.model;
 	if (self.classname != "dyn_item") // dont do these for dyn items
 	{
-		self.classname = cls;
+		self.classname = scls;
 		if (PK) pk_placeitem();
 		self.think = SUB_regen; // dont go thru place_item - use regen method
 		self.nextthink = time + 1 + 3 * random(); // spread em out
@@ -1550,7 +1597,7 @@ float(float fb, float rb) bit_cnt =
 // dest1 - weapon bit codes to select from
 // dest2 - item bit codes to select from
 
-// sv_kill_func_dynitem - stop func_dynitem processing
+// pk_dyn_func_stop - stop func_dynitem processing
 
 void() func_dynitem =
 {
@@ -1575,6 +1622,9 @@ void() func_dynitem =
 
 	self.think = func_dynitem;
 	self.nextthink = time + self.wait + rv;
+
+// stop item spawn when set true - leaves func_ ents on map
+	if (cvar("pk_dyn_func_stop")) return;
 
 // spawn an item
 	e = spawn();
@@ -1633,3 +1683,292 @@ void() func_dynitem =
 		}
 	}
 };
+
+// run loop cycles
+
+// .target - timer string
+// .noise - 0 str
+// .noise1-4 1-4 string
+// .target1-2 5-6 string
+// .theowner - ent loop
+
+void(entity e, string l0, string l1, string l2, string l3, string l4, string l5, string l6, string t0) loop_var =
+{
+	e.noise = l0;
+	e.noise1 = l1;
+	e.noise2 = l2;
+	e.noise3 = l3;
+	e.noise4 = l4;
+	e.target1 = l5;
+	e.target2 = l6;
+	e.target = t0;
+}
+
+// try to find the next map code in the loop vars, given the current mcode
+// if called with search 0 - verify there are loop values
+
+float(entity e, float p) loop_next =
+{
+	local float f, rp, sf;
+	
+	if (!p)
+	{
+	if (!cvar(e.noise1) && !cvar(e.noise2) && !cvar(e.noise3) && !cvar(e.noise4) && !cvar(e.target1) && !cvar(e.target2))
+		return(0);
+	else
+		return(102); // default here in case
+	}
+
+	if (p == cvar(e.noise)) rp = 1;
+	else if (p == cvar(e.noise1)) rp = 2;
+	else if (p == cvar(e.noise2)) rp = 3;
+	else if (p == cvar(e.noise3)) rp = 4;
+	else if (p == cvar(e.noise4)) rp = 5;
+	else if (p == cvar(e.target1)) rp = 6;
+	else if (p == cvar(e.target2)) rp = 1;
+	else return(0); // value p not found
+
+	sf = 15;
+	f = 0;
+
+	while (!f && sf > 0)
+	{
+		if (rp == 1)
+		{
+			f = cvar(e.noise1);
+			if (!f) rp = 2;
+		}
+		if (rp == 2)
+		{
+			f = cvar(e.noise2);
+			if (!f) rp = 3;
+		}
+		if (rp == 3)
+		{
+			f = cvar(e.noise3);
+			if (!f) rp = 4;
+		}
+		if (rp == 4)
+		{
+			f = cvar(e.noise4);
+			if (!f) rp = 5;
+		}
+		if (rp == 5)
+		{
+			f = cvar(e.target1);
+			if (!f) rp = 6;
+		}
+		if (rp == 6)
+		{
+			f = cvar(e.target2);
+			if (!f) rp = 1;
+		}
+		sf = sf - 1;
+	}
+	return(f);
+};
+
+void() loopcyc_think =
+{
+	local float f, rp, rn;
+	local entity e, sv;
+
+	sv = self;
+	f = cvar(sv.noise);
+	rp = cvar(sv.noise1);
+	rn = FALSE;
+
+	if (!f && !rp) // 1 & 0 are zeroed - restore items & remove
+	{
+		rn = TRUE;
+	}
+	
+	e = sv.theowner;
+	while (e)
+	{
+		self = e;
+		if (!e.scode) e.scode = e.mcode;
+		if (cvar("pk_cyc_halt") || rn)
+		{
+			item_call(item_by_mcode(e.scode));
+		}
+		else
+		{
+			f = loop_next(sv, 0); // check all 0's
+			if (!f) // keep these ents gone
+			{
+				e.model = "";
+				e.nextthink = -1;
+				e.pk_touch = e.touch = SUB_Null;
+			}
+			else
+			{
+				f = loop_next(sv, e.mcode);
+				e.pk_touch = (void()) 0;
+				if (!f)
+				{
+					bprint("\b*** warning: loop code changed on live item loop - restoring item.\n");
+					item_call(item_by_mcode(e.scode));
+				}
+				else
+					item_call(item_by_mcode(f)); // set replacement item
+			}
+		}
+
+		e = e.theowner;
+	}
+
+	self = sv;
+	if (rn)
+	{
+		remove(self);
+		return;
+	}
+
+	f = cvar(self.target);
+	if (f < 0) // negative - 20% + random() 80%
+	{
+		f = fabs(f);
+		rp = 0.2 * f;
+		f = f - rp;
+		rn = random() * f;
+		f = rn + rp;
+	}
+
+	self.nextthink = time + f;
+};
+
+void(entity e) init_loopcyc =
+{
+	local entity sr;
+	local string cl;
+	local float f0, f1;
+
+	cl = "";
+	f0 = cvar(e.noise);
+	f1 = cvar(e.noise1);
+	if (!f0 && !f1)
+	{
+		remove(e);
+		return; // failed - no 0 or 1
+	}
+	if (f0) cl = item_by_mcode(f0);
+	if (cl == "") cl = item_by_mcode(f1);
+	if (cl == "")
+	{
+		remove(e);
+		return; // failed - 0 or 1 (or both) not valid map codes
+	}
+
+	e.theowner = sr = find( world, classname, cl);
+	if (!sr)
+	{
+		remove(e);
+		return; // none on map right now
+	}
+
+	if (!cvar(e.target)) cvar_set(e.target, "-60"); // default timer
+
+	while (sr) // chain em up
+	{
+		sr.theowner = find( sr, classname, cl);
+		sr = sr.theowner;
+	}
+
+	f0 = cvar(e.target);
+	if (f0 < 0) // negative - 20% + random() 80%
+	{
+		f0 = fabs(f0);
+		f1 = 0.2 * f0;
+		f0 = f0 - f1;
+		f0 = f1 +  random() * f0;
+	}
+
+	e.think = loopcyc_think;
+	e.nextthink = time + f0;
+};
+
+void() start_loopcyc =
+{
+	local entity e;
+
+	if (!find(world, noise, "pk_cyc_lg_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_lg_0", "pk_cyc_lg_1", "pk_cyc_lg_2", "pk_cyc_lg_3", "pk_cyc_lg_4", "pk_cyc_lg_5", "pk_cyc_lg_6", "pk_cyc_lg_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_rl_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_rl_0", "pk_cyc_rl_1", "pk_cyc_rl_2", "pk_cyc_rl_3", "pk_cyc_rl_4", "pk_cyc_rl_5", "pk_cyc_rl_6", "pk_cyc_rl_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_gl_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_gl_0", "pk_cyc_gl_1", "pk_cyc_gl_2", "pk_cyc_gl_3", "pk_cyc_gl_4", "pk_cyc_gl_5", "pk_cyc_gl_6", "pk_cyc_gl_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_sng_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_sng_0", "pk_cyc_sng_1", "pk_cyc_sng_2", "pk_cyc_sng_3", "pk_cyc_sng_4", "pk_cyc_sng_5", "pk_cyc_sng_6", "pk_cyc_sng_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_ng_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_ng_0", "pk_cyc_ng_1", "pk_cyc_ng_2", "pk_cyc_ng_3", "pk_cyc_ng_4", "pk_cyc_ng_5", "pk_cyc_ng_6", "pk_cyc_ng_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_ssg_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_ssg_0", "pk_cyc_ssg_1", "pk_cyc_ssg_2", "pk_cyc_ssg_3", "pk_cyc_ssg_4", "pk_cyc_ssg_5", "pk_cyc_ssg_6", "pk_cyc_ssg_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_pkw_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_pkw_0", "pk_cyc_pkw_1", "pk_cyc_pkw_2", "pk_cyc_pkw_3", "pk_cyc_pkw_4", "pk_cyc_pkw_5", "pk_cyc_pkw_6", "pk_cyc_pkw_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_pkc_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_pkc_0", "pk_cyc_pkc_1", "pk_cyc_pkc_2", "pk_cyc_pkc_3", "pk_cyc_pkc_4", "pk_cyc_pkc_5", "pk_cyc_pkc_6", "pk_cyc_pkc_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_art_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_art_0", "pk_cyc_art_1", "pk_cyc_art_2", "pk_cyc_art_3", "pk_cyc_art_4", "pk_cyc_art_5", "pk_cyc_art_6", "pk_cyc_art_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_ammo_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_ammo_0", "pk_cyc_ammo_1", "pk_cyc_ammo_2", "pk_cyc_ammo_3", "pk_cyc_ammo_4", "pk_cyc_ammo_5", "pk_cyc_ammo_6", "pk_cyc_ammo_t");
+	init_loopcyc(e);
+	}
+
+	if (!find(world, noise, "pk_cyc_itm_0"))
+	{
+	e = spawn();
+	loop_var(e, "pk_cyc_itm_0", "pk_cyc_itm_1", "pk_cyc_itm_2", "pk_cyc_itm_3", "pk_cyc_itm_4", "pk_cyc_itm_5", "pk_cyc_itm_6", "pk_cyc_itm_t");
+	init_loopcyc(e);
+	}
+
+	self.nextthink = time + 15; // recheck every 10 secs?
+};
+

@@ -399,7 +399,7 @@ void() PK_SetCurrentAmmo =
 		self.currentammo = self.ammo_nails;
 // PULSE_GUN_START
 		if (PK)
-		{			
+		{
 			if (PK_100 || Q_100)
 				self.weaponmodel = "progs/v_fnail.mdl";
 			else
@@ -889,6 +889,39 @@ float() PK_CheckNoAmmo =
 	return FALSE;
 };
 
+void() pk_cycleObjects;
+
+// fn(PK_CheckLivEnt) - check live ents for throwing fire & forget
+
+// return false if we cant fire
+
+float(float rot) PK_CheckLivEnt =
+{
+	if (self.weapon != IT_AXE || PK_100) return(TRUE);
+
+	pk_livent = cnt_ent(world, "classname", "turret") + cnt_ent(world, "classname", "beartrap") + cnt_ent(world, "classname", "gravity") + cnt_ent(world, "classname", "tomb");
+	
+	if (self.pk_currentitem == PK_IT_GRAVITYWELL ||
+		  self.pk_currentitem == PK_IT_TURRET ||
+		  self.pk_currentitem == PK_IT_BEARTRAP ||
+		  self.pk_currentitem == PKPLUS_IT_TOMB)
+	{
+		if (pk_livent < PK_MAX_LIVENT) return(TRUE);
+	}
+	else return(TRUE);
+
+	bprint(" *** warning: too many live ents to fire selected weapon = ");
+	bprint(ftos(pk_livent));
+	bprint(".\n");
+
+	if (rot) // rotate weapons if we cant fire
+	if (self.weapon == IT_AXE)
+	{
+		pk_cycleObjects();
+	}
+	return(FALSE);
+};
+
 // called from below
 
 void() PK_Attack =
@@ -897,6 +930,9 @@ void() PK_Attack =
 
 	if (!W_CheckNoAmmo ())
 		return;
+
+	if (!PK_CheckLivEnt (TRUE))
+	return;
 
 	makevectors	(self.v_angle);			// calculate forward angle for velocity
 	self.show_hostile = time + 1;	// wake monsters up
@@ -1401,13 +1437,12 @@ void() PK_ImpulseCommands =
 		if (pk_flags & PK_TP_SPARKSFLASH)
 		{
 			bprint("SFX Enabled.\n");
-
-			pk_flags = pk_flags - PK_TP_SPARKSFLASH;
+			pk_bas_flags(PK_TP_SPARKSFLASH, 1);
 		}
 		else
 		{
 			bprint("SFX Disabled.\n");
-			pk_flags = pk_flags | PK_TP_SPARKSFLASH;
+			pk_bas_flags(PK_TP_SPARKSFLASH, 0);
 		}
 		admin_sv_cfg();
 	}
@@ -1418,12 +1453,12 @@ void() PK_ImpulseCommands =
 		if (pk_flags & PK_SF_HUB)
 		{
 			bprint("Hub mode OFF\n");
-			pk_flags = pk_flags - PK_SF_HUB;
+			pk_bas_flags(PK_SF_HUB, 0);
 		}
 		else
 		{
 			bprint("Hub mode ON\n");
-			pk_flags = pk_flags | PK_SF_HUB;
+			pk_bas_flags(PK_SF_HUB, 1);
 		}
 		if (pk_admintime > 0) admin_resettimeout();
 	}
@@ -1449,12 +1484,12 @@ void() PK_ImpulseCommands =
 		if (pk_flags & PK_TP_DUTYON)
 		{
 			bprint("Duty Checking OFF\n");
-			pk_flags = pk_flags - PK_TP_DUTYON;
+			pk_bas_flags(PK_TP_DUTYON, 0);
 		}
 		else
 		{
 			bprint("Duty Checking ON\n");
-			pk_flags = pk_flags | PK_TP_DUTYON;
+			pk_bas_flags(PK_TP_DUTYON, 1);
 		}
 		admin_sv_cfg();
 	}
@@ -1483,33 +1518,8 @@ void() PK_ImpulseCommands =
 		if (pk_admintime > 0) admin_resettimeout();
 	}
 
-// Cataboligne - 8.13.9 - handle item testing from admin
-	else if (self.admin > 0 && self.impulse == 252) // items
-	{
-		sv = self;
-		self = spawn();
-		setorigin(self, sv.origin);
-		item_call(item_by_bit(cvar("saved1")));
-		self.velocity_z = 300 + 100 * random();
-		self.velocity_x = -170 + (random() * 340);
-		self.velocity_y = -170 + (random() * 340);
-		self = sv;
-	}
-	else if (self.admin > 0 && self.impulse == 254) // weapons
-	{
-		sv = self;
-		self = spawn();
-		setorigin(self, sv.origin);
-		item_call(ammo_by_bit(cvar("saved1")));
-		self.velocity_z = 300 + 100 * random();
-		self.velocity_x = -170 + (random() * 340);
-		self.velocity_y = -170 + (random() * 340);
-		self = sv;
-	}
-
 	else if (self.impulse == 255)
 		QuadCheat ();
-
 	self.impulse = 0;
 };
 

@@ -41,7 +41,7 @@ float pk_xsound;							// set to state of PK_XSOUND bit for sound code toggle
 float pk_itemovr;							// control items - admin override
 float pk_map;								// true if a painkeep map is loaded
 float pk_ditems;							// count painkeep items for dyn_items code
-float PK_DYNTO					= 120;	// timeout in 120 secs
+float PK_DYNTO;							// timeout in 120 secs
 float PK_DYNRAD				= 8000;	// dynamic radius search 8000 units
 float DARKPLACES;							// for detecting darkplaces - modded engine sets cvar("chaos") to this value
 
@@ -56,6 +56,7 @@ float pk_admintime;						// if > 0 - inactivity timer for admin mode
 float pk_adminframe;						// only do once per frame
 float LIVE_ADMIN				= 100;	// for being in game with admin privs - previous painkeep admin mode
 float ADMIN_LOGIN				= -2;		// .admin value for login
+float ADMINLOCK;						// polled from sv_c_adminlock
 float USER_MENU				= -1;		// .admin value that handles user menu - admin code set runs user menus
 float USER_TIMEOUT			= 5;		// timeout user menu in 5 secs
 float USER_IMPULSE			= 39;		// user menu impulse
@@ -81,6 +82,16 @@ float DYN_ARTFR;
 float DYN_ARTFR_ONLY; // if set true dynamic only adds artifacts to map
 float DYN_FORCE_CNT; // max forced items to load
 float DYN_START_TIME			= 5;	// seconds till dynamic spawner starts its thing - precache must cutoff before this, leave a couple secs for map load
+string (float mc) item_by_mcode;
+void(string cls) item_call;
+
+// respawn times
+//float RSP_AMMO; // these are dm 3 rules
+//float RSP_ARMOR;
+//float RSP_ITEM;
+//float RSP_WEP;
+//float RSP_ART;
+float RSP_TIME; // respawn time
 
 float WEP_SSHOT				= 1; 	 // admin of super shotgun
 float WEP_NAILGUN				= 2; 	 // admin of nailgun
@@ -236,6 +247,12 @@ Impulse 38 - Axe (just to do complete)
 .float pk_gravitywellammo, pk_turretammo, pk_canpabammo, pk_beartrapammo;
 
 // Ammo Max'S
+// q1 standard
+float Q1_SHELLAMMO_MAX;
+float Q1_NAILAMMO_MAX;
+float Q1_ROCKETAMMO_MAX;
+float Q1_CELLAMMO_MAX;
+
 float PK_GRAVITYWELLAMMO_MAX;
 float PK_TURRETAMMO_MAX;
 float PK_CANPABAMMO_MAX;
@@ -536,6 +553,9 @@ void() cam_punch;						// return punchangle if passed parm - otherwise set self.
 void() dead_cam_set;					// Cataboligne 9.11.3 purify proto - chase cam
 float DCAMTO;							// timeout for death cam 2 mins
 float DCAMTOACT;						// action after timeout 0 = respawn, 1 = disconnect
+float FFW_LIMIT;						// time limit on how long players get frags from fire & forget weaps after dead
+float NOCIDE;
+float NOENVCIDE;
 
 // cam vision field settings
 float DCAM_FOV					= 130; // dead cam crow vision
