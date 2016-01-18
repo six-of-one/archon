@@ -5,6 +5,7 @@
  * file: young.qc
  *
  * date: 10/13/11
+ * date: 11/16/12 - enhanced for evolving young - get larger as time goes by
  *
  * qc - support alien infestation by LordHavoc
  *
@@ -22,7 +23,7 @@ $frame stand1
 $frame run1 run2 run3 run4 run5 run6 run7 run8
 $frame runatt1 runatt2 runatt3 runatt4 runatt5 runatt6 runatt7 runatt8
 
-// young grow "up" now - after a certain time passes they get bigger
+// young "evolve" now - after a certain time passes they get bigger
 // the final stage - Aliens!
 
 $frame mdstand1
@@ -34,6 +35,15 @@ $frame lgrun1 lgrun2 lgrun3 lgrun4 lgrun5 lgrun6 lgrun7 lgrun8
 $frame lgrunatt1 lgrunatt2 lgrunatt3 lgrunatt4 lgrunatt5 lgrunatt6 lgrunatt7 lgrunatt8
 
 //============================================================================
+
+float YOUNG_LIFE_SM = 10; // secs for a small youngling
+float YOUNG_LIFE_MD = 20; // secs for a med youngling
+/* TEST
+float YOUNG_LIFE_SM = 30; // secs for a small youngling
+float YOUNG_LIFE_MD = 65; // secs for a med youngling
+*/
+float YOUNG_LIFE_LG = 125; // secs for a large youngling
+
 
 // hrm - this should be genericed in watermove dealy
 
@@ -57,6 +67,9 @@ void() young_slimedamage =
 	}
 };
 
+void() young_med;
+void() young_lg;
+
 // not dyn_monster, so dont get checked there
 
 void() young_noway =
@@ -76,11 +89,25 @@ void() young_noway =
 			remove(self);
 		}
 	}
+
+	if (!now)
+	if (self.aflag)
+	if (self.rad_time < time)
+	{
+		self.aflag = self.aflag + 1;
+		if (self.aflag == 2) // becomes med
+			young_med();
+		if (self.aflag == 3) // becomes lg
+			young_lg();
+	}
+
 };
 
 void()	Young_JumpTouch;
 
 void()	young_stand1	=[	$stand1,	young_stand1	] {ai_stand();young_slimedamage();};
+void()	young_mdstand1	=[	$mdstand1,	young_mdstand1	] {ai_stand();young_slimedamage();};
+void()	young_lgstand1	=[	$lgstand1,	young_lgstand1	] {ai_stand();young_slimedamage();};
 
 /*
 void()	young_run1	=[	$run1,		young_run2	] {ai_run(-2);young_slimedamage();};
@@ -93,15 +120,38 @@ void()	young_run7	=[	$run7,		young_run8	] {ai_face();young_slimedamage();};
 void()	young_run8	=[	$run8,		young_run1	] {ai_face();young_slimedamage();};
 */
 
-void()	young_walk1	=[	$walk1,		young_walk2	] {ai_walk(16);young_slimedamage(); young_noway();};
-void()	young_walk2	=[	$walk2,		young_walk3	] {ai_walk(16);young_slimedamage();};
-void()	young_walk3	=[	$walk3,		young_walk4	] {ai_walk(16);young_slimedamage();};
-void()	young_walk4	=[	$walk4,		young_walk5	] {ai_walk(16);young_slimedamage();};
-void()	young_walk5	=[	$walk5,		young_walk6	] {ai_walk(16);young_slimedamage();};
-void()	young_walk6	=[	$walk6,		young_walk7	] {ai_walk(16);young_slimedamage();};
-void()	young_walk7	=[	$walk7,		young_walk8	] {ai_walk(16);young_slimedamage();};
-void()	young_walk8	=[	$walk8,		young_walk1	] {ai_walk(16);young_slimedamage();};
+// so we can enhance and have a walk slower than a run
+float YOUNG_WALK;
 
+// walk sets
+void()	young_walk1	=[	$run1,		young_walk2	] {ai_walk(YOUNG_WALK);young_slimedamage(); young_noway();};
+void()	young_walk2	=[	$run2,		young_walk3	] {ai_walk(YOUNG_WALK);young_slimedamage();};
+void()	young_walk3	=[	$run3,		young_walk4	] {ai_walk(YOUNG_WALK);young_slimedamage();};
+void()	young_walk4	=[	$run4,		young_walk5	] {ai_walk(YOUNG_WALK);young_slimedamage();};
+void()	young_walk5	=[	$run5,		young_walk6	] {ai_walk(YOUNG_WALK);young_slimedamage();};
+void()	young_walk6	=[	$run6,		young_walk7	] {ai_walk(YOUNG_WALK);young_slimedamage();};
+void()	young_walk7	=[	$run7,		young_walk8	] {ai_walk(YOUNG_WALK);young_slimedamage();};
+void()	young_walk8	=[	$run8,		young_walk1	] {ai_walk(YOUNG_WALK);young_slimedamage();};
+
+void()	young_mdwalk1	=[	$mdrun1,		young_mdwalk2	] {ai_walk(YOUNG_WALK + 2);young_slimedamage(); young_noway();};
+void()	young_mdwalk2	=[	$mdrun2,		young_mdwalk3	] {ai_walk(YOUNG_WALK + 2);young_slimedamage();};
+void()	young_mdwalk3	=[	$mdrun3,		young_mdwalk4	] {ai_walk(YOUNG_WALK + 2);young_slimedamage();};
+void()	young_mdwalk4	=[	$mdrun4,		young_mdwalk5	] {ai_walk(YOUNG_WALK + 2);young_slimedamage();};
+void()	young_mdwalk5	=[	$mdrun5,		young_mdwalk6	] {ai_walk(YOUNG_WALK + 2);young_slimedamage();};
+void()	young_mdwalk6	=[	$mdrun6,		young_mdwalk7	] {ai_walk(YOUNG_WALK + 2);young_slimedamage();};
+void()	young_mdwalk7	=[	$mdrun7,		young_mdwalk8	] {ai_walk(YOUNG_WALK + 2);young_slimedamage();};
+void()	young_mdwalk8	=[	$mdrun8,		young_mdwalk1	] {ai_walk(YOUNG_WALK + 2);young_slimedamage();};
+
+void()	young_lgwalk1	=[	$lgrun1,		young_lgwalk2	] {ai_walk(YOUNG_WALK + 6);young_slimedamage(); young_noway();};
+void()	young_lgwalk2	=[	$lgrun2,		young_lgwalk3	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
+void()	young_lgwalk3	=[	$lgrun3,		young_lgwalk4	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
+void()	young_lgwalk4	=[	$lgrun4,		young_lgwalk5	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
+void()	young_lgwalk5	=[	$lgrun5,		young_lgwalk6	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
+void()	young_lgwalk6	=[	$lgrun6,		young_lgwalk7	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
+void()	young_lgwalk7	=[	$lgrun7,		young_lgwalk8	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
+void()	young_lgwalk8	=[	$lgrun8,		young_lgwalk1	] {ai_walk(YOUNG_WALK + 6);young_slimedamage();};
+
+// run sets
 void()	young_run1	=[	$run1,		young_run2	] {ai_run(16);young_slimedamage(); young_noway();};
 void()	young_run2	=[	$run2,		young_run3	] {ai_run(16);young_slimedamage();};
 void()	young_run3	=[	$run3,		young_run4	] {ai_run(16);young_slimedamage();};
@@ -111,18 +161,38 @@ void()	young_run6	=[	$run6,		young_run7	] {ai_run(16);young_slimedamage();};
 void()	young_run7	=[	$run7,		young_run8	] {ai_run(16);young_slimedamage();};
 void()	young_run8	=[	$run8,		young_run1	] {ai_run(16);young_slimedamage();};
 
-void()	young_runatt1	=[	$runatt1,		young_runatt2	] {ai_face();};
-void()	young_runatt2	=[	$runatt2,	young_runatt3	]
+void()	young_mdrun1	=[	$mdrun1,		young_mdrun2	] {ai_run(20);young_slimedamage(); young_noway();};
+void()	young_mdrun2	=[	$mdrun2,		young_mdrun3	] {ai_run(20);young_slimedamage();};
+void()	young_mdrun3	=[	$mdrun3,		young_mdrun4	] {ai_run(20);young_slimedamage();};
+void()	young_mdrun4	=[	$mdrun4,		young_mdrun5	] {ai_run(20);young_slimedamage();};
+void()	young_mdrun5	=[	$mdrun5,		young_mdrun6	] {ai_run(20);young_slimedamage();};
+void()	young_mdrun6	=[	$mdrun6,		young_mdrun7	] {ai_run(20);young_slimedamage();};
+void()	young_mdrun7	=[	$mdrun7,		young_mdrun8	] {ai_run(20);young_slimedamage();};
+void()	young_mdrun8	=[	$mdrun8,		young_mdrun1	] {ai_run(20);young_slimedamage();};
+
+void()	young_lgrun1	=[	$lgrun1,		young_lgrun2	] {ai_run(24);young_slimedamage(); young_noway();};
+void()	young_lgrun2	=[	$lgrun2,		young_lgrun3	] {ai_run(24);young_slimedamage();};
+void()	young_lgrun3	=[	$lgrun3,		young_lgrun4	] {ai_run(24);young_slimedamage();};
+void()	young_lgrun4	=[	$lgrun4,		young_lgrun5	] {ai_run(24);young_slimedamage();};
+void()	young_lgrun5	=[	$lgrun5,		young_lgrun6	] {ai_run(24);young_slimedamage();};
+void()	young_lgrun6	=[	$lgrun6,		young_lgrun7	] {ai_run(24);young_slimedamage();};
+void()	young_lgrun7	=[	$lgrun7,		young_lgrun8	] {ai_run(24);young_slimedamage();};
+void()	young_lgrun8	=[	$lgrun8,		young_lgrun1	] {ai_run(24);young_slimedamage();};
+
+// do an attack
+
+void() young_attack =
 {
-	ai_face();
-	
 	self.touch = Young_JumpTouch;
 	makevectors (self.angles);
 	self.origin_z = self.origin_z + 1;
 	self.velocity = v_forward * 400 + '0 0 200';
 	if (self.flags & FL_ONGROUND)
-		self.flags = self.flags - FL_ONGROUND;
-};
+		self.flags = self.flags - FL_ONGROUND;	
+}
+
+void()	young_runatt1	=[	$runatt1,		young_runatt2	] {ai_face();};
+void()	young_runatt2	=[	$runatt2,	young_runatt3	] {	ai_face(); young_attack(); };
 void()	young_runatt3	=[	$runatt3,	young_runatt1	] {
 self.nextthink = time + 3;
 // if three seconds pass, assume young is stuck and jump again
@@ -134,17 +204,69 @@ void()	young_runatt6	=[	$runatt6,	young_runatt7	] {ai_face();young_slimedamage()
 void()	young_runatt7	=[	$runatt7,	young_runatt8	] {ai_face();young_slimedamage();};
 void()	young_runatt8	=[ 	$runatt8,	young_run1		] {ai_face();young_slimedamage();};
 
+
+void()	young_mdrunatt1	=[	$mdrunatt1,	young_mdrunatt2	] {ai_face();};
+void()	young_mdrunatt2	=[	$mdrunatt2,	young_mdrunatt3	] {	ai_face(); young_attack(); };
+void()	young_mdrunatt3	=[	$mdrunatt3,	young_mdrunatt1	] { self.nextthink = time + 3; };
+
+void()	young_mdrunatt4	=[	$mdrunatt4,	young_mdrunatt5	] {ai_face();young_slimedamage();};
+void()	young_mdrunatt5	=[	$mdrunatt5,	young_mdrunatt6	] {ai_face();young_slimedamage();};
+void()	young_mdrunatt6	=[	$mdrunatt6,	young_mdrunatt7	] {ai_face();young_slimedamage();};
+void()	young_mdrunatt7	=[	$mdrunatt7,	young_mdrunatt8	] {ai_face();young_slimedamage();};
+void()	young_mdrunatt8	=[ 	$mdrunatt8,	young_mdrun1		] {ai_face();young_slimedamage();};
+
+
+void()	young_lgrunatt1	=[	$lgrunatt1,	young_lgrunatt2	] {ai_face();};
+void()	young_lgrunatt2	=[	$lgrunatt2,	young_lgrunatt3	] {	ai_face(); young_attack(); };
+void()	young_lgrunatt3	=[	$lgrunatt3,	young_lgrunatt1	] { self.nextthink = time + 3; };
+
+void()	young_lgrunatt4	=[	$lgrunatt4,	young_lgrunatt5	] {ai_face();young_slimedamage();};
+void()	young_lgrunatt5	=[	$lgrunatt5,	young_lgrunatt6	] {ai_face();young_slimedamage();};
+void()	young_lgrunatt6	=[	$lgrunatt6,	young_lgrunatt7	] {ai_face();young_slimedamage();};
+void()	young_lgrunatt7	=[	$lgrunatt7,	young_lgrunatt8	] {ai_face();young_slimedamage();};
+void()	young_lgrunatt8	=[ 	$lgrunatt8,	young_lgrun1		] {ai_face();young_slimedamage();};
+
+
+// pain sets
 void()	young_pain1	=[	$run1,		young_pain2	] {};
 void()	young_pain2	=[	$run1,		young_pain3	] {young_slimedamage();};
 void()	young_pain3	=[	$run1,		young_pain4	] {young_slimedamage();};
 void()	young_pain4	=[	$run1,		young_run1	] {young_slimedamage();};
 
+void()	young_mdpain1	=[	$mdrun1,		young_mdpain2	] {};
+void()	young_mdpain2	=[	$mdrun1,		young_mdpain3	] {young_slimedamage();};
+void()	young_mdpain3	=[	$mdrun1,		young_mdpain4	] {young_slimedamage();};
+void()	young_mdpain4	=[	$mdrun1,		young_mdrun1	] {young_slimedamage();};
+
+void()	young_lgpain1	=[	$lgrun1,		young_lgpain2	] {};
+void()	young_lgpain2	=[	$lgrun1,		young_lgpain3	] {young_slimedamage();};
+void()	young_lgpain3	=[	$lgrun1,		young_lgpain4	] {young_slimedamage();};
+void()	young_lgpain4	=[	$lgrun1,		young_lgrun1	] {young_slimedamage();};
+
 void(entity attacker, float damage)	young_pain =
 {
+	if (self.aflag == 2) young_mdpain1 ();
+	if (self.aflag == 3) young_lgpain1 ();
+	else
 	young_pain1 ();
 };
 
+// death of younglings
 void()	young_die1		=[	$runatt4,		young_die1	]
+{
+	self.think = SUB_Remove;
+	self.nextthink = time + 15;
+	self.solid = SOLID_NOT;
+};
+
+void()	young_mddie1		=[	$mdrunatt4,		young_mddie1	]
+{
+	self.think = SUB_Remove;
+	self.nextthink = time + 15;
+	self.solid = SOLID_NOT;
+};
+
+void()	young_lgdie1		=[	$lgrunatt4,		young_lgdie1	]
 {
 	self.think = SUB_Remove;
 	self.nextthink = time + 15;
@@ -169,8 +291,49 @@ void() young_die =
 	}
 
 // regular death
-	young_die1 ();
+	if (self.aflag == 2) young_mddie1 ();
+	if (self.aflag == 3) young_lgdie1 ();
+	else young_die1 ();
 };
+
+
+// younglings evolve
+
+void() young_med =
+{
+//	setsize (self, '-32 -32 0', '32 32 16');
+	self.health = 20 * self.aflag;
+
+	self.th_stand = young_mdstand1;
+	self.th_walk = young_mdwalk1;
+	self.th_run = young_mdrun1;
+	self.th_die = young_die;
+	self.th_missile = young_mdrunatt1;
+	self.th_pain = young_pain;
+
+	self.rad_time = time + YOUNG_LIFE_MD + random() * 14;
+	self.dmg = 15;
+	young_mdwalk1();
+};
+
+void() young_lg =
+{
+//	setsize (self, '-65 -64 0', '64 64 32');
+	self.health = 20 * self.aflag + random() * 40;
+
+	self.th_stand = young_lgstand1;
+	self.th_walk = young_lgwalk1;
+	self.th_run = young_lgrun1;
+	self.th_die = young_die;
+	self.th_missile = young_lgrunatt1;
+	self.th_pain = young_pain;
+
+//	self.rad_time = time + YOUNG_LIFE_LG + random() * 18;
+	self.rad_time = MAXFL; // no more evolution for now
+	self.dmg = 40;
+	young_lgwalk1();
+};
+
 
 string(entity targ, entity attacker) young_killmsg =
 {
@@ -182,6 +345,9 @@ string(entity targ, entity attacker) young_killmsg2 =
 	return ".\n";
 };
 
+
+
+float YOUNG_EVOL = 1; // set to 0 to stop evolutions
 
 /*QUAKED monster_young (1 0 0) (-16 -16 -24) (16 16 32) Ambush
 
@@ -227,6 +393,15 @@ if (ign != A_MONSTER)
 	self._killmsg = young_killmsg;
 
 	self.class_select = "class_monster";
+
+	self.aflag = 0;
+	YOUNG_WALK = 16;
+	if (ENHANCED && YOUNG_EVOL)
+	{
+		YOUNG_WALK = 8;
+		self.rad_time = time + YOUNG_LIFE_SM + random() * 10;
+		self.aflag = 1;
+	}
 
 	if (ign)
 	{
@@ -325,11 +500,12 @@ void()	Young_JumpTouch =
 	if (other.classname == self.classname)
 		return;
 		
+	if (self.dmg <= 0) self.dmg = 5;
 	if (other.takedamage)
 	{
 		if ( vlen(self.velocity) > 200 )
 		{
-			ldmg = 5 + 15*random();
+			ldmg = self.dmg + 15*random();
 			T_Damage (other, self, self, ldmg);	
 		}
 	}
@@ -340,6 +516,9 @@ void()	Young_JumpTouch =
 		{	// jump randomly to not get hung up
 //dprint ("popjump\n");
 	self.touch = SUB_Null;
+	if (self.aflag == 2) self.think = young_mdrunatt1;
+	if (self.aflag == 3) self.think = young_lgrunatt1;
+	else
 	self.think = young_runatt1;
 	self.nextthink = time + 0.1;
 
@@ -352,6 +531,9 @@ void()	Young_JumpTouch =
 	}
 
 	self.touch = SUB_Null;
+	if (self.aflag == 2) self.think = young_mdrunatt4;
+	if (self.aflag == 3) self.think = young_lgrunatt4;
+	else
 	self.think = young_runatt4;
 	self.nextthink = time + 0.1;
 };
