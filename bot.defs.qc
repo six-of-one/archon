@@ -23,13 +23,12 @@ float BOT_TOUCHED_CACHE_ROUTE_TOUCH	= -4039293;
 float BOT_SAVE_SKILL			= 12; // number of bots that can save skill between levels for 1 players parms
 
 // bot mask for flags
-//float UNRESTRICTED			= 4096;
 float BOTS						= 240;		// (serverflags)                 11110000
 float TEAMBOTS					= 3840;		//  (serverflags)            111100000000
-float UNRESTRICTED			= 4096; 		//  (serverflags)           1000000000000 - admin - allow anyone to issue bot impulse commands
+//float UNRESTRICTED			= 4096; 		//  (serverflags)           1000000000000 - admin - allow anyone to issue bot impulse commands
 float TEAMFLAG					= 16384;		//  (serverflags)         100000000000000
 float INITLEVEL				= 32768;		//  (serverflags)        1000000000000000 - server - indicate bots need to be spawned after level load
-float FL_OBSERVER				= 65536; 	//  (serverflags)       10000000000000000 - admin - flag for observer restrict
+//float FL_OBSERVER				= 65536; 	//  (serverflags)       10000000000000000 - admin - flag for observer restrict
 float DEDICATED				= 4194304;	//  (serverflags) 10000000000000000000000
 
 // orig

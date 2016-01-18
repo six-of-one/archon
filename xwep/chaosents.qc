@@ -758,16 +758,6 @@ float(float am) bound_ammo_pack =
 		if (other.target1 == "progs/w_pack.mdl")
 		{
 			bl_mx	= 299;
-
-
-
-if (WARNING)
-{
-bprint("\b *** warning: wolf pack values set\n");
-}
-
-
-
 		}
 		else if (other.target1 == "progs/d_pack.mdl")
 		{
@@ -775,16 +765,6 @@ bprint("\b *** warning: wolf pack values set\n");
 			sh_mx	= 100;
 			rk_mx	= 100;
 			cl_mx	= 600;
-
-
-
-if (WARNING)
-{
-bprint("\b *** warning: doom pack values set\n");
-}
-
-
-
 		}
 		else if (other.target1 == "progs/q2_pack.mdl")
 		{
@@ -793,16 +773,6 @@ bprint("\b *** warning: doom pack values set\n");
 			rk_mx	= 100;
 			cl_mx	= 300;
 			sl_mx	= 100;
-
-
-
-if (WARNING)
-{
-bprint("\b *** warning: q2 pack values set\n");
-}
-
-
-
 		}
 		else if (other.target1 == "progs/q2_bando.mdl")
 		{
@@ -811,16 +781,6 @@ bprint("\b *** warning: q2 pack values set\n");
 			rk_mx	= 50;
 			cl_mx	= 250;
 			sl_mx	= 75;
-
-
-
-if (WARNING)
-{
-bprint("\b *** warning: q2 band values set\n");
-}
-
-
-
 		}
 		else
 		{
@@ -832,14 +792,6 @@ bprint("\b *** warning: q2 band values set\n");
 			sl_mx	= PK_SLUGAMMO_MAX * 2;
 			nl_mx	= Q1_NAILAMMO_MAX * 2;
 			gs_mx	= PK_GASAMMO_MAX * 2;
-
-
-if (WARNING)
-{
-bprint("\b *** warning: default -- ammo rune 2x server limit values set\n");
-}
-
-
 		}
 
 	}

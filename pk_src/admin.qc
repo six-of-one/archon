@@ -753,6 +753,7 @@ float() MapDM =
 	admin_clear(self);
 	admin_sv_cfg();
 	bot_changelevel(); // *bot - reload bots on next level, handle intermission
+	NoExit_save(); // Cataboligne - 9.9.11 - protect against exitless levels in dm - restore setting
 	changelevel(mname);
 	return(TRUE);
 };
@@ -860,7 +861,7 @@ void() Admin_botmenu =
 							" - add 4 bots - same skill  \n"
 							" 05: verbose                \n"
 							" 06: update    20: +skill   \n"
-							" 07: unrestricted           \n"
+//							" 07: unrestricted           \n"
 							" 08: observer mode          \n"
 							" 09: observer time          \n"
 							" 666:  main menu            \n"
@@ -1829,30 +1830,35 @@ void() AdminCommands =
 				self.wad = "\ncats got pk*bots tongues.";
 			self.admin_input = 0;
 		}
+/*
 		else if (self.admin_input == 7)
 		{
-			if (serverflags & UNRESTRICTED)
+//			if (serverflags & UNRESTRICTED)
 			{
-				serverflags = (serverflags - UNRESTRICTED);
+//				serverflags = (serverflags - UNRESTRICTED);
 				self.wad = "\nBot commands restricted to admin.";
 			}
 			else
 			{
-				serverflags = (serverflags | UNRESTRICTED);
+//				serverflags = (serverflags | UNRESTRICTED);
 				self.wad = "\nBot commands NOT restricted on server.\n\banyone can issue bot admin commands!";
 			}
 			self.admin_input = 0;
 		}
+*/
 		else if (self.admin_input == 8)
 		{
-			if (serverflags & FL_OBSERVER)
+//			if (serverflags & FL_OBSERVER)
+			if (cvar("sv_observe"))
 			{
-				serverflags = (serverflags - FL_OBSERVER);
+//				serverflags = (serverflags - FL_OBSERVER);
+				cvar_set("sv_observe", "0");
 				self.wad = "\nOnly admins can observe.";
 			}
 			else
 			{
-				serverflags = (serverflags | FL_OBSERVER);
+//				serverflags = (serverflags | FL_OBSERVER);
+				cvar_set("sv_observe", "1");
 				self.wad = "\n\bAll players can observe.";
 			}
 			self.admin_input = 0;

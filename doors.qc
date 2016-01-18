@@ -59,7 +59,7 @@ void () door_blocked =
 
 void () door_hit_top =
 {
-	if (self.sounds != DOOR_2S)				// cataboligne - 6.28.11 --- wolf / doom doors
+	if (self.sounds != DOOR_2S)				// cataboligne - 6.28.11 --- wd doors
 
 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_TOP;
@@ -71,7 +71,7 @@ void () door_hit_top =
 
 void () door_hit_bottom =
 {
-	if (self.sounds != DOOR_2S)				// cataboligne - 6.28.11 --- wolf / doom doors
+	if (self.sounds != DOOR_2S)				// cataboligne - 6.28.11 --- wd doors
 
 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_BOTTOM;
@@ -79,7 +79,7 @@ void () door_hit_bottom =
 
 void () door_go_down =
 {
-	if (self.sounds == DOOR_2S)				// cataboligne - 6.28.11 --- wolf / doom doors
+	if (self.sounds == DOOR_2S)				// cataboligne - 6.28.11 --- wd doors
 		sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	else
 
@@ -121,10 +121,20 @@ ACTIVATION FUNCTIONS
 =============================================================================
 */
 
+// Cataboligne - 10.28.11 - added score unlock code
+
 void () door_fire =
 {
 	local entity oself;
 	local entity starte;
+
+	if (!m_score_rel1)
+	if (self.target1 == "score_rel1")
+		return;
+
+	if (!m_score_rel2)
+	if (self.target1 == "score_rel2")
+		return;
 
 	if (self.owner != self)
 		objerror ("door_fire: self.owner != self");
@@ -549,7 +559,7 @@ void () func_door =
 	}
 
 	
-	door_sounds_wd();				// cataboligne - 6.28.11 wolf / doom doors
+	door_sounds_wd();				// cataboligne - 6.28.11 wd doors
 
 
 	SetMovedir ();

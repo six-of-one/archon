@@ -497,6 +497,10 @@ void() pk_plcfg =
 		stuffcmd(self, "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
 
 		stuffcmd(self, "infobar 30 \"you are playing: Archon 1.0 alpha\"\n");
+
+		stuffcmd(self, "alias score \"echo score: ");
+		stuffcmd(self, ftos(score_rel1 + 1));
+		stuffcmd(self, " frags = unlock level 1\n");
 	}
 };
 
@@ -2177,7 +2181,26 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			{
 				attacker.frags = attacker.frags + frag_plus(attacker); // note: adds frags for all wep kills below - this includes monsters! 
 
-				if (attacker.frags > high_score) high_score = attacker.frags; // secretly for bot morph decision making
+				if (attacker.frags > high_score)
+				{
+					high_score = attacker.frags; // secretly for bot morph decision making
+					if (high_score > cvar("master_high_score"))
+						cvar_set("master_high_score", ftos(high_score));
+				}
+
+				if (attacker.class_select == "class_player")
+				{
+					if (attacker.frags > score_rel1)
+					{
+						serverflags = serverflags | FL_SCORE1;
+						m_score_rel1 = 1;
+					}
+					if (attacker.frags > score_rel2)
+					{
+						serverflags = serverflags | FL_SCORE2;
+						m_score_rel2 = 1;
+					}
+				}
 
 // died & empathy damaged hit targ
 				if (empathy_dmg == 1)

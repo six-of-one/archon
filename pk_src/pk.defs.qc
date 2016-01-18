@@ -10,6 +10,7 @@ float CHAOS_ENG				= 10100010110111; // chaos engine id
 float DARKPLACES;								// for detecting darkplaces
 float GENERATIONS;							// exclude xtra elements
 float ULOKW, ULOKD, ULOK2, ULOK3;		// unlock codes
+float LOK_STRICT				= 1; // lock deal
 float XTR_SAVED1				= 1195724115; // saved1 test val 
 // end engines
 
@@ -123,6 +124,13 @@ void() mcode_load;
 float (float lMean, float lStDev) meantime;
 
 float high_score; // best of the best
+float score_rel1				= 50;
+float score_rel2				= 100;
+float FL_SCORE1				= 4096;
+float FL_SCORE2				= 65536;
+
+float m_score_rel1;
+float m_score_rel2;
 
 // from light.qc
 

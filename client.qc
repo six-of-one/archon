@@ -149,6 +149,8 @@ entity () FindIntermission =
 string nextmap;
 void () GotoNextMap =
 {
+	NoExit_save(); // Cataboligne - 9.9.11 - protect against exitless levels in dm - restore setting
+
 	if (cvar("samelevel"))	// if samelevel is set, stay on same level - overrides all pk rules
 		changelevel (mapname);
 	else
@@ -731,19 +733,18 @@ void () CheckRules =
 
 	if (inHubMap)  // *pk - ingore limits if in hub...
 		return ;
+
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar ("fraglimit");
 
 	if (timelimit > 0 && time >= timelimit)
 	{
-		NoExit_savetime(); // Cataboligne - 9.9.11 - protect against exitless levels in dm - restore setting
 		NextLevel ();
 		return ;
 	}
 
 	if (fraglimit > 0 && self.frags >= fraglimit)
 	{
-		NoExit_savefrag(); // Cataboligne - 9.9.11 - protect against exitless levels in dm - restore setting
 		NextLevel ();
 		return ;
 	}

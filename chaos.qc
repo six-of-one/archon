@@ -975,40 +975,57 @@ void() archon_fader =
 
 	if ((self.alpha >= 1) && !t) // cycle 1 color
 	{
-		self.alpha = 1;
+		self.alpha = 0.98;
 		self.nextthink = time + self.wait;
 		self.delay = 0 - self.delay;
 	}
 	else
-	if (self.alpha <= 0)
+	if (self.alpha < 0.01)
 	{
-		self.alpha = 0.001; // cant set alpha at 0 - engine displays full tex
+//		self.alpha = 0.001; // cant set alpha at 0 - engine displays full tex
+
 		if (t)
 		{
-			 t.alpha = 1;
+			self.alpha = 0;
+			self.mdl = self.model;
+			self.model = "";
+
+			t.model = t.mdl;
+			t.alpha = 1;
 			t.nextthink = time + t.wait;
 			t.think = archon_fader;
 		}
 		else // no targets - cycle this color
 		{
+			self.alpha = 0.01;
 			self.nextthink = time + self.wait;
 			self.delay = 0 - self.delay;
 		}
 	}
 	else
 	{
+		if (t)
+		{
+			if (t.model == "")
+			{
+				t.alpha = 0.01;
+				t.model = t.mdl;
+			}
+			t.alpha = t.alpha + self.delay;
+		}
 		self.alpha = self.alpha - self.delay;
-		if (t) t.alpha = t.alpha + self.delay;
 		self.nextthink = time + self.cnt;
 	}
 };
 
 
-// cause the map load wont set this correctly
+// was cause the map load wouldnt set alpha correctly
+// changed because near 0 alpha was mega slowdown
 
 void() archon_fadeinit =
 {
-	self.alpha = 0.001;	
+	self.mdl = self.model;
+	self.model = "";
 };
 
 
@@ -1106,18 +1123,15 @@ void() archon_powerclr =
 		remove(self);
 		self = e;
 	}
-//	self.nextthink = time + 2;
 };
 
 void() archon_power =
 {
 	local entity e;
 
-
 	e = chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "archon_powerclr", "", SUB_Null, 1, q2_teleport_particles, archon_powerclr, self, world);
-//	e = chaos_spawn(0, 0, 0, 0,  self.origin, v0, v0, v0, v0, "archon_powerclr", "", SUB_Null, 1, archon_powerclr, SUB_Null, self, world);
 	e.cnt = 74;
-// dont always make items
+// dont always make items instantly
 	if (random() < 0.4)
 		e.search_time = time + 3 + random() * 5;
 

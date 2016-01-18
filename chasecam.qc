@@ -330,9 +330,9 @@ void () cam_deathmove =
 		stuffcmd(self.owner, " rels) Archon 1a - high score: ");
 		stuffcmd(self.owner, ftos(high_score));
 		stuffcmd(self.owner, " - map: ");
-		if (world.message != "")
-			stuffcmd(self.owner, world.message);
-		else
+//		if (world.message != "")
+//			stuffcmd(self.owner, world.message); // some world messages fsck the info bar because they have \n in them
+//		else
 			stuffcmd(self.owner, world.model);
 		stuffcmd(self.owner, "\"\n");
 

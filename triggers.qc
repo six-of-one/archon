@@ -50,6 +50,22 @@ void () multi_trigger =
 		return;		// allready been triggered
 	}
 
+	if (!m_score_rel1)
+	if (self.target1 == "score_rel1")
+		return;
+
+	if (!m_score_rel2)
+	if (self.target1 == "score_rel2")
+		return;
+
+	if (m_score_rel1)
+	if (self.target1 == "!score_rel1")
+		return;
+
+	if (m_score_rel2)
+	if (self.target1 == "!score_rel2")
+		return;
+
 	if (self.classname == "trigger_secret")
 	{
 	if (self.enemy.classname != "pk*bot")

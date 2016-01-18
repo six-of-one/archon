@@ -31,7 +31,7 @@ void () button_done =
 
 void () button_return =
 {
-	if (self.sounds == DOOR_2S)				// cataboligne - 6.29.11 --- wolf / doom buttons - return sound
+	if (self.sounds == DOOR_2S)				// cataboligne - 6.29.11 --- wd buttons - return sound
 		sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 
 	self.state = STATE_DOWN;

@@ -943,7 +943,7 @@ entity(float mc, string cls, entity de, vector vb) drop_item =
 
 // dropping imventory - the complicated method
 
-float DROP_NOTEST; // just drop it, no testing
+float DROP_NOTST; // just drop it, no testing
 
 // p - ent to drop inv - player
 // im - selection from menu
@@ -955,8 +955,8 @@ void(float im, entity p, vector vb) drop_inventory =
 	local float b, f, nt;
 	local entity e, d;
 
-	nt = DROP_NOTEST;
-	DROP_NOTEST = FALSE;
+	nt = DROP_NOTST;
+	DROP_NOTST = FALSE;
 
 	if (!im) return;
 
@@ -1837,7 +1837,7 @@ float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) 
 		e = spawn(); // note: no record keeping here, and test fail!
 					e.stack1 = "insta spawn drop_one"; // test: nothing spawn test
 		ss = ""; // no fail message possible
-		DROP_NOTEST = TRUE; // because there are no real player bits to test
+		DROP_NOTST = TRUE; // because there are no real player bits to test
 	}
 
 	if (force_drop_set(e, ss))

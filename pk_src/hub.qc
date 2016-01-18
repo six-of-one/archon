@@ -51,6 +51,14 @@ void() hub_teleport_touch =
 		return;
 	}
 
+	if (!m_score_rel1)
+	if (self.target1 == "score_rel1")
+		return;
+
+	if (!m_score_rel2)
+	if (self.target1 == "score_rel2")
+		return;
+
 	// change of vote?
 	if (other.map != "")
 	{
@@ -341,12 +349,24 @@ float() countMaps =
 entity(float num) getMap =
 {
 	local entity e;
-	local float c;
+	local float c,f;
 	c = 1;
 	e = find(world, classname, "hub_teleport");
+
 	// loop thru looking for the num'th guy
 	while (e != world)
 	{
+		f = TRUE;
+
+		if (!m_score_rel1)
+		if (e.target1 == "score_rel1") // bot vote
+			f = FALSE;
+
+		if (!m_score_rel2)
+		if (e.target1 == "score_rel2")
+			f = FALSE;
+
+		if (f)
 		if (e.map != "@random")
 		{
 			if (c > num)
@@ -1251,7 +1271,7 @@ void() WaitForVotesThink =
 			// print some information
 			getHighestScores();
 
-			local float timemins, timedef, votecast, maxplayers;
+			local float timemins, timedef, votecast, maxplayers, novote;
 			local entity pl;
 
 			timemins = 0;
@@ -1289,8 +1309,11 @@ void() WaitForVotesThink =
 				{
 					if (pl.map != "")
 						votecast = votecast + 1;
+					else if (pl.classname == OBSERVER) novote = novote + 1; // non voting observer
 					else
+					{
 						e = pl; // save for the 1 bot scenario
+					}
 
 					maxplayers = maxplayers + 1;
 				}
@@ -1314,7 +1337,7 @@ void() WaitForVotesThink =
 			playerIntermissionVotesTimeLeft(maxplayers, votecast, timemins, timedef);
 
 // trick when 1 bot is left to vote
-			if ((maxplayers - votecast) == 1)
+			if ((maxplayers - votecast - novote) == 1)
 			if (e.class_select == "class_bot")
 			if (random() < 0.2)
 			{
@@ -1393,6 +1416,12 @@ void() bot_votereveal =
 	bprint(": I just voted for ");
 	bprint(self.map);
 	bprint("\n");
+
+// fixed bots leaving "live" body behind
+// here for common area - means we cant get rid of this fn if we dont want to reveal bot votes
+// bots still seem to leave posed bodys somehow?
+	if (!self.deadflag)
+		self.model = "";
 };
 
 // Cataboligne - 5.12.10 - sneak in bot votes (yep, this is labor union heavy handedness - since they dont seem to be real keen on going to the polls...)

@@ -93,6 +93,7 @@ void() end_observer =
 };
 
 // Cataboligne - 8.16.9 - observer fix - move fast while flying - using cam_deathmove
+// note: this didnt actually work good, fixed by adapting haste code, 10.11
 
 // IDEA - do something with body so it doesnt just "vanish", maybe a trance /// --- deadframe it & return a/la zombie wake up!, or kibble it down or some such
 
@@ -106,7 +107,8 @@ void () observer =
 
 	if (!self.admin)
 	{
-		if (! serverflags & FL_OBSERVER) // restricted, only admins can observe
+//		if (! serverflags & FL_OBSERVER) // restricted, only admins can observe
+		if (! cvar("sv_observe")) // restricted, only admins can observe
 			return;
 		if (observer_time) // can only observe for this long
 		{
@@ -232,11 +234,13 @@ void () botControl =
 		dprint (tmp);
 		dprint (" server flags\n");
 	}
+/*
 	else if (self.impulse == 218)
 	{
-		serverflags = serverflags - (serverflags & UNRESTRICTED);
+//		serverflags = serverflags - (serverflags & UNRESTRICTED);
 		bprint ("Unrestricted mode cleared\n");
 	}
+*/
 };
 
 void () botImpulseCommand =
@@ -261,7 +265,7 @@ void () botImpulseCommand =
 	{
 		UpdateTeamColors ();
 	}
-	else if (self.admin || (serverflags & UNRESTRICTED))
+	else if (self.admin) // || (serverflags & UNRESTRICTED))
 		botControl();
 };
 

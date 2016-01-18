@@ -550,25 +550,27 @@ void(float b) b_launch =
 
 // restore limits if noexit used
 
-void() NoExit_savefrag =
+void() NoExit_save =
 {
+	if (!deathmatch || inHubMap) return;
+	
 	if (NOEXIT_SAVEFRAG > -1)
 	{
 		localcmd("fraglimit ");
 		localcmd(ftos(NOEXIT_SAVEFRAG));
 		localcmd("\n");
+		NOEXIT_SAVEFRAG = -2;
 	}
-};
 
-void() NoExit_savetime =
-{
 	if (NOEXIT_SAVETIME > -1)
 	{
 		localcmd("timelimit ");
 		localcmd(ftos(NOEXIT_SAVETIME));
 		localcmd("\n");
+		NOEXIT_SAVETIME = -2;
 	}	
 };
+
 
 // fn(pk_liveupd) - these cvar update live during game
 
@@ -769,38 +771,42 @@ void() pk_liveupd =
 	SV_HOLDING = cvar("sv_c_holding");
 
 	if (deathmatch)
-	if (!NOEXIT_CHECK)
+	if (time > 2) // dont do before we recognize the hub & get triggers loaded
+	if (!inHubMap)  // *pk - dont need this on hub
 	{
-		NOEXIT_SAVETIME = NOEXIT_SAVEFRAG = -2;
+		if (!NOEXIT_CHECK)
+		{
+			NOEXIT_SAVETIME = NOEXIT_SAVEFRAG = -2;
 
-		if (find(world, classname, "trigger_changelevel"))
-			NOEXIT_CHECK = 1;
-		else if (!cvar("timelimit") && !cvar("fraglimit")) // no limits already set
-		{
-			NOEXIT_CHECK = -1; // using default timeout if set
-			NOEXIT_SAVETIME = cvar("timelimit");
-			NOEXIT_SAVEFRAG = cvar("fraglimit");
+			if (find(world, classname, "trigger_changelevel"))
+				NOEXIT_CHECK = 1;
+			else if (!cvar("timelimit") && !cvar("fraglimit")) // no limits already set
+			{
+				NOEXIT_CHECK = -1; // using default timeout if set
+				NOEXIT_SAVETIME = cvar("timelimit");
+				NOEXIT_SAVEFRAG = cvar("fraglimit");
+			}
 		}
-	}
 
-// update noext defaults if changed live and they are in use
-	if (NOEXIT_CHECK < 0)
-	{
-		if (NOEXIT_TIMEOUT != cvar("sv_c_noexit_timeout"))
+	// update noext defaults if changed live and they are in use
+		if (NOEXIT_CHECK < 0)
 		{
-			bprint("\bServer set default time limit due to no exit\n");
-			NOEXIT_TIMEOUT = cvar("sv_c_noexit_timeout");
-			localcmd("timelimit ");
-			localcmd(ftos(NOEXIT_TIMEOUT));
-			localcmd("\n");
-		}
-		if (NOEXIT_FRAGLIMIT != cvar("sv_c_noexit_fraglimit"))
-		{
-			bprint("\bServer set default frag limit due to no exit\n");
-			NOEXIT_FRAGLIMIT = cvar("sv_c_noexit_fraglimit");
-			localcmd("fraglimit ");
-			localcmd(ftos(NOEXIT_FRAGLIMIT));
-			localcmd("\n");
+			if (NOEXIT_TIMEOUT != cvar("sv_c_noexit_timeout"))
+			{
+				bprint("\bServer set default time limit due to no exit\n");
+				NOEXIT_TIMEOUT = cvar("sv_c_noexit_timeout");
+				localcmd("timelimit ");
+				localcmd(ftos(NOEXIT_TIMEOUT));
+				localcmd("\n");
+			}
+			if (NOEXIT_FRAGLIMIT != cvar("sv_c_noexit_fraglimit"))
+			{
+				bprint("\bServer set default frag limit due to no exit\n");
+				NOEXIT_FRAGLIMIT = cvar("sv_c_noexit_fraglimit");
+				localcmd("fraglimit ");
+				localcmd(ftos(NOEXIT_FRAGLIMIT));
+				localcmd("\n");
+			}
 		}
 	}
 
@@ -942,13 +948,15 @@ void() pk_liveupd =
 		random_monster(); // control
 	}
 
-	if (deathmatch)
 	if (M_MONSTER != cvar("sv_monster_map"))
 	{
 		M_MONSTER = cvar("sv_monster_map"); // TDO: process loop - turn bits on and off
-		M_MONSTER_II = cvar("sv_monster_map2");
 //		if (!R_MONSTER) // monsters were not removed when loading map - live controls usefull
+		if (M_MONSTER < 0)
+		if (!deathmatch)
+			bprint("*** Alert - map monsters turned off in single player / coop\n --- certain levels can NOT be finished without using enhancements\n");
 	}
+	M_MONSTER_II = cvar("sv_monster_map2");
 
 // pk cubes
 	PK_CUBE_TIME = cvar("pk_cubes_time"); // TDO: doesnt reset existing makers
@@ -1179,10 +1187,12 @@ void() pk_srvcmd_load =
 	e = spawn();
 	e.think = start_loopcyc;
 	e.nextthink = time + PIC_TO + random() * 3;
+	e.classname = "pk_loopcyc";
 
 	e = spawn();
 	e.think = pk_monitor;
 	e.nextthink = time + PIC_TO;
+	e.classname = "pk_monitor";
 
 // set server flag bit stored states
 
@@ -1234,6 +1244,11 @@ void() pk_srvcmd_set =
 	if (world.aflag == IT1_WQ1) ULOKD = TRUE;
 	if (world.aflag == IT3_WQ1) ULOK2 = TRUE;
 	if (world.aflag == IT4_WQ1) ULOK3 = TRUE;
+
+// score deal
+
+	m_score_rel1 = (serverflags & FL_SCORE1);
+	m_score_rel2 = (serverflags & FL_SCORE2);
 
 // pk control
 	PK_100 = FALSE; // if true run 100% true to pk v1.11 - i n theory, dev purposes only
@@ -1292,10 +1307,30 @@ void() pk_srvcmd_set =
 	LASER_HOOK = 0;
 	LTN_HOOK = 0;
 
+	if (cvar("sv_adm"))
+		m_score_rel1 = m_score_rel2 = cvar("sv_adm");
+
 	if (MAP_MODE == "Q2") LASER_HOOK = TRUE;
 	else if (MAP_MODE == "Q3") LTN_HOOK = TRUE;
 	if (!ULOK2) LASER_HOOK = FALSE;
 	if (!ULOK3) LTN_HOOK = FALSE;
+
+	if (LOK_STRICT)
+	{
+		if (!m_score_rel1)
+		if (world.target1 == "score_rel1")
+		{
+			localcmd("default_hub\n");
+			return;
+		}
+
+		if (!m_score_rel2)
+		if (world.target1 == "score_rel2")
+		{
+			localcmd("default_hub\n");
+			return;
+		}
+	}
 
 // cam controls
 	DCAMTO = 0; // RELEASE - final release default should have 2 mins & respawn
@@ -1578,6 +1613,8 @@ current max is 312, move lines out of comment as needed
 		registercvar("sv_bot_noway_below", "0"); // no bot waypoints below this
 		registercvar("sv_bot_noway_above", "0"); // bot bot waypoints above this
 
+		registercvar("master_high_score", "0"); // master high score
+
 // rune server
 		registercvar("sv_c_rune", "0");
 		registercvar("sv_c_rune_cnt", "0");
@@ -1612,6 +1649,8 @@ current max is 312, move lines out of comment as needed
 		registercvar("sv_vw_holster", "1"); // show holstered weps
 		registercvar("sv_vw_armor", "0");
 // painkeep controls
+		registercvar("sv_adm", "0");
+		registercvar("sv_observe", "0"); // allow anyone admin observer priv.
 		registercvar("sv_pk99", "0");
 		registercvar("sv_pk100", "0");
 		registercvar("sv_pk100_objerr", "0");

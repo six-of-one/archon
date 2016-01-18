@@ -118,6 +118,8 @@ void(entity targ, entity attacker) Killed =
 	if (self.vwepent) vw_chain(self); // re chain any vweps before death - which can throw weps
 
 	monster_death_use ();
+
+	if (self.th_die != (void()) 0) // something got thru with 0 th die on server test 10.28.11
 	self.th_die ();
 
 	if (self.vwepent) viswep_ld(self, -2); // still have visweps
