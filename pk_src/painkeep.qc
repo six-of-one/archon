@@ -16,11 +16,11 @@ void() PK_init =
 	DARKPLACES = cvar("pr_checkextension"); // check for dp engine
 
 // info string set by server
-	localcmd("alias version \"echo quake-c: generations alpha 3.0\"\n");
-	localcmd("alias website \"echo http://www.moddb.com/mods/chaos-archon\"\n");
-	localcmd("alias codesite \"echo http://www.moddb.com/members/invadercat\"\n");
-	localcmd("alias qcsite \"echo http://www.moddb.com/groups/qc\"\n");
-	localcmd("alias sites \"echo website http://www.moddb.com/mods/chaos-archon\ncodesite http://www.moddb.com/members/invadercat\nqcsite http://www.moddb.com/groups/qc\"\n");
+	localcmd("alias version \"echo quake-c: chaos archon alpha 3.0\"\n");
+	localcmd("alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n");
+	localcmd("alias codesite \"echo http://www.moddb.com/members/invadercat/\"\n");
+	localcmd("alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n");
+	localcmd("alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo codesite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n");
 
 	pk_precache();
 	q1_precache();
@@ -36,11 +36,11 @@ void() PK_init =
 	if (cvar("saved1") == XTR_SAVED1)
 	{
 		cvar_set("saved1", "0"); // clear temp code
-		cvar_set("sv_generations", "1");
+		cvar_set("sv_xtras", "1");
 		GENERATIONS = 1;
 	}
 
-	if (GENERATIONS) // possible to run qc extras w/o paks
+	if (GENERATIONS) // possible to run qc w/o paks
 	{
 		ULOKW = ULOKD = ULOK2 = ULOK3 = TRUE;
 	}
@@ -954,7 +954,7 @@ void() pk_srvcmd_load =
 
 // these all req. map reload for full effectiveness
 
-	GENERATIONS = cvar("sv_generations");
+	GENERATIONS = cvar("sv_xtras");
 
 	PK_100 = cvar("sv_pk100");
 
@@ -978,8 +978,13 @@ void() pk_srvcmd_set =
 /// this section assigns vars to default values - they will rule any engine not dp registercvar able or not customized as the glquake build we release
 //				- it would be trivial to take the custom cvar section from the glquake build and add to _any_ engine...
 
-	GENERATIONS = 0; // this bad code - non dp enabled engines (or eng w/o glq mod) cant run gens!  (see hack below...)
+	GENERATIONS = 0; // this bad code - non dp enabled engines (or eng w/o glq mod) cant run x!  (see hack below...)
 	ULOKW = ULOKD = ULOK2 = ULOK3 = FALSE;
+
+	if (world.aflag == IT0_WQ1) ULOKW = TRUE;
+	if (world.aflag == IT1_WQ1) ULOKD = TRUE;
+	if (world.aflag == IT3_WQ1) ULOK2 = TRUE;
+	if (world.aflag == IT4_WQ1) ULOK3 = TRUE;
 
 // pk control
 	PK_100 = FALSE; // if true run 100% true to pk v1.11 - i n theory, dev purposes only
@@ -1197,7 +1202,7 @@ POW_TIME = 30;
 	if (DARKPLACES) // reg under darkplaces - chaos engine has pre-reg
 	{
 // server controls
-		registercvar("sv_generations", "0"); // set true when xtra
+		registercvar("sv_xtras", "0"); // set true when xtra
 		registercvar("sv_dmstart", "0");
 		registercvar("sv_c_mapcmd", "1");
 		registercvar("sv_c_mapcfg", "1");
@@ -1512,7 +1517,7 @@ POW_TIME = 30;
 
 // done in another cfg
 //		localcmd("exec ");
-//		localcmd("gen.cfg\n");
+//		localcmd("info.cfg\n");
 
 		if (!deathmatch)
 		{

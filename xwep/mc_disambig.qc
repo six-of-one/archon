@@ -29,13 +29,13 @@ void() weapon_bfg =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_weapon_bfg();
 		self.classname = "q2_weapon_bfg";
+		q2_weapon_bfg();
 	}
 	else
 	{
-		q3_weapon_bfg();
 		self.classname = "q3_weapon_bfg";
+		q3_weapon_bfg();
 	}
 }
 
@@ -43,13 +43,13 @@ void() weapon_railgun =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_weapon_railgun();
 		self.classname = "q2_weapon_railgun";
+		q2_weapon_railgun();
 	}
 	else //if (world.wad == "")
 	{
-		q3_weapon_railgun(); 
 		self.classname = "q3_weapon_railgun";
+		q3_weapon_railgun(); 
 	}
 };
 
@@ -58,8 +58,8 @@ void() weapon_lightning =
 	if (!pk_map) // not a pk map (some hubX maps have no .wad!)
 	if (world.wad == "")
 	{
-		q3_weapon_lightning();
 		self.classname = "q3_weapon_lightning";
+		q3_weapon_lightning();
 		return;
 	}
 
@@ -70,14 +70,14 @@ void () weapon_rocketlauncher =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_weapon_rocketlauncher();
 		self.classname = "q2_weapon_rocketlauncher";
+		q2_weapon_rocketlauncher();
 		return;
 	}
 	else if (world.wad == "" && !pk_map)
 	{
-		q3_weapon_rocketlauncher(); 
 		self.classname = "q3_weapon_rocketlauncher";
+		q3_weapon_rocketlauncher(); 
 		return;
 	}
 
@@ -88,14 +88,14 @@ void () weapon_grenadelauncher =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_weapon_grenadelauncher();
 		self.classname = "q2_weapon_grenadelauncher";
+		q2_weapon_grenadelauncher();
 		return;
 	}
 	else if (world.wad == "" && !pk_map)
 	{
-		q3_weapon_grenadelauncher(); 
 		self.classname = "q3_weapon_grenadelauncher";
+		q3_weapon_grenadelauncher(); 
 		return;
 	}
 
@@ -106,13 +106,13 @@ void() weapon_machinegun =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_weapon_machinegun();
 		self.classname = "q2_weapon_machinegun";
+		q2_weapon_machinegun();
 	}
 	else
 	{
-		q3_weapon_machinegun();
 		self.classname = "q3_weapon_machinegun";
+		q3_weapon_machinegun();
 	}
 }
 
@@ -120,8 +120,8 @@ void () weapon_supershotgun =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_weapon_supershotgun();
 		self.classname = "q2_weapon_supershotgun";
+		q2_weapon_supershotgun();
 		return;
 	}
 
@@ -132,14 +132,14 @@ void () weapon_shotgun =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_weapon_shotgun();
 		self.classname = "q2_weapon_shotgun";
+		q2_weapon_shotgun();
 		return;
 	}
 	else if (world.wad == "" && !pk_map)
 	{
-		q3_weapon_shotgun(); 
 		self.classname = "q3_weapon_shotgun"; // for item translates, map code controls, etc
+		q3_weapon_shotgun(); 
 		return;
 	}
 
@@ -152,13 +152,13 @@ void() ammo_slugs =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_ammo_slugs();
 		self.classname = "q2_ammo_slugs";
+		q2_ammo_slugs();
 	}
 	else
 	{
-		q3_ammo_slugs();
 		self.classname = "q3_ammo_slugs";
+		q3_ammo_slugs();
 	}
 };
 
@@ -166,13 +166,13 @@ void() spawnfunc_ammo_cells =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_ammo_cells();
 		self.classname = "q2_ammo_cells";
+		q2_ammo_cells();
 	}
 	else
 	{
-		q3_ammo_cells();
 		self.classname = "q3_ammo_cells";
+		q3_ammo_cells();
 	}
 };
 
@@ -180,13 +180,13 @@ void() spawnfunc_ammo_rockets =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_ammo_rockets();
 		self.classname = "q2_ammo_rockets";
+		q2_ammo_rockets();
 	}
 	else
 	{
-		q3_ammo_rockets();
 		self.classname = "q3_ammo_rockets";
+		q3_ammo_rockets();
 	}
 };
 
@@ -194,13 +194,13 @@ void() ammo_grenades =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_ammo_grenades();
 		self.classname = "q2_ammo_grenades";
+		q2_ammo_grenades();
 	}
 	else
 	{
-		q3_ammo_grenades();
 		self.classname = "q3_ammo_grenades";
+		q3_ammo_grenades();
 	}
 }
 
@@ -208,13 +208,13 @@ void() ammo_bullets =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_ammo_bullets();
 		self.classname = "q2_ammo_bullets";
+		q2_ammo_bullets();
 	}
 	else
 	{
-		q3_ammo_bullets();
 		self.classname = "q3_ammo_bullets";
+		q3_ammo_bullets();
 	}
 };
 
@@ -222,13 +222,13 @@ void() spawnfunc_ammo_shells =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_ammo_shells();
 		self.classname = "q2_ammo_shells";
+		q2_ammo_shells();
 	}
 	else
 	{
-		q3_ammo_shells();
 		self.classname = "q3_ammo_shells";
+		q3_ammo_shells();
 	}
 };
 
@@ -238,13 +238,13 @@ void () item_armor_combat =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_item_armor_combat();
 		self.classname = "q2_item_armor_combat";
+		q2_item_armor_combat();
 	}
 	else
 	{
-		q3_item_armor_combat(); 
 		self.classname = "q3_item_armor_combat";
+		q3_item_armor_combat(); 
 	}
 };
 
@@ -253,13 +253,13 @@ void () item_armor_body =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_item_armor_body();
 		self.classname = "q2_item_armor_body";
+		q2_item_armor_body();
 	}
 	else
 	{
-		q3_item_armor_body(); 
 		self.classname = "q3_item_armor_body";
+		q3_item_armor_body(); 
 	}
 };
 
@@ -268,13 +268,13 @@ void () item_armor_shard =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_item_armor_shard();
 		self.classname = "q2_item_armor_shard";
+		q2_item_armor_shard();
 	}
 	else
 	{
-		q3_item_armor_shard(); 
 		self.classname = "q3_item_armor_shard";
+		q3_item_armor_shard(); 
 	}
 };
 
@@ -355,13 +355,13 @@ void () item_quad =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_item_quad();
 		self.classname = "q2_item_quad";
+		q2_item_quad();
 	}
 	else
 	{
-		q3_item_quad(); 
 		self.classname = "q3_item_quad";
+		q3_item_quad(); 
 	}
 };
 
@@ -369,13 +369,13 @@ void () item_enviro =
 {
 	if (world.wad == "q2.wad")
 	{
-		q2_item_enviro();
 		self.classname = "q2_item_enviro";
+		q2_item_enviro();
 	}
 	else
 	{
-		q3_item_enviro(); 
 		self.classname = "q3_item_enviro";
+		q3_item_enviro(); 
 	}
 };
 

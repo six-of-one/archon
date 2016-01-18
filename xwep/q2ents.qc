@@ -631,7 +631,7 @@ void () q2_weapon_grenadelauncher =
 	{
 		self.touch = painkeep_touch;
 		self.pk_touch = weapon_touch;
-		self.classname = "weapon_grenadelaunche";
+		self.classname = "weapon_grenadelauncher";
 		return;
 	}
 

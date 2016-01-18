@@ -646,17 +646,6 @@ void() flamer_precache;
 
 // genre section - weps, items, maps etc.
 
-// detect wad = q1 maps, other method - worldtype
-// use 3x this value for worldtype with no wad = q1 items (for now)
-
-float IT0_WQ1					= 3; // worldtype 3
-float IT1_WQ1					= 4; // worldtype 4
-										  // worldtype q1 = 0, 1, 2
-float IT3_WQ1						= 5; // worldtype 5
-float IT4_WQ1						= 6; // worldtype 6
-
-void () weapon_chainlg; // for !GENERATIONS
-
 // hip
 
 float IT_MJOLNIR				= 128;
@@ -665,6 +654,7 @@ void() hip_precache;
 
 // wolf
 
+void() wolf_precache;
 void() wchg2_weapon_touch;
 
 // doom
@@ -690,6 +680,19 @@ void() player_bfg1;
 
 float DOOM_BFG 				= 66603;
 float DOOM_BFG_TRACE			= 1024; // IDEA: adjust by doom to quake dist adjust for maps ?
+
+// q1
+
+// detect wad = q1 maps, other method - worldtype
+// use 3x this value for worldtype with no wad = q1 items (for now)
+
+										  // worldtype q = 0, 1, 2
+float IT0_WQ1					= 3; // worldtype 3
+float IT1_WQ1					= 4; // worldtype 4
+float IT3_WQ1					= 5; // worldtype 5
+float IT4_WQ1					= 6; // worldtype 6
+
+void () weapon_chainlg; // for !GENERATIONS
 
 // q2
 

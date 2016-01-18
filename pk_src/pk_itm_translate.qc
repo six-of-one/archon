@@ -2266,7 +2266,7 @@ void(string tri, float trv) master_item_control_loop =
 	}
 };
 
-// fn(noxtr_item_control) - check to see if we are running without extra and take right action
+// fn(noxtr_item_control) - check to see if we are running without x and take right action
 
 // e - item to check
 // q1ck - check for wad = q1 & worldtype rules
