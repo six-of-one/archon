@@ -8,7 +8,7 @@
 
 void() d_weapon_touch =
 {
-	local	float best, new, oldw, camc;
+	local	float best, new, oldw, camc, ign;
 	local	entity e;
 	local float leave;
 
@@ -35,6 +35,7 @@ void() d_weapon_touch =
 
 	if (self.classname == "q2_weapon_rocketlauncher" || self.classname == "q3_weapon_rocketlauncher" ||
 		self.classname == "q3_weapon_grenadelauncher" || self.classname == "q2_weapon_grenadelauncher" ||
+		self.classname == "q2_ammo_grenades" ||
 		self.classname == "weapon_grenadelauncher" || self.classname == "weapon_rocketlauncher" ||
 		self.classname == "d_weapon_rocketlauncher" || self.classname == "w_weapon_mortar")
 	{
@@ -44,15 +45,16 @@ void() d_weapon_touch =
 	else if (self.classname == "d_weapon_shotgun" || self.classname == "d_weapon_supershotgun" ||
 		self.classname == "q2_weapon_shotgun" || self.classname == "q2_weapon_supershotgun" ||
 		self.classname == "weapon_shotgun" || self.classname == "weapon_supershotgun" ||
+		self.classname == "c_weapon_reggun" ||
 		self.classname == "q3_weapon_shotgun")
 	{
 	other.ammo_shells = other.ammo_shells + self.currentammo;
 	camc = other.ammo_shells;
 	}
 	else if (self.classname == "d_weapon_pistol" || self.classname == "d_weapon_chaingun"
-					|| self.classname == "q3_weapon_machinegun"
-					|| self.classname == "w_weapon_machinegun"
-					|| self.classname == "w_weapon_chaingun"
+					|| self.classname == "q3_weapon_machinegun" || self.classname == "q2_weapon_machinegun"
+					|| self.classname == "w_weapon_machinegun" || self.classname == "w_weapon_chaingun"
+					|| self.classname == "weapon_chaingun"
 					|| self.classname == "w_weapon_pistol")
 	{
 	other.ammo_bullet = other.ammo_bullet + self.currentammo;
@@ -61,17 +63,29 @@ void() d_weapon_touch =
 	else if (self.classname == "d_weapon_plasma" ||
 		self.classname == "q3_weapon_lightning" || self.classname == "weapon_lightning" ||
 		self.classname == "q3_weapon_bfg" || self.classname == "weapon_hyperblaster" ||
+		self.classname == "d_weapon_bfg" || self.classname == "q2_weapon_bfg" ||
 		self.classname == "weapon_plasmagun")
 	{
 	other.ammo_cells = other.ammo_cells + self.currentammo;
 	camc = other.ammo_cells;
 	}
-	else if (self.classname == "q2_weapon_railgun" ||
-		self.classname == "q3_weapon_railgun" ||
+	else if (self.classname == "q2_weapon_railgun" || self.classname == "q3_weapon_railgun" ||
 		self.classname == "weapon_railgun")
 	{
 	other.ammo_slug = other.ammo_slug + self.currentammo;
 	camc = other.ammo_slug;
+	}
+	else if (self.classname == "weapon_flamer" || 
+		self.classname == "w_weapon_flamer")
+	{
+	other.ammo_gaspr = other.ammo_gaspr + self.currentammo;
+	camc = other.ammo_gaspr;
+	}
+	else if (self.classname == "d_weapon_saw" ||
+		self.classname == "q2_weapon_blaster" ||
+		self.classname == "w_weapon_knife")
+	{
+	camc = 1;
 	}
 	else
 	{
@@ -89,7 +103,14 @@ void() d_weapon_touch =
 		}
 	}
 
-	if (!vchk(new, 0, other.vwepent) || new == IT_SHOTGUN)
+	ign = FALSE;
+	e = vchk(new, 0, other.vwepent);
+	if (self.aflag == IGN_INV)
+	{
+		if (e.mdl != self.vwepmdl) ign = TRUE; // not the same vwep - load a vwep
+	}
+
+	if (!e || ign || new == IT_SHOTGUN) // TESTING - shotgun
 	{
 		e = vload(other, new);
 		e.eweapon = e;
@@ -107,6 +128,7 @@ void() d_weapon_touch =
 		e.dmg_take = self.dmg_take;
 		e.punchangle = self.punchangle;
 		e.aflag = camc;
+		e.style = self.style;
 
 		e.netname = self.netname;
 //		e.mdl = self.mdl; - invisible
@@ -115,6 +137,7 @@ void() d_weapon_touch =
 		e.weaponmodel = self.weaponmodel;
 		e.chaosweptime = self.chaosweptime;
 		e.endtime = self.endtime;
+		e.duration = self.duration;
 		e.noise = self.noise;
 		e.noise2 = self.noise2;
 		e.noise3 = self.noise3;
@@ -222,6 +245,8 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 						self.currentammo = self.ammo_slug = self.ammo_slug - ammo_con(e.dmg_save, self, ""); // use ammo
 					else if (e.lip == AMMO_GRENADES)
 						self.currentammo = self.ammo_rockets = self.ammo_rockets - ammo_con(e.dmg_save, self, ""); // use ammo
+					else if (e.lip == AMMO_GAS)
+						self.currentammo = self.ammo_gaspr = self.ammo_gaspr - ammo_con(e.dmg_save, self, ""); // use ammo
 					else if (e.lip == AMMO_NAILS)
 						self.currentammo = self.ammo_nails = self.ammo_nails - ammo_con(e.dmg_save, self, ""); // use ammo
 			}
@@ -301,6 +326,82 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 };
 
 
+void() melee_hit =
+{
+	local vector source, org;
+	local float dm;
+
+	makevectors (self.v_angle);
+	source = self.origin + '0 0 16';
+	if (self.classname == "pk*bot")
+	{
+		source = botaim ();
+	}
+	
+	dm = EWEAP.dmg_save;
+	if (!dm) dm = 64;
+	traceline (source, source + v_forward * dm, FALSE, self);
+
+
+
+
+
+// TESTING
+bprint(" *** eweap ");
+bprint(EWEAP.netname);
+
+
+// TESTING
+	dm = EWEAP.dmg;
+	if (dm == DOOM_ML_DMG) dm = 10 * ceil(random() * 2);
+bprint(", hit dmg = ");
+bprint(ftos(dm));
+//bprint(", splash dmg = ");
+//bprint(ftos(EWEAP.dodmg));
+fts.dmg_take = fts.dmg_take + dm;
+fts.dmg_save = fts.dmg_save + 1;
+
+
+bprint(", tot dmg = ");
+bprint(ftos(dm));
+bprint(".\n");
+fts.dmg = fts.dmg + dm;
+fts.cnt = fts.cnt + 1;
+
+
+
+
+
+	if (trace_fraction == 1.0)
+		return;
+
+	org = trace_endpos - v_forward*4;
+
+	if (trace_ent.takedamage)
+	{
+		self.chaosweptime = 0;
+		ominous_hum(EWEAP.target, EWEAP.endtime);
+		trace_ent.axhitme = 1;
+
+		dm = EWEAP.dmg;
+		if (!dm) dm = 20;
+		else if (dm == DOOM_ML_DMG) dm = 10 * ceil(random() * 2);
+		if (trace_ent.solid == SOLID_SLIDEBOX) // bloodcheck
+			SpawnBlood (org, '0 0 0', dm);
+		T_Damage (trace_ent,self,self,dm);
+	}
+	else
+	{	// hit wall
+		sound (self, CHAN_ITEM, "player/axhit2.wav", 1, ATTN_NORM);
+		WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST,TE_GUNSHOT);
+		WriteCoord (MSG_BROADCAST,org_x);
+		WriteCoord (MSG_BROADCAST,org_y);
+		WriteCoord (MSG_BROADCAST,org_z);
+	}
+};
+
+
 // moved from viswep.qc - belongs here, its home now - YAY
 
 // run full viswep frames for super nailgun / nailgun
@@ -365,8 +466,6 @@ void() player_bolt4	 =[$lightfatt4, player_bolt1  ]
 
 // eweapon missiles
 
-entity fts; // fire test
-
 void () X_MissileTouch =
 {
 	if (other == self.owner)
@@ -390,6 +489,7 @@ bprint(" *** missile (?) ");
 
 
 
+// TESTING
 bprint(", hit dmg = ");
 bprint(ftos(self.dmg));
 bprint(", splash dmg = ");
@@ -413,6 +513,7 @@ fts.dmg_save = fts.dmg_save + 1;
 
 
 
+// TESTING
 bprint(", tot dmg = ");
 bprint(ftos(self.dmg+self.dodmg));
 bprint(".\n");
@@ -457,6 +558,7 @@ void (float shotcount, float pdmg, vector dir, vector spread) X_FireBullets =
 
 
 
+// TESTING
 bprint(", bdmg = ");
 bprint(ftos(ddmg));
 
@@ -491,6 +593,7 @@ void () X_FireHitscan =
 
 
 
+// TESTING
 bprint(" *** eweap ");
 bprint(EWEAP.netname);
 tdmg = 0;
@@ -541,6 +644,7 @@ tdmg = 0;
 
 
 
+// TESTING
 bprint(", tot dmg = ");
 bprint(ftos(tdmg));
 bprint(".\n");
@@ -557,6 +661,8 @@ if (fts.eweapon._attack == SUB_Null) fts.cnt = fts.cnt + 1;
 
 void(float ns) mgchg_shot =
 {
+	local string fsnd;
+
 	EWEAP = self.eweapon;
 	if (EWEAP)
 	{
@@ -565,7 +671,12 @@ void(float ns) mgchg_shot =
 			self.attack_finished = time + EWEAP.attack_finished;
 		if (ns)
 		if (EWEAP.noise3 != "")
-			sound (self, CHAN_WEAPON, EWEAP.noise3, 1, ATTN_NORM);
+		{
+			fsnd = EWEAP.noise3;
+			if (fsnd == "q2_bullet_5")
+				fsnd = rnd_string(v0, "q2_snd/machgf1b.wav", "q2_snd/machgf2b.wav", "q2_snd/machgf3b.wav", "q2_snd/machgf4b.wav", "q2_snd/machgf5b.wav");
+			sound (self, CHAN_WEAPON, fsnd, 1, ATTN_NORM);
+		}
 		EWEAP = world;
 	}
 	else
@@ -588,8 +699,13 @@ void() player_mgchg1   =[$lightfatt1, player_mgchg2  ]
 	if (self.weaponframe == 9)
 		self.weaponframe = 1;
 	SuperDamageSound();
-	mgchg_shot(0);
-	if (self.eweapon) self.nextthink = time + self.eweapon.attack_finished;
+	mgchg_shot(1);
+	if (self.eweapon)
+	{
+		self.nextthink = time + self.eweapon.attack_finished;
+		if (!rune_haste(self.eweapon.attack_finished / 2))
+			self.nextthink = time + self.eweapon.attack_finished / 2;
+	}
 };
 
 void() player_mgchg2   =[$lightfatt2, player_mgchg3  ]
@@ -603,7 +719,12 @@ void() player_mgchg2   =[$lightfatt2, player_mgchg3  ]
 		self.weaponframe = 1;
 	SuperDamageSound();
 	mgchg_shot(1);
-	if (self.eweapon) self.nextthink = time + self.eweapon.attack_finished;
+	if (self.eweapon)
+	{
+		self.nextthink = time + self.eweapon.attack_finished;
+		if (!rune_haste(self.eweapon.attack_finished / 2))
+			self.nextthink = time + self.eweapon.attack_finished / 2;
+	}
 };
 
 void() player_mgchg3   =[$lightfatt3, player_mgchg4  ] 
@@ -616,8 +737,13 @@ void() player_mgchg3   =[$lightfatt3, player_mgchg4  ]
 	if (self.weaponframe == 9)
 		self.weaponframe = 1;
 	SuperDamageSound();
-	mgchg_shot(0);
-	if (self.eweapon) self.nextthink = time + self.eweapon.attack_finished;
+	mgchg_shot(1);
+	if (self.eweapon)
+	{
+		self.nextthink = time + self.eweapon.attack_finished;
+		if (!rune_haste(self.eweapon.attack_finished / 2))
+			self.nextthink = time + self.eweapon.attack_finished / 2;
+	}
 };
 
 void() player_mgchg4   =[$lightfatt4, player_mgchg1  ]
@@ -631,7 +757,104 @@ void() player_mgchg4   =[$lightfatt4, player_mgchg1  ]
 		self.weaponframe = 1;
 	SuperDamageSound();
 	mgchg_shot(1);
-	if (self.eweapon) self.nextthink = time + self.eweapon.attack_finished;
+	if (self.eweapon)
+	{
+		self.nextthink = time + self.eweapon.attack_finished;
+		if (!rune_haste(self.eweapon.attack_finished / 2))
+			self.nextthink = time + self.eweapon.attack_finished / 2;
+	}
+};
+
+// fire pistols & other items that use axe frames
+
+float GUN_WAIT  = 666020;
+float GUN_BASE  = 666000;
+
+void() player_pistol4 = [$axatt6, player_pistol5] { };
+void() player_pistol5 = [$axstnd11, player_pistol6] { };
+void() player_pistol6 = [$axstnd12, player_stand1] { };
+
+void() player_pistol1 =
+{
+	self.nextthink = time + 0.1;
+	self.think = player_pistol1;
+
+	if (self.tomb_time > GUN_BASE)
+	{
+		if (self.weaponframe > 1)
+			self.weaponframe = self.weaponframe + 1;
+		if (self.weaponframe >= 6)
+			self.weaponframe = 1;
+		self.frame = $axatt2;
+		self.tomb_time = self.tomb_time - 1;
+		if (self.tomb_time <= GUN_BASE) // done - go back
+		{
+			self.tomb_time = 0;
+			player_pistol4();
+		}
+		if (!self.button0)
+		{
+			if (self.velocity_x || self.velocity_y)
+			{
+				self.tomb_time = 0;
+				player_run();
+			}
+			return;
+		}
+		else
+		{
+			self.tomb_time = 0;
+			self.weaponframe = 0;
+			if (self.eweapon)
+				setorigin(self.eweapon, self.eweapon.origin + ' 0 0 1.33'); 
+		}
+	}
+
+	if (self.weaponframe > 3)
+		self.weaponframe = 0;
+
+	if (self.weaponframe == 3) // fire!
+	{
+		self.frame = $axatt2;
+		EWEAP = self.eweapon;
+		SuperDamageSound();
+		if (EWEAP.mdl == "progs/vw_q2_blst.mdl")
+			X_FireBlaster();
+		else
+		X_FireHitscan();
+
+		self.nextthink = time + EWEAP.attack_finished;
+		if (!rune_haste(EWEAP.attack_finished / 2))
+			self.nextthink = time + EWEAP.attack_finished / 2;
+
+		EWEAP = world;
+		self.tomb_time = GUN_WAIT;
+		return;
+	}
+
+	self.weaponframe = self.weaponframe + 1;
+
+	if (self.weaponframe <= 1) // bring pistol up to fire
+	{
+		if (self.frame != $axatt2)
+			self.frame = $axstnd8;
+		return;
+	}
+
+	if (self.weaponframe == 2)
+	{
+		if (self.frame != $axatt2)
+			self.frame = $axatt6;
+		return;
+	}
+
+	if (self.weaponframe == 3) // ready
+	{
+		if (self.frame != $axatt2)
+			self.frame = $axatt2;
+		return;
+	}
+
 };
 
 
@@ -733,6 +956,7 @@ void () X_FireOnePlasma =
 
 
 
+// TESTING
 bprint(" *** eweap ");
 bprint(EWEAP.netname);
 
@@ -741,17 +965,19 @@ bprint(EWEAP.netname);
 	dm = 15;
 	pls = "progs/d_plasma_sht.mdl";
 	expl = "doom/dsfirxpl.wav";
+	snd = "doom/dsplasma.wav"; // FIX - different generic, chaos will come here
 //	org = self.origin; // self.origin + (v_forward * 30) + '0 0 11' - arach ref
 	if (EWEAP) 
 	{
 //		self.currentammo = self.ammo_cells = self.ammo_cells - ammo_con(EWEAP.dmg_save, self, ""); // use ammo
 		dm = EWEAP.dmg;
-		if (dm == DOOM_SHOT_DMG) dm = 5 * ceil(random() * 8);
 		snd = EWEAP.noise3;
+		if (EWEAP.mdl == "progs/vw_d_bfg.mdl" || EWEAP.mdl == "progs/vw_q2_bfg.mdl") snd = "";
+		if (dm == DOOM_SHOT_DMG) dm = 5 * ceil(random() * 8);
+		else if (dm == DOOM_BFG_DMG) dm = 100 * ceil(random() * 8);
 		if (EWEAP.target1 != "") pls = EWEAP.target1;
 		if (EWEAP.target != "") expl = EWEAP.target;
 	}
-	if (snd == "") snd = "doom/dsplasma.wav"; // FIX - different generic, chaos will come here
 
 	makevectors (self.v_angle);
 	if (self.classname == "pk*bot")
@@ -787,6 +1013,7 @@ bprint(EWEAP.netname);
 
 
 
+// TESTING
 bprint(", hit dmg = ");
 bprint(ftos(dm));
 bprint(", splash dmg = ");
@@ -811,7 +1038,7 @@ void() player_plasma4   = [$shotatt2, player_plasma5] {self.weaponframe = 8; };
 void() player_plasma5   = [$shotatt3, player_plasma6] {self.weaponframe = 9; };
 void() player_plasma6   = [$shotatt4, player_plasma7] {self.weaponframe = 9; };
 void() player_plasma7   = [$shotatt5, player_plasma8] {self.weaponframe = 9; };
-void() player_plasma8   = [$shotatt6, player_run] {self.weaponframe = 1; };
+void() player_plasma8   = [$shotatt6, player_run] {self.weaponframe = 0; };
 
 void() player_plasma1b   = [$lightfatt2, player_plasma1]
 {
@@ -826,7 +1053,11 @@ void() player_plasma1b   = [$lightfatt2, player_plasma1]
 		self.weaponframe = 1;
 
 	if (self.eweapon)
-		self.nextthink = time + self.eweapon.attack_finished; // every other frame is fire frame
+	{
+		self.nextthink = time + self.eweapon.attack_finished;
+		if (!rune_haste(self.eweapon.attack_finished / 2))
+			self.nextthink = time + self.eweapon.attack_finished / 2;
+	}
 	else
 		self.nextthink = time + 0.2;
 
@@ -852,7 +1083,11 @@ void() player_plasma1   = [$lightfatt1, player_plasma1b]
 		self.weaponframe = 1;
 
 	if (EWEAP)
-		self.nextthink = time + EWEAP.attack_finished; // every other frame is fire frame
+	{
+		self.nextthink = time + EWEAP.attack_finished;
+		if (!rune_haste(EWEAP.attack_finished / 2))
+			self.nextthink = time + EWEAP.attack_finished / 2;
+	}
 	else
 		self.nextthink = time + 0.2;
 
@@ -866,97 +1101,169 @@ void() player_plasma1   = [$lightfatt1, player_plasma1b]
 
 void() hyper_fire_fr =
 {
-	if (!self.button0)
-	{
-		ominous_hum("q2_snd/hyprbd1a.wav", 1.02);
-		player_run();
-		return;
-	}
 	EWEAP = self.eweapon;
 
-	ominous_hum(EWEAP.noise3, self.chaosweptime);
-
 	self.effects = self.effects | EF_MUZZLEFLASH;
-
-	self.weaponframe = self.weaponframe + 1;
-	if (self.weaponframe >= 6)
-		self.weaponframe = 1;
-
-	if (EWEAP)
-		self.nextthink = time + EWEAP.attack_finished;
-	else
-		self.nextthink = time + 0.2;
 
 	SuperDamageSound();
 	
 	laser_sel = laser_sk = 3;
 	laser_fr = 4;
-	fire_laser1();
+	fire_laser1(FL_PUNCH | FL_USEAMMO);
 	newmis.effects = EF_DIMLIGHT;
-	sound (self, CHAN_ITEM, "q2_snd/laser2.wav", TRUE, ATTN_NORM);
+	sound (self, CHAN_ITEM, "q2_snd/hyprbf1a.wav", TRUE, ATTN_NORM);
 
 	EWEAP = world;
 };
 
-void() hyper_inter =
+void() player_hyper0   = [$lightfatt1, player_hyper0]
 {
 	if (!self.button0)
 	{
+		self.chaosweptime = 0;
 		ominous_hum("q2_snd/hyprbd1a.wav", 1.02);
 		player_run();
 		return;
 	}
 
-	ominous_hum(self.eweapon.noise3, self.chaosweptime);
+	if (self.weaponframe == 0)
+	{
+		self.chaosweptime = 0;
+		ominous_hum("q2_snd/hyprbu1a.wav", 0.373);
+	}
+	else
+		ominous_hum(self.eweapon.noise3, self.eweapon.chaosweptime);
 
 	self.weaponframe = self.weaponframe + 1;
 	if (self.weaponframe >= 6)
 		self.weaponframe = 1;
 
+	self.frame = self.frame + (self.tomb_time & 3);
+	self.tomb_time = self.tomb_time + 1;
+
 	if (self.eweapon)
+	{
 		self.nextthink = time + self.eweapon.attack_finished;
+		if (!rune_haste(self.eweapon.attack_finished / 2))
+			self.nextthink = time + self.eweapon.attack_finished / 2;
+	}
 	else
 		self.nextthink = time + 0.2;
-};
 
-void() player_hyper4   = [$lightfatt1, player_hyper1b] 
-{
-	hyper_inter();
-};
-
-void() player_hyper3   = [$lightfatt4, player_hyper4] 
-{
-	hyper_fire_fr();
-};
-
-void() player_hyper2   = [$lightfatt3, player_hyper3] 
-{
-	hyper_inter();
-};
-
-void() player_hyper1b   = [$lightfatt2, player_hyper2] 
-{
-	hyper_fire_fr();
+	if (self.tomb_time & 1) hyper_fire_fr();
 };
 
 
-void() player_hyper1   = [$lightfatt1, player_hyper1b] 
+// q2 chain gun
+
+void() chain_fire_fr =
 {
-	if (!self.button0)
+	EWEAP = self.eweapon;
+
+	self.effects = self.effects | EF_MUZZLEFLASH;
+
+	SuperDamageSound();
+	
+	mgchg_shot(1);
+
+	EWEAP = world;
+};
+
+void() player_chain0   = [$lightfatt1, player_chain0]
+{
+	local float div;
+
+	self.weaponframe = self.weaponframe + 1;
+	if (self.weaponframe >= 9)
+		self.weaponframe = 1;
+
+	if (self.tomb_time == -666)
 	{
+		self.frame = self.frame + (self.weaponframe & 3);
+		self.nextthink = time + 0.2;
+		if (self.attack_finished > time) return;
+		self.tomb_time = 0;
 		player_run();
 		return;
 	}
 
-	self.weaponframe = self.weaponframe + 1;
-	if (self.weaponframe >= 6)
-		self.weaponframe = 1;
+	if (!self.button0)
+	{
+		self.tomb_time = -666;
+		self.chaosweptime = 0;
+		ominous_hum("q2_snd/chngnd1a.wav", 1.71);
+		self.attack_finished = time + 2;
+		return;
+	}
 
-	ominous_hum("q2_snd/hyprbu1a.wav", 0.373);
-	self.nextthink = time + 0.2;
+	div = 1;
+	hum_chan = CHAN_ITEM;
+	if (self.weaponframe == 0)
+	{
+		self.chaosweptime = 0;
+		self.tomb_time = 0;
+		ominous_hum("q2_snd/chngnu1a.wav", 0.945);
+	}
+	else
+		ominous_hum("q2_snd/chngnl1a.wav", self.eweapon.chaosweptime);
+
+	self.frame = self.frame + (self.tomb_time & 3);
+	self.tomb_time = self.tomb_time + 1;
+
+	if (self.tomb_time & 1) chain_fire_fr();
+
+	if (self.tomb_time > 40) div = 2.25; // double fire rate after 20 shots (in 1 sec)
+
+	if (self.eweapon)
+	{
+		self.nextthink = time + (self.eweapon.attack_finished / div);
+		if (!rune_haste((self.eweapon.attack_finished / div) / 2))
+			self.nextthink = time + (self.eweapon.attack_finished / div) / 2;
+	}
+	else
+		self.nextthink = time + 0.2;
 };
 
+// bfg doom & q2
 
+void() player_bfg1   = [$lightfatt1, player_bfg1]
+{
+
+	if (self.weaponframe == 0)
+	{
+		self.tomb_time = time + self.eweapon.endtime;
+		sound (self, CHAN_ITEM, self.eweapon.noise3, 1, ATTN_NORM);
+	}
+
+	self.weaponframe = self.weaponframe + 1;
+	if (self.weaponframe >= 9)
+		self.weaponframe = 1;
+
+	self.frame = self.frame + (self.weaponframe & 3);
+
+	if (self.tomb_time > time)
+	{
+		if (self.weaponframe >= 2)
+			self.weaponframe = 8;
+		return;
+	}
+	else
+		self.weaponframe = 1;
+
+	self.effects = self.effects | EF_MUZZLEFLASH; // TDO: special flash
+
+	EWEAP = self.eweapon;
+
+	SuperDamageSound();
+	X_FireOnePlasma();
+
+	newmis.frame = 0;
+	newmis.skin = 1;
+	newmis.effects = EF_BRIGHTLIGHT | EF_BRIGHTFIELD;
+
+	EWEAP = world;
+	player_shot2();
+};
 
 // q3 bfg - easy
 
@@ -979,6 +1286,7 @@ void() X_Fire3BFG =
 
 
 
+// TESTING
 void() f_rmv =
 {
 bprint(".\n");
@@ -1019,6 +1327,9 @@ void() e_weap_Attack =
 
 	EWEAP = e = self.eweapon;
 
+
+
+// TESTING
 	if (!fts) // testing - rpm
 	{
 		fts = spawn();
@@ -1032,15 +1343,26 @@ void() e_weap_Attack =
 		fts.dmg = fts.cnt = 0;
 	}
 
+
+
 	if (rune_haste(e.attack_finished / 2))
 		self.attack_finished = time + e.attack_finished;
 
 	if (e._attack != SUB_Null) {e._attack();
 
+
+
+// TESTING
 fts.cnt = fts.cnt + 1;
 }
 
+
+
+
+
 	if (e._fr_attack != SUB_Null) e._fr_attack();
+
+	if (e.duration == SND_OVER)
 	if (e.noise3 != "")
 		sound (self, CHAN_WEAPON, e.noise3, 1, ATTN_NORM);
 //	e.aflag = self.currentammo;
@@ -1054,6 +1376,15 @@ fts.cnt = fts.cnt + 1;
 		newmis.dodmg = e.dodmg;
 		newmis.eweapon = e;
 		newmis.target = e.target;
+	}
+// grenade wep specials
+	if (e._attack == W_FireGrenade)
+	if (newmis.classname == "grenade")
+	{
+		newmis.dmg = e.dmg;
+		newmis.dodmg = e.dodmg;
+		newmis.eweapon = e;
+		newmis.noise = e.target;
 	}
 
 	EWEAP = world;

@@ -48,7 +48,7 @@ void() viswep_pre =
 // qw - quake wep bit
 // pkw - pkwep bit
 
-float(float qw, float pkw) FL_MELEE =
+float(entity e, float qw, float pkw) FL_MELEE =
 {
 	local float Q_MELEE, PK_MELEE;
 	local float c;
@@ -68,11 +68,15 @@ float(float qw, float pkw) FL_MELEE =
 
 	if (qw & Q_MELEE) c = TRUE;
 
+	if (e.eweapon)
+	if (e.eweapon.style == FL_MELEE_WEP)
+		c = TRUE;
+
 //	if (mc >= MC_CARRYABLE) c = TRUE; // demolition inventory bits hack
 	return(c);
 };
 
-float(float qw, float pkw) FL_RANGE =
+float(entity e, float qw, float pkw) FL_RANGE =
 {
 	local float Q_RANGE, PK_RANGE;
 	local float c;
@@ -86,6 +90,14 @@ float(float qw, float pkw) FL_RANGE =
 
 	if ((pkw & PK_RANGE) && !Q_100) c = TRUE;
 	else if (qw & Q_RANGE) c = TRUE;
+
+	if (e.eweapon)
+	{
+	if (e.eweapon.style == FL_MELEE_WEP)
+		c = FALSE;
+	else
+		c = TRUE;
+	}
 
 	return(c);
 };
@@ -506,13 +518,13 @@ void() viswep_post =
 		if (!vhead)
 		{
 			vload(self, 8388608);
-			if (!FL_RANGE(self.weapon, self.pk_currentitem))
+			if (!FL_RANGE(self.eweapon, self.weapon, self.pk_currentitem))
 //			if (self.weapon == IT_AXE && (Q_100 || !PK || self.pk_currentitem == PK_IT_AXE))
 				vload(self, IT_AXE);
 		}
 		else
 		{
-			if (!FL_RANGE(self.weapon, self.pk_currentitem))
+			if (!FL_RANGE(self.eweapon, self.weapon, self.pk_currentitem))
 //			else if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_AXE)
 //			if (self.weapon == IT_AXE && (Q_100 || !PK || self.pk_currentitem == PK_IT_AXE))
 //			if (self.weapon == IT_AXE && (Q_100 || PK && self.pk_currentitem == PK_IT_AXE))
@@ -637,9 +649,9 @@ void() viswep_post =
 					grap_frame_adjust = VW_HARP_FRADJ;
 				vofs = ' 0 0 0';
 				if (vhead.owner.viswframe > -1) vframe = vhead.owner.viswframe;
-				if (FL_MELEE(vhead.weapon, vhead.pk_currentitem)) {
+				if (FL_MELEE(vhead, vhead.weapon, vhead.pk_currentitem)) {
 					if ( (vhead.owner.frame - gremlin_frame_adjust) >= melee_frames) vadd = viswaddf - melee_frames;
-					} else if (FL_RANGE(vhead.weapon, vhead.pk_currentitem) || (vhead.mdl == VW_DEFGUN)) {
+					} else if (FL_RANGE(vhead, vhead.weapon, vhead.pk_currentitem) || (vhead.mdl == VW_DEFGUN)) {
 					if ( (vhead.owner.frame - gremlin_frame_adjust) < range_frames) vadd = viswaddf;
 				 }
 

@@ -5,9 +5,6 @@
 */
 // map item indiv reposition codes
 
-float HEAL_BOT					= 4; // doom health bottle - ignore normal max, no rot
-float HEAL_SOUL				= 5; // doom health: soul, mega spheres - 200 max, no rot
-
 float ARM_SPIRIT				= 1; // doom spirit armor
 
 // doom values
@@ -18,6 +15,7 @@ float D_DEF_SOULSPH			= 100;
 float D_SOUL_MAX				= 200; // soul, mega max health
 
 float D_ARM_TGRN				= 0.333;
+float D_ARM_GRN				= 100;
 float D_ARM_TBLU				= 0.5;
 float D_ARM_BLUE				= 200;
 
@@ -40,11 +38,14 @@ float D_BARREL_BLAST			= 128;
 // should be RSP_TIME
 float D_POWER_WAIT			= 30; // seconds major doom powers need to respawn
 
+float DOOM_ML_DMG				= -1666665; // tell code to calculate doom melee damage - d2 * 10 per hit
 float DOOM_SHOT_DMG			= -1666666; // tell code to calculate doom bullet damage - d3 * 5 per shot
 float DOOM_ROCK_DMG			= -1666667; // tell code to calculate doom rocket damage - 
+float DOOM_BFG_DMG				= -1666669; // tell code to calculate doom bfg damage -  d8 * 100 + traces + ??
 
 float W_DEF_BULLETS_CLIP	= 8;
 
+float SAWLEN					= 80; // lenght saw can attack
 
 void() doom_precache =
 {
@@ -88,11 +89,13 @@ void() doom_precache =
 
 // view models
 	precache_model ("progs/v_d_pistol.mdl");
+	precache_model ("progs/v_d_bfg.mdl");
 	precache_model ("progs/v_d_shot.mdl");
 	precache_model ("progs/v_d_dblshot.mdl");
 	precache_model ("progs/v_d_chg.mdl");
 	precache_model ("progs/v_d_plasma.mdl");
 	precache_model ("progs/v_d_rock.mdl");
+	precache_model ("progs/v_d_saw.mdl");
 // viswep
 	precache_model ("progs/vw_d_saw.mdl");
 	precache_model ("progs/vw_d_pistol.mdl");
@@ -144,10 +147,15 @@ void() doom_precache =
 	precache_sound ("doom/gibs.wav");
 // weps
 	precache_sound ("doom/dsrlaunc.wav");
+	precache_sound ("doom/dsbfg.wav");
 	precache_sound ("doom/dspistol.wav");
 	precache_sound ("doom/dsshotgn.wav");
 	precache_sound ("doom/dsdshtgn.wav");
 	precache_sound ("doom/dsplasma.wav");
+	precache_sound ("doom/dssawup.wav");
+	precache_sound ("doom/dssawidl.wav");
+	precache_sound ("doom/dssawhit.wav");
+	precache_sound ("doom/dssawful.wav");
 	precache_sound ("doom/dsfirxpl.wav");
 //	precache_sound ("doom/d_f_chg.wav");
 // wolf
@@ -171,7 +179,6 @@ void() doom_precache =
 		+---------------------------------------+
 */
 
-void() item_health;
 /*
 NOTE: this code assumes the translation of doom map entites to quake style definitions in the map file by some device or code...
 
@@ -182,13 +189,14 @@ NOTE: this code assumes the translation of doom map entites to quake style defin
 
 void() d_item_healthbottle =
 {
-	item_health();
+	q100_item_health();
 	setmodel(self, "progs/heal_bottle.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav"; // doom respawn sound
 	self.netname = "Health potion";
 	self.healamount = D_DEF_HBOTTLE;
 	self.healtype = HEAL_BOT;
+	self.volume = 200; // max add
 	self.effects = self.effects | EF_FULLBRIGHT;
 	self.alpha = 0.8;
 	if (self.class_select == "") self.class_select = "doom_item";
@@ -196,26 +204,28 @@ void() d_item_healthbottle =
 
 void() d_item_healthmedkit =
 {
-	item_health();
+	q100_item_health();
 	setmodel(self, "progs/heal_medkit.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Health Medikit";
 	self.healamount = D_DEF_HMEDKIT;
-//	self.healtype = HEAL_NORM;
+	self.healtype = HEAL_NORM;
+	self.volume = 100; // max add
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
 void() d_item_healthstimpak =
 {
-	item_health();
+	q100_item_health();
 	setmodel(self, "progs/heal_stimpak.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Health Stimpak";
 	self.healamount = D_DEF_HSTIMPAK;
-//	self.healtype = HEAL_NORM;
+	self.healtype = HEAL_NORM;
+	self.volume = 100; // max add
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -227,9 +237,12 @@ void() d_item_spiritarmor =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Spirit armor";
+	self.volume = 200; // max add
 //	self.skin = 0;
-	self.state = D_ARM_TBLU;
+	self.style = D_ARM_TBLU;
 	self.currentammo = ARM_SPIRIT;
+	self.items = IT_ARMOR2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -243,7 +256,11 @@ void() d_item_armorgreen =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Security armor";
-	self.state = D_ARM_TGRN;
+	self.style = D_ARM_TGRN;
+	self.currentammo = D_ARM_GRN; // 100 units
+	self.volume = 100; // max add
+	self.items = IT_ARMOR1;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -256,8 +273,11 @@ void() d_item_armorblue =
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Combat armor";
-	self.state = D_ARM_TBLU;
+	self.style = D_ARM_TBLU;
 	self.currentammo = D_ARM_BLUE; // 200 units
+	self.volume = 200; // max add
+	self.items = IT_ARMOR2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -406,12 +426,30 @@ void() d_weapon_bfg =
 	q100_weapon_lightning();
 	self.netname = "BFG 9000";
 
+// fn
+	self.touch = d_weapon_touch;
+	self._attack = SUB_Null;
+	self._fr_attack = player_bfg1;
+// stats
+	self.currentammo = D_DEF_BFG;
+	self.items = IT_LIGHTNING;
+	self.lip = AMMO_CELLS;
+	self.attack_finished = 2;
+	self.dmg = DOOM_BFG_DMG;
+//	self.dodmg = 128; // splash
+	self.dmg_save = 40;
+
+// appearances
 	setmodel (self, "progs/d_bfg.mdl");
-//	self.weaponmodel = "progs/v_d_bfg.mdl";
+	self.weaponmodel = "progs/v_d_bfg.mdl";
 	self.vwepmdl = "progs/vw_d_bfg.mdl";
+	self.target1 = "progs/d_bfg_boom.mdl";
 	self.noise = "doom/dswpnup.wav";
 	self.noise4 = "doom/dsitembk.wav";
-	self.currentammo = D_DEF_BFG;
+	self.noise3 = "doom/dsbfg.wav";
+	self.target = "doom/dsfirxpl.wav";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	self.endtime = 0.768;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
@@ -439,6 +477,9 @@ void() d_weapon_rocketlauncher =
 	self.noise = "doom/dswpnup.wav";
 	self.noise3 = "doom/dsrlaunc.wav";
 	self.noise4 = "doom/dsitembk.wav";
+	self.target = "doom/dsfirxpl.wav";
+	self.duration = SND_OVER;
+	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
@@ -480,8 +521,8 @@ void() d_weapon_pistol =
 	self.netname = "Pistol";
 
 	self.touch = d_weapon_touch;
-	self._attack = X_FireHitscan;
-	self._fr_attack = player_shot1; // FIX - special framing
+	self._attack = SUB_Null;
+	self._fr_attack = player_pistol1;
 
 // stats
 	self.currentammo = 25;
@@ -492,6 +533,7 @@ void() d_weapon_pistol =
 	self.dmg_save = 1;
 	self.dmg_take = 1;
 	self.punchangle = ' 0.01 0.01 0';
+	self.style = FL_MELEE_WEP;
 
 	setmodel (self, "progs/d_pistol.mdl");
 	self.weaponmodel = "progs/v_d_pistol.mdl";
@@ -499,6 +541,7 @@ void() d_weapon_pistol =
 	self.noise3 = "doom/dspistol.wav";
 	self.noise = "doom/dswpnup.wav";
 	self.noise4 = "doom/dsitembk.wav";
+	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -509,18 +552,34 @@ void() d_weapon_saw =
 	weapon_nailgun();
 	self.netname = "Chainsaw";
 
+	self.touch = d_weapon_touch;
+	self._attack = SUB_Null;
+	self._fr_attack = player_saw1;
+
+// stats
+	self.currentammo = 0;
+	self.items = IT_NAILGUN; // IT_AXE; // testing
+	self.lip = AMMO_NONE;
+	self.attack_finished = 0.12;
+	self.dmg = DOOM_ML_DMG;
+	self.dmg_save = SAWLEN;
+	self.dmg_take = 1;
+//	self.style = FL_MELEE_WEP;
+
 	setmodel (self, "progs/d_saw.mdl");
 	self.weaponmodel = "progs/v_d_saw.mdl";
 	self.vwepmdl = "progs/vw_d_saw.mdl";
-//	self.noise3 = "doom/dssaw.wav";
+	self.noise3 = "doom/dssawful.wav";
+	self.noise2 = "doom/dssawidl.wav";
+	self.target = "doom/dssawhit.wav";
 	self.noise = "doom/dswpnup.wav";
 	self.noise4 = "doom/dsitembk.wav";
-	self.currentammo = 1;
+	self.chaosweptime = 0.68;
+	self.endtime = 0.715;
 	self.effects = self.effects | EF_FULLBRIGHT;
-//	self._attack = player_dchg1;
-	self.attack_finished = 0.25;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
+
 
 void() d_weapon_shotgun =
 {
@@ -546,6 +605,7 @@ void() d_weapon_shotgun =
 	self.noise = "doom/dswpnup.wav";
 	self.noise3 = "doom/dsshotgn.wav";
 	self.noise4 = "doom/dsitembk.wav";
+	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -574,6 +634,7 @@ void() d_weapon_supershotgun =
 	self.noise = "doom/dswpnup.wav";
 	self.noise3 = "doom/dsdshtgn.wav";
 	self.noise4 = "doom/dsitembk.wav";
+	self.duration = SND_OVER;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -611,6 +672,11 @@ void() d_weapon_plasma =
 void() d_item_pack =
 {
 	item_shells();
+	self.ammo_bullet = 10;
+	self.ammo_shells = 4;
+	self.ammo_rockets = 1;
+	self.ammo_cells = 20;
+
 	setmodel(self, "progs/d_pack.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
@@ -621,13 +687,13 @@ void() d_item_pack =
 
 void() d_art_berserker =
 {
-	item_health();
+	q100_item_health();
 	setmodel(self, "progs/d_berzerk.mdl");
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Berserker";
 	self.healamount = 100;
-//	self.healtype = HEAL_NORM;
+	self.healtype = HEAL_NORM;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
@@ -636,7 +702,7 @@ void() d_art_berserker =
 
 void() d_art_soulsphere =
 {
-	item_health();
+	q100_item_health();
 	setmodel(self, "progs/d_spheres.mdl");
 	self.skin = 0;
 	self.noise = "doom/dsgetpow.wav";
@@ -644,6 +710,7 @@ void() d_art_soulsphere =
 	self.netname = "Soul Sphere";
 	self.healamount = D_DEF_SOULSPH;
 	self.healtype = HEAL_SOUL;
+	self.volume = 200; // max add
 	self.wait = D_POWER_WAIT;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
@@ -662,6 +729,7 @@ void() d_art_megasphere =
 // heal
 	self.healamount = D_DEF_SOULSPH;
 	self.healtype = HEAL_SOUL;
+	self.volume = 200; // max add
 	self.wait = D_POWER_WAIT;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
@@ -896,17 +964,33 @@ void() w_weapon_mortar =
 
 void() w_weapon_flamer =
 {
-	q100_weapon_grenadelauncher();
+	q100_weapon_lightning();
+	self.netname = "Flame thrower";
 
-	self.netname = "Flame Thrower";
+// fn
+	self.touch = d_weapon_touch;
+	self._attack = W_FireFlamer;
+	self._fr_attack = player_flamer1;
+
+// stats
+	self.currentammo = 20;
+	self.items = IT_GRENADE_LAUNCHER;
+	self.lip = AMMO_GAS;
+	self.attack_finished = 0.1;
+	self.dmg = 10;
+	self.dmg_save = 1;
+
+// appearances
 	setmodel (self, "progs/w_flamer.mdl");
 	self.weaponmodel = "progs/v_w_flamer.mdl";
 	self.vwepmdl = "progs/vw_w_flamer.mdl";
-//	self.noise3 = "wolf/w_mg.wav";
+//	self.target1 = "progs/";
 	self.noise = "wolf/pickup_gn.wav";
-	self.noise3 = "doom/dsrlaunc.wav";
+	self.noise3 = "flm/ft_fire.wav";
+	self.noise2 = "flm/ft_hum.wav";
 	self.noise4 = "doom/dsitembk.wav";
-
+//	self.target = ".wav";
+	self.chaosweptime = 1.2;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
@@ -916,18 +1000,19 @@ void() w_weapon_pistol =
 	weapon_nailgun();
 
 	self.touch = d_weapon_touch;
-	self._attack = X_FireHitscan;
-	self._fr_attack = player_shot1; // FIX - special framing
+	self._attack = SUB_Null;
+	self._fr_attack = player_pistol1;
 
 // stats
 	self.currentammo = 6;
-	self.items = IT_SHOTGUN; // IT_AXE; // testing
+	self.items = IT_NAILGUN; // IT_AXE; // testing
 	self.lip = AMMO_BULLETS;
 	self.attack_finished = 0.465; // 2.15 per
 	self.dmg = 10;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
 	self.punchangle = ' 0.01 0.01 0';
+	self.style = FL_MELEE_WEP;
 
 	self.netname = "Luger Pistol";
 	setmodel (self, "progs/w_pistol.mdl");
@@ -936,6 +1021,7 @@ void() w_weapon_pistol =
 	self.noise3 = "wolf/w_pistol.wav";
 	self.noise = "wolf/pickup_gn.wav";
 	self.noise4 = "doom/dsitembk.wav";
+	self.duration = SND_OVER;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
@@ -944,10 +1030,22 @@ void() w_weapon_pistol =
 void() w_weapon_knife =
 {
 	weapon_axe();
-
-	self.attack_finished = 0.465; // 2.15 per
-
 	self.netname = "Knife";
+
+	self.touch = d_weapon_touch;
+	self._attack = melee_hit;
+	self._fr_attack = player_axe1;
+
+// stats
+	self.currentammo = 0;
+	self.items = IT_NAILGUN; // IT_AXE; // testing
+	self.lip = AMMO_NONE;
+	self.attack_finished = 0.465; // 2.15 per
+	self.dmg = 20;
+	self.dmg_save = 48;
+	self.dmg_take = 1;
+	self.style = FL_MELEE_WEP;
+
 	setmodel (self, "progs/w_knife.mdl");
 	self.weaponmodel = ""; //progs/v_w_knife.mdl";
 	self.vwepmdl = "progs/vw_w_knife.mdl";
@@ -958,6 +1056,7 @@ void() w_weapon_knife =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
+
 
 void() w_ammo_clip =
 {
@@ -977,14 +1076,15 @@ void() w_ammo_clip =
 
 void() w_art_facesphere =
 {
-	item_health();
+	q100_item_health();
 	setmodel(self, "progs/d_spheres.mdl");
 	self.skin = 4;
 	self.noise = "wolf/pickup_gdy.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Face Sphere";
 	self.healamount = 100;
-	self.healtype = HEAL_SOUL;
+	self.ammo_bullet = 25; // doh - special
+	self.healtype = HEAL_SOUL; // normally max 100, but we need to accomodate +1 life
 	self.wait = D_POWER_WAIT;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
@@ -1090,7 +1190,7 @@ float() mega_touch =
 	if (other.armorvalue < self.currentammo)
 	{
 			arm = 0; // got armor portion of mega sphere
-			other.armortype = self.state;
+			other.armortype = self.style;
 			other.armorvalue = self.currentammo;
 			other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + self.items;
 		
@@ -1139,3 +1239,60 @@ void() wchg2_weapon_touch =
 	d_weapon_touch();
 };
 
+void() player_saw1 = [$shotatt1, player_saw1]
+{
+	if (!self.button0)
+	{
+		self.eweapon.fly_sound = 0;
+		player_run ();
+		return;
+	}
+
+	if (self.weaponframe == 0)
+	{
+		self.tomb_time = 1;
+		self.chaosweptime = 0;
+//		ominous_hum(self.eweapon.noise3, 1.64);
+		self.weaponframe = 3;
+	}
+	else
+// cyclic weapon frame for 1pf
+//	if ((time * 10) & 1)
+		self.weaponframe = self.weaponframe + self.tomb_time;
+
+	if (self.weaponframe >= 5)
+	{
+		self.weaponframe = 5;
+		self.tomb_time = -1;
+	}
+	else if (self.weaponframe <= 1)
+	{
+		self.weaponframe = 1;
+		self.tomb_time = 1;
+	}
+	self.frame = $shotatt1 + self.weaponframe;
+
+	EWEAP = self.eweapon;
+	EWEAP.fly_sound = HUMLOCAL;
+	ominous_hum(EWEAP.noise3, 1.64);
+
+	melee_hit(); // look for something to cut
+
+	self.nextthink = time + EWEAP.attack_finished;
+	if (!rune_haste(EWEAP.attack_finished / 2))
+		self.nextthink = time + EWEAP.attack_finished / 2;
+	EWEAP = world;
+};
+
+// bring  saw up - has to happen on switch (drop / pull deal)
+
+void() player_sawu1 = [$shotatt1, player_sawu2]
+{
+	ominous_hum("doom/dssawup.wav", 1.48);
+	self.weaponframe = 6;
+};
+void() player_sawu2 = [$shotatt2, player_sawu3] { self.weaponframe = 7; };
+void() player_sawu3 = [$shotatt3, player_sawu4] { self.weaponframe = 8; };
+void() player_sawu4 = [$shotatt4, player_sawu5] { self.weaponframe = 7; };
+void() player_sawu5 = [$shotatt5, player_sawu6] { self.weaponframe = 6; };
+void() player_sawu6 = [$shotatt6, player_stand1] { };

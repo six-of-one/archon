@@ -69,25 +69,71 @@ void() laser_bolt_select =
 	}
 };
 
-void() fire_laser1 =
+
+void(float fl) fire_laser1 =
 {
 	local vector org;
+	local float fy, fz, lv;
+	local string snd;
 
 	if (!laser_sel) laser_bolt_select();
 
-	org = self.origin; // + v_forward * 4 + v_up * 16; // gen fire ref - really chaos morph, but was screwing up firebursts
-	if (EWEAP) org = self.origin + v_right * VWY_LASER + v_forward * VWX_LASER + v_up * VWZ_LASER;
 
-	fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, FL_USEAMMO, RM_SKY | PF_LAVA, org, ' 0 0 0', "laser", "progs/laser_m.mdl", "", Laser_Blast, 6, SUB_Remove, Laser_Blast);
+
+// TESTING
+bprint(" *** eweap ");
+bprint(EWEAP.netname);
+
+
+
+	lv = LASER_VEL;
+	fy = fz = 0;
+	org = self.origin; // + v_forward * 4 + v_up * 16; // gen fire ref - really chaos morph, but was screwing up firebursts
+	if (EWEAP)
+	{
+		snd = EWEAP.noise3;
+		if (EWEAP.mdl == "progs/vw_q2_hbl.mdl")
+		{
+			snd = "";
+			lv = LASERCAN_VEL;
+			if ((self.tomb_time & 7) == 1) { fy = 0; fz = 2;}
+			if ((self.tomb_time & 7) == 3) { fy = 2; fz = 0;}
+			if ((self.tomb_time & 7) == 5) { fy = 0; fz = -2;}
+			if ((self.tomb_time & 7) == 7) { fy = -2; fz = 0;}
+		}
+		org = self.origin + v_right * (VWY_LASER + fy) + v_forward * VWX_LASER + v_up * (VWZ_LASER + fz);
+	}
+
+	fire_missile(lv, MOVETYPE_FLYMISSILE, fl, RM_SKY | PF_LAVA, org, ' 0 0 0', "laser", "progs/laser_m.mdl", snd, Laser_Blast, 6, SUB_Remove, Laser_Blast);
 	newmis.skin = laser_sk;
 	newmis.frame = laser_fr;
 //		newmis.effects = EF_DIMLIGHT;
 	if (EWEAP)
 	{
 		newmis.dmg = EWEAP.dmg;
+		newmis.dodmg = EWEAP.dodmg;
 		if (EWEAP.dmg == DOOM_SHOT_DMG) newmis.dmg = 5 * ceil(random() * 8);
 		if (EWEAP.target != "") newmis.noise3 = EWEAP.target;
 	}
+
+
+
+
+
+bprint(", hit dmg = ");
+bprint(ftos(newmis.dmg));
+bprint(", splash dmg = ");
+bprint(ftos(EWEAP.dodmg));
+fts.dmg_take = fts.dmg_take + newmis.dmg;
+fts.dmg_save = fts.dmg_save + 1;
+
+
+bprint(", tot dmg = ");
+bprint(ftos(newmis.dmg+EWEAP.dodmg));
+bprint(".\n");
+fts.dmg = fts.dmg + newmis.dmg+EWEAP.dodmg;
+fts.cnt = fts.cnt + 1;
+
 
 };
 

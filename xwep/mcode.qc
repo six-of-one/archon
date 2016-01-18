@@ -23,160 +23,559 @@ float ITEM_SET2				= 1047552; // allows multiplexing of 2 x 1023 bit values in 1
 
 /// quake 1
 // q1 wep ids
-float MC_AXE					= 100;
-float MC_SHOTGUN				= 101;
-float MC_SUPER_SHOTGUN		= 102; // - 101 to get item override menu #
-float MC_NAILGUN				= 103;
-float MC_SUPER_NAILGUN		= 104;
-float MC_GRENADEL	 			= 105;
-float MC_ROCKETL				= 106;
-float MC_THUNDER				= 107;
+float MC_AXE;
+float MC_SHOTGUN;
+float MC_SUPER_SHOTGUN; // - 101 to get item override menu #
+float MC_NAILGUN;
+float MC_SUPER_NAILGUN;
+float MC_GRENADEL;
+float MC_ROCKETL;
+float MC_THUNDER;
 
 // 108 is special - xlates to pkitems on admin item override menu
 
 // special ids
-float MC_QUAD					= 109;
-float MC_PENT					= 110;
-float MC_RING					= 111;
-float MC_SUIT					= 112;
+float MC_QUAD;
+float MC_PENT;
+float MC_RING;
+float MC_SUIT;
 
 // armor ids
-float MC_ARMOR1				= 113;
-float MC_ARMOR2				= 114;
-float MC_ARMOR3				= 115;
+float MC_ARMOR1;
+float MC_ARMOR2;
+float MC_ARMOR3;
 
 // health ids - translate
-float MC_HEALTHROT			= 116;
-float MC_HEALTH				= 117;
-float MC_HEALTHMEGA			= 118;
+float MC_HEALTHROT;
+float MC_HEALTH;
+float MC_HEALTHMEGA;
 
 // key ids
-float MC_KEY1					= 119;
-float MC_KEY2					= 120;
+float MC_KEY1;
+float MC_KEY2;
 
 // ammo ids
-float MC_ASHELLS				= 121;
-float MC_ASHELLS_LG			= 122;
-float MC_ANAILS				= 123;
-float MC_ANAILS_LG			= 124;
-float MC_AROCKETS				= 125;
-float MC_AROCKETS_LG			= 126;
-float MC_ACELLS				= 127;
-float MC_ACELLS_LG			= 128;
+float MC_ASHELLS;
+float MC_ASHELLS_LG;
+float MC_ANAILS;
+float MC_ANAILS_LG;
+float MC_AROCKETS;
+float MC_AROCKETS_LG;
+float MC_ACELLS;
+float MC_ACELLS_LG;
 
 // boom!
-float MC_EXPLOD1				= 129;
-float MC_EXPLOD2				= 130;
+float MC_EXPLOD1;
+float MC_EXPLOD2;
 
 // sigil id - flags
-float MC_SIGIL1				= 131;
-float MC_SIGIL2				= 132;
-float MC_SIGIL4				= 133;
-float MC_SIGIL8				= 134;
+float MC_SIGIL1;
+float MC_SIGIL2;
+float MC_SIGIL4;
+float MC_SIGIL8;
 
-float MC_Q1						= 135;
-float MC_RNDITM				= 32;		// # of q1 items - have to change as items changes
-float MC_NR_RNDITM			= 28;		//   no runes
+float MC_Q1;
+float MC_RNDITM; // # of q1 items - have to change as items changes
+float MC_NR_RNDITM; // no runes
 
-float MC_SIGIL					= 135;
+float MC_SIGIL;
 
-float MC_BACKPACK				= 135;
+// key ids special (keyX)
+float MC_KEY1_0;
+float MC_KEY1_1;
+float MC_KEY1_2;
+float MC_KEY2_0;
+float MC_KEY2_1;
+float MC_KEY2_2;
+
+float MC_BACKPACK;
 
 /// painkeep
 // pk wep ids
-float MC_EXPSHOTGUN			= 140;
-float MC_PULSE_NAILGUN		= 141;
-float MC_CHTHUNDR				= 142;
-float MC_GRAP					= 143;
-float MC_AIRGUN				= 144;
+float MC_EXPSHOTGUN;
+float MC_PULSE_NAILGUN;
+float MC_CHTHUNDR;
+float MC_GRAP;
+float MC_AIRGUN;
 
 // device ids - carryable stuff? (doesnt use ammo like a range wep)
-//float MC_CARRYABLE			= 200;
+//float MC_CARRYABLE;
 // pk weps;
-float MC_BEARTRAP				= 145;
-float MC_GRAVITY				= 146;
-float MC_SENTRY				= 147;
-float MC_CANOBEANS			= 148;
-float MC_AEXPLSH				= 149;
+float MC_BEARTRAP;
+float MC_GRAVITY;
+float MC_SENTRY;
+float MC_CANOBEANS;
+float MC_AEXPLSH;
 // pk plus
-float MC_TOMB					= 150;
-float MC_EGO					= 151;
-float MC_PHONE					= 152;
-float MC_MASK					= 153;
+float MC_TOMB;
+float MC_EGO;
+float MC_PHONE;
+float MC_MASK;
 
-float MC_PK						= 154;
-float MC_PK_RNDITM			= 8;		// # of base pk items
-float MC_PKP_RNDITM			= 12;		//   + plus items
+float MC_PK;
+float MC_PK_RNDITM; // # of base pk items
+float MC_PKP_RNDITM; // + plus items
 
 
-float MC_T_RNDITM				= 40;		// # of total items
-float MC_TRNSUB				= 6;		// skip from q1 - pk
+float MC_T_RNDITM; // # of total items
+float MC_TRNSUB; // skip from q1 - pk
 
 /// doom
 
-float MC_D_FIST				= 160;
-float MC_D_SAW					= 161;
-float MC_D_PISTOL				= 162;
-float MC_D_SHOTGUN			= 163;
-float MC_D_BOOMSTICK			= 164;
-float MC_D_CHAINGUN			= 165;
-float MC_D_ROCKETL			= 166;
-float MC_D_PLASMA	 			= 167;
-float MC_D_BFG					= 168;
+float MC_D_FIST;
+float MC_D_SAW;
+float MC_D_PISTOL;
+float MC_D_SHOTGUN;
+float MC_D_BOOMSTICK;
+float MC_D_CHAINGUN;
+float MC_D_ROCKETL;
+float MC_D_PLASMA;
+float MC_D_BFG;
 
-float MC_D_BERS				= 169;
-float MC_D_INVUL				= 170;
-float MC_D_INVIS				= 171;
-float MC_D_RADSUIT			= 172;
-float MC_D_SOULSPH			= 173;
-float MC_D_MEGASPH			= 174;
+float MC_D_BERS;
+float MC_D_INVUL;
+float MC_D_INVIS;
+float MC_D_RADSUIT;
+float MC_D_SOULSPH;
+float MC_D_MEGASPH;
 
-float MC_D_ARM_SPR			= 175;
-float MC_D_ARM_GRN			= 176;
-float MC_D_ARM_BLU			= 177;
+float MC_D_ARM_SPR;
+float MC_D_ARM_GRN;
+float MC_D_ARM_BLU;
 
-float MC_D_HBOTTLE			= 178;
-float MC_D_STIMPAK			= 179;
-float MC_D_MEDKIT				= 180;
+float MC_D_HBOTTLE;
+float MC_D_STIMPAK;
+float MC_D_MEDKIT;
 
-float MC_D_KEY_RED_SK		= 181;
-float MC_D_KEY_BLU_SK		= 182;
-float MC_D_KEY_YEL_SK		= 183;
-float MC_D_KEY_RED_CR		= 184;
-float MC_D_KEY_BLU_CR		= 185;
-float MC_D_KEY_YEL_CR		= 186;
+float MC_D_KEY_RED_SK;
+float MC_D_KEY_BLU_SK;
+float MC_D_KEY_YEL_SK;
+float MC_D_KEY_RED_CR;
+float MC_D_KEY_BLU_CR;
+float MC_D_KEY_YEL_CR;
 
-float MC_D_ASHELLS			= 187;
-float MC_D_ASHELLS_LG		= 188;
-float MC_D_ABULLETS			= 189;
-float MC_D_ABULLETS_LG		= 190;
-float MC_D_AROCKET			= 191;
-float MC_D_AROCKETS_LG		= 192;
-float MC_D_ACELLS				= 193;
-float MC_D_ACELLS_LG			= 194;
+float MC_D_ASHELLS;
+float MC_D_ASHELLS_LG;
+float MC_D_ABULLETS;
+float MC_D_ABULLETS_LG;
+float MC_D_AROCKET;
+float MC_D_AROCKETS_LG;
+float MC_D_ACELLS;
+float MC_D_ACELLS_LG;
 
-float MC_D_PACK				= 195;
-float MC_D_NIGHTVS			= 196;
-float MC_D_AUTOMAP			= 197;
+float MC_D_PACK;
+float MC_D_NIGHTVS;
+float MC_D_AUTOMAP;
 
-float MC_D_BARREL				= 198;
+float MC_D_BARREL;
 
-float MC_D_RNDITM				= 38;		// # of total items
+float MC_DOOM;
+
+float MC_D_RNDITM; // # of total items
 
 /// wolf 3d
 
-float MC_W_KNIFE				= 199;
-float MC_W_PISTOL				= 200;
-float MC_W_MACHGUN			= 201;
-float MC_W_CHAINGUN			= 202;
-float MC_W_MORTAR				= 203;
-float MC_W_FLAMER				= 204;
-float MC_W_CLIP				= 205;
-float MC_W_KEY_G				= 206;
-float MC_W_KEY_B				= 207;
-float MC_W_BARREL				= 208;
+float MC_W_KNIFE;
+float MC_W_PISTOL;
+float MC_W_MACHGUN;
+float MC_W_CHAINGUN;
+float MC_W_MORTAR;
+float MC_W_FLAMER;
+float MC_W_CLIP;
+float MC_W_FACESPHERE;
+float MC_W_KEY_G;
+float MC_W_KEY_B;
+float MC_W_BARREL;
 
-float MC_W_RNDITM				= 9;		// # of total items
+float MC_WOLF;
+
+float MC_W_RNDITM; // # of total items
+
+/// q2
+
+float MC_Q2_BLASTER;
+float MC_Q2_SHOTGUN;
+float MC_Q2_DBLSHOTGUN;
+float MC_Q2_MACHINEGUN;
+float MC_Q2_CHAINGUN;
+float MC_Q2_GRENADEL;
+float MC_Q2_ROCKETL;
+float MC_Q2_HYPBLASTER;
+float MC_Q2_RAILGUN;
+float MC_Q2_BFG;
+
+float MC_Q2_QUAD;
+float MC_Q2_INVUL;
+float MC_Q2_ENVIRO;
+float MC_Q2_SILENCE;
+
+float MC_Q2_ARM_SHARD;
+float MC_Q2_ARM_JAK;
+float MC_Q2_ARM_COMBAT;
+float MC_Q2_ARM_BODY;
+float MC_Q2_ARM_PSHIELD;
+float MC_Q2_ARM_PSCREEN;
+
+float MC_Q2_STIMPAK;
+float MC_Q2_FIRSTAID;
+float MC_Q2_MEDKIT;
+float MC_Q2_MEGA;
+
+float MC_Q2_KEY_RED;
+float MC_Q2_KEY_BLU;
+float MC_Q2_KEY_CHEAD;
+float MC_Q2_KEY_ATARGET;
+float MC_Q2_KEY_CD;
+float MC_Q2_KEY_SPINNER;
+float MC_Q2_KEY_PASS;
+float MC_Q2_KEY_POWER;
+float MC_Q2_KEY_PYRAMID;
+
+float MC_Q2_ASHELLS;
+float MC_Q2_ABULLETS;
+float MC_Q2_AROCKETS;
+float MC_Q2_AGRENADES;
+float MC_Q2_ACELLS;
+float MC_Q2_ASLUGS;
+
+float MC_Q2_PACK;
+float MC_Q2_ADRENALINE;
+float MC_Q2_BANDOLIER;
+float MC_Q2_BREATHER;
+
+float MC_Q2_BARREL;
+
+float MC_Q2;
+
+float MC_Q2_RNDITM; // # of total items
+
+/// q3
+
+float MC_Q3_GAUNTLET;
+float MC_Q3_GRAPPLE;
+float MC_Q3_MACHINEGUN;
+float MC_Q3_SHOTGUN;
+float MC_Q3_GRENADEL;
+float MC_Q3_ROCKETL;
+float MC_Q3_PLASMA;
+float MC_Q3_LIGHTNING;
+float MC_Q3_RAILGUN;
+float MC_Q3_BFG;
+
+float MC_Q3_QUAD;
+float MC_Q3_REGEN;
+float MC_Q3_ENVIRO;
+float MC_Q3_INVIS;
+float MC_Q3_HASTE;
+float MC_Q3_FLIGHT;
+
+float MC_Q3_ARM_SHARD;
+float MC_Q3_ARM_COMBAT;
+float MC_Q3_ARM_BODY;
+
+float MC_Q3_HSMALL;
+float MC_Q3_HEALTH;
+float MC_Q3_HLARGE;
+float MC_Q3_MEGA;
+
+float MC_Q3_ASHELLS;
+float MC_Q3_ABULLETS;
+float MC_Q3_AROCKETS;
+float MC_Q3_AGRENADES;
+float MC_Q3_ACELLS;
+float MC_Q3_ASLUGS;
+float MC_Q3_ALIGNTNING;
+float MC_Q3_ABFG;
+
+float MC_Q3_HOLDMEDKIT;
+float MC_Q3_HOLDTELE;
+
+float MC_Q3;
+
+float MC_Q3_RNDITM; // # of total items
+
+float MC_TOT; // total mcodes
+
+// fn(mcode_load) - set map codes dynamically so we dont have the long list anymore
+
+void() mcode_load =
+{
+	local float f;
+
+	f = 99; // starts at 100 for string array
+
+	MC_AXE = f = (f + 1);
+	MC_SHOTGUN = f = (f + 1);
+	MC_SUPER_SHOTGUN = f = (f + 1);	//	-	101	to	get	item	override	menu	#
+	MC_NAILGUN = f = (f + 1);
+	MC_SUPER_NAILGUN = f = (f + 1);
+	MC_GRENADEL = f = (f + 1);
+	MC_ROCKETL = f = (f + 1);
+	MC_THUNDER = f = (f + 1);
+
+//	108	is	special	-	xlates	to	pkitems	on	admin	item	override	menu
+
+//	special ids
+	MC_QUAD = f = (f + 1);
+	MC_PENT = f = (f + 1);
+	MC_RING = f = (f + 1);
+	MC_SUIT = f = (f + 1);
+
+//	armor ids
+	MC_ARMOR1 = f = (f + 1);
+	MC_ARMOR2 = f = (f + 1);
+	MC_ARMOR3 = f = (f + 1);
+
+//	health ids	-	translate
+	MC_HEALTHROT = f = (f + 1);
+	MC_HEALTH = f = (f + 1);
+	MC_HEALTHMEGA = f = (f + 1);
+
+//	key ids
+	MC_KEY1 = f = (f + 1);
+	MC_KEY2 = f = (f + 1);
+
+//	ammo ids
+	MC_ASHELLS = f = (f + 1);
+	MC_ASHELLS_LG = f = (f + 1);
+	MC_ANAILS = f = (f + 1);
+	MC_ANAILS_LG = f = (f + 1);
+	MC_AROCKETS = f = (f + 1);
+	MC_AROCKETS_LG = f = (f + 1);
+	MC_ACELLS = f = (f + 1);
+	MC_ACELLS_LG = f = (f + 1);
+
+//	boom!
+	MC_EXPLOD1 = f = (f + 1);
+	MC_EXPLOD2 = f = (f + 1);
+
+	MC_NR_RNDITM = f - MC_AXE;		//			no	runes
+
+// sigil id - flags
+	MC_SIGIL1 = f = (f + 1);
+	MC_SIGIL2 = f = (f + 1);
+	MC_SIGIL4 = f = (f + 1);
+	MC_SIGIL =
+	MC_SIGIL8 = f = (f + 1);
+
+	MC_Q1 = (f + 1);
+
+	MC_RNDITM = f - MC_AXE;		//	#	of	q1	items	-	have	to	change	as	items	changes
+
+//	key ids special
+	MC_KEY1_0 = f = (f + 1);
+	MC_KEY1_1 = f = (f + 1);
+	MC_KEY1_2 = f = (f + 1);
+	MC_KEY2_0 = f = (f + 1);
+	MC_KEY2_1 = f = (f + 1);
+	MC_KEY2_2 = f = (f + 1);
+
+	MC_BACKPACK = f = (f + 1);
+
+///	painkeep
+//	pk	wep	ids
+//	MC_EXPSHOTGUN = f = (f + 1); // no map loadable exploding shotgun - and if there is we may not want the code here anyway, would be a chaos code and not a pk item
+	MC_PULSE_NAILGUN = f = (f + 1);
+	MC_CHTHUNDR = f = (f + 1);
+	MC_GRAP = f = (f + 1);
+	MC_AIRGUN = f = (f + 1);
+
+//	device	ids	-	carryable	stuff?	(doesnt	use	ammo	like	a	range	wep)
+//	MC_CARRYABLE = f = (f + 1);
+//	pk	weps;
+	MC_BEARTRAP = f = (f + 1);
+	MC_GRAVITY = f = (f + 1);
+	MC_SENTRY = f = (f + 1);
+	MC_CANOBEANS = f = (f + 1);
+	MC_AEXPLSH = f = (f + 1);
+
+// TDO: fix when there is a map loadable exploding shot gun? or not...
+	MC_PK_RNDITM = f - MC_PULSE_NAILGUN;		//	#	of	base	pk	items
+
+//	pk	plus
+	MC_TOMB = f = (f + 1);
+	MC_EGO = f = (f + 1);
+	MC_PHONE = f = (f + 1);
+	MC_MASK = f = (f + 1);
+
+	MC_PKP_RNDITM = f - MC_PULSE_NAILGUN;		//			+	plus	items
+	MC_PK	 = (f + 1);
+
+	MC_T_RNDITM = f - MC_AXE;		//	#	of	total	items
+	MC_TRNSUB = 0;		//	skip	from	q1	-	pk - TDO: remove from code
+
+///	doom
+
+//	MC_D_FIST = f = (f + 1); // NOTE: not a map spawn item, can this be removed?
+	MC_D_SAW = f = (f + 1);
+	MC_D_PISTOL = f = (f + 1);
+	MC_D_SHOTGUN = f = (f + 1);
+	MC_D_BOOMSTICK = f = (f + 1);
+	MC_D_CHAINGUN = f = (f + 1);
+	MC_D_ROCKETL = f = (f + 1);
+	MC_D_PLASMA = f = (f + 1);
+	MC_D_BFG = f = (f + 1);
+
+	MC_D_BERS = f = (f + 1);
+	MC_D_INVUL = f = (f + 1);
+	MC_D_INVIS = f = (f + 1);
+	MC_D_RADSUIT = f = (f + 1);
+	MC_D_SOULSPH = f = (f + 1);
+	MC_D_MEGASPH = f = (f + 1);
+
+	MC_D_ARM_SPR = f = (f + 1);
+	MC_D_ARM_GRN = f = (f + 1);
+	MC_D_ARM_BLU = f = (f + 1);
+
+	MC_D_HBOTTLE = f = (f + 1);
+	MC_D_STIMPAK = f = (f + 1);
+	MC_D_MEDKIT = f = (f + 1);
+
+	MC_D_KEY_RED_SK = f = (f + 1);
+	MC_D_KEY_BLU_SK = f = (f + 1);
+	MC_D_KEY_YEL_SK = f = (f + 1);
+	MC_D_KEY_RED_CR = f = (f + 1);
+	MC_D_KEY_BLU_CR = f = (f + 1);
+	MC_D_KEY_YEL_CR = f = (f + 1);
+
+	MC_D_ASHELLS = f = (f + 1);
+	MC_D_ASHELLS_LG = f = (f + 1);
+	MC_D_ABULLETS = f = (f + 1);
+	MC_D_ABULLETS_LG = f = (f + 1);
+	MC_D_AROCKET = f = (f + 1);
+	MC_D_AROCKETS_LG = f = (f + 1);
+	MC_D_ACELLS = f = (f + 1);
+	MC_D_ACELLS_LG = f = (f + 1);
+
+	MC_D_PACK = f = (f + 1);
+	MC_D_NIGHTVS = f = (f + 1);
+	MC_D_AUTOMAP = f = (f + 1);
+
+	MC_D_BARREL = f = (f + 1);
+
+	MC_DOOM = (f + 1);
+	MC_D_RNDITM = f - MC_D_SAW;		//	#	of	total	items
+
+///	wolf	3d
+
+	MC_W_KNIFE = f = (f + 1);
+	MC_W_PISTOL = f = (f + 1);
+	MC_W_MACHGUN = f = (f + 1);
+	MC_W_CHAINGUN = f = (f + 1);
+	MC_W_MORTAR = f = (f + 1);
+	MC_W_FLAMER = f = (f + 1);
+	MC_W_CLIP = f = (f + 1);
+	MC_W_FACESPHERE = f = (f + 1);
+	MC_W_KEY_G = f = (f + 1);
+	MC_W_KEY_B = f = (f + 1);
+	MC_W_BARREL = f = (f + 1);
+
+	MC_WOLF = (f + 1);
+	MC_W_RNDITM = f - MC_W_KNIFE;		//	#	of	total	items
+
+/// q2
+
+	MC_Q2_BLASTER = f = (f + 1);
+	MC_Q2_SHOTGUN = f = (f + 1);
+	MC_Q2_DBLSHOTGUN = f = (f + 1);
+	MC_Q2_MACHINEGUN = f = (f + 1);
+	MC_Q2_CHAINGUN = f = (f + 1);
+	MC_Q2_GRENADEL = f = (f + 1);
+	MC_Q2_ROCKETL = f = (f + 1);
+	MC_Q2_HYPBLASTER = f = (f + 1);
+	MC_Q2_RAILGUN = f = (f + 1);
+	MC_Q2_BFG = f = (f + 1);
+
+	MC_Q2_QUAD = f = (f + 1);
+	MC_Q2_INVUL = f = (f + 1);
+	MC_Q2_ENVIRO = f = (f + 1);
+	MC_Q2_SILENCE = f = (f + 1);
+
+	MC_Q2_ARM_SHARD = f = (f + 1);
+	MC_Q2_ARM_JAK = f = (f + 1);
+	MC_Q2_ARM_COMBAT = f = (f + 1);
+	MC_Q2_ARM_BODY = f = (f + 1);
+	MC_Q2_ARM_PSHIELD = f = (f + 1);
+	MC_Q2_ARM_PSCREEN = f = (f + 1);
+
+	MC_Q2_STIMPAK = f = (f + 1);
+	MC_Q2_FIRSTAID = f = (f + 1);
+	MC_Q2_MEDKIT = f = (f + 1);
+	MC_Q2_MEGA = f = (f + 1);
+
+	MC_Q2_KEY_RED = f = (f + 1);
+	MC_Q2_KEY_BLU = f = (f + 1);
+	MC_Q2_KEY_CHEAD = f = (f + 1);
+	MC_Q2_KEY_ATARGET = f = (f + 1);
+	MC_Q2_KEY_CD = f = (f + 1);
+	MC_Q2_KEY_SPINNER = f = (f + 1);
+	MC_Q2_KEY_PASS = f = (f + 1);
+	MC_Q2_KEY_POWER = f = (f + 1);
+	MC_Q2_KEY_PYRAMID = f = (f + 1);
+
+	MC_Q2_ASHELLS = f = (f + 1);
+	MC_Q2_ABULLETS = f = (f + 1);
+	MC_Q2_AROCKETS = f = (f + 1);
+	MC_Q2_AGRENADES = f = (f + 1);
+	MC_Q2_ACELLS = f = (f + 1);
+	MC_Q2_ASLUGS = f = (f + 1);
+
+	MC_Q2_PACK = f = (f + 1);
+	MC_Q2_ADRENALINE = f = (f + 1);
+	MC_Q2_BANDOLIER = f = (f + 1);
+	MC_Q2_BREATHER = f = (f + 1);
+
+	MC_Q2_BARREL = f = (f + 1);
+
+	MC_Q2 = (f + 1);
+	MC_Q2_RNDITM = f - MC_Q2_BLASTER; // # of total items
+
+/// q3
+
+	MC_Q3_GAUNTLET = f = (f + 1);
+	MC_Q3_GRAPPLE = f = (f + 1);
+	MC_Q3_MACHINEGUN = f = (f + 1);
+	MC_Q3_SHOTGUN = f = (f + 1);
+	MC_Q3_GRENADEL = f = (f + 1);
+	MC_Q3_ROCKETL = f = (f + 1);
+	MC_Q3_PLASMA = f = (f + 1);
+	MC_Q3_LIGHTNING = f = (f + 1);
+	MC_Q3_RAILGUN = f = (f + 1);
+	MC_Q3_BFG = f = (f + 1);
+
+	MC_Q3_QUAD = f = (f + 1);
+	MC_Q3_REGEN = f = (f + 1);
+	MC_Q3_ENVIRO = f = (f + 1);
+	MC_Q3_INVIS = f = (f + 1);
+	MC_Q3_HASTE = f = (f + 1);
+	MC_Q3_FLIGHT = f = (f + 1);
+
+	MC_Q3_ARM_SHARD = f = (f + 1);
+	MC_Q3_ARM_COMBAT = f = (f + 1);
+	MC_Q3_ARM_BODY = f = (f + 1);
+
+	MC_Q3_HSMALL = f = (f + 1);
+	MC_Q3_HEALTH = f = (f + 1);
+	MC_Q3_HLARGE = f = (f + 1);
+	MC_Q3_MEGA = f = (f + 1);
+
+	MC_Q3_ASHELLS = f = (f + 1);
+	MC_Q3_ABULLETS = f = (f + 1);
+	MC_Q3_AROCKETS = f = (f + 1);
+	MC_Q3_AGRENADES = f = (f + 1);
+	MC_Q3_ACELLS = f = (f + 1);
+	MC_Q3_ASLUGS = f = (f + 1);
+	MC_Q3_ALIGNTNING = f = (f + 1);
+	MC_Q3_ABFG = f = (f + 1);
+
+	MC_Q3_HOLDMEDKIT = f = (f + 1);
+	MC_Q3_HOLDTELE = f = (f + 1);
+
+	MC_Q3 = (f + 1);
+	MC_Q3_RNDITM = f - MC_Q3_GAUNTLET; // # of total items
+
+	MC_TOT = f - MC_AXE;		//	total # of total items
+};
 
 // fn(bit_mcode) - item bit assoc with given mcode
 
@@ -187,7 +586,9 @@ float(float mcv, entity e) bit_mcode =
 	mc = mcv;
 	if (!mc && e) mc = e.mcode;
 	if (!mc) return(0);
-	
+
+/// q1
+
 	if (mc == MC_AXE)														return(IT_AXE);
 	if (mc == MC_SHOTGUN)												return(IT_SHOTGUN);
 	if (mc == MC_SUPER_SHOTGUN)										return(IT_SUPER_SHOTGUN);
@@ -229,6 +630,8 @@ float(float mcv, entity e) bit_mcode =
 
 	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 		return(0);
+
+/// pk
 	
 // pk item subs by special bits
 	if (mc == MC_GRAVITY)												return(PK_IT_GRAVITYWELL);
@@ -244,6 +647,8 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_TOMB)													return(PKPLUS_IT_TOMB);
 	if (mc == MC_MASK)													return(PKPLUS_IT_ACTOR);
 	if (mc == MC_PHONE)													return(PKPLUS_IT_PHONE);
+
+/// doom
 
 	if (mc == MC_D_SHOTGUN)												return(IT_SHOTGUN);
 	if (mc == MC_D_BOOMSTICK)											return(IT_SUPER_SHOTGUN);
@@ -280,6 +685,8 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_D_ACELLS)												return(IT_CELLS);
 	if (mc == MC_D_ACELLS_LG)											return(IT_CELLS);
 
+/// wolf
+
 	if (mc == MC_W_KNIFE)												return(IT_AXE);
 	if (mc == MC_W_PISTOL)												return(IT_SHOTGUN);
 	if (mc == MC_W_MACHGUN)												return(IT_NAILGUN);
@@ -288,9 +695,106 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_W_FLAMER)												return(IT_GRENADE_LAUNCHER);
 //	if (mc == MC_W_CLIP)													return(IT_BULLETS);
 
+	if (mc == MC_W_FACESPHERE)											return(IT_SUPERHEALTH);
+
 	if (mc == MC_W_KEY_G)												return(IT_KEY1);
 	if (mc == MC_W_KEY_B)												return(IT_KEY2);
 	if (mc == MC_W_BARREL)												return(0);
+
+/// q2
+
+	if (mc == MC_Q2_BLASTER)											return(0);
+	if (mc == MC_Q2_SHOTGUN)											return(IT_SHOTGUN);
+	if (mc == MC_Q2_DBLSHOTGUN)										return(IT_SUPER_SHOTGUN);
+	if (mc == MC_Q2_MACHINEGUN)										return(IT_NAILGUN);
+	if (mc == MC_Q2_CHAINGUN)											return(IT_SUPER_NAILGUN);
+	if (mc == MC_Q2_GRENADEL)											return(IT_GRENADE_LAUNCHER);
+	if (mc == MC_Q2_ROCKETL)											return(IT_ROCKET_LAUNCHER);
+	if (mc == MC_Q2_HYPBLASTER)										return(IT_LIGHTNING);
+	if (mc == MC_Q2_RAILGUN)											return(IT_ROCKET_LAUNCHER);
+	if (mc == MC_Q2_BFG)													return(IT_LIGHTNING);
+
+	if (mc == MC_Q2_QUAD)												return(IT_QUAD);
+	if (mc == MC_Q2_INVUL)												return(IT_INVULNERABILITY);
+	if (mc == MC_Q2_ENVIRO)												return(IT_SUIT);
+	if (mc == MC_Q2_SILENCE)											return(0);
+
+	if (mc == MC_Q2_ARM_SHARD)											return(0);
+	if (mc == MC_Q2_ARM_JAK)											return(IT_ARMOR1);
+	if (mc == MC_Q2_ARM_COMBAT)										return(IT_ARMOR2);
+	if (mc == MC_Q2_ARM_BODY)											return(IT_ARMOR3);
+	if (mc == MC_Q2_ARM_PSHIELD)										return(0);
+	if (mc == MC_Q2_ARM_PSCREEN)										return(0);
+
+	if (mc == MC_Q2_STIMPAK)											return(0);
+	if (mc == MC_Q2_FIRSTAID)											return(0);
+	if (mc == MC_Q2_MEDKIT)												return(0);
+	if (mc == MC_Q2_MEGA)												return(IT_SUPERHEALTH);
+
+	if (mc == MC_Q2_KEY_RED)											return(IT_KEY2);
+	if (mc == MC_Q2_KEY_BLU)											return(IT_KEY1);
+	if (mc == MC_Q2_KEY_CHEAD)											return(0);
+	if (mc == MC_Q2_KEY_ATARGET)										return(0);
+	if (mc == MC_Q2_KEY_CD)												return(0);
+	if (mc == MC_Q2_KEY_SPINNER)										return(0);
+	if (mc == MC_Q2_KEY_PASS)											return(0);
+	if (mc == MC_Q2_KEY_POWER)											return(0);
+	if (mc == MC_Q2_KEY_PYRAMID)										return(0);
+
+	if (mc == MC_Q2_ASHELLS)											return(IT_SHELLS);
+	if (mc == MC_Q2_ABULLETS)											return(0);
+	if (mc == MC_Q2_AROCKETS)											return(IT_ROCKETS);
+	if (mc == MC_Q2_AGRENADES)											return(IT_ROCKETS);
+	if (mc == MC_Q2_ACELLS)												return(IT_CELLS);
+	if (mc == MC_Q2_ASLUGS)												return(0);
+
+	if (mc == MC_Q2_PACK)												return(0);
+	if (mc == MC_Q2_ADRENALINE)										return(0);
+	if (mc == MC_Q2_BANDOLIER)											return(0);
+	if (mc == MC_Q2_BREATHER)											return(0);
+
+	if (mc == MC_Q2_BARREL)												return(0);
+
+/// q3
+
+	if (mc == MC_Q3_GAUNTLET)											return(IT_AXE);
+	if (mc == MC_Q3_GRAPPLE)											return(0);
+	if (mc == MC_Q3_MACHINEGUN)										return(IT_NAILGUN);
+	if (mc == MC_Q3_SHOTGUN)											return(IT_SUPER_SHOTGUN);
+	if (mc == MC_Q3_GRENADEL)											return(IT_GRENADE_LAUNCHER);
+	if (mc == MC_Q3_ROCKETL)											return(IT_ROCKET_LAUNCHER);
+	if (mc == MC_Q3_PLASMA)												return(IT_SUPER_NAILGUN);
+	if (mc == MC_Q3_LIGHTNING)											return(IT_LIGHTNING);
+	if (mc == MC_Q3_RAILGUN)											return(IT_ROCKET_LAUNCHER);
+	if (mc == MC_Q3_BFG)													return(IT_LIGHTNING);
+
+	if (mc == MC_Q3_QUAD)												return(IT_QUAD);
+	if (mc == MC_Q3_REGEN)												return(0);
+	if (mc == MC_Q3_ENVIRO)												return(IT_SUIT);
+	if (mc == MC_Q3_INVIS)												return(IT_INVISIBILITY);
+	if (mc == MC_Q3_HASTE)												return(0);
+	if (mc == MC_Q3_FLIGHT)												return(0);
+
+	if (mc == MC_Q3_ARM_SHARD)											return(0);
+	if (mc == MC_Q3_ARM_COMBAT)										return(IT_ARMOR2);
+	if (mc == MC_Q3_ARM_BODY)											return(IT_ARMOR3);
+
+	if (mc == MC_Q3_HSMALL)												return(0);
+	if (mc == MC_Q3_HEALTH)												return(0);
+	if (mc == MC_Q3_HLARGE)												return(0);
+	if (mc == MC_Q3_MEGA)												return(IT_SUPERHEALTH);
+
+	if (mc == MC_Q3_ASHELLS)											return(IT_SHELLS);
+	if (mc == MC_Q3_ABULLETS)											return(0);
+	if (mc == MC_Q3_AROCKETS)											return(IT_ROCKETS);
+	if (mc == MC_Q3_AGRENADES)											return(IT_ROCKETS);
+	if (mc == MC_Q3_ACELLS)												return(IT_CELLS);
+	if (mc == MC_Q3_ASLUGS)												return(0);
+	if (mc == MC_Q3_ALIGNTNING)										return(IT_CELLS);
+	if (mc == MC_Q3_ABFG)												return(IT_CELLS);
+
+	if (mc == MC_Q3_HOLDMEDKIT)										return(PK_IT_CANPAB);
+	if (mc == MC_Q3_HOLDTELE)											return(PKPLUS_IT_PHONE);
 
 	return(0);
 };
@@ -300,6 +804,8 @@ float(float mcv, entity e) bit_mcode =
 // e - ent being tested
 // sc - classname to test
 // returns map code value
+
+//  TDO: handle native q3 & converted q2 maps that use disambig code
 
 float(string sc, entity e) pk_mcode =
 {
@@ -327,8 +833,13 @@ float(string sc, entity e) pk_mcode =
 		if ((tsc == "item_sigil") && (e.spawnflags & R_ELDER))	return(MC_SIGIL8);
 		if (tsc == "item_keyX")
 		{
-			if (e.items == IT_KEY1)											return(MC_KEY1);
-			if (e.items == IT_KEY2)											return(MC_KEY2);
+			if (!e.cnt)															return(MC_KEY1_0);
+			if (e.cnt == 10)													return(MC_KEY1_0);
+			if (e.cnt == 11)													return(MC_KEY1_1);
+			if (e.cnt == 12)													return(MC_KEY1_2);
+			if (e.cnt == 20)													return(MC_KEY2_0);
+			if (e.cnt == 21)													return(MC_KEY2_1);
+			if (e.cnt == 22)													return(MC_KEY2_2);
 		}
 		if (tsc == "w_key")
 		{
@@ -365,6 +876,17 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "item_sigil")											return(MC_SIGIL);
 	if (tsc == "misc_explobox")										return(MC_EXPLOD1);
 	if (tsc == "misc_explobox2")										return(MC_EXPLOD2);
+
+// keys special
+	if (tsc == "item_key1_0")											return(MC_KEY1_0);
+	if (tsc == "item_key1_1")											return(MC_KEY1_1);
+	if (tsc == "item_key1_2")											return(MC_KEY1_2);
+	if (tsc == "item_key2_0")											return(MC_KEY2_0);
+	if (tsc == "item_key2_1")											return(MC_KEY2_1);
+	if (tsc == "item_key2_2")											return(MC_KEY2_2);
+
+	if (tsc == "fn_backpack")											return(MC_BACKPACK);
+
 // pk
 	if (tsc == "weapon_airfist")										return(MC_AIRGUN);
 	if (tsc == "weapon_chainlg")										return(MC_CHTHUNDR);
@@ -435,10 +957,105 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "w_weapon_mortar")										return(MC_W_MORTAR);
 	if (tsc == "w_weapon_flamer")										return(MC_W_FLAMER);
 	if (tsc == "w_ammo_clip")											return(MC_W_CLIP);
+	if (tsc == "w_art_facesphere")									return(MC_W_FACESPHERE);
 	if (tsc == "w_key_g")												return(MC_W_KEY_G);
 	if (tsc == "w_key_b")												return(MC_W_KEY_B);
 	if (tsc == "w_barrel")												return(MC_W_BARREL);
 
+/// q2
+
+	if (tsc == "q2_weapon_blaster")									return(MC_Q2_BLASTER);
+	if (tsc == "q2_weapon_shotgun")									return(MC_Q2_SHOTGUN);
+	if (tsc == "q2_weapon_supershotgun")							return(MC_Q2_DBLSHOTGUN);
+	if (tsc == "q2_weapon_machinegun")								return(MC_Q2_MACHINEGUN);
+	if (tsc == "weapon_chaingun")										return(MC_Q2_CHAINGUN);
+	if (tsc == "q2_weapon_grenadelauncher")						return(MC_Q2_GRENADEL);
+	if (tsc == "q2_weapon_rocketlauncher")							return(MC_Q2_ROCKETL);
+	if (tsc == "weapon_hyperblaster")								return(MC_Q2_HYPBLASTER);
+	if (tsc == "q2_weapon_railgun")									return(MC_Q2_RAILGUN);
+	if (tsc == "q2_weapon_bfg")										return(MC_Q2_BFG);
+
+	if (tsc == "q2_item_quad")											return(MC_Q2_QUAD);
+	if (tsc == "item_invulnerability")								return(MC_Q2_INVUL);
+	if (tsc == "q2_item_enviro")										return(MC_Q2_ENVIRO);
+	if (tsc == "item_silencer")										return(MC_Q2_SILENCE);
+
+	if (tsc == "q2_item_armor_shard")								return(MC_Q2_ARM_SHARD);
+	if (tsc == "item_armor_jacket")									return(MC_Q2_ARM_JAK);
+	if (tsc == "q2_item_armor_combat")								return(MC_Q2_ARM_COMBAT);
+	if (tsc == "q2_item_armor_body")									return(MC_Q2_ARM_BODY);
+	if (tsc == "item_power_shield")									return(MC_Q2_ARM_PSHIELD);
+	if (tsc == "item_power_screen")									return(MC_Q2_ARM_PSCREEN);
+
+	if (tsc == "q2_item_health_small")								return(MC_Q2_STIMPAK);
+	if (tsc == "q2_item_health")										return(MC_Q2_FIRSTAID);
+	if (tsc == "q2_item_health_large")								return(MC_Q2_MEDKIT);
+	if (tsc == "q2_item_health_mega")								return(MC_Q2_MEGA);
+
+	if (tsc == "key_red_key")											return(MC_Q2_KEY_RED);
+	if (tsc == "key_blue_key")											return(MC_Q2_KEY_BLU);
+	if (tsc == "key_commander_head")									return(MC_Q2_KEY_CHEAD);
+	if (tsc == "key_airstrike_target")								return(MC_Q2_KEY_ATARGET);
+	if (tsc == "key_data_cd")											return(MC_Q2_KEY_CD);
+	if (tsc == "key_data_spinner")									return(MC_Q2_KEY_SPINNER);
+	if (tsc == "key_pass")												return(MC_Q2_KEY_PASS);
+	if (tsc == "key_power_cube")										return(MC_Q2_KEY_POWER);
+	if (tsc == "key_pyramid")											return(MC_Q2_KEY_PYRAMID);
+
+	if (tsc == "q2_ammo_shells")										return(MC_Q2_ASHELLS);
+	if (tsc == "q2_ammo_bullets")										return(MC_Q2_ABULLETS);
+	if (tsc == "q2_ammo_rockets")										return(MC_Q2_AROCKETS);
+	if (tsc == "q2_ammo_grenades")									return(MC_Q2_AGRENADES);
+	if (tsc == "q2_ammo_cells")										return(MC_Q2_ACELLS);
+	if (tsc == "q2_ammo_slugs")										return(MC_Q2_ASLUGS);
+
+	if (tsc == "item_pack")												return(MC_Q2_PACK);
+	if (tsc == "item_adrenaline")										return(MC_Q2_ADRENALINE);
+	if (tsc == "item_bandolier")										return(MC_Q2_BANDOLIER);
+	if (tsc == "item_breather")										return(MC_Q2_BREATHER);
+
+	if (tsc == "q2_misc_explobox")									return(MC_Q2_BARREL);
+
+/// q3
+
+	if (tsc == "weapon_gauntlet")										return(MC_Q3_GAUNTLET);
+	if (tsc == "weapon_grapplinghook")								return(MC_Q3_GRAPPLE);
+	if (tsc == "q3_weapon_machinegun")								return(MC_Q3_MACHINEGUN);
+	if (tsc == "q3_weapon_shotgun")									return(MC_Q3_SHOTGUN);
+	if (tsc == "q3_weapon_grenadelauncher")						return(MC_Q3_GRENADEL);
+	if (tsc == "q3_weapon_rocketlauncher")							return(MC_Q3_ROCKETL);
+	if (tsc == "weapon_plasmagun")									return(MC_Q3_PLASMA);
+	if (tsc == "q3_weapon_lightning")								return(MC_Q3_LIGHTNING);
+	if (tsc == "q3_weapon_railgun")									return(MC_Q3_RAILGUN);
+	if (tsc == "q3_weapon_bfg")										return(MC_Q3_BFG);
+
+	if (tsc == "q3_item_quad")											return(MC_Q3_QUAD);
+	if (tsc == "item_regen")											return(MC_Q3_REGEN);
+	if (tsc == "q3_item_enviro")										return(MC_Q3_ENVIRO);
+	if (tsc == "item_invis")											return(MC_Q3_INVIS);
+	if (tsc == "item_haste")											return(MC_Q3_HASTE);
+	if (tsc == "item_flight")											return(MC_Q3_FLIGHT);
+
+	if (tsc == "q3_item_armor_shard")								return(MC_Q3_ARM_SHARD);
+	if (tsc == "q3_item_armor_combat")								return(MC_Q3_ARM_COMBAT);
+	if (tsc == "q3_item_armor_body")									return(MC_Q3_ARM_BODY);
+
+	if (tsc == "q3_item_health_small")								return(MC_Q3_HSMALL);
+	if (tsc == "q3_item_health")										return(MC_Q3_HEALTH);
+	if (tsc == "q3_item_health_large")								return(MC_Q3_HLARGE);
+	if (tsc == "q3_item_health_mega")								return(MC_Q3_MEGA);
+
+	if (tsc == "q3_ammo_shells")										return(MC_Q3_ASHELLS);
+	if (tsc == "q3_ammo_bullets")										return(MC_Q3_ABULLETS);
+	if (tsc == "q3_ammo_rockets")										return(MC_Q3_AROCKETS);
+	if (tsc == "q3_ammo_grenades")									return(MC_Q3_AGRENADES);
+	if (tsc == "q3_ammo_cells")										return(MC_Q3_ACELLS);
+	if (tsc == "q3_ammo_slugs")										return(MC_Q3_ASLUGS);
+	if (tsc == "ammo_lightning")										return(MC_Q3_ALIGNTNING);
+	if (tsc == "ammo_bfg")												return(MC_Q3_ABFG);
+
+	if (tsc == "holdable_medkit")										return(MC_Q3_HOLDMEDKIT);
+	if (tsc == "holdable_teleporter")								return(MC_Q3_HOLDTELE);
 
 // q3 - translates classname for now
 //	else if (tsc == "")								return(MC_);
@@ -451,7 +1068,7 @@ float(string sc, entity e) pk_mcode =
 		bprint("\n");
 	}
 
-	return(0); 
+	return(0);
 
 };
 
@@ -504,7 +1121,18 @@ string (float mc) item_by_mcode =
 
 	if (Q_100 || Q_99) // Cataboligne - 8.16.9 - quake 1 compatability mode(s)
 		return("");
-	
+
+// TDO - q1 backpack cls - & in dyn items call()
+
+	if (mc == MC_KEY1_0)													return("item_key1_0");
+	if (mc == MC_KEY1_1)													return("item_key1_1");
+	if (mc == MC_KEY1_2)													return("item_key1_2");
+	if (mc == MC_KEY2_0)													return("item_key2_0");
+	if (mc == MC_KEY2_1)													return("item_key2_1");
+	if (mc == MC_KEY2_2)													return("item_key2_2");
+
+	if (mc == MC_BACKPACK)												return("fn_backpack");
+
 // pk item subs by special bits
 	if (mc == MC_GRAVITY)												return("item_painkeep_gwell");
 	if (mc == MC_SENTRY)													return("item_painkeep_turret");
@@ -577,9 +1205,105 @@ string (float mc) item_by_mcode =
 	if (mc == MC_W_FLAMER)												return("w_weapon_flamer");
 
 	if (mc == MC_W_CLIP)													return("w_ammo_clip");
+	if (mc == MC_W_FACESPHERE)											return("w_art_facesphere");
 	if (mc == MC_W_KEY_G)												return("w_key_g");
 	if (mc == MC_W_KEY_B)												return("w_key_b");
 	if (mc == MC_W_BARREL)												return("w_barrel");
+
+/// q2
+
+	if (mc == MC_Q2_BLASTER)											return("q2_weapon_blaster"); 
+	if (mc == MC_Q2_SHOTGUN)											return("q2_weapon_shotgun"); 
+	if (mc == MC_Q2_DBLSHOTGUN)										return("q2_weapon_supershotgun"); 
+	if (mc == MC_Q2_MACHINEGUN)										return("q2_weapon_machinegun"); 
+	if (mc == MC_Q2_CHAINGUN)											return("weapon_chaingun"); 
+	if (mc == MC_Q2_GRENADEL)											return("q2_weapon_grenadelauncher"); 
+	if (mc == MC_Q2_ROCKETL)											return("q2_weapon_rocketlauncher"); 
+	if (mc == MC_Q2_HYPBLASTER)										return("weapon_hyperblaster"); 
+	if (mc == MC_Q2_RAILGUN)											return("q2_weapon_railgun"); 
+	if (mc == MC_Q2_BFG)													return("q2_weapon_bfg"); 
+
+	if (mc == MC_Q2_QUAD)												return("q2_item_quad"); 
+	if (mc == MC_Q2_INVUL)												return("item_invulnerability"); 
+	if (mc == MC_Q2_ENVIRO)												return("q2_item_enviro"); 
+	if (mc == MC_Q2_SILENCE)											return("item_silencer"); 
+
+	if (mc == MC_Q2_ARM_SHARD)											return("q2_item_armor_shard"); 
+	if (mc == MC_Q2_ARM_JAK)											return("item_armor_jacket"); 
+	if (mc == MC_Q2_ARM_COMBAT)										return("q2_item_armor_combat"); 
+	if (mc == MC_Q2_ARM_BODY)											return("q2_item_armor_body"); 
+	if (mc == MC_Q2_ARM_PSHIELD)										return("item_power_shield"); 
+	if (mc == MC_Q2_ARM_PSCREEN)										return("item_power_screen"); 
+
+	if (mc == MC_Q2_STIMPAK)											return("q2_item_health_small"); 
+	if (mc == MC_Q2_FIRSTAID)											return("q2_item_health"); 
+	if (mc == MC_Q2_MEDKIT)												return("q2_item_health_large"); 
+	if (mc == MC_Q2_MEGA)												return("q2_item_health_mega"); 
+
+	if (mc == MC_Q2_KEY_RED)											return("key_red_key"); 
+	if (mc == MC_Q2_KEY_BLU)											return("key_blue_key"); 
+	if (mc == MC_Q2_KEY_CHEAD)											return("key_blue_key"); 
+	if (mc == MC_Q2_KEY_ATARGET)										return("key_airstrike_target"); 
+	if (mc == MC_Q2_KEY_CD)												return("key_data_cd"); 
+	if (mc == MC_Q2_KEY_SPINNER)										return("key_data_spinner"); 
+	if (mc == MC_Q2_KEY_PASS)											return("key_pass"); 
+	if (mc == MC_Q2_KEY_POWER)											return("key_power_cube"); 
+	if (mc == MC_Q2_KEY_PYRAMID)										return("key_pyramid"); 
+
+	if (mc == MC_Q2_ASHELLS)											return("q2_ammo_shells"); 
+	if (mc == MC_Q2_ABULLETS)											return("q2_ammo_bullets"); 
+	if (mc == MC_Q2_AROCKETS)											return("q2_ammo_rockets"); 
+	if (mc == MC_Q2_AGRENADES)											return("q2_ammo_grenades"); 
+	if (mc == MC_Q2_ACELLS)												return("q2_ammo_cells"); 
+	if (mc == MC_Q2_ASLUGS)												return("q2_ammo_slugs"); 
+
+	if (mc == MC_Q2_PACK)												return("item_pack"); 
+	if (mc == MC_Q2_ADRENALINE)										return("item_adrenaline"); 
+	if (mc == MC_Q2_BANDOLIER)											return("item_bandolier"); 
+	if (mc == MC_Q2_BREATHER)											return("item_breather"); 
+
+	if (mc == MC_Q2_BARREL)												return("q2_misc_explobox"); 
+
+/// q3
+
+	if (mc == MC_Q3_GAUNTLET)											return("weapon_gauntlet"); 
+	if (mc == MC_Q3_GRAPPLE)											return("weapon_grapplinghook"); 
+	if (mc == MC_Q3_MACHINEGUN)										return("q3_weapon_machinegun"); 
+	if (mc == MC_Q3_SHOTGUN)											return("q3_weapon_shotgun"); 
+	if (mc == MC_Q3_GRENADEL)											return("q3_weapon_grenadelauncher"); 
+	if (mc == MC_Q3_ROCKETL)											return("q3_weapon_rocketlauncher"); 
+	if (mc == MC_Q3_PLASMA)												return("weapon_plasmagun"); 
+	if (mc == MC_Q3_LIGHTNING)											return("q3_weapon_lightning"); 
+	if (mc == MC_Q3_RAILGUN)											return("q3_weapon_railgun"); 
+	if (mc == MC_Q3_BFG)													return("q3_weapon_bfg"); 
+
+	if (mc == MC_Q3_QUAD)												return("q3_item_quad"); 
+	if (mc == MC_Q3_REGEN)												return("item_regen"); 
+	if (mc == MC_Q3_ENVIRO)												return("q3_item_enviro"); 
+	if (mc == MC_Q3_INVIS)												return("item_invis"); 
+	if (mc == MC_Q3_HASTE)												return("item_haste"); 
+	if (mc == MC_Q3_FLIGHT)												return("item_flight"); 
+
+	if (mc == MC_Q3_ARM_SHARD)											return("q3_item_armor_shard"); 
+	if (mc == MC_Q3_ARM_COMBAT)										return("q3_item_armor_combat"); 
+	if (mc == MC_Q3_ARM_BODY)											return("q3_item_armor_body"); 
+
+	if (mc == MC_Q3_HSMALL)												return("q3_item_health_small"); 
+	if (mc == MC_Q3_HEALTH)												return("q3_item_health"); 
+	if (mc == MC_Q3_HLARGE)												return("q3_item_health_large"); 
+	if (mc == MC_Q3_MEGA)												return("q3_item_health_mega"); 
+
+	if (mc == MC_Q3_ASHELLS)											return("q3_ammo_shells"); 
+	if (mc == MC_Q3_ABULLETS)											return("q3_ammo_bullets"); 
+	if (mc == MC_Q3_AROCKETS)											return("q3_ammo_rockets"); 
+	if (mc == MC_Q3_AGRENADES)											return("q3_ammo_grenades"); 
+	if (mc == MC_Q3_ACELLS)												return("q3_ammo_cells"); 
+	if (mc == MC_Q3_ASLUGS)												return("q3_ammo_slugs"); 
+	if (mc == MC_Q3_ALIGNTNING)										return("ammo_lightning"); 
+	if (mc == MC_Q3_ABFG)												return("ammo_bfg"); 
+
+	if (mc == MC_Q3_HOLDMEDKIT)										return("holdable_medkit"); 
+	if (mc == MC_Q3_HOLDTELE)											return("holdable_teleporter"); 
 
 
 //	if (mc == MC_) return("item_");
@@ -722,48 +1446,56 @@ void (float ksv) item_keyX =
 
 	ks = ksv;
 	if (self.cnt) ks = self.cnt;
+//	else self.cnt = ksv;
 
 	if (ks == 10)
 	{
 		setmodel (self,"progs/w_s_key.mdl");
 		self.netname = "silver key";
 		self.items = IT_KEY1;
+		self.classname = "item_key1_0";
 	}
 	else if (ks == 11)
 	{
 		setmodel (self,"progs/m_s_key.mdl");
 		self.netname = "silver runekey";
 		self.items = IT_KEY1;
+		self.classname = "item_key1_1";
 	}
 	else if (ks == 12)
 	{
 		setmodel (self,"progs/b_s_key.mdl");
 		self.netname = "silver keycard";
 		self.items = IT_KEY1;
+		self.classname = "item_key1_2";
 	}
 	else if (ks == 20)
 	{
 		setmodel (self,"progs/w_g_key.mdl");
 		self.netname = "gold key";
 		self.items = IT_KEY2;
+		self.classname = "item_key2_0";
 	}
 	else if (ks == 21)
 	{
 		setmodel (self,"progs/m_g_key.mdl");
 		self.netname = "gold runekey";
 		self.items = IT_KEY2;
+		self.classname = "item_key2_1";
 	}
 	else if (ks == 22)
 	{
 		setmodel (self,"progs/b_g_key.mdl");
 		self.netname = "gold keycard";
 		self.items = IT_KEY2;
+		self.classname = "item_key2_2";
 	}
 	else
 	{
 		setmodel (self,"progs/w_s_key.mdl");
 		self.netname = "silver key";
 		self.items = IT_KEY1;
+		self.classname = "item_key1_0";
 	}
 	if (ks == 10 || ks == 20)
 	{
@@ -856,6 +1588,18 @@ void(float mc, vector vo) fn_make =
 
 // func_make handles map call - set wait to valid map code
 
+// special values of .wait
+// -1 = q1 items, no runes if RUNES
+// -2 = q1 items, ignore RUNES
+// -3 = pk items, no art if !PK_ART
+// -4 = pk items, ignore PK_ART
+// -5 = all items, ignoring rules
+
+// -6 = doom items
+// -7 = wolf items
+// -8 = q2 items
+// -9 = q3 items
+
 void() func_make =
 {
 	local float d, f;
@@ -869,23 +1613,39 @@ void() func_make =
 	if (self.spawnflags & 1) self.origin = v0;
 
 	d = self.wait;
-	f = MC_RNDITM;
-	if (RUNES && self.wait == -1) f = MC_NR_RNDITM; // dont rndize runes if server on
-	if (self.wait == -1 || self.wait == -2) d = 102 + rint(random() * f);
+	f = MC_RNDITM - 2;
+	if (RUNES && self.wait == -1) f = MC_NR_RNDITM - 2; // dont rndize runes if server on
+	if (self.wait == -1 || self.wait == -2) d = MC_SUPER_SHOTGUN + rint(random() * f);
 
 	if (!Q_99)
 	{
 		f = MC_PK_RNDITM;
 		if (PK_ART || self.wait == -4) f = MC_PKP_RNDITM;
-		if (self.wait == -3 || self.wait == -4) d = 141 + rint(random() * f);
+		if (self.wait == -3 || self.wait == -4) d = MC_PULSE_NAILGUN + rint(random() * f);
+
+		f = MC_D_RNDITM;
+		if (self.wait == -6) d = MC_D_SAW + rint(random() * f);
+
+		f = MC_W_RNDITM;
+		if (self.wait == -7) d = MC_W_KNIFE + rint(random() * f);
+
+		f = MC_Q2_RNDITM;
+		if (self.wait == -8) d = MC_Q2_BLASTER + rint(random() * f);
+
+		f = MC_Q3_RNDITM;
+		if (self.wait == -9) d = MC_Q3_GAUNTLET + rint(random() * f);
+	}
+	else
+	{
+		if (RUNES) f = MC_NR_RNDITM - 2; // dont rndize runes if server on
+		if (self.wait < -5) d = MC_SUPER_SHOTGUN + rint(random() * f);
 	}
 
 	f = MC_T_RNDITM;
 	if (self.wait == -5)
 	{
 		if (Q_99) f = MC_NR_RNDITM;
-		d = 102 + rint(random() * f);
-		if (self.wait >= MC_Q1) d = d + MC_TRNSUB; // gap q1 to pk
+		d = MC_SUPER_SHOTGUN + rint(random() * f);
 	}
 
 	fn_make(d, self.origin);
@@ -1080,4 +1840,102 @@ void () misc_explobox2 =
 	}
 
 	misc_explodbox_set(self, "maps/b_exbox2.bsp", 160, 20, MOVETYPE_NONE);
+};
+
+// rndize (or map item) created pack
+
+void() rnd_pack_ammo = 
+{
+	local float f, k;
+
+
+// clear old values - there may be some items this musses up (like doom & q2 packs? - I think not)
+	self.ammo_nails = self.ammo_rockets = self.ammo_cells = self.ammo_bullet = self.ammo_slug = self.ammo_gaspr = 0;
+	self.pk_gravitywellammo = self.pk_turretammo = self.pk_canpabammo = self.pk_beartrapammo = self.pk_explode_ammo = 0;
+	self.pkplus_egoammo = self.pkplus_tombammo = self.pkplus_actorammo = self.pkplus_phoneammo = 0;
+
+	f = rint(random() * 6);
+	k = rint(random()) + 1;
+	if (f == 0) self.ammo_bullet = 50 * k;
+	else if (f == 1) self.ammo_shells = 50 * k;
+	else if (f == 2) self.ammo_cells = 100 * k;
+	else if (f == 3) self.ammo_rockets = 35 * k;
+	else if (f == 4) self.ammo_nails = 100 * k;
+	else if (f == 5) self.ammo_slug = 20 * k;
+	else if (f == 6) self.ammo_gaspr = 100 * k;
+
+	if (random() < 0.3)
+	{
+		f = rint(random() * 7);
+		k = rint(random() * 2) + 1;
+		if (f == 0) self.pk_gravitywellammo = 1;
+		else if (f == 1) self.pk_turretammo = k;
+		else if (f == 2) self.pk_beartrapammo = k;
+		else if (f == 3) self.pk_explode_ammo = 5 * k;
+		else if (f == 4) self.pkplus_egoammo = 1;
+		else if (f == 5) self.pkplus_tombammo = 2;
+		else if (f == 6) self.pkplus_phoneammo = 1;
+		else if (f == 7) self.pk_canpabammo = 1;
+
+		f = rint(random() * 7);
+		k = rint(random() * 2) + 1;
+		if (f == 0) self.pk_gravitywellammo = 1;
+		else if (f == 1) self.pk_turretammo = k;
+		else if (f == 2) self.pk_beartrapammo = k;
+		else if (f == 3) self.pk_explode_ammo = 5 * k;
+		else if (f == 4) self.pkplus_egoammo = 1;
+		else if (f == 5) self.pkplus_tombammo = 2;
+		else if (f == 6) self.pkplus_phoneammo = 1;
+		else if (f == 7) self.pk_canpabammo = 1;
+	}
+};
+
+void() fn_bpack_seq;
+
+// 		- may want to set wait to -666 for map loaded pack spawner
+//			- delay != 0, ammo set by map fn, dont randomize
+
+void() fn_backpack =
+{
+	local entity e;
+	if (!self.ammo_shells) self.ammo_shells = 5; // so pack gets made
+
+	if (self.wait != -666) // rndized map item
+	{
+		rnd_pack_ammo();
+// hide converted item - its now a pack spawner
+		self.touch = SUB_Null;
+		setmodel (self,"");
+		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "", "", SUB_Null, time + 120, fn_bpack_seq, SUB_Null, self, world);
+	}
+	else
+	{
+		if (!self.delay) rnd_pack_ammo();
+// make new pack when old expires
+		self.think = fn_backpack;
+		self.nextthink = newmis.nextthink;
+	}
+
+	if (random() < 0.0666)
+	{
+		e = spawn();
+		misc_explodbox_set(e, "progs/backpack.mdl", 10 + random() * 20, 5 + random() * 10, MOVETYPE_NONE);
+		e.touch = barrel_explode;
+	}
+	else
+		DropBackpack();
+};
+
+// so items from rndize can keep spawning packs
+
+void() fn_bpack_seq =
+{
+	if (self.owner.model != "") // done with pack spawning - go away
+	{
+		remove(self);
+		return;
+	}
+
+	fn_backpack();
+	self.nextthink = newmis.nextthink;
 };
