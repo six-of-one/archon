@@ -56,6 +56,13 @@ void() HIP_LaserTouch =
 		return;
 	}
 
+	if (other.classname == "monster_scourge") // scourge dont kill scourge
+	if (self.netname == "monster_scourge")
+	{
+		SUB_Remove();
+		return;
+	}
+
 	oldvel = normalize(self.oldorigin);
 	spot1 = self.origin - (16*oldvel);
 	spot2 = self.origin + (16*oldvel);

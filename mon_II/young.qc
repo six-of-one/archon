@@ -511,7 +511,7 @@ if (ign != A_MONSTER)
 		
 		self.pausetime = 99999999;
 		self.th_stand ();
-		
+
 		if (self.enemy)
 			FoundTarget();
 		young_runatt2();

@@ -549,7 +549,7 @@ void(string gibname, float dm) ThrowGib =
 {
 	local	entity new;
 
-	new = spawn();
+	newmis = new = spawn();
 	new.origin = self.origin;
 	setmodel (new, gibname);
   setsize (new, '0 0 0', '0 0 0');

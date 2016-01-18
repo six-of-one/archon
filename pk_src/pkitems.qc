@@ -728,6 +728,7 @@ if (self.classname == "")
 
 
 
+if (0)
 if (ae != self && a2 != self && a3 != self) // TEST
 {
 	a3 = a2;
