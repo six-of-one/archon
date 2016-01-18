@@ -214,7 +214,11 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 
 
 // check for quad damage powerup on the attacker
-	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & TECH_AMP) ) ) || ( RUNE_QUAD_COMB || !ENHANCED ) ) // rune overpowers quad on higher rule sets 
+#ifdef enhanced
+//	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & TECH_AMP) ) ) || ( RUNE_QUAD_COMB || !ENHANCED ) ) // rune overpowers quad on higher rule sets 
+	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & TECH_AMP) ) ) || RUNE_QUAD_COMB ) // rune overpowers quad on higher rule sets 
+#endifdef
+
 	if (attacker.super_damage_finished > time)
 	if (attacker.pkplus_actortype != PKPLUS_ACTORQUAD) // pk art code here
 	{
@@ -235,7 +239,10 @@ bprint(" ------------ ***          damage * 4\n"); // TEST: remove
 		damage = damage * 2;
 
 		if (attacker.rune_flag & TECH_AMP) // combind with dmg tech!
-		if (RUNE_TECH_DMG_COMB || !ENHANCED)
+#ifdef enhanced
+//		if (RUNE_TECH_DMG_COMB || !ENHANCED)
+		if (RUNE_TECH_DMG_COMB)
+#endifdef
 			damage = damage * 2;
 	}
 	else
@@ -284,11 +291,17 @@ bprint(" ------------ ***          damage * 4\n"); // TEST: remove
 	{
 		take = floor(take / 2);
 		save = floor(save / 2);
-		if (( RUNE_TECH_RS_COMB || !ENHANCED ) && (targ.rune_flag & RUNE_FLG_RS) && (targ.rune_flag & TECH_DSH))
+//		if (( RUNE_TECH_RS_COMB || !ENHANCED ) && (targ.rune_flag & RUNE_FLG_RS) && (targ.rune_flag & TECH_DSH))
+		if (
+#ifdef enhanced
+			RUNE_TECH_RS_COMB && 
+#endifdef
+			(targ.rune_flag & RUNE_FLG_RS) && (targ.rune_flag & TECH_DSH))
 		{
 			take = floor(take / 2);
 			save = floor(save / 2);			
 		}
+
 		if (targ.invincible_sound < time)
 		{
 			if ( (self.rune_flag & TECH_DSH) && !(self.rune_flag & RUNE_FLG_RS) )
@@ -357,12 +370,19 @@ bprint(" ------------ ***          damage * 4\n"); // TEST: remove
 // we have a suck head
    if (attacker.rune_flag & RUNE_VAMPIRE) // a bit of vampire action
    if (!targ.empathy_finished)
-   if ((!targ.rune_flag & RUNE_VAMPIRE) || ! ENHANCED)
-   if ((!targ.rune_flag & RUNE_FLG_RG) || ! ENHANCED) // regen immune to feeders
-   if ((!targ.rune_flag & TECH_ADOC) || ! ENHANCED)
+#ifdef enhanced
+//   if ((!targ.rune_flag & RUNE_VAMPIRE) || ! ENHANCED)
+//   if ((!targ.rune_flag & RUNE_FLG_RG) || ! ENHANCED) // regen immune to feeders
+//   if ((!targ.rune_flag & TECH_ADOC) || ! ENHANCED)
+   if (! targ.rune_flag & RUNE_VAMPIRE)
+   if (! targ.rune_flag & RUNE_FLG_RG) // regen immune to feeders
+   if (! targ.rune_flag & TECH_ADOC)
+#endifdef
    if (targ.flags & (FL_CLIENT | FL_MONSTER)) // only these get vamped for now - excludes all doors, triggers, crates, etc
 	{
-		if (! ENHANCED && (r > 1)) // lith code
+#ifndef enhanced
+//		if (! ENHANCED && (r > 1)) // lith code
+		if (r > 1) // lith code
 		{
 			if (attacker.health < (attacker.max_health * attacker.health_modifier * 2))
 			{
@@ -382,6 +402,7 @@ bprint(" ------------ ***          damage * 4\n"); // TEST: remove
 			}
 		}
 		else
+#endifdef
 		if (targ.health < take) attacker.health = attacker.health + RUNE_VAMPIRE_PER * targ.health; // only get RUNE_VAMPIRE_PER% of actual damage, excludes armor & other saves
 		else attacker.health = attacker.health + RUNE_VAMPIRE_PER * take;
 	}

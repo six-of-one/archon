@@ -101,17 +101,22 @@ void() chaos_precache =
 
 string() creg_killmsg =
 {
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ",null_string,null_string," was blown away by "));
+#endifdef
 
 	return " was blown away by ";
 };
 
 string() creg_killmsg2 =
 {
-	if (ENHANCED && random() < 0.23)
+#ifdef enhanced
+//	if (ENHANCED && random() < 0.23)
+	if (random() < 0.23)
 		return "'s Reggie Bannister special\n";
 	else
+#endifdef
 	return "'s quad shotgun\n";
 };
 
@@ -164,8 +169,10 @@ void() c_weapon_reggun =
 
 string() csh_killmsg =
 {
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ",null_string,null_string," was dug a grave by "));
+#endifdef
 
 	return " was dug a grave by ";
 };
@@ -217,8 +224,10 @@ void() c_weapon_shovel =
 
 string() cds_killmsg =
 {
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ",null_string,null_string," stopped running for "));
+#endifdef
 
 	return " stopped running for ";
 };
@@ -331,8 +340,10 @@ void () c_weapon_deepsleep =
 
 string() tsphere_killmsg =
 {
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," joined the Tall Man because of "," was given a mind altering experience by ",null_string,null_string," was drilled by "));
+#endifdef
 
 	return " joined the Tall Man because of ";
 };
@@ -560,9 +571,14 @@ void() health_touch =
 	// Megahealth = rot down the player's super health
 
 	if (self.healtype == HEAL_MEGA)
-	if ((!other.rune_flag & RUNE_FLG_RG) || !ENHANCED)
-	if ((!other.rune_flag & TECH_ADOC) || !ENHANCED)
-	if ((!other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
+#ifdef enhanced
+//	if ((!other.rune_flag & RUNE_FLG_RG) || !ENHANCED)
+//	if ((!other.rune_flag & TECH_ADOC) || !ENHANCED)
+//	if ((!other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
+	if (!other.rune_flag & RUNE_FLG_RG)
+	if (!other.rune_flag & TECH_ADOC)
+	if (!other.rune_flag & RUNE_VAMPIRE)
+#endifdef
 	{
 		if (!other.items & IT_SUPERHEALTH) // not already rotting - start it up
 		{

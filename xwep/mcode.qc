@@ -2414,7 +2414,7 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 
 	if (MORPH_LOCK) // already morphed and morph lock is engaged - hit impulse 50 to clear
 	if (self.wad == "morph_cube")
-	if (other.state)
+	if (other.state) // this locks morph state - player toggle to 0 allows more morphing
 	{
 		if (other.class_select == "class_player") return;
 		else if (random() > 0.08) return;

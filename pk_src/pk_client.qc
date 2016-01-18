@@ -174,7 +174,10 @@ void() DecodeLevelParms =
 {
 //		q10-_DecodeLevelParms();
 
-	if (!deathmatch || !ENHANCED) // Cataboligne - enhanced code - dont do this in DM
+#ifdef enhanced
+//	if (!deathmatch || !ENHANCED) // Cataboligne - enhanced code - dont do this in DM
+	if (!deathmatch) // Cataboligne - enhanced code - dont do this in DM
+#endifdef
 	if (serverflags)
 	{
 		if (world.model == "maps/start.bsp" && !inHubMap) // Cataboligne - 5.19.10 - q1 SP hack for using forced dyn items
@@ -1876,7 +1879,7 @@ bprint ("\n");
 				{
 					if (!NOPKCIDE)
 						targ.frags = (targ.frags - frag_minus());
-					if (random() < 0.5)
+					if (rnum < 0.5)
 					{
 						deathstring = rnd_string(' 90.0 60.0 60.0'," got dumb and set a sphere of annihlation free...good going chump!\n"," checked his own event horizon\n",null_string,null_string," made a really bad mistake\n");
 						bprint (deathstring);
@@ -1908,11 +1911,14 @@ bprint ("\n");
 					// killed self
 					if (!NOPKCIDE)
 						targ.frags = targ.frags - frag_minus();
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n",null_string,null_string," forgot to hide from his autosentry\n"));
-					else
+#ifdef enhanced
+//					if (ENHANCED)
+					bprint(rnd_string(' 90.0 60.0 60.0'," got shot in the arse by his own autosentry\n"," learns a valuable lesson about automated weapons\n",null_string,null_string," forgot to hide from his autosentry\n"));
+//					else
+#else
 					bprint(" forgot to hide from his own AutoSentry!\n");
-				return;
+#endifdef
+			return;
 			}
 
 		// increase frags & print message.
@@ -1935,10 +1941,13 @@ bprint ("\n");
 
 				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_GRAVITYWELL)
 				{
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n",null_string,null_string," visits another dimension\n"));
-					else
+#ifdef enhanced
+//					if (ENHANCED)
+					bprint(rnd_string(' 90.0 60.0 60.0'," sees eye to eye with eternity\n"," got sucked into his own trap\n",null_string,null_string," visits another dimension\n"));
+//					else
+#else
 					bprint (" visits another dimension\n");
+#endifdef
 					if (!NOPKCIDE)
 						targ.frags = (targ.frags - frag_minus());
 					return;
@@ -1946,12 +1955,15 @@ bprint ("\n");
 
 				if (inflictor.weapon == IT_AXE && inflictor.pk_currentitem == PK_IT_BEARTRAP)
 				{
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n",null_string,null_string," forgot about his beartrap\n"));
-					else
-					bprint (" forget about his beartrap\n");
+#ifdef enhanced
+//					if (ENHANCED)
+					bprint(rnd_string(' 90.0 60.0 60.0'," got bit in the ass by his own trap\n"," felt his own cold steel trap\n",null_string,null_string," forgot about his beartrap\n"));
+//					else
+#else
+					bprint (" forgot about his beartrap\n");
+#endifdef
 					if (!NOPKCIDE)
-						targ.frags = (targ.frags - frag_minus()); // reason these are up here - speical pkicide
+						targ.frags = (targ.frags - frag_minus()); // reason these tests are up here - speical pkicide
 					return;
 				}
 
@@ -1959,40 +1971,56 @@ bprint ("\n");
 
 				if (inflictor.wad == "pulse_spike")
 				{
-					if (ENHANCED)
+#ifdef enhanced
+//					if (ENHANCED)
+					if (rnum > 0.75)
 						bprint (" figured out the math for his pulse spike trajectory\n");
 					else
-						bprint (" becomes bored with life\n");
+#endifdef
+					bprint (" becomes bored with life\n");
 				}
 				else if (inflictor.classname == "cluster_bomb")
 				{
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," checks his cluster bomb spread\n"," went to collect the cluster bombs\n",null_string,null_string," checked to see if the cluster bombs were duds\n"));
-					else
-						bprint (" becomes bored with life\n");
+#ifdef enhanced
+//					if (ENHANCED)
+					bprint(rnd_string(' 90.0 60.0 60.0'," checks his cluster bomb spread\n"," went to collect the cluster bombs\n",null_string,null_string," checked to see if the cluster bombs were duds\n"));
+//					else
+#else
+					bprint (" becomes bored with life\n");
+#endifdef
 				}
 				else if (inflictor.classname == "grenade" || inflictor.classname == "MultiGrenade" || inflictor.classname == "MiniGrenade") // Cataboligne - 11.21.12 - added rogue weps
 				{
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n",null_string,null_string," tries to put the pin back in\n"));
-					else
-						bprint (" tries to put the pin back in\n");
+#ifdef enhanced
+//					if (ENHANCED)
+					bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n",null_string,null_string," tries to put the pin back in\n"));
+//					else
+#else
+					bprint (" tries to put the pin back in\n");
+#endifdef
 				}
 				else if (inflictor.classname == "missile")
 				{
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n",null_string,null_string," becomes bored with life\n"));
-					else
-						bprint (" becomes bored with life\n");
+#ifdef enhanced
+//					if (ENHANCED)
+					bprint(rnd_string(' 90.0 60.0 60.0'," launches a new career\n"," dances with his own HE\n",null_string,null_string," becomes bored with life\n"));
+//					else
+#else
+					bprint (" becomes bored with life\n");
+#endifdef
 				}
 				else if (inflictor.classname == "laser")
 				{
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n",null_string,null_string," self cremated\n"));
-					else if (rnum > 0.4 )
+#ifdef enhanced
+//					if (ENHANCED)
+					bprint(rnd_string(' 90.0 60.0 60.0'," melted him self\n"," got down with his own light beams\n",null_string,null_string," self cremated\n"));
+//					else 
+#else
+					if (rnum > 0.4 )
 						bprint (" becomes bored with life\n");
 					else
 						bprint (" checks if his weapon is loaded\n");
+#endifdef
 				}
 
 //				if (curwep_mapcode(targ, 0) == MC_GRAVITY)
@@ -2015,10 +2043,13 @@ bprint ("\n");
 
 				else if (inflictor.classname == "proximity_grenade")
 				{
-					if (ENHANCED)
-						bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n",null_string,null_string," tested the prox grenades motion sensor\n"));
-					else
-						bprint (" becomes bored with life\n");
+#ifdef enhanced
+//					if (ENHANCED)
+					bprint(rnd_string(' 90.0 60.0 60.0'," got stupid\n"," went back to get the prox grenade\n",null_string,null_string," tested the prox grenades motion sensor\n"));
+//					else
+#else
+					bprint (" becomes bored with life\n");
+#endifdef
 				}
 
 				else if (inflictor.classname == "ball_lightning")
@@ -2049,10 +2080,13 @@ bprint ("\n");
 
 					if ((inflictor.weapon == IT_LIGHTNING) || ((inflictor.weapon == IT_AXE) && (targ.pk_currentitem == PK_IT_CLIGHT)) && attacker.waterlevel > 1)
 					{
-						if (ENHANCED)
-							bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n",null_string,null_string," discharges into the water\n"));
-						else
-							bprint (" discharges into the water.\n");
+#ifdef enhanced
+//						if (ENHANCED)
+						bprint(rnd_string(' 90.0 60.0 60.0'," rode his own lightning!\n"," goes fishin in a thunder storm\n",null_string,null_string," discharges into the water\n"));
+//						else
+#else
+						bprint (" discharges into the water\n");
+#endifdef
 						return;
 					}
 // NOTE: conflict - morph that can get eweaps - fires builtin (capable of morphicide) & switches to eweap or v.v
@@ -2079,12 +2113,14 @@ bprint ("\n");
 
 					if (inflictor.weapon == IT_GRENADE_LAUNCHER)
 						bprint (" tries to put the pin back in\n");
-//					else
-//						bprint (" becomes bored with life\n"); // NOTE: generic death
-					else if (rnum > 0.4 || !ENHANCED) // hip mod
-						bprint (" becomes bored with life\n");
-					else
+#ifdef enhanced
+// note - at this point these are genericide deaths
+//					else if (rnum < 0.4 && ENHANCED) // hip mod
+					else if (rnum < 0.4) // hip mod
 						bprint (" checks if his weapon is loaded\n");
+#endifdef
+					else
+						bprint (" becomes bored with life\n");
 				}
 				return;
 			}
@@ -2133,7 +2169,7 @@ bprint ("\n");
 				if (empathy_dmg == 1)
 				{
 					bprint (targ.netname);
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" shares ");
 					else
 						bprint (" feels ");
@@ -2160,7 +2196,7 @@ bprint ("\n");
 					bprint (targ.netname);
 					if (inflictor.morphy == IMP_MSCOURGE)
 					{
-						if (random()<0.5)
+						if (rnum < 0.5)
 							bprint (" was bombed by ");
 						else
 							bprint (" tried to disarm a bomb set by ");
@@ -2169,7 +2205,7 @@ bprint ("\n");
 						return;
 					}
 
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" got too friendly with ");
 					else
 						bprint (" did the rhumba with ");
@@ -2182,17 +2218,9 @@ bprint ("\n");
 				{
 					bprint (targ.netname);
 
-					if (!ENHANCED || random() < 0.1)
-					{
-						deathstring = " eats ";
-						deathstring2 = "'s pineapple\n";
-						if (targ.health < -40)
-						{
-							deathstring = " was gibbed by ";
-							deathstring2 = "'s grenade\n";
-						}
-					}
-					else
+#ifdef enhanced
+//					if (ENHANCED && random() > 0.1)
+					if (rnum  > 0.1)
 					{
 						deathstring = " eats ";
 						deathstring2 = "'s wee little pineapple\n";
@@ -2202,6 +2230,18 @@ bprint ("\n");
 							deathstring2 = "'s wee little grenade\n";
 						}
 					}
+					else
+#endifdef
+					{
+						deathstring = " eats ";
+						deathstring2 = "'s pineapple\n";
+						if (targ.health < -40) // note - ack, human gib only! -- issue
+						{
+							deathstring = " was gibbed by ";
+							deathstring2 = "'s grenade\n";
+						}
+					}
+
 					bprint (deathstring);
 					bprint (attacker.netname);
 					bprint (deathstring2);
@@ -2213,7 +2253,7 @@ bprint ("\n");
 
 					if (inflictor.morphy == IMP_MSCOURGE)
 					{
-						if (random()<0.7)
+						if (rnum < 0.7)
 							bprint(" was melted by ");
 						else
 							bprint(" was lasered by ");
@@ -2222,10 +2262,13 @@ bprint ("\n");
 						return;
 					}
 
-					if (!ENHANCED || random() < 0.8)
-					if (inflictor.weapon == -256) // laser cannon secret code
+#ifdef enhanced
+//					if (!ENHANCED || random() < 0.8)
+					if (random() < 0.8)
+#endifdef
+					if (inflictor.weapon == -66) // laser cannon secret code
 					{
-						if (random()<0.5)
+						if (rnum < 0.5)
 							bprint (" was toasted by ");
 						else
 							bprint (" was radiated by ");
@@ -2234,14 +2277,14 @@ bprint ("\n");
 						return;
 					}
 
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" was radiated by ");
-					else if (random()<0.5)
+					else if (random() < 0.5)
 						bprint (" was melted by ");
 					else
 						bprint (" felt the lumnous heat from ");
 					bprint (attacker.netname);
-					if (random()<0.2)
+					if (random() < 0.2)
 						bprint ("'s hot light\n");
 					else
 						bprint ("'s laser\n");
@@ -2251,10 +2294,13 @@ bprint ("\n");
             if (inflictor.classname == "cluster_bomb")
 				{
 					bprint (targ.netname);
-					if (random()<0.5 || !ENHANCED)
-						bprint (" exploded under a rain of ");
-					else
+#ifdef enhanced
+//					if (random()>0.5 && ENHANCED)
+					if (rnum > 0.5)
 						bprint (" got more shrapnel than smiles with ");
+					else
+#endifdef
+					bprint (" exploded under a rain of ");
 
 					bprint (attacker.netname);
 					bprint ("'s cluster bombs\n");
@@ -2265,7 +2311,7 @@ bprint ("\n");
             if (inflictor.classname == "bfg_ball") // IMP: q2 message for direct hit
 				{
 					bprint (targ.netname);
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" was erased by ");
 					else
 						bprint (" got smashed by ");
@@ -2278,32 +2324,35 @@ bprint ("\n");
             if (inflictor.classname == "bfg_laser")
 				{
 					bprint (targ.netname);
-					if (!ENHANCED)
-					{
+#ifdef enhanced
+					if (rnum < 0.5)
 						bprint (" couldn't hide from ");
-						bprint (attacker.netname);
-						bprint ("'s BFG\n");
-						return;
-					}
-					if (random()<0.5)
-						bprint (" couldn't hide from ");
-					if (random()<0.5)
+					if (random() < 0.5)
 						bprint (" was melted by ");
 					else
 						bprint (" felt the lumnous heat from ");
 
 					bprint (attacker.netname);
-					if (random()<0.5)
+					if (random() < 0.5)
 						bprint ("'s BFG lasers\n");
 					else
 						bprint ("'s BFG\n");
 					return;
+#else
+//					if (!ENHANCED)
+//					{
+					bprint (" couldn't hide from ");
+					bprint (attacker.netname);
+					bprint ("'s BFG\n");
+					return;
+//					}
+#endifdef
 				}
 
             if (inflictor.classname == "hook_ball")
 				{
 					bprint (targ.netname);
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" was hooked by ");
 					else
 						bprint (" had his internal organs ripped out by ");
@@ -2316,7 +2365,7 @@ bprint ("\n");
             if (inflictor.classname == "demonboom")
 				{
 					bprint (targ.netname);
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" was ripped to shreds by ");
 					else
 						bprint (" got a blast from ");
@@ -2329,7 +2378,7 @@ bprint ("\n");
             if (inflictor.classname == "cloudkill")
 				{
 					bprint (targ.netname);
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" breathed his last from ");
 					else
 						bprint (" got a last gasp from ");
@@ -2342,7 +2391,7 @@ bprint ("\n");
             if (inflictor.classname == "plague")
 				{
 					bprint (targ.netname);
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" caught the plague from ");
 					else
 						bprint (" did something he shouldnt with ");
@@ -2358,7 +2407,7 @@ bprint ("\n");
 					if (inflictor.classname == "fireballwep" || inflictor.classname == "fireballmissle")
 					{
 						bprint (targ.netname);
-						if (random()<0.5)
+						if (rnum < 0.5)
 							bprint (" felt the heat from ");
 						else
 							bprint (" was melted by ");
@@ -2371,7 +2420,7 @@ bprint ("\n");
 					if (inflictor.classname == "lavaspike")
 					{
 						bprint (targ.netname);
-						if (random()<0.5)
+						if (rnum < 0.5)
 							bprint (" got the hot point from ");
 						else
 							bprint (" was nailed down by ");
@@ -2384,7 +2433,7 @@ bprint ("\n");
 					if (inflictor.classname == "spike")
 					if (inflictor.morphy == IMP_MSCOURGE)
 					{
-						if (random()<0.7)
+						if (rnum < 0.7)
 							bprint(" was perforated by ");
 						else
 							bprint(" was nailed up by ");
@@ -2396,7 +2445,7 @@ bprint ("\n");
 					if (inflictor.classname == "wizspike")
 					{
 						bprint (targ.netname);
-						if (random()<0.5)
+						if (rnum < 0.5)
 							bprint (" was really stiffed by ");
 						else
 							bprint (" felt the pain from ");
@@ -2409,7 +2458,7 @@ bprint ("\n");
 					if (inflictor.classname == "knightspike")
 					{
 						bprint (targ.netname);
-						if (random()<0.5)
+						if (rnum < 0.5)
 							bprint (" was on the wrong end of ");
 						else
 							bprint (" got the special delivery from ");
@@ -2422,7 +2471,7 @@ bprint ("\n");
 					if (inflictor.classname == "gib_tracer")
 					{
 						bprint (targ.netname);
-						if (random()<0.5)
+						if (rnum < 0.5)
 							bprint (" was pelted with ");
 						else
 							bprint (" got all stinky with ");
@@ -2437,39 +2486,48 @@ bprint ("\n");
 			if (inflictor.classname == "ogre_grenade") // new ogre message via rogue classname
 				{
 					bprint (targ.netname);
-					if (random()<0.5 || !ENHANCED)
-						bprint (" was destroyed by an Ogre\n");
-					else
+#ifdef enhanced
+//					if (rnum > 0.5 && ENHANCED)
+					if (rnum > 0.5)
 						bprint (" tried playing ball with an Ogre\n");
+					else
+#endifdef
+					bprint (" was destroyed by an Ogre\n");
 					return;
 				}
 
 			if (inflictor.classname == "dragon_fire") // owwie - note: not done yet
 				{
 					bprint (targ.netname);
-					if (random()<0.5 || !ENHANCED)
-						bprint (" was fried by a Dragon\n");
-					else
+#ifdef enhanced
+//					if (rnum > 0.5 && ENHANCED)
+					if (rnum > 0.5)
 						bprint (" became an amature throat specialist for Dragon kind\n");
+					else
+#endifdef
+					bprint (" was fried by a Dragon\n");
 					return;
 				}
 
 			if (inflictor.classname == "poison") // spider attack
 				{
 					bprint (targ.netname);
-					if (random()<0.5 || !ENHANCED)
-						bprint (" was poisoned by a Spider\n");
-					else
+#ifdef enhanced
+//					if (rnum > 0.5 && ENHANCED)
+					if (rnum > 0.5)
 						bprint (" should have sucked out the Spider venom\n");
+					else
+#endifdef
+					bprint (" was poisoned by a Spider\n");
 					return;
 				}
 
             if (inflictor.classname == "vomis") // vomis spike
 				{
 					bprint (targ.netname);
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" was slimed by a Vomitus\n");
-					else if (random()<0.5)
+					else if (random() < 0.5)
 						bprint (" was vomited on by a Vomitus\n");
 					else
 						bprint (" got vomit all over him\n");
@@ -2482,7 +2540,7 @@ bprint ("\n");
             if (inflictor.classname == "vomisexplod") // vomis bomb
 				{
 					bprint (targ.netname);
-					if (random()<0.5)
+					if (rnum < 0.5)
 						bprint (" caught the vomitus exploding spittle\n");
 					else
 						bprint (" got vomit bombed!\n");
@@ -2770,7 +2828,7 @@ bprint ("\n");
 				else
 				if (attacker.classname == "monster_supervore")
 				{
-					if (random() < 0.2)
+					if (rnum < 0.2)
 						bprint (" was eviscerated by a Hierophant Vore\n");
 					else
 						bprint (" was eviscerated by a Vaareziel\n"); // from Rothrin

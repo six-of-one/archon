@@ -40,9 +40,12 @@ void() de_archon_thk =
 	if (self.owner.height == IMP_MCHAOS) self.lefty = CHAOS_BEAM_MIN;
 	if (self.owner.archon > self.lefty)
 	{
-		if (self.owner.goalentity == self) self.owner.goalentity = world;
-		polymorph_check(self.owner.height, 0);
-		remove(self);
+		newmis = self;
+		self = self.owner;
+		if (self.goalentity == newmis) self.goalentity = world;
+		polymorph_check(self.height, 0);
+		self.archon = self.archon - (newmis.lefty * 0.25);
+		remove(newmis);
 	}
 	else
 	if (self.owner.disconnectPlayer)

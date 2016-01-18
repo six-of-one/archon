@@ -507,6 +507,9 @@ void() morph_cube_use =
 
 	c = self.eweapon;
 
+	if (c.archon < 1) // option not set, or not valid
+		return;
+
 	if (c.wad != "morph_cube")
 	{
 		self.button0 = 0;
@@ -569,15 +572,14 @@ void() morph_cube_use =
 	else
 	if (c.button0 != self.morphy) // failed morph - restore points, does this ever need any verification?
 	{
-		if (trace_ent)
-		{
-			centerprint3(self, "You have been polymorphed by chaos into: ", polymorph_id(self.morphy),null_string);
-			cube_rearm(); // does a few things, incase they are in cubes, spells or menus
-			self = trace_ent;
-		}
 		self.archon = c.height;
 	}
-	else if (trace_ent) self = trace_ent;
+	else if (trace_ent) // an Archon force polymorping another player / bot
+	{
+		centerprint3(self, "You have been polymorphed by chaos into: ", polymorph_id(self.morphy),null_string); // TEST:
+		cube_rearm(); // does a few things, incase they are in cubes, spells or menus
+		self = trace_ent;
+	}
 
 	self.impulse = 0;
 	remove(c);

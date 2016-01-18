@@ -357,7 +357,8 @@ void(entity e, float pr) rune_pull =
 // MUST always be set because of code (like harpoon) that tries to snag a rune
 	newmis = world;
 
-	if (!ENHANCED) return;
+#ifdef enhanced
+//	if (!ENHANCED) return;
 	if (!e) return;
 
 // only players & bots for now
@@ -374,6 +375,7 @@ void(entity e, float pr) rune_pull =
 	RUNE_PULL = TRUE;
 	rune_drop(e);
 	if (newmis) item_eject(newmis, GEN_BOUNCE);
+#endifdef
 };
 
 // handle runes when player dies
@@ -785,13 +787,15 @@ void () rune_touch =
 	if (! (self.spawnflags & RUNE_MASK)) // rune not allowed - prob map rune
 		return;
 
-	if (ENHANCED)
-	{
+#ifdef enhanced
+//	if (ENHANCED)
+//	{
 		if (other.rune_flag & RUNE_VAMPIRE)
 		if (self.spawnflags & RUNE_FLG_RG || self.spawnflags & TECH_ADOC)
 		{
 			if (other.duration < time)
-			sprint(other,"Suck heads cant get Regeneration\n");
+				stuffcmd(self.owner, "hud_message \"Suck heads cant get Regeneration\"\n");
+//			sprint(other,"Suck heads cant get Regeneration\n");
 			other.duration = time + 2 + random();
 			return;
 		}
@@ -800,11 +804,13 @@ void () rune_touch =
 		if (other.rune_flag & RUNE_FLG_RG || other.rune_flag & TECH_ADOC)
 		{
 			if (other.duration < time)
-			sprint(other,"You have Regeneration - you cant become a Suck head\n");
+				stuffcmd(self.owner, "hud_message \"You have Regeneration - you cant become a Suck head\"\n");
+//			sprint(other,"You have Regeneration - you cant become a Suck head\n");
 			other.duration = time + 2 + random();
 			return;
 		}
-	}
+//	}
+#endifdef
 
 	centerprint3 (other,"You got the ",self.netname," Rune!");
 	sprint(other,"You have the power of ");
@@ -1695,8 +1701,9 @@ void() rune_vamp =
 	f = 1;
 	
 // suck head has too much health - do an upper bleed out
-	if (ENHANCED)
-	{
+#ifdef enhanced
+//	if (ENHANCED)
+//	{
 		if (self.rune_flag & TECH_DSH) // tech cuts upper bleed out in half
 			f = 0.5;
 
@@ -1708,13 +1715,15 @@ void() rune_vamp =
 			if (!self.rune_flag & TECH_DSH) // tech cuts bleed out
 				self.health = self.health - 0.5;
 		}
+// scaled upper bleed out - note - cumulative
 		if (self.health > (2 * self.max_health * self.health_modifier))
 			self.health = self.health - (1 * f);
 		if (self.health > (4 * self.max_health * self.health_modifier))
 			self.health = self.health - (1 * f);
 		if (self.health > (8 * self.max_health * self.health_modifier))
 			self.health = self.health - (2 * f);
-	}
+//	}
+#endifdef
 };
 
 void() HasteSound =
@@ -1867,8 +1876,11 @@ void () item_sigil =
 			setmodel (self,"progs/end1.mdl");
 			self.netname = "Earth magic"; // Cataboligne - 5.32.10 - for rune server		
 
+#ifdef enhanced
 			if (R_EARTH == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY);
+//			if (ENHANCED) 
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY);
+#endifdef
 		}
 		if (self.spawnflags & R_BLACK)
 		{
@@ -1876,8 +1888,11 @@ void () item_sigil =
 			setmodel (self,"progs/end2.mdl");
 			self.netname = "Black magic"; // Cataboligne - 5.32.10 - for rune server
 
+#ifdef enhanced
 			if (R_BLACK == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+//			if (ENHANCED) 
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 		if (self.spawnflags & R_HELL)
 		{
@@ -1885,8 +1900,11 @@ void () item_sigil =
 			setmodel (self,"progs/end3.mdl");
 			self.netname = "Hell magic"; // Cataboligne - 5.32.10 - for rune server
 
+#ifdef enhanced
 			if (R_HELL == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+//			if (ENHANCED)
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 		if (self.spawnflags & R_ELDER)
 		{
@@ -1894,8 +1912,11 @@ void () item_sigil =
 			setmodel (self,"progs/end4.mdl");
 			self.netname = "Elder magic"; // Cataboligne - 5.32.10 - for rune server
 
+#ifdef enhanced
 			if (R_ELDER == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+//			if (ENHANCED)
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 		if (self.spawnflags & R_VAMPIRE) // bit 64
 		{
@@ -1904,7 +1925,10 @@ void () item_sigil =
 			self.netname = "Vampire magic";
 			self.effects = EF_DIMLIGHT;
 
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#ifdef enhanced
+//			if (ENHANCED) 
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 	}
 	else
@@ -1917,8 +1941,11 @@ void () item_sigil =
 			self.frame = 1;
 			self.skin = 2;
 
+#ifdef enhanced
 			if (R_EARTH == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+//			if (ENHANCED) 
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 		if (self.spawnflags & R_BLACK)
 		{
@@ -1926,8 +1953,11 @@ void () item_sigil =
 			self.frame = 1;
 			self.skin = 1;
 
+#ifdef enhanced
 			if (R_BLACK == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+//			if (ENHANCED) 
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 		if (self.spawnflags & R_HELL)
 		{
@@ -1935,8 +1965,11 @@ void () item_sigil =
 			self.frame = 1;
 			self.skin = 3;
 
+#ifdef enhanced
 			if (R_HELL == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+//			if (ENHANCED) 
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 		if (self.spawnflags & R_ELDER)
 		{
@@ -1944,8 +1977,11 @@ void () item_sigil =
 			self.frame = 1;
 			self.skin = 4;
 
+#ifdef enhanced
 			if (R_ELDER == RUNE_FLG_RG)
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+//			if (ENHANCED) 
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 		if (self.spawnflags & R_VAMPIRE) // bit 64
 		{
@@ -1953,7 +1989,10 @@ void () item_sigil =
 			self.frame = 1;
 			self.skin = 6;
 
-			if (ENHANCED) self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#ifdef enhanced
+//			if (ENHANCED) 
+				self.mask_x = MORPH_ALL - (MORPH_ALL & CB_ZOMBY) ;
+#endifdef
 		}
 	}
 

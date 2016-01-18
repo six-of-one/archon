@@ -230,8 +230,8 @@ void () item_megahealth_rot =
 // Cataboligne - 10.13.11 - regen / vampire runes
 #ifdef enhanced
 //	if (!(other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
-	if (! (other.rune_flag & RUNE_VAMPIRE))
 //	if (! other.rune_flag & (RUNE_FLG_RG | TECH_ADOC) || !ENHANCED)
+	if (! (other.rune_flag & RUNE_VAMPIRE))
 	if (! other.rune_flag & (RUNE_FLG_RG | TECH_ADOC))
 #endifdef
 

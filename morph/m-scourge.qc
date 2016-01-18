@@ -228,9 +228,11 @@ void()   player_scourge_atk1 =[ $shoot1,   player_scourge_atk2 ]
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(40);
 
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-45);
+#endifdef
 //   player_scourge_FireSpikes(-40);
 };
 void()   player_scourge_atk2 =[ $shoot2,   player_scourge_atk3 ]
@@ -239,9 +241,11 @@ void()   player_scourge_atk2 =[ $shoot2,   player_scourge_atk3 ]
 //   player_scourge_FireSpikes(56);
    player_scourge_FireSpikes(-52);  // moving outside shots in 4 units
 
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(47);
+#endifdef
 };
 void()   player_scourge_atk3 =[ $shoot1,   player_scourge_atk4 ]
 {
@@ -249,14 +253,16 @@ void()   player_scourge_atk3 =[ $shoot1,   player_scourge_atk4 ]
 //   player_scourge_FireSpikes(40);
    player_scourge_FireSpikes(-40);
 
-	if (ENHANCED)
-	{
-		if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
-			player_scourge_FireSpikes(45);
+#ifdef enhanced
+//	if (ENHANCED)
+//	{
+	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
+		player_scourge_FireSpikes(45);
 
-		if ((self.rune_flag & TECH_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - more extra nails
-			player_scourge_FireSpikes(-47);
-	}
+	if ((self.rune_flag & TECH_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - more extra nails
+		player_scourge_FireSpikes(-47);
+//	}
+#endifdef
 
 };
 void()   player_scourge_atk4 =[ $shoot2,   player_scourge_atk5 ]
@@ -265,18 +271,22 @@ void()   player_scourge_atk4 =[ $shoot2,   player_scourge_atk5 ]
    player_scourge_FireSpikes(52);
 //   player_scourge_FireSpikes(-56);
 
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
+#endifdef
 };
 void()   player_scourge_atk5 =[ $shoot1,   player_scourge_atk6 ]
 {
    self.effects = self.effects | EF_MUZZLEFLASH;
    player_scourge_FireSpikes(40);
 
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-45);
+#endifdef
 //   player_scourge_FireSpikes(-40);
 };
 void()   player_scourge_atk6 =[ $shoot2,   player_scourge_atk7 ]
@@ -285,14 +295,16 @@ void()   player_scourge_atk6 =[ $shoot2,   player_scourge_atk7 ]
 //   player_scourge_FireSpikes(56);
    player_scourge_FireSpikes(-52);
 
-	if (ENHANCED)
-	{
-		if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
-			player_scourge_FireSpikes(-47);
+#ifdef enhanced
+//	if (ENHANCED)
+//	{
+	if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
+		player_scourge_FireSpikes(-47);
 
-		if ((self.rune_flag & TECH_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - extra nails
-			player_scourge_FireSpikes(45);
-	}
+	if ((self.rune_flag & TECH_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - extra nails
+		player_scourge_FireSpikes(45);
+//	}
+#endifdef
 };
 void()   player_scourge_atk7 =[ $shoot1,   player_scourge_atk8 ]
 {
@@ -300,9 +312,11 @@ void()   player_scourge_atk7 =[ $shoot1,   player_scourge_atk8 ]
 //   player_scourge_FireSpikes(40);
    player_scourge_FireSpikes(-40);
 
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
 		player_scourge_FireSpikes(45);
+#endifdef
 
 };
 void()   player_scourge_atk8 =[ $shoot2,   player_stand1 ]
@@ -311,9 +325,11 @@ void()   player_scourge_atk8 =[ $shoot2,   player_stand1 ]
    player_scourge_FireSpikes(52);
 //   player_scourge_FireSpikes(-56);
 //   SUB_AttackFinished (4*random());
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
+#endifdef
 
 	if (self.currentammo < 1 )  // firing lasers, out of ammo
 	{
@@ -483,18 +499,25 @@ float (entity p, float heala, float ign) player_scourge_armor =
 
 string(entity targ, entity attacker) player_scourge_killmsg =
 {
-	if (!ENHANCED) return " was stung by a Centroid\n";
-
+#ifdef enhanced
 	if (attacker.weapon == IT_AXE)
-		return " was stung by ";
+		return " was stung by Centroid ";
 	else
-		return " was hated by ";
+		return " was hated by Centroid ";
+#else
+//	if (!ENHANCED) 
+	return " was stung by a Centroid\n";
+#endifdef
 };
 
 string(entity targ, entity attacker) player_scourge_killmsg2 =
 {
-	if (!ENHANCED) return "noname";
+#ifdef enhanced
 	return ".\n";
+#else
+//	if (!ENHANCED) 
+	return "noname";
+#endifdef
 };
 
 

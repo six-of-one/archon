@@ -1399,8 +1399,8 @@ void() q3_ha_rot_thk =
 
 #ifdef enhanced
 //	if ((!self.owner.rune_flag & TECH_ADOC) || !ENHANCED)
-	if (! self.owner.rune_flag & TECH_ADOC)
 //	if ((!self.owner.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
+	if (! self.owner.rune_flag & TECH_ADOC)
 	if (! self.owner.rune_flag & RUNE_VAMPIRE)
 #endifdef
 	if (!self.owner.rune_flag & RUNE_FLG_RG) // no rot when regen item or rune is set

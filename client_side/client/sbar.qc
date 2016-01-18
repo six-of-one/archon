@@ -378,15 +378,36 @@ float items, items2, currentweap, cammo, mcode, archon;
 float rune_flag, dmg_flare;
 float pk_inv, pk_wep;
 
+// flasher codes
+
+float flasher, flashhl, flashawep, sterix_fl;
+float ALPHA_FULL, ALPHA_MEDIUM, ALPHA_LOW, ALPHA_90, p_alph;
+
+// note setting > 1 will cause numbers of critical stats to flash on hud - health, current wep ammo, armor, etc
+var float autocvar_hud_flash_numeral = 16;
+// note setting > 1 will cause icons of critical stats to flash on hud - health, current wep ammo, armor, etc
+var float autocvar_hud_flash_icon = 6;
+// dont flash wep/ammo when ammo = 1 - most infinite ammo items set 1 ammo in qc
+var float autocvar_hud_flash_noammow = 1;
+
+
 
 //  for the 4 small sized ammo counts on the right side
-void(vector valor, float ammo, float transparencia) DrawAmmo =
+void(vector vcol, vector valor, float ammo, float transparencia) DrawAmmo =
 {
 	vector v;
 	string s;
 	v = valor;
 	v_y = v_y + weapons_offset;
 
+if (vcol != '0 0 0')
+{
+	if ((ammo >= 10) && (ammo <= 99)) v_x = v_x + 7;
+	if ((ammo >= 0) && (ammo <= 9)) v_x = v_x + 14;
+//	s = strconv(CONV_SAME, CONV_RED, CONV_WHITESPECIAL, ftos(ammo));
+	Sbar_DrawString(v, ftos(ammo), transparencia, '7 7 0', vcol);
+	return;
+}
 if (ammo >= 100)
 {
 	s = strconv(CONV_SAME, CONV_RED, CONV_WHITESPECIAL, ftos(ammo));
@@ -394,13 +415,13 @@ if (ammo >= 100)
 }
 if ((ammo >= 10) && (ammo <= 99)) 
 {
-	v_x = v_x + 7;    
+	v_x = v_x + 7;
 	s = strconv(CONV_SAME, CONV_RED, CONV_WHITESPECIAL, ftos(ammo));
 	Sbar_DrawString(v, s, transparencia, '7 7 0','1 1 1');
 }
-if ((ammo >= 0) && (ammo <= 9)) 
+if ((ammo >= 0) && (ammo <= 9))
 {
-	v_x = v_x + 14;   
+	v_x = v_x + 14;
 	s = strconv(CONV_SAME, CONV_RED, CONV_WHITESPECIAL, ftos(ammo));
 	Sbar_DrawString(v, s, transparencia, '7 7 0','1 0.5 0.5');
 }
@@ -424,6 +445,7 @@ void(vector valor, string pic1, string pic2, float itemnum, float scale, float s
 	vector v, y;
 	string pic;
 	float inv_alm, draw, has;
+	float awepflash, awicofset, awicof;
 
 // if invisible, ghost all holstered weps
 	inv_alm = 1;
@@ -446,6 +468,15 @@ void(vector valor, string pic1, string pic2, float itemnum, float scale, float s
 
 	if (has)
 	{
+		awepflash = 1;
+		awicof = awicofset = 1;
+		if (cammo >= 1)
+		if (cammo != autocvar_hud_flash_noammow)
+		{
+			if (cammo < autocvar_hud_flash_numeral) awepflash = flashawep;
+			if (cammo < autocvar_hud_flash_icon) awicofset = flashawep;
+		}
+
       v = valor;
 		v_y = v_y + weapons_offset;    
 		if (draw)
@@ -465,14 +496,16 @@ void(vector valor, string pic1, string pic2, float itemnum, float scale, float s
 // code hasted weps - dbl shadow image on active wep
 			if ((rune_flag & RUNE_FLG_HS) || (rune_flag & TECH_TEIM))
 				Sbar_DrawPic(v + '2 5 0', pic, ibar_alpha * 0.45, scale);
+
 // idea: find some way to ID infinite ammo weps
 // live ammo count for drawn weapon
-			if (cammo > 0) DrawAmmo(v + y + '-24 4 0', ceil(cammo), 1.0);
+			if (cammo > 0) DrawAmmo('0.3 0.3 1', v + y + '-24 4 0', ceil(cammo), ALPHA_FULL * awepflash);
+			awicof = awicofset;
 		}
 		else
 			pic = pic1;
 
-		Sbar_DrawPic(v, pic, ibar_alpha * inv_alm, scale);
+		Sbar_DrawPic(v, pic, ibar_alpha * inv_alm * awicof, scale);
 	}
 };
 
@@ -538,8 +571,6 @@ void() Sbar_DrawInventory =
 
 	ibar_alpha = cvar("sbar_alpha_fg");
 
-	float ALPHA_FULL, ALPHA_MEDIUM, ALPHA_LOW, ALPHA_90, p_alph;
-
 	ALPHA_FULL = ibar_alpha;
 	ALPHA_MEDIUM = ibar_alpha * 0.7;
 	ALPHA_90 = ibar_alpha * 0.9;
@@ -547,7 +578,9 @@ void() Sbar_DrawInventory =
 
 	float casting, converting, k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
 	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag;
-	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v;
+	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v, clr;
+
+	float healflash, hicof, armorflash, armicof, flashclv;
 
 	string wep_sg, wep_ssg, wep_nail, wep_snail, wep_gren, wep_rock, wep_light, wep_mj, wep_prox, wep_laser, wep_harp, wep_airgun, wep_clg, wep_axe, wep_pnail;
 	string target1, target2, instr;
@@ -686,6 +719,22 @@ if (ibar_flag)
 	woff = '0 0 0';
 	woff_y = weapons_offset;
 
+// flasher set
+
+	flasher = 1;
+	flashhl = 1;
+	flashawep = 1;
+	flashclv = 1;
+	sterix_fl = 1;
+
+	if (autocvar_hud_flash_numeral)
+	{
+		flasher = ((1 + (time * 10) & 3)/2);
+		flashhl = ((1 + ((time + 0.1) * 10) & 3)/2);
+		flashawep = ((1 + ((time + 0.2) * 10) & 3)/2);
+		sterix_fl = ((1 + (time * 10) & 3)/3);
+	}
+
 
 /// runes area left adjust
 	pwr_step = '-400 53 0';
@@ -706,6 +755,11 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	{
 		if (explodeshot > 0)
 			plevel = archon - explodeshot; // archon magic cost
+		if (plevel < 0)
+		{
+			flashclv = flasher;
+			cvar_set("hud_message", "Casting spell will severly reduce your archon level!");
+		}
 	}
 	else
 	if (volspec < 0) plevel = archon - fabs(volspec); // morph cube cost or power shots
@@ -758,7 +812,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				pwr_step_x = pwr_step_x + 7;
 			}
 		}
-		DrawAmmo(arc_level + '20 5 0' - woff, fabs(archon), ALPHA_FULL);
+		DrawAmmo('0 0 0', arc_level + '20 5 0' - woff, fabs(archon), ALPHA_FULL * flashclv);
 
 // converting XP to archon points indicator
 
@@ -798,7 +852,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 //			if  (plevel < 10) p_level_y = p_level_y + 10 - plevel;
 			if ((p_level_y < 7) && (arc_level_y > 10)) p_level_y = 7; // hold text amt here if poss.
-			if (p_level_y > 6) DrawAmmo(p_level + '20 0 0' - woff, plevel, ALPHA_FULL);
+			if (p_level_y > 6) DrawAmmo('0 0 0', p_level + '20 0 0' - woff, plevel, ALPHA_FULL);
 			k = p_level_y;
 		}
 	}
@@ -824,10 +878,10 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 /*
 // test to find lowest val in left draw coords
 
-	DrawAmmo('-300 100 0', chaos_level_y, ALPHA_FULL);
-	DrawAmmo('-300 80 0', p_level_y, ALPHA_FULL);
-	DrawAmmo('-300 60 0', arc_level_y, ALPHA_FULL);
-	DrawAmmo('-300 40 0', cnt_left, ALPHA_FULL);
+	DrawAmmo('0 0 0', '-300 100 0', chaos_level_y, ALPHA_FULL);
+	DrawAmmo('0 0 0', '-300 80 0', p_level_y, ALPHA_FULL);
+	DrawAmmo('0 0 0', '-300 60 0', arc_level_y, ALPHA_FULL);
+	DrawAmmo('0 0 0', '-300 40 0', cnt_left, ALPHA_FULL);
 */
 
 // move runes over for low range digit display
@@ -937,6 +991,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if (autocvar_hud_message != "")
 		{
 			print(autocvar_hud_message);
+			print("\n"); // so far none of these <\n> at the end
 			cvar_set("hud_message", "");
 		}
 	}
@@ -1282,6 +1337,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	  }
 	}
 
+
 	if (deadflag) // display dead time and none else
 	{
 		k = time - deadtime;
@@ -1310,43 +1366,54 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		
 		if (!archon_magic)
 		{
+			healflash = 1;
+			hicof = 1;
+			if (health < autocvar_hud_flash_numeral) healflash = flasher;
+			if (health < autocvar_hud_flash_icon) hicof = flasher;
+
 			if (cl_items & IT_SUPERHEALTH)
 				DrawInventory(pwr_step + '2 0 0' + woff,"gfx/sb_mega",   IT_SUPERHEALTH, 0, ALPHA_FULL, 0.19);
 			else
-				DrawInventoryAmmo(pwr_step + '4 0 0', "gfx/sb_health", ALPHA_FULL, 0.17);
-			DrawAmmo(pwr_step + '27 -10 0', health, ALPHA_FULL);
+				DrawInventoryAmmo(pwr_step + '4 0 0', "gfx/sb_health", ALPHA_FULL * hicof, 0.17);
+			
+			DrawAmmo('1 0.15 0.15', pwr_step + '27 -10 0', health, ALPHA_FULL * healflash);
 
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 27;
 		}
 
 // IMP: archons have shield here - dont use armor icons
-		if (cl_items & IT_ARMOR3)
-			DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor3", ALPHA_FULL, 0.28);
-		else if (cl_items & IT_ARMOR2)
-			DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor2", ALPHA_FULL, 0.28);
-		else if (cl_items & IT_ARMOR1)
-			DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor1", ALPHA_FULL, 0.28);
-
-		if (cl_items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3))
+		if (floor(armorval) >= 1)
 		{
-			DrawAmmo(pwr_step + '27 -10 0', armorval, ALPHA_FULL);
-			cnt_left = pwr_step_y;
-			pwr_step_y = pwr_step_y + 27;
+			armorflash = 1;
+			armicof = 1;
+			if (armorval < autocvar_hud_flash_numeral) armorflash = flasher;
+			if (armorval < autocvar_hud_flash_icon) armicof = flasher;
+			clr = '0.5 0.7 1';
+			if (cl_items & IT_ARMOR3)
+			{
+				DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor3", ALPHA_FULL * armicof, 0.28);
+				clr = '1 0.3 0.3';
+			}
+			else if (cl_items & IT_ARMOR2)
+			{
+				DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor2", ALPHA_FULL * armicof, 0.28);
+				clr = '1 1 0.3';
+			}
+			else if (cl_items & IT_ARMOR1)
+			{
+				DrawInventoryAmmo(pwr_step + '2 0 0', "gfx/sb__armor1", ALPHA_FULL * armicof, 0.28);
+				clr = '0.3 1 0.3';
+			}
+
+			if (cl_items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3))
+			{
+				DrawAmmo(clr, pwr_step + '27 -10 0', armorval, ALPHA_FULL * armorflash);
+				cnt_left = pwr_step_y;
+				pwr_step_y = pwr_step_y + 27;
+			}
 		}
 	}
-
-	float flasher, sterix_fl;
-	var float autocvar_hud_flash_numeral = 1;
-
-	flasher = 1;
-	sterix_fl = 1;
-	if (autocvar_hud_flash_numeral)
-	{
-		flasher = ((1 + (time * 10) & 3)/2);
-		sterix_fl = ((1 + (time * 10) & 3)/3);
-	}
-	
 
 	if (ibar_flag > 2)
 	{
@@ -1354,7 +1421,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if (cl_items & IT_INVISIBILITY)
 		{
 			if (!ring) ring = time + 30;
-			else if ((ring - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(ring - time), ALPHA_MEDIUM * flasher);
+			else if ((ring - time) > 0) DrawAmmo('0 0 0', pwr_step + '27 -8 0', ceil(ring - time), ALPHA_MEDIUM * flasher);
 			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_invis",    ALPHA_LOW, 1.5);
 			cnt_left = pwr_step_y;
@@ -1366,7 +1433,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		{
 //			if (!suit) suit= time + 30;
 //			else 
-			if ((wsuit - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(wsuit - time), ALPHA_MEDIUM * flasher);
+			if ((wsuit - time) > 0) DrawAmmo('0 0 0', pwr_step + '27 -8 0', ceil(wsuit - time), ALPHA_MEDIUM * flasher);
 			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_wsuit",    ALPHA_MEDIUM, 0.45);
 			cnt_left = pwr_step_y;
@@ -1375,7 +1442,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		else
 		{
 			if (!suit) suit= time + 30;
-			else if ((suit - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(suit - time), ALPHA_MEDIUM * flasher);
+			else if ((suit - time) > 0) DrawAmmo('0 0 0', pwr_step + '27 -8 0', ceil(suit - time), ALPHA_MEDIUM * flasher);
 			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_suit",    ALPHA_MEDIUM, 1.5);
 			cnt_left = pwr_step_y;
@@ -1385,7 +1452,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if (cl_items & IT_QUAD)
 		{
 			if (!quad) quad = time + 30;
-			else if ((quad - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(quad - time), ALPHA_MEDIUM * flasher);
+			else if ((quad - time) > 0) DrawAmmo('0 0 0', pwr_step + '27 -8 0', ceil(quad - time), ALPHA_MEDIUM * flasher);
 			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_quad",    ALPHA_FULL, 1.5);
 			cnt_left = pwr_step_y;
@@ -1395,7 +1462,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if (cl_items & IT_INVULNERABILITY)
 		{
 			if (!inv) inv = time + 30;
-			else if ((inv - time) > 0) DrawAmmo(pwr_step + '27 -8 0', ceil(inv - time), ALPHA_MEDIUM * flasher);
+			else if ((inv - time) > 0) DrawAmmo('0 0 0', pwr_step + '27 -8 0', ceil(inv - time), ALPHA_MEDIUM * flasher);
 			else Sbar_DrawString(pwr_step + woff + '27 -8 0', " **", ALPHA_FULL * sterix_fl, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo(pwr_step + '2 0 0',"gfx/sb_invuln",    ALPHA_FULL, 1.5);
 			cnt_left = pwr_step_y;
@@ -1894,9 +1961,9 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		DrawInventoryAmmo(wep_step + '12 -10 0',"gfx/sb_bullet", ALPHA_FULL, 0.08);
 //		if (mcode == MC_C_FLAMER)
-//			DrawAmmo(wep_step + '-10 -15 0', bullets, ALPHA_FULL);
+//			DrawAmmo('0 0 0', wep_step + '-10 -15 0', bullets, ALPHA_FULL);
 //		else
-			DrawAmmo(wep_step + '-10 -15 0', bullets, ALPHA_MEDIUM);
+			DrawAmmo('0 0 0', wep_step + '-10 -15 0', bullets, ALPHA_MEDIUM);
 		wep_step = wep_step + '0 20 0';
 	}
 
@@ -1904,9 +1971,9 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		DrawInventoryAmmo(wep_step + '12 -10 0',"gfx/sb_gas1", ALPHA_FULL, 0.1);
 		if (mcode == MC_C_FLAMER)
-			DrawAmmo(wep_step + '-10 -15 0', gas, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-10 -15 0', gas, ALPHA_FULL);
 		else
-			DrawAmmo(wep_step + '-10 -15 0', gas, ALPHA_MEDIUM);
+			DrawAmmo('0 0 0', wep_step + '-10 -15 0', gas, ALPHA_MEDIUM);
 		wep_step = wep_step + '0 20 0';
 	}
 
@@ -1914,9 +1981,9 @@ sb_align = SB_BOTTOM_RIGHT;
 	{
 		DrawInventoryAmmo(wep_step + '12 -10 0',"gfx/sb_slug", ALPHA_FULL, 0.08);
 		if (mcode == MC_Q2_RAILGUN)
-			DrawAmmo(wep_step + '-10 -15 0', slugs, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-10 -15 0', slugs, ALPHA_FULL);
 		else
-			DrawAmmo(wep_step + '-10 -15 0', slugs, ALPHA_MEDIUM);
+			DrawAmmo('0 0 0', wep_step + '-10 -15 0', slugs, ALPHA_MEDIUM);
 		wep_step = wep_step + '0 20 0';
 	}
 
@@ -1977,12 +2044,12 @@ sb_align = SB_BOTTOM_RIGHT;
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
 			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_phn", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_phone, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_phone, ALPHA_FULL);
 		}
 		else
 		{
 			DrawInventoryAmmo(wep_step, "gfx/inv_phn", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_phone, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_phone, ALPHA_MEDIUM);			
 		}
 		wep_step = wep_step + '0 20 0';
 	}
@@ -1994,12 +2061,12 @@ sb_align = SB_BOTTOM_RIGHT;
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
 			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_mask", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_mask, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_mask, ALPHA_FULL);
 		}
 		else
 		{
 			DrawInventoryAmmo(wep_step, "gfx/inv_mask", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_mask, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_mask, ALPHA_MEDIUM);			
 		}
 		wep_step = wep_step + '0 20 0';
 	}
@@ -2011,12 +2078,12 @@ sb_align = SB_BOTTOM_RIGHT;
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
 			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_tomb", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_tomb, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_tomb, ALPHA_FULL);
 		}
 		else
 		{
 			DrawInventoryAmmo(wep_step, "gfx/inv_tomb", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_tomb, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_tomb, ALPHA_MEDIUM);			
 		}
 		wep_step = wep_step + '0 20 0';
 	}
@@ -2028,12 +2095,12 @@ sb_align = SB_BOTTOM_RIGHT;
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
 			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_ego", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_ego, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_ego, ALPHA_FULL);
 		}
 		else
 		{
 			DrawInventoryAmmo(wep_step, "gfx/inv_ego", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_ego, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_ego, ALPHA_MEDIUM);			
 		}
 		wep_step = wep_step + '0 20 0';
 	}
@@ -2045,12 +2112,12 @@ sb_align = SB_BOTTOM_RIGHT;
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
 			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_copb", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_copb, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_copb, ALPHA_FULL);
 		}
 		else
 		{
 			DrawInventoryAmmo(wep_step, "gfx/inv_copb", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_copb, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_copb, ALPHA_MEDIUM);			
 		}
 		wep_step = wep_step + '0 20 0';
 	}
@@ -2062,12 +2129,12 @@ sb_align = SB_BOTTOM_RIGHT;
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
 			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_btrap", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_bt, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_bt, ALPHA_FULL);
 		}
 		else
 		{
 			DrawInventoryAmmo(wep_step, "gfx/inv_btrap", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_bt, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_bt, ALPHA_MEDIUM);			
 		}
 		wep_step = wep_step + '0 20 0';
 	}
@@ -2079,12 +2146,12 @@ sb_align = SB_BOTTOM_RIGHT;
 			if (dmg_flare) Sbar_DrawPic(wep_step + '-2 2 0' + woff, "gfx/dmg_flare3", ALPHA_90, 0.15);
 			else Sbar_DrawPic(wep_step + '-2 -16 0' + woff, "gfx/spell_bar", ALPHA_90, 0.5);
 			DrawInventoryAmmo(wep_step, "gfx/inv_turr", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_tur, ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_tur, ALPHA_FULL);
 		}
 		else
 		{
 			DrawInventoryAmmo(wep_step, "gfx/inv_turr", ALPHA_FULL * inv_alm, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', pk_tur, ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', pk_tur, ALPHA_MEDIUM);			
 		}
 		wep_step = wep_step + '0 20 0';
 	}
@@ -2099,7 +2166,7 @@ sb_align = SB_BOTTOM_RIGHT;
 				DrawInventoryAmmo(wep_step, "gfx/inv_gwell", ALPHA_FULL, 0.125);
 			else
 				DrawInventoryAmmo(wep_step, "gfx/inv_sgwell", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_FULL);
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_FULL);
 		}
 		else
 		{
@@ -2107,7 +2174,7 @@ sb_align = SB_BOTTOM_RIGHT;
 				DrawInventoryAmmo(wep_step, "gfx/inv_gwell", ALPHA_FULL * inv_alm, 0.125);
 			else
 				DrawInventoryAmmo(wep_step, "gfx/inv_sgwell", ALPHA_FULL, 0.125);
-			DrawAmmo(wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_MEDIUM);			
+			DrawAmmo('0 0 0', wep_step + '-22 -5 0', fabs(pk_gwell), ALPHA_MEDIUM);			
 		}
 		wep_step = wep_step + '0 20 0';
 	}
@@ -2123,7 +2190,7 @@ sb_align = SB_BOTTOM_RIGHT;
 	if (explodeshot > 0)
 	{
 		DrawInventoryAmmo('302 30 0', "gfx/sb_xpshells", explodsht_alp, 0.125);  
-		DrawAmmo('280 25 0', explodeshot, explodsht_alp);
+		DrawAmmo('0 0 0', '280 25 0', explodeshot, explodsht_alp);
 	}
 
 // for 4 small ammo icon positions
@@ -2133,22 +2200,22 @@ sb_align = SB_BOTTOM_RIGHT;
 		if (shells > 0)
 		{
 			DrawInventoryAmmo('302 50 0', "gfx/sb_shells", ALPHA_FULL, 0.5);  
-			DrawAmmo('280 45 0', shells, ALPHA_MEDIUM);
+			DrawAmmo('0 0 0', '280 45 0', shells, ALPHA_MEDIUM);
 		}
 		if (nails > 0)
 		{
 			DrawInventoryAmmo('302 70 0', "gfx/sb_nails", ALPHA_FULL, 0.5);
-			DrawAmmo('280 65 0', nails, ALPHA_MEDIUM);
+			DrawAmmo('0 0 0', '280 65 0', nails, ALPHA_MEDIUM);
 		}
 		if (rockets > 0)
 		{
 			DrawInventoryAmmo('302 90 0', "gfx/sb_rocket", ALPHA_FULL, 0.5);
-			DrawAmmo('280 85 0', rockets, ALPHA_MEDIUM);
+			DrawAmmo('0 0 0', '280 85 0', rockets, ALPHA_MEDIUM);
 		}
 		if (cells > 0)
 		{
 			DrawInventoryAmmo('302 110 0',"gfx/sb_cells", ALPHA_FULL, 0.5);
-			DrawAmmo('280 105 0', cells, ALPHA_MEDIUM);		
+			DrawAmmo('0 0 0', '280 105 0', cells, ALPHA_MEDIUM);		
 		}
 		return;
 	}
@@ -2161,33 +2228,33 @@ sb_align = SB_BOTTOM_RIGHT;
 	if (cl_items & IT_SHELLS)
 	{
 		if (explodsht_alp == ALPHA_FULL)
-			DrawAmmo('280 45 0', shells, ALPHA_MEDIUM);
+			DrawAmmo('0 0 0', '280 45 0', shells, ALPHA_MEDIUM);
 		else
-		DrawAmmo('280 45 0', shells, ALPHA_FULL);
-		DrawAmmo('280 65 0', nails, ALPHA_MEDIUM);
-		DrawAmmo('280 85 0', rockets, ALPHA_MEDIUM);
-		DrawAmmo('280 105 0', cells, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 45 0', shells, ALPHA_FULL);
+		DrawAmmo('0 0 0', '280 65 0', nails, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 85 0', rockets, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 105 0', cells, ALPHA_MEDIUM);
 	}	
 	else if (cl_items & IT_NAILS)
 	{
-		DrawAmmo('280 45 0', shells, ALPHA_MEDIUM);
-		DrawAmmo('280 65 0', nails, ALPHA_FULL);
-		DrawAmmo('280 85 0', rockets, ALPHA_MEDIUM);
-		DrawAmmo('280 105 0', cells, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 45 0', shells, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 65 0', nails, ALPHA_FULL);
+		DrawAmmo('0 0 0', '280 85 0', rockets, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 105 0', cells, ALPHA_MEDIUM);
 	}
 		else if (cl_items & IT_ROCKETS)
 	{
-		DrawAmmo('280 45 0', shells, ALPHA_MEDIUM);
-		DrawAmmo('280 65 0', nails, ALPHA_MEDIUM);
-		DrawAmmo('280 85 0', rockets, ALPHA_FULL);
-		DrawAmmo('280 105 0', cells, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 45 0', shells, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 65 0', nails, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 85 0', rockets, ALPHA_FULL);
+		DrawAmmo('0 0 0', '280 105 0', cells, ALPHA_MEDIUM);
 	}
 		else if (cl_items & IT_CELLS)
 	{
-		DrawAmmo('280 45 0', shells, ALPHA_MEDIUM);
-		DrawAmmo('280 65 0', nails, ALPHA_MEDIUM);
-		DrawAmmo('280 85 0', rockets, ALPHA_MEDIUM);
-		DrawAmmo('280 105 0', cells, ALPHA_FULL);
+		DrawAmmo('0 0 0', '280 45 0', shells, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 65 0', nails, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 85 0', rockets, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 105 0', cells, ALPHA_FULL);
 	}		
 	if (cl_items & IT_AXE)// a strange dummy, but work´s fine!
 	{
@@ -2195,10 +2262,10 @@ sb_align = SB_BOTTOM_RIGHT;
 		if (cl_items & IT_NAILS) 	return;
 		if (cl_items & IT_ROCKETS) 	return;
 		if (cl_items & IT_CELLS) 	return;
-		DrawAmmo('280 45 0', shells, ALPHA_MEDIUM);
-		DrawAmmo('280 65 0', nails, ALPHA_MEDIUM);
-		DrawAmmo('280 85 0', rockets, ALPHA_MEDIUM);
-		DrawAmmo('280 105 0', cells, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 45 0', shells, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 65 0', nails, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 85 0', rockets, ALPHA_MEDIUM);
+		DrawAmmo('0 0 0', '280 105 0', cells, ALPHA_MEDIUM);
 	}
 }
 

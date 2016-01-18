@@ -39,6 +39,9 @@ float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 #else
 #endifdef
 
+// replaces - 
+//							float ENHANCED					= 1; // adds features that werent originally there in the sub mods (like runes)
+
 // **************************************
 // engine section
 
@@ -727,8 +730,6 @@ float MC_Q3_HOLDTELE;
 // chaos section
 
 // **************************************
-
-float ENHANCED					= 1; // adds features that werent originally there in the sub mods (like runes)
 
 //float WORLD_NOWAY				= 1; // use world min & max for noway bounds if sv_ bounds not set
 
