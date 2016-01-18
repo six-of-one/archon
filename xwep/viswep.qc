@@ -1094,7 +1094,7 @@ void(entity e, string md, entity p) DeadThrew =
 	{
 		newmis.nextthink = time + DEAD_THROW_TIME;
 		if (newmis.eweapon)
-			dyn_remove(newmis.eweapon, time + DEAD_THROW_TIME + 1); // set up an eventual remove if wep uncollected
+			dyn_remove(newmis.eweapon, time + DEAD_THROW_TIME + 1, SUB_Null); // set up an eventual remove if wep uncollected
 	}
 
 	AddToSplash(newmis); // *pk - splash tossed items

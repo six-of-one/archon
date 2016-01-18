@@ -72,7 +72,8 @@ float pk_map;								// true if a painkeep map is loaded
 float pk_ditems;							// count painkeep items for dyn_items code
 float PK_DYNTO;							// timeout in 120 secs
 float PK_DYNRAD				= 8000;	// dynamic radius search 8000 units
-void(entity e, float tm) dyn_remove;
+void(entity e, float tm, void() rmv) dyn_remove;
+void() dyn_rem;
 float REMOVE_DV 				= 30; // some deviation to spread things out
 
 float PK_ADMIN;							// allow admin - set this to 0 to completely disable all admin

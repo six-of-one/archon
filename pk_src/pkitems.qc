@@ -566,24 +566,34 @@ void() pk_ammo_touch =
 void() painkeep_touch =
 {
 	local entity stm2;
-	local float f;
+	local float f, cube;
+	local entity e;
 
 	if (other.admin)
 	if (other.admin != LIVE_ADMIN)
 	if (other.admin != USER_MENU)
 		return; // *pk - admin - no collecting stuff
 
-	local entity e;
+	if (other.duration > time) return; // note: snything that sets player duration fsck here
+
+	if (other.eweapon)
+	if (other.eweapon.wad == "pk_cube" || other.eweapon.wad == "morph_cube")
+		cube = TRUE;
+
 	e = world;
-	if (other.classname == "pk*bot") // *bot
+
+	if (!cube)
+	if (other.health > 0)
+	if (other.classname == "pk*bot") // *bot - looks like player for touch
 	{
 		if (self.state == BOT_TOUCHED || self.state == BOT_TOUCHED_CACHE_ROUTE_TOUCH) // *bot code - patch in bot_toucheditem for bots - routes here because this is PK master touch fn()
 		{
 			bot_toucheditem ();
 		}
-			e = other;
-			e.wad = e.classname;
-			e.classname = "player";
+
+		e = other;
+		e.wad = e.classname;
+		e.classname = "player";
 	}
 
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
@@ -591,20 +601,20 @@ void() painkeep_touch =
 		grap_checkIfGrap();
 		return;
 	}
+
 	if (other.health <= 0)
 		return;
 
 // cubic - because anything that sets eweap fsck's cube op
-	if (other.eweapon)
+	if (cube)
 	{
-		if (other.eweapon.wad == "pk_cube" || other.eweapon.wad == "morph_cube")
-		{
-			if (other.eweapon.duration > time) return;
-			other.eweapon.duration = time + 3;
-			sprint(other, "You cannot collect items while linked to a cube - change weapons or activate cube.\n");
-			return;
-		}
+		if (other.eweapon.duration > time) return;
+		other.eweapon.duration = time + 3;
+		sprint(other, "You cannot collect items while linked to a cube - change weapons or activate cube.\n");
+		return;
 	}
+	
+	other.duration = time + 1; // only hit touch 1 per sec for uncollected items - only set for players
 
 
 
@@ -624,7 +634,7 @@ if (!self.mask_x) 			bprint("------------------- ** WARNING - item with no mask 
 
 	if (f) // make sure morph can collect this
 	{
-		if (e) e.classname = "pk*bot";
+		if (e) e.classname = e.wad;
 
 		if (!other.mask_x & CB_HUMAN)
 		if (!other.mask_x & CB_GREMLIN)
@@ -647,7 +657,10 @@ if (!self.mask_x) 			bprint("------------------- ** WARNING - item with no mask 
 	}
 
 	if (self.pk_touch == SUB_Null) // deactivated
+	{
+		if (e) e.classname = e.wad;
 		return;
+	}
 	if (self.pk_touch == (void()) 0)
 	{
 		if (WARNING)
@@ -659,6 +672,7 @@ if (!self.mask_x) 			bprint("------------------- ** WARNING - item with no mask 
 		if (self.event != "dynamic_item") item_call(self.classname);
 		else if (self.wad != "") item_call(self.wad);
 		else if (self.scode) item_call(item_by_mcode(self.scode));
+		if (e) e.classname = e.wad;
 		return;
 	}
 	else
@@ -687,10 +701,10 @@ if (self.classname == "") bprint("*** - blank classname in touch fn \n");
 		if (other.mask_x & CB_SCOURGE) // scourge has to select x_wep so they look / sound right
 		if (self.items & (IT_GRENADE_LAUNCHER | IT_LIGHTNING))
 		{
-			e = self;
+			stm2 = self;
 			self = other;
 			player_scourge_impulse();
-			self = e;
+			self = stm2;
 		}
 		if (self.solid == SOLID_NOT)
 		if (self.think == SUB_regen)
@@ -724,7 +738,7 @@ bprint(")\n");
 
 		if (e)
 		{
-			e.classname = "pk*bot";
+			e.classname = e.wad;
 			if (e.think == player_run) e.think = e.th_run;
 			if (e.think == player_stand1) e.think = e.th_stand;
 		}
@@ -736,10 +750,11 @@ bprint(")\n");
 			self.solid = SOLID_NOT; // cant touch till respawn
 		}
 		if (self.aflag == NO_REMOVE_NORET) self.nextthink = -1;
+		other.duration = 0;
 		return;
 	}
 
-	if (e) e.classname = "pk*bot";
+	if (e) e.classname = e.wad;
 
 
 	if (other.builtin)
@@ -832,6 +847,7 @@ bprint(")\n");
 	SUB_UseTargets();				// fire all targets / killtargets
 	
 	if (pk_flags & PK_DYNAMIC) pk_dyn_touch();
+	other.duration = 0;
 };
 
 
@@ -1607,7 +1623,7 @@ void() DropBackpack =
 		newmis.eweapon.items = self.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
 																						  // had to do this because laser cannon was getting wrong weapon value & not selectable
 		xwep_ammo(newmis.eweapon, self);
-		dyn_remove(newmis.eweapon, bkt + REMOVE_DV + 1); // set up an eventual remove if pack uncollected
+		dyn_remove(newmis.eweapon, bkt + REMOVE_DV + 1, SUB_Null); // set up an eventual remove if pack uncollected
 	}
 	else
 

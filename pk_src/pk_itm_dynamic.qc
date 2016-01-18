@@ -823,23 +823,33 @@ float(float cn, entity e, string op) ammo_con =
 
 // note: this has very few qualifications for a selected ent
 
+// kept for the old style remove on cubes and anything with a think
+
 void() dyn_rem =
 {
 	if (self.enemy)
 	{
 		if (self.button13 == self.enemy.button13)
 		{
-			if (self.enemy.wad == "pk_cube" || self.enemy.wad == "morph_cube") // dont just remove an active cube
-			if (self.enemy.owner)
+			if (self.wait) // new ops - set sub rem & exit
 			{
-				self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 2;
-				return;
+				self.enemy.think = SUB_Remove;
+				self.enemy.nextthink = time + self.wait;
 			}
-			remove(self.enemy);
-			pk_ditems = pk_ditems - 1; // this is really meaningless
+			else // old ops
+			{
+				if (self.enemy.wad == "pk_cube" || self.enemy.wad == "morph_cube") // dont just remove an active cube
+				if (self.enemy.owner)
+				{
+					self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 2;
+					return;
+				}
+				remove(self.enemy);
+	//			pk_ditems = pk_ditems - 1; // this is really meaningless
+			}
 		}
 		else
-		if (1) //(WARNING)
+		if (WARNING)
 		{
 			bprint(" *** WARNING: dynamic remove hash fail: ");
 			bprint(item_ident(self.enemy));
@@ -861,12 +871,15 @@ void() dyn_rem =
 
 // e - remove this ent
 // tm - time to live
+// rmv - alternate remve fn - for any ent that has think for something
 
 //float REMOVE_DV = 30; // some deviation to spread things out
 
+float DYN_REM_TIME = 6; // 6 secs then set sub_remove
+
 float dynrem_hash;
 
-void(entity e, float tm) dyn_remove =
+void(entity e, float tm, void() rmv) dyn_remove =
 {
 	local entity f;
 	local float dv;
@@ -875,23 +888,33 @@ void(entity e, float tm) dyn_remove =
 
 	f = spawn();
 	f.classname = "dyn_removal";
+	f.think = dyn_rem;
+	f.nextthink = time + DYN_REM_TIME;
+
 	f.netname = e.netname; // in case of hash fail
 	f.target1 = e.classname;
 	f.enemy = e;
-	f.think = dyn_rem;
+
 	f.button13 = e.button13 = dynrem_hash;
 	dynrem_hash = dynrem_hash + 1 + rint(random() * 5);
 
 	dv = REMOVE_DV;
 	if (dv > tm) dv = tm * 0.2;
 	if (tm)
-		f.nextthink = time + tm + crandom() * dv;
+		f.wait = time + tm + crandom() * dv;
 	else if (e.wad == "morph_cube")
-		f.nextthink = time + MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
+		f.wait = time + MORPH_CUBE_TIME + crandom() * MORPH_CUBE_DV;
 	else if (e.wad == "pk_cube")
-		f.nextthink = time + fabs(PK_CUBE_TIME) + crandom() * 20;
+		f.wait = time + fabs(PK_CUBE_TIME) + crandom() * 20;
 	else
-	f.nextthink = time + PK_DYNTO + crandom() * 55;
+	f.wait = time + PK_DYNTO + crandom() * 55;
+
+	if (rmv != SUB_Null) // old style or something else = direct think
+	{
+		f.think = rmv;
+		f.nextthink = time + f.wait;
+		f.wait = 0;
+	}
 };
 
 entity rseu; // random spawn ent origin used
@@ -1009,7 +1032,12 @@ void() dyn_spawn =
 	item_call(self.wad);
 
 	if (self.wad != "pk_crate") // pk_crates get removed by ops code - because they can leave an open box
-		dyn_remove(self, 0);
+	{
+		if (self.wad == "morph_cube" || self.wad == "pk_cube") // cubes think & need old op
+			dyn_remove(self, 0, dyn_rem);
+		else
+			dyn_remove(self, 0, SUB_Null);
+	}
 };
 
 // think to handle dynamic item spawns if enabled by admin - pk_items only

@@ -140,7 +140,7 @@ void() CheckWaterLevels =
 				e.inwater = pc;
 
 				// Remove turrets and beartraps if they fall into the lava
-				if (!ENHANCED || ((cc_frame & 3) == 3))
+				if (!ENHANCED || ((cc_frame & 3) == 2))
 				if (pc == CONTENT_LAVA)
 				{
 					if (e.classname == "beartrap")
@@ -183,7 +183,7 @@ void() CheckWaterLevels =
 
 // suspect shot stuff is from bots fallen out & not returned yet
 
-		if ((cc_frame & 15) == 15) // dont run these every frame, or even every 14th frame
+		if ((cc_frame & 15) == 10) // dont run these every frame, or even every 14th frame
 		{
 			if (pcc == CONTENT_SOLID || (floor(e.velocity_z) == -2011 || floor(e.velocity_z) == mv))
 			{

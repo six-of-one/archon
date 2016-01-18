@@ -705,7 +705,6 @@ void() PutClientInServer =
 	// PAINKEEP Fix the velocity on respawn bug
 	self.velocity = '0 0 0';
 
-	set_viewport( self, self); // Cataboligne 10.4.11 - fix bug while using dpcam where view gets borked
 	Chase_cam_level_start(); // Cataboligne 8.9.9 purify - chase cam
 };
 
@@ -1448,9 +1447,9 @@ void () PlayerPreThink =
 	else
 		self.flags = self.flags | FL_JUMPRELEASED;
 
-// NOTE: morph flyers, jetpack
-//	if (self.rune_flag & RUNE_FLG_FLY)
-	if (! (framecount & 2))
+// note: covers morph flyers, jetpack
+
+	if ((framecount & 3) == 2)
 	if ((!self.flags & FL_ONGROUND) || (self.v_angle_x < -45))
 	if (self.movetype == MOVETYPE_FLY) // NOTE: horn, grap set this
 		flyer_move(); // Cataboligne - 7.26.10 - flyer mouse-fly right code from chaos mod flight

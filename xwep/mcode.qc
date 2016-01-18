@@ -2071,8 +2071,8 @@ void() painkeep_cube_use =
 					{
 						d = MC_PENT;
 						f = MC_TOT - 2;
-						if (random() < 0.2 && GENERATIONS) d = MC_SUPER_SHOTGUN + rint(random() * f);
-						if (random() < 0.2 && MORPHIC) c.wad = "morph_cube";
+						if (random() < 0.2 && GENERATIONS) d = MC_SUPER_SHOTGUN + rint(random() * f); // any item besides q1 axe or sg
+						if (random() < 0.2 && MORPHIC && c.event == "dynamic_item") c.wad = "morph_cube"; // can only do this with dynamic pk cubes
 					}
 				}
 			}
@@ -2135,10 +2135,11 @@ void() painkeep_cube_use =
 		setorigin(c, crate.origin + ' 0 0 8');
 		c.event = "dynamic_item"; // dont respawn
 		c.ammo_cells = crate.ammo_cells; // was set above
-		dyn_remove(c, (PK_DYNTO * 2 + random())); // remove it eventually
 
 		c.wad = item_by_mcode(d); // default
 		f = floor(random() * crate.stdev);
+
+// map loaded crates
 		if (crate.items) c.wad = item_by_mcode(crate.items + f);
 		else if (crate.map) c.wad = crate.map;
 		else if (crate.wait)
@@ -2146,7 +2147,7 @@ void() painkeep_cube_use =
 			self = c; // temp ent
 			self.delay = self.count = 0;
 			self.wait = crate.wait;
-			self.spawnflags = 2; // no respawn on item
+			self.spawnflags = 2 | (crate.spawnflags & 4); // no respawn on item - + spawnflag for dynamic remove
 			func_make();
 			d = pk_mcode(newmis.wad, world);
 			if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL)
@@ -2161,7 +2162,7 @@ void() painkeep_cube_use =
 	if (c.wad == "pk_cube")
 	{
 		c.model = "";
-		if (c.event != "dynamic_item") // a map created cube - should respawn
+		if (c.event != "dynamic_item") // a map created cube - should respawn, items will not remove
 		{
 			c.solid = SOLID_NOT;
 			if (deathmatch)
@@ -2231,7 +2232,21 @@ bprint(")\n");
 		if (!crate)
 			self.punchangle = ' 110 110 280'; // for ejector
 		else
-			self.punchangle = anti_bounce; // for ejector - just a boost
+		{
+			self.punchangle = anti_bounce;
+			if ( (crate.spawnflags & 4) || crate.event ==  "dynamic_item")
+			{
+				f = crate.mean;
+				if (!f) f = PK_DYNTO * 2;
+				if (self.class_select == "class_monster")
+				{
+					if (crate.event !=  "dynamic_item")
+					dyn_remove(self, (f + 20 * random()), dyn_rem); // monsters think & have to go old style
+				}
+				else
+					dyn_remove(self, (f + 20 * random()), SUB_Null);
+			}
+		}
 
 // pk cube fix - spawned something and fns are reversed
 		if (self.class_select != "class_monster")
@@ -2566,13 +2581,14 @@ void() pk_crate =
 	self.nextthink = time + 1 + random();
 };
 
-/*QUAKED func_crate  (0 .5 .8) (-16 -16 0) (16 16 32) LARGE RESPAWN
+/*QUAKED func_crate  (0 .5 .8) (-16 -16 0) (16 16 32) LARGE RESPAWN REMOVE
 --------  CAT  --------
 
 Breakable crates for your map
 
 LARGE - large crate = dimensions (-32 -32 0) (32 32 64)
 RESPAWN - respawn this crate
+REMOVE - remove items made after dynamic timeout
 
 -------- NOTES --------
 
@@ -2588,6 +2604,8 @@ nothing - pick a random item from pk_cube list
 "map" - used as spawn func - i.e. monster_dog
 
 "wait" - use func_make codes = special value listed below
+
+"mean" - set time for removal if selected in flags
 
 special values of .wait - select random item from:
 -1 = q1 items, no runes if RUNES
@@ -2628,7 +2646,6 @@ void() func_crate =
 		self.event = "dynamic_item"; // just in case?
 //		pk_ditems = pk_ditems + 1; // just became dyn item - but, this ent doesnt sub_regen, so nevermind
 	}
-
 
 	self.wad = "pk_crate";
 	self.netname = "Crate";
@@ -2904,6 +2921,9 @@ count: if not 0 spawn this many items and go away
 delay: if not 0 wait this long and spawn another ent.
        you might want random locations for this
 
+mean: time to dynamic removal
+stdev: deviation from removal time
+
 --- monster bits ---
 
 if more than one bit is set monsters will be selected randomly
@@ -3025,7 +3045,16 @@ void() func_make =
 		pk_ditems = pk_ditems + 1; // do here because call already made
 	}
 
-	if (self.spawnflags & 4) dyn_remove(newmis, 0);
+	if (self.spawnflags & 4)
+	{
+		f = self.mean;
+		if (!f) f = PK_DYNTO;
+
+		if (newmis.class_select == "class_monster")
+			dyn_remove(newmis, f + (crandom() * self.stdev), dyn_rem); // monsters think & have to go old style
+		else
+			dyn_remove(newmis, f + (crandom() * self.stdev), SUB_Null);
+	}
 
 	if (newmis) // make sure we made it
 	if (self.charmer) // IDEA: if targeted this func could easily spawn charmed monsters just by detecting targeting player

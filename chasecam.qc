@@ -880,6 +880,15 @@ void() Chase_cam_level_start =
 //	if (IROBOT(self)) return; // no cam start for bots
 	if (!self.ishuman) return; // no bots
 
+	set_viewport( self, self); // Cataboligne 10.4.11 - fix bug while using dpcam where view gets borked
+
+// get rid of any dcam
+	if (self.oldenemy)
+	if (self.oldenemy.classname == "deadcam")
+		remove(self.oldenemy);
+
+	self.oldenemy = world;
+
 	if (Q_100 || PK_100)
 	{
 		stuffcmd(self, "chase_active 0\n"); // Cataboligne - 9.24.11 - stuff must get turned back off
