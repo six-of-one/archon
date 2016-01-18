@@ -2059,7 +2059,7 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					else
 						bprint (" becomes bored with life\n");
 				}
-				if (inflictor.classname == "grenade")
+				if (inflictor.classname == "grenade" || inflictor.classname == "MultiGrenade" || inflictor.classname == "MiniGrenade") // Cataboligne - 11.21.12 - added rogue weps
 				{
 					if (ENHANCED)
 						bprint(rnd_string(' 90.0 60.0 60.0'," is painting the level red\n"," trips over his own pineapple\n","",""," tries to put the pin back in\n"));
@@ -2254,6 +2254,35 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					bprint (attacker.netname);
 					bprint ("'s bomb\n");
 					return;
+				}
+
+				if (inflictor.classname == "MultiGrenade" || inflictor.classname == "MiniGrenade")
+				{
+					bprint (targ.netname);
+
+					if (!ENHANCED || random() < 0.1)
+					{
+						deathstring = " eats ";
+						deathstring2 = "'s pineapple\n";
+						if (targ.health < -40)
+						{
+							deathstring = " was gibbed by ";
+							deathstring2 = "'s grenade\n";
+						}
+					}
+					else
+					{
+						deathstring = " eats ";
+						deathstring2 = "'s wee little pineapple\n";
+						if (targ.health < -40)
+						{
+							deathstring = " was gibbed by ";
+							deathstring2 = "'s wee little grenade\n";
+						}
+					}
+					bprint (deathstring);
+					bprint (attacker.netname);
+					bprint (deathstring2);
 				}
 
             if (inflictor.classname == "laser" || inflictor.classname == "plasma")
@@ -2482,6 +2511,16 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					}
 				}
 
+
+			if (inflictor.classname == "ogre_grenade") // new ogre message via rogue classname
+				{
+					bprint (targ.netname);
+					if (random()<0.5 || !ENHANCED)
+						bprint (" was destroyed by an Ogre\n");
+					else
+						bprint (" tried playing ball with an Ogre\n");
+					return;
+				}
 
 			if (inflictor.classname == "dragon_fire") // owwie - note: not done yet
 				{

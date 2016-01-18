@@ -142,6 +142,10 @@ hipnotic/gremlin.qc
 hipnotic/hipspawn.qc
 hipnotic/hipspikemine.qc
 
+// rogue
+
+hipnotic/multi_weapons.qc
+
 // runes
 
 runes.qc

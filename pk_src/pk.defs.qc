@@ -412,6 +412,8 @@ string sid_code;							// list of all codes as string, access = (code - 100) * 4
 //float RSP_WEP;
 //float RSP_ART;
 
+float TE_EXPLOSION2			= 12;
+
 float EXPLBOX_RESP;			// explode box respawn if true
 void() d_barrel;
 

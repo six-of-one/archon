@@ -148,6 +148,12 @@ void() hip_precache =
 	precache_model ("progs/s_plspg.spr");
 	precache_model ("progs/s_plspg2.spr");
 
+// rogue
+
+	precache_model ("progs/mervup.mdl");
+	precache_model ("progs/rockup.mdl");
+	precache_model ("progs/rockup_d.mdl");
+
 };
 
 
