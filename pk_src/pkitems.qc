@@ -691,8 +691,7 @@ if (self.classname == "") bprint("*** - blank classname in touch fn \n");
 
 
 
-		if ( !(other.rune_flag & self.spawnflags) || !(self.model == "progs/q3_art.mdl") )
-			stack_touch(self, other); // save some items model string for drop codes
+		stack_touch(self, other); // save some items model string for drop codes
 //		if (self.event == "dynamic_item")
 //		{
 //			f = TRUE;

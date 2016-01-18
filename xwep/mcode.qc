@@ -2079,7 +2079,7 @@ void() painkeep_cube_use =
 		}
 	}
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
-//	if (1) d = MC_GRAVITY; // TEST:
+	if (1) d = MC_GRAVITY; // TEST:
 
 	if (crate)
 	{
@@ -2189,7 +2189,7 @@ void() painkeep_cube_use =
 		d = pk_mcode(self.wad, world);
 
 
-if (cvar("saved1") == -555)
+if (cvs1 == -555)
 {
 bprint(" *** cube / crate made =  (");
 //bprint(item_ident(self));
@@ -2221,7 +2221,7 @@ bprint(")\n");
 
 
 
-if (cvar("saved1") == -555)
+if (cvs1 == -555)
 {
 bprint(" *** cube / crate made =  (");
 //bprint(item_ident(self));
@@ -2230,7 +2230,7 @@ bprint(")\n");
 }
 
 		if (self.classname == "item_painkeep_gwell")
-//		if (random() < 0.333)
+//		if (random() < 0.333) // TEST:
 		{
 			self.skin = 1; // super gravity well
 			self.frame = 1;
@@ -2311,7 +2311,7 @@ bprint(")\n");
 
 
 
-if (cvar("saved1") == -555)
+if (cvs1 == -555)
 {
 bprint(" *** cube done self =  (");
 bprint(item_ident(self));

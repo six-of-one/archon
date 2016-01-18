@@ -280,6 +280,41 @@ void () DropHook =
 	remove( self );
 };
 
+// drop hook given a hooked ent, e
+
+void (entity e) DropHook_ent =
+{
+	local entity linkptr, nextptr, f;
+
+	f = find(world, classname, "hook_ball");
+	while (f && (e != f.owner))
+	{
+		f = find(f, classname, "hook_ball");
+	}
+
+	if (!f) return;
+
+	// remove all hook flags
+	f.owner.hook = 0;
+
+	if (!f.morphy) 
+	if (f.lefty == SEL_S_HOOK )
+		stuffcmd(f.owner, "exec hook_release.cfg\n");
+
+	sound (f.owner, CHAN_AUTO, f.noise1, 1, ATTN_NORM);
+
+	// removes hook and chain
+	linkptr = f.goalentity;
+	while (linkptr != world)
+	{
+		nextptr = linkptr.goalentity;
+		remove (linkptr);
+		linkptr = nextptr;
+	}
+	remove( f );
+};
+
+
 // think to set laser hook beam len (and lightning hook)
 
 void() hook_laser_thk =

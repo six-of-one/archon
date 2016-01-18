@@ -544,7 +544,7 @@ void() melee_hit =
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(" *** eweap ");
 bprint(EWEAP.netname);
@@ -558,7 +558,7 @@ bprint(EWEAP.netname);
 
 
 
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", hit dmg = ");
 bprint(ftos(dm));
@@ -804,7 +804,7 @@ void () X_MissileTouch =
 	}
 
 
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 if (self.eweapon) {
 bprint(" *** eweap ");
@@ -822,7 +822,7 @@ bprint(" *** missile (?) ");
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", hit dmg = ");
 bprint(ftos(self.dmg));
@@ -849,7 +849,7 @@ fts.dmg_save = fts.dmg_save + 1;
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", tot dmg = ");
 bprint(ftos(self.dmg+self.dodmg));
@@ -897,14 +897,14 @@ void (float shotcount, float pdmg, vector dir, vector spread) X_FireBullets =
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", bdmg = ");
 bprint(ftos(ddmg));
 }
 
 }
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 tdmg = tdmg + ddmg;
 fts.dmg_take = fts.dmg_take + ddmg;
@@ -937,7 +937,7 @@ void () X_FireHitscan =
 
 
 // TESTING - fire rates
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(" *** eweap ");
 bprint(EWEAP.netname);
@@ -990,7 +990,7 @@ tdmg = 0;
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", tot dmg = ");
 bprint(ftos(tdmg));
@@ -1391,7 +1391,7 @@ void () X_FireOnePlasma =
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(" *** eweap ");
 bprint(EWEAP.netname);
@@ -1465,7 +1465,7 @@ bprint(EWEAP.netname);
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", hit dmg = ");
 bprint(ftos(dm));
@@ -2071,7 +2071,7 @@ local entity g;
 
 
 tr = tr + 1;
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint("*** q2 bfg beam hit = ");
 bprint(item_ident(e));
@@ -2092,7 +2092,7 @@ bprint(".\n");
 
 
 
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", beams fired = ");
 bprint(ftos( tr));
@@ -2127,7 +2127,7 @@ bprint(ftos( tr));
 				v1 = self.enemy.origin;
 				i = vlen(v1) / m;
 
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(" --- laser vln = ");
 bprint(ftos(vlen(v1)));
@@ -2155,7 +2155,7 @@ bprint(".\n");
 				g.frame = i;
 				g.skin = 1;
 
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 fts.dmg_take = fts.dmg_take + Q2_BFG_LASER_DMG;
 bdm = bdm + Q2_BFG_LASER_DMG;
@@ -2257,7 +2257,7 @@ bprint(".\n");
 	}
 */
 
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint("*** doom bfg beam hit = ");
 bprint(item_ident(e));
@@ -2286,7 +2286,7 @@ bprint(".\n");
 
 
 
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", beams fired = ");
 bprint(ftos(40 - tr));
@@ -2299,17 +2299,17 @@ bprint(ftos(40 - tr));
 // fake it for fire rate stats
 if (self.flags == Q2_BFG)
 {
-if (cvar("saved1") == -777) fts.dmg_take = fts.dmg_take + 40 * 200;
+if (cvs1 == -777) fts.dmg_take = fts.dmg_take + 40 * 200;
 bdm = bdm + 40 * 200;
 }
 else 	if (self.flags == DOOM_BFG)
 {
-if (cvar("saved1") == -777) fts.dmg_take = fts.dmg_take + 40 * 128;
+if (cvs1 == -777) fts.dmg_take = fts.dmg_take + 40 * 128;
 bdm = bdm + 40 * 128;
 }
 
 
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(", beams dmg = ");
 bprint(ftos(bdm));
@@ -2461,7 +2461,7 @@ void() e_weap_Attack =
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 	if (!fts) // testing - rpm
 	{
 		fts = spawn();
@@ -2486,7 +2486,7 @@ if (cvar("saved1") == -777)
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 fts.cnt = fts.cnt + 1;
 }
 

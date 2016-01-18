@@ -141,7 +141,7 @@ void() flyer_move =
 
 
 // TEST: flyer speed
-if (cvar("saved1") == -888)
+if (cvs1 == -888)
 if (vlen(self.velocity) > 50)
 //if (vlen(self.velocity) > cvar("sv_maxspeed") + 2)
 //if (time & 3 == 0)

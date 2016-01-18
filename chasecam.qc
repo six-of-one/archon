@@ -332,10 +332,14 @@ if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
 		{
 			self.owner.think = dcam_respawnthink;
 			self.owner.nextthink = time + 0.2;
+
+			stuffcmd(self, "con_notify 4\n");
+			stuffcmd(self, "con_notifytime 3\n");
+			stuffcmd(self, "con_notify_alias\n"); // for notify default
 		}
 		if (self.owner.crosshair_sv > 0) crosshair_off(self.owner);
 
-// pbserver status bar - time spent observing in rels & high score
+// pbserver status bar - time spent observing in rels + "high score"
 		stuffcmd(self.owner, "infobar 2 \"");
 		stuffcmd(self.owner, self.owner.netname);
 		if (self.owner.deadflag)

@@ -419,12 +419,12 @@ void() health_touch =
 	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
-	if (!other.rune_flag & RUNE_VAMPIRE)
+
 	if (self.healtype == HEAL_MEGA)
+	if ((!other.rune_flag & RUNE_FLG_RG) || !ENHANCED)
+	if ((!other.rune_flag & TECH_ADOC) || !ENHANCED)
+	if ((!other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
 	{
-		if ((!other.rune_flag & RUNE_FLG_RG) || !ENHANCED)
-		if ((!other.rune_flag & TECH_ADOC) || !ENHANCED)
-		if ((!other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
 		if (!other.items & IT_SUPERHEALTH) // not already rotting - start it up
 		{
 			self.nextthink = time + 5;
@@ -658,7 +658,7 @@ void() x_pwr_touch =
 		e.enemy.mdl = e.enemy.model;
 		e.enemy.skin = Q3_SH_QUAD;
 		e.think = q3_art_shell;
-		e.nextthink = time + t - 1; //POW_TIME - 1;
+		e.nextthink = time + 1;//t - 1; //POW_TIME - 1;
 		if (self.items == IT_SUIT)
 			e.enemy.skin = Q3_SH_ENV;
 		if (self.items == IT_QUAD)

@@ -880,7 +880,7 @@ float(entity e) notmod =
 
 
 // TESTING
-//	if (cvar("saved1") == 17 || cvar("saved1") == -999) return(FALSE); // allow test
+//	if (cvs1 == 17 || cvar("saved1") == -999) return(FALSE); // allow test
 
 
 

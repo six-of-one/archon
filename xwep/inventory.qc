@@ -1235,6 +1235,25 @@ void(float im, entity p, vector vb) drop_inventory =
 		p.dropent.map = sel;
 		stack_delete(p, ic);
 		stack_compress(p);
+		
+		d = find(world, map, "mega_health_rot");
+		while (d)
+		{
+			if (d.owner == p)
+			{
+				e.healamount = d.duration;
+				if (p.health > (p.max_health * p.health_modifier))
+				{
+					f = p.health - (p.max_health * p.health_modifier);
+					p.health = p.health - d.duration;
+					if (p.health < (p.max_health * p.health_modifier))
+						p.health = p.max_health * p.health_modifier;
+					if (f < e.healamount) e.healamount = f;
+				}
+				return; // only one rot processed - should only be one anyway
+			}
+			d = find(d, map, "mega_health_rot");
+		}
 		return;
 	}
 

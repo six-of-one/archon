@@ -227,7 +227,7 @@ void () item_megahealth_rot =
 
 // Cataboligne - 10.13.11 - regen / vampire runes
 	if (!(other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
-	if (! other.rune_flag & (RUNE_FLG_RG | TECH_ADOC))
+	if (! other.rune_flag & (RUNE_FLG_RG | TECH_ADOC) || !ENHANCED)
 
 	if (other.health > other.max_health * other.health_modifier) // Cataboligne - 9.18.11 - morphic
 	{
@@ -243,6 +243,8 @@ void () item_megahealth_rot =
 
 	if (deathmatch == 1 || deathmatch == 3)	// deathmatch 2 is silly old rules // *pk more dm modes
 	{
+		self.map = "";
+		self.owner = world;
 		if (self.wait) // because all x item megas use this
 			self.nextthink = time + self.wait;
 		else

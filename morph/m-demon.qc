@@ -204,7 +204,7 @@ void() player_demon_explode =
 
 
 
-if (cvar("saved1") == -556)
+if (cvs1 == -556)
 {
 bprint("---- demon boom init tot dmg: ");
 bprint(ftos(k));
@@ -225,7 +225,7 @@ bprint("\n");
 			k = k * (5 + f);
 
 
-if (cvar("saved1") == -556)
+if (cvs1 == -556)
 {
 bprint("---- demon super boom tot dmg: ");
 bprint(ftos(k));
@@ -260,7 +260,7 @@ bprint("\n");
 					T_Damage(e, self, self.owner, f);
 
 
-if (cvar("saved1") == -556)
+if (cvs1 == -556)
 {
 bprint("---- demon boom super dmg: ");
 bprint(ftos(f));

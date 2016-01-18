@@ -1906,7 +1906,7 @@ Infl = inflictor;
 Targ = targ;
 Att = attacker;
 
-if (cvar("saved1") == -556)
+if (cvs1 == -556)
 {
 bprint("\nInflicitor was:");
 bprint(item_ident(inflictor));

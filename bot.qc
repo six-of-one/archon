@@ -916,7 +916,7 @@ void() bot_wakey =
 	{
 
 
-if (cvar("saved1") == -555)
+if (cvs1 == -555)
 {
 bprint("------------------- ** bot woken  ");
 //bprint(item_ident(e));
@@ -952,7 +952,7 @@ void() bot_fixed =
 		T_Damage (self.owner,world,bot_fix,self.owner.health + 10);
 
 
-if (cvar("saved1") == -555)
+if (cvs1 == -555)
 {
 bprint("------------------- ** bot fixed  ");
 //bprint(item_ident(e));
@@ -1028,7 +1028,7 @@ bprint("bot fix removed\n");
 						f.owner = e;
 						e.button16 = -666000;
 
-if (cvar("saved1") == -556)
+if (cvs1 == -556)
 {
 bprint("------------------- ** bot waking  ");
 //bprint(item_ident(e));
@@ -1043,7 +1043,7 @@ bprint("\n");
 					{
 
 
-if (cvar("saved1") == -556)
+if (cvs1 == -556)
 {
 bprint("------------------- ** bot fixing  ");
 bprint(e.netname);
@@ -1105,7 +1105,7 @@ void() Bot_Melee =
 
 
 
-if (cvar("saved1") == -556)
+if (cvs1 == -556)
 {
 bprint(" --------- bot special melee attack:: ");
 bprint(self.netname);

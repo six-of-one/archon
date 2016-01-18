@@ -141,7 +141,7 @@ void(float fl) fire_laser1 =
 
 
 // TESTING
-if (cvar("saved1") == -777)
+if (cvs1 == -777)
 {
 bprint(" *** eweap ");
 bprint(EWEAP.netname);

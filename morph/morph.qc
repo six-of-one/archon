@@ -1587,7 +1587,7 @@ bprint("\n");
 		self.event = "dyn_monster";
 		item_call(self.wad);
 
-if (cvar("saved1") == -555)
+if (cvs1 == -555)
 {
 bprint("spawning: ");
 bprint(item_ident(self));

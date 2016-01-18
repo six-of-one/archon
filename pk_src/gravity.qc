@@ -77,22 +77,33 @@ void() gravity_touch =
 
 void() gravity_pull =
 {
-	local entity e;
-	local float d;
-	local vector org;
+	local entity e, g;
+	local float d, sgl, i;
+	local vector org, v1;
 	local float gPercent;
-	local float gDist;
+	local float gDist, gExt, gFal;
 	local float gPower;
 
 	gDist = 960;		// range of the weapon
 	gPower = 512;	// ideal speed of pull
+	gExt = 0; // extra dist - only super gravwell
 
+// either banished & went grav or grav + sphere
 	if (self.classname == "sphere_annihilation") // these are a bit more powerfull
 	{
 		gDist = 1290 + random() * 200;
 		gPower = 640 + random() * 100;		
 	}
 
+	if (self.frame > $cubelf20) // super grav well = sgw
+	{
+		gDist = 1280;
+		gPower = 640;
+		gExt = 320; // laser beam range out to 1600
+		sgl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS;		// all hittable things for lazer
+	}
+
+// idea: sgw -  phantom zone effect with 6 sides flying off, catching vars ents, & sweeping from level - players watch this - time out & allow respawn / return
 	if (time > self.attack_finished)
 	{
 		// turn off bright light
@@ -113,7 +124,7 @@ void() gravity_pull =
 	}
 
 	org = (self.absmin + self.absmax) * 0.5;
-	e = findradius(self.origin, gDist);
+	e = findradius(self.origin, gDist + gExt);
 
 
 	while (e)
@@ -141,8 +152,41 @@ if (!pk_art_movshot_ck(e, "grav"))
 
 }
 
+		gFal = TRUE; // fail check for ext dist items
+		if (gExt) // sgw - laser range test
+		{
+			if (vlen(e.origin - self.origin) > gDist)
+			{
+// idea: sgw - chance to teleport out of range in range
+				if (random() < 0.366)
+				if (can_has_target(e, self, self.origin, 0, sgl)) // check LOS to grav
+				{
+					T_Damage (e,self,self.owner,10); // fired black laser
 
+					v1 = e.origin - self.origin;
+					g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.origin, v0, v0, vectoangles(v1), v0, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
+					i = vlen(v1);
+					i = floor(i / 32);
+					if (i > 63) i = 63;
+					g.frame = i;
+					g.skin = 2;
+				}
+				gFal = FALSE; // laser beam range item only
+			}
+			else // in range - other tests
+			{
+// idea: sgw - grim flakes
+				if (random() < 0.45)
+					chaos_particle(e.origin + ' 0 0 8', 105, 0.8, 0);
+				if (e.hook & HOOK_ON)
+				if (random() < 0.28) // heh heh - strong enough to release hooks
+					DropHook_ent(e);
+			}
+		}
 
+// idea: sgw - check for players / bots moving & lift if not - e.g. stuck behind brush, or just pull through solid
+
+		if (gFal)
 		if (grav_visible(e))
 		if (e.classname != "gravity") // don't yank on any other gravity wells
 		if (e.classname != "beartrap")
@@ -222,6 +266,8 @@ void() gravity_explode =
 	//sound (self, CHAN_BODY, "misc/gravsp_3.wav", 1, ATTN_NORM);
 	//self.nextthink = time + 1.0;
 };
+
+// idea: sgw - move sphere up 200 units, or 1/2 dist bot to top if  < 400 units
 
 void() drop_gravity =
 {

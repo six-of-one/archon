@@ -161,7 +161,7 @@ entity(entity e) vw_chain =
 	{
 		if (f.owner.deadflag || f.owner.classname == OBSERVER) // wep found with non owner - should not EVAR happen...evar!
 		{
-//if (cvar("saved1") == -556)
+//if (cvs1 == -556)
 if (1)
 {
 bprint("------------------- ** vw_chain found no carry player with vweps (clearing):  ");
@@ -284,7 +284,7 @@ entity(entity e, float fl) vload =
 	if (fl > 0) tr.vwepent.mcode = wepbit_mcode(fl, "Q");
 
 
-if (cvar("saved1") == -888)
+if (cvs1 == -888)
 {
 bprint("viswep loaded: ");
 bprint(md);
@@ -832,7 +832,7 @@ void() viswep_post =
 //						vhead.angles = vhead.angles - vhead.owner.angles;
 //						if (vv_x_000_x) vhead.v_angle_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
 //						if (vv_x_000_z) vhead.v_angle_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
-						if (cvar("saved1") == -888888) // TEST: seems better without this pitch adjust
+						if (cvs1 == -888888) // TEST: seems better without this pitch adjust
 						{
 							if (vv_x_000_x) vhead.angles_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
 							if (vv_x_000_z) vhead.angles_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
@@ -2048,7 +2048,7 @@ void(float f) vv_print =
 
 void() vw_config = 
 {
-	if (cvar("saved1") == -999)
+	if (cvs1 == -999)
 	{
 		WARNING = FALSE;
 		if (!vv)

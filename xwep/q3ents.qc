@@ -1395,10 +1395,12 @@ void() q3_ha_rot_thk =
 
 	if ((!self.owner.rune_flag & TECH_ADOC) || !ENHANCED)
 	if ((!self.owner.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
-	if (self.owner.rune_flag & RUNE_FLG_RG) // no rot when regen rune is set
+	if (!self.owner.rune_flag & RUNE_FLG_RG) // no rot when regen item or rune is set
 	if (self.owner.health > tv1)
 	{
 		self.owner.health = self.owner.health - 1;
+		if (self.enemy)
+			self.enemy.duration = self.enemy.duration - 1; // for drop inv - TDO: have to find this ent & set
 		f = TRUE;
 	}
 
@@ -1410,7 +1412,7 @@ void() q3_ha_rot_thk =
 		f = TRUE;
 	}
 
-	if (f && self.super_time > time)
+	if ((f && self.super_time > time) && (self.owner.items & IT_SUPERHEALTH))
 		self.nextthink = time + 1;
 	else
 	{
@@ -1421,6 +1423,8 @@ void() q3_ha_rot_thk =
 			else
 				self.enemy.nextthink = time + 20;
 			self.enemy.think = SUB_regen;
+			self.enemy.map = "";
+			self.enemy.owner = world;
 		}
 		self.owner.items = self.owner.items - (self.owner.items & IT_SUPERHEALTH);
 		remove(self);
@@ -1470,6 +1474,8 @@ void(entity e, float v) q3_ha_rot =
 							else
 								f.enemy.nextthink = time + 20;
 							f.enemy.think = SUB_regen;
+							f.enemy.map = "";
+							f.enemy.owner = world;
 						}
 						remove(self);
 					}
@@ -1742,8 +1748,8 @@ void() q3_art_shell =
 {
 	local float f;
 	
-	if (self.items) f = (!self.items & self.owner.items);
-	if (self.enemy.skin == Q3_SH_HASTE) f = (!self.owner.rune_flag & RUNE_FLG_HS);
+	if (self.items) f = !(self.items & self.owner.items);
+	if (self.enemy.skin == Q3_SH_HASTE) f = !(self.owner.rune_flag & RUNE_FLG_HS);
 
 	if (!self.enemy || self.owner.health <= 0 || f )
 	{
@@ -1843,7 +1849,7 @@ void() q3_pwr_touch =
 		{
 			e.enemy.skin = Q3_SH_HASTE;
 			e.think = q3_art_shell;
-			e.nextthink = time + POW_TIME - 1;
+			e.nextthink = time + 1; //POW_TIME - 1; // have to check all the time in case of drop 
 		}
 		e.wad = "art_shell";
 	}

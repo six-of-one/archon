@@ -634,7 +634,7 @@ void() cloudkill =
 	dist = (self.cnt + random() * self.lip) * mult;
 
 
-if (cvar("saved1") == -555)
+if (cvs1 == -555)
 {
 bprint("cloud loop: ");
 bprint(ftos(dist));

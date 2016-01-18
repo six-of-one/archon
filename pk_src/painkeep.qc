@@ -7,6 +7,105 @@ Cataboligne 3.29.8
 
 */
 
+// think stat package - try to track down heavy think periods
+
+.float thkw;
+.float lastthink;
+float cvs1;
+
+void() think_stat =
+{
+	local entity e;
+	local float f, p, b, i, m, u, w, s1;
+
+	self.nextthink = time + 0.033;
+
+	if (cvs1 > -553) // not active
+	{
+		self.nextthink = time + 5;
+		return;
+	}
+
+	if (self.attack_finished > time) 
+	{
+		e = findradius(world.origin, 300000);
+		while(e)
+		{
+			if (e.lastthink != e.nextthink) e.thkw = e.thkw + 1;
+			e.lastthink = e.nextthink;
+			e = e.chain;
+		}
+		return;
+	}
+	self.attack_finished = time + 1;
+
+	if (cvs1 == -554) 		bprint("^												^^ ents:  ");
+
+
+	b = i = m = p = u = w = // nw = 
+	f = 0;
+	e = findradius(world.origin, 300000);
+	while(e)
+	{
+		if (e != self)
+		if (e.think != (void ()) 0)
+		if (e.nextthink > time)
+		if (e.nextthink <= time + 1)
+		{
+			f = f +1;
+			if (e.class_select == "class_bot") b = b + 1;
+			else if (e.class_select == "class_monster") m = m + 1;
+			else if (e.flags & FL_ITEM) i = i + 1;
+			else u = u + 1;
+//			if (!e.thkw) nw = nw + 1;
+			w = w + e.thkw;
+
+			if (e.thkw > 16)
+			if (cvs1 == -557)
+			{
+				bprint("^																				^^ Think weight > 16: ");
+				bprint(item_ident(e));
+				bprint(" - wt: ");
+				bprint(ftos(e.thkw));
+				bprint("\n");
+			}
+			e.thkw = 0;
+/*
+			if (e.lastthink != e.nextthink)
+			{
+				wa = e.nextthink - e.lastthink;
+				if (wa < 0.11) w = w + 8; // firing every 10th or less
+				else if (wa < 0.3) w = w + 6;
+				else if (wa < 0.52) w = w + 4;
+				else if (wa < 1.1) w = w + 2; 
+				else w = w + 1;
+			}
+			else nw = nw + 1; // no weight, lt & nt same
+			e.lastthink = e.nextthink;
+*/
+			}
+		if (cvs1 == -554) bprint(item_ident(e));
+		e = e.chain;
+	}
+	if (cvs1 == -554) bprint("\n");
+	if (f)
+	{
+		bprint("^											^^ Thinking next rel:  ");
+		bprint(ftos(f));
+		bprint(" -- wgt: ");
+		bprint(ftos(w));
+		bprint(" -- bot: ");
+		bprint(ftos(b));
+		bprint(" -- mon: ");
+		bprint(ftos(m));
+		bprint(" -- itm: ");
+		bprint(ftos(i));
+		bprint(" -- oth: ");
+		bprint(ftos(u));
+		bprint("\n");
+	}
+}
+
 // precache all PK items here - relocated from world.qc
 
 void() PK_init =
@@ -71,6 +170,11 @@ void() PK_init =
 	}
 
 	local entity e;
+
+// TEST: think stats
+	e = spawn();
+	e.think = think_stat;
+	e.nextthink = time + 1;
 
 	if (PK_ADMIN)
 	{
@@ -653,6 +757,7 @@ void() pk_liveupd =
 // bots
 	if (BOTFREEZE != cvar("sv_c_botfreeze")) bot_froze(world);
 
+	cvs1 = 
 	f = cvar("saved1");
 
 	if (f == 268226) // frik botcam toggle code
