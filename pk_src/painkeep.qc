@@ -339,6 +339,8 @@ string (string s) precache_sound =
 {
 	if (time < PIC_TO)
 		return(precache_sound__(s));
+
+	return(string_null);// Cataboligne - 8.7.13 - compiler warning
 };
 
 string (string s) precache_model =
@@ -362,6 +364,8 @@ string (string s) precache_model =
 
 			return(precache_model__(s));
 	}
+
+	return(string_null);// Cataboligne - 8.7.13 - compiler warning
 }; 
 
 // set mode based on map name

@@ -1935,6 +1935,7 @@ void() monster_respawn =
 
 };
 
+// fn(IS_LAVA) - morph is lava capable
 // returns true if lava enabled morph / monster
 
 float(entity e) IS_LAVA =

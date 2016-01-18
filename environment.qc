@@ -65,31 +65,43 @@ float(entity e, float s) getsurfacenumpoints =
 {
 	if (DARKPLACES) // || chaos
 		return(getsurfacenumpoints_wrap(e, s));
+
+	return(0);// Cataboligne - 8.7.13 - compiler warning
 };
 vector(entity e, float s, float n) getsurfacepoint =
 {
 	if (DARKPLACES)
 		return(getsurfacepoint_wrap(e, s, n));
+
+	return(v0);// Cataboligne - 8.7.13 - compiler warning
 };
 vector(entity e, float s) getsurfacenormal =
 {
 	if (DARKPLACES)
 		return(getsurfacenormal_wrap(e, s));
+
+	return(v0);// Cataboligne - 8.7.13 - compiler warning
 };
 string(entity e, float s) getsurfacetexture =
 {
 	if (DARKPLACES)
 		return(getsurfacetexture_wrap(e, s));
+
+	return(string_null);// Cataboligne - 8.7.13 - compiler warning
 };
 float(entity e, vector p) getsurfacenearpoint =
 {
 	if (DARKPLACES)
 		return(getsurfacenearpoint_wrap(e, p));
+
+	return(0);// Cataboligne - 8.7.13 - compiler warning
 };
 vector(entity e, float s, vector p) getsurfaceclippedpoint =
 {
 	if (DARKPLACES)
 		return(getsurfaceclippedpoint_wrap(e, s, p));
+
+	return(v0);// Cataboligne - 8.7.13 - compiler warning
 };
 
 

@@ -143,7 +143,7 @@ string(float r) BotName =
 		self.b_shirt = 9;
 		return "Gypsy";
 	}
-	else if (r == 16)
+	else //if (r == 16)  // Cataboligne - 8.7.13 - compiler warning
 	{
 		self.b_pants = 5;
 		self.b_shirt = 10;
@@ -717,6 +717,7 @@ float (entity targ) sisible =
 		return TRUE;
 	else if (trace_fraction == 1)
 		return TRUE;
+	return FALSE; // Cataboligne - 8.7.13 - compiler warning
 };
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

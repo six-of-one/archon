@@ -417,6 +417,12 @@ string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n";
 
 // gremlin
 
+void(vector org, float rn, float pr, float col) chaos_particle;
+float(entity e) IS_CHAOS;
+entity chaos_poly;
+void() chaos_morph_chgthk;
+
+// gremlin
 float ST_CLAW						= 1;
 float ST_BITE						= 2;
 float GREM_AASPAWN				= FALSE; // if true always allow monster gremlin to spawn in water

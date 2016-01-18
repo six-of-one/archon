@@ -499,6 +499,7 @@ entity(entity p, float chan, string sd, float vl, float attn, float tm, vector o
 		q.search_time = time + end;
 		return(q);
 	}
+	return(world);  // Cataboligne - 8.7.13 - compiler warning - what would this be, fail?
 }
 
 // fn(ominous_hum) - idle sound for some weps
@@ -1945,7 +1946,19 @@ float(string mp) rogue_map =
 
 // chaos morph and beam support
 
+// fn(IS_CHAOS) - morph is master of chaos
+// fn(IS_CHAOS_PURE) - morph is master of chaos in natural form
 
+float(entity e) IS_CHAOS =
+{
+	if (e.state == IMP_MCHAOS) return TRUE; // chaos in another from
+	return(e.morphy == IMP_MCHAOS);
+};
+
+float(entity e) IS_CHAOS_PURE =
+{
+	return(e.morphy == IMP_MCHAOS);
+};
 
 
 // fn(chaos_particle) - chaos particle field effect
@@ -1977,6 +1990,99 @@ void(vector org, float rn, float pr, float col) chaos_particle =
 	}
 	else
 		if (random() < pr) particle (org + p1, ' 0 0 0', cl, random() * 25); // IDEA - restrict colors?
+};
+
+
+// simple version - see original chaos code for full deal, this is grav well code
+float (entity e, float t) move_check =
+{
+	local float f;
+
+	f = FALSE;
+
+	if (e.model != "progs/boss.mdl" && e.model != "progs/oldone.mdl" && e.model != "progs/cthon.mdl") // dont pull bosses or cthon morph
+//	if (pk_art_movshot_ck(e, "grav")) // Cataboligne 8.12.9 purify - pk artifacts
+	if (e.classname != "chase_cam")
+	if (e.map != "nonmove") // 7.22.13 - func_models we should not suck
+	//if (e != self.owner)
+	if (e.classname != OBSERVER)
+	if (e.movetype != MOVETYPE_NONE) // anything that can move
+	if (e.movetype != MOVETYPE_PUSH)
+	if (e.movetype != MOVETYPE_NOCLIP)
+		f = TRUE;
+	return(f);
+};
+
+// fn(rnd_list) - select a random item from a .chain structure, held items will be dropped
+// fn(list_test) - test item for req. parms
+// returns entity selected or world if select fails
+// hent - head entity
+// rads - within this radius of hent
+// tent - test entity
+// flg - list flag set
+float FL_MISSILE                                = 4; // item is a flying missile
+float FL_DECOR                          = 8; // item is a non solid decor
+float FL_PLAYER                         = 16; // item selected must be a player class
+//float FL_MONSTER = 32
+float FL_LTALL                                  = 316;  // test all - will return match FL_*
+
+//
+float(entity tent, float flg) list_test =
+{
+        if (!flg) return 1;
+        if (flg & FL_PLAYER) if (tent.classname == "player") return FL_PLAYER;
+        if (flg & FL_MONSTER) if (tent.flags & FL_MONSTER) return FL_MONSTER;
+        if (flg & FL_ITEM) if (tent.flags & FL_ITEM) return FL_ITEM;
+//        if (flg & FL_DECOR) if (IS_DECOR(tent)) return FL_DECOR;
+        if (flg & FL_MISSILE) if (IS_MISSILE(tent)) return FL_MISSILE;
+        return 0;
+};
+
+void(entity e) print_chain = // TEST fn - print out linked chain of ents
+{
+        while (e)
+        {
+                bprint(" chain ent: ");
+                if (e.netname != "")    { bprint(e.netname); bprint(" : "); }
+                if (e.classname != "") bprint(e.classname);
+                bprint(" \n");
+                e = e.chain;
+        }
+};
+
+entity(entity hent, float flg) rnd_list =
+{
+        local float rc, r1;
+        local entity sel, sr, s2;
+
+        sel = s2 = world;
+        rc = 0.3;
+        sr = hent;
+ //       set_CLE("calderashard", "", "", "", "", "", "");
+        while (sr) // count stuff
+                {
+                if (move_check(sr, 15999 | 128)) //T_BLAST | T_IGNHELD)) // FIX - remove move_check failures from chain?
+                        {
+                        if (list_test(sr, flg)) rc = rc + 1;
+                        }
+                sr = sr.chain;
+                }
+        sr = hent;
+        r1 = floor(rc * random());
+        while ((sr != world) && (sel == world))
+                {
+                        if (move_check(sr, 15999 | 128))
+                        if (list_test(sr, flg))
+                        {
+                                r1 = r1 - 1;
+                                s2 = sr;
+                        }
+                if (r1 < 1.0) sel = s2;
+                sr = sr.chain;
+                }
+        if (!sel && s2) sel = s2;
+//        if (sel) if (sel.flags & FL_HELD) drop_held(sel, v0); // item_held() // cant hold items yet
+        return(sel);
 };
 
 
