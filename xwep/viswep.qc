@@ -738,7 +738,20 @@ void() viswep_post =
 					{
 																			// grap hook out - adjust run / stand frameset
 					if (vhead.mdl == "progs/vw_harp.mdl" && vhead.owner.grap_cornerchainNext != world && (vhead.owner.frame - gremlin_frame_adjust)< 11) // $pain1
+					{
 						grap_frame_adjust = VW_HARP_FRADJ;
+						local entity e;
+						e = vhead.owner.grap_cornerchainNext; // harpoon itself
+						v1 = normalize(e.origin - vhead.owner.origin); // dir to move rope piece
+						if (!e.enemy)
+						{
+							e.enemy = spawn();
+							setmodel(e.enemy, "progs/harprope.mdl");
+						}
+						v2 = vhead.owner.origin + grap_vw_adj(vhead.owner);
+						setorigin(e.enemy, v2 + (v1 * 18));
+						e.enemy.angles = e.grap_ropechainPrev.angles; // angles of rope segs
+					}
 					vofs = ' 0 0 0';
 					if (vhead.owner.viswframe > -1) vframe = vhead.owner.viswframe;
 					if (FL_MELEE(vhead, vhead.weapon, vhead.pk_currentitem)) {
@@ -784,12 +797,35 @@ void() viswep_togl =
 
 // fn(grap_vw_adj) - adjust start position for viswep location
 
+// hent - holding entity - player
+
 vector(entity hent) grap_vw_adj =
 {
 	local vector vwa;
+	local vector v1, v2, v3, v4;
 
 	vwa = v0;
 	if (!hent) return (vwa);
+
+	vw_harpoon_pnt(hent.frame);
+
+	v1 = hent.angles;
+	v1_x = 0 - v1_x; // must reverse pitch for proper position from v_fwd calc
+	makevectors( v1 );
+
+	v2 = (vv_o_000_x) * v_forward;
+	v3 = (0 - (vv_o_000_y)) * v_right;
+	v4 = (vv_o_000_z) * v_up;
+
+//	vwa = hent.origin  + v2 + v3 + v4;
+	vwa = v2 + v3 + v4;
+
+	return(vwa);
+
+/*
+
+// depricated - old vw positioning code
+	
 //	if (hent.flags & FL_CLIENT)
 	makevectors(hent.v_angle);
 	if (hent.frame > 10) // retr | shoot frames
@@ -801,6 +837,7 @@ vector(entity hent) grap_vw_adj =
 		vwa = VWX_HARP_IDLE * v_forward + VWY_HARP_IDLE * v_right + VWZ_HARP_IDLE * v_up;
 	}
 	return(vwa);
+*/
 };
 
 
@@ -884,12 +921,6 @@ void(float v_frm) vv_load_0 =
 		vv_a_000 = '-8.0  -9.4 -15.6';
 		vv_x_000 = ' 0.0   8.0   0.0';
 	}
-
-
-
-
-
-
 
 
 
@@ -1908,7 +1939,7 @@ void() vw_config =
 			if (vv == world)
 			{
 				vv = spawn();
-//				setmodel(vv, "progs/player.mdl");
+				setmodel(vv, "progs/player.mdl");
 //				setmodel(vv, "progs/baseq2/players/male/tris.md2");
 				setorigin(vv, self.origin);
 				vv.vwepent = spawn();
@@ -1918,14 +1949,16 @@ void() vw_config =
 //				setmodel(vv.vwepent, "progs/vw_shovel.mdl");
 //				setmodel(vv.vwepent, "progs/vw_q2_rock2.mdl");
 //				setmodel(vv.vwepent, "progs/vw_airgun2b.mdl");
-				setmodel(vv.vwepent, "maps/vs_dfloor.bsp");
+//				setmodel(vv.vwepent, "maps/vs_dfloor.bsp");
+				setmodel(vv.vwepent, "progs/bit.mdl");
 				setorigin(vv.vwepent, self.origin);
 				vv.vwepent.viswframe = 1; // get / save data for this var slot
 				vv_load(vv.vwepent.viswframe);
-				if (0)
+				if (1)
 				{
 					vv.eweapon = spawn();
-					setmodel(vv.eweapon, "progs/baseq2/players/male/w_rlauncher.md2");
+					setmodel(vv.eweapon, "progs/vw_harp.mdl");
+//					setmodel(vv.eweapon, "progs/baseq2/players/male/w_rlauncher.md2");
 //					setmodel(vv.eweapon, "progs/vw_q2_rock.mdl");
 //					setmodel(vv.eweapon, "progs/vw_axe.mdl");
 					setorigin(vv.eweapon, self.origin);
@@ -2051,8 +2084,8 @@ bprint("\n");
 		vv.eweapon.angles = vv.angles;
 //		vv.eweapon.frame = vv.frame + 233; // run fired
 //		vv.eweapon.frame = vv.frame + viswaddf - melee_frames;
-//		vv.eweapon.frame = vv.frame + viswaddf;
-		vv.eweapon.frame = vv.frame; // q2  set
+		vv.eweapon.frame = vv.frame + viswaddf;
+//		vv.eweapon.frame = vv.frame; // q2  set
 
 		self.impulse = 0;
 	}
