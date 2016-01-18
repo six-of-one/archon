@@ -6,6 +6,7 @@
 # QCC="fqcc /O2"
 
 # NOTE: no-mundane removes some compiler warnings
+#	- these mostly relate to items you can not remove or change - precache, and variables required but still generate warnings
 
 QCC="fteqcc -Wno-mundane"
 

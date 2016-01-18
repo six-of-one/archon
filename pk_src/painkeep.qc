@@ -1719,6 +1719,15 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 	if (DARKPLACES) // reg under darkplaces - chaos engine has pre-reg
 	{
+// csqc - HUD, etc
+
+		addstat(STAT_MCODE, AST_FLOAT, mcode);
+		addstat(STAT_RUNEFLAG, AST_FLOAT, rune_flag);
+		addstat(STAT_EXPSHELL, AST_FLOAT, pk_explode_ammo);
+		addstat(STAT_PKINV, AST_FLOAT, pk_items); // only detects 3 inv weps
+		addstat(STAT_PKWEP, AST_FLOAT, pk_currentitem); // current wep
+		addstat(STAT_ARCHON, AST_FLOAT, archon);
+
 // server controls
 //		registercvar("no_auto", "0"); // allow everything to be turned off without re-launching defaults
 

@@ -384,6 +384,7 @@ float TECH_TEIM				= 524288;
 float TECH_ADOC				= 1048576;
 float TECH_MASK_ALL			= 1966080;
 
+
 float RULE1_MASK				= 15;
 float RULE2_MASK				= 1966159; // original 4 + vampire + techs
 float RALL_MASK				= 1966207; // everything
@@ -1256,6 +1257,27 @@ float Q3_SH_ENV				= 3;
 
 
 // end genre section
+
+// **************************************
+// server, HUD, csqc
+
+// **************************************
+
+
+//EXT_CSQC
+// #232 void(float index, float type, .void field) SV_AddStat (EXT_CSQC)
+void(float index, float type, ...) addstat = #232;
+
+float AST_STRING = 1;
+float AST_FLOAT = 2;
+
+float STAT_MCODE = 33; // track mcode of current weap in csqc - heh heh
+float STAT_RUNEFLAG = 34; // track rune_flag
+float STAT_EXPSHELL = 35; // track splode shells
+float STAT_PKINV = 36; // track pk inv
+float STAT_PKWEP = 37; // track pk inv
+float STAT_ARCHON = 66; // track archon power for power bar display
+
 
 
 // so we can make new sv_ console vars

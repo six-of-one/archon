@@ -703,6 +703,9 @@ void() viswep_post =
 			drw = TRUE;
 			vhead.owner.eweapon = vhead.eweapon;
 
+			// for csqc hud - set players mcode to the mcode in the vwepent of the currently held weapon - this *should* always work
+			vhead.owner.mcode = vhead.mcode;
+
 			if (self.class_select == "class_player")
 			if ( !(self.cam_x & CHSCAM_ON))
 			{

@@ -112,9 +112,9 @@ void(entity e) pkplus_item_control =
 				k = find(world,classname,"rndize_item");
 				while (k)
 				{
-					if (k.owner == e)
+					if (k.owner == e) // do we need to verify this isnt a dynamic_item ??
 					{
-						k.wad = "pkpitem"; // so we can find when art back on
+						k.event = "pkpitem"; // so we can find when art back on
 						k.think = rndize_item;
 						k.nextthink = time + random() * 5; // force quick re-think to rndize again
 					}
@@ -185,7 +185,6 @@ void(entity e) pkplus_item_control =
 void() pkplus_item_control_loop =
 {
 	local entity e;//, sv;
-	local string sr;
 
 // note: disabled - if rndize makes any that get clobbered we want to restore them
 //	if (cvar("pk_place_item") != 0)
@@ -194,15 +193,14 @@ void() pkplus_item_control_loop =
 	if (PK_ART)
 	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
 	{
-		sr = "pkpitem";
-		e = find(world,wad,sr); // looking for rndize_* control ents for pkp items
+		e = find(world, event, "pkpitem"); // looking for rndize_* control ents for pkp items
 		while (e)
 		{
 			e.owner.mcode = MC_TOMB + rint(random() * 3);
 			e.owner.wad = item_by_mcode(e.owner.mcode);
 			item_call_save(e.owner, e.owner.wad);
-			e.wad = "";
-			e = find(world,wad,sr);
+//			e.wad = "";
+			e = find(e, event, "pkpitem");
 		}
 		return;
 	}
@@ -212,6 +210,18 @@ void() pkplus_item_control_loop =
 	{
 		pkplus_item_control(e);
 		e = find(e, class_select, "pkplus_item");
+	}
+
+// additional search if rndize active - look for any pk item randomly turned into a pkplus item
+	if (cvar("pk_place_item") == 2 || cvar("pk_place_item") == 3)
+	if (!PK_ART)
+	{
+		e = find(world, event, "pkpitem");
+		while (e)
+		{
+			pkplus_item_control(e);
+			e = find(e, event, "pkpitem");
+		}	
 	}
 
 };

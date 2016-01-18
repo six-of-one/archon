@@ -361,6 +361,8 @@ void() mcode_load =
 
 	f = 99; // starts at 100 for string array
 
+/// quake
+	
 	MC_AXE = f = (f + 1);
 	MC_SHOTGUN = f = (f + 1);
 	MC_SUPER_SHOTGUN = f = (f + 1);	//	-	101	to	get	item	override	menu	#
@@ -679,7 +681,7 @@ void() mcode_load =
 	MC_D_NIGHTVS = f = (f + 1);
 	MC_D_AUTOMAP = f = (f + 1);
 
-	MC_W_G_CROSS = f = (f + 1); // if these are here they will randomize onto map - 7.13: what map, how is it controlled?
+	MC_W_G_CROSS = f = (f + 1);
 	MC_W_G_CHALICE = f = (f + 1);
 	MC_W_G_CHEST = f = (f + 1);
 	MC_W_G_CROWN = f = (f + 1);
@@ -2474,7 +2476,7 @@ void() cube_touch =
 		other.state = other.morphy;
 		if (other.class_select == "class_player")
 		{
-			stuffcmd(other, "exec cfg/hook_release.cfg\n"); // make sure they have wheel select here
+			stuffcmd(other, "exec hook_release.cfg\n"); // make sure they have wheel select here
 
 			other.impulse = 10; // display first item
 			self.lefty = 8388608; // start bit will be 1

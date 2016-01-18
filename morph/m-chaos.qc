@@ -1617,41 +1617,42 @@ void() player_chaos_attack =
 	}
 
 	if (self.chaosweptime < time) // pick a weapon and some time to fire it
-		{
+	{
 		self.chaosweptime = time + 1 + (random() * 5); // more complex later, based on level, couple a fudge vars, etc
 		r1 = random();
 		if (r1 < 0.17)
 		{
-			self.weapon = IT_SUPER_NAILGUN | IT_LIGHTNING;  // reflective laser
+			self.lastweapon = IT_SUPER_NAILGUN | IT_LIGHTNING;  // reflective laser
 			self.chaosweptime = self.chaosweptime + random() * 25;
 		}
-		else if (r1 < 0.27) self.weapon = IT_SUPER_NAILGUN;  // laser
-		else if (r1 < 0.5) self.weapon = IT_NAILGUN; // vary these ?...
+		else if (r1 < 0.27) self.lastweapon = IT_SUPER_NAILGUN;  // laser
+		else if (r1 < 0.5) self.lastweapon = IT_NAILGUN; // vary these ?...
 		else if (r1 < 0.57)
 		{
-			self.weapon = IT_NAILGUN | IT_LIGHTNING; // pulse spikes
+			self.lastweapon = IT_NAILGUN | IT_LIGHTNING; // pulse spikes
 			self.chaosweptime = self.chaosweptime + random() * 25;
 		}
-		else if (r1 < 0.87) self.weapon = IT_ROCKET_LAUNCHER;
-		else self.weapon = IT_LIGHTNING;
+		else if (r1 < 0.87) self.lastweapon = IT_ROCKET_LAUNCHER;
+		else self.lastweapon = IT_LIGHTNING;
 //		self.delay = 3 + rint(random() * 2);
 		if (random() < 0.15) self.chaosattnoise = 0;
 		else self.chaosattnoise = 1;
-		}
+	}
 
 // NOTE: crap hard to do with this code
 //		if (rune_haste(0.275))
 //		self.attack_finished=time+0.55;
 
+
 //		newmis.morphy = self.morphy; // missiles should have a morphy
 
-	if (self.weapon == IT_LIGHTNING)
-		{
+	if (self.lastweapon == IT_LIGHTNING)
+	{
 		if (self.t_width < time)
 		{
 			if (self.chaosattnoise) sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
 			self.t_width = time + 7;//0.6;
-self.delay = self.delay + 1;
+			self.delay = self.delay + 1;
 		}
 		org = self.origin + ' 0 0 4';
 		traceline (org, org + v_forward*600, TRUE, self);
@@ -1663,9 +1664,9 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 		beam4(org, trace_endpos, self.delay);
 
 		LightningDamage_x(FALSE, self.origin, trace_endpos + v_forward*4, self, 20);
-		}
-	else if (self.weapon == IT_ROCKET_LAUNCHER)
-		{
+	}
+	else if (self.lastweapon == IT_ROCKET_LAUNCHER)
+	{
 		self.attack_finished = time + 0.8;
 		if (random() < 0.16)  W_FireRocket();
 		else
@@ -1691,12 +1692,12 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 
 			self.attack_finished = time + 0.55;
 			}
-		}
-	else if (self.weapon & IT_NAILGUN) // fire some spikes
-		{
+	}
+	else if (self.lastweapon & IT_NAILGUN) // fire some spikes
+	{
 //		md = rnd_string(' 66.6 66.6 66.6',"progs/s_spike.mdl","","","","progs/spike.mdl"); 
 		if (self.chaosattnoise) sd = rnd_string(' 95.0 66.6 66.6',"weapons/spike2.wav","chaos/pist1.wav","","","weapons/rocket1i.wav");
-		if (self.weapon & IT_LIGHTNING)
+		if (self.lastweapon & IT_LIGHTNING)
 		{
 			if (sd != "" && random() < 0.7) sd = "pulse/pulse_1.wav";
 			fire_missile(SPIKE_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "pulse_spike", "progs/spike.mdl", sd, spike_touch, 2 + random() * 4, SUB_Remove, spike_touch);
@@ -1710,11 +1711,11 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 
 		if (random() > 0.666) newmis.dmg = 18;
 		self.attack_finished = time + 0.2;
-		}
-	else if (self.weapon & IT_SUPER_NAILGUN)
-		{
+	}
+	else if (self.lastweapon & IT_SUPER_NAILGUN)
+	{
 		if (self.chaosattnoise) sd = rnd_string(' 90.0 90.0 90.0',"misc/r_tele3.wav","","","","enforcer/enfire.wav");
-		if (self.weapon & IT_LIGHTNING)
+		if (self.lastweapon & IT_LIGHTNING)
 		{
 			if (random() < 0.5) sd = "lasercannon/laserg.wav";
 			HIP_LaunchLaser(self.origin + ' 0 0 4', aim(self, 10000), rint(random()), sd); //gun_aim(self, v0), rint(random()), sd);
@@ -1724,7 +1725,7 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 		newmis.skin = random() * 10.4;
 		newmis.frame = random() * 10.4;
 		self.attack_finished = time + 0.3;
-		}
+	}
 };
 
 
@@ -1742,13 +1743,7 @@ void() player_chaos_impulse =
 
 	morph_impulse();
 
-/*
-	if (self.weapon == IT_AXE)
-	if (self.pk_currentitem == PK_IT_AXE)
-	{
-		sprint(self, "Lava Bomb using ( Jump attack )\n");
-	}
-*/
+
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
@@ -1820,10 +1815,8 @@ void(float silent) player_chaos_become =
 		tc = FL_SPIKE;
 
 	chaos_form(tc);
-	self.dest_y = CB_CHAOS | CB_HUMAN | CB_SHALR | CB_CTHON | CB_SCOURGE | CB_GREMLIN | CB_TANK | CB_ARACHN | CB_ENF | CB_SCRAG;
+	self.dest_y = CB_CHAOS | CB_HUMAN | CB_SHALR | CB_CTHON | CB_SCOURGE | CB_GREMLIN | CB_ENF | CB_SCRAG;
 
-//	if (chaos != QRACK_ENGINE) self.dest_y = self.dest_y | CB_GREMLIN;
-// RESTORE - rest of morphs CB_DEMON | CB_HKNIGHT | CB_OGRE | CB_SHAMBL | CB_ZOMBY
 
 	self.cam_z = 10 / 100;
 	self.cam_y = 36;

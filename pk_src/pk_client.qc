@@ -1603,7 +1603,7 @@ void () PlayerPostThink =
 	if (time < self.attack_finished)
 		return;
 
-	if (self.attack_finished < time) W_WeaponFrame ();
+	W_WeaponFrame ();
 
 	if (self.classname != OBSERVER) // Cataboligne - 8.16.9 - dont need this for observers
 // check to see if player landed and play landing sound

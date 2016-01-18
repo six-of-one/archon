@@ -1592,6 +1592,11 @@ void() rndize_item =
 	else if (self.owner.mcode >= MC_PULSE_NAILGUN && self.owner.mcode < MC_PK)
 	{
 		self.owner.mcode = MC_PULSE_NAILGUN + rint(random() * d);
+		if (self.owner.mcode >= MC_TOMB)
+		if (PK_ART)
+		{
+			self.owner.event = "pkpitem"; // so we can reset if art turned off - these may not be native pkarts
+		}
 	}
 	else if (self.owner.mcode >= MC_D_SAW && self.owner.mcode < MC_DOOM)
 	{
@@ -1608,6 +1613,14 @@ void() rndize_item =
 	else if (self.owner.mcode >= MC_Q3_GAUNTLET && self.owner.mcode < MC_Q3)
 	{
 		self.owner.mcode = MC_Q3_GAUNTLET + rint(random() * MC_Q3_RNDITM);
+	}
+	else if (self.owner.mcode >= MC_D_SAW && self.owner.mcode < MC_DOOM)
+	{
+		self.owner.mcode = MC_D_SAW + rint(random() * MC_D_RNDITM);
+	}
+	else if (self.owner.mcode >= MC_HIP_MJOLNIR && self.owner.mcode < MC_HIP)
+	{
+		self.owner.mcode = MC_HIP_MJOLNIR + rint(random() * MC_HIP_RNDITM);
 	}
 	else
 	{

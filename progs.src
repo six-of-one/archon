@@ -23,8 +23,8 @@ pk_src/pk_art.defs.qc
 pk_src/pk.defs.qc
 
 // pk*bot define
-bot.defs.qc
-bot_tally.qc
+pk_bot/bot.defs.qc
+pk_bot/bot_tally.qc
 
 // morphic define
 morph/morph.defs.qc
@@ -88,23 +88,23 @@ plats.qc
 misc.qc
 
 // quake monsters
-ogre.qc
-demon.qc
-shambler.qc
-knight.qc
-soldier.qc
-wizard.qc
-dog.qc
-zombie.qc
-boss.qc
+monster/ogre.qc
+monster/demon.qc
+monster/shambler.qc
+monster/knight.qc
+monster/soldier.qc
+monster/wizard.qc
+monster/dog.qc
+monster/zombie.qc
+monster/boss.qc
 
-tarbaby.qc
-hknight.qc
-fish.qc
-shalrath.qc
-enforcer.qc
-oldone.qc
-scourge.qc
+monster/tarbaby.qc
+monster/hknight.qc
+monster/fish.qc
+monster/shalrath.qc
+monster/enforcer.qc
+monster/oldone.qc
+monster/scourge.qc
 mon_II/vomitus.qc
 
 // monsters II
@@ -233,17 +233,17 @@ morph/m-gremlin.qc
 
 // pk*bot code
 
-bot.qc
-bot_func.qc
-botfight.qc
-botthink.qc
-botspawn.qc
-botsignl.qc
-botmove.qc
-botnoise.qc
-botvis.qc
-botgoal.qc
-bot_ai.qc
-pkbot.qc
-botroute.qc
-botimp.qc
+pk_bot/bot.qc
+pk_bot/bot_func.qc
+pk_bot/botfight.qc
+pk_bot/botthink.qc
+pk_bot/botspawn.qc
+pk_bot/botsignl.qc
+pk_bot/botmove.qc
+pk_bot/botnoise.qc
+pk_bot/botvis.qc
+pk_bot/botgoal.qc
+pk_bot/bot_ai.qc
+pk_bot/pkbot.qc
+pk_bot/botroute.qc
+pk_bot/botimp.qc

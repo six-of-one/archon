@@ -1415,13 +1415,13 @@ float(float rot) PK_CheckLivEnt =
 
 	if (WARNING)
 	{
-	bprint(" *** warning: too many live ents to fire selected weapon = ");
+	bprint(" *** warning: too many live ents to fire selected weapon, cnt = ");
 	bprint(ftos(pk_livent));
 	bprint(".\n");
 	}
 	else
 	{
-	sprint(self, " *** warning: too many live ents to fire selected weapon = ");
+	sprint(self, " *** warning: too many live ents to fire selected weapon, cnt = ");
 	sprint(self, ftos(pk_livent));
 	sprint(self, ".\n");
 	}
@@ -2005,51 +2005,6 @@ void() PK_CycleWeaponReverseCommand =
 
 };
 
-// called below
-
-void() PK_CheatCommand =
-{
-	if (deathmatch || coop)
-		return;
-
-	self.ammo_rockets = 100;
-	self.ammo_nails = 200;
-	self.ammo_shells = 100;
-	self.items = self.items |
-		IT_AXE |
-		IT_SHOTGUN |
-		IT_SUPER_SHOTGUN |
-		IT_NAILGUN |
-		IT_SUPER_NAILGUN |
-		IT_GRENADE_LAUNCHER |
-		IT_ROCKET_LAUNCHER |
-		IT_KEY1 | IT_KEY2;
-
-	self.ammo_cells = 200;
-	self.items = self.items | IT_LIGHTNING;
-
-	self.pk_gravitywellammo = PK_GRAVITYWELLAMMO_MAX;
-	self.pk_turretammo = PK_TURRETAMMO_MAX;
-	self.pk_canpabammo = PK_CANPABAMMO_MAX;
-	self.pk_beartrapammo = PK_BEARTRAPAMMO_MAX;
-	self.pk_explode_ammo = PK_EXPLODEAMMO_MAX;
-
-	self.pk_items = self.pk_items | PK_IT_GRAPGUN | PK_IT_AIRGUN | PK_IT_CLIGHT;
-
-// Cataboligne 8.12.9 purify - pk artifacts
-	if (PK_ART)
-	{
-	self.pkplus_egoammo = PKPLUS_EGOAMMO_MAX;
-	self.pkplus_tombammo = PKPLUS_TOMBAMMO_MAX;
-	self.pkplus_actorammo = PKPLUS_ACTORAMMO_MAX;
-	self.pkplus_phoneammo = PKPLUS_PHONEAMMO_MAX;
-	}
-// end pk_art
-
-	self.weapon = IT_ROCKET_LAUNCHER;
-	self.impulse = 0;
-	W_SetCurrentAmmo();
-};
 
 // called below
 
@@ -2096,6 +2051,8 @@ void() PK_ImpulseCommands =
 		else // no eweapon - give morph builtins alternate fire
 			if (self._attack != SUB_Null)
 				self._attack();
+		self.impulse = 0;
+		return;
 	}
 
 	if ((self.impulse >= 1 && self.impulse <= 14) && self._impulse != SUB_Null) 
@@ -2110,7 +2067,6 @@ void() PK_ImpulseCommands =
 		W_ChangeWeapon ();
 	else if (self.impulse == 9)
 		W_ChangeWeapon (); // mjolnir
-//		PK_CheatCommand ();
 	else if (self.impulse == 10)
 		CycleWeaponCommand ();
 //	else if (self.impulse == 11)

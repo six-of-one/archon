@@ -1617,11 +1617,10 @@ Called every frame so impulse events can be handled as well as possible
 
 void () W_WeaponFrame =
 {
-	// Rob
 	if (self.button2)
 		CheckGrapHookJump (); // cataboligne - 8.29.11 - hook check
 
-	if (time < self.attack_finished)
+	if (time < self.attack_finished) // note - q100 code, mod checks before this call
 		return;
 
 	if (self.classname == OBSERVER && (self.impulse != 212)) // *bot - no commands when observing except stop observing

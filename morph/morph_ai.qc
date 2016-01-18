@@ -810,6 +810,8 @@ float() FindTarget =
 //	0.2 - half speed monster
 //	0.05 - double speed monster
 
+/// NOTE - .weaponframe use *** will interfere with new monster frame code sets for more complex monsters - search for weaponframe use ***
+
 void(float dist) ai_forward =
 {
 	if (!Q_100)
