@@ -299,6 +299,8 @@ void() x_pwr_touch =
 			other.silencer_finished = other.silencer_finished + t;
 	}
 	
+	activator = other;
+	SUB_UseTargets();				// fire all targets / killtargets
 };
 
 // x ammo pack touch & bounds

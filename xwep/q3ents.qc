@@ -1199,6 +1199,7 @@ void() q3_item_quad =
 
 	self.touch = x_pwr_touch;
 	self.items = IT_QUAD;
+	self.dmgtime = Q3_POWER_TIME;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	setmodel(self, "progs/q3_art.mdl");
@@ -1229,18 +1230,69 @@ void () item_quad =
 
 void() q3_pwr_touch =
 {
+	local entity e;
+
+	if (other.classname != "player") // bot handled by pk_touch
+			return;
+	if (other.health <= 0)
+		return ;
+
+	if (other.rune_flag & self.spawnflags) // already using this rune power - just go back
+		return;
+
+	sprint (other,"You got the ");
+	sprint (other,self.netname);
+	sprint (other,"\n");
+
+	if (Q_99 || (deathmatch != 4)) // *pk - my new rule, logical extrapolation
+	if (deathmatch)
+	{
+		self.mdl = self.model;
+//		if (self.wait)
+//			self.nextthink = time + self.wait;
+//		else
+		self.nextthink = time + RSP_TIME * 2; // = 60 default
+		self.think = SUB_regen;
+	}
+
+	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	stuffcmd (other, "bf\n");
+	self.solid = SOLID_NOT;
+	other.items = other.items | self.items;
+	self.model = string_null;
+
+	other.rune_flag = other.rune_flag | (self.spawnflags & RUNE_MASK_ALL); // still qualify one of the valid runes
+
+	e = spawn();
+	if (e)
+	{
+		e.classname = "rune_1_expiry";
+		e.netname = self.netname;
+		e.rune_flag = self.spawnflags & RUNE_MASK_ALL;
+		e.think = rune_1_expire;
+		if (self.dmgtime)
+			e.nextthink = time + self.dmgtime;
+		else
+		e.nextthink = time + POW_TIME;
+		e.owner = other;
+		e.noise4 = self.noise4;
+	}
+
+	activator = other;
+	SUB_UseTargets();				// fire all targets / killtargets
 	
 };
 
 void() item_regen =
 {
 	if (self.class_select == "") self.class_select = "q3_item";
-//	self.classname = "item_sigil";
-	self.spawnflags = RUNE_FLG_RG; //rune_bit_code(rune_bit_code(0, RUNE_FLG_RG),0);
+
+	self.spawnflags = RUNE_FLG_RG;
 	item_sigil();
-	self.touch = q3_pwr_touch;
 	self.netname = "Regeneration";
 
+	self.touch = q3_pwr_touch;
+	self.dmgtime = Q3_POWER_TIME;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	setmodel(self, "progs/q3_art.mdl");
@@ -1262,6 +1314,7 @@ void() item_invis =
 
 	self.touch = x_pwr_touch;
 	self.items = IT_INVISIBILITY;
+	self.dmgtime = Q3_POWER_TIME;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	setmodel(self, "progs/q3_art.mdl");
@@ -1283,6 +1336,7 @@ void() q3_item_enviro =
 
 	self.touch = x_pwr_touch;
 	self.items = IT_SUIT;
+	self.dmgtime = Q3_POWER_TIME;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	setmodel(self, "progs/q3_art.mdl");
@@ -1314,11 +1368,13 @@ void () item_enviro =
 void() item_haste =
 {
 	if (self.class_select == "") self.class_select = "q3_item";
-//	self.classname = "item_sigil";
-	self.spawnflags = RUNE_FLG_HS; //rune_bit_code(rune_bit_code(0, RUNE_FLG_HS),0);
+
+	self.spawnflags = RUNE_FLG_HS;
 	item_sigil();
 	self.netname = "Haste";
 
+	self.touch = q3_pwr_touch;
+	self.dmgtime = Q3_POWER_TIME;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	setmodel(self, "progs/q3_art.mdl");
@@ -1339,6 +1395,7 @@ void() item_flight =
 	item_spikes(); // FIX: placeholder only
 	self.netname = "Flight";
 
+	self.dmgtime = Q3_POWER_TIME;
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	setmodel(self, "progs/q3_art.mdl");

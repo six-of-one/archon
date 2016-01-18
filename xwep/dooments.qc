@@ -66,7 +66,7 @@ void() doom_precache =
 // items
 	precache_model ("progs/barrel.mdl");
 	precache_model ("progs/barrel2.mdl");
-	precache_model ("progs/heal_bottle.mdl");
+	precache_model ("progs/d_bottle.mdl");
 	precache_model ("progs/heal_medkit.mdl");
 	precache_model ("progs/spiritarmor.mdl");
 	precache_model ("progs/d_spheres.mdl");
@@ -203,16 +203,21 @@ NOTE: this code assumes the translation of doom map entites to quake style defin
 void() d_item_healthbottle =
 {
 	q100_item_health();
-	setmodel(self, "progs/heal_bottle.mdl");
-	self.noise = "doom/dsitemup.wav";
-	self.noise4 = "doom/dsitembk.wav"; // doom respawn sound
 	self.netname = "Health potion";
+
+
 	self.healamount = D_DEF_HBOTTLE;
 	self.healtype = HEAL_BOT;
 	self.volume = 200; // max add
 	self.wait = RSP_TIME;
-	self.effects = self.effects | EF_FULLBRIGHT;
+
+	setmodel(self, "progs/d_bottle.mdl");
+	self.noise = "doom/dsitemup.wav";
+	self.noise4 = "doom/dsitembk.wav"; // doom respawn sound
+	self.frame = 0;
+	self.skin = 0;
 	self.alpha = 0.8;
+	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
 
@@ -387,7 +392,9 @@ void() d_ammo_4shell =
 	self.wait = RSP_TIME;
 	self.volume = D_MAX_SHELLS;
 
-	setmodel (self, "progs/d_4shell.mdl");
+//	setmodel (self, "progs/d_4shell.mdl");
+	doom_alpha_tran(self, MC_D_ASHELLS);
+
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "4 shells";
@@ -405,7 +412,9 @@ void() d_ammo_shellbox =
 	self.wait = RSP_TIME;
 	self.volume = D_MAX_SHELLS;
 
-	setmodel (self, "progs/d_shellbox.mdl");
+//	setmodel (self, "progs/d_shellbox.mdl");
+	doom_alpha_tran(self, MC_D_ASHELLS_LG);
+
 	self.noise = "doom/dsitemup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.netname = "Box of Shells";
@@ -804,14 +813,13 @@ void() d_art_berserker =
 	self.wait = D_POWER_WAIT;
 	self.dmgtime = D_POWER_TIME;
 
-	setmodel(self, "progs/d_berzerk.mdl");
+//	setmodel(self, "progs/d_berzerk.mdl");
+	doom_alpha_tran(self, MC_D_BERS);
 	self.noise = "doom/dsitemup.wav"; // TDO: check this
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 };
-
-// FIX - need correct sphere sounds
 
 void() d_art_soulsphere =
 {
@@ -823,8 +831,10 @@ void() d_art_soulsphere =
 	self.volume = 200; // max add
 	self.wait = D_POWER_WAIT;
 
-	setmodel(self, "progs/d_spheres.mdl");
-	self.skin = 0;
+//	setmodel(self, "progs/d_spheres.mdl");
+//	self.frame = 0;
+//	self.skin = 0;
+	doom_alpha_tran(self, MC_D_SOULSPH);
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -844,8 +854,10 @@ void() d_art_megasphere =
 	self.volume = 200; // max add - done by armor as well, ok they are same max
 	self.wait = D_POWER_WAIT;
 
-	setmodel(self, "progs/d_spheres.mdl");
-	self.skin = 1;
+//	setmodel(self, "progs/d_spheres.mdl");
+//	self.frame = 0;
+//	self.skin = 1;
+	doom_alpha_tran(self, MC_D_MEGASPH);
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -862,8 +874,11 @@ void() d_art_invulnerable =
 	self.wait = D_POWER_WAIT;
 	self.dmgtime = D_POWER_TIME;
 
-	setmodel (self, "progs/d_spheres.mdl");
-	self.skin = 2;
+//	setmodel (self, "progs/d_spheres.mdl");
+//	self.frame = 0;
+//	self.skin = 2;
+	doom_alpha_tran(self, MC_D_INVUL);
+
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -880,8 +895,11 @@ void() d_art_invisible =
 	self.wait = D_POWER_WAIT;
 	self.dmgtime = D_POWER_TIME;
 
-	setmodel (self, "progs/d_spheres.mdl");
-	self.skin = 3;
+//	setmodel (self, "progs/d_spheres.mdl");
+//	self.frame = 0;
+//	self.skin = 3;
+	doom_alpha_tran(self, MC_D_INVIS);
+	
 	self.noise = "doom/dsgetpow.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
@@ -1296,6 +1314,7 @@ void() w_art_facesphere =
 {
 	q100_item_health();
 	setmodel(self, "progs/d_spheres.mdl");
+	self.frame = 0;
 	self.skin = 4;
 	self.noise = "wolf/pickup_gdy.wav";
 	self.noise4 = "doom/dsitembk.wav";
