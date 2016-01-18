@@ -136,6 +136,9 @@ void() x_weapon_touch =
 		self.classname == "c_weapon_shovel" ||
 		self.classname == "q2_weapon_blaster" ||
 		self.classname == "weapon_gauntlet" ||
+		self.classname == "weapon_grapplinghook" ||
+		self.classname == "q2_weapon_grapple" ||
+		self.classname == "weapon_hook" ||
 		self.classname == "w_weapon_knife")
 	{
 	camc = 1;
@@ -154,6 +157,15 @@ void() x_weapon_touch =
 			self.touch = SUB_Null;
 			return;
 		}
+	}
+
+	if (self.classname == "weapon_hook" || self.classname == "q2_weapon_grapple" || self.classname == "weapon_grapplinghook")
+	{
+		if (! other.pk_items & self.pk_currentitem)
+			other.pk_items = other.pk_items | self.pk_currentitem; // NOTE: could set multiple bits
+ // NOTE: no other weapons avoid extra pickup - this next bit does block it
+//		else
+//			return;
 	}
 
 	ign = FALSE;
@@ -178,6 +190,7 @@ void() x_weapon_touch =
 		e._fr_attack = self._fr_attack;
 		e.vv_draw = self.vv_draw;
 		e.vv_holster = self.vv_holster;
+		e.vwepmdl = self.vwepmdl; // for pack / dthrow weps
 //		e.touch = self.touch;
 
 		e.weapon = e.items = self.items;
@@ -194,6 +207,7 @@ void() x_weapon_touch =
 		e.aflag = camc;
 		e.style = self.style; // melee flag
 		e.lefty = self.lefty; // misc data
+		e.mcode = self.mcode; // for pack touch deal
 //		e.cnt = self.cnt; // vw skinnage
 
 		e.netname = self.netname;
@@ -247,6 +261,8 @@ void() x_weapon_touch =
 		Deathmatch_Weapon (oldw, new);
 
 	W_SetCurrentAmmo ();
+
+	xw_parm(other);
 
 	self = e;
 
@@ -1824,11 +1840,12 @@ bprint(ftos( tr));
 		bfl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS | TFL_TR_IGM;
 		while (e)
 		{
-			if (can_has_target(e, self.owner, self.enemy.origin, 0, bfl))
+			if (can_has_target(e, self.owner, self.enemy.origin, 0, bfl)) 
 			{
 				T_Damage (e,self,self.owner,Q2_BFG_LASER_DMG);
 
 				v1 = e.origin - self.enemy.origin;
+/*	
 				m = 2; //vlen(v1) * 0.02;
 				v2 = normalize(v1) * m;
 				v1 = self.enemy.origin;
@@ -1854,7 +1871,13 @@ bprint(".\n");
 					v1 = v1 + v2;
 					i = i - 1;
 				}
-
+*/
+				g = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, self.enemy.origin, v0, v0, vectoangles(v1), v0, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.2, SUB_Remove, SUB_Null, self, world);
+				i = vlen(v1);
+				i = floor(i / 32);
+				if (i > 63) i = 63;
+				g.frame = i;
+				g.skin = 1;
 
 if (cvar("saved1") == -777)
 {

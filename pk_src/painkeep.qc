@@ -692,6 +692,7 @@ void() pk_liveupd =
 	HOOK_TIME = cvar("sv_c_hook_time");
 	HOOK_URTO = cvar("sv_c_hook_urto");
 	HOOK_SPEED = cvar("sv_c_hook_speed");
+	HOOK_DAMP = cvar("sv_c_hook_damp");
 	MAX_CHAIN_LEN = HOOK_RANGE;
 
 	if (MAP_MODE == "Q2") LASER_HOOK = TRUE;
@@ -699,9 +700,11 @@ void() pk_liveupd =
 
 // overrides
 	if (cvar("sv_c_hook_laser") > 0) LASER_HOOK = TRUE;
-	else if (cvar("sv_c_hook_q3") > 0) LTN_HOOK = TRUE;
+	else if (cvar("sv_c_hook_ltn") > 0) LTN_HOOK = TRUE;
 	if (cvar("sv_c_hook_laser") < 0) LASER_HOOK = FALSE;
-	if (cvar("sv_c_hook_q3") < 0) LTN_HOOK = FALSE;
+	if (cvar("sv_c_hook_ltn") < 0) LTN_HOOK = FALSE;
+	if (!ULOK2) LASER_HOOK = FALSE;
+	if (!ULOK3) LTN_HOOK = FALSE;
 
 // frag suicide controls - nocides when set dont take frags
 
@@ -772,7 +775,12 @@ void() pk_liveupd =
 
 	PK_MAX_LIVENT = cvar("pk_max_livent");
 
-	Q2_SILENCE = cvar("q2_silence");
+	DEAD_THROW = cvar("sv_dead_throw");
+	DEAD_XPACK = cvar("sv_dead_xpack");
+
+	X_CHGLVL = cvar("pk_xchgl");
+
+Q2_SILENCE = cvar("q2_silence");
 
 // turrets
 	if (PK_TUR_AMMO != cvar("pk_tur_ammo") || 
@@ -1042,11 +1050,14 @@ void() pk_srvcmd_set =
 	HOOK_TIME = 0;
 	HOOK_URTO = 0;
 	HOOK_SPEED = 600;
+	HOOK_DAMP = 0;
 	LASER_HOOK = 0;
 	LTN_HOOK = 0;
 
 	if (MAP_MODE == "Q2") LASER_HOOK = TRUE;
 	else if (MAP_MODE == "Q3") LTN_HOOK = TRUE;
+	if (!ULOK2) LASER_HOOK = FALSE;
+	if (!ULOK3) LTN_HOOK = FALSE;
 
 // cam controls
 	DCAMTO = 0; // RELEASE - final release default should have 2 mins & respawn
@@ -1157,6 +1168,11 @@ POW_TIME = 30;
 	SV_AMMO_MAX = FALSE;
 
 	PK_MAX_LIVENT = 256; // guessed - need research into where slowdown starts
+
+	DEAD_THROW = 0;
+	DEAD_XPACK = 1;
+
+	X_CHGLVL = 1;
 
 // weps
 
@@ -1275,10 +1291,12 @@ POW_TIME = 30;
 		registercvar("sv_c_hook_range", "1200"); // how far you can throw it
 		registercvar("sv_c_hook_time", "0"); // how long the hook will stay once reeled in - if 0, hook never releases till player hits release
 		registercvar("sv_c_hook_urto", "0"); // unreeled timeout - if fired and caught, but not reeled in, this will drop the line after timeout
+		registercvar("sv_c_hook_damp", "0"); // > 0 - damp all final travel speed on all hooks - prevents those wild loop swings from borts code
+																					  // < 0 - refuse to damp laser & lightning hook swings (give away & items)
 		registercvar("sv_c_hook_speed", "600"); // pull speed of all hooks but harpoon
 																						// set the next two both to -1 to force the q1 ctf hook at all times for give away - this does not affect map item hooks
 		registercvar("sv_c_hook_laser", "0"); // force give away hook to be lithium style (laser beam), if < 0 dont use laser hook
-		registercvar("sv_c_hook_q3", "0"); // force give away to lightning hook, if < 0 dont use l-hook
+		registercvar("sv_c_hook_ltn", "0"); // force give away to lightning hook, if < 0 dont use l-hook
 //		registercvar("sv_c_hook_", "0");
 
 		registercvar("sv_c_rsp_time", "30");
@@ -1297,6 +1315,12 @@ POW_TIME = 30;
 		registercvar("sv_pk_hub", "1");
 		registercvar("sv_pk_duty", "0");
 		registercvar("sv_pk_cmap", "0"); // admin setup custom maps - activate server map loop via pknextmap aliases
+
+// things dealing with the dead
+
+		registercvar("sv_dead_xpack", "1"); // 0 = no xweap in pack, 1 = include extra weapon held in pack, 2 = include held & random xweap, 3 = stuff all dudes xweaps in there
+		registercvar("sv_dead_throw", "0"); // 0 = remove all weps no in pack, 1 = throw weaps, none worky, 2 = throw weaps, some no worky, 3 = throw weaps, all worky
+		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at ready weapon
 
 // cam controls
 		registercvar("sv_cam_off", "0"); // set to 1 to turn cam off entirely

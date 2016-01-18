@@ -21,6 +21,20 @@ $frame death1 death2 death3 death4 death5 death6 death7
 $frame	walk1 walk2 walk3 walk4 walk5 walk6 walk7 walk8 walk9 walk10
 $frame	walk11 walk12
 
+// super shalrath!
+$frame lgattack1 lgattack2 lgattack3 lgattack4 lgattack5 lgattack6 lgattack7 lgattack8
+$frame lgattack9 lgattack10 lgattack11
+
+$frame lgpain1 lgpain2 lgpain3 lgpain4 lgpain5
+
+$frame lgdeath1 lgdeath2 lgdeath3 lgdeath4 lgdeath5 lgdeath6 lgdeath7
+
+$frame	lgwalk1 lgwalk2 lgwalk3 lgwalk4 lgwalk5 lgwalk6 lgwalk7 lgwalk8 lgwalk9 lgwalk10
+$frame	lgwalk11 lgwalk12
+
+$frame lgattackb1 lgattackb2 lgattackb3 lgattackb4
+
+
 void() shalrath_pain;
 void() ShalMissile;
 void() shal_stand     =[      $walk1,       shal_stand    ] {ai_stand();};
@@ -87,12 +101,102 @@ void() shal_death6      =[      $death6,        shal_death7     ] {};
 void() shal_death7      =[      $death7,        shal_death7    ] {};
 
 
+// super shal-rath
+
+void() s_shal_stand     =[      $lgwalk1,       s_shal_stand    ] {ai_stand();};
+
+void() s_shal_walk1     =[      $lgwalk2,       s_shal_walk2    ] {
+if (random() < 0.2)
+	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
+ai_walk(6);};
+void() s_shal_walk2     =[      $lgwalk3,       s_shal_walk3    ] {ai_walk(4);};
+void() s_shal_walk3     =[      $lgwalk4,       s_shal_walk4    ] {ai_walk(0);};
+void() s_shal_walk4     =[      $lgwalk5,       s_shal_walk5    ] {ai_walk(0);};
+void() s_shal_walk5     =[      $lgwalk6,       s_shal_walk6    ] {ai_walk(0);};
+void() s_shal_walk6     =[      $lgwalk7,       s_shal_walk7    ] {ai_walk(0);};
+void() s_shal_walk7     =[      $lgwalk8,       s_shal_walk8    ] {ai_walk(5);};
+void() s_shal_walk8     =[      $lgwalk9,       s_shal_walk9    ] {ai_walk(6);};
+void() s_shal_walk9     =[      $lgwalk10,       s_shal_walk10    ] {ai_walk(5);};
+void() s_shal_walk10    =[      $lgwalk11,       s_shal_walk11    ] {ai_walk(0);};
+void() s_shal_walk11    =[      $lgwalk12,       s_shal_walk12    ] {ai_walk(4);};
+void() s_shal_walk12    =[      $lgwalk1,       s_shal_walk1    ] {ai_walk(5);};
+
+void() s_shal_run1     =[      $lgwalk2,       s_shal_run2    ] {
+if (random() < 0.2)
+	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
+ai_run(6);};
+void() s_shal_run2     =[      $lgwalk3,       s_shal_run3    ] {ai_run(4);};
+void() s_shal_run3     =[      $lgwalk4,       s_shal_run4    ] {ai_run(0);};
+void() s_shal_run4     =[      $lgwalk5,       s_shal_run5    ] {ai_run(0);};
+void() s_shal_run5     =[      $lgwalk6,       s_shal_run6    ] {ai_run(0);};
+void() s_shal_run6     =[      $lgwalk7,       s_shal_run7    ] {ai_run(0);};
+void() s_shal_run7     =[      $lgwalk8,       s_shal_run8    ] {ai_run(5);};
+void() s_shal_run8     =[      $lgwalk9,       s_shal_run9    ] {ai_run(6);};
+void() s_shal_run9     =[      $lgwalk10,       s_shal_run10    ] {ai_run(5);};
+void() s_shal_run10    =[      $lgwalk11,       s_shal_run11    ] {ai_run(0);};
+void() s_shal_run11    =[      $lgwalk12,       s_shal_run12    ] {ai_run(4);};
+void() s_shal_run12    =[      $lgwalk1,       s_shal_run1    ] {ai_run(5);};
+
+void() s_shal_attack1     =[      $lgattack1,       s_shal_attack2    ] {
+sound (self, CHAN_VOICE, "shalrath/attack.wav", 1, ATTN_NORM);
+ai_face();
+};
+void() s_shal_attack2     =[      $lgattack2,       s_shal_attack3    ] {ai_face();};
+void() s_shal_attack3     =[      $lgattack3,       s_shal_attack4    ] {ai_face();};
+void() s_shal_attack4     =[      $lgattack4,       s_shal_attack5    ] {ai_face();};
+void() s_shal_attack5     =[      $lgattack5,       s_shal_attack6    ] {ai_face();};
+void() s_shal_attack6     =[      $lgattack6,       s_shal_attack7    ] {ai_face();};
+void() s_shal_attack7     =[      $lgattack7,       s_shal_attack8    ] {ai_face();};
+void() s_shal_attack8     =[      $lgattack8,       s_shal_attack9    ] {ai_face();};
+void() s_shal_attack9     =[      $lgattack9,       s_shal_attack10   ]
+{
+	ShalMissile();
+	ShalMissile(); // TDO: some decision here - need logic
+};
+void() s_shal_attack10    =[      $lgattack10,      s_shal_attack11   ] {ai_face();};
+void() s_shal_attack11    =[      $lgattack11,      s_shal_run1   ] {};
+
+void() s_shal_pain1       =[      $lgpain1, s_shal_pain2      ] {};
+void() s_shal_pain2       =[      $lgpain2, s_shal_pain3      ] {};
+void() s_shal_pain3       =[      $lgpain3, s_shal_pain4      ] {};
+void() s_shal_pain4       =[      $lgpain4, s_shal_pain5      ] {};
+void() s_shal_pain5       =[      $lgpain5, s_shal_run1      ] {};
+
+void() s_shal_death1      =[      $lgdeath1,        s_shal_death2     ] {};
+void() s_shal_death2      =[      $lgdeath2,        s_shal_death3     ] {};
+void() s_shal_death3      =[      $lgdeath3,        s_shal_death4     ] {};
+void() s_shal_death4      =[      $lgdeath4,        s_shal_death5     ] {};
+void() s_shal_death5      =[      $lgdeath5,        s_shal_death6     ] {};
+void() s_shal_death6      =[      $lgdeath6,        s_shal_death7     ] {};
+void() s_shal_death7      =[      $lgdeath7,        s_shal_death7    ] {};
+
+// 2nd attack - lightning, summon sphere, portal, other magics
+void() s_shal_attackb1     =[      $lgattackb1,       s_shal_attackb2    ] 
+{
+	sound (self, CHAN_VOICE, "shalrath/attack.wav", 1, ATTN_NORM); // TDO: new sounds
+	ai_face();
+};
+void() s_shal_attackb2     =[      $lgattackb2,       s_shal_attackb3    ] {ai_face();};
+void() s_shal_attackb3     =[      $lgattackb3,       s_shal_attackb4    ] {ai_face();};
+void() s_shal_attackb4     =[      $lgattackb4,       s_shal_attackb5    ]
+{
+	ShalMissile(); // TDO: attack 2
+};
+void() s_shal_attackb5    =[      $lgattackb3,      s_shal_attackb6   ] {ai_face();};
+void() s_shal_attackb6    =[      $lgattackb2,      s_shal_run1   ] {};
+
+
+
 void() shalrath_pain =
 {
 	if (self.pain_finished > time)
 		return;
 
 	sound (self, CHAN_VOICE, "shalrath/pain.wav", 1, ATTN_NORM);
+
+	if (self.frame > $walk12) // handle super vore
+		s_shal_pain1();
+	else
 	shal_pain1();
 	self.pain_finished = time + 3;
 };
@@ -111,6 +215,10 @@ void() shalrath_die =
 	}
 
 	sound (self, CHAN_VOICE, "shalrath/death.wav", 1, ATTN_NORM);
+
+	if (self.frame > $walk12) // handle super vore
+		s_shal_death1();
+	else
 	shal_death1();
 	self.solid = SOLID_NOT;
 	// insert death sounds here

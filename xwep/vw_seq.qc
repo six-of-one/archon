@@ -714,9 +714,135 @@ void (float v_frm) vw_melee_base =
 
 };
  
-/*
+/*  q3 grap adjust to _melee vals
 
+        if (v_frm == 45)
+        {
+                vv_o_000 = '  2.0   0.0   0.0';
+                vv_a_000 = ' 71.0 162.0  30.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 46)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = '-132.0 -33.0 -127.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 47)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = '-141.0 -34.0 -90.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 48)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = '164.0 -185.0 189.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 49)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = '164.0 -185.0 189.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 50)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = '164.0 -185.0 189.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 51)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = '164.0 -185.0 189.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 52)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = '  0.0   0.0   0.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 53)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = '  0.0   0.0   0.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 54)
+        {
+                vv_o_000 = ' -2.0   0.0   0.0';
+                vv_a_000 = '  0.0   0.0   0.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 55)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = ' 62.0   0.0   0.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 56)
+        {
+                vv_o_000 = '  0.0   0.0   0.0';
+                vv_a_000 = ' 68.0   0.0   0.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 57)
+        {
+                vv_o_000 = '  0.3  -1.0   0.0';
+                vv_a_000 = '-123.0  26.0  49.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
+        if (v_frm == 58)
+        {
+                vv_o_000 = '  0.8  -1.0   0.0';
+                vv_a_000 = '-99.0  26.0  49.0';
+                vv_x_000 = '  0.0   0.0   0.0';
+        }
 */
+
+
+
+void (float v_frm) vw_q3_grap =
+{
+	vw_melee_base(v_frm);
+
+// poss reel frames
+	if (v_frm == 97)  // 99 a good lead in frame
+	{
+		vv_a_000_x = vv_a_000_x + 99;
+	}
+	if (v_frm == 94)
+	{
+		vv_o_000_x = vv_o_000_x + 1;
+		vv_a_000_y = vv_a_000_y + 36;
+	}
+
+};
+
+// grap for q1 & q2 item hooks - goes to frame 5 when on hook
+
+void (float v_frm) vw_q1_grap =
+{
+	vw_melee_base(v_frm);
+
+// poss reel frames
+	if (v_frm == 97)  // 99 a good lead in frame
+	{
+		vv_a_000_x = vv_a_000_x + 99;
+	}
+	if (v_frm == 94)
+	{
+		vv_o_000_x = vv_o_000_x + 1;
+		vv_a_000_y = vv_a_000_y + 36;
+	}
+
+	if (self.hook & HOOK_ON) // NOTE: now self always must be player / bot for this viswep call
+		vv_x_000_y = HOOK_OUT_FRM;
+};
+
+// gauntlet run
 
 void (float v_frm) vw_q3_gaunt =
 {

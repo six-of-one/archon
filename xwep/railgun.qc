@@ -154,7 +154,7 @@ void() X_FireRailgun =
 //	while (i < 500)
 	if (ew)
 	{
-		e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, 0, org, v0, v0, vectoangles(v_forward), v0, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
+		e = chaos_spawn(MOVETYPE_FLY, SOLID_NOT, 0, 0, org, v0, v0, vectoangles(v_forward), self.velocity, "", "progs/lzrbm_seg.mdl", SUB_Remove, 0.5, SUB_Remove, SUB_Null, self, world);
 		cn = ceil(vl / 32);
 		if (cn > 63) cn = 63;
 		e.frame = cn;

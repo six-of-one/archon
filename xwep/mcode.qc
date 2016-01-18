@@ -119,6 +119,8 @@ float MC_PKP_RNDITM; // + plus items
 
 float MC_T_RNDITM; // # of total items
 
+float MC_HOOK; // CTF hook map item
+
 /// hipnotic
 // wep ids
 float MC_HIP_MJOLNIR;
@@ -224,6 +226,7 @@ float MC_Q2_ROCKETL;
 float MC_Q2_HYPBLASTER;
 float MC_Q2_RAILGUN;
 float MC_Q2_BFG;
+float MC_Q2_GRAPPLE;
 
 float MC_Q2_QUAD;
 float MC_Q2_INVUL;
@@ -432,6 +435,10 @@ void() mcode_load =
 	MC_PKP_RNDITM = f - MC_PULSE_NAILGUN;		//			+	plus	items
 	MC_PK	 = (f + 1);
 
+/// ctf
+
+	MC_HOOK = f = (f + 1);
+
 	MC_T_RNDITM = f - MC_AXE;		//	#	of	total	items
 
 /// hipnotic
@@ -535,6 +542,7 @@ void() mcode_load =
 	MC_Q2_HYPBLASTER = f = (f + 1);
 	MC_Q2_RAILGUN = f = (f + 1);
 	MC_Q2_BFG = f = (f + 1);
+	MC_Q2_GRAPPLE = f = (f + 1);
 
 	MC_Q2_QUAD = f = (f + 1);
 	MC_Q2_INVUL = f = (f + 1);
@@ -706,6 +714,10 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_MASK)													return(PKPLUS_IT_ACTOR);
 	if (mc == MC_PHONE)													return(PKPLUS_IT_PHONE);
 
+/// ctf
+
+	if (mc == MC_HOOK)													return(PK_IT_GRAPGUN);
+
 /// hipnotic
 
 	if (mc == MC_HIP_MJOLNIR)											return(IT_MJOLNIR);
@@ -785,6 +797,7 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_Q2_HYPBLASTER)										return(IT_LIGHTNING);
 	if (mc == MC_Q2_RAILGUN)											return(IT_GRENADE_LAUNCHER);
 	if (mc == MC_Q2_BFG)													return(IT_EXTRA_WEAPON);
+	if (mc == MC_Q2_GRAPPLE)											return(PK_IT_GRAPGUN);
 
 	if (mc == MC_Q2_QUAD)												return(IT_QUAD);
 	if (mc == MC_Q2_INVUL)												return(IT_INVULNERABILITY);
@@ -830,7 +843,7 @@ float(float mcv, entity e) bit_mcode =
 /// q3
 
 	if (mc == MC_Q3_GAUNTLET)											return(IT_AXE);
-	if (mc == MC_Q3_GRAPPLE)											return(IT_AXE);
+	if (mc == MC_Q3_GRAPPLE)											return(PK_IT_GRAPGUN);
 	if (mc == MC_Q3_MACHINEGUN)										return(IT_NAILGUN);
 	if (mc == MC_Q3_SHOTGUN)											return(IT_SUPER_SHOTGUN);
 	if (mc == MC_Q3_GRENADEL)											return(IT_GRENADE_LAUNCHER);
@@ -982,6 +995,10 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "item_pkplus_actor")									return(MC_MASK);
 	if (tsc == "item_pkplus_phone")									return(MC_PHONE);
 
+/// ctf
+
+	if (tsc == "weapon_hook")										return(MC_HOOK);
+
 /// hipnotic
 	
 	if (tsc == "weapon_mjolnir")										return(MC_HIP_MJOLNIR);
@@ -1071,6 +1088,7 @@ float(string sc, entity e) pk_mcode =
 	if (tsc == "weapon_hyperblaster")								return(MC_Q2_HYPBLASTER);
 	if (tsc == "q2_weapon_railgun")									return(MC_Q2_RAILGUN);
 	if (tsc == "q2_weapon_bfg")										return(MC_Q2_BFG);
+	if (tsc == "q2_weapon_grapple")								return(MC_Q2_GRAPPLE);
 
 	if (tsc == "q2_item_quad")											return(MC_Q2_QUAD);
 	if (tsc == "item_invulnerability")								return(MC_Q2_INVUL);
@@ -1256,6 +1274,10 @@ string (float mc) item_by_mcode =
 	if (mc == MC_MASK)													return("item_pkplus_actor");
 	if (mc == MC_PHONE)													return("item_pkplus_phone");
 
+/// ctf
+
+	if (mc == MC_HOOK)													return("weapon_hook");
+
 /// hipnotic
 	
 	if (mc == MC_HIP_MJOLNIR)											return("weapon_mjolnir");
@@ -1345,6 +1367,7 @@ string (float mc) item_by_mcode =
 	if (mc == MC_Q2_HYPBLASTER)										return("weapon_hyperblaster"); 
 	if (mc == MC_Q2_RAILGUN)											return("q2_weapon_railgun"); 
 	if (mc == MC_Q2_BFG)													return("q2_weapon_bfg"); 
+	if (mc == MC_Q2_GRAPPLE)											return("q2_weapon_grapple"); 
 
 	if (mc == MC_Q2_QUAD)												return("q2_item_quad"); 
 	if (mc == MC_Q2_INVUL)												return("item_invulnerability"); 
@@ -1460,6 +1483,10 @@ float(float mcv) valid_wep_mcode =
 	if (mcv == MC_ROCKETL)												return(IT_ROCKET_LAUNCHER);
 	if (mcv == MC_THUNDER)												return(IT_LIGHTNING);
 
+/// ctf
+
+	if (mcv == MC_HOOK)											return(IT_AXE);
+
 /// hipnotic
 
 	if (mcv == MC_HIP_MJOLNIR)											return(IT_MJOLNIR);
@@ -1498,11 +1525,12 @@ float(float mcv) valid_wep_mcode =
 	if (mcv == MC_Q2_HYPBLASTER)										return(IT_LIGHTNING);
 	if (mcv == MC_Q2_RAILGUN)											return(IT_GRENADE_LAUNCHER);
 	if (mcv == MC_Q2_BFG)												return(IT_EXTRA_WEAPON);
+	if (mcv == MC_Q2_GRAPPLE)											return(IT_AXE); // needs to be grap gun -> special
 
 /// q3
 
 //	if (mcv == MC_Q3_GAUNTLET)											return(IT_AXE);
-//	if (mcv == MC_Q3_GRAPPLE)											return(IT_AXE); // needs to be grap gun -> special
+	if (mcv == MC_Q3_GRAPPLE)											return(IT_AXE); // needs to be grap gun -> special
 	if (mcv == MC_Q3_MACHINEGUN)										return(IT_NAILGUN);
 	if (mcv == MC_Q3_SHOTGUN)											return(IT_SUPER_SHOTGUN);
 	if (mcv == MC_Q3_GRENADEL)											return(IT_GRENADE_LAUNCHER);
@@ -1588,7 +1616,7 @@ float(float bt, string md) wepbit_mcode =
 
 	else if (md == "Q3")
 	{
-//		if (bt == IT_AXE)													return(MC_Q3_GAUNTLET); // (IT_AXE);
+		if (bt == IT_AXE)													return(MC_Q3_GAUNTLET);
 //		if (bt == IT_AXE)													return(MC_Q3_GRAPPLE); // (IT_SHOTGUN);
 		if (bt == IT_NAILGUN)											return(MC_Q3_MACHINEGUN); // (IT_NAILGUN);
 		if (bt == IT_SUPER_SHOTGUN)									return(MC_Q3_SHOTGUN); // (IT_SUPER_SHOTGUN);
@@ -1695,6 +1723,52 @@ void () q100_weapon_shotgun =
 
 	setsize (self,'-16 -16 0','16 16 56');
 	StartItem ();
+};
+
+/*QUAKED weapon_hook (0 .5 .8) (-16 -16 0) (16 16 32)
+*/
+void() 	weapon_grapgun;
+void() 	player_q3grap;
+
+void () weapon_hook =
+{
+	weapon_grapgun();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = painkeep_weapon_touch;
+		self.classname = "weapon_grapgun";
+		return;
+	}
+
+	self.netname = "Grappling hook";
+
+	self.touch = x_weapon_touch;
+	self._attack = player_q3grap;
+	self._fr_attack = SUB_Null;
+
+	self.currentammo = 0;
+	self.lip = 0;
+	self.attack_finished = 0.5;
+	self.lefty = SEL_S_HOOK;
+	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_GRAPGUN; // grap replacement
+/*
+	self.dmg = 5;
+	self.dmg_save = 0;
+	self.dmg_take = 1; // shot cnt
+*/
+	self.style = FL_MELEE_WEP;
+	if (!self.wait) self.wait = RSP_TIME * 0.1666;
+
+	self.vv_draw = vw_q1_grap;
+
+	setmodel (self, "progs/g_grap.mdl");
+	self.weaponmodel = "progs/v_grap.mdl";
+	self.vwepmdl = "progs/vw_grap.mdl";
 };
 
 // all quake 1 key load outs

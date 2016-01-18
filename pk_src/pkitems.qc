@@ -999,6 +999,22 @@ void() BackpackTouch =
 	else
 // end ammo pack code
 
+	if (self.eweapon) // pack has an xweap
+	{
+		acount = 1;
+		sprint (other, "the ");
+
+		st1 = self;
+		self = self.eweapon;
+		sprint (other, self.netname);
+
+		x_weapon_touch();
+		self = other;
+		best = W_BestWeapon();
+		self = st1;
+		remove(self.eweapon);
+	}
+	else // ? may want
 	if (self.items)
 	{
 // PAINKEEP_START
@@ -1234,7 +1250,74 @@ bprint("\n");
 	W_SetCurrentAmmo ();
 };
 
-// called from DropBackpack
+// fn(xwep_ammo) - handel xweapon ammo issues when they go in the pack
+// also called prior to dead drop
+
+// p - pack / player
+// e - wepent
+
+void(entity e, entity p) xwep_ammo =
+{
+	if (e.lip == AMMO_SHELLS)
+	{
+		if (e.currentammo > p.ammo_shells) { e.currentammo = p.ammo_shells;		p.ammo_shells = 0; }
+		else
+		p.ammo_shells = p.ammo_shells - e.currentammo;
+	}
+
+	if (e.lip == AMMO_NAILS)
+	{
+		if (e.currentammo > p.ammo_nails) { e.currentammo = p.ammo_nails;		p.ammo_nails = 0; }
+		else
+		p.ammo_nails = p.ammo_nails - e.currentammo;
+	}
+
+	if (e.lip == AMMO_ROCKETS)
+	{
+		if (e.currentammo > p.ammo_rockets) { e.currentammo = p.ammo_rockets;		p.ammo_rockets = 0; }
+		else
+		p.ammo_rockets = p.ammo_rockets - e.currentammo;
+	}
+
+	if (e.lip == AMMO_CELLS)
+	{
+		if (e.currentammo > p.ammo_cells) { e.currentammo = p.ammo_cells;		p.ammo_cells = 0; }
+		else
+		p.ammo_cells = p.ammo_cells - e.currentammo;
+	}
+
+	if (e.lip == AMMO_BULLETS)
+	{
+		if (e.currentammo > p.ammo_bullet) { e.currentammo = p.ammo_bullet;		p.ammo_bullet = 0; }
+		else
+		p.ammo_bullet = p.ammo_bullet - e.currentammo;
+	}
+
+	if (e.lip == AMMO_SLUGS)
+	{
+		if (e.currentammo > p.ammo_slug) { e.currentammo = p.ammo_slug;		p.ammo_slug = 0; }
+		else
+		p.ammo_slug = p.ammo_slug - e.currentammo;
+	}
+
+	if (e.lip == AMMO_GAS)
+	{
+		if (e.currentammo > p.ammo_gaspr) { e.currentammo = p.ammo_gaspr;		p.ammo_gaspr = 0; }
+		else
+		p.ammo_gaspr = p.ammo_gaspr - e.currentammo;
+	}
+
+/* later
+	if (e.lip == AMMO_GRENADES)
+	{
+		if (e.currentammo > p.ammo_hgrenade) { e.currentammo = p.ammo_hgrenade;		p.ammo_hgrenade = 0; }
+		else
+		p.ammo_hgrenade = p.ammo_hgrenade - e.currentammo;
+	}
+*/
+};
+	
+// called as DropBackpack
 
 void() DropBackpack =
 {
@@ -1245,14 +1328,28 @@ void() DropBackpack =
 	}
 
 	newmis = world;
-	if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells + self.pk_explode_ammo))
+	if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells + self.ammo_bullet + self.ammo_slug + self.ammo_gaspr + self.ammo_hgrenade + self.pk_explode_ammo))
 		return;	// nothing in it - IDEA: randomize some stuff?
 
 	newmis = spawn();
 	newmis.origin = self.origin - '0 0 24';
 
-	newmis.pk_items = 0;
 	newmis.items = self.weapon;
+	newmis.pk_items = 0;
+
+	if (self.eweapon && DEAD_XPACK ) // xweap was unholstered - see if it goes in pack
+	{
+		newmis.eweapon = self.eweapon;
+		newmis.eweapon.wad = "packwep";
+		newmis.eweapon.classname = item_by_mcode(newmis.eweapon.mcode); // for touch
+		newmis.eweapon.model = "";
+		newmis.netname = newmis.eweapon.netname; // this doesnt matter
+		newmis.eweapon.items = self.weapon; // newmis.eweapon.items & WEP_ITEM_MASK; // ARG: now all vwep xwep all have to have proper weapon bit code to go to items
+																						  // had to do this because laser cannon was getting wrong weapon value & not selectable
+		xwep_ammo(newmis.eweapon, self);
+	}
+	else // standard weapon
+
 	if (newmis.items == IT_AXE)
 	{
 		if (self.pk_currentitem == PK_IT_AXE)
@@ -1306,6 +1403,7 @@ void() DropBackpack =
 	newmis.ammo_bullet = self.ammo_bullet;
 	newmis.ammo_slug = self.ammo_slug;
 	newmis.ammo_gaspr = self.ammo_gaspr;
+	newmis.ammo_hgrenade = self.ammo_hgrenade;
 
 	newmis.pk_gravitywellammo = self.pk_gravitywellammo;
 	newmis.pk_turretammo = self.pk_turretammo;

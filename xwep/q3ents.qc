@@ -176,6 +176,9 @@ void() q3_precache =
 	precache_sound ("sound/q3_snd/pt1_end.wav");
 	precache_sound ("sound/q3_snd/pt1_mid.wav");
 	precache_sound ("sound/q3_snd/pt1_strt.wav");
+// lightning hook
+	precache_sound ("q3_snd/lg_hit3.wav");
+	precache_sound ("q3_snd/gauntrun.wav");
 
 };
 
@@ -359,7 +362,15 @@ void() player_gauntlet1 =
 	{
 		self.frame = $axatt2;		
 	}
+};
 
+// fn(player_q3grap) - fire or release q3 grap
+
+void() player_q3grap =
+{
+	self.button0 = 0;
+	self.impulse = 94;
+	hook_impulse_check();
 };
 
 /*
@@ -705,6 +716,7 @@ void () weapon_gauntlet =
 	self.dmg = 50;
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
+	self.style = FL_MELEE_WEP;
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 
 	self.vv_draw = vw_q3_gaunt;
@@ -743,24 +755,29 @@ void () weapon_grapplinghook =
 
 	self.netname = "Grappling hook";
 
-/*
 	self.touch = x_weapon_touch;
-	self._attack = SUB_Null;
-	self._fr_attack = player_;
+	self._attack = player_q3grap;
+	self._fr_attack = SUB_Null;
 
 	self.currentammo = 0;
-//	self.items = IT_AXE; // using grap gun
 	self.lip = 0;
 	self.attack_finished = 0.5;
+	self.lefty = SEL_LTN_HOOK;
+	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_GRAPGUN; // grap replacement
+/*
 	self.dmg = 5;
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
 */
+	self.style = FL_MELEE_WEP;
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
+
+	self.vv_draw = vw_q3_grap;
 
 	setmodel (self, "progs/q3_grapple.mdl");
 //	self.weaponmodel = "progs/v_q3_.mdl";
-//	self.vwepmdl = "progs/vw_q3_.mdl";
+	self.vwepmdl = "progs/vw_q3_grap.mdl";
 	self.noise = "q3_snd/w_pkup.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 	self.noise3 = "q3_snd/gauntrun.wav";

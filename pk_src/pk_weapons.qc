@@ -263,6 +263,7 @@ void() PK_SetCurrentAmmo =
 		self.weaponframe = 0;
 		self.weaponmodel = "";
 		self.eweapon = world;
+		self.mcode = self.scode = 0;
 		return;
 	}
 
@@ -579,6 +580,9 @@ void() PK_SetCurrentAmmo =
 		{
 			self.weaponmodel = "";
 		}
+
+// xwep change level deal
+	xw_parm(self);
 };
 
 // just to update ammo counts since viswep controls "you have selected" & weaponmodel changes now
@@ -1957,10 +1961,15 @@ void() PK_ImpulseCommands =
 		pk_art_specialimpulse(self.impulse);
 		return;
 	}
-	else if (self.impulse >= 94 && self.impulse <= 98) // Cataboligne 8.29.11 purify - hook
+	else if (self.impulse >= 94 && self.impulse <= 98) // Cataboligne 8.29.11 purify - hook - this is only the vector for give-away hook, item hooks vector via fire code
 	{
-		if (HOOK) // TDO: inventory item
+		if (HOOK)
 			hook_impulse_check();
+
+		if (self.eweapon)
+		if (self.eweapon.netname == "Grappling hook") // holding a hook - check impulses
+			hook_impulse_check();
+
 		return;
 	}
 

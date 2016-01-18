@@ -183,7 +183,6 @@ void(entity ve, float camct, float mcd, string spf) xwep_fakeload =
 	self = sv;
 }
 
-
 // from chaos mod
 
 float Q_MEGA_MAX = 250;
@@ -706,6 +705,33 @@ zz=3;
 
 	}
 
+};
+
+// fn(xw_parm) - handle xweps for level chg
+
+// e - player / bot to handle
+
+void (entity e) xw_parm =
+{
+	local entity tr;
+
+	tr = e.vwepent;
+	e.scode = 0;
+
+	if (X_CHGLVL)
+	if (e.eweapon)
+		e.mcode = e.eweapon.mcode;
+
+	while (tr)
+	{
+		if (tr != e.eweapon)
+		{			
+			if (tr.netname == "Grappling hook") e.scode = e.scode | 512; // special - grapples
+			else
+			if (tr.mcode) e.scode = e.scode | tr.weapon;
+		}
+		tr = tr.vwepent;
+	}
 };
 
 void(entity e, float bl) xw_bit_loop =

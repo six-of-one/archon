@@ -623,14 +623,14 @@ void() d_barrel =
 doom wep inventory slots
 
 slot		weapon
-1				pistol *
-2				shotgun *
-3				boom stick
-4				chainsaw
-5				chain gun
-6				plasma gun
-7				rocket launcher
-8				bfg
+1				pistol *							4096
+2				shotgun *						1
+3				boom stick					2
+4				chainsaw						4
+5				chain gun						8
+6				plasma gun					16
+7				rocket launcher		32
+8				bfg									128
 
 * = touch fn will replace other slot 1 & 2 weps with these
 

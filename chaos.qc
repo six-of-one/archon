@@ -1715,3 +1715,22 @@ float (entity e) sv_decor =
 	return(f);
 };
 
+// fn(seq_bolt) - sequence a lightning bolt into the world,, no damage yet
+
+// lorg1 - start
+// lorg2 - end
+
+void(vector lorg1, vector lorg2) seq_bolt =
+{
+	WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST,TE_LIGHTNING2);
+	WriteEntity (MSG_BROADCAST,self);
+	WriteCoord (MSG_BROADCAST,lorg1_x);
+	WriteCoord (MSG_BROADCAST,lorg1_y);
+	WriteCoord (MSG_BROADCAST,lorg1_z);
+	WriteCoord (MSG_BROADCAST,lorg2_x);
+	WriteCoord (MSG_BROADCAST,lorg2_y);
+	WriteCoord (MSG_BROADCAST,lorg2_z);	
+};
+
+

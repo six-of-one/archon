@@ -385,6 +385,7 @@ void () bot_axed4 = [ $axattd4, bot_run ]
 void () pkbot_melee =
 {
 	self.weapon = W_BestBotWeapon ();
+	xw_parm(self); // Cataboligne - 9.2.11 - is needed ???
 	W_BotAttack ();
 };
 

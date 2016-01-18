@@ -44,9 +44,17 @@ float HOOK_RANGE;
 float HOOK_TIME;
 float HOOK_URTO;
 float HOOK_SPEED;
+float HOOK_DAMP; //server option to prevent wild swings at end of hook ride
+float HOOK_DAMPING 			= 0.5;
 
 float LASER_HOOK; // used on q2 maps for give away hook, or q2_weapon_grapple
 float LTN_HOOK; // ditto
+
+float HOOK_OUT_FRM			= 5; // must be so - in all models that have hook out frames
+
+float SEL_S_HOOK				= 70000; // standard hook behavior - for item hooks
+float SEL_LTN_HOOK			= 78005; //let an item set ltn mode
+float SEL_LASER_HOOK			= 718005; //let an item set laser mode
 
 void() hook_dmg_check;
 void() hook_precache;

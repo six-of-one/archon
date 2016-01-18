@@ -221,6 +221,9 @@ void(string cls) item_call =
 	else if (cls == "item_pkplus_actor") item_pkplus_actor();
 	else if (cls == "item_pkplus_phone") item_pkplus_phone();
 
+// ctf
+	else if (cls == "weapon_hook") weapon_hook();
+
 // hipnotic
 	else if (cls == "weapon_mjolnir") weapon_mjolnir();
 	else if (cls == "weapon_laser_gun")	weapon_laser_gun();
@@ -312,6 +315,7 @@ void(string cls) item_call =
 	else if (cls == "weapon_hyperblaster") weapon_hyperblaster();
 	else if (cls == "q2_weapon_railgun") q2_weapon_railgun();
 	else if (cls == "q2_weapon_bfg") q2_weapon_bfg();
+	else if (cls == "q2_weapon_grapple") q2_weapon_grapple();
 
 	else if (cls == "q2_item_quad") q2_item_quad();
 	else if (cls == "item_invulnerability") item_invulnerability();

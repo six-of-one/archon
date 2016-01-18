@@ -253,6 +253,13 @@ void () DropHook =
 
 	// remove all hook flags
 	self.owner.hook = 0;
+
+	local float dhm;
+
+	dhm = 0;
+	if (self.owner.eweapon)
+	if (self.owner.eweapon.lefty == SEL_LTN_HOOK || self.owner.eweapon.lefty == SEL_LASER_HOOK || self.owner.eweapon.lefty == SEL_S_HOOK) // detect hook modes
+		dhm = self.owner.eweapon.lefty;
 /*
 	if (hook_ver == CHAOS_VER)
 	{
@@ -264,9 +271,8 @@ void () DropHook =
 	}
 	else
 */
-	if (!LTN_HOOK)
-	if (!LASER_HOOK)
-	sound (self.owner, CHAN_AUTO, "hook/retract.wav", 1, ATTN_NORM);
+	if (dhm == SEL_S_HOOK || ( !dhm && !LTN_HOOK && !LASER_HOOK ))
+		sound (self.owner, CHAN_AUTO, "hook/retract.wav", 1, ATTN_NORM);
 
 	// removes hook and chain
 	linkptr = self.goalentity;
@@ -292,7 +298,7 @@ void() hook_laser_thk =
 		remove(self);
 		return;
 	}
-	
+
 	chainvec = (self.aiment.origin - (self.owner.origin + '0 0 16')); // player to hook
 	chainlen = vlen(chainvec);
 	chainvec = normalize(chainvec);
@@ -305,9 +311,26 @@ void() hook_laser_thk =
 
 	setorigin (self, (self.owner.origin + '0 0 16'));
 
-	chainlen = floor(chainlen / 32);
-	if (chainlen > 63) chainlen = 63;
-	self.frame = chainlen;
+	if (self.super_time < time) // super time - to run a couple hook effects
+	{
+		self.super_time = time + 0.2;
+		if ((LTN_HOOK && self.lefty != SEL_LASER_HOOK && self.lefty != SEL_S_HOOK) || self.lefty == SEL_LTN_HOOK)
+		{
+			ominous_hum(self.noise2, self.endtime);
+			seq_bolt((self.owner.origin + '0 0 16'), self.aiment.origin);
+		}
+
+		if (!HOOK_DAMP) // -1 = dont, 1 = done in main behave, 0 = do here
+		if (chainlen < 160)
+			self.owner.velocity = self.owner.velocity * HOOK_DAMPING; // default damping for wild swings borts hook tends to do - which these hooks dont really do
+	}
+
+	if ((LASER_HOOK && self.lefty != SEL_LTN_HOOK && self.lefty != SEL_S_HOOK) || self.lefty == SEL_LASER_HOOK) // laser repose
+	{
+		chainlen = floor(chainlen / 32);
+		if (chainlen > 63) chainlen = 63;
+		self.frame = chainlen;
+	}
 
 	self.nextthink = time + 0.05;	
 };
@@ -350,6 +373,13 @@ void () MaintainLinks =
 	currlink = self;
 	currpos = 0;
 
+	local float dhm;
+
+	dhm = 0;
+	if (self.owner.eweapon)
+	if (self.owner.eweapon.lefty == SEL_LTN_HOOK || self.owner.eweapon.lefty == SEL_LASER_HOOK) // detect hook modes
+		dhm = self.owner.eweapon.lefty;
+
 	// generate and refresh links
 	linknum = ceil(chainlen / CHAIN_LINK_LEN);
 	while (currpos < linknum)
@@ -372,13 +402,14 @@ void () MaintainLinks =
 				else if (self.owner.morphnum == IMP_MCHAOS) newlink.skin = floor(random() * 3.4);
 			}
 */
+			
 //			if (LASER_HOOK) newlink.skin = 1; // NOTE: used by laser hook - old, uses beam now
-			if (LASER_HOOK || LTN_HOOK)
+			if (LASER_HOOK || LTN_HOOK || dhm)
 			{
-				newlink.classname = "laser_hook_beam";
-				setmodel (newlink, "progs/lzrbm_seg.mdl");
+				newlink.classname = "lightning_hook_beam";
 				newlink.owner = self.owner;
 				newlink.aiment = self;
+				newlink.lefty = dhm;  // NOTE: does not detect standard hook in think fn above
 
 				newlink.angles = vectoangles(chainvec);
 
@@ -389,10 +420,27 @@ void () MaintainLinks =
 //				setorigin (currlink, p_self_origin + chainunit * (linkstart + CHAIN_LINK_LEN / 2 ));
 				setorigin (newlink, chainvec);
 
-				chainlen = vlen(chainvec);
-				chainlen = floor(chainlen / 32);
-				if (chainlen > 63) chainlen = 63;
-				newlink.frame = chainlen;
+				if ((LASER_HOOK && self.lefty != SEL_LTN_HOOK && self.lefty != SEL_S_HOOK) || dhm == SEL_LASER_HOOK)
+				{
+					newlink.classname = "laser_hook_beam";
+					setmodel (newlink, "progs/lzrbm_seg.mdl");
+					chainlen = vlen(chainvec);
+					chainlen = floor(chainlen / 32);
+					if (chainlen > 63) chainlen = 63;
+					newlink.frame = chainlen;
+				}
+
+				if ((LTN_HOOK && self.lefty != SEL_LASER_HOOK && self.lefty != SEL_S_HOOK) || dhm == SEL_LTN_HOOK)
+				{
+//					ominous_hum("q2_snd/chngnl1a.wav", self.eweapon.chaosweptime);
+					newlink.noise2 = "q3_snd/gauntrun.wav";
+					newlink.model = "";
+					sound (newlink, CHAN_AUTO, newlink.noise2, 1, ATTN_NORM);
+					newlink.endtime = 1.99; 
+					newlink.chaosweptime = time + newlink.endtime;
+					newlink.super_time = time + 0.2;
+					seq_bolt(self.owner.origin, p_self_origin);
+				}
 
 				newlink.think = hook_laser_thk;
 				newlink.nextthink = time + 0.05;
@@ -400,7 +448,7 @@ void () MaintainLinks =
 			}
 		}
 		else
-		if (LASER_HOOK) return;
+		if (LASER_HOOK || LTN_HOOK || dhm) return;
 
 		currlink = currlink.goalentity;
 		currpos = currpos + 1;
@@ -412,36 +460,20 @@ void () MaintainLinks =
 		if ((currlink.angles_y > 0) && (currlink.angles_y < 180))
 			currlink.angles = currlink.angles + '0 1 0';
 
-		if (LASER_HOOK)
+		// vibrates chain links on the z axis
+		currlink.angles_z = currlink.angles_z + crandom() * 30;
+
+		// set position and frames
+		linkstart = (currpos - 1) * CHAIN_LINK_LEN;
+		if (currpos < linknum)
 		{
-			currlink.classname = "laser_hook_beam";
-			setmodel (currlink, "progs/lzrbm_seg.mdl");
-			linkstart = (currpos - 1) * CHAIN_LINK_LEN;
 			setorigin (currlink, p_self_origin + chainunit * (linkstart + CHAIN_LINK_LEN / 2 ));
-			chainlen = vlen(p_self_origin - chainvec);
-			chainlen = ceil(chainlen / 32) - 2;
-			if (chainlen < 0) chainlen  = 0;
-			if (chainlen > 63) chainlen = 63;
-			currlink.frame = chainlen;
-			return;
+			currlink.frame = 9 + CHAIN_FRAME_ADJ;
 		}
 		else
 		{
-			// vibrates chain links on the z axis
-			currlink.angles_z = currlink.angles_z + crandom() * 30;
-
-			// set position and frames
-			linkstart = (currpos - 1) * CHAIN_LINK_LEN;
-			if (currpos < linknum)
-			{
-				setorigin (currlink, p_self_origin + chainunit * (linkstart + CHAIN_LINK_LEN / 2 ));
-				currlink.frame = 9 + CHAIN_FRAME_ADJ;
-			}
-			else
-			{
-				setorigin (currlink, p_self_origin + chainunit * (linkstart + (chainlen - linkstart) / 2 ));
-				currlink.frame = floor((chainlen - linkstart) / CHAIN_LINK_LEN * 10) + CHAIN_FRAME_ADJ;
-			}
+			setorigin (currlink, p_self_origin + chainunit * (linkstart + (chainlen - linkstart) / 2 ));
+			currlink.frame = floor((chainlen - linkstart) / CHAIN_LINK_LEN * 10) + CHAIN_FRAME_ADJ;
 		}
 	}
 
@@ -485,9 +517,17 @@ void () HookBehavior =
 		return;
 	}
 
+	local float dhm;
+
+	dhm = 0;
+	if (self.owner.eweapon)
+	if (self.owner.eweapon.lefty == SEL_LTN_HOOK || self.owner.eweapon.lefty == SEL_LASER_HOOK || self.owner.eweapon.lefty == SEL_S_HOOK) // detect hook modes
+		dhm = self.owner.eweapon.lefty;
+
 	// give some damage to entities that take damage
 	if (self.enemy.takedamage)
 	if (HOOK_DMG)
+	if (dhm != SEL_LASER_HOOK) // TDO: check if ltn hook does dmg from gun
 	if (time > self.wait)
 	{
 			T_Damage (self.enemy, self, self.owner, HOOK_DMG);
@@ -552,7 +592,7 @@ void () HookBehavior =
 			if (self.delay < time)
 			{
 				f1 = gs / GROW_RATE;
-				if (!LASER_HOOK)
+				if (dhm == SEL_S_HOOK || ( !dhm && !LTN_HOOK && !LASER_HOOK ))
 				if (hook_ver == CHAOS_VER)
 				{
 /*
@@ -588,7 +628,7 @@ void () HookBehavior =
 				i1 = fabs(gs);
 				i2 = fabs(SHRINK_RATE);
 				f1 = i1 / i2;
-				if (!LASER_HOOK)
+				if (dhm == SEL_S_HOOK || ( !dhm && !LTN_HOOK && !LASER_HOOK ))
 				if (hook_ver == CHAOS_VER)
 				{
 /*
@@ -649,6 +689,14 @@ void () HookBehavior =
 	// applys chain restrainment
 	self.owner.velocity = self.owner.velocity + normalize(chainvec) * f1;
 
+	if (self.super_time < time) // super time - to run a couple hook effects
+	{
+		self.super_time = time + 0.2;
+		if (HOOK_DAMP > 0)
+		if (chainlen < 160)
+			self.owner.velocity = self.owner.velocity * HOOK_DAMPING; // damping for wild swings borts hook tends to do - which these hooks dont really do
+	}
+
 	MaintainLinks ();
 };
 
@@ -666,6 +714,16 @@ void() HookTouch =
 		return;
 	}
 	
+	local float dhm;
+
+	dhm = 0;
+	if (self.owner.eweapon)
+	{
+		if (self.owner.eweapon.lefty == SEL_LTN_HOOK || self.owner.eweapon.lefty == SEL_LASER_HOOK) // detect hook modes
+			dhm = self.owner.eweapon.lefty;
+		if (self.owner.eweapon.lefty == SEL_S_HOOK) dhm = -1;
+	}
+
 	// armorvalue is used to hold current length of chain
 	self.armorvalue = vlen(self.origin - (self.owner.origin + '0 0 16'));
 
@@ -694,7 +752,9 @@ void() HookTouch =
 	}
 	else
 */
-		if (LASER_HOOK)
+		if ((LTN_HOOK  && dhm != SEL_LASER_HOOK && dhm > 0) || dhm == SEL_LTN_HOOK)
+			sound (self, CHAN_AUTO, "q3_snd/lg_hit3.wav", 1, ATTN_NORM);
+		else if ((LASER_HOOK  && dhm != SEL_LTN_HOOK && dhm > 0) || dhm == SEL_LASER_HOOK)
 			sound (self, CHAN_AUTO, "q2_snd/lhook_h.wav", 1, ATTN_NORM);
 		else
 		sound (self, CHAN_AUTO, "player/axhit2.wav", 1, ATTN_NORM);
@@ -744,7 +804,15 @@ void(entity e) InitiateHook =
 
 	hk = "progs/hook.mdl";
 
-	if (LASER_HOOK) hk = "progs/null.mdl";
+	local float dhm;
+
+	dhm = 0;
+	if (self.eweapon)
+	{
+		if (self.eweapon.lefty == SEL_LTN_HOOK || self.eweapon.lefty == SEL_LASER_HOOK) // detect hook modes
+			dhm = self.eweapon.lefty;
+		if (self.eweapon.lefty == SEL_S_HOOK) dhm = -1;
+	}
 
 /*
 	if (hook_ver == CHAOS_VER)
@@ -766,14 +834,20 @@ void(entity e) InitiateHook =
 //			sound (e, CHAN_AUTO, "weapons/ax1.wav", 1, ATTN_NORM);
 		}
 	}
+	else
 */
+
+	if (dhm > -1)
+	if (LTN_HOOK || LASER_HOOK || dhm > 0) hk = "progs/null.mdl";
 
 	newhook = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, e.origin + (v_forward*16) + '0 0 16', ' 0 0 0', ' 0 0 0', vectoangles(v_forward), v_forward*2000, "", hk, HookTouch, 0.01, LaunchHook, SUB_Null, e, world);
 
 	newhook.avelocity = '0 0 500';
-	if (LASER_HOOK)
+	if ((LASER_HOOK  && dhm != SEL_LTN_HOOK && dhm > 0) || dhm == SEL_LASER_HOOK)
 		sound (e, CHAN_AUTO, "q2_snd/lhook_l.wav", 1, ATTN_NORM);
-	else
+	else if ((LTN_HOOK && dhm != SEL_LASER_HOOK && dhm > 0) || dhm == SEL_LTN_HOOK)
+		sound (e, CHAN_AUTO, "q3_snd/gauntrun.wav", 1, ATTN_NORM);
+	else 
 	sound (e, CHAN_AUTO, "weapons/ax1.wav", 1, ATTN_NORM);
 
 	// used as pointer to first chain link
@@ -811,7 +885,7 @@ void() CheckGrapHookJump =
 //--------------------------------------------------------------------
 void() CheckGrapHook =
 {
-	local float cb_msk;
+	local float cb_msk, ts;
 //	cb_msk = CB_CHAOS | CB_GREMLIN | CB_CTHON | CB_SCOURGE | CB_ZOMBY;
 
 /*
@@ -853,8 +927,17 @@ void() CheckGrapHook =
 			self.hook = self.hook - (self.hook & HOOK_ON);
 			return;
 		}
+		
+		if (self.eweapon)
+		{
+			if (self.eweapon.vwepmdl == "progs/vw_q3_grap.mdl") // cant "reel" q3 hook
+				return;
 
-		if (LASER_HOOK) return; // no reeling with this hook
+			if (self.eweapon.netname == "Grappling hook") ts = TRUE; // no test if item hook
+		}
+
+		if (!ts)
+		if (LASER_HOOK || LTN_HOOK) return; // no reeling with these hook
 
 		// deactivate chain growth or shrink
 		if (self.impulse == I_STOP)
@@ -885,19 +968,22 @@ void () hook_precache =
 //	precache_model ("progs/cross1.mdl" ); // lasertargeter
 	// Bort's swinging hook
 	precache_model ("progs/hook.mdl");
+	precache_model ("progs/g_grap.mdl");
+	precache_model ("progs/v_grap.mdl");
+	precache_model ("progs/vw_grap.mdl");
 
-	precache_sound ("blob/land1.wav");
-	precache_sound ("hook/chain1.wav");
-	precache_sound ("hook/chain2.wav");
-	precache_sound ("hook/retract.wav");
+	precache_sound ("hook/chain1.wav"); // in - out
+	precache_sound ("hook/chain2.wav"); // in - out
+	precache_sound ("hook/retract.wav"); // drop hook
 
-// laser hook
-	precache_sound ("q2_snd/lhook_h.wav");
-	precache_sound ("q2_snd/lhook_l.wav");
-// lightning hook
-	precache_sound ("q3_snd/lg_hit3.wav");
-	precache_sound ("q3_snd/gauntrun.wav");
+	precache_sound ("player/axhit2.wav"); // end hit solid
+	precache_sound ("player/ax1.wav"); // launch sound
+
+	precache_sound ("shambler/smack.wav"); // initial damage hit
+	precache_sound ("blob/land1.wav"); // secondary dmg noise
 };
+
+// self must be player / bot
 
 void () hook_impulse_check =
 {

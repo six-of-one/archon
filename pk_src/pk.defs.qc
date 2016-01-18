@@ -160,7 +160,7 @@ string EARTHQUAKE				= "earthquake"; // select things we want to shake up
 float QUAKE_RUBBLE			= 0.17; // chance of rubble when skaking loose debris
 float QUAKE_RUBBLE_PER		= 0.04; // chance of rubble percent per richter
 float RUBBLE_DMGDEF			= 10; // default damage from hot rubble
-float RUBBLE_TIME				= 15; // TEST 45; // time for rubble to hang around
+float RUBBLE_TIME				= 15; // TEST: 45; // time for rubble to hang around
 float RUBBLE_TDEV				= 15; // dev time on rubble
 float RUBBLE_BLASTRAD		= 48; // distance from explosion to look for rubble to blast
 float EXPLODE_RUBBLE			= 0.6; // chance of rubble from explosion
@@ -411,6 +411,8 @@ float PF_LAVA					= 1048576;
 
 // inventory flags
 
+float WEP_ITEM_MASK			= 255; // mask of weapon bits in .items
+
 float DROP_ALLOW; // inv bits player is allowed to drop
 
 float IGN_INV 					= 66600;
@@ -427,6 +429,11 @@ float NO_BUBBLES				= -1; // this ent wont make bubbles
 float FL_VANM					= 131072; // vmodel animation in progress
 
 float EF_FULLBRIGHT			= 512;
+
+// dead rules
+
+float DEAD_THROW;
+float DEAD_XPACK;
 
 // end inventorys
 
@@ -542,6 +549,9 @@ float PK_GASAMMO_MAX;
 .float x_items; // extra weapon item control - pwr armors / extended keys / etc
 void() x_item_touch;
 void(entity e, float camct, float mcd, string spf) xwep_fakeload;
+void(entity e, float smc) set_xweap;
+void(entity e) xw_parm;
+float X_CHGLVL;
 
 float(entity e, entity f, float dm) power_armor;
 void() power_armor_impulse;

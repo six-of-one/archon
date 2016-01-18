@@ -142,6 +142,8 @@ void() q2_precache =
 	precache_model ("progs/vw_q2_rock2.mdl");
 	precache_model ("progs/vw_q2_rock.mdl");
 	precache_model ("progs/vw_q2_shot.mdl");
+	precache_model ("progs/q2_grap.mdl");
+	precache_model ("progs/vw_q2_grap.mdl");
 
 
 // sounds
@@ -205,6 +207,15 @@ void() q2_precache =
 	precache_sound ("sound/q2_snd/pt1_mid.wav");
 	precache_sound ("sound/q2_snd/pt1_strt.wav");
 	precache_sound ("sound/q2_snd/butn2.wav");
+// laser hook
+	precache_sound ("q2_snd/lhook_h.wav");
+	precache_sound ("q2_snd/lhook_l.wav");
+// grapple gun q2 style
+	precache_sound ("q2_snd/grfire.wav");
+	precache_sound ("q2_snd/grhang.wav");
+	precache_sound ("q2_snd/grhit.wav");
+	precache_sound ("q2_snd/grpull.wav");
+	precache_sound ("q2_snd/grreset.wav");
 
 //	precache_sound ("q2_snd/.wav");
 	rail_precache();
@@ -892,6 +903,53 @@ void () q2_weapon_blaster =
 	if (self.class_select == "") self.class_select = "q2_item";
 };
 
+void () q2_weapon_grapple =
+{
+	weapon_grapgun();
+
+	if (!ULOK2)
+	if (!GENERATIONS)
+	if (noxtr_item_control(self, TRUE, ""))
+	{
+		self.touch = painkeep_touch;
+		self.pk_touch = painkeep_weapon_touch;
+		self.classname = "weapon_grapgun";
+		return;
+	}
+
+	self.netname = "Grappling hook";
+
+	self.touch = x_weapon_touch;
+	self._attack = player_q3grap;
+	self._fr_attack = SUB_Null;
+
+	self.currentammo = 0;
+	self.lip = 0;
+	self.attack_finished = 0.5;
+	self.lefty = SEL_S_HOOK;
+	self.items = IT_AXE;
+	self.pk_currentitem = PK_IT_GRAPGUN; // grap replacement
+/*
+	self.dmg = 5;
+	self.dmg_save = 0;
+	self.dmg_take = 1; // shot cnt
+*/
+	self.style = FL_MELEE_WEP;
+	if (!self.wait) self.wait = RSP_TIME * 0.1666;
+
+	self.vv_draw = vw_q1_grap;
+
+	setmodel (self, "progs/q2_grap.mdl");
+//	self.weaponmodel = "progs/v_q3_.mdl";
+	self.vwepmdl = "progs/vw_q2_grap.mdl";
+
+	self.noise = "q2_snd/w_pkup.wav";
+	self.noise4 = "q2_snd/respawn1.wav";
+	self.noise3 = "q2_snd/grpull.wav";
+
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "q2_item";
+};
 
 void() q2_item_health_small =
 {
@@ -1403,7 +1461,7 @@ void() key_pyramid =
 	}
 
 	setmodel(self, "progs/q2_keypyramid.mdl");
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Pyramid Key";
 	self.touch = x_item_touch;
@@ -1425,7 +1483,7 @@ void() key_power_cube =
 	}
 
 	setmodel(self, "progs/q2_keypower.mdl");
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Power Cube";
 	self.touch = x_item_touch;
@@ -1447,7 +1505,7 @@ void() key_pass =
 	}
 
 	setmodel(self, "progs/q2_keypass.mdl");
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Pass Key";
 	self.touch = x_item_touch;
@@ -1469,7 +1527,7 @@ void() key_data_cd =
 	}
 
 	setmodel(self, "progs/q2_keycd.mdl");
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Data CD";
 	self.touch = x_item_touch;
@@ -1491,7 +1549,7 @@ void() key_data_spinner =
 	}
 
 	setmodel(self, "progs/q2_keyspinner.mdl");
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Data Spinner";
 	self.touch = x_item_touch;
@@ -1513,7 +1571,7 @@ void() key_airstrike_target =
 	}
 
 	setmodel(self, "progs/q2_keytarget.mdl");
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Airstrike Target";
 	self.touch = x_item_touch;
@@ -1536,7 +1594,7 @@ void() key_blue_key =
 
 	setmodel(self, "progs/q2_keyrb.mdl");
 	self.skin = 1;
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Blue Key";
 	self.touch = x_item_touch;
@@ -1559,7 +1617,7 @@ void() key_red_key =
 
 	setmodel(self, "progs/q2_keyrb.mdl");
 	self.skin = 0;
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Red Key";
 	self.touch = x_item_touch;
@@ -1581,7 +1639,7 @@ void() key_commander_head =
 	}
 
 	setmodel(self, "progs/q2_key_cmd_head.mdl");
-	self.noise = "doom/dsitemup.wav";
+	self.noise = "q2_snd/pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.netname = "Commanders Head";
 	self.touch = x_item_touch;

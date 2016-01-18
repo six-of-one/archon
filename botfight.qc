@@ -224,7 +224,7 @@ float () W_BestBotWeapon =
 		}
 	}
 	if (XRP)
-	if ((rng == RANGE_MELEE) && (self.enemy.health < 20))
+	if ((rng == RANGE_MELEE) && (self.enemy.health < 20)) // Cataboligne --- NOTE: TDO: part of endless axe war problem?
 	{
 		return(IT_AXE);
 	}

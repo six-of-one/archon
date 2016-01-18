@@ -73,8 +73,18 @@ void() SetChangeParms =
 		parm16 = parm16 | 256; // Cataboligne - 8.22.9 - pk orig oper
 		return ;
 	}
+
+	// code xweaps - return poss map code for parm & clear items
+
+	parm12 = self.mcode; //xw_parm(self);
+
+	if (self.scode & 512) // had a grapple - zip out bit
+	{
+		self.scode = self.scode - 512;
+		self.pk_items = self.pk_items - (self.pk_items & PK_IT_GRAPGUN);
+	}
 // remove items
-	self.items = self.items - (self.items & (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
+	self.items = self.items - (self.items & (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD | self.scode));
 
 // cap super health
 	if (self.health > 100)
@@ -164,6 +174,8 @@ void() DecodeLevelParms =
 		if (world.model == "maps/qstart.bsp") SetNewParms();
 	}
 //	bot_skinDecode();
+	if (parm12) set_xweap(self, parm12);
+	self.mcode = parm12;
 
 	self.items = parm1;
 	self.health = parm2;

@@ -11,7 +11,7 @@ Cataboligne 9.26.9
 
 string VW_DEFGUN = "progs/vw_qgun.mdl";
 
-// fn(viswep_pre) - precache
+// fn(viswep_pre) - precache - standard weps
 
 void() viswep_pre =
 {
@@ -149,7 +149,8 @@ entity(entity e) vw_chain =
 		{
 //			f.model = "";
 			f.vwepent = world;
-			remove(f);
+			if (f.wad != "packwep") // pack deal
+				remove(f);
 			rck = TRUE;
 		}
 		else
@@ -320,6 +321,7 @@ void(entity e, float pkbt) vwep_firecary =
 	if (f)
 	{
 		f.vwepent = world;
+//		if (f.wad != "packwep") // pack deal
 		remove(f);
 		vw_chain(e);
 	}
@@ -327,6 +329,7 @@ void(entity e, float pkbt) vwep_firecary =
 
 // fn (viswep_ld) - load or unload viswep models
 
+// TWEAKED: for xwep in pack (effects throw and remove) if wad == "packwep" no remove
 // vh - head ent
 // e - player ent
 // cd - 1 = load em up, -1 = unload em
@@ -352,7 +355,8 @@ void(entity e, float cd) viswep_ld =
 			tr = tr.vwepent;
 //			pr.mdl = "";
 			pr.vwepent = world;
-			remove(pr);
+			if (pr.wad != "packwep") // pack deal
+				remove(pr);
 		}
 		if (e) // because we may come here with self = first viswep ent
 		{
@@ -401,7 +405,8 @@ void(entity e, float cd) viswep_ld =
 			{
 				pr = tr.vwepent;
 				tr.vwepent = world;
-				remove(tr);
+				if (tr.wad != "packwep") // pack deal
+					remove(tr);
 				rmv = TRUE;
 				}
 			else
@@ -419,7 +424,8 @@ void(entity e, float cd) viswep_ld =
 //				pr.vwepent = tr.vwepent;
 				pr = tr.vwepent;
 				tr.vwepent = world;
-				remove(tr);
+				if (tr.wad != "packwep") // pack deal
+					remove(tr);
 				rmv = TRUE;
 			}
 			else
@@ -517,7 +523,10 @@ void() viswep_post =
 														// NOTE: check this vs. invisibility for norm & morphs
 	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0' || self.model == "") //(self.admin && self.admin != USER_MENU)) //intermission_running)
 	{
-		if (self.vwepent) viswep_ld(self, -2); // unload all weps - for now just removes ent, later deadthrow what's not put in pack if died
+		if (self.vwepent)
+		{
+			viswep_ld(self, -2); // unload all weps - for now just removes ent, later deadthrow what's not put in pack if died
+		}
 		return;
 	}
 
@@ -1980,7 +1989,8 @@ void() vw_config =
 		vv_pa = vv.angles_x; // set pitch adjust
 //		vv_load_0(vv.frame); // get current stored data
 //		vw_melee_base(vv.frame); // get actual data - generic
-		vw_q3_gaunt(vv.frame); // get actual data - specific
+//		vw_q3_gaunt(vv.frame); // get actual data - specific
+		vw_q3_grap(vv.frame); // get actual data - specific
 
 		v1 = vv.angles;
 		v1_x = 0 - v1_x; // must reverse pitch for proper position from v_fwd calc
