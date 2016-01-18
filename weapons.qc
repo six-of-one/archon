@@ -51,6 +51,8 @@ void () W_FireAxe =
 	local vector source;
 	local vector org;
 
+	ax_dmg = 0; // Cataboligne - 10.11.11 - bot endless axe war preventative deal
+
 	makevectors (self.v_angle);
 	source = self.origin + '0 0 16';
 	if (self.classname == "pk*bot")
@@ -59,7 +61,10 @@ void () W_FireAxe =
 	}
 	traceline (source, source + v_forward*64, FALSE, self);
 	if (trace_fraction == 1.0)
+	{
+		if (self.class_select == "class_bot") Bot_Melee();
 		return;
+	}
 
 	org = trace_endpos - v_forward*4;
 
@@ -78,6 +83,10 @@ void () W_FireAxe =
 		WriteCoord (MSG_BROADCAST,org_y);
 		WriteCoord (MSG_BROADCAST,org_z);
 	}
+
+	if (!ax_dmg)
+	if (self.class_select == "class_bot")
+		Bot_Melee();
 };
 
 

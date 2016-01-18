@@ -827,16 +827,34 @@ void() dyn_rem =
 {
 	if (self.enemy)
 	{
-		if (self.enemy.wad == "pk_cube" || self.enemy.wad == "morph_cube") // dont just remove an active cube
-		if (self.enemy.owner)
+		if (self.button13 == self.enemy.button13)
 		{
-			self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 2;
-			return;
+			if (self.enemy.wad == "pk_cube" || self.enemy.wad == "morph_cube") // dont just remove an active cube
+			if (self.enemy.owner)
+			{
+				self.nextthink = time + (PK_CUBE_TIME + MORPH_CUBE_TIME) / 2;
+				return;
+			}
+			remove(self.enemy);
+			pk_ditems = pk_ditems - 1; // this is really meaningless
 		}
-		remove(self.enemy);
+		else
+		if (1) //(WARNING)
+		{
+			bprint(" *** WARNING: dynamic remove hash fail: ");
+			bprint(item_ident(self.enemy));
+			bprint(" - supposed 2B: ");
+			bprint(self.target1);
+			bprint(" - ");
+			bprint(self.netname);
+			bprint(" - hash: ");
+			bprint(ftos(self.enemy.button13));
+			bprint(" - dr hash: ");
+			bprint(ftos(self.button13));
+			bprint("\n");
+		}
 	}
 	remove(self);
-	pk_ditems = pk_ditems - 1; // this is really meaningless
 }
 
 // setup an item for removal
@@ -846,15 +864,23 @@ void() dyn_rem =
 
 //float REMOVE_DV = 30; // some deviation to spread things out
 
+float dynrem_hash;
+
 void(entity e, float tm) dyn_remove =
 {
 	local entity f;
 	local float dv;
 
+	if (!dynrem_hash) dynrem_hash = 10000 + rint(random() * 3000);
+
 	f = spawn();
 	f.classname = "dyn_removal";
+	f.netname = e.netname; // in case of hash fail
+	f.target1 = e.classname;
 	f.enemy = e;
 	f.think = dyn_rem;
+	f.button13 = e.button13 = dynrem_hash;
+	dynrem_hash = dynrem_hash + 1 + rint(random() * 5);
 
 	dv = REMOVE_DV;
 	if (dv > tm) dv = tm * 0.2;

@@ -1865,11 +1865,16 @@ float(entity p, string ds, float bv, entity ew, string fm, vector vb, float ke) 
 	else
 	{
 		e = spawn(); // note: no record keeping here, and test fail!
+					e.stack1 = "insta spawn drop_one";
 		ss = ""; // no fail message possible
 		DROP_NOTEST = TRUE; // because there are no real player bits to test
 	}
 
-	if (force_drop_set(e, ss)) return(FALSE); // setup fail
+	if (force_drop_set(e, ss))
+	{
+		if (!p) remove(e);
+		return(FALSE); // setup fail
+	}
 
 	e.dropent.cnt = 1;
 	drop_string(ds, bv, ew);

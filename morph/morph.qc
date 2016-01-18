@@ -1541,6 +1541,7 @@ bprint("\n");
 				bprint(ftos(M));
 				bprint("\n");
 			}
+			remove(self);
 			self = c;
 			return;
 		}

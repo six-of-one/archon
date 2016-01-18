@@ -1052,6 +1052,7 @@ bprint("\n");
 
 
 					}
+/*
 					else if (bot_fix.cnt < 1)
 					{
 
@@ -1071,6 +1072,7 @@ bprint("\n");
 					f.owner = e;
 					f.frags = e.frags;
 					}
+*/
 				}
 			}
 			else
@@ -1088,7 +1090,46 @@ bprint("\n");
 	}
 };
 
+// preventative for endless bot axe war - also remove bot fixer
 
+void() Bot_Melee =
+{
+	local entity e;
+	local float f;
+
+//	if (cl)
+//	W_FireAxe (); // called from in fireaxe now
+
+	if (!ax_dmg)
+	if (random() < 0.444) // unknown timing - this is a guess, might be really good or really bad
+	{
+		f = TRUE;
+		e = findradius(self.origin, 80);
+		while (e && f)
+		{
+			if (e.class_select == "class_bot")
+			{
+				if (CanDamage(e, self)) // hit this other bot - we dont really care about the particulars, what happens between bots, stays between bots
+				{
+					e.axhitme = 1;
+					SpawnBlood (e.origin, '0 0 0', 20);
+					T_Damage (e,self,self,10 + random() * 10);
+					f = FALSE;
+
+
+bprint(" --------- bot special melee attack:: ");
+bprint(self.netname);
+bprint(" - hit - ");
+bprint(e.netname);
+bprint("\n");
+
+
+				}
+			}
+			e = e.chain;
+		}
+	}
+};
 
 
 

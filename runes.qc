@@ -838,7 +838,9 @@ void() rune_maker =
 	self.nextthink = time + tm;
 
 
-// fix leak - be better to stop leak
+// fix leak - leak is stopped, but the code is staying for now
+
+	if (rune_count >= RUNE_CNT || tm > 60)
 	if (RUNES == 2) // && 4
 	{
 		f = 0;
@@ -912,6 +914,7 @@ bprint("\n");
 			if (!f)
 			{
 				if (WARNING) bprint("*** warning: rune_make could not find a rune that fit mask rules - giving up\n");
+				remove(e);
 //				remove(self);
 				return;
 			}
@@ -966,6 +969,7 @@ bprint("\n");
 			if (!e) 
 			{
 				if (WARNING) bprint("*** warning: rune_make could not find a random (or any) location - giving up\n");
+				remove(self);
 //				remove(self);
 				return; // crap - no location
 			}

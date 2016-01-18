@@ -8,6 +8,9 @@ float MSG_UPDATECOLORS		= 17;
 
 float observer_time;			// time limit for observer mode
 
+float ax_dmg; // record melee damage in T_Damage so bots can avoid endless axe wars
+void() Bot_Melee;
+
 // if .state ==, call cacheRoute when touching this item
 float CACHE_ROUTE_TOUCH		= -1559742;
 // if .state ==, call  bot_toucheditem when touching this item

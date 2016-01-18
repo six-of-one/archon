@@ -286,6 +286,8 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 // do the damage
 	targ.health = ceil(targ.health - take);
 
+	ax_dmg = take; // Cataboligne - 10.11.11 - bot endless axe war preventative deal
+
 	if (!Q_100) pk_setDamageSkin(targ); // *pk damage skin support
 
 	if (targ.health <= 0)

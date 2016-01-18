@@ -1126,7 +1126,7 @@ void() BackpackTouch =
 		self = other;
 		best = W_BestWeapon();
 		self = st1;
-		remove(self.eweapon);
+//		remove(self.eweapon); // this has a dyn_remove
 	}
 	else // ? may want
 	if (self.items)

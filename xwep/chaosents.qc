@@ -409,6 +409,9 @@ void() health_touch =
 	if (!other.rune_flag & RUNE_VAMPIRE)
 	if (self.healtype == HEAL_MEGA)
 	{
+		if ((!other.rune_flag & RUNE_FLG_RG) || !ENHANCED)
+		if ((!other.rune_flag & TECH_ADOC) || !ENHANCED)
+		if ((!other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
 		if (!other.items & IT_SUPERHEALTH) // not already rotting - start it up
 		{
 			self.nextthink = time + 5;
