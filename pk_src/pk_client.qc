@@ -1923,9 +1923,12 @@ bprint("\n");
 			return;
 		}
 
-		if (attacker.classname == "teledeath")
+		if (attacker.classname == "teledeath"  || attacker.classname == "portalteledeath")
 		{
 			bprint (targ.netname);
+			if (attacker.classname == "portalteledeath")
+				bprint (" was portal fragged by ");
+			else
 			bprint (" was telefragged by ");
 			bprint (attacker.owner.netname);
 			bprint ("\n");
@@ -2281,13 +2284,25 @@ bprint("\n");
             if (inflictor.classname == "bfg_laser")
 				{
 					bprint (targ.netname);
+					if (!ENHANCED)
+					{
+						bprint (" couldn't hide from ");
+						bprint (attacker.netname);
+						bprint ("'s BFG\n");
+						return;
+					}
+					if (random()<0.5)
+						bprint (" couldn't hide from ");
 					if (random()<0.5)
 						bprint (" was melted by ");
 					else
 						bprint (" felt the lumnous heat from ");
 
 					bprint (attacker.netname);
-					bprint ("'s BFG lasers\n");
+					if (random()<0.5)
+						bprint ("'s BFG lasers\n");
+					else
+						bprint ("'s BFG\n");
 					return;
 				}
 
@@ -2806,7 +2821,7 @@ bprint("\n");
 			else if (rnum == -5)
 			{
 //				noenvcide(targ);
-				if (MAP_MODE == "Q3")
+				if (MAP_MODE == "Q3" || MAP_MODE == "Q2")
 				{
 					bprint (" does a back flip into the lava.\n");
 					return;

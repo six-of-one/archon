@@ -982,9 +982,8 @@ void() dyn_spawn =
 
 	item_call(self.wad);
 
-	if (self.wad == "pk_crate") return; // note: hrm. crates are not removed?  seems like they could fill a map
-
-	dyn_remove(self, 0);
+	if (self.wad != "pk_crate") // pk_crates get removed by ops code - because they can leave an open box
+		dyn_remove(self, 0);
 };
 
 // think to handle dynamic item spawns if enabled by admin - pk_items only

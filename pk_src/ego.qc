@@ -83,9 +83,18 @@ void () ego_destruct =
 	s_explode1 ();
 };
 
+void () ego_think;
+
 void () ego_touch =
 {
+	local float f;
+
+	f = FALSE;
+	if (ENHANCED)
+	f = other.flags & FL_MONSTER;
+
 	if (other.classname != "player" && other.classname != "pk*bot")
+	if (!f)
 	{
 		return ;
 	}
@@ -104,9 +113,27 @@ void () ego_touch =
 	WriteCoord (MSG_BROADCAST,self.origin_x);
 	WriteCoord (MSG_BROADCAST,self.origin_y);
 	WriteCoord (MSG_BROADCAST,self.origin_z);
+	self.touch = SUB_Null;
+
+	if (ENHANCED)
+	if (f) // ego can hit a monster(s) a few times
+	if (self.cnt < 4)
+	{
+		self.cnt = self.cnt + 1;
+		self.dmg = self.dmg - 20 - random() * 60;
+		if (self.dmg > 0)
+		{
+			self.delay = self.delay + 10 + random() * 20;
+			self.owner.dmg_inflictor = self.owner; // note: what if this happens right before a combat call?
+			self.enemy = world;
+			self.nextthink = (time + 0.1);
+			self.think = ego_think; // go back to player
+			return;
+		}
+	}
+
 	sound (self,CHAN_VOICE,"misc/null.wav",1,ATTN_NORM);
 	self.velocity = '0 0 0';
-	self.touch = SUB_Null;
 	setmodel (self,"progs/s_explod.spr");
 	self.solid = SOLID_NOT;
 	s_explode1 ();
@@ -167,6 +194,8 @@ void () ego_attack =
 
 void () ego_think =
 {
+	local float f;
+
 	if ( self.disconnectPlayer )
 	{
 		sound (self,CHAN_VOICE,"misc/null.wav",1,ATTN_NORM);
@@ -188,9 +217,15 @@ void () ego_think =
 			sound (self,CHAN_VOICE,"ego/ego.wav",1,ATTN_NORM);
 		}
 	}
-	if ( (self.owner.dmg_inflictor != self.owner) )
+
+	f = FALSE;
+	if (self.owner.dmg_inflictor.classname == "player") f = TRUE;
+	else if (self.owner.dmg_inflictor.classname == "pk*bot") f = TRUE;
+	else if ((self.owner.dmg_inflictor.flags & FL_MONSTER) && ENHANCED) f = TRUE;
+	
+	if ( (self.owner.dmg_inflictor != self.owner) ) // direct damage
 	{
-		if ( (self.owner.dmg_inflictor.classname == "player") )
+		if ( f )
 		{
 			if ( visible (self.owner.dmg_inflictor) )
 			{
@@ -202,9 +237,15 @@ void () ego_think =
 				}
 			}
 		}
-		if ( (self.owner.dmg_inflictor.owner != self.owner) )
+
+		f = FALSE;
+		if (self.owner.dmg_inflictor.owner.classname == "player") f = TRUE;
+		else if (self.owner.dmg_inflictor.owner.classname == "pk*bot") f = TRUE;
+		else if ((self.owner.dmg_inflictor.owner.flags & FL_MONSTER) && ENHANCED) f = TRUE;
+
+		if ( (self.owner.dmg_inflictor.owner != self.owner) ) // damage by proxy (missile, nail, etc.)
 		{
-			if ( (self.owner.dmg_inflictor.owner.classname == "player") )
+			if ( f )
 			{
 				if ( visible (self.owner.dmg_inflictor.owner) )
 				{

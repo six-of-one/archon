@@ -142,6 +142,7 @@ void () PortalTouch =
 			setorigin(self.portal_entrance, self.portal_entrance.enemy.origin);
 			spawn_tfog (self.portal_entrance.origin);
 			spawn_tdeath (self.portal_entrance.origin, self.master);
+			newmis.classname = "portalteledeath";
 			makevectors(self.portal_entrance.enemy.v_angle);
 			self.portal_entrance.mangle = v_forward;
 			centerprint (self.owner, "PORTAL frag: xFFFF1a99 - \b portal-telefrag +1\n");

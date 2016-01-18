@@ -64,6 +64,10 @@ float (entity targ, entity inflictor) CanDamage =
 Killed
 ============
 */
+
+// fn(Killed) - a living thing has been killed, handles things, schedules viewing, calls morturary, collects insurance, fixes probate, etc...
+
+
 void(entity targ, entity attacker) Killed =
 {
 	local entity oself;
@@ -79,6 +83,11 @@ void(entity targ, entity attacker) Killed =
 	{
 		self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 	}
+
+	if (self.event == "dyn_monster") monster_rnd_cnt = monster_rnd_cnt - 1;
+	if (monster_rnd_cnt < 0) monster_rnd_cnt = 0;
+
+	if (! self.flags & (FL_CLIENT | FL_MONSTER)) // because some elements of chaos mod mk I used movetype none
 
 	if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
 	{	// doors, triggers, etc
@@ -105,9 +114,6 @@ void(entity targ, entity attacker) Killed =
 
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;
-
-	if (self.event == "dyn_monster") monster_rnd_cnt = monster_rnd_cnt - 1;
-	if (monster_rnd_cnt < 0) monster_rnd_cnt = 0;
 
 	monster_death_use ();
 	self.th_die ();
@@ -375,10 +381,10 @@ void (entity inflictor, entity attacker, float damage, entity ignore) T_RadiusDa
 				{
 					if (CanDamage (head,inflictor))
 					{	// shambler takes half damage from all explosions
-						if (head.classname == "monster_shambler")
-							T_Damage (head, inflictor, attacker, points*0.5);
-						else
-							T_Damage (head,inflictor,attacker,points);
+//						if (head.classname == "monster_shambler")
+							T_Damage (head, inflictor, attacker, points * BlastProof(head)); //0.5);
+//						else
+//							T_Damage (head,inflictor,attacker,points);
 					}
 				}
 			}

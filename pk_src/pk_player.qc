@@ -661,7 +661,7 @@ void() PK_GibPlayer =
 
 	self.deadflag = DEAD_DEAD;
 
-	if (damage_attacker.classname == "teledeath")
+	if (damage_attacker.classname == "teledeath" || damage_attacker.classname == "portalteledeath")
 	{
 		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 		return;

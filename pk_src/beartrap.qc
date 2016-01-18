@@ -64,7 +64,7 @@ $frame bear01 bear02 bear03
 void() beartrapFollow =
 {
 	// SWP: 14/05/97 - check if the player has "respawned" or dead.
-	if (!(self.beartrap_target.beartrap_time) || self.disconnectPlayer || self.beartrap_target.deadflag || self.beartrap_target.health < 0) // Cataboligne - 5.20.10 - beartrap single player code - targeting monsters
+	if (!(self.beartrap_target.beartrap_time) || self.beartrap_target.disconnectPlayer || self.beartrap_target.deadflag || self.beartrap_target.health < 0) // Cataboligne - 5.20.10 - beartrap single player code - targeting monsters
 	{ // player is dead or respawned...
 //		remove(self);
 		beartrapDie(); // die when done instead of dissapearing
@@ -118,16 +118,14 @@ void() beartrapTouch =
 {
 
 	if (!deathmatch) // Cataboligne - 5.20.10 - beartrap single player code - turn off player target, allow monster target
+	if (other.classname == "player")
 	{
-		if (other.classname == "player")
-		{
 			if (cvar("sv_sp_bt_noplayer")) return;
-		}
-		else if (! other.flags & FL_MONSTER) return;
 	}
-	else
+
 	if (other.classname != "pk*bot") // *bot - bots get bit
 	if (other.classname != "player")
+	if ((!other.flags & FL_MONSTER) || !ENHANCED) // monsters in dm now
 	  return;
 
 	// The owner of the beartrap is immune for a few secs

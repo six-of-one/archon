@@ -414,7 +414,7 @@ void (vector org, entity death_owner) spawn_tdeath =
 {
 	local entity death;
 
-	death = spawn ();
+	newmis = death = spawn ();
 	death.classname = "teledeath";
 	death.movetype = MOVETYPE_NONE;
 	death.solid = SOLID_TRIGGER;

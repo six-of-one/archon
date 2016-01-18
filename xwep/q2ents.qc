@@ -239,6 +239,7 @@ void() q2_precache =
 };
 
 
+
 void() q2_ammo_bullets =
 {
 	item_spikes();
@@ -398,6 +399,177 @@ void() q2_ammo_grenades =
 };
 */
 
+// kill messages
+
+// bfg
+string(entity targ, entity attacker) q2bfg_killmsg =
+{
+	if (targ == attacker) return " should have used a smaller gun.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was disintegrated by ";
+};
+
+string(entity targ, entity attacker) q2bfg_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s BFG blast\n";
+};
+
+// rail
+string(entity targ, entity attacker) q2rail_killmsg =
+{
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was railed by ";
+};
+
+string(entity targ, entity attacker) q2rail_killmsg2 =
+{
+	return "\n";
+};
+
+
+// lightning
+string(entity targ, entity attacker) q2hbl_killmsg =
+{
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was melted by ";
+};
+
+string(entity targ, entity attacker) q2hbl_killmsg2 =
+{
+	return "'s hyperblaster\n";
+};
+
+// rocket
+string(entity targ, entity attacker) q2rock_killmsg =
+{
+	if (targ == attacker) return " blew himself up.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " ate ";
+};
+
+string(entity targ, entity attacker) q2rock_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s rocket\n";
+};
+
+// grenade
+string(entity targ, entity attacker) q2gren_killmsg =
+{
+	if (targ == attacker) return " tripped on his own grenade.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was popped by ";
+};
+
+string(entity targ, entity attacker) q2gren_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s grenade\n";
+};
+
+// hand grenade
+string(entity targ, entity attacker) q2hgren_killmsg =
+{
+	if (targ == attacker) return " tripped on his own grenade.\n";
+		
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " caught ";
+};
+
+string(entity targ, entity attacker) q2hgren_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s hand grenade\n";
+};
+
+// super shotgun
+string(entity targ, entity attacker) q2ssg_killmsg =
+{
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was blown away by ";
+};
+
+string(entity targ, entity attacker) q2ssg_killmsg2 =
+{
+	return "'s super shotgun\n";
+};
+
+// shotgun
+string(entity targ, entity attacker) q2sg_killmsg =
+{
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was gunned down by ";
+};
+
+string(entity targ, entity attacker) q2sg_killmsg2 =
+{
+	return "\n";
+};
+
+// mg
+string(entity targ, entity attacker) q2cg_killmsg =
+{
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was cut in half by ";
+};
+
+string(entity targ, entity attacker) q2cg_killmsg2 =
+{
+	return "'s chaingun\n";
+};
+
+
+// mg
+string(entity targ, entity attacker) q2mg_killmsg =
+{
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was machinegunned by ";
+};
+
+string(entity targ, entity attacker) q2mg_killmsg2 =
+{
+	return "\n";
+};
+
+// melee
+string(entity targ, entity attacker) q2blst_killmsg =
+{
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was blasted by ";
+};
+
+string(entity targ, entity attacker) q2blst_killmsg2 =
+{
+	return "\n";
+};
+
+
 /*
 q2 wep inventory slots
 
@@ -457,6 +629,10 @@ void() q2_ammo_grenades =
 	self.noise3 = "q2_snd/hgrent1a.wav";
 	self.target = "q2_snd/hgrenb1a.wav";
 	self.chaosweptime = 1;
+
+	self._killmsg = q2hgren_killmsg;
+	self._killmsg2 = q2hgren_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
@@ -517,6 +693,10 @@ void () q2_weapon_bfg =
 	self.target = "q2_snd/bfg_x1b.wav";
 	self.chaosweptime = 0.932;
 	self.endtime = 0.87;
+
+	self._killmsg = q2bfg_killmsg;
+	self._killmsg2 = q2bfg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -562,6 +742,10 @@ void () q2_weapon_railgun =
 	self.noise2 = "q2_snd/rg_hum.wav"; // gun hum
 	self.chaosweptime = 1.16;
 	self.endtime = 2.33;
+
+	self._killmsg = q2rail_killmsg;
+	self._killmsg2 = q2rail_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -605,6 +789,10 @@ void () weapon_hyperblaster =
 	self.noise3 = "q2_snd/hyprbl1a.wav";
 	self.target = "q2_snd/lashit.wav";
 	self.chaosweptime = 1.62;
+
+	self._killmsg = q2hbl_killmsg;
+	self._killmsg2 = q2hbl_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;// + CB_SCOURGE;
@@ -654,6 +842,10 @@ void() q2_weapon_rocketlauncher =
 	self.noise3 = "q2_snd/rktf_mx.wav";
 	self.target = "q2_snd/rocklx1a.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q2rock_killmsg;
+	self._killmsg2 = q2rock_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -698,6 +890,10 @@ void () q2_weapon_grenadelauncher =
 	self.noise3 = "q2_snd/grnf_mx.wav";
 	self.target = "q2_snd/grenlb1b.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q2gren_killmsg;
+	self._killmsg2 = q2gren_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;// + CB_SCOURGE;
@@ -744,6 +940,10 @@ void () weapon_chaingun =
 //	self.noise2 = "q2_snd/chngnl1a.wav";
 //	self.target = "q2_snd/lashit.wav"; // TDO: ricochets - q3 only?
 	self.chaosweptime = 2.01;
+
+	self._killmsg = q2cg_killmsg;
+	self._killmsg2 = q2cg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -793,6 +993,9 @@ void() q2_weapon_machinegun =
 	self.noise = "q2_snd/w_pkup.wav";
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.noise3 = "q2_bullet_5";
+
+	self._killmsg = q2mg_killmsg;
+	self._killmsg2 = q2mg_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -845,6 +1048,10 @@ void () q2_weapon_supershotgun =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.noise3 = "q2_snd/sshotf1b.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q2ssg_killmsg;
+	self._killmsg2 = q2ssg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -889,6 +1096,10 @@ void () q2_weapon_shotgun =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.noise3 = "q2_snd/shtf_mx.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q2sg_killmsg;
+	self._killmsg2 = q2sg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -933,6 +1144,10 @@ void () q2_weapon_blaster =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.noise3 = "q2_snd/blastf1a.wav";
 	self.target = "q2_snd/lashit.wav";
+
+	self._killmsg = q2blst_killmsg;
+	self._killmsg2 = q2blst_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;

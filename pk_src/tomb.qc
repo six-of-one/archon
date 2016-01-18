@@ -124,6 +124,8 @@ void () corpsefollow =
 void () tombtouch =
 {
 	local entity holdowner;
+
+/*
 	if (!deathmatch) // Cataboligne - 5.20.10 - tomb single player code - allow monster target
 	{
 //		if (other.classname == "player" && cvar("sv_sp_bt_noplayer")) return;
@@ -131,7 +133,9 @@ void () tombtouch =
 		if (other.classname != "player" && ! other.flags & FL_MONSTER) return;
 	}
 	else
+*/
 	if (other.classname != "player" && other.classname != "pk*bot")
+	if ((! other.flags & FL_MONSTER) || !ENHANCED)
 	{
 		return ;
 	}
@@ -143,12 +147,17 @@ void () tombtouch =
 	{
 		return ;
 	}
+	
+	if (ENHANCED)
 	if (other.mask_x & CB_ZOMBY || other.model == "progs/zombie.mdl")
 	{
 		if (self.class_select != "progs/zombie.mdl")
 		if (self.flags & FL_CLIENT)
-			sprint(other, "Theres and old friend down there...\n");
-		self.class_select = "progs/zombie.mdl";
+		if (self.ishuman)
+		{
+			sprint(other, "There is an old friend down there...\n");
+			self.class_select = "progs/zombie.mdl";
+		}
 		return ;
 	}
 	holdowner = self.owner;

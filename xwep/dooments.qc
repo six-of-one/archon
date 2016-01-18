@@ -634,6 +634,70 @@ void() d_barrel =
 //	self.effects = self.effects | EF_FULLBRIGHT;
 };
 
+
+// kill messages
+
+// cheat for now
+string(entity targ, entity attacker) q2bfg_killmsg;
+string(entity targ, entity attacker) q2bfg_killmsg2;
+
+string(entity targ, entity attacker) q2rock_killmsg;
+string(entity targ, entity attacker) q2rock_killmsg2;
+
+string(entity targ, entity attacker) q3plasma_killmsg;
+string(entity targ, entity attacker) q3plasma_killmsg2;
+
+// super shotgun
+string(entity targ, entity attacker) dssg_killmsg =
+{
+//	if (ENHANCED)
+//		bprint(rnd_string(' 90.0 60.0 60.0'," "," ","",""," "));
+
+	return " was blown away by ";
+};
+
+string(entity targ, entity attacker) dssg_killmsg2 =
+{
+	return "'s boomstick\n";
+};
+
+string(entity targ, entity attacker) q2sg_killmsg;
+string(entity targ, entity attacker) q2sg_killmsg2;
+
+string(entity targ, entity attacker) q2cg_killmsg;
+string(entity targ, entity attacker) q2cg_killmsg2;
+
+string(entity targ, entity attacker) q2mg_killmsg;
+string(entity targ, entity attacker) q2mg_killmsg2;
+
+// pistol
+string(entity targ, entity attacker) dp_killmsg =
+{
+	if (ENHANCED)
+		bprint(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ","",""," was shot by "));
+
+	return " was shot by ";
+};
+
+string(entity targ, entity attacker) dp_killmsg2 =
+{
+	return "\n";
+};
+
+// saw
+string(entity targ, entity attacker) dsaw_killmsg =
+{
+	if (ENHANCED)
+		bprint(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ","",""," was cut to pieces by "));
+
+	return " was cut to pieces by ";
+};
+
+string(entity targ, entity attacker) dsaw_killmsg2 =
+{
+	return "\n";
+};
+
 /*
 doom wep inventory slots
 
@@ -700,6 +764,10 @@ void() d_weapon_bfg =
 	self.target = "doom/dsfirxpl.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	self.endtime = 0.768;
+
+	self._killmsg = q2bfg_killmsg;
+	self._killmsg2 = q2bfg_killmsg2;
+
 	if (self.class_select == "") self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
 };
@@ -744,6 +812,10 @@ void() d_weapon_rocketlauncher =
 	self.noise4 = "doom/dsitembk.wav";
 	self.target = "doom/dsfirxpl.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q2rock_killmsg;
+	self._killmsg2 = q2rock_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -789,6 +861,10 @@ void() d_weapon_chaingun =
 	self.noise3 = "doom/dspistol.wav";
 	self.noise = "doom/dswpnup.wav";
 	self.noise4 = "doom/dsitembk.wav";
+
+	self._killmsg = q2cg_killmsg;
+	self._killmsg2 = q2cg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -852,6 +928,10 @@ void() d_weapon_pistol =
 	self.noise = "doom/dswpnup.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = dp_killmsg;
+	self._killmsg2 = dp_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
@@ -899,6 +979,10 @@ void() d_weapon_saw =
 	self.noise4 = "doom/dsitembk.wav";
 	self.chaosweptime = 0.68;
 	self.endtime = 0.715;
+
+	self._killmsg = dsaw_killmsg;
+	self._killmsg2 = dsaw_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
@@ -945,6 +1029,10 @@ void() d_weapon_shotgun =
 	self.noise3 = "doom/dsshotgn.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = q2sg_killmsg;
+	self._killmsg2 = q2sg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -988,6 +1076,10 @@ void() d_weapon_supershotgun =
 	self.noise3 = "doom/dsdshtgn.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = dssg_killmsg;
+	self._killmsg2 = dssg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -1031,6 +1123,9 @@ void() d_weapon_plasma =
 	self.noise3 = "doom/dsplasma.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.target = "doom/dsfirxpl.wav";
+
+	self._killmsg = q3plasma_killmsg;
+	self._killmsg2 = q3plasma_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
@@ -1455,6 +1550,56 @@ void() d_key_yellowcard =
 		+---------------------------------------+
 */
 
+// kill messages
+
+// mortar
+string(entity targ, entity attacker) wrock_killmsg =
+{
+	if (targ == attacker) return " blew himself up.\n";
+		
+	if (ENHANCED)
+		bprint(rnd_string(' 90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ","",""," ate "));
+
+	return " ate ";
+};
+
+string(entity targ, entity attacker) wrock_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s mortar\n";
+};
+
+// flamer
+string(entity targ, entity attacker) wflame_killmsg =
+{
+	if (targ == attacker) return " hurt himself playing with fire.\n";
+		
+	if (ENHANCED)
+		bprint(rnd_string(' 90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ","",""," got burnt by "));
+
+	return " got burnt by ";
+};
+
+string(entity targ, entity attacker) wflame_killmsg2 =
+{
+	if (targ == attacker) return "";
+	return "'s flamethrower\n";
+};
+
+// knife
+string(entity targ, entity attacker) wk_killmsg =
+{
+	if (ENHANCED)
+		bprint(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ","",""," was cut down by "));
+
+	return " was cut down by ";
+};
+
+string(entity targ, entity attacker) wk_killmsg2 =
+{
+	return "\n";
+};
+
 /*
 NOTE: this code assumes the translation of wolf map entites to quake style definitions in the map file by some device or code...
 
@@ -1512,6 +1657,10 @@ void() w_weapon_machinegun =
 	self.noise3 = "wolf/w_mg.wav";
 	self.noise = "wolf/pickup_gn.wav";
 	self.noise4 = "wolf/w_resp.wav";
+
+	self._killmsg = q2mg_killmsg;
+	self._killmsg2 = q2mg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -1561,6 +1710,10 @@ void() w_weapon_chaingun =
 	self.noise3 = "wolf/w_chg.wav";
 	self.noise = "wolf/pickup_gn.wav";
 	self.noise4 = "wolf/w_resp.wav";
+
+	self._killmsg = q2cg_killmsg;
+	self._killmsg2 = q2cg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -1613,6 +1766,9 @@ void() w_weapon_mortar =
 	self.noise3 = "wolf/w_mortar.wav";
 	self.noise4 = "wolf/w_resp.wav";
 
+	self._killmsg = wrock_killmsg;
+	self._killmsg2 = wrock_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -1660,6 +1816,10 @@ void() w_weapon_flamer =
 	self.noise4 = "wolf/w_resp.wav";
 //	self.target = ".wav";
 	self.chaosweptime = 1.2;
+
+	self._killmsg = wflame_killmsg;
+	self._killmsg2 = wflame_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
@@ -1706,6 +1866,9 @@ void() w_weapon_pistol =
 	self.noise4 = "wolf/w_resp.wav";
 	self.duration = SND_OVER;
 
+	self._killmsg = dp_killmsg;
+	self._killmsg2 = dp_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
@@ -1750,6 +1913,9 @@ void() w_weapon_knife =
 	self.noise = "wolf/pickup_gn.wav";
 	self.noise3 = "wolf/w_knife.wav";
 	self.noise4 = "wolf/w_resp.wav";
+
+	self._killmsg = wk_killmsg;
+	self._killmsg2 = wk_killmsg2;
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";

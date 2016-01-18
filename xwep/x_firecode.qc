@@ -2582,3 +2582,30 @@ void(entity e) crosshair_off =
 	stuffcmd(e, ftos(e.crosshair_sv)); // save this so if game exists while off, it restores on reentry
 	stuffcmd(e, "\n");	
 };
+
+// fn(BlastProof) - some things take less blast damage - return percentage for damage calculation
+
+
+float(entity o) BlastProof =
+{
+	local float d;
+
+	d = 1;
+
+	if(o.morphy == IMP_MCHAOS)// || o.state == IMP_MCHAOS) // pure chaos
+	{
+		d = 0.4 + random() * 0.6;
+		if (random() < 0.1) d = 0.1 * random();
+	}
+	else if (o.morphy == IMP_MCYBER || o.morphy == IMP_MSHAMBLR) d = 0.65; // havent quite learned this trick as well
+// Cataboligne @12.25.7 - mod for morphs, added monsters
+	else if (o.classname == "monster_shambler") d = 0.5;	// mostly immune
+	else if (o.classname == "monster_cyber") d = 0.5;	// mostly immune
+/* deprecated (already even!) until needed
+	else if (o.map == "blastproof_0") d = 0;	// code config blast proofer - 4 levels
+	else if (o.map == "blastproof_.25") d = 0.25;
+	else if (o.map == "blastproof_.5") d = 0.5;
+	else if (o.map == "blastproof_.75") d = 0.75; */
+
+	return(d);
+};

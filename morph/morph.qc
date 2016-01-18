@@ -369,9 +369,8 @@ void() morphic_impulse =
 
 void() morph_cube_use = 
 {
-	local entity c, sv;
+	local entity c;
 
-	sv = self;
 	c = self.eweapon;
 
 	if (c.wad != "morph_cube")
@@ -411,7 +410,6 @@ void() morph_cube_use =
 
 	polymorph_check(self.state, 0);
 
-	remove(c);
 	self.impulse = 0;
 	cube_rearm(); // re arm player
 };
@@ -1478,7 +1476,6 @@ void() random_monster =
 		if (monster_rnd_cnt >= C_MONSTER_CNT)
 		if (mc < monster_rnd_cnt)
 		{
-			monster_rnd_cnt = mc;
 
 
 bprint(" --------- monster count total fail:  ");
@@ -1488,6 +1485,7 @@ bprint(ftos(monster_rnd_cnt));
 bprint("\n");
 
 
+			monster_rnd_cnt = mc;
 		}
 	}
 

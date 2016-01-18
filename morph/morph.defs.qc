@@ -371,6 +371,10 @@ void() player_demon_explode;
 
 float WRAITH_USE_CAM				= FALSE; // if true wraith can use chase cam - NOTE: cam does not work when wraith penetrates solids
 
+// shambler, cyberd
+
+float(entity o) BlastProof;
+
 // humans
 
 float(string mm) set_char_num;

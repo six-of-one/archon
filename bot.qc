@@ -496,7 +496,7 @@ void(entity targ, entity attacker) bot_kill =
 
 	if ((targ.classname == "player") || (targ.classname == "pk*bot"))
 	{
-		if (attacker.classname == "teledeath")
+		if (attacker.classname == "teledeath") // note: portal frag, one day maybe
 		if (attacker.owner.classname == "pk*bot")
 		{
 			TELEFRAGFLAG = 1;

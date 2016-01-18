@@ -36,7 +36,9 @@ void() bolt_fire =
 
 	 	self.bolt_target = world;  // disable the firing target...
 		W_SetCurrentAmmo ();
+		discharged = 1; // wetsuit deal
 		T_RadiusDamage (self, self, 35*cells, world);
+		discharged = 0;
 		return;
 	}
 

@@ -75,6 +75,23 @@ void() chaos_precache =
 //	flamer_precache();
 };
 
+string(entity targ, entity attacker) creg_killmsg =
+{
+	if (ENHANCED)
+		bprint(rnd_string(' 90.0 60.0 60.0'," got 4 loads of 00 buck from "," was just like a little troll for ","",""," was blown away by "));
+
+	return " was blown away by ";
+};
+
+string(entity targ, entity attacker) creg_killmsg2 =
+{
+	if (ENHANCED && random() < 0.23)
+		return "'s Reggie Bannister special\n";
+	else
+	return "'s quad shotgun\n";
+};
+
+
 void() c_weapon_reggun =
 {
 	q100_weapon_supershotgun();
@@ -101,9 +118,26 @@ void() c_weapon_reggun =
 	self.noise3 = "reggun/fire4.wav";
 	self.noise4 = "doom/dsitembk.wav";
 	self.duration = SND_OVER;
+
+	self._killmsg = creg_killmsg;
+	self._killmsg2 = creg_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN + CB_ENF;
+};
+
+string(entity targ, entity attacker) csh_killmsg =
+{
+	if (ENHANCED)
+		bprint(rnd_string(' 90.0 60.0 60.0'," got a splitting head ache from "," was comparing his gun with ","",""," was dug a grave by "));
+
+	return " was dug a grave by ";
+};
+
+string(entity targ, entity attacker) csh_killmsg2 =
+{
+	return "'s shovel\n";
 };
 
 void() c_weapon_shovel =
@@ -136,9 +170,25 @@ void() c_weapon_shovel =
 	self.noise3 = "player/axhit2.wav"; // hit wall &| solid
 //	self.noise4 = "zombie/z_hit.wav"; // hit flesh
 
+	self._killmsg = csh_killmsg;
+	self._killmsg2 = csh_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;
+};
+
+string(entity targ, entity attacker) cds_killmsg =
+{
+	if (ENHANCED)
+		bprint(rnd_string(' 90.0 60.0 60.0'," didnt find sanctuary because of "," should have went to carosel instead of running from ","",""," stopped running for "));
+
+	return " stopped running for ";
+};
+
+string(entity targ, entity attacker) cds_killmsg2 =
+{
+	return "\n";
 };
 
 void () c_weapon_deepsleep =
@@ -170,6 +220,10 @@ void () c_weapon_deepsleep =
 	self.vwepmdl = "progs/vw_deepsleep.mdl";
 	self.noise3 = "q2_snd/blastf1a.wav";
 	self.target = "q2_snd/lashit.wav";
+
+	self._killmsg = cds_killmsg;
+	self._killmsg2 = cds_killmsg2;
+
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "x_item";
 	self.mask_x = CB_HUMAN + CB_GREMLIN;

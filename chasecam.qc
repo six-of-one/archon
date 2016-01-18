@@ -261,8 +261,13 @@ void () cam_deathmove =
 {
 	self.nextthink = time + 0.2;
 
-	if (self.owner.solid != SOLID_NOT)
+	if (self.owner.solid != SOLID_NOT) // respawned
 	{
+
+
+if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
+
+
 		remove( self);
 		return;
 	}
@@ -288,7 +293,7 @@ void () cam_deathmove =
 //			set_viewport(self.owner, self.owner); // NOTE: not the fix we wanted?
 		return;
 	}
-	else if (DCAMTO && self.delay < time)
+	else if (DCAMTO && (self.delay < time))
 	{
 		if (DCAMTOACT)
 		{
@@ -1097,7 +1102,7 @@ void () dead_cam_set =
 		if (self.oldenemy)
 		if (self.oldenemy.classname == "deadcam") return; // dont make more than one - just in case
 
-		if ( (! self.cam_x & CHSCAM_ON) || (CAM_DEF & DPCAM_ON) )
+		if ( (! self.cam_x & CHSCAM_ON) || (self.cam_x & DPCAM_ON) )
 			cam_startdeathview();
 	}
 };

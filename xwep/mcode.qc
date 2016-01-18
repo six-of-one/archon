@@ -1987,13 +1987,13 @@ void(entity e, float trvs) item_translate;
 void() painkeep_cube_use =
 {
 	local vector v1;
-	local entity c, sv, crate;
+	local entity c, sv, crate, y;
 	local float f, d;
 	local vector v;
 
 	sv = self;
 	d = 0;
-	crate = world;
+	y = crate = world;
 
 	if (self.wad == "pk_crate") crate = self;
 
@@ -2017,6 +2017,7 @@ void() painkeep_cube_use =
 		}
 		c.think = SUB_Null;
 
+		if (c.owner)
 		if (c.message) sprint(c.owner, c.message);
 		c.owner = world;
 	}
@@ -2027,6 +2028,7 @@ void() painkeep_cube_use =
 	}
 	f = floor(random() * c.stdev);
 	if (c.items) d = c.items + f; // select item
+	c.touch = SUB_Null;
 
 	sound (c, CHAN_WEAPON, c.noise, 1, ATTN_NORM);
 
@@ -2053,7 +2055,7 @@ void() painkeep_cube_use =
 					f = rint(random() * 6);
 					if (f == 1) d = MC_HEALTHMEGA;
 					else if (f == 2) d = MC_ARMOR3;
-					else if (f == 3) { c.touch = SUB_Null; d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL;  } 
+					else if (f == 3) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL;  } 
 					else if (f == 4) d = MC_HOOK;
 					else if (f == 5)
 					{
@@ -2094,7 +2096,6 @@ void() painkeep_cube_use =
 			else
 				setmodel(c, "progs/crate_o3.bsp");
 
-			c.touch = SUB_Null;
 			c.solid = SOLID_TRIGGER; // non blocking
 			if (c.classname != "func_crate")
 				c.takedamage = DAMAGE_AIM; // this isnt actually shootable because of the trigger solid
@@ -2130,7 +2131,7 @@ void() painkeep_cube_use =
 //				c = find (world,targetname,c.target);
 			}
 		}
-		c = spawn(); // crates make a new thing
+		y = c = spawn(); // crates make a new thing
 		setorigin(c, crate.origin + ' 0 0 8');
 		c.event = "dynamic_item"; // dont respawn
 		c.ammo_cells = crate.ammo_cells; // was set above
@@ -2151,24 +2152,24 @@ void() painkeep_cube_use =
 			if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL)
 				newmis.th_stand = SUB_Remove;
 			newmis.velocity = v0; // stop eject
-			remove(self);
-			sv = self;
+			if (y) remove(y);
+			self = sv;
 			return;
 		}
 	}
 	else
 	if (c.wad == "pk_cube")
 	{
+		c.model = "";
 		if (c.event != "dynamic_item") // a map created cube - should respawn
 		{
-			c.model = "";
 			c.solid = SOLID_NOT;
 			if (deathmatch)
 //			if (deathmatch == 1 || deathmatch == 3)
 			c.think = SUB_regen;
 			c.nextthink = time + fabs(PK_CUBE_TIME);
 			v = c.origin + ' 0 0 4';
-			c = spawn();
+			y = c = spawn();
 			c.origin = v;
 			c.event = "dynamic_item"; // dont respawn
 		}
@@ -2176,7 +2177,6 @@ void() painkeep_cube_use =
 	}
 
 	self = c;
-	self.pk_touch = painkeep_touch;
 	self.class_select = ""; // for q3 holds
 	self.mask_x = 0; // reset
 	self.style = 0; // so we arent making a melee wep out of a range wep
@@ -2184,6 +2184,7 @@ void() painkeep_cube_use =
 	if (random() > 0.15 || crate) // crates always give goody
 //	if (0) // TEST:
 	{
+		self.pk_touch = painkeep_touch;
 		d = pk_mcode(self.wad, world);
 
 
@@ -2203,14 +2204,13 @@ bprint(")\n");
 
 		if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL) // cause barrels are special
 		{
-//			self = spawn();
 			self.event = self.classname = "";
 			self.scode = -1; // item call tests this for making barrels
 			item_call(self.wad);
 			newmis.th_stand = SUB_Remove; // go away after boom
 			newmis.event = "dynamic_item"; // dont respawn - in case above misses
 			pk_ditems = pk_ditems + 1; // do here because call already made
-			remove(c);
+			if (y) remove(y); // cant remove a dynamic cube - it has a dyn_rem
 			self = sv;
 			return;
 		}
@@ -2260,7 +2260,6 @@ bprint(")\n");
 		{
 			chaos_teleport(self.origin, "", world);
 			newmis.origin_z = newmis.origin_z + 20 + random() * 30;
-			remove(self);
 		}
 		else if (random() < 0.25)
 		{
@@ -2279,7 +2278,8 @@ bprint(")\n");
 				f = f - 1;
 			}
 		}
-		remove(self);
+
+		if (y) remove(y);
 	}
 // IDEA: tele-sphere, portal, explosive regular item, nail bomb, chaos effect
 	self = sv;
@@ -2330,7 +2330,9 @@ void() cube_touch =
 
 	if (PK_100 || Q_100)
 	{
-		remove(self);
+		self.model = "";
+		self.touch = SUB_Null;
+//		remove(self); // no can - dyn_rem issue
 		return;
 	}
 
@@ -2395,12 +2397,17 @@ void() cube_touch =
 	{
 		other.cnt = -1;
 		other.state = other.morphy;
-		other.impulse = 10; // display first item
-		self.lefty = 8388608; // start bit will be 1
-		stuffcmd(other, "usergamma\n");
-		stuffcmd(other, "admin_centertime\n");
-//		admin_timer(FALSE, USER_TIMEOUT);
+		if (other.ishuman)
+		{
+			other.impulse = 10; // display first item
+			self.lefty = 8388608; // start bit will be 1
+			stuffcmd(other, "usergamma\n");
+			stuffcmd(other, "admin_centertime\n");
+//			admin_timer(FALSE, USER_TIMEOUT);
+		}
 	}
+
+	if (other.ishuman)
 	if (cvar("r_ambient") > 0)
 		other.light_lev = cvar("r_ambient"); // because of cube re-arm
 
@@ -2423,6 +2430,7 @@ void() cube_touch =
 
 	if (!other.ishuman)
 	{
+		self.owner = world; // clear this now, only used for messages
 		self = other;
 		if (self.eweapon.wad == "pk_cube")
 			painkeep_cube_use();
@@ -2437,11 +2445,13 @@ void() cube_touch =
 				sf = sf - 1;
 			}
 			polymorph_check(self.state, 0);
-			remove(e); // chaos vector - was not removing a cube
-			e = world;
+//			remove(e); // no can - dyn_rem issue
+			e.model = "";
+			e.touch = SUB_Null;
+
 			cube_rearm();
 		}
-		if (e) self = e;
+		self = e;
 		return;
 	}
 };

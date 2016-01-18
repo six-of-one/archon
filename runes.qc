@@ -825,18 +825,77 @@ void() rune_maker =
 
 // periodic check once all runes made
 	tm = 120 + random() * 60;
-	self.nextthink = time + tm;
 
-	if (rune_count < RUNE_CNT)
+	if (rune_count < RUNE_CNT) // set timing now so checker can see it
 	{
 		f = RUNE_CNT / 2;
 		if (rune_count < f) // make at least 1/2 sort of quicker
 			tm = random() * 10;
 		else
 			tm = 5 + random() * 43;
+	}
 
-		self.nextthink = time + tm;
+	self.nextthink = time + tm;
 
+
+// fix leak - be better to stop leak
+	if (RUNES == 2) // && 4
+	{
+		f = 0;
+		e = find(world, map, "rune"); // excludes q3 items
+		while (e)
+		{
+			if (e.spawnflags & RUNE_MASK)
+			{
+				rm = rm | e.spawnflags;
+				f = f + 1;
+			}
+			e = find(e, map, "rune");
+		}
+		e = find(world, classname, "player"); // can include q3 items from flag set
+		while (e)
+		{
+			if (e.rune_flag & RUNE_MASK)
+			{
+				rm = rm | e.rune_flag;
+				f = f + 1;
+			}
+			e = find(e, classname, "player");
+		}
+		e = find(world, class_select, "class_bot");
+		while (e)
+		{
+			if (e.rune_flag & RUNE_MASK)
+			{
+				rm = rm | e.rune_flag;
+				f = f + 1;
+			}
+			e = find(e, class_select, "class_bot");
+		}
+		if (f != rune_count)
+		{
+			self.cnt = self.cnt + 1;
+			if (rune_count >= RUNE_CNT || self.cnt > 4 || tm > 60)
+			if (f < rune_count)
+			{
+
+
+bprint(" --------- rune count total not matched:  ");
+bprint(ftos(f));
+bprint(" != master: ");
+bprint(ftos(rune_count));
+bprint("\n");
+
+
+				self.cnt = 0;
+				rune_count = f;
+				rune_map = rm; // need rebuilt rune map too
+			}
+		}
+	}
+
+	if (rune_count < RUNE_CNT)
+	{
 // make a rune
 		e = spawn();
 		if (e)
@@ -907,7 +966,7 @@ void() rune_maker =
 			if (!e) 
 			{
 				if (WARNING) bprint("*** warning: rune_make could not find a random (or any) location - giving up\n");
-				remove(self);
+//				remove(self);
 				return; // crap - no location
 			}
 			v1 = e.origin + ' 0 0 8';
@@ -951,62 +1010,6 @@ void() rune_maker =
 			bprint("\n\n");
 
 			rune_count = rune_count + 1;
-		}
-	}
-
-// fix leak - be better to stop leak
-	if (RUNES == 2) // && 4
-	{
-		f = 0;
-		e = find(world, map, "rune");
-		while (e)
-		{
-			if (e.spawnflags & RUNE_MASK)
-			{
-				rm = rm | e.spawnflags;
-				f = f + 1;
-			}
-			e = find(e, map, "rune");
-		}
-		e = find(world, classname, "player");
-		while (e)
-		{
-			if (e.rune_flag & RUNE_MASK)
-			{
-				rm = rm | e.rune_flag;
-				f = f + 1;
-			}
-			e = find(e, classname, "player");
-		}
-		e = find(world, class_select, "class_bot");
-		while (e)
-		{
-			if (e.rune_flag & RUNE_MASK)
-			{
-				rm = rm | e.rune_flag;
-				f = f + 1;
-			}
-			e = find(e, class_select, "class_bot");
-		}
-		if (f != rune_count)
-		{
-			self.cnt = self.cnt + 1;
-			if (rune_count >= RUNE_CNT || self.cnt > 4 || tm > 60)
-			if (f < rune_count)
-			{
-
-
-bprint(" --------- rune count total not matched:  ");
-bprint(ftos(f));
-bprint(" != master: ");
-bprint(ftos(rune_count));
-bprint("\n");
-
-
-				self.cnt = 0;
-				rune_count = f;
-				rune_map = rm; // need rebuilt rune map too
-			}
 		}
 	}
 };
