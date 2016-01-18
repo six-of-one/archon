@@ -348,6 +348,7 @@ void() lavablob_mytosis =
 	newmis.netname = "Bomb";
 	newmis.class_select = "class_monster";
 	newmis.think = tbaby_checknew; // should be set already
+	if (random() < 0.2) newmis.skin = 2; // pk lava skin
 
 	r = random();
 

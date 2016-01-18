@@ -10,6 +10,19 @@
  *
  */
 
+// 4 mine sizes
+
+$frame spike1 spike2 spike3 spike4 spike5 spike6 spike7 spike8 spike9
+
+$frame minspike1 minspike2 minspike3 minspike4 minspike5 minspike6 minspike7 minspike8 minspike9
+
+$frame microspike1 microspike2 microspike3 microspike4 microspike5 microspike6 microspike7 microspike8 microspike9
+
+$frame lgspike1 lgspike2 lgspike3 lgspike4 lgspike5 lgspike6 lgspike7 lgspike8 lgspike9
+
+// skins = std (ball stitched), cracked rock, orange (hl), red rock, black, aa lava, pk lava, hellaport, blue
+
+
 // IDEA: vorerel can make spike mines - so can chaos
 
 void() spikemine_Home =
