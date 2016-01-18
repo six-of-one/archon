@@ -549,7 +549,7 @@ void() PutClientInServer =
 		stuffcmd(self, "exec anode.cfg");
 	}
 
-//	self.morphy = IMP_MSHALR; // TEST:
+//	self.morphy = IMP_MZOMBIE; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
 
 	W_SetCurrentAmmo (); // moved for m0rphic
@@ -707,10 +707,7 @@ void () CheckPowerups =
 
 	if (self.classname == OBSERVER) // Cataboligne 8.9.9 purify - chase cam (dead) & observer - clear all effects
 	{
-		self.super_damage_finished = self.invisible_finished = self.invincible_finished = self.radsuit_finished = 0;
-		self.super_time = self.invisible_time = self.invincible_time = self.rad_time = 0;
-		self.items = self.items - (self.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY));
-		self.effects = 0;
+		morph_clearparms(self, TRUE);
 		return;
 	}						// NOTE: great place for some interesting chaos effects
 
@@ -762,7 +759,7 @@ void () CheckPowerups =
 
 		if (self.invisible_finished < time)
 		{	// just stopped
-			self.items = self.items - IT_INVISIBILITY;
+			self.items = self.items - (self.items & IT_INVISIBILITY);
 			self.invisible_finished = 0;
 			self.invisible_time = 0;
 		}
@@ -804,7 +801,7 @@ void () CheckPowerups =
 
 		if (self.invincible_finished < time)
 		{	// just stopped
-			self.items = self.items - IT_INVULNERABILITY;
+			self.items = self.items - (self.items & IT_INVULNERABILITY);
 			self.invincible_time = 0;
 			self.invincible_finished = 0;
 			if (self.pkplus_actortype == PKPLUS_ACTORPENT) // pk art code here
@@ -846,7 +843,7 @@ void () CheckPowerups =
 
 		if (self.super_damage_finished < time)
 		{	// just stopped
-			self.items = self.items - IT_QUAD;
+			self.items = self.items - (self.items & IT_QUAD);
 			self.super_damage_finished = 0;
 			self.super_time = 0;
 			if (self.pkplus_actortype == PKPLUS_ACTORQUAD)

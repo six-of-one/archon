@@ -1862,7 +1862,7 @@ void () weapon_hook =
 	self.target1 = "hook/chain1.wav"; // in + out
 	self.target2 = "hook/chain2.wav"; // in + out
 	self.targetname = "weapons/ax1.wav"; // launch snd
-	self.punchangle_x = 0.85; // damp
+	self.bulletspread_x = 0.85; // damp
 
 };
 
@@ -1958,7 +1958,7 @@ void() painkeep_cube_use =
 		}
 	}
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
-	if (1) d = MC_Q2_BFG; // TEST:
+//	if (1) d = MC_Q2_BFG; // TEST:
 
 	if (c.wad == "pk_cube")
 		c.wad = item_by_mcode(d);
@@ -2046,10 +2046,12 @@ void() abandoned_cube =
 };
 
 // used by pk & morphic cubes
+float BOT_NOUSE_PKCUBE = 0.3;
+float BOT_NOUSE_MCUBE = 0.8;
 
 void() cube_touch =
 {
-	if ( (other.classname != "player") || (!other.ishuman) ) // *bot - done in master touch fn - NOTE: no bots in cube code yet
+	if (other.classname != "player") // *bot - done in master touch fn
 	{
 		grap_checkIfGrap();
 		return ;
@@ -2085,6 +2087,17 @@ void() cube_touch =
 		}
 	}
 
+	if (self.duration < time) // dont let bots hit cube too much
+	if (!other.ishuman)
+	{
+		self.duration = time + 2;
+		if (self.wad == "pk_cube")
+		if (random() < BOT_NOUSE_PKCUBE) return;
+
+		if (self.wad == "morph_cube")
+		if (random() < BOT_NOUSE_MCUBE) return;
+	}
+
 	if (self.wad == "morph_cube")
 		sprint(other, "you merged with this Evolution Cube");
 	else
@@ -2107,10 +2120,29 @@ void() cube_touch =
 
 	sprint(other, ".\nIf you select another weapon the cube will be free...\n");
 	self.owner = other;
+	other.prevweapon = other.weapon; // save for pack on morphic
+	other.theowner = other.eweapon;
+
 	other.weapon = 0;
 	other.eweapon = self;
 	self.effects = self.effects | EF_DIMLIGHT;
 	self.touch = SUB_Null;
+
+	if (!other.ishuman)
+	{
+		self = other;
+		if (self.eweapon.wad == "pk_cube")
+			painkeep_cube_use();
+		else if (self.eweapon.wad == "morph_cube")
+		{
+			self.lefty = rnd_bit_mask(self.eweapon.mask_x);
+			self.state = cb_morph(self.lefty);
+			polymorph_check(self.state, 0);
+			remove(self.eweapon);
+			cube_rearm();
+		}
+		return;
+	}
 
 	self.think = abandoned_cube;
 	self.nextthink = time + 120;

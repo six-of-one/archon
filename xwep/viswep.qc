@@ -231,7 +231,8 @@ entity(entity e, float fl) vload =
 	setmodel(tr.vwepent, md);
 
 	if (fl > 0) tr.vwepent.mcode = wepbit_mcode(fl, "Q");
-/*
+
+/*  you'd think that because this is engine driver it would be smooth as glass - tried it on a -listen server - major fail
 	if (DARKPLACES) // TEST: - trying movement deal - movetype 12
 	{
 		tr.vwepent.movetype = MOVETYPE_FOLLOW; // make the tr.vwepent follow
@@ -240,6 +241,7 @@ entity(entity e, float fl) vload =
 		tr.vwepent.punchangle = e.angles; // the original angles of e
 		tr.vwepent.view_ofs = '0 0 0'; //tr.vwepent.origin - e.origin; // relative origin
 		tr.vwepent.v_angle = '0 0 0'; //tr.vwepent.angles - e.angles; // relative angles
+		tr.vwepent.angles = e.angles;
 	}
 */
 	return(tr.vwepent);
@@ -697,41 +699,51 @@ void() viswep_post =
 				vhead.mangle = vhead.owner.angles;
 				vhead.weaponframe = vhead.owner.frame;
 
+				vv_pa = vhead.owner.angles_x; // set pitch detect adjust
 				if (drw) vhead.vv_draw(vhead.owner.frame);
 				else if (vhead.vv_holster != (void()) 0) vhead.vv_holster(vhead.owner.frame);
 				else vwc = FALSE; // no display - no frames!
 
 				if (vwc)
 				{
-				if( ! (vhead.owner.cam_x & CHSCAM_ON) ) vhead.exteriormodeltoclient = vhead.owner; // darkplaces - works for dp!
-				else vhead.exteriormodeltoclient = world;
+					if( ! (vhead.owner.cam_x & CHSCAM_ON) ) vhead.exteriormodeltoclient = vhead.owner; // darkplaces - works for dp!
+					else vhead.exteriormodeltoclient = world;
 
 
+					local vector v1, v2, v3, v4;
 
-				local vector v1, v2, v3, v4;
+					v1 = vhead.owner.angles;
+					v1_x = 0 - v1_x; // must reverse pitch for proper position from v_fwd calc
+					makevectors( v1 );
 
-				v1 = vhead.owner.angles;
-				v1_x = 0 - v1_x; // must reverse pitch for proper position from v_fwd calc
-				makevectors( v1 );
+					v2 = (vv_o_000_x) * v_forward;
+					v3 = (0 - (vv_o_000_y)) * v_right;
+					v4 = (vv_o_000_z) * v_up;
 
-				v2 = (vv_o_000_x) * v_forward;
-				v3 = (0 - (vv_o_000_y)) * v_right;
-				v4 = (vv_o_000_z) * v_up;
+					vhead.frame = vv_x_000_y;
 
-				vhead.frame = vv_x_000_y;
-				setorigin(vhead, vhead.owner.origin  + v2 + v3 + v4); // ... sync visible weapon model
-				vhead.angles = vhead.owner.angles + vv_a_000;
+					setorigin(vhead, vhead.owner.origin  + v2 + v3 + v4); // ... sync visible weapon model
+					vhead.angles = vhead.owner.angles + vv_a_000;
 
-				vv_pa = vhead.owner.angles_x; // set pitch detect adjust
-				if (vv_x_000_x) vhead.angles_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
-				if (vv_x_000_z) vhead.angles_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
+					if (vv_x_000_x) vhead.angles_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
+					if (vv_x_000_z) vhead.angles_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
 
+					if (vhead.movetype == MOVETYPE_FOLLOW)
+					{
+
+						vhead.view_ofs = vhead.origin - vhead.owner.origin; // relative origin
+						vhead.v_angle = vhead.angles - vhead.owner.angles;
+//						vhead.view_ofs = v2 + v3 + v4; //tr.vwepent.origin - e.origin; // relative origin
+//						vhead.v_angle = vv_a_000; //tr.vwepent.angles - e.angles; // relative angles
+//						if (vv_x_000_x) vhead.v_angle_x = vhead.owner.angles_x + vv_a_000_x + (vhead.owner.angles_x * vv_x_000_x);
+//						if (vv_x_000_z) vhead.v_angle_z = vhead.owner.angles_z + vv_a_000_z + (vhead.owner.angles_x * vv_x_000_z);
+					}
 				}
 				else 
 					vhead.model = "";
 			}
 		}
-		else
+		else // old method - brute force animated models
 		{
 			if (vhead.model == "" || (vhead.origin + vofs) != vhead.owner.origin || vhead.angles != vhead.owner.angles || vhead.weaponframe != vhead.owner.frame) // update track
 			{
@@ -760,7 +772,7 @@ void() viswep_post =
 
 				if (qld)
 					{
-																			// grap hook out - adjust run / stand frameset
+																			// grap hook out - adjust run / stand frameset - this also syncs first rope seg out of gun with end of gun vw location
 					if (vhead.mdl == "progs/vw_harp.mdl" && vhead.owner.grap_cornerchainNext != world && (vhead.owner.frame - gremlin_frame_adjust)< 11) // $pain1
 					{
 						grap_frame_adjust = VW_HARP_FRADJ;
@@ -783,8 +795,11 @@ void() viswep_post =
 
 					} // IDEA: viswframe weps on gremlins back for special frames
 				vhead.frame = vframe + vadd - gremlin_frame_adjust - grap_frame_adjust;
-				setorigin(vhead, vhead.owner.origin + vofs); // ... sync visible weapon model
-				vhead.angles = vhead.owner.angles;
+				if (vhead.movetype != MOVETYPE_FOLLOW)
+				{
+					setorigin(vhead, vhead.owner.origin + vofs); // ... sync visible weapon model
+					vhead.angles = vhead.owner.angles;
+				}
 			}
 		}
 		vhead = vhead.vwepent;

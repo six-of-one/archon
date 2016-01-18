@@ -34,6 +34,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.vv_holster = self.vv_holster;
 	e.vwepmdl = self.vwepmdl; // for pack / dthrow weps
 //		e.touch = self.touch;
+	if (e.vv_draw != (void()) 0) e.movetype = 0; // for now these cant movetype follow - that will come later
 
 	e.weapon = e.items = self.items;
 	if (self.items == IT_AXE) e.pk_currentitem = self.pk_currentitem; // replacing the axe
@@ -45,7 +46,7 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.dodmg = self.dodmg;
 	e.dmg_save = self.dmg_save;
 	e.dmg_take = self.dmg_take;
-	e.punchangle = self.punchangle;
+	e.bulletspread = self.bulletspread;
 	if (fabs(camcc) >= 1) e.aflag = fabs(camcc);
 	e.style = self.style; // melee flag
 	e.lefty = self.lefty; // misc data
@@ -841,7 +842,7 @@ tdmg = 0;
 	else
 		dir = aim (self,100000);
 
-	X_FireBullets (t, EWEAP.dmg, dir, EWEAP.punchangle);
+	X_FireBullets (t, EWEAP.dmg, dir, EWEAP.bulletspread);
 
 
 
@@ -2211,7 +2212,7 @@ bprint(") pl_ bfg1\n");
 
 	f = 0.2;
 	if (EWEAP.noise4 == DOOM_DET) f = ROCKET_FUSE; // ball flight time max - doom starts think here to get data but it gets activated by plasma hit logic
-	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.punchangle, v0, v0, self.v_angle, v0, "", "", SUB_Null, f, bfg_trace_thk, SUB_Null, self, world);
+	e = chaos_spawn(0, 0, EWEAP.endtime, 0, EWEAP.bulletspread, v0, v0, self.v_angle, v0, "", "", SUB_Null, f, bfg_trace_thk, SUB_Null, self, world);
 	e.eweapon = EWEAP;
 	e.enemy = newmis; // q2 - fires lasers from ball
 	newmis.enemy = e; // trace blast

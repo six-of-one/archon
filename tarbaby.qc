@@ -224,7 +224,7 @@ if (ign != A_MONSTER)
 
 	if (!Q_100)
 	if (ign != A_MONSTER)
-	if (random() < 0.17) // hot tarbaby from a map spawned baby
+	if (random() < 0.5) // hot tarbaby from a map spawned baby // TEST: was 0.17
 	{
 		setmodel(self,"progs/lavabomb.mdl");
 		setsize (self, '-16 -16 -24', '16 16 40');

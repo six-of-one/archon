@@ -288,6 +288,38 @@ void(vector lorg1, vector lorg2) seq_bolt =
 };
 
 
+// fn(chaos_particle) - chaos particle field effect
+// org - origin
+// rn - range
+// pr - percent chance
+// col - fixed color
+
+vector cparticle_lorg;
+
+void(vector org, float rn, float pr, float col) chaos_particle =
+{
+	local vector p1;
+	local float cl;
+
+	p1_x = (random() - 0.5) * random() * rn;
+	p1_y = (random() - 0.5) * random() * rn;
+	p1_z = (random() - 0.5) * random() * rn * 0.9;
+	cparticle_lorg = org + p1;
+	cl = col;
+	if (cl < 0) cl = random() * 255;
+
+	if (self.morphy == IMP_MWRAITH)
+	{
+		if (col == 12 || col == 251)
+			particle (org + p1, ' 0 0 0', cl, 3);
+		else
+			particle (org + p1, ' 0 0 0', cl, 15);
+	}
+	else
+		if (random() < pr) particle (org + p1, ' 0 0 0', cl, random() * 25); // IDEA - restrict colors?
+};
+
+
 
 // fn(fire_burst) - fire off a burst of stuff
 
@@ -403,6 +435,12 @@ void(void() fr, vector org, float mvt, float velm, string cln, string md, float 
 };
 
 
+
+vector(vector src, float lbper, vector lbvec, float lcnt) lava_shot =
+{
+	return(v0);
+	// TDO: finish
+};
 
 void () fire_fly_touch =
 {

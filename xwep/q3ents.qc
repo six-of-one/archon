@@ -516,7 +516,7 @@ void() q3_mg_base =
 	self.dmg = 7;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.punchangle = ' 0.025 0.025 0';
+	self.bulletspread = ' 0.025 0.025 0';
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 
 	self.netname = "Machine Gun";
@@ -586,7 +586,7 @@ void() q3_weapon_shotgun =
 	self.dmg = 10;
 	self.dmg_save = 2;
 	self.dmg_take = 11; // shot cnt
-	self.punchangle = ' 0.14 0.08 0'; // bullet spread out -- TDO: get q3 value, this is q1
+	self.bulletspread = ' 0.14 0.08 0'; // bullet spread out -- TDO: get q3 value, this is q1
 	if (!self.wait) self.wait = RSP_TIME * 0.1666;
 
 	setmodel (self, "progs/q3_shot.mdl");
@@ -795,7 +795,7 @@ void () weapon_grapplinghook =
 	self.target1 = ""; // in + out
 	self.target2 = ""; // in + out
 	self.targetname = "q3_snd/gauntrun.wav"; // launch snd
-	self.punchangle_x = 0.5; // damp
+	self.bulletspread_x = 0.5; // damp
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
@@ -1294,6 +1294,7 @@ void() q3_item_armor_combat =
 	self.skin = 0;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() q3_item_armor_body =
@@ -1324,6 +1325,7 @@ void() q3_item_armor_body =
 	self.skin = 1;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() q3_item_armor_shard =
@@ -1589,6 +1591,7 @@ void() q3_pwr_touch =
 
 	if (self.spawnflags & RUNE_FLG_FLY) other.movetype = MOVETYPE_FLY;
 
+	if (other.mask_x & CB_HUMAN)
 	if (self.spawnflags & (RUNE_FLG_RG | RUNE_FLG_HS))
 	{
 		e = spawn();

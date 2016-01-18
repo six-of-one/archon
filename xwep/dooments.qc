@@ -352,6 +352,7 @@ void() d_item_armorgreen =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() d_item_armorblue =
@@ -381,6 +382,7 @@ void() d_item_armorblue =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() d_ammo_ammobox =
@@ -675,7 +677,7 @@ void() d_weapon_bfg =
 	self.dmg = DOOM_BFG_DMG;
 //	self.dodmg = 128; // splash
 	self.dmg_save = 40;
-	self.punchangle = ' 0.6 0.3 0'; // for traces ?
+	self.bulletspread = ' 0.6 0.3 0'; // for traces ?
 	self.wait = RSP_TIME;
 
 // appearances
@@ -766,7 +768,7 @@ void() d_weapon_chaingun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.punchangle = ' 0.065 0.065 0';
+	self.bulletspread = ' 0.065 0.065 0';
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/d_chaingun.mdl");
@@ -789,9 +791,9 @@ void(float cn) doom_pistol_spread =
 	if (self.eweapon.vwepmdl == "progs/vw_d_pistol.mdl")
 	{
 		if (!cn)
-			self.eweapon.punchangle = ' 0.0 0.0 0';	
+			self.eweapon.bulletspread = ' 0.0 0.0 0';	
 		else
-			self.eweapon.punchangle = ' 0.02 0.02 0'; // button held down - accuracy level
+			self.eweapon.bulletspread = ' 0.02 0.02 0'; // button held down - accuracy level
 	}
 }
 
@@ -827,7 +829,7 @@ void() d_weapon_pistol =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.punchangle = ' 0.02 0.02 0';
+	self.bulletspread = ' 0.02 0.02 0';
 	self.style = FL_MELEE_WEP;
 	self.wait = RSP_TIME;
 
@@ -919,7 +921,7 @@ void() d_weapon_shotgun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_take = 7; // shot cnt
 	self.dmg_save = 1;
-	self.punchangle = ' 0.04 0.02 0'; // bullet spread out
+	self.bulletspread = ' 0.04 0.02 0'; // bullet spread out
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/d_shotgun.mdl");
@@ -961,7 +963,7 @@ void() d_weapon_supershotgun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 2;
 	self.dmg_take = 21; // shot cnt
-	self.punchangle = ' 0.14 0.08 0'; // bullet spread out -- TDO: get doom value, this is q1
+	self.bulletspread = ' 0.14 0.08 0'; // bullet spread out -- TDO: get doom value, this is q1
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/d_dblshot.mdl");
@@ -1474,7 +1476,7 @@ void() w_weapon_machinegun =
 	self.dmg = 10;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.punchangle = ' 0.02 0.02 0';
+	self.bulletspread = ' 0.02 0.02 0';
 	self.wait = RSP_TIME;
 
 	self.netname = "Machine Gun";
@@ -1500,7 +1502,7 @@ void() w_chg_base =
 	self.dmg = 10;
 	self.dmg_save = 1;
 	self.dmg_take = 2;
-	self.punchangle = ' 0.05 0.05 0';
+	self.bulletspread = ' 0.05 0.05 0';
 	self.wait = RSP_TIME;
 
 	self.netname = "Chain Gun";
@@ -1663,7 +1665,7 @@ void() w_weapon_pistol =
 	self.dmg = 10;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.punchangle = ' 0.01 0.01 0';
+	self.bulletspread = ' 0.01 0.01 0';
 	self.style = FL_MELEE_WEP;
 	self.wait = RSP_TIME;
 
@@ -2099,7 +2101,7 @@ void() wchg2_weapon_touch =
 			self.items = IT_LIGHTNING;
 			self.dmg_save = 2;
 			self.dmg_take = 4;
-			self.punchangle = ' 0.07 0.07 0';
+			self.bulletspread = ' 0.07 0.07 0';
 
 			self.netname = "Dual Chain Gun";
 

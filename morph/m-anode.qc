@@ -327,7 +327,7 @@ local entity e;
 
 	//	self.modelindex_morph=self.modelindex;
 //	self.mask_x = CB_SHALR;
-	self.builtin = self.items = IT_AXE | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
+	self.builtin = self.items = self.items | IT_AXE | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
 	SEL_SHAL_BOMB = IT_ROCKET_LAUNCHER;
 	SEL_SHAL_LTN = IT_LIGHTNING;
 	SEL_SHAL_SPIKE = IT_AXE;

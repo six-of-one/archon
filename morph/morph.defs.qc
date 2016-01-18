@@ -230,6 +230,9 @@ void(float silent) player_shalrath_become;
 void(float silent) player_enforcer_become;
 void(float silent) player_anode_become;
 void(float silent) player_demon_become;
+void(float silent) player_zombie_become;
+void(float silent) player_hknight_become;
+void(float silent) player_wizard_become;
 
 //morph health modifiers            original code
 float MHUMAN_HEALMOD				= 1.0;	// 100 = 1.0
@@ -287,6 +290,8 @@ float FL_DEMONBOOM				= 65536; // demon on overload!
 float WRAITH_USE_CAM				= FALSE; // if true wraith can use chase cam - NOTE: cam does not work when wraith penetrates solids
 
 
+float(entity e) IS_ZOMBIE;
+
 // precaches
 
 void() morph_precache;
@@ -294,3 +299,6 @@ void() m_precache_scourge;
 void() m_precache_shalrath;
 void() m_precache_enforcer;
 void() m_precache_demon;
+void() m_precache_zombie;
+void() m_precache_hknight;
+void() m_precache_wizard;

@@ -242,25 +242,25 @@ void() player_shalrath_impulse =
 
 	if (self.weapon == SEL_SHAL_ANH)
 	{
-		self.items = self.items | IT_CELLS | IT_AXE;
+		self.items = self.items | IT_CELLS;
 		sprint(self, "Press fire to summon / dismiss Sphere of annihilation\n"); 
 	}
 	if (self.weapon == SEL_SHAL_BOMB)
 	{
-		self.items = self.items | IT_ROCKETS | IT_ROCKET_LAUNCHER;
+		self.items = self.items | IT_ROCKETS;
 		sprint(self, "Shalrath firing ( Spiked bomb )\n"); 
 	}
 
 	if (self.weapon == SEL_SHAL_LTN)
 		{
 		sprint(self, "Shalrath using ( Lightning )\n");
-		self.items = self.items | IT_CELLS | IT_LIGHTNING;
+		self.items = self.items | IT_CELLS;
 		}
 
 		if (self.weapon == SEL_SHAL_SPIKE)
 		{
 		sprint(self, "Shalrath using ( Spikes )\n");
-		self.items = self.items | IT_SUPER_NAILGUN | IT_NAILS;
+		self.items = self.items | IT_NAILS;
 		}
 };
 
@@ -291,7 +291,7 @@ void(float silent) player_shalrath_become =
 
 	//	self.modelindex_morph=self.modelindex;
 //	self.mask_x = CB_SHALR;
-	self.builtin = self.items = IT_AXE | IT_SUPER_NAILGUN | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
+	self.builtin = self.items = self.items | IT_AXE | IT_SUPER_NAILGUN | IT_ROCKET_LAUNCHER | IT_LIGHTNING;
 	SEL_SHAL_BOMB = IT_ROCKET_LAUNCHER;
 	SEL_SHAL_LTN = IT_LIGHTNING;
 	SEL_SHAL_SPIKE = IT_SUPER_NAILGUN;

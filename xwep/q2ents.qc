@@ -705,7 +705,7 @@ void () weapon_chaingun =
 	self.dmg = 6;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.punchangle = ' 0.03 0.03 0';
+	self.bulletspread = ' 0.03 0.03 0';
 	self.wait = RSP_TIME;
  
 	setmodel (self, "progs/q2_chain.mdl");
@@ -735,7 +735,7 @@ void() q2_mg_base =
 	self.dmg = 8;
 	self.dmg_save = 1;
 	self.dmg_take = 1;
-	self.punchangle = ' 0.025 0.025 0';
+	self.bulletspread = ' 0.025 0.025 0';
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_mgun.mdl");
@@ -799,7 +799,7 @@ void () q2_weapon_supershotgun =
 	self.dmg = 6;
 	self.dmg_save = 2;
 	self.dmg_take = 20; // shot cnt
-	self.punchangle = ' 0.10 0.05 0'; // bullet spread out -- guestimate from q2 code below
+	self.bulletspread = ' 0.10 0.05 0'; // bullet spread out -- guestimate from q2 code below
 /*
 	r = crandom()*hspread; 1000 (500 for shotgun)
    u = crandom()*vspread; 500
@@ -849,7 +849,7 @@ void () q2_weapon_shotgun =
 	self.dmg = 4;
 	self.dmg_save = 1;
 	self.dmg_take = 12; // shot cnt
-	self.punchangle = ' 0.05 0.05 0'; // bullet spread out -- guestimate from q2 code
+	self.bulletspread = ' 0.05 0.05 0'; // bullet spread out -- guestimate from q2 code
 	self.wait = RSP_TIME;
 
 	setmodel (self, "progs/q2_shotgun.mdl");
@@ -958,7 +958,7 @@ void () q2_weapon_grapple =
 	self.target1 = "q2_snd/grhang.wav"; // in + out
 	self.target2 = "q2_snd/grhang.wav"; // in + out
 	self.targetname = "q2_snd/grfire.wav"; // launch snd
-	self.punchangle_x = 0.75; // damp
+	self.bulletspread_x = 0.75; // damp
 
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
@@ -1109,6 +1109,7 @@ void() q2_item_armor_body =
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() q2_item_armor_combat =
@@ -1136,6 +1137,7 @@ void() q2_item_armor_combat =
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() item_armor_jacket =
@@ -1163,6 +1165,7 @@ void() item_armor_jacket =
 	self.wait = RSP_TIME * 0.666;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() q2_item_armor_shard =
@@ -1218,6 +1221,7 @@ void() item_power_shield =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() item_power_screen =
@@ -1248,6 +1252,7 @@ void() item_power_screen =
 	self.noise4 = "q2_snd/respawn1.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q2_item";
+	self.mask_x = CB_HUMAN + CB_ENF;
 };
 
 void() item_silencer =

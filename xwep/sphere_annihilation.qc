@@ -169,6 +169,8 @@ if turret, must remove stand
 
 */
 
+void () respawnBot;
+
 // fn(annihilate) - it gets destroyed in the portable stable black hole
 
 // ents sucked into sphere as fn of 1/6 of 1st dist to sphere, along that vector - all other motion stops
@@ -220,11 +222,16 @@ if (WARNING)
 			}
 		else if (self.flags & FL_CLIENT) // gib players - gibs should be sucked
 			{
-			self.think = SUB_Null; // just in case some deaths dont set think fn
-			self.invincible_finished = time - 1; // not invincible enough
-			CheckPowerups();
-			T_Damage (self, world, world, self.health * 2); // this shit can kill anybody
-			return;
+				if (self.classname == "pk*bot")
+				{
+					self.think = respawnBot;
+					self.nextthink = time + 10 + random() * 45;
+				}
+				else self.think = SUB_Null; // just in case some deaths dont set think fn
+				self.invincible_finished = time - 1; // not invincible enough
+				CheckPowerups();
+				T_Damage (self, world, world, self.health * 2); // this shit can kill anybody
+				return;
 			}
 		if (self.classname == "Harpoon")
 		{

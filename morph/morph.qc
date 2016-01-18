@@ -50,6 +50,9 @@ void() morph_precache =
 	m_precache_enforcer();
 	m_precache_shalrath();
 	m_precache_demon();
+	m_precache_zombie();
+	m_precache_hknight();
+	m_precache_wizard();
 };
 
 
@@ -356,10 +359,17 @@ void() morph_cube_use =
 		cube_rearm(); // re arm player
 		return;
 	}
-	if (self.state == IMP_MSCOURGE) // TEST: only one so far
-// evolve here
 
-	self.eweapon = world; // thrown pack have cube in them! - NOTE: prevents packs from getting xweap
+	self.eweapon = world; // dont put cube ref in pack
+	if (self.mask_x & (CB_HUMAN | CB_ENF)) // only humans throw packs so far
+	{
+		self.eweapon = self.theowner; // set for throwing pack
+
+		if (!self.prevweapon & self.builtin)
+			self.weapon = self.prevweapon;
+	}
+
+// evolve here
 
 	polymorph_check(self.state, 0);
 
@@ -592,34 +602,37 @@ return morph_test(chk,IMP_MSCOURGE,0,0,0,0,IMP_MSHAMBLR); // no classname
 // f - ent to clear
 // all - clear everything, otherwise just clear morph stuff
 
-void(entity f, float all) morph_clearparms =
+void(entity e, float all) morph_clearparms =
 {
-	f.mask = v0;
-	f.noise1 = f.noise2 = f.noise3 = f.noise4 = f.msight = "";
+	local float f;
+	e.mask = v0;
+	e.noise1 = e.noise2 = e.noise3 = e.noise4 = e.msight = "";
 
-	f.weaponframe = 0;
-	f.weaponmodel = "";
+	e.weaponframe = 0;
+	e.weaponmodel = "";
 
 // Cataboligne - 9.15.11 - moved from chasecam
 	if (all) // morph change will retain these
 	{
-		f.flags = FL_CLIENT | FL_ONGROUND | FL_JUMPRELEASED; // default, need to clear drop pull & such
-		f.invincible_time = f.super_damage_finished = f.radsuit_finished = f.invisible_finished = f.invincible_finished = 0;
-		f.effects = 0;
+		e.flags = FL_CLIENT | FL_ONGROUND | FL_JUMPRELEASED; // default, need to clear drop pull & such
+		e.invincible_time = e.super_damage_finished = e.radsuit_finished = e.invisible_finished = e.invincible_finished = 0;
+		e.effects = 0;
 	}
 
-	f.skin = f.items = f.builtin = 0;
-// f.frame = 0;
-//		f.items = f.items - (f.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY));
-	f.weapon = f.currentammo = f.ammo_shells = f.ammo_nails = f.ammo_rockets = f.ammo_cells = 0;
-	f.eweapon = world;
-	f.pkprevweapon = f.pklastweapon = f.prevweapon = f.lastweapon = 0;
+	f = e.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY);
+	e.skin = e.items = e.builtin = 0;
+	if (!all) e.items = f; // maintain powers
+
+// remove items & ammos
+	e.weapon = e.currentammo = e.ammo_shells = e.ammo_nails = e.ammo_rockets = e.ammo_cells = 0;
+	e.eweapon = world;
+	e.pkprevweapon = e.pklastweapon = e.prevweapon = e.lastweapon = 0;
 // remove pk items & ammos
-	f.pkplus_egoammo = f.pkplus_tombammo = f.pkplus_actorammo = f.pkplus_phoneammo = 0;
-	f.pk_gravitywellammo = f.pk_turretammo = f.pk_canpabammo = f.pk_beartrapammo = f.pk_explode_ammo = 0;
+	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
+	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;
 // remove x items & ammos
-	f.ammo_bullet = f.ammo_slug = f.ammo_gaspr = f.ammo_hgrenade = 0;
-	f.x_items = x_item_dm_giveaway;
+	e.ammo_bullet = e.ammo_slug = e.ammo_gaspr = e.ammo_hgrenade = 0;
+	e.x_items = x_item_dm_giveaway;
 };
 
 // fn(morph_CycleWeaponCommand) - cycle builtins for morphs
@@ -866,6 +879,14 @@ void(float cmd, float pls) polymorph_check =
 			}
 	*/
 			viswep_ld(self, -1); // unloads weps - NOTE: threw option
+
+
+			if (self.mask_x & CB_ENF)
+			if (self.ammo_cells < 5) self.ammo_cells = 5;
+
+			if (self.mask_x & CB_OGRE)
+			if (self.ammo_rockets < 2) self.ammo_rockets = 2;
+
 			if (self.mask_x & (CB_HUMAN | CB_ENF | CB_OGRE | CB_GREMLIN))
 				DropBackpack();
 	//		morph_armor_check();
@@ -889,9 +910,13 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
 		else if (cmd == IMP_MENF) player_enforcer_become(pls);
 		else if (cmd == IMP_MDEMON) player_demon_become(pls);
+		else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
+		else if (cmd == IMP_MHKNIGHT) player_hknight_become(pls);
+		else if (cmd == IMP_MWIZARD) player_wizard_become(pls);
 		else if (cmd == IMP_MANODEX) player_anode_become(pls);
 		else player_human_become(pls);
-	/*	else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
+	/*
+		else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
 		else if (cmd == IMP_MWIZARD) player_wizard_become(pls);
 		else if (cmd == IMP_MHKNIGHT) player_hknight_become(pls);
@@ -982,6 +1007,8 @@ float(entity e, float hl) morph_heal =
 entity random_monster_spawn;
 
 // need think to wake them up because *monster_start_go has to happen
+// NOTE: this does seem to wack monsters that attack player / morph on site (grunts)
+
 void() random_monster_wakey =
 {
 	local entity f;
@@ -989,10 +1016,13 @@ void() random_monster_wakey =
 	if (self.owner.class_select == "class_monster")
 	if (self.owner.enemy.classname == "player")
 	{
+		f = self;
 		self.owner.goalentity = self.owner.enemy;
-		self.owner.nextthink = time + 2 + random() * 2;
-		self.owner.think = self.owner.th_walk;
-		remove(self);
+//		self.owner.nextthink = time + 2 + random() * 2;
+//		self.owner.think = self.owner.th_walk;
+		self = self.owner;
+		FoundTarget();
+		remove(f);
 		return;
 	}
 //	f = self;
@@ -1001,7 +1031,7 @@ void() random_monster_wakey =
 
 //	self = self.owner;
 //	FoundTarget();
-	if (f)
+	if (f) // these should be random monsters - when they get here there should be no enemy
 //	if((self.owner.enemy == world) || (self.owner.enemy == self))	//If he doesn't have an enemy
 	{
 		self.owner.goalentity = f;	// target entity f
@@ -1018,6 +1048,8 @@ void() random_monster =
 
 	C_MONSTER = cvar("sv_monster_rnd");
 	C2_MONSTER = cvar("sv_monster_rnd2");
+
+	C_MONSTER = C_MONSTER - (C_MONSTER & (CB_M_CTHON | CB_M_SHUBS)); // because we really dont want to spawn cthon or shubs
 
 	if (self.classname != "random_mspawn")
 	{
@@ -1084,6 +1116,7 @@ void() random_monster =
 	v = e.origin;
 	v_z = v_z + 30 - fabs(e.mins_z); // has to move up enough to account for monsters feet at -24
 	setorigin(self, v);
+	spawn_tdeath(v, self);
 
 
 	if (WARNING) // dont normally post random monster info
@@ -1109,6 +1142,7 @@ void() monster_respawn_fire =
 	setorigin(self, self. origin + ' 0 0 8');
 	item_call(self.classname); // back to life
 	spawn_tfog (self.origin);
+	spawn_tdeath(self.origin, self);
 };
 
 void() monster_respawn =
@@ -1164,6 +1198,19 @@ void() monster_respawn =
 
 };
 
+
+
+float(entity e) IS_LAVA =
+{
+	local float f;
+	f = FALSE;
+
+	if (e.morphy == IMP_MCTHON) f = TRUE;
+	else if (e.morphy == IMP_MCHAOS) f = TRUE;
+	else if (e.model == "progs/boss.mdl") f = TRUE;
+
+	return(f);
+};
 
 // NOTE: TDO: put back in volcano when added to mod
 
@@ -1258,88 +1305,6 @@ void(entity e) chaos_mdlsize =
 	if (vmin != v0 && vmax != v0) setsize(e, vmin, vmax);
 };
 
-
-// put in m-zomby.qc
-
-// gib tracer deal
-// fn(GibTDie) - gib tracer done
-
-void() GibTDie =
-{
-//	self.dest_y = ITEM_MELTD;
-	self.think = SUB_Remove; //meltthink;
-};
-
-// fn(GibTracer) - shoot zombies enemys in range
-
-// IDEA - squisy slashy type sound made periodically
-
-void() ZombieGrenadeTouch2;
-
-void() GibTracer =
-{
-	self.nextthink = time + 0.1;
-
-	if (self.turret_timeout < time || self.health < 0) // ran out
-	{
-		self.th_die(); // gib tracer
-		return;
-	}
-
-	if (self.owner.enemy)
-	if (self.owner.enemy.takedamage && (self.owner.enemy.classname == "player" || self.owner.enemy.flags & FL_MONSTER))
-	{
-		if (self.owner.enemy.mask_x & CB_ZOMBY) return; // can this even happen?
-
-		fire_missile(ZOMBIE_FLSH_VEL * 0.833335, MOVETYPE_FLYMISSILE, FL_CTHONF, RM_SKY | MLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 10', self.owner.enemy.origin - self.origin, "grenade", "progs/zom_gib.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 2.5, SUB_Remove, SUB_Null);
-		newmis.dmg = 10 + random() * 5;
-		self.health = self.health - newmis.dmg;
-		newmis.avelocity = '3000 1000 2000';
-
-		self.nextthink = time + 1.3; // only shoot so often
-	}
-};
-
-void() ZombieGrenadeTouch2 =
-{
-	local float h;
-	
-	if (other.mask_x & CB_ZOMBY) return;
-
-	if (self.classname == "gib_tracer") // touched a gib tracer - do a bit of damage - IDEA chance of plague
-	if (self.attack_finished < time) // limit to touch hits
-	{
-		h = 5 + random() * 5;
-		T_Damage (other, self, self.owner, h);
-		self.health = self.health + h;
-		sound (self, CHAN_WEAPON, "zombie/z_hit.wav", 1, ATTN_NORM);
-		self.attack_finished = time + 0.3 + random();
-		return;
-	}
-	self.owner.enemy = other;
-	ZombieGrenadeTouch(); // reg damage
-};
-
-void() player_ZombieFireGrenade =
-{
-	if (self.weapon == IT_SHOTGUN) // shoot gib fountain chunk - TDO: vet this
-	{
-		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', ' 0 0 0', "gib_tracer", "progs/gib_m.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 0.1, GibTracer, GibTDie);
-		newmis.frame = 7;
-		newmis.takedamage = DAMAGE_YES;
-		newmis.health = 300;
-		newmis.turret_timeout = 30 + random() * 60 + time;
-		newmis.avelocity = '400 250 500';
-		return;
-	}
-	else
-		fire_missile(ZOMBIE_FLSH_VEL, MOVETYPE_BOUNCE, FL_GRN , RM_SKY | MLT_LAVA | FL_NOPART | CK_EARTHQUAKE | PF_SOLID, self.origin + '0 0 8', ' 0 0 0', "grenade", "progs/zom_gib.mdl", "zombie/z_shot1.wav", ZombieGrenadeTouch2, 2.5, SUB_Remove, SUB_Null);
-
-	newmis.dmg = 10 + random() * 15;  // player stinks a little bit more, thus more dmg
-	newmis.avelocity = '3000 1000 2000';
-
-//	if (self.weapon == SEL_MRANGE) newmis.touch = PlagueTouch;
-};
 
 
 

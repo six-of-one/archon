@@ -11,6 +11,12 @@
  */
  
  
+/*
+		+---------------------------------------+
+		|  Frame code                           | SEC-HEAD
+		+---------------------------------------+
+*/
+
 $cd /raid/quake/id1/models/demon3
 $scale	0.8
 $origin 0 0 24
@@ -305,12 +311,12 @@ void() player_demon_impulse =
 	if (self.weapon == IT_SHOTGUN)
 	{
 		sprint(self, "Demon using ( Head Spike )\n");
-		self.items = self.items | IT_CELLS | IT_SHOTGUN;
+		self.items = self.items | IT_NAILS;
 	}
-	if (self.weapon == IT_SUPER_SHOTGUN)
+	if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
 		sprint(self, "Demon getting enraged\n");
-		self.items = self.items | IT_CELLS | IT_SUPER_SHOTGUN;
+		self.items = self.items | IT_ROCKETS;
 	}
 };
 
@@ -335,7 +341,7 @@ void(float silent) player_demon_become =
 //	self.modelindex_morph=self.modelindex;
 //	self.mask_x = CB_DEMON;
 
-	self.builtin = self.items = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN;
+	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN | IT_GRENADE_LAUNCHER;
 	self.weapon = IT_SHOTGUN;
 
 	self.msight = "demon/sight2.wav";

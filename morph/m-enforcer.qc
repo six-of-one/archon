@@ -257,15 +257,15 @@ void() player_enf_impulse =
 
 	if (self.weapon == IT_AXE)
 	{
-		self.items = self.items | IT_AXE;
+//		self.items = self.items | IT_AXE;
 		sprint(self, "Enforcer using ( Nothing )\n"); 
 	}
 
 	if (self.weapon == IT_SHOTGUN)
-		{
+	{
 		sprint(self, "Enforcer using ( Laser )\n");
-		self.items = self.items | IT_CELLS | IT_SHOTGUN;
-		}
+		self.items = self.items | IT_CELLS;
+	}
 };
 /*
 		+---------------------------------------+
@@ -309,7 +309,7 @@ void(float silent) player_enforcer_become =
 //	self.modelindex_morph = self.modelindex;
 //	self.mask_x = CB_ENF;
 
-	self.builtin = self.items = IT_AXE | IT_SHOTGUN;
+	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN;
 	self.weapon = IT_SHOTGUN;
 
 	self.msight = "enforcer/sight1.wav";

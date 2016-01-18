@@ -390,6 +390,7 @@ void () tdeath_touch =
 		if (self.owner.classname != "pk*bot")
 		if (self.owner.classname != "player")
 		{	// other monsters explode themselves
+			if (self.owner.health)
 			T_Damage (self.owner,self,self,50000);
 			return ;
 		}

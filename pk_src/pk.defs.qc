@@ -425,6 +425,8 @@ float EF_FULLBRIGHT			= 512;
 
 // env stuff - part of chaos engine env effects - mostly unused
 
+float LAVA_SHOT				= 0.17; // % chance a bullet hitting lava will release a mini lavaball
+
 void(vector v1, vector v2, float typ, string snd) lightning_bolt;
 
 void(void() fr, vector org, float mvt, float vel, string cln, string md, float ct, float amt, float rmt, vector vp, vector vr, void() cb, float flg, entity s) fire_burst;
@@ -594,6 +596,8 @@ float DEF_AMMO_BASE			= 25; // if no ammo given for a default wep, this is it
 // X (extra) weapon stuff
 
 // **************************************
+
+.vector bulletspread; // weapon fire spread - used to be punchangle
 
 float ALT_FIRE_IMP			= 13; // impulse for alt fire
 .void(entity ew) _alt_fire;

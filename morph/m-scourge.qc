@@ -117,7 +117,9 @@ void() player_scourge_pain5  =[ $pain5, player_stand1 ] { };
 
 void() player_scourge_pain =
 {
-	self.pain_finished = time + 2;
+	if (self.attack_finished > time) return;
+
+	self.pain_finished = time + 2 + random() * 1;
 	player_scourge_pain1();
 };
 
@@ -414,7 +416,7 @@ void(float silent) player_scourge_become =
 	setmodel(self,"progs/scor.mdl");
 
 //	self.mask_x = CB_SCOURGE;
-	self.builtin = self.items = IT_AXE | IT_SHOTGUN;
+	self.builtin = self.items = self.items | IT_AXE | IT_SHOTGUN;
 	SEL_SCRGNAIL = IT_SHOTGUN;
 	SEL_SCRGTAIL = IT_AXE;
 	self.weapon = SEL_SCRGNAIL;

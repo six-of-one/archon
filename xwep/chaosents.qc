@@ -84,7 +84,7 @@ void() c_weapon_reggun =
 	self.dmg = DOOM_SHOT_DMG;
 	self.dmg_save = 4;
 	self.dmg_take = 42; // shot cnt
-	self.punchangle = ' 0.20 0.06 0'; // bullet spread out
+	self.bulletspread = ' 0.20 0.06 0'; // bullet spread out
 
 	setmodel (self, "progs/m_reggun.mdl");
 	self.weaponmodel = "progs/v_reggun.mdl";
@@ -224,7 +224,7 @@ TEST: more testing before removeal
 		ve.dodmg = self.dodmg;
 		ve.dmg_save = self.dmg_save;
 		ve.dmg_take = self.dmg_take;
-		ve.punchangle = self.punchangle;
+		ve.bulletspread = self.bulletspread;
 		ve.aflag = camct;
 		ve.style = self.style; // melee flag
 		ve.lefty = self.lefty; // misc data
@@ -594,6 +594,7 @@ bprint("\n");
 			other.silencer_finished = other.silencer_finished + t;
 	}
 
+	if (other.mask_x & CB_HUMAN)
 	if (self.mdl == "progs/q3_art.mdl")
 	if (self.items == IT_SUIT || self.items == IT_QUAD)
 	{

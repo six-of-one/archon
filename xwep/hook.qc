@@ -674,7 +674,7 @@ void () HookBehavior =
 		f1 = 0;
 		self.super_time = time + 0.2;
 		if (HOOK_DAMP > 0) f1 = HOOK_DAMPING;
-		else if (self.punchangle_x) f1 = self.punchangle_x;
+		else if (self.bulletspread_x) f1 = self.bulletspread_x;
 
 		if (f1 > 0)
 		if (chainlen < 160)
@@ -840,7 +840,7 @@ void(entity e) InitiateHook =
 		newhook.target1 = e.eweapon.target1;
 		newhook.target2 = e.eweapon.target2;
 		newhook.targetname = e.eweapon.targetname;
-		newhook.punchangle = e.eweapon.punchangle;
+		newhook.bulletspread = e.eweapon.bulletspread;
 	}
 
 	if (!newhook.lefty) // give away hook behavior
@@ -857,7 +857,7 @@ void(entity e) InitiateHook =
 			newhook.target1 = ""; // in + out
 			newhook.target2 = ""; // in + out
 			newhook.targetname = "q2_snd/lhook_l.wav"; // launch snd			
-			newhook.punchangle_x = 0.5;
+			newhook.bulletspread_x = 0.5;
 			newhook.speed = 650;
 			e.hook = e.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
 		}
@@ -870,7 +870,7 @@ void(entity e) InitiateHook =
 			newhook.target2 = ""; // in + out
 			newhook.targetname = "q3_snd/gauntrun.wav"; // launch snd
 			newhook.noise3 = "q3_snd/gauntrun.wav"; // continous run sound - ltn hook
-			newhook.punchangle_x = 0.5;
+			newhook.bulletspread_x = 0.5;
 			e.hook = e.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
 		}
 //		if (newhook.lefty == SEL_S_HOOK)

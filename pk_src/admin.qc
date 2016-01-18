@@ -2011,7 +2011,13 @@ void() AdminCommands =
 		}
 		else if (self.lefty == 29)
 		{
-			pk_monster_set = 0;
+			self.wad = "\nBit set cleared - 0";
+			if (!pk_monster_set)
+				pk_monster_set = MONSTER_MASK; // double action - if all off, turn all on
+			else
+				pk_monster_set = 0;
+			if (pk_monster_set)
+				self.wad = "\nBit set filled - 1s";
 		}
 		else if (self.lefty == 30)
 			Admin_monsterbits();
