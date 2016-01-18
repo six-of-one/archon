@@ -115,7 +115,13 @@ void() altar_touch =
 	{
 		other.archon = other.archon + 1;
 		other.xp = other.xp - self.aflag;
-		if (random() < 0.01) sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+		if (random() < 0.002) sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+
+ 		if (self.goalentity) // made by an Archon, he gets some every usage
+		{
+			if (self.goalentity == other) return; // this might be a redundant check, as Archons cant touch altars
+			self.goalentity.archon = self.goalentity.archon + 0.1;
+		}
 	}
 
 	if (time > 240) self.aflag = 64;
@@ -136,6 +142,8 @@ void() archon_altar =
 	}
 	else
 	setmodel (self, self.model);
+	setsize (self, self.mins, self.maxs);
+
 	if (!self.noise) self.noise = "items/r_item2.wav";
 
 	self.mask_x = MORPH_ALL;
@@ -283,7 +291,7 @@ void() archon_nodule_rnd =
 			self.archon = 30 + crandom() * 10;
 //		}		
 	}
-	setsize (self,'-16 -16 -24','16 16 16');
+	setsize (self,'-16 -16 -24','16 16 24');
 
 	if (self != god_particle)
 	if (random() < 0.4)

@@ -130,15 +130,10 @@ void() mangaFireGrenade =
 /*
 ================
 highkick
-
-FIXME
 ================
 */
 void(float side) highkick =
 {
-local vector	delta;
-local float 	ldmg;
-
 	if (!self.enemy)
 		return;
 	if (!CanDamage (self.enemy, self))
@@ -146,13 +141,13 @@ local float 	ldmg;
 
 	ai_charge(10);
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 100)
+	if (vlen(self.dest) > 100)
 		return;
 		
-	ldmg = (random() + random() + random()) * 4;
-	T_Damage (self.enemy, self, self, ldmg);
+	self.dmg = (random() + random() + random()) * 4;
+	T_Damage (self.enemy, self, self, self.dmg);
 	
 	if (side)
 	{
@@ -166,10 +161,13 @@ local float 	ldmg;
 
 void() manga_stand1	=[	$st1,	manga_stand1	]
 {
-	if ((self.weaponframe < $st1) || (self.weaponframe > $st7)) self.weaponframe = $st1;
-	else self.weaponframe = self.weaponframe + 1;
+	if ((self.duration < $st1) || (self.duration > $st7))
+	{
+		self.duration = $st1;
+	}
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
 	if (self.frame == $st5)
 	if (random() < 0.2)
@@ -195,10 +193,13 @@ void() manga_stand8	=[	$st8,	manga_stand1	] {ai_stand();};
 
 void() manga_walk1	=[	$wa1,		manga_walk1	]
 {
-	if ((self.weaponframe < $wa1) || (self.weaponframe > $wa17)) self.weaponframe = $wa1;
-	else self.weaponframe = self.weaponframe + 1;
+	if ((self.duration < $wa1) || (self.duration > $wa17))
+	{
+		self.duration = $wa1;
+	}
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
 	if (self.frame == $wa3)
 	if (random() < 0.2)
@@ -293,7 +294,34 @@ void() manga_smash12	=[	$ki12,		manga_smash13 ] {ai_charge(0);};
 void() manga_smash13	=[	$ki13,		manga_smash14 ] {ai_charge(4);};
 void() manga_smash14	=[	$ki14,		manga_run1	] {ai_charge(12);};
 
-void() manga_nail1	=[	$at1,		manga_nail2	] {ai_face();};
+void() manga_nail1	=[	$at1,		manga_nail1	]
+{
+	if ((self.duration < $at1) || (self.duration > $at9))
+	{
+		self.duration = $at1;
+	}
+	else self.duration = self.duration + 1;
+
+	self.frame = self.duration;
+
+	if (self.frame == $at8)
+	{
+		OgreFireGrenade();
+
+// fix obit message for these girls
+		newmis.classname = "grenade";
+		newmis.weapon = IT_GRENADE_LAUNCHER; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
+	}
+
+	if (self.frame == $at10) self.think = manga_run1;
+
+	ai_face();
+};
+
+/*
+
+deprecated for loop code
+
 void() manga_nail2	=[	$at2,		manga_nail3	] {ai_face();};
 void() manga_nail3	=[	$at3,		manga_nail4	] {ai_face();};
 void() manga_nail4	=[	$at4,		manga_nail5	] {ai_face();};
@@ -309,16 +337,32 @@ void() manga_nail8	=[	$at8,		manga_nail9	] {ai_face();
 };
 void() manga_nail9	=[	$at9,		manga_nail10	] {ai_face();};
 void() manga_nail10	=[	$at10,		manga_run1	] {ai_face();};
+*/
 
 
+void()	manga_pain1	=[	$pa1,		manga_pain1	]
+{
+	if ((self.duration < $pa1) || (self.duration > $pa5))
+	{
+		self.duration = $pa1;
+	}
+	else self.duration = self.duration + 1;
 
-void()	manga_pain1	=[	$pa1,		manga_pain2	] {};
+	self.frame = self.duration;
+
+	if (self.frame == $pa6) self.think = manga_run1;
+};
+
+/*
+
+deprecated for loop code
+
 void()	manga_pain2	=[	$pa2,		manga_pain3	] {};
 void()	manga_pain3	=[	$pa3,		manga_pain4	] {};
 void()	manga_pain4	=[	$pa4,		manga_pain5	] {};
 void()	manga_pain5	=[	$pa5,		manga_pain6	] {};
 void()	manga_pain6	=[	$pa6,		manga_run1	] {};
-
+*/
 
 
 //void(entity attacker, float damage)	manga_pain =
@@ -338,7 +382,30 @@ void()	manga_pain =
 
 };
 
-void()	manga_die1	=[	$die1,	manga_die2	] {};
+void()	manga_die1	=[	$die1,	manga_die1	]
+{
+	if ((self.duration < $die1) || (self.duration > $die17))
+	{
+		self.duration = $die1;
+	}
+	else self.duration = self.duration + 1;
+
+	self.frame = self.duration;
+
+	if (self.frame == $die3)
+	{
+		self.solid = SOLID_NOT;
+		self.ammo_rockets = 2;
+		DropBackpack();
+	}
+
+	if (self.frame == $die18) self.think = SUB_Null; // drop out
+};
+
+/*
+
+deprecated for loop code
+
 void()	manga_die2	=[	$die2,	manga_die3	] {};
 void()	manga_die3	=[	$die3,	manga_die4	]
 {self.solid = SOLID_NOT;
@@ -356,10 +423,10 @@ void()	manga_die13	=[	$die13,	manga_die14	] {};
 void()	manga_die14	=[	$die14,	manga_die15	] {};
 void()	manga_die15	=[	$die15,	manga_die16	] {};
 void()	manga_die16	=[	$die16,	manga_die17	] {};
-/* I had to add those 2 lines, it works that way ....*/
+// I had to add those 2 lines, it works that way ....
 void()	manga_die17	=[	$die17,	manga_die18	] {};
 void()	manga_die18	=[	$die18,	manga_die18	] {};
-
+*/
 
 
 
@@ -448,6 +515,7 @@ if (ign != A_MONSTER)
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/manga3.mdl");
 

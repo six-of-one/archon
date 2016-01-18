@@ -2992,10 +2992,8 @@ void(entity e, float mc) doom_alpha_tran =
 		{
 		setmodel (e, "progs/d_rockbox.mdl");
 		e.frame = 2;
-		if (ENHANCED)
-			e.skin = 4; // make alpha shells ammo look like shells & not bullets
-		else
-			e.skin = 3; // original design - bullet box
+		e.skin = 4; // make alpha shells ammo look like shells & not bullets
+//		e.skin = 3; // original design - bullet box
 		}
 		else if (DOOM_ALPHA == 0.6) // pre-beta
 		{

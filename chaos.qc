@@ -87,8 +87,16 @@ entity(float mvt, float sd, float flg, float ct, vector org, vector smin, vector
 // match - find on this field
 // srch - search for this
 
+// "owner" - search classnames - .owner must = current self
+// - note: if chaining, everything found will be chained, regardless of owner
+
 // RETURN - count of ents matching search parm
+
+//#define cntentnext
+
+#ifdef cntentnext
 float cnt_ent_next; // use pk .next to chain up
+#endifdef
 
 float(entity hent, string match, string srch) cnt_ent =
 {
@@ -97,36 +105,53 @@ float(entity hent, string match, string srch) cnt_ent =
 
 	sr = world;
 	if (match == "classname") sr = find (world, classname, srch);
-//	else if (match == "class_select") sr = find (world, class_select, srch);
-//	else if (match == "quakeset") sr = find (world, quakeset, srch);
+	else if (match == "owner") sr = find (world, classname, srch);
 	else if (match == "netname") sr = find (world, netname, srch);
 	else if (match == "map") sr = find (world, map, srch);
+//	else if (match == "class_select") sr = find (world, class_select, srch);
+//	else if (match == "quakeset") sr = find (world, quakeset, srch);
 //	else if (match == "scode") sr = find (world, scode, srch);
 	ch = hent;
 
 	rc = 0;
 	while (sr)
-		{
+	{
+			if (match == "owner")
+			{
+				if (sr.owner == self) rc = rc + 1;
+			}
+			else
 			rc = rc + 1;
 			if (hent)
 			{
+#ifdef cntentnext
 				if (cnt_ent_next) ch.next = sr;
-				else ch.chain = sr;
+				else 
+#endifdef
+				ch.chain = sr;
 				ch = sr;
 			}
 			if (match == "classname") sr = find (sr, classname, srch);
-//			else if (match == "class_select") sr = find (sr, class_select, srch);
-//			else if (match == "quakeset") sr = find (sr, quakeset, srch);
+			else if (match == "owner") sr = find (sr, classname, srch);
 			else if (match == "netname") sr = find (sr, netname, srch);
 			else if (match == "map") sr = find (sr, map, srch);
+//			else if (match == "class_select") sr = find (sr, class_select, srch);
+//			else if (match == "quakeset") sr = find (sr, quakeset, srch);
 //			else if (match == "scode") sr = find (sr, scode, srch);
-		}
+	}
+
 	if (hent) 
 	{
+#ifdef cntentnext
 		if (cnt_ent_next) ch.next = world;
-		else ch.chain = world; // remove other potential chains left around - not even sure if this can happen
+		else 
+#endifdef
+		ch.chain = world; // remove other potential chains left around - not even sure if this can happen
 	}
+#ifdef cntentnext
 	cnt_ent_next = FALSE;
+#endifdef
+
 	return(rc);
 }
 

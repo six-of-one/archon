@@ -1260,6 +1260,8 @@ ClientObituary
 called when a player dies
 ============
 */
+/* deprecated
+
 void(entity targ, entity attacker) ClientObituary =
 {
 	local	float rnum;
@@ -1504,3 +1506,4 @@ void(entity targ, entity attacker) ClientObituary =
 		}
 	}
 };
+*/

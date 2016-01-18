@@ -12,7 +12,7 @@
 
 void () T_MissileTouch;
 void () info_player_start;
-void(entity targ, entity attacker) ClientObituary;
+//void(entity targ, entity attacker) ClientObituary;
 
 void () monster_death_use;
 
@@ -102,6 +102,7 @@ void(entity targ, entity attacker) Killed =
 // bump the monster counter
 	if (self.flags & FL_MONSTER)
 	{
+		if (self.owner.flags & FL_MONSTER) self.owner = world; // clear summoned count for limits
 		killed_monsters = killed_monsters + 1;
 		WriteByte (MSG_ALL,SVC_KILLEDMONSTER);
 //		if (attacker.flags & FL_CLIENT)

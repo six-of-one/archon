@@ -874,10 +874,13 @@ void () W_FireSuperSpikes =
 		launch_spike (self.origin + '0 0 16', dir);
 	else
 		launch_spike (self.origin + v_up * VWZ_SNAILG + v_right * VWY_SNAILG + v_forward * VWX_SNAILG, dir);
-	if (ENHANCED)
-		newmis.touch = spike_touch;
-	else
+#ifdef enhanced
+//	if (ENHANCED)
+	newmis.touch = spike_touch;
+//	else
+#else
 	newmis.touch = superspike_touch;
+#endifdef
 	newmis.weapon = IT_SUPER_NAILGUN; // Cataboligne - 2.19.11 - correct obit in pk_clientobit
 	newmis.dmg = 18;
 	setmodel (newmis,"progs/s_spike.mdl");

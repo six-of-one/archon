@@ -90,8 +90,10 @@ void () ego_touch =
 	local float f;
 
 	f = FALSE;
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	f = other.flags & FL_MONSTER;
+#endifdef
 
 	if (other.classname != "player" && other.classname != "pk*bot")
 	if (!f)
@@ -115,7 +117,8 @@ void () ego_touch =
 	WriteCoord (MSG_BROADCAST,self.origin_z);
 	self.touch = SUB_Null;
 
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	if (f) // ego can hit a monster(s) a few times
 	if (self.cnt < 4)
 	{
@@ -131,6 +134,7 @@ void () ego_touch =
 			return;
 		}
 	}
+#endifdef
 
 	sound (self,CHAN_VOICE,"misc/null.wav",1,ATTN_NORM);
 	self.velocity = '0 0 0';
@@ -223,7 +227,10 @@ void () ego_think =
 	f = FALSE;
 	if (self.owner.dmg_inflictor.classname == "player") f = TRUE;
 	else if (self.owner.dmg_inflictor.classname == "pk*bot") f = TRUE;
-	else if ((self.owner.dmg_inflictor.flags & FL_MONSTER) && ENHANCED) f = TRUE;
+#ifdef enhanced
+//	else if ((self.owner.dmg_inflictor.flags & FL_MONSTER) && ENHANCED) f = TRUE;
+	else if (self.owner.dmg_inflictor.flags & FL_MONSTER) f = TRUE;
+#endifdef
 	
 	if ( (self.owner.dmg_inflictor != self.owner) ) // direct damage
 	{
@@ -243,7 +250,10 @@ void () ego_think =
 		f = FALSE;
 		if (self.owner.dmg_inflictor.owner.classname == "player") f = TRUE;
 		else if (self.owner.dmg_inflictor.owner.classname == "pk*bot") f = TRUE;
-		else if ((self.owner.dmg_inflictor.owner.flags & FL_MONSTER) && ENHANCED) f = TRUE;
+#ifdef enhanced
+//		else if ((self.owner.dmg_inflictor.owner.flags & FL_MONSTER) && ENHANCED) f = TRUE;
+		else if (self.owner.dmg_inflictor.owner.flags & FL_MONSTER) f = TRUE;
+#endifdef
 
 		if ( (self.owner.dmg_inflictor.owner != self.owner) ) // damage by proxy (missile, nail, etc.)
 		{

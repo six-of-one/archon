@@ -798,6 +798,40 @@ float() FindTarget =
 
 
 //=============================================================================
+// Cataboligne - 10.22.13 - multi set monters (e.g. ogre, super ogre, super ogre extra mad - all 3 framed in one model)
+// allow use of same frame macro code by adding in an adjustment frame
+
+// list of fn() affected
+
+//		ai_stand
+//		ai_walk
+//		ai_forward
+//		ai_back
+//		ai_turn
+//		ai_turn_in_place
+//		ai_run
+
+// adjust frames for multi monsters
+// aj - adjustment test value, if .frame < aj, add to frame
+
+// - positive aj - MUST be going from 0 base - i.e. 0-19 adjust to 40-59, so +40
+
+// for now, not using negative, all frames will be based off 0 - some (+) value
+// - negative aj - MUST be going to 0 base - i.e. 20 - 39 adjust to 0 - 19, so -20
+
+void(float aj) ai_frame =
+{
+	if (aj > 0)
+	{
+		if (self.frame < aj) self.frame = self.frame + aj;
+	}
+//	else if (aj < 0)
+//	{
+//		if (self.frame >= fabs(aj)) self.frame = self.frame + aj;
+//	}
+};
+
+//=============================================================================
 // Cataboligne - 11.14.12 - fast / slow code
 // 	uses self.speed as a distance value modifier
 //		self.lip is monsters speed divisor
@@ -809,6 +843,8 @@ float() FindTarget =
 
 void(float dist) ai_forward =
 {
+	ai_frame(self.walkframe);
+
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
 	if (self.flags & FL_FROZEN) return; // monster frozen
 
@@ -817,6 +853,8 @@ void(float dist) ai_forward =
 
 void(float dist) ai_back =
 {
+	ai_frame(self.walkframe);
+
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
 	if (self.flags & FL_FROZEN) return; // monster frozen
 
@@ -872,6 +910,8 @@ void(float dist) ai_walk =
 	local float ddist;
 	ddist = dist;
 
+	ai_frame(self.walkframe);
+
 	if (self.speed > 0)
 	{
 		if (self.lip <= 0) self.lip = 1; // local speed divisor
@@ -913,6 +953,7 @@ The monster is staying in one place for a while, with slight angle turns
 */
 void() ai_stand =
 {
+	ai_frame(self.walkframe);
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
 	if (self.flags & FL_FROZEN) return; // monster frozen
 
@@ -938,6 +979,8 @@ don't move, but turn towards ideal_yaw
 */
 void() ai_turn =
 {
+	ai_frame(self.walkframe);
+
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
 	if (self.flags & FL_FROZEN) return; // monster frozen
 
@@ -962,6 +1005,8 @@ don't move, but turn towards ideal_yaw
 void() ai_turn_in_place =
 {
 	local float delta;
+
+	ai_frame(self.walkframe);
 
 //	if (framecount & 3 == 3 && self.weaponframe != framecount) WaterMove(); // Cataboligne - 2.27.8 - water move for monsters
 	if (self.flags & FL_FROZEN) return; // monster frozen
@@ -1203,6 +1248,8 @@ void(float dist) ai_run =
 //	local	float	direct, ang_rint, ang_floor, ang_ceil, ddist;
 	local	float	ddist;
 
+	ai_frame(self.walkframe);
+
 	movedist = ddist = dist;
 
 	if (self.speed > 0)
@@ -1346,4 +1393,3 @@ if (WARNING & 4) bprint("monster move check\n");
 	movetogoal (ddist);		// done in C code...
 	}
 };
-

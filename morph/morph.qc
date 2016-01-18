@@ -904,12 +904,14 @@ float(entity chk) morph_clichk =
 {
 float m_test;
 
-if (ENHANCED)
+#ifdef enhanced
+//if (ENHANCED)
 if (deathmatch && MARINE_FRND)
 {
 	if (chk.morphy == CHAR_Q) m_test = CHAR_Q;
 	if (chk.morphy == CHAR_PK) m_test = CHAR_PK;
-}	
+}
+#endifdef
 if (self.classname == "monster_army") return morph_test(chk,IMP_MENF,IMP_MOGRE,IMP_MZOMBIE,m_test,0,0,   0); // he's kinda dumb...and a dork
 else if (self.classname == "monster_ogre") return morph_test(chk,IMP_MOGRE,IMP_MHKNIGHT,IMP_MSHALR,IMP_MSCOURGE,0,IMP_MSHAMBLR,   0);
 else if (self.classname == "monster_knight") return morph_test(chk,IMP_MHKNIGHT,IMP_MSHALR,IMP_MOGRE,0,0,IMP_MSHAMBLR,   0);

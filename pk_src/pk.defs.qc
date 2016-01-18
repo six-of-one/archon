@@ -31,6 +31,13 @@ float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 #else
 #endifdef
 
+// basic code has been enhanced - mostly monsters, but some other things as well
+
+#define enhanced
+
+#ifdef enhanced
+#else
+#endifdef
 
 // **************************************
 // engine section
@@ -80,7 +87,7 @@ string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.5\"\n
 string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.5\"\n";
 string vmotd					= "\\/ersion \b1\b.\b0\b.\b5a\b\n\n";
 string motd2					= "\n\n[\\/\b1\b.\b0\b.\b5a\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
-string infobver				= "infobar 30 \"you are playing: Archon 1.0.5 alpha\"\n";
+string infobver				= "infobar 10 \"you are playing: Archon 1.0.5 alpha\"\n";
 
 // web sites
 string vweb						= "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n";

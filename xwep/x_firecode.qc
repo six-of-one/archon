@@ -696,7 +696,12 @@ void() spike_touch =
 		spawn_touchblood (self.dmg);
 		T_Damage (other, self, self.owner, self.dmg);
 	}
-	if (!other.takedamage || (other.solid != SOLID_SLIDEBOX && ENHANCED))
+	if (!other.takedamage
+#ifdef enhanced
+//		|| (other.solid != SOLID_SLIDEBOX && ENHANCED)
+		|| (other.solid != SOLID_SLIDEBOX)
+#endifdef
+		)
 	{
 		local float rn;
 		if (self.frame != 5) rn = 0.07;

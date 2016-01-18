@@ -99,6 +99,7 @@ void(entity xw, entity e) set_xw_defammo =
 	if (xw.lip == AMMO_ROCKETS) if (e.ammo_rockets < 1) e.ammo_rockets = DEF_AMMO_BASE / 2.5;	
 	if (xw.lip == AMMO_GRENADES) if (e.ammo_rockets < 1) e.ammo_rockets = DEF_AMMO_BASE / 2.5;	
 	if (xw.lip == AMMO_SLUGS) if (e.ammo_slug < 1) e.ammo_slug = DEF_AMMO_BASE / 2.5;	
+	if (xw.lip == AMMO_GAS) if (e.ammo_gaspr < 1) e.ammo_gaspr = DEF_AMMO_BASE * 4;	
 };
 
 // fn(set_defaults) - server control of player/bot load defaults
@@ -115,6 +116,9 @@ void(entity e, float smc) set_xweap =
 	local string ssc;
 
 	if (!e) return;
+
+	if (e.mask_x & MORPH_ARCHON) return;
+
 	wbt = valid_wep_mcode(smc); // make sure this is a valid weapon & get inv. bit
 
 	if (!wbt || wbt & e.items) return; // no bit or already got one - IDEA: code an axe swap ??

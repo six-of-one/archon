@@ -1115,7 +1115,7 @@ void() chaos_item =
 	ft = (ci_last == 3 && (f1 & FL_SAME));
 	if (ft || random() < 0.1) // various wep effects
 		{
-			if (!ft) ci_fr = floor(random() * 10.3);
+			if (!ft) ci_fr = floor(random() * 11.3);
 			ci_last = 3;
 			if (ci_fr == 0) W_FireSpikes(0);
 			else if (ci_fr == 1) W_FireLightning(); // IDEA - just use diff lightning code here
@@ -1128,6 +1128,12 @@ void() chaos_item =
 			else if (ci_fr == 8) fire_cbolt();
 			else if (ci_fr == 9) { beartrap_dropBearTrap(); newmis.beartrap_time = time + 9; }
 			else if (ci_fr == 10) { turret_dropTurret(); turret.owner = self.owner; }
+			else if (ci_fr == 11)
+			{
+				newmis = spawn();
+				item_call_save(newmis, "archon_altar");
+				newmis.goalentity = self;
+			}
 			if (newmis)
 			{
 				if (ci_fr == 4) newmis.classname = "chaos_prox";
@@ -1157,7 +1163,7 @@ void() chaos_item =
 			else if (r1 == 11) {ci_md = "maps/b_batt1.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
 			else if (r1 == 12) ci_md = "progs/zom_gib.mdl";
 			else if (r1 == 13) ci_md = "progs/s_bubble.spr";
-			else if (r1 == 14) ci_md = "progs/eyes.mdl";
+			else if (r1 == 14) ci_md = "progs/nodule110110110.bsp"; // this is cruel - a fake god particle
 			else if (r1 == 15) {ci_md = "progs/chaos_b2.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 100; }
 			else if (r1 == 16) ci_md = "progs/grenade.mdl";
 			else if (r1 == 17) {ci_md = "progs/invulner.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
@@ -1169,7 +1175,7 @@ void() chaos_item =
 	if (ft || random() < 0.05) // random inert crap
 		{
 			ci_last = 4;
-			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, RM_SKY | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | CK_EARTHQUAKE | PF_SOLID, v0, v0, v0, v0, v0, "chaos_item", ci_md, sky_touch_pointer, 5 + (random() * 20), meltthink, SUB_Null, self, world);
+			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, RM_SKY | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | CK_EARTHQUAKE | PF_SOLID, v0, v0, v0, v0, v0, "chaos_item", ci_md, sky_touch_pointer, 5 + (random() * 20), remove_fade, SUB_Null, self, world);
 			if (newmis)
 				{
 				newmis.th_stand = SUB_Null;
@@ -2148,7 +2154,10 @@ void() thing_imprisoned =
 	self.classname = "imprisoned";
 	self.nextthink = time + 0.25;
 
-// NOTE: archon sub-game idea
+// NOTE: archon sub-game idea -
+//					imprisoned pieces in arc I are freed when color reaches their favor, in arc II they are not freed, but dont die
+
+
 	if (self.button4 <= 0) // player freed in one complete color exchange, monsters when they die of neglect
 	{
 		if (self.enemy.flags & FL_CLIENT)
@@ -2165,6 +2174,20 @@ void() thing_imprisoned =
 		self.enemy.attack_finished = 0;
 		self.enemy.event = null_string; // clear imprison notice so we can re-imprison
 		self.owner.archon = self.owner.archon + 50; // self.pk_explode_ammo; - we dont have release spell set in this case
+		remove(self.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
+		remove(self);
+	}
+	else if (! self.owner.mask_x & MORPH_ARCHON) // caster was de-archoned, free prisoners
+	{
+		if (self.enemy.flags & FL_CLIENT)
+		{
+			self.enemy.movetype = MOVETYPE_WALK;
+			self.enemy.think = player_stand1;
+			if (self.enemy.classname == "pk*bot") self.enemy.think = bot_stand1;
+		}
+		self.enemy.attack_finished = 0;
+		self.enemy.event = null_string;
+		self.owner.archon = self.owner.archon + 50; // still releases energy back to former Archon
 		remove(self.enemy.bolt_target); // NOTE: may need verification in case they get hit by clg !!
 		remove(self);
 	}
@@ -2218,12 +2241,21 @@ void() next_imprisoned =
 
 void() archon_release =
 {
+#ifdef testset
+bprint(" --- in archon release - at entry\n");
+#endifdef
 	if (!self.bolt_target) return;
 	if (self.bolt_target == self) return;
 	if (!self.bolt_target.owner != self) return;
+#ifdef testset
+bprint(" --- in archon release - at verified\n");
+#endifdef
 
 	if (self.bolt_target.classname == "imprisoned")
 	{
+#ifdef testset
+bprint(" --- in archon release - released\n");
+#endifdef
 		if (self.bolt_target.enemy.flags & FL_CLIENT)
 		{
 			self.bolt_target.enemy.movetype = MOVETYPE_WALK;
@@ -3207,7 +3239,7 @@ void(float silent) player_chaos_become =
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_LIGHTNING;
-	self.items = self.items | self.builtin;
+	self.items = self.builtin; // Archons shouldnt have any other items
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;
 // spell init - done in target

@@ -26,12 +26,11 @@ void() blarg_run8;
 void() blarg_stop1;
 void() blarg_bstop1;
 
+/*
+deprecated to dog_bite
 
 void() blarg_bite =
 {
-	local vector delta;
-	local float  ldmg;
-
 	if (!self.enemy)
 		return;
 
@@ -40,19 +39,21 @@ void() blarg_bite =
 	if (!CanDamage (self.enemy, self))
 		return;
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 100)
+	if (vlen(self.dest) > 100)
 		return;
 		
-	ldmg = (random() + random() + random()) * 8;
-	T_Damage (self.enemy, self, self, ldmg);
+	self.dmg = (random() + random() + random()) * 8;
+	T_Damage (self.enemy, self, self, self.dmg);
 };
+*/
+
+/*
+deprecated to Monster_JumpTouch
 
 void()  Blarg_JumpTouch =
 {
-	local   float   ldmg;
-
 	if (self.health <= 0)
 		return;
 		
@@ -60,8 +61,8 @@ void()  Blarg_JumpTouch =
 	{
 		if ( vlen(self.velocity) > 300 )
 		{
-			ldmg = 5 + 10*random();
-			T_Damage (other, self, self, ldmg);     
+			self.dmg = 5 + 10*random();
+			T_Damage (other, self, self, self.dmg);     
 		}
 	}
 
@@ -80,11 +81,11 @@ void()  Blarg_JumpTouch =
 	self.think = blarg_run8;
 	self.nextthink = time;
 };
-
+*/
 //void(entity attacker, float damage)  blarg_pain =
 void()  blarg_pain =
 {
-	if (self.touch == Blarg_JumpTouch)
+	if (self.touch == Monster_JumpTouch)
 		return;
 
 	if (self.pain_finished > time)
@@ -180,7 +181,7 @@ void() blarg_run4       =[      $kikatt15 ,     blarg_run5      ]
 {
 	ai_face();
 	
-	self.touch = Blarg_JumpTouch;
+	self.touch = Monster_JumpTouch;
 	makevectors (self.angles);
 	self.origin_z = self.origin_z + 1;
 	self.velocity = v_forward * 400 + '0 0 250';
@@ -196,13 +197,13 @@ void() blarg_run8       =[      $kikatt11 ,     blarg_run1      ] {};
 
 void() blarg_atta1      =[      $kikatt13,      blarg_atta2     ] {ai_charge(10); ai_face();};
 void() blarg_atta2      =[      $kikatt14,      blarg_atta3     ] {ai_charge(10); ai_face();};
-void() blarg_atta3      =[      $kikatt15,      blarg_atta4     ] {ai_charge(10); blarg_bite();};
+void() blarg_atta3      =[      $kikatt15,      blarg_atta4     ] {ai_charge(10); dog_bite();};
 void() blarg_atta4      =[      $kikatt16,      blarg_atta5     ] 
 {
 	sound (self, CHAN_VOICE, "mon_II/blarg/bjump2.wav", 1, ATTN_NORM);
-	blarg_bite();
+	dog_bite();
 };
-void() blarg_atta5      =[      $kikatt17,      blarg_atta6     ] {ai_charge(10); blarg_bite();};
+void() blarg_atta5      =[      $kikatt17,      blarg_atta6     ] {ai_charge(10); dog_bite();};
 void() blarg_atta6      =[      $kikatt18,      blarg_atta7     ] {ai_charge(10);};
 void() blarg_atta7      =[      $kikatt19,      blarg_atta8     ] {ai_charge(10);};
 void() blarg_atta8      =[      $kikatt20,      blarg_run1      ] {ai_charge(10);};
@@ -213,7 +214,7 @@ void() blarg_leap3      =[      $kikatt22,              blarg_leap4     ]
 {
 	ai_face();
 	
-	self.touch = Blarg_JumpTouch;
+	self.touch = Monster_JumpTouch;
 	makevectors (self.angles);
 	self.origin_z = self.origin_z + 1;
 	self.velocity = v_forward * 600 + '0 0 250';
@@ -237,6 +238,10 @@ CheckBlargMelee
 Returns TRUE if a melee attack would hit right now
 ==============
 */
+/*
+
+ --- apparently this is NEVER checked!
+
 float() CheckBlargMelee =
 {
 	if (enemy_range == RANGE_MELEE)
@@ -294,19 +299,24 @@ float() BlargCheckAttack =
 	
 	return FALSE;
 };
-
+*/
 
 //string(entity targ, entity attacker) blarg_killmsg =
 string() blarg_killmsg =
 {
-	if (random() < 0.5 || !ENHANCED)
-		return " was ripped apart by a  ";
+#ifdef enhanced
+//	if (random() < 0.5 || !ENHANCED)
+	if (random() < 0.5)
+		return " was ripped apart by a ";
 	else if (random() < 0.8)
-		return " bot viscerally mauled a ";
+		return " got viscerally mauled a ";
 	else
 	{
-		return(" found out Blargs dont make good pets.\n");
+		return(" found that you cant make a decent pet out of a ");
 	}
+#else
+	return " was ripped apart by a  ";
+#endifdef
 };
 
 //===========================================================================
@@ -326,7 +336,7 @@ if (ign != A_MONSTER)
 		return;
 	}
 	
-	if (!M_MONSTER_II & CB_M_ARMY)
+	if (!M_MONSTER_II & CB_M_BLARG)
 	if (deathmatch)
 //		if (deathmatch != 4)
 	{
@@ -357,6 +367,7 @@ if (ign != A_MONSTER)
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/blarg.mdl");
 
@@ -373,6 +384,12 @@ if (ign != A_MONSTER)
 	self.th_die = blarg_stop;
 	self.pain_finished = time + 3;
 	self._killmsg = blarg_killmsg;
+
+// jumptouch multi
+	self._jump = blarg_leap1;
+	self._jump2 = blarg_run8;
+	self.jump_flag = 300;
+	self.dodmg = 5;
 
 	walkmonster_start();
 };

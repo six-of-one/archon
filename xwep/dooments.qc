@@ -691,8 +691,10 @@ string() q2mg_killmsg2;
 // pistol
 string() dp_killmsg =
 {
-	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ",null_string,null_string," was shot by "));
+#ifdef enhanced
+//	if (ENHANCED)
+	return(rnd_string(' 90.0 60.0 60.0'," got plinked by "," got picked off by ",null_string,null_string," was shot by "));
+#endifdef
 
 	return " was shot by ";
 };
@@ -705,8 +707,10 @@ string() dp_killmsg2 =
 // saw
 string() dsaw_killmsg =
 {
-	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ",null_string,null_string," was cut to pieces by "));
+#ifdef enhanced
+//	if (ENHANCED)
+	return(rnd_string(' 90.0 60.0 60.0'," underwent chainsaw surgery by "," simply went to bits for ",null_string,null_string," was cut to pieces by "));
+#endifdef
 
 	return " was cut to pieces by ";
 };
@@ -1573,8 +1577,10 @@ string(entity targ, entity attacker) wrock_killmsg =
 {
 	if (targ == attacker) return " blew himself up.\n";
 		
-	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ",null_string,null_string," ate "));
+#ifdef enhanced
+//	if (ENHANCED)
+	return(rnd_string(' 90.0 60.0 60.0'," got shrapnel from "," got up close and personal with ",null_string,null_string," ate "));
+#endifdef
 
 	return " ate ";
 };
@@ -1590,8 +1596,10 @@ string(entity targ, entity attacker) wflame_killmsg =
 {
 	if (targ == attacker) return " hurt himself playing with fire.\n";
 		
-	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ",null_string,null_string," got burnt by "));
+#ifdef enhanced
+//	if (ENHANCED)
+	return(rnd_string(' 90.0 60.0 60.0'," felt the heat from "," danced the napalm cha-cha with ",null_string,null_string," got burnt by "));
+#endifdef
 
 	return " got burnt by ";
 };
@@ -1605,8 +1613,10 @@ string(entity targ, entity attacker) wflame_killmsg2 =
 // knife
 string() wk_killmsg =
 {
-	if (ENHANCED)
-		return(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ",null_string,null_string," was cut down by "));
+#ifdef enhanced
+//	if (ENHANCED)
+	return(rnd_string(' 90.0 60.0 60.0'," went to ribbons for "," got a columbian neck tie from ",null_string,null_string," was cut down by "));
+#endifdef
 
 	return " was cut down by ";
 };

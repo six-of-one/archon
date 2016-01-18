@@ -4,7 +4,7 @@
  *
  * file: heximp.qc
  *
- * date: 11/29/12
+ * date: 11/29/12 - inserted
  *
  * qc - hexen 2 imp monster for quake
  *
@@ -54,10 +54,13 @@ float SPAWN_AMBUSH = 3;
 
 void() heximp_sit1 = [	$heximpwat1, heximp_sit1 ]
 {
-	if ((self.weaponframe < $heximpwat1) || (self.weaponframe > $heximpwat23)) self.weaponframe = $heximpwat1;
-	else self.weaponframe = self.weaponframe + 1;
+	if ((self.duration < $heximpwat1) || (self.duration > $heximpwat23))
+	{
+		self.duration = $heximpwat1;
+	}
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
 	if (self.frame == $heximpwat1)
 	if (random() < 0.5) sound (self, CHAN_VOICE, "heximp/up.wav", 1, ATTN_IDLE);
@@ -92,10 +95,13 @@ void() heximp_sit24 =[	$heximpwat24, heximp_sit1 ] {ai_stand();};
 
 void() heximp_stand1 = [	$heximpfly1, heximp_stand1 ]
 {
-	if ((self.weaponframe < $heximpfly1) || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
-	else self.weaponframe = self.weaponframe + 1;
+	if ((self.duration < $heximpfly1) || (self.duration > $heximpfly19))
+	{
+		self.duration = $heximpfly1;
+	}
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
 	ai_stand();
 };
@@ -125,10 +131,13 @@ void() heximp_stand20 =[	$heximpfly20, heximp_stand1 ] {ai_stand();};
 
 void() heximp_hover1 =[	$heximpfly1, heximp_hover1 ]
 {
-	if ((self.weaponframe < $heximpfly1) || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
-	else self.weaponframe = self.weaponframe + 1;
+	if ((self.duration < $heximpfly1) || (self.duration > $heximpfly19))
+	{
+		self.duration = $heximpfly1;
+	}
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
 	ai_walk(14);
 };
@@ -158,10 +167,13 @@ void() heximp_hover20 =[	$heximpfly20, heximp_hover1 ] {ai_walk(14);};
 
 void() heximp_fly1 =[	$heximpfly1, heximp_fly1 ]
 {
-	if ((self.weaponframe < $heximpfly1) || (self.weaponframe > $heximpfly19)) self.weaponframe = $heximpfly1;
-	else self.weaponframe = self.weaponframe + 1;
+	if ((self.duration < $heximpfly1) || (self.duration > $heximpfly19))
+	{
+		self.duration = $heximpfly1;
+	}
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
 	ai_run(24);
 };
@@ -197,35 +209,39 @@ Imp Attack Code
 
 void() ImpClaw =
 {
-local vector	delta;
-local float 	ldmg;
-
 	if (!self.enemy) return;
 	if (!CanDamage (self.enemy, self)) return;
 
 	ai_charge(10);
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 64) return;
+	if (vlen(self.dest) > 64) return;
 
-	ldmg = (random() + random() + random()) * 4;
-	T_Damage (self.enemy, self, self, ldmg);
+	self.dmg = (random() + random() + random()) * 4;
+	T_Damage (self.enemy, self, self, self.dmg);
 };
 
-void() heximp_hit1 =[	$heximpfir1, heximp_hit2 ] {ai_charge(1);};
-void() heximp_hit2 =[	$heximpfir2, heximp_hit3 ] {ai_charge(1);};
-void() heximp_hit3 =[	$heximpfir3, heximp_hit4 ] {ai_charge(2);};
-void() heximp_hit4 =[	$heximpfir4, heximp_hit5 ] {ai_charge(2);};
-void() heximp_hit5 =[	$heximpfir5, heximp_hit6 ] {ai_charge(3);};
-void() heximp_hit6 =[	$heximpfir6, heximp_hit7 ] {ai_charge(3);};
-void() heximp_hit7 =[	$heximpfir7, heximp_hit8 ] {ai_charge(4);};
-void() heximp_hit8 =[	$heximpfir8, heximp_hit9 ] {ai_charge(4);};
-void() heximp_hit9 =[	$heximpfir9, heximp_hit10 ] {ai_charge(5);};
-void() heximp_hit10 =[	$heximpfir10, heximp_hit11 ] {ai_charge(5);};
-void() heximp_hit11 =[	$heximpfir11, heximp_hit12 ] {ai_charge(6);};
-void() heximp_hit12 =[	$heximpfir12, heximp_hit13 ] {ai_charge(6);};
-void() heximp_hit13 =[	$heximpfir13, heximp_hit14 ] {ai_charge(7);};
+void() heximp_ball14;
+
+void() heximp_hit1 =[	$heximpfir1, heximp_hitball2 ] {ai_charge(1);self.aflag = 1;};
+void() heximp_hitball2 =[	$heximpfir2, heximp_hitball3 ] {ai_charge(1);};
+void() heximp_hitball3 =[	$heximpfir3, heximp_hitball4 ] {ai_charge(2);};
+void() heximp_hitball4 =[	$heximpfir4, heximp_hitball5 ] {ai_charge(2);};
+void() heximp_hitball5 =[	$heximpfir5, heximp_hitball6 ] {ai_charge(3);};
+void() heximp_hitball6 =[	$heximpfir6, heximp_hitball7 ] {ai_charge(3);};
+void() heximp_hitball7 =[	$heximpfir7, heximp_hitball8 ] {ai_charge(4);};
+void() heximp_hitball8 =[	$heximpfir8, heximp_hitball9 ] {ai_charge(4);};
+void() heximp_hitball9 =[	$heximpfir9, heximp_hitball10 ] {ai_charge(5);};
+void() heximp_hitball10 =[	$heximpfir10, heximp_hitball11 ] {ai_charge(5);};
+void() heximp_hitball11 =[	$heximpfir11, heximp_hitball12 ] {ai_charge(6);};
+void() heximp_hitball12 =[	$heximpfir12, heximp_hitball13 ] {ai_charge(6);};
+void() heximp_hitball13 =[	$heximpfir13, heximp_hit14 ]
+{
+	ai_charge(7);
+	if (self.aflag == 2) self.think = heximp_ball14;	
+};
+
 void() heximp_hit14 =[	$heximpfir14, heximp_hit15 ] {ai_charge(7);};
 void() heximp_hit15 =[	$heximpfir15, heximp_hit16 ]
 {
@@ -283,7 +299,11 @@ void() ImpThrowBall =
 	setorigin (missile, self.origin);
 };
 
-void() heximp_ball1 =[	$heximpfir1, heximp_ball2 ] {ai_charge(1);};
+void() heximp_ball1 =[	$heximpfir1, heximp_hitball2 ] {ai_charge(1);self.aflag = 2;};
+
+/*
+multiplex with *_hitball2 above
+
 void() heximp_ball2 =[	$heximpfir2, heximp_ball3 ] {ai_charge(1);};
 void() heximp_ball3 =[	$heximpfir3, heximp_ball4 ] {ai_charge(2);};
 void() heximp_ball4 =[	$heximpfir4, heximp_ball5 ] {ai_charge(2);};
@@ -296,6 +316,8 @@ void() heximp_ball10 =[	$heximpfir10, heximp_ball11 ] {ai_charge(5);};
 void() heximp_ball11 =[	$heximpfir11, heximp_ball12 ] {ai_charge(6);};
 void() heximp_ball12 =[	$heximpfir12, heximp_ball13 ] {ai_charge(6);};
 void() heximp_ball13 =[	$heximpfir13, heximp_ball14 ] {ai_charge(7);};
+*/
+
 void() heximp_ball14 =[	$heximpfir14, heximp_ball15 ] {ai_charge(4);};
 void() heximp_ball15 =[	$heximpfir15, heximp_ball16 ]
 {
@@ -357,16 +379,19 @@ void() heximp_up1 = [	$heximpup1, heximp_up2 ] {sound (self, CHAN_VOICE, "heximp
 
 void() heximp_up2 = [	$heximpup2, heximp_up2 ]
 {
-	if ((self.weaponframe < $heximpup2) || (self.weaponframe > $heximpup23)) self.weaponframe = $heximpup2;
-	else self.weaponframe = self.weaponframe + 1;
-
-	if (self.weaponframe > $heximpup23)
+	if ((self.duration < $heximpup2) || (self.duration > $heximpup23))
 	{
-		self.weaponframe = $heximpup1;
+		self.duration = $heximpup2;
+	}
+	else self.duration = self.duration + 1;
+
+	if (self.duration > $heximpup23)
+	{
+		self.duration = $heximpup1;
 		heximp_fly1();
 	}
 	else
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 };
 /*
 void() heximp_up2 =[	$heximpup2, heximp_up3 ] {};
@@ -462,6 +487,7 @@ if (ign != A_MONSTER)
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
  setmodel (self, "progs/heximp.mdl");
 

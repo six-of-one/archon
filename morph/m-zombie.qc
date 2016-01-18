@@ -920,17 +920,24 @@ void() player_zombie_impulse =
 
 string() player_zombie_killmsg =
 {
-	if (!ENHANCED) return " joins the Zombies\n";
-
+#ifdef enhanced
 	if (random() < 0.3) return " joins the Zombies with ";
 	if (random() < 0.8) return " was splatted to death by ";
 	return " caught leprosy from ";
+#else
+//	if (!ENHANCED) 
+	return " joins the Zombies\n";
+#endifdef
 };
 
 string() player_zombie_killmsg2 =
 {
-	if (!ENHANCED) return  "noname";
+#ifdef enhanced
 	return ", and rots away.\n";
+#else
+//	if (!ENHANCED) 
+	return  "noname";
+#endifdef
 };
 
 void(float silent) player_zombie_become = 

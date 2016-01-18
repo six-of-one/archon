@@ -335,16 +335,23 @@ void() player_shalrath_impulse =
 
 string() player_shalrath_killmsg =
 {
-	if (!ENHANCED) return " was exploded by a Vore\n";
+#ifdef enhanced
 	if (random() < 0.5) return " felt the deep existential magic of ";
-	return " was exploded by ";
+	return " was exploded by Vore ";
+#else
+//	if (!ENHANCED) 
+	return " was exploded by a Vore\n";
+#endifdef
 };
 
 string() player_shalrath_killmsg2 =
 {
-	if (!ENHANCED) return "noname";
-
+#ifdef enhanced
 	return "\n";
+#else
+//	if (!ENHANCED) 
+	return "noname";
+#endifdef
 };
 
 void(float silent) player_shalrath_become =

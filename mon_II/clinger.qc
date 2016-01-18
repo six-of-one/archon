@@ -61,9 +61,11 @@ void() clinger_idle1 =[ $idle1, clinger_idle1 ]
 	if (!targ) return;
 //	if (targ.classname == OBSERVER) return; // dont fall on observers
 
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
    if (targ.invisible_finished) // mostly cant see invisible
 	if (random() < 0.96) return;
+#endifdef
 
 	targposition = targ.origin + targ.velocity * 0.3;
 	targposition_z = targ.origin_z;
@@ -305,6 +307,7 @@ if (ign != A_MONSTER)
 
 	self.class_select = "class_monster";
 	self.cnt = 2 + cvar("skill") * 2;
+	self.walkframe = 0;
 
 	if (self.event == "dyn_monster") // Cat note: dont create a load of respawners when making random monsters
 	{
@@ -313,8 +316,10 @@ if (ign != A_MONSTER)
 		if (!self.count)  self.count = 2 + ceil( random() * 4); // loop respawn a few times, then out
 		if (!self.wait) self.wait = C_MONSTER_WAIT / self.count; // try to be done by next random up
 		if (self.wait < 15) self.wait = 15 + random();
-		if (ENHANCED)
+#ifdef enhanced
+//		if (ENHANCED)
 		if (random() < 0.5) self.cnt = 3 + random() * 10; // 50% random spawns get rnd cnts
+#endifdef
 
 		traceline(self.origin + ' 0 0 6', self.origin + ' 0 0 1005', TRUE, self);
 		if (sky_touch(null_string, trace_endpos + ' 0 0 1', world)) trace_fraction = 1; // hit sky brush or surface

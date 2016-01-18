@@ -343,13 +343,22 @@ void() player_enf_sight =
 
 string() player_enf_killmsg =
 {
-	if (!ENHANCED) return " was blasted by an Enforcer\n";
+#ifdef enhanced
 	return(rnd_string(' 60.0 50.0 40.0'," was blasted by Enforcer ",null_string,null_string," got pulled over - permanently by "," was arrested by Enforcer "));
+#else
+//	if (!ENHANCED)
+	return " was blasted by an Enforcer\n";
+#endifdef
 };
+
 string() player_enf_killmsg2 =
 {
-	if (!ENHANCED) return "noname";
+#ifdef enhanced
 	return "\n";
+#else
+//	if (!ENHANCED)
+	return "noname";
+#endifdef
 };
 
 /*

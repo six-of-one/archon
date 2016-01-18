@@ -135,7 +135,10 @@ void () tombtouch =
 	else
 */
 	if (other.classname != "player" && other.classname != "pk*bot")
-	if ((! other.flags & FL_MONSTER) || !ENHANCED)
+//	if ((! other.flags & FL_MONSTER) || !ENHANCED)
+#ifdef enhanced
+	if (! other.flags & FL_MONSTER)
+#endifdef
 	{
 		return ;
 	}
@@ -148,7 +151,8 @@ void () tombtouch =
 		return ;
 	}
 	
-	if (ENHANCED)
+#ifdef enhanced
+//	if (ENHANCED)
 	if (other.mask_x & CB_ZOMBY || other.model == "progs/zombie.mdl")
 	{
 		if (self.enemy != other)
@@ -163,6 +167,7 @@ void () tombtouch =
 		}
 		return ;
 	}
+#endifdef
 	holdowner = self.owner;
 	self.owner = holdowner.owner;
 	sound (self,CHAN_AUTO,"tomb/tombopen.wav",1,ATTN_NORM);

@@ -31,7 +31,7 @@ void() spikemine_Home =
    local entity selected;
    local float cur_dist;
    local float head_dist;
-   local vector dir, vtemp;
+   local vector dir;
 
    self.frame = self.frame + 1;
    if (self.frame==9) self.frame = 0;
@@ -73,8 +73,8 @@ void() spikemine_Home =
       self.velocity = '0 0 0';
       return;
       }
-   vtemp = self.enemy.origin + '0 0 10';
-	dir = normalize(vtemp - self.origin);
+   self.dest = self.enemy.origin + '0 0 10';
+	dir = normalize(self.dest - self.origin);
    if (infront(self.enemy, 0, v0, v0))
       {
       self.velocity = dir * ((skill*50) + 50);
@@ -89,8 +89,6 @@ void() spikemine_Home =
 
 void() spikemine_Touch =
 {
-	local float ldmg;
-
 	if (self.health>0)
       {
       if (other.classname == "trap_spike_mine")
@@ -110,10 +108,9 @@ void() spikemine_Touch =
       }
 //   self.effects = self.effects | EF_MUZZLEFLASH;
 
-	ldmg = self.dmg;
-	if (!ldmg) ldmg = 110;
+	if (!self.dmg) self.dmg = 110;
 
-   T_RadiusDamage (self, self, ldmg, world);
+   T_RadiusDamage (self, self, self.dmg, world);
 	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
 
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
@@ -171,7 +168,7 @@ if (ign != A_MONSTER)
    precache_sound ("misc/null.wav");
 }
    setmodel (self, "progs/spikmine.mdl");
-//   setmodel (self, "progs/spike.mdl");
+
    setsize (self, self.mins, self.maxs);
    self.classname = "trap_spike_mine";
    self.solid = SOLID_BBOX;

@@ -1143,7 +1143,6 @@ float() GremlinFindTarget;
 
 float() GremlinAttemptWeaponSteal =
    {
-   local vector delta;
    local entity tempself;
    local float best;
    local entity victim;
@@ -1163,9 +1162,9 @@ float() GremlinAttemptWeaponSteal =
       return FALSE;
       }
 
-   delta = (self.enemy.origin - self.origin);
+   self.dest = (self.enemy.origin - self.origin);
 
-   if (vlen(delta) > 100)
+   if (vlen(self.dest) > 100)
       return FALSE;
    if (random() < 0.5)
       return FALSE;
@@ -1903,17 +1902,15 @@ float()  GremlinCheckAttack =
 
 void(float stc)  Gremlin_Melee =
 {
-//	local	float	ldmg;
-	local vector	delta;
 
 	ai_face ();
 
 //   walkmove (self.ideal_yaw, 12);   // allow a little closing
 
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 100)
+	if (vlen(self.dest) > 100)
 		return;
 	if (!CanDamage (self.enemy, self))
 		return;
@@ -1921,11 +1918,11 @@ void(float stc)  Gremlin_Melee =
 	W_FireClawBite(stc);
 /*
 //    sound (self, CHAN_WEAPON, "grem/attack.wav", 1, ATTN_NORM);
-	ldmg = 10 + 5*random();
+	self.dmg = 10 + 5*random();
 	if (side == 0)
-		ldmg = ldmg + 15; // bite damage
+		self.dmg = self.dmg + 15; // bite damage
 	else // slash
-	T_Damage (self.enemy, self, self, ldmg);
+	T_Damage (self.enemy, self, self, self.dmg);
 
 	makevectors (self.angles);
 	SpawnMeatSpray (self.origin + v_forward*16, side * v_right);
@@ -2090,19 +2087,17 @@ void() Gremlin_Split =
 
 void(float side)  Gremlin_Gorge =
    {
-	local	float	ldmg;
-	local vector	delta;
 
 //   ai_face ();
 //   walkmove (self.ideal_yaw, 6);   // allow a little closing
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 //   self.enemy.takedamage = DAMAGE_YES;
 
     sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
 //    sound (self, CHAN_WEAPON, "grem/attack.wav", 1, ATTN_NORM);
-   ldmg = 7+5*random();
-   Gremlin_Damage (self.enemy, self, ldmg);
+   self.dmg = 7+5*random();
+   Gremlin_Damage (self.enemy, self, self.dmg);
 
 	makevectors (self.angles);
 	SpawnMeatSpray (self.origin + v_forward*16, side * v_right);
@@ -2119,8 +2114,8 @@ void(float side)  Gremlin_Gorge =
 //         ThrowGib ("progs/gib2.mdl", -15);
 //         ThrowGib ("progs/gib3.mdl", -15);
          self = trace_ent;
-         ldmg = 150 + 100*random();
-         T_Heal(self,ldmg,FALSE);
+         self.dmg = 150 + 100*random();
+         T_Heal(self,self.dmg,FALSE);
 //         if (self.health >= self.max_health)
             Gremlin_Split();
          }
@@ -2161,7 +2156,6 @@ void(float side)  Gremlin_Gorge =
 
 void()   Gremlin_JumpTouch =
 {
-//	local	float	ldmg;
 
    if (self.health <= 0)
 		return;
@@ -2171,8 +2165,8 @@ void()   Gremlin_JumpTouch =
 	{
 		if ( vlen(self.velocity) > 400 )
 		{
-			ldmg = 40 + 10*random();
-			T_Damage (other, self, self, ldmg);
+			self.dmg = 40 + 10*random();
+			T_Damage (other, self, self, self.dmg);
 		}
 	}
 */
@@ -2194,7 +2188,6 @@ void()   Gremlin_JumpTouch =
 
 void()   Gremlin_FlipTouch =
 {
-//	local	float	ldmg;
 
 	if (!checkbottom(self))
       {

@@ -228,8 +228,12 @@ void () item_megahealth_rot =
 	other = self.owner;
 
 // Cataboligne - 10.13.11 - regen / vampire runes
-	if (!(other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
-	if (! other.rune_flag & (RUNE_FLG_RG | TECH_ADOC) || !ENHANCED)
+#ifdef enhanced
+//	if (!(other.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
+	if (! (other.rune_flag & RUNE_VAMPIRE))
+//	if (! other.rune_flag & (RUNE_FLG_RG | TECH_ADOC) || !ENHANCED)
+	if (! other.rune_flag & (RUNE_FLG_RG | TECH_ADOC))
+#endifdef
 
 	if (other.health > other.max_health * other.health_modifier) // Cataboligne - 9.18.11 - morphic
 	{

@@ -28,7 +28,13 @@ void()	q100_ClientDisconnect;
 void() SetNewParms_PK =
 {
 	parm1 = 0; // IT_SHOTGUN | IT_AXE;
-	parm2 = 100;
+
+// if this is called other than a first connect, we never take away archon pts
+	if (self.archon < 0) self.archon = 0;
+	if (self.archon > 65535) self.archon = 65535; // cap - largest amount var will hold
+
+//	parm2 = 100;
+	parm2 = 100 + ceil(self.archon) * 256;
 	parm4 = -25;
 	parm3 = parm5 = parm6 = parm7 = parm9 = 0;
 	parm8 = 1;
@@ -51,10 +57,18 @@ void() SetChangeParms =
 
 //	cam_parms(0);
 
+	// code xweaps - return poss map code for parm & clear items
+
+	parm3 = self.mcode;
+
 	if (self.class_select == "class_player")
 	{
 		parm15 = self.morphy;
-		if ((self.height == IMP_MCHAOS) || (self.height == IMP_MORDER)) parm15 = self.height; // true archon form
+		if ((self.height == IMP_MCHAOS) || (self.height == IMP_MORDER))
+		{
+			parm15 = self.height; // true archon form
+			parm3 = 0; // archon could be de-archoned and have weps
+		}
 	}
 
 	if (self.health <= 0 || self.classname == OBSERVER) // Cataboligne - 5.3.10 - fix level change issue when in dead observer or admin observer
@@ -64,9 +78,6 @@ void() SetChangeParms =
 		return ;
 	}
 
-	// code xweaps - return poss map code for parm & clear items
-
-	parm3 = self.mcode;
 
 	if (self.scode & 512) // had a grapple - zip out bit, so an xwep grap doesnt become a pk grapgun
 	{
@@ -85,6 +96,8 @@ void() SetChangeParms =
 		self.health = 50;
 
 	parm1 = self.items;
+
+	if (self.archon < 0) self.archon = 0;
 	if (self.archon > 65535) self.archon = 65535; // cap - largest amount var will hold
 
 	parm2 = self.health + ceil(self.archon) * 256;
@@ -129,7 +142,13 @@ void() SetNewParms =
 //		q10-_SetNewParms();
 
 	parm1 = 0; // IT_SHOTGUN | IT_AXE;
-	parm2 = 100;
+
+	if (self.archon < 0) self.archon = 0;
+	if (self.archon > 65535) self.archon = 65535; // cap - largest amount var will hold
+
+//	parm2 = 100;
+	parm2 = 100 + ceil(self.archon) * 256;
+
 	parm3 = 0;
 	parm4 = -25;
 	parm5 = 0;

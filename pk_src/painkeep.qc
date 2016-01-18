@@ -1012,13 +1012,16 @@ void() pk_liveupd =
 		monster_respawner = world;
 	}
 
-	if (ENHANCED)
-	{
-		FAST_MONSTER = cvar("sv_monster_fast");
-		SLOW_MONSTER = cvar("sv_monster_slow");
-		R_FAST_MONSTER = cvar("sv_monster_rnd_fast");
-		R_SLOW_MONSTER = cvar("sv_monster_rnd_slow");
-	}
+#ifdef enhanced
+//	if (ENHANCED)
+//	{
+	FAST_MONSTER = cvar("sv_monster_fast");
+	SLOW_MONSTER = cvar("sv_monster_slow");
+	R_FAST_MONSTER = cvar("sv_monster_rnd_fast");
+	R_SLOW_MONSTER = cvar("sv_monster_rnd_slow");
+//	}
+#endifdef
+
 	C_FS_MONSTER = cvar("sv_monster_cfs");
 
 	if (MON_SPEED_DIV <= 0) MON_SPEED_DIV = 1;

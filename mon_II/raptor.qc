@@ -1,12 +1,3 @@
-void()  raptor_JumpTouch;
-void(entity attacker, float damage)     raptor1_pain;
-void(entity attacker, float damage)     raptor1_stumble;
-void() raptor_die;
-void() raptor_limp;
-void(float side, float damg)        raptor_Melee;
-void() raptor_MeleeAttackb;
-void() raptor_MeleeAttack;
-
 /*
 ==============================================================================
 
@@ -16,6 +7,15 @@ RAPTOR
 
 ==============================================================================
 */
+
+
+void(entity attacker, float damage)     raptor1_pain;
+void(entity attacker, float damage)     raptor1_stumble;
+void() raptor_die;
+void() raptor_limp;
+void(float side, float damg)        raptor_Melee;
+void() raptor_MeleeAttackb;
+void() raptor_MeleeAttack;
 
 $scale  0.8
 $origin 0 100 24
@@ -112,17 +112,22 @@ void()  raptor1_stand1   =[      $stand1,        raptor1_stand2   ]
 
 void()  raptor1_stand2   =[      $stand2,        raptor1_stand2   ]
 {
-	if ((self.weaponframe < $stand2) || (self.weaponframe > $stand15)) self.weaponframe = $stand2;
-	else self.weaponframe = self.weaponframe + 1;
-	
-	if (self.weaponframe > $stand15)
+	if ((self.duration < $stand2) || (self.duration > $stand15))
 	{
-		self.weaponframe = $stand1;
+		self.duration = $stand2;
+	}
+	else self.duration = self.duration + 1;
+
+	if (self.duration > $stand15)
+	{
+		self.duration = $stand1;
 		raptor1_stand1();
 	}
 	else
-	self.frame = self.weaponframe;
-	ai_stand();
+	{
+		self.frame = self.duration;
+		ai_stand();
+	}
 };
 
 /*
@@ -256,7 +261,7 @@ void()  raptor1_jump4    =[      $leap4,         raptor1_jump5    ]
 	sound (self, CHAN_VOICE, "mon_II/raptor/rjump.wav", 1, ATTN_NORM);
 	ai_face();
 	self.th_die = raptor_die;
-	self.touch = raptor_JumpTouch;
+	self.touch = Monster_JumpTouch;
 	makevectors (self.angles);
 	self.origin_z = self.origin_z + 1;
 	self.velocity = v_forward * 600 + '0 0 300';
@@ -332,7 +337,27 @@ void()  raptor1_pain6    =[      $pain6,         raptor1_run1     ] {};
 
 void()  raptor1_die1             =[      $death1,                raptor1_die2     ] {
 sound (self, CHAN_VOICE, "mon_II/raptor/rdeath1.wav", 1, ATTN_NORM);};
-void()  raptor1_die2             =[      $death2,                raptor1_die3     ] {};
+
+
+void()  raptor1_die2             =[      $death2,                raptor1_die2     ]
+{
+	if ((self.duration < $death2) || (self.duration > $death12))
+	{
+		self.duration = $death2;
+	}
+	else self.duration = self.duration + 1;
+
+	self.frame = self.duration;
+
+	if (self.frame == $death6) self.solid = SOLID_NOT;
+
+	if (self.frame == $death13) self.think = SUB_Null;
+};
+
+/*
+
+deprecated for loop code
+
 void()  raptor1_die3             =[      $death3,                raptor1_die4     ] {};
 void()  raptor1_die4             =[      $death4,                raptor1_die5     ] {};
 void()  raptor1_die5             =[      $death5,                raptor1_die6     ] {};
@@ -345,8 +370,36 @@ void()  raptor1_die10            =[      $death10,               raptor1_die11  
 void()  raptor1_die11            =[      $death11,               raptor1_die12    ] {};
 void()  raptor1_die12            =[      $death12,               raptor1_die13    ] {};
 void()  raptor1_die13            =[      $death13,               raptor1_die13    ] {};
+*/
 
-void()  raptor1_keel1             =[      $deathb1,                raptor1_keel2     ] {};
+void()  raptor1_keel1             =[      $deathb1,                raptor1_keel1     ]
+{
+	if ((self.duration < $deathb1) || (self.duration > $deathb13))
+	{
+		self.duration = $deathb1;
+	}
+	else self.duration = self.duration + 1;
+
+	self.frame = self.duration;
+
+	if (self.frame == $deathb6) self.solid = SOLID_NOT;
+
+	if (self.frame == $deathb7)
+	{
+		self.cnt = random() * 9;
+		if (self.cnt > 4)
+			sound (self, CHAN_VOICE, "mon_II/raptor/rdeath2.wav", 1, ATTN_NORM);
+		else
+			sound (self, CHAN_VOICE, "mon_II/raptor/rdeath1.wav", 1, ATTN_NORM);
+	}
+
+	if (self.frame == $deathb14) self.think = SUB_Null;
+};
+
+/*
+
+deprecated for loop code
+
 void()  raptor1_keel2             =[      $deathb2,                raptor1_keel3     ] {};
 void()  raptor1_keel3             =[      $deathb3,                raptor1_keel4     ] {};
 void()  raptor1_keel4             =[      $deathb4,                raptor1_keel5     ] {};
@@ -369,6 +422,7 @@ void()  raptor1_keel11            =[      $deathb11,               raptor1_keel1
 void()  raptor1_keel12            =[      $deathb12,               raptor1_keel13    ] {};
 void()  raptor1_keel13            =[      $deathb13,               raptor1_keel14    ] {};
 void()  raptor1_keel14            =[      $deathb14,               raptor1_keel14    ] {};
+*/
 
 void()  raptor1_limp1             =[      $limp1,                raptor1_limp2     ] {
 	local float diroff;
@@ -377,28 +431,21 @@ void()  raptor1_limp1             =[      $limp1,                raptor1_limp2  
 	ChangeYaw();};
 void()  raptor1_limp2             =[      $limp2,                raptor1_limp3     ] {};
 void()  raptor1_limp3             =[      $limp3,                raptor1_limp4     ] {};
-void()  raptor1_limp4             =[      $limp4,                raptor1_limp5     ] {
-walkmove (self.ideal_yaw, 1);};
-void()  raptor1_limp5             =[      $limp5,                raptor1_limp6     ] {
-walkmove (self.ideal_yaw, 2);};
-void()  raptor1_limp6             =[      $limp6,                raptor1_limp7     ] {
-walkmove (self.ideal_yaw, 4.5);};
-void()  raptor1_limp7             =[      $limp7,                raptor1_limp8     ] {
-walkmove (self.ideal_yaw, 4);};
-void()  raptor1_limp8             =[      $limp8,                raptor1_limp9     ] {
-walkmove (self.ideal_yaw, 2.5);};
-void()  raptor1_limp9             =[      $limp9,                raptor1_limp10     ] {
-walkmove (self.ideal_yaw, 0.5);};
-void()  raptor1_limp10             =[      $limp10,                raptor1_limp11     ] {
-walkmove (self.ideal_yaw, 3);};
-void()  raptor1_limp11             =[      $limp11,                raptor1_limp12     ] {
-walkmove (self.ideal_yaw, 3);};
-void()  raptor1_limp12             =[      $limp12,                raptor1_keel1     ] {
-self.impulse = self.impulse - 1;
-if (self.impulse > 0)
-  raptor1_limp1();
-else
-  raptor1_keel1();
+void()  raptor1_limp4             =[      $limp4,                raptor1_limp5     ] {walkmove (self.ideal_yaw, 1);};
+void()  raptor1_limp5             =[      $limp5,                raptor1_limp6     ] {walkmove (self.ideal_yaw, 2);};
+void()  raptor1_limp6             =[      $limp6,                raptor1_limp7     ] {walkmove (self.ideal_yaw, 4.5);};
+void()  raptor1_limp7             =[      $limp7,                raptor1_limp8     ] {walkmove (self.ideal_yaw, 4);};
+void()  raptor1_limp8             =[      $limp8,                raptor1_limp9     ] {walkmove (self.ideal_yaw, 2.5);};
+void()  raptor1_limp9             =[      $limp9,                raptor1_limp10     ] {walkmove (self.ideal_yaw, 0.5);};
+void()  raptor1_limp10             =[      $limp10,                raptor1_limp11     ] {walkmove (self.ideal_yaw, 3);};
+void()  raptor1_limp11             =[      $limp11,                raptor1_limp12     ] {walkmove (self.ideal_yaw, 3);};
+void()  raptor1_limp12             =[      $limp12,                raptor1_keel1     ]
+{
+	self.impulse = self.impulse - 1;
+	if (self.impulse > 0)
+		raptor1_limp1();
+	else
+		raptor1_keel1();
 };
 
 
@@ -406,7 +453,7 @@ void(entity attacker, float damage)     raptor1_pain =
 {
 	local float rsnd;
 
-	if (self.touch == raptor_JumpTouch)
+	if (self.touch == Monster_JumpTouch)
 		return;
 
 	if (self.pain_finished > time)
@@ -495,14 +542,19 @@ void() raptor_MeleeAttackb =
 //string(entity targ, entity attacker) raptor_killmsg =
 string() raptor_killmsg =
 {
-	if (random() < 0.5 || !ENHANCED)
+#ifdef enhanced
+//	if (random() < 0.5 || !ENHANCED)
+	if (random() < 0.5)
 		return " was slashed by a ";
 	else if (random() < 0.9)
 		return " tried to examine the claws of a ";
 	else
 	{
-		return(" could not wait for modern times to be an archaeologist.\n");
+		return(" could not wait for modern times to be an archaeologist of a ");
 	}
+#else
+	return " was slashed by a ";
+#endifdef
 };
 
 
@@ -556,6 +608,7 @@ if (ign != A_MONSTER)
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/raptor.mdl");
 
@@ -570,6 +623,12 @@ if (ign != A_MONSTER)
 	self.th_missile = raptor1_jump1;                 // jump attack
 	self.th_pain = raptor1_pain;
 	self._killmsg = raptor_killmsg;
+
+// jumptouch multi
+	self._jump = raptor1_jump1;
+	self._jump2 = raptor1_jump11;
+	self.jump_flag = 400;
+	self.dodmg = 40;
 
 	walkmonster_start();
 };
@@ -657,23 +716,20 @@ float() raptorCheckAttack =
 //===========================================================================
 
 void(float side, float damg)        raptor_Melee =
-{
-	local   float   ldmg;
-	local vector    delta;
-	
+{	
 	ai_face ();
 	walkmove (self.ideal_yaw, 6);  // allow a little closing
 
-	delta = self.enemy.origin - self.origin;
+	self.dest = self.enemy.origin - self.origin;
 
-	if (vlen(delta) > 100)
+	if (vlen(self.dest) > 100)
 		return;
 	if (!CanDamage (self.enemy, self))
 		return;
 		
     sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
-	ldmg = damg + 5*random();
-	T_Damage (self.enemy, self, self, ldmg);        
+	self.dmg = damg + 5*random();
+	T_Damage (self.enemy, self, self, self.dmg);        
 
 	makevectors (self.angles);
 	SpawnMeatSpray (self.origin + v_forward*16, ((side / damg * 6 ) * v_right) + (v_up * 2));
@@ -681,10 +737,11 @@ void(float side, float damg)        raptor_Melee =
 
 
 
+/*
+deprecated to Monster_JumpTouch
+
 void()  raptor_JumpTouch =
 {
-	local   float   ldmg;
-
 	if (self.health <= 0)
 		return;
 		
@@ -692,8 +749,8 @@ void()  raptor_JumpTouch =
 	{
 		if ( vlen(self.velocity) > 400 )
 		{
-			ldmg = 40 + 10*random();
-			T_Damage (other, self, self, ldmg);     
+			self.dmg = 40 + 10*random();
+			T_Damage (other, self, self, self.dmg);     
 		}
 	}
 
@@ -719,3 +776,4 @@ void()  raptor_JumpTouch =
 	self.nextthink = time + 0.1;
 };
 
+*/

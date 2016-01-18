@@ -427,8 +427,8 @@ void() player_order_impulse =
 	{
 		if (self.weapon == IT_SUPER_NAILGUN) // loop thru spell set
 		{
-			if (self.ammo_bullet == 3) self.ammo_bullet = 5;
-			else if (self.ammo_bullet == 5) self.ammo_bullet = 7;
+			if (self.ammo_bullet == 3) self.ammo_bullet = 7;
+//			else if (self.ammo_bullet == 5) self.ammo_bullet = 7; // order cant make a chaos teleport
 			else if (self.ammo_bullet == 7) self.ammo_bullet = 11;
 			else if (self.ammo_bullet == 11) self.ammo_bullet = 3;
 
@@ -523,7 +523,7 @@ void(float silent) player_order_become =
 	stuffcmd(self, "exec cfg/morph/m-chaos.cfg\n");
 
 	self.builtin = IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN | IT_LIGHTNING;
-	self.items = self.items | self.builtin;
+	self.items = self.builtin;
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;
 

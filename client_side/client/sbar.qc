@@ -514,7 +514,9 @@ float(float pow) bar_scale =
 
 	scl = pow;
 
-	if (pow > 5000)
+	if (pow < 0)
+		scl = 0;
+	else if (pow > 5000)
 		scl = 360 + ((pow - 5000) / 55000) * 120;
 	else if (pow > 100)
 		scl = 100 + ((pow - 100) / 4900) * 260;
@@ -543,7 +545,7 @@ void() Sbar_DrawInventory =
 	ALPHA_90 = ibar_alpha * 0.9;
 	ALPHA_LOW = ibar_alpha * 0.4;
 
-	float k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
+	float casting, converting, k, shells, rockets, nails, cells, health, armorval, explodeshot, explodsht_alp, inv_alm, slugs, bullets, gas, volspec, plevel, archon_magic, morph, xp;
 	float pk_gwell, pk_tur, pk_bt, pk_copb, pk_tomb, pk_ego, pk_mask, pk_phone, wsuit, deadflag;
 	vector pwr_step, wep_step, wep_axlv, arc_level, chaos_level, p_level, woff, v;
 
@@ -669,7 +671,7 @@ void() Sbar_DrawInventory =
 	if (! pk_inv & PK_IT_GRAPGUN) has_hook = FALSE;
 	if (mcode == MC_HOOK) has_hook = TRUE;
 
-// timers for these
+// timers for these - this times them out
 
 	if (!cl_items & IT_INVISIBILITY) ring = 0;
 	if (!cl_items & IT_SUIT) suit = 0;
@@ -684,6 +686,10 @@ if (ibar_flag)
 	woff = '0 0 0';
 	woff_y = weapons_offset;
 
+
+/// runes area left adjust
+	pwr_step = '-400 53 0';
+
 sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 /// Archon power bars
@@ -691,13 +697,19 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 //note vid_conheight and vid_conwidth are very important for this - they need consulted or set
 
 //	if (mcode == -665) archon_magic = 2; // using magic from archon pts - for now we use (-) volume
-	if (mcode == -666) archon_magic = 1; // chaos archon
-	if (mcode == -667) archon_magic = 1; // order archon - for diff color bars
+//	if (mcode == -666) archon_magic = 1; // chaos archon
+//	if (mcode == -667) archon_magic = 1; // order archon - for diff color bars
+	if (morph == IMP_MCHAOS) archon_magic = 1;
+	if (morph == IMP_MORDER) archon_magic = 1;
 
 	if (archon_magic)
-	if (explodeshot > 0)
-		plevel = archon - explodeshot; // archon magic cost
+	{
+		if (explodeshot > 0)
+			plevel = archon - explodeshot; // archon magic cost
+	}
+	else
 	if (volspec < 0) plevel = archon - fabs(volspec); // morph cube cost or power shots
+
 	if (plevel < 0) plevel = 0; // IMP: warn on - result - red # or such
 
 // IMP: diff colors for archons themselves, 
@@ -719,22 +731,34 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 	if (chaos_level_y < arc_level_y + 4)
 		chaos_level_x = -409; // move over for second bar
 
+// casting - technically any process that uses up archon pts
+	casting = FALSE;
+	if (archon_magic && (explodeshot > 0)) casting = TRUE;
+	if ((plevel > 0) && (volspec < 0)) casting = TRUE;
+
 	p_alph = ALPHA_FULL;
-	if (plevel > 0) p_alph = ibar_alpha * 0.35; // shade spell cost portion
+	if (casting) p_alph = ibar_alpha * 0.35; // shade spell cost portion
 
 	if (archon_magic == 1)
 	if (volspec > 0)
-		Sbar_DrawPic(chaos_level, "gfx/inv_chaos_bar", p_alph * 0.8, 1); // chaos / order power
+		Sbar_DrawPic(chaos_level, "gfx/inv_chaos_bar", p_alph * 0.8, 1); // chaos / order power - mana
 
-	if (archon > 0)
+	if (archon != 0)
 	{
 		Sbar_DrawPic(arc_level, "gfx/inv_archon_bar", p_alph, 1);
 		if  (arc_level_y < 4) arc_level_y = 3;
-		DrawAmmo(arc_level + '20 5 0' - woff, archon, ALPHA_FULL);
-
-//		if (!archon_magic)
-//		if (morph != IMP_MCHAOS)
-//		if (morph != IMP_MORDER)
+		if (archon < 0)
+		{
+			Sbar_DrawString(arc_level + '13 5 0', "-", ALPHA_FULL, '7 7 0','1 0.1 0.1');
+			arc_level_x = arc_level_x + 2;
+			k = floor(archon);
+			while (k < -999)
+			{
+				k = floor(k / 10);
+				pwr_step_x = pwr_step_x + 7;
+			}
+		}
+		DrawAmmo(arc_level + '20 5 0' - woff, fabs(archon), ALPHA_FULL);
 
 // converting XP to archon points indicator
 
@@ -743,6 +767,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if ((xp < xplast) || (xpltime > time))
 		if (xp > 0)
 		{
+			converting = TRUE; // was to move runes over before we handled (-) pts
 			v = '36 14 0';
 			if (xp != xplast) xpltime = time + 4;
 			xplast = xp;
@@ -757,9 +782,11 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			Sbar_DrawString(arc_level + v, ")", ALPHA_FULL, '7 7 0','1 0.5 1');
 		}
 
+// power cost of spell, cube, or morph (non Archon) power shot
+
 		k = arc_level_y;
-		if (archon_magic || (volspec < 0))
-		if (plevel > 0)
+
+		if (casting)
 		{
 // make sure we have a visible usage amt at high archon levels where scale is minimal for small amts
 			if (arc_level_y > 100)
@@ -775,6 +802,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 			k = p_level_y;
 		}
 	}
+
 
 	if (chaos_level_y > 0) // c/o power numeric
 	{
@@ -793,9 +821,6 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 /// morph cube status here
 
 
-/// runes area left
-	pwr_step = '-400 53 0';
-
 /*
 // test to find lowest val in left draw coords
 
@@ -808,12 +833,17 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 // move runes over for low range digit display
 	cnt_left = cnt_left + woff_y;
 
-	if ((archon > 0) && (arc_level_y < cnt_left + 2))
-		pwr_step = '-370 53 0';
-	if ((plevel > 0) && (p_level_y < cnt_left + 6))
-		pwr_step = '-370 53 0';
-	if ((volspec > 0) && (chaos_level_y < cnt_left + 2))
-		pwr_step = '-370 53 0';
+//	if ((archon < 0) && converting) // de-archoned & converting pts
+//		pwr_step = '-370 53 0';
+
+	if ((archon != 0) && (arc_level_y < cnt_left + 2))
+		pwr_step_x = pwr_step_x + 30;
+//		pwr_step = '-370 53 0';
+//	if ((plevel > 0) && (p_level_y < cnt_left + 6))
+	else if (casting && (p_level_y < cnt_left + 6))
+		pwr_step_x = pwr_step_x + 30;
+	else if ((volspec > 0) && (chaos_level_y < cnt_left + 2))
+		pwr_step_x = pwr_step_x + 30;
 
 	cnt_left = 0; // recount every time
 
@@ -1502,7 +1532,8 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 		if (currentweap != IT_AXE) // casting spells
 		{
-			if (plevel > 0)
+//			if (plevel > 0)
+			if (casting)
 			{
 				if (currentweap == IT_SHOTGUN) // spell list 1 - teleports
 				{

@@ -125,7 +125,10 @@ void() beartrapTouch =
 
 	if (other.classname != "pk*bot") // *bot - bots get bit
 	if (other.classname != "player")
-	if ((!other.flags & FL_MONSTER) || !ENHANCED) // monsters in dm now
+//	if ((!other.flags & FL_MONSTER) || !ENHANCED) // monsters in dm now
+#ifdef enhanced
+	if (!other.flags & FL_MONSTER) // monsters in dm now
+#endifdef
 	  return;
 
 	// The owner of the beartrap is immune for a few rels

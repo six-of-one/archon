@@ -1397,8 +1397,12 @@ void() q3_ha_rot_thk =
 	if (self.health > Q3_HA_MAX) tv1 = self.health;
 	if (self.armorvalue > Q3_HA_MAX) tv2 = self.armorvalue;
 
-	if ((!self.owner.rune_flag & TECH_ADOC) || !ENHANCED)
-	if ((!self.owner.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
+#ifdef enhanced
+//	if ((!self.owner.rune_flag & TECH_ADOC) || !ENHANCED)
+	if (! self.owner.rune_flag & TECH_ADOC)
+//	if ((!self.owner.rune_flag & RUNE_VAMPIRE) || !ENHANCED)
+	if (! self.owner.rune_flag & RUNE_VAMPIRE)
+#endifdef
 	if (!self.owner.rune_flag & RUNE_FLG_RG) // no rot when regen item or rune is set
 	if (self.owner.health > tv1)
 	{
@@ -1408,7 +1412,10 @@ void() q3_ha_rot_thk =
 		f = TRUE;
 	}
 
-	if ((!self.owner.rune_flag & TECH_ADOC) || !ENHANCED)
+#ifdef enhanced
+//	if ((!self.owner.rune_flag & TECH_ADOC) || !ENHANCED)
+	if (! self.owner.rune_flag & TECH_ADOC)
+#endifdef
 	if (self.owner.armorvalue > tv2)
 	{
 		armorsave_rev(self.owner);

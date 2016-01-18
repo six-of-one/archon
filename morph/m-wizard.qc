@@ -499,15 +499,22 @@ void() player_wizard_impulse =
 
 string() player_wizard_killmsg =
 {
-	if (!ENHANCED) return " was scragged by a Scrag\n";
-
+#ifdef enhanced
 	return " was scragged by ";
+#else
+//	if (!ENHANCED) 
+	return " was scragged by a Scrag\n";
+#endifdef
 };
 
 string() player_wizard_killmsg2 =
 {
-	if (!ENHANCED) return "noname";
+#ifdef enhanced
 	return ".\n";
+#else
+//	if (!ENHANCED) 
+	return "noname";
+#endifdef
 };
 
 void(float silent) player_wizard_become =

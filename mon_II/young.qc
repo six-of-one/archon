@@ -36,12 +36,14 @@ $frame lgrunatt1 lgrunatt2 lgrunatt3 lgrunatt4 lgrunatt5 lgrunatt6 lgrunatt7 lgr
 
 //============================================================================
 
+#ifdef testset
 float YOUNG_LIFE_SM = 10; // rels for a small youngling
 float YOUNG_LIFE_MD = 20; // rels for a med youngling
-/* TEST
+#else
 float YOUNG_LIFE_SM = 30; // rels for a small youngling
 float YOUNG_LIFE_MD = 65; // rels for a med youngling
-*/
+#endifdef
+
 float YOUNG_LIFE_LG = 125; // rels for a large youngling
 
 
@@ -103,11 +105,10 @@ void() young_noway =
 
 };
 
-void()	Young_JumpTouch;
-
 void()	young_stand1	=[	$stand1,	young_stand1	] {ai_stand();young_slimedamage();};
-void()	young_mdstand1	=[	$mdstand1,	young_mdstand1	] {ai_stand();young_slimedamage();};
-void()	young_lgstand1	=[	$lgstand1,	young_lgstand1	] {ai_stand();young_slimedamage();};
+
+//void()	young_mdstand1	=[	$mdstand1,	young_mdstand1	] {ai_stand();young_slimedamage();};
+//void()	young_lgstand1	=[	$lgstand1,	young_lgstand1	] {ai_stand();young_slimedamage();};
 
 /*
 void()	young_run1	=[	$run1,		young_run2	] {ai_run(-2);young_slimedamage();};
@@ -127,19 +128,19 @@ float YOUNG_WALK;
 
 void()	young_walk1	=[	$run1,		young_walk1	]
 {
-	if ((self.weaponframe < $run1) || (self.weaponframe > $run7))
+	if ((self.duration < $run1) || (self.duration > $run7))
 	{
-		self.weaponframe = $run1;
+		self.duration = $run1;
 		young_noway();
 	}
-	else self.weaponframe = self.weaponframe + 1;
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
-	ai_walk(YOUNG_WALK);
+	ai_walk(YOUNG_WALK + self.waitmin);
 	young_slimedamage();
 };
-
+/*
 void()	young_mdwalk1	=[	$mdrun1,		young_mdwalk1	]
 {
 	if ((self.weaponframe < $mdrun1) || (self.weaponframe > $mdrun7))
@@ -169,6 +170,7 @@ void()	young_lgwalk1	=[	$lgrun1,		young_lgwalk1	]
 	ai_walk(YOUNG_WALK + 6);
 	young_slimedamage();
 };
+*/
 /*
 void()	young_walk1	=[	$run1,		young_walk2	] {ai_walk(YOUNG_WALK);young_slimedamage(); young_noway();};
 void()	young_walk2	=[	$run2,		young_walk3	] {ai_walk(YOUNG_WALK);young_slimedamage();};
@@ -202,19 +204,19 @@ void()	young_lgwalk8	=[	$lgrun8,		young_lgwalk1	] {ai_walk(YOUNG_WALK + 6);young
 
 void()	young_run1	=[	$run1,		young_run1	]
 {
-	if ((self.weaponframe < $run1) || (self.weaponframe > $run7))
+	if ((self.duration < $run1) || (self.duration > $run7))
 	{
-		self.weaponframe = $run1;
+		self.duration = $run1;
 		young_noway();
 	}
-	else self.weaponframe = self.weaponframe + 1;
+	else self.duration = self.duration + 1;
 
-	self.frame = self.weaponframe;
+	self.frame = self.duration;
 
-	ai_run(16);
+	ai_run(self.waitmax);
 	young_slimedamage();
 };
-
+/*
 void()	young_mdrun1	=[	$mdrun1,		young_mdrun1	]
 {
 	if ((self.weaponframe < $mdrun1) || (self.weaponframe > $mdrun7))
@@ -244,6 +246,7 @@ void()	young_lgrun1	=[	$lgrun1,		young_lgrun1	]
 	ai_run(24);
 	young_slimedamage();
 };
+*/
 /*
 void()	young_run1	=[	$run1,		young_run2	] {ai_run(16);young_slimedamage(); young_noway();};
 void()	young_run2	=[	$run2,		young_run3	] {ai_run(16);young_slimedamage();};
@@ -277,7 +280,7 @@ void()	young_lgrun8	=[	$lgrun8,		young_lgrun1	] {ai_run(24);young_slimedamage();
 
 void() young_attack =
 {
-	self.touch = Young_JumpTouch;
+	self.touch = Monster_JumpTouch;
 	makevectors (self.angles);
 	self.origin_z = self.origin_z + 1;
 	self.velocity = v_forward * 400 + '0 0 200';
@@ -285,20 +288,22 @@ void() young_attack =
 		self.flags = self.flags - FL_ONGROUND;	
 }
 
-void()	young_runatt1	=[	$runatt1,		young_runatt2	] {ai_face();};
-void()	young_runatt2	=[	$runatt2,	young_runatt3	] {	ai_face(); young_attack(); };
-void()	young_runatt3	=[	$runatt3,	young_runatt1	] {
-self.nextthink = time + 3;
+void()	young_runatt1	=[	$runatt1,		young_runatt2	] {ai_frame(self.walkframe);ai_face();};
+void()	young_runatt2	=[	$runatt2,	young_runatt3	] {	ai_frame(self.walkframe);ai_face(); young_attack(); };
+void()	young_runatt3	=[	$runatt3,	young_runatt1	]
+{
+	ai_frame(self.walkframe);
+	self.nextthink = time + 3;
 // if three rels pass, assume young is stuck and jump again
 };
 
-void()	young_runatt4	=[	$runatt4,	young_runatt5	] {ai_face();young_slimedamage();};
-void()	young_runatt5	=[	$runatt5,	young_runatt6	] {ai_face();young_slimedamage();};
-void()	young_runatt6	=[	$runatt6,	young_runatt7	] {ai_face();young_slimedamage();};
-void()	young_runatt7	=[	$runatt7,	young_runatt8	] {ai_face();young_slimedamage();};
-void()	young_runatt8	=[ 	$runatt8,	young_run1		] {ai_face();young_slimedamage();};
+void()	young_runatt4	=[	$runatt4,	young_runatt5	] {ai_frame(self.walkframe);ai_face();};
+void()	young_runatt5	=[	$runatt5,	young_runatt6	] {ai_frame(self.walkframe);ai_face();};
+void()	young_runatt6	=[	$runatt6,	young_runatt7	] {ai_frame(self.walkframe);ai_face();};
+void()	young_runatt7	=[	$runatt7,	young_runatt8	] {ai_frame(self.walkframe);ai_face();};
+void()	young_runatt8	=[ 	$runatt8,	young_run1		] {ai_frame(self.walkframe);ai_face();};
 
-
+/*
 void()	young_mdrunatt1	=[	$mdrunatt1,	young_mdrunatt2	] {ai_face();};
 void()	young_mdrunatt2	=[	$mdrunatt2,	young_mdrunatt3	] {	ai_face(); young_attack(); };
 void()	young_mdrunatt3	=[	$mdrunatt3,	young_mdrunatt1	] { self.nextthink = time + 3; };
@@ -320,13 +325,14 @@ void()	young_lgrunatt6	=[	$lgrunatt6,	young_lgrunatt7	] {ai_face();young_slimeda
 void()	young_lgrunatt7	=[	$lgrunatt7,	young_lgrunatt8	] {ai_face();young_slimedamage();};
 void()	young_lgrunatt8	=[ 	$lgrunatt8,	young_lgrun1		] {ai_face();young_slimedamage();};
 
-
+*/
 // pain sets
-void()	young_pain1	=[	$run1,		young_pain2	] {};
-void()	young_pain2	=[	$run1,		young_pain3	] {young_slimedamage();};
-void()	young_pain3	=[	$run1,		young_pain4	] {young_slimedamage();};
-void()	young_pain4	=[	$run1,		young_run1	] {young_slimedamage();};
+void()	young_pain1	=[	$run1,		young_pain2	] {ai_frame(self.walkframe);};
+void()	young_pain2	=[	$run1,		young_pain3	] {ai_frame(self.walkframe);};
+void()	young_pain3	=[	$run1,		young_pain4	] {ai_frame(self.walkframe);};
+void()	young_pain4	=[	$run1,		young_run1	] {ai_frame(self.walkframe);};
 
+/*
 void()	young_mdpain1	=[	$mdrun1,		young_mdpain2	] {};
 void()	young_mdpain2	=[	$mdrun1,		young_mdpain3	] {young_slimedamage();};
 void()	young_mdpain3	=[	$mdrun1,		young_mdpain4	] {young_slimedamage();};
@@ -345,15 +351,17 @@ void()	young_pain =
 	else
 	young_pain1 ();
 };
+*/
 
 // death of younglings
 void()	young_die1		=[	$runatt4,		young_die1	]
 {
+	ai_frame(self.walkframe);
 	self.think = SUB_Remove;
 	self.nextthink = time + 15;
 	self.solid = SOLID_NOT;
 };
-
+/*
 void()	young_mddie1		=[	$mdrunatt4,		young_mddie1	]
 {
 	self.think = SUB_Remove;
@@ -367,7 +375,7 @@ void()	young_lgdie1		=[	$lgrunatt4,		young_lgdie1	]
 	self.nextthink = time + 15;
 	self.solid = SOLID_NOT;
 };
-
+*/
 void() young_die =
 {
 	// spawned by a clinger, notify parent that one has died
@@ -386,49 +394,74 @@ void() young_die =
 	}
 
 // regular death
-	if (self.aflag == 2) young_mddie1 ();
-	if (self.aflag == 3) young_lgdie1 ();
-	else young_die1 ();
+//	if (self.aflag == 2) young_mddie1 ();
+//	if (self.aflag == 3) young_lgdie1 ();
+//	else 
+	young_die1 ();
 };
 
 
 // younglings evolve
 
+// note: these may not need to be complete builds
+
 void() young_med =
 {
 //	setsize (self, '-32 -32 0', '32 32 16');
-	self.health = 20 * self.aflag;
+	self.walkframe = $mdstand1;
+	self.waitmin = 2; // walk speed
+	self.waitmax = 20; // run speed
 
-	self.th_stand = young_mdstand1;
-	self.th_walk = young_mdwalk1;
-	self.th_run = young_mdrun1;
+	self.health = 20 * self.aflag;
+/*
+	self.th_stand = young_stand1;
+	self.th_walk = young_walk1;
+	self.th_run = young_run1;
 	self.th_die = young_die;
-	self.th_missile = young_mdrunatt1;
-	self.th_pain = young_pain;
+	self.th_missile = young_runatt1;
+	self.th_pain = young_pain1;
+
+// jumptouch multi
+	self._jump = young_runatt1;
+	self._jump2 = young_runatt4;
+	self.jump_flag = 200;
+*/
+	self.dodmg = 10 + random() * 5;
 
 	self.rad_time = time + YOUNG_LIFE_MD + random() * 14;
-	self.dmg = 15;
-	young_mdwalk1();
+//	self.dmg = 15;
+	young_walk1();
 };
 
 void() young_lg =
 {
 //	setsize (self, '-65 -64 0', '64 64 32');
-	self.health = 20 * self.aflag + random() * 40;
+	self.walkframe = $lgstand1;
+	self.waitmin = 6; // walk speed
+	self.waitmax = 24; // run speed
 
-	self.th_stand = young_lgstand1;
-	self.th_walk = young_lgwalk1;
-	self.th_run = young_lgrun1;
+	self.health = 20 * self.aflag + random() * 40;
+/*
+	self.th_stand = young_stand1;
+	self.th_walk = young_walk1;
+	self.th_run = young_run1;
 	self.th_die = young_die;
-	self.th_missile = young_lgrunatt1;
-	self.th_pain = young_pain;
+	self.th_missile = young_runatt1;
+	self.th_pain = young_pain1;
+
+// jumptouch multi
+	self._jump = young_runatt1;
+	self._jump2 = young_runatt4;
+	self.jump_flag = 200;
+*/
+	self.dodmg = 35 + random() * 5;
 
 //	self.rad_time = time + YOUNG_LIFE_LG + random() * 18;
 	self.rad_time = MAXFL; // no more evolution for now
-	self.dmg = 40;
+//	self.dmg = 40;
 	self.wad = "MEGA";
 
-	young_lgwalk1();
+	young_walk1();
 };
 
 
@@ -445,7 +478,7 @@ string() young_killmsg2 =
 
 
 
-float YOUNG_EVOL = 1; // set to 0 to stop evolutions
+//float YOUNG_EVOL = 1; // set to 0 to stop evolutions
 
 /*QUAKED monster_young (1 0 0) (-16 -16 -24) (16 16 32) Ambush
 
@@ -473,6 +506,7 @@ if (ign != A_MONSTER)
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.walkframe = 0;
 
 	setmodel (self, "progs/young.mdl");
 
@@ -487,19 +521,32 @@ if (ign != A_MONSTER)
 	self.th_run = young_run1;
 	self.th_die = young_die;
 	self.th_missile = young_runatt1;			// jump attack
-	self.th_pain = young_pain;
+	self.th_pain = young_pain1;
 	self._killmsg = young_killmsg;
 
 	self.class_select = "class_monster";
 
+	self.waitmin = 0; // walk speed add in
+	self.waitmax = 16; // run speed
+
+// jumptouch multi
+	self._jump = young_runatt1;
+	self._jump2 = young_runatt4;
+	self.jump_flag = 200;
+	self.dodmg = 5 + random() * 5;
+
 	self.aflag = 0;
 	YOUNG_WALK = 16;
-	if (ENHANCED && YOUNG_EVOL)
+
+#ifdef enhanced
+//	if (ENHANCED && YOUNG_EVOL)
+	if (1) //YOUNG_EVOL)
 	{
 		YOUNG_WALK = 8;
 		self.rad_time = time + YOUNG_LIFE_SM + random() * 10;
 		self.aflag = 1;
 	}
+#endifdef
 
 	if (ign)
 	{
@@ -586,11 +633,11 @@ float()	YoungCheckAttack =
 
 
 //===========================================================================
+/*
+deprecated to Monster_JumpTouch
 
 void()	Young_JumpTouch =
 {
-	local	float	ldmg;
-
 	if (self.health <= 0)
 		return;
 
@@ -603,8 +650,8 @@ void()	Young_JumpTouch =
 	{
 		if ( vlen(self.velocity) > 200 )
 		{
-			ldmg = self.dmg + 15*random();
-			T_Damage (other, self, self, ldmg);	
+			self.dodmg = self.dmg + 15*random();
+			T_Damage (other, self, self, self.dodmg);	
 		}
 	}
 
@@ -636,3 +683,4 @@ void()	Young_JumpTouch =
 	self.nextthink = time + 0.1;
 };
 
+*/

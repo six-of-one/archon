@@ -308,14 +308,19 @@ void(float offset) SpiderMissile =
 //string(entity targ, entity attacker) spider_killmsg =
 string() spider_killmsg =
 {
-	if (random() < 0.5 || !ENHANCED)
+#ifdef enhanced
+//	if (random() < 0.5 || !ENHANCED)
+	if (random() < 0.5)
 		return " was dessicated by a ";
 	else if (random() < 0.8)
 		return " felt the powerful bite of a ";
 	else
 	{
-		return(" tried to pet the pretty Spider, aww.\n");
+		return(" - aww, tried to pet the pretty ");
 	}
+#else
+	return " was dessicated by a ";
+#endifdef
 };
 
 //=================================================================
@@ -366,7 +371,8 @@ if (ign != A_MONSTER)
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
-	
+	self.walkframe = 0;
+
 	setmodel (self, "progs/spider.mdl");
 	setsize (self, '-32 -32 -24', '32 32 5');
 	self.health = 200;

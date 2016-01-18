@@ -178,12 +178,18 @@ slot		weapon
 string(entity targ, entity attacker) mjolnir_killmsg =
 {
 	if (targ == attacker)
-	if (ENHANCED)
+	{
+#ifndef enhanced
+		if (random() > 0.4 )
+			return (" becomes bored with life\n");
+		else
+			return (" checks if his weapon is loaded\n");
+#else
+//	if (ENHANCED)
 		return(rnd_string(' 90.0 60.0 60.0'," got creative with Mjolnir\n"," angered the Gods\n",null_string,null_string," swung too hard\n"));
-	else if (random() > 0.4 )
-		return (" becomes bored with life\n");
-	else
-		return (" checks if his weapon is loaded\n");
+//	else 
+#endifdef
+	}
 
 	return " was slammed by ";
 };
@@ -456,8 +462,12 @@ void() item_artifact_wetsuit =
 	self.wait = RSP_TIME;
 	self.touch = x_pwr_touch;
 //	self.dmgtime = ; // just using pow time for now
-	if (ENHANCED && (random() < 0.6)) self.group = "Air tanks are getting low";
-	else self.group = "Air supply in Wetsuit is running out";
+#ifdef enhanced
+//	if (ENHANCED && (random() < 0.6)) self.group = "Air tanks are getting low";
+	if (random() < 0.6) self.group = "Air tanks are getting low";
+	else
+#endifdef
+	self.group = "Air supply in Wetsuit is running out";
 
 	self.items = IT_SUIT;
 

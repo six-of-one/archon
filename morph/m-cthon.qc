@@ -343,14 +343,17 @@ void() cthon_outoflava =
 
 string() player_cthon_killmsg =
 {
-	if (!ENHANCED) return " died\n";
-
+#ifdef enhanced
 	return(rnd_string(' 60.0 50.0 40.0'," met Cthon in battle\n",null_string,null_string," was blasted by living Lava\n"," was sacraficed to the Volcano God!\n"));
+#else
+//	if (!ENHANCED) return " died\n";
+	return " died\n";
+#endifdef
 };
 string() player_cthon_killmsg2 =
 {
 //	if (!ENHANCED) 
-		return "noname";
+	return "noname";
 
 //	return "\n";
 };

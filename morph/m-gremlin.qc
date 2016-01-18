@@ -479,8 +479,7 @@ void() player_gremlin_impulse =
 
 string(entity targ, entity attacker) player_gremlin_killmsg =
 {
-	if (!ENHANCED) return " was outsmarted by a Gremlin\n";
-
+#ifdef enhanced
 	if (attacker.weapon == IT_AXE)
 		return " was bit to death by ";
 	else if  (attacker.weapon == IT_SHOTGUN)
@@ -492,13 +491,21 @@ string(entity targ, entity attacker) player_gremlin_killmsg =
 	}
 	else
 		return " got murdered (heh heh) by ";
+#else
+//	if (!ENHANCED) 
+	return " was outsmarted by a Gremlin\n";
+#endifdef
 };
 
 //string(entity targ, entity attacker) player_gremlin_killmsg2 =
 string() player_gremlin_killmsg2 =
 {
-	if (!ENHANCED) return "noname";
+#ifdef enhanced
 	return ".\n";
+#else
+//	if (!ENHANCED) 
+	return "noname";
+#endifdef
 };
 
 // fn(touch_theft) - attempt to steal another players wep on touch

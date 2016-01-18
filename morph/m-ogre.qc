@@ -305,20 +305,25 @@ void() player_ogre_impulse =
 
 string(entity targ, entity attacker) player_ogre_killmsg =
 {
-	if (!ENHANCED) return " was destroyed by an Ogre\n";
-
+#ifdef enhanced
 	if(attacker.weapon == IT_AXE) return " was sawed to death by ";
 
-	return " was destroyed by ";
+	return " was destroyed by Ogre ";
+#else
+//	if (!ENHANCED) 
+	return " was destroyed by an Ogre\n";
+#endifdef
 //	else return " eats ";
 };
 	
 string(entity targ, entity attacker) player_ogre_killmsg2 =
 {
-	if (!ENHANCED) return "noname";
-
+#ifdef enhanced
 	return "\n";
-//	else return "'s pineapple\n";
+#else
+//	if (!ENHANCED)
+	return "noname";
+#endifdef
 };
 
 void(float silent) player_ogre_become =

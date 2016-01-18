@@ -52,11 +52,11 @@ float RND_LAVABABY				= 0.3; // chance random babys will be lava monsters
 
 // spike mine launcher  controls - mines are launched while idle
 
-void() SShalSpikeMine;
+void(string ms) SShalSpikeMine;
 
-float SV_SETMINE = 0.15; // chance to summon a spike mine
+//float SV_SETMINE = 0.15; // chance to summon a spike mine
 float SV_CKTIME = 15; // how frequently we check - 15 rels
-float SV_MINELIM = 3; // max mines one monster can make
+//float SV_MINELIM = 3; // max mines one monster can make
 
 // supervore = 65536
 // super 3x scrag = 1024
@@ -484,6 +484,7 @@ float DEMONBOOM_FALLOFF			= 512; // damage falloff beyond this
 
 float FL_DEMONBOOM				= 65536; // demon on overload!
 void() player_demon_explode;
+void()	Monster_JumpTouch;
 
 // spikey arm boy
 

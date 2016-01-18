@@ -183,13 +183,15 @@ void() player_demon_explode =
 		if (self.items & IT_QUAD) f = 4;
 		if (self.items & IT_SUIT) f = f * 0.5; // env protect power contains half of blast
 
-		if (RUNES)
-		if (ENHANCED)
+#ifdef enhanced
+		if (RUNES) // note - runes are still required, this is only for enhancing damage done
+//		if (ENHANCED)
 		{
 			if ( (self.rune_flag & RUNE_FLG_RS) || (self.rune_flag & TECH_DSH) ) f = f * 0.8;
 			if (self.rune_flag & RUNE_FLG_DM) f = f * 1.333;
 			if (self.rune_flag & TECH_AMP) f = f * 1.21;
 		}
+#endifdef
 
 		sv = self;
 		self = spawn(); // cant blow a client ent
@@ -452,21 +454,29 @@ void() player_demon_impulse =
 
 string(entity targ, entity attacker) player_demon_killmsg =
 {
-	if (!ENHANCED) return " was eviscerated by a Fiend\n";
-	else if (attacker.deathtype == "rage")
+#ifdef enhanced
+	if (attacker.deathtype == "rage")
 	{
 		if (attacker.items & IT_INVULNERABILITY) return " was sent straight to HELL by ";
 		return " was blasted by ";
 	}
 	else if (random () < 0.75) 	return " was eviscerated by ";
 	return " was slashed by "; 
+#else
+//	if (!ENHANCED) 
+	return " was eviscerated by a Fiend\n";
+#endifdef
 };
 
 string(entity targ, entity attacker) player_demon_killmsg2 =
 {
-	if (!ENHANCED) return "noname";
-	else if (attacker.deathtype == "rage") return "'s violent rage\n";
+#ifdef enhanced
+	if (attacker.deathtype == "rage") return "'s violent rage\n";
 	return "\n";
+#else
+//	if (!ENHANCED) 
+	return "noname";
+#endifdef
 };
 
 void(float silent) player_demon_become = 

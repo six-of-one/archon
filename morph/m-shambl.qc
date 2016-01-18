@@ -282,17 +282,24 @@ void() player_shambler_impulse =
 
 string(entity targ, entity attacker) player_shambler_killmsg =
 {
-	if (!ENHANCED) return (" was smashed by a Shambler\n");
-
+#ifdef enhanced
 	if(attacker.weapon == IT_AXE) return " was smashed by ";
 	if (random() < 0.25) return " did the bolt boogaloo for ";
 	return " was zapped by ";
+#else
+//	if (!ENHANCED) 
+	return (" was smashed by a Shambler\n");
+#endifdef
 };
 
 string() player_shambler_killmsg2 =
 {
-	if (!ENHANCED) return "noname";
+#ifdef enhanced
 	return "\n";
+#else
+//	if (!ENHANCED) 
+	return "noname";
+#endifdef
 };
 
 

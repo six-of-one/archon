@@ -108,7 +108,7 @@ void() CheckWaterLevels =
 	cc_frame = framecount; // call only once per frame
 
 // run every other frame if enhanced
-	if (ENHANCED)
+//	if (ENHANCED)
 	if (cc_frame & 1) return;
 
 	mv = 0 - cvar("sv_maxvelocity");
@@ -186,13 +186,8 @@ void() CheckWaterLevels =
 					else if (e.classname == "tomb") // Cataboligne 8.12.9 purify - pk artifacts
 					{
 						e.think = tombdie;
-						if (ENHANCED) 
-						{
-							e.velocity = v0; // stop on surface
-							e.nextthink = (time + 2 + random() * 5 );
-						}
-						else
-							e.nextthink = (time + 0.1 + random() );
+						e.velocity = v0; // stop on surface
+						e.nextthink = (time + 2 + random() * 5 );
 					}
 				}
 			}
