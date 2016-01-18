@@ -900,6 +900,7 @@ entity(float fl, string clsn) find_tdest =
 
 // IDEA - nemesis of sphere annihilation | something similar to sphere bomb
 
+float chaos_tele_total;
 
 // to auto remove random teles (ones from cubes)
 
@@ -915,10 +916,13 @@ void() chaos_tele_expire =
 			{
 				sound (self.enemy.aiment, self.enemy.aiment.cnt,"misc/null.wav",1,ATTN_NORM);
 //				self.enemy.aiment.search_time = 0;
-				remove(self.enemy.aiment); // Cat - 10.31.12 - now removing these
+				remove(self.enemy.aiment); // Cat - 12.31.10 - now removing these
 			}
 			self.enemy.aiment = world;
 			remove(self.enemy.trigger_field);
+// now counting - 11.8.12
+			chaos_tele_total = chaos_tele_total - 1;
+			if (chaos_tele_total < 0) chaos_tele_total = 0;
 		}
 	}
 	remove(self);
@@ -1040,7 +1044,6 @@ float(entity ent, float flg) content =
 	}
 	else
 		return(pointcontents (self.origin + self.view_ofs));
-
 };
 
 
@@ -1048,22 +1051,22 @@ float(entity ent, float flg) content =
 
 void (entity targ, entity inflictor, entity attacker, float damage) T_FireDamage =
 {
-	if ((targ.morphy == IMP_MCTHON) || (targ.morphy == IMP_MCHAOS) || (targ.classname == "monster_tarbaby")) // lava capable ents wont get burned...often
+	if ((targ.morphy == IMP_MCTHON) || (targ.morphy == IMP_MCHAOS) || (targ.classname == "monster_tarbaby" || targ.classname == "monster_lavabomb")) // lava capable ents wont get burned...often
 //	if (IS_LAVA(targ)) 
-		{
+	{
 		if (targ.morphy == IMP_MCTHON) T_Heal(targ, damage, 0); // LOL - lava is "healed" by fire - such a horta situation...
-		else if (targ.classname == "monster_tarbaby") { if (random() < 0.2) T_Heal(targ, damage, 0); } // tarbabys too..
+		else if (targ.classname == "monster_tarbaby" || targ.classname == "monster_lavabomb") { if (random() < 0.2) T_Heal(targ, damage, 0); } // tarbabys too..
 		else // chaos here
-			{
+		{
 			if (targ.watertype == CONTENT_LAVA)
-				{
+			{
 				if (random() < 0.05) T_Heal(targ, damage * random(), 0); // CHAOS_LEVEL ph
 				else if (random() < 0.015) T_Damage (targ, inflictor, attacker, damage * random()); // even less chance of damage
-				}
+			}
 			else
 				if (random() < 0.02) T_Damage (targ, inflictor, attacker, damage * random());
-			}
 		}
+	}
 	else T_Damage (targ, inflictor, attacker, damage);
 };
 

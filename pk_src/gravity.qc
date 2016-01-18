@@ -94,8 +94,10 @@ void() gravity_pull =
 	{
 		gDist = 1290 + random() * 200;
 		gPower = 640 + random() * 100;		
+		gExt = 360; // laser beam range out to 1600
+		sgl = TFL_HEAL | TFL_TKDMG | TFL_TRACE | TFL_INVIS;		// all hittable things for lazer
 	}
-
+	else
 	if (self.frame > $cubelf20) // super grav well = sgw
 	{
 		gDist = 1280;
@@ -165,6 +167,9 @@ void() gravity_pull =
 					v1_y = crandom() * 25;
 					v1_z = crandom() * 25;
 					chaos_particle(e.origin + v1, 0, 0.8, 0);
+
+					if (random() < 0.16)
+						sound (e, CHAN_VOICE, "misc/thunder/thunder5.wav", 1, ATTN_NORM); 
 				}
 				if (e.hook & HOOK_ON)
 				if (random() < 0.28) // heh heh - strong enough to release hooks

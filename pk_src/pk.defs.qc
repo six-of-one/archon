@@ -20,13 +20,13 @@ float() SUB_True				= { return 1; }; // Return a true value
 
 // version strings
 
-string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.2\"\n";
-string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.2\"\n";
+string vers						= "alias version \"echo quake-c: chaos archon (alpha) 1.0.3\"\n";
+string stats					= "alias status \"echo code:     chaos archon (alpha) 1.0.3\"\n";
 string vweb						= "alias website \"echo http://www.moddb.com/mods/chaos-archon/\"\n";
 string vdev						= "alias devsite \"echo http://www.moddb.com/members/invadercat/\"\n";
 string vqcs						= "alias qcsite \"echo http://www.moddb.com/groups/qc/\"\n";
 string sites					= "alias sites \"echo website  http://www.moddb.com/mods/chaos-archon/;echo devsite http://www.moddb.com/members/invadercat/;echo qcsite   http://www.moddb.com/groups/qc/\"\n";
-string vmotd					= "\\/ersion \b1\b.\b0\b.\b2a\b\n\n";
+string vmotd					= "\\/ersion \b1\b.\b0\b.\b3a\b\n\n";
 
 
 
@@ -605,12 +605,15 @@ float FL_REMOVE				= 64;
 float FL_HELD					= 128;
 float NO_BUBBLES				= -1; // this ent wont make bubbles
 float FL_VANM					= 131072; // vmodel animation in progress
+//float FL_SLOW					= 262144; // something is slowing player - velocity percentage in .distance -- was for zomby gas cloud slowdown
 
 float EF_FULLBRIGHT			= 512;
 // end inventorys
 
 
 // env stuff - part of chaos engine env effects - mostly unused
+
+float CHAOS_TELE_LIMIT		= 6; // max number of cube spawned spheres per map instance
 
 void(vector v1, vector v2, float typ, string snd) lightning_bolt;
 

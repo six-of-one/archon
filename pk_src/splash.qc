@@ -139,8 +139,7 @@ void() CheckWaterLevels =
 			}
 			else
 			{
-				if (!XENV || PK_100) // NOTE: server vars that control splashing
-				if ( ! pk_flags & PK_TP_SPARKSFLASH)
+				if ((! pk_flags & PK_TP_SPARKSFLASH) || !XENV)
 				  MakeSplash(e);
 
 				e.inwater = pc;

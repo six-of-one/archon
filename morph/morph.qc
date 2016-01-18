@@ -420,7 +420,7 @@ void() morph_cube_use =
 	cube_rearm(); // re arm player
 };
 
-/*QUAKED morph_cube  (0 .5 .8) (-16 -16 0) (16 16 32)
+/*QUAKED func_morph_cube  (0 .5 .8) (-16 -16 0) (16 16 32)
 --------  CAT  --------
 
 to use as map item - they will respawn
@@ -504,6 +504,12 @@ void() morph_cube =
 	StartItem ();
 };
 
+// map item wrapper (so  radiant doesnt have the one morph_ entry)
+
+void() func_morph_cube =
+{
+	morph_cube();
+};
 
 
 /*
@@ -1419,11 +1425,17 @@ void() random_monster_wakey =
 		(self.owner.health < 1) || // got killed - likely a monsta_frag --- note: chaos vector
 		(self.owner.think == (void ()) 0))
 	{
+		self.owner.think = SUB_Remove;
+		self.owner.nextthink = time + 15 + random() * 2;
+		
 		remove(self);
 		return;
 	}
 
 	self.owner.think(); // attempt to *_start_go
+
+	if (self.owner.think == SUB_Remove) return; // some failure is removing the monster
+
 	if (!self.owner.takedamage) self.owner.takedamage = DAMAGE_AIM;
 
 	if (self.owner.class_select == "class_monster")
@@ -1448,10 +1460,30 @@ void() random_monster_wakey =
 //	if((self.owner.enemy == world) || (self.owner.enemy == self))	//If he doesn't have an enemy
 	{
 		self.owner.goalentity = f;	// target entity f
-		self.owner.nextthink = time + 2 + random() * 2;
-		self.owner.think = self.owner.th_walk;
+		if (self.owner.th_walk != (void ()) 0)
+		{
+			self.owner.nextthink = time + 2 + random() * 2;
+			self.owner.think = self.owner.th_walk;
+		}
 	}
 	remove(self);
+};
+
+// note: has issue of assuming all monsters feet are at -24
+
+void() random_monster_location =
+{
+	local entity e;
+	local vector v;
+
+	e = dyn_rndloc();
+	v = e.origin;
+	if (e.flags & FL_ITEM) // randomize away from map items - in case its not an immediate mover
+		v = stdv_rndloc(e.origin, 50, 120);
+
+	v_z = v_z + 30 - fabs(e.mins_z); // has to move up enough to account for monsters feet at -24
+	setorigin(self, v);
+	spawn_tdeath(v, self);
 };
 
 
@@ -1621,17 +1653,7 @@ void() random_monster =
 			return;
 		}
 
-// note: has issue of assuming all monsters feet are at -24
-
-		e = dyn_rndloc();
-		v = e.origin;
-		if (e.flags & FL_ITEM) // randomize away from map items - in case its not an immediate mover
-			v = stdv_rndloc(e.origin, 50, 120);
-
-		v_z = v_z + 30 - fabs(e.mins_z); // has to move up enough to account for monsters feet at -24
-		setorigin(self, v);
-		spawn_tdeath(v, self);
-
+		random_monster_location();
 
 		self.event = "dyn_monster";
 		item_call(self.wad);
@@ -1664,6 +1686,14 @@ void() random_monster =
 		bprint("\n");
 	}
 	self = c;
+};
+
+// sv_monster_map < 0
+
+void() remove_monster =
+{
+	monster_death_use(); // in case monster has triggers & we are in SP
+	remove(self);	
 };
 
 // IDEA: upgrades

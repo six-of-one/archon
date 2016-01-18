@@ -180,14 +180,14 @@ void() PK_init =
 
 // genre for init stuff
 
-	if (Q_100)  MAP_MODE = "Q";
-	else if (pk_map || PK_100) MAP_MODE = "PK";
+	MAP_MODE = "Q";
+	if (!Q_100) 
+	if (pk_map || PK_100) MAP_MODE = "PK";
 	else if (world.wad == "wolftex.wad" && ULOKW) MAP_MODE = "W";
 	else if (world.wad == "doomtex.wad" && ULOKD) MAP_MODE = "D";
 	else if (world.wad == "doom2tex.wad" && ULOKD) MAP_MODE = "D";
 	else if (world.wad == "q2.wad" && ULOK2) MAP_MODE = "Q2";
 	else if (world.wad == "" && !pk_map && ULOK3) MAP_MODE = "Q3";
-	else  MAP_MODE = "Q";
 
 // single player hack - if hub flag is set and we forced dynamic items level exit returns to hub
 	if (!deathmatch && (pk_flags & PK_SF_HUB)) pk_flags = pk_flags - PK_SF_HUB;
@@ -850,7 +850,7 @@ void() pk_liveupd =
 
 	if (PK_100)
 	{
-		XENV = TRUE;
+		XENV = FALSE;
 		PK_ART = FALSE;
 		return;
 	}
@@ -1015,6 +1015,7 @@ void() pk_liveupd =
 		MORPHIC = cvar("sv_morph");
 	}
 
+// monsters
 	DM_MONSTER = FALSE;
 	if (find(world,class_select,"class_monster")) DM_MONSTER = TRUE;
 
@@ -1047,6 +1048,12 @@ void() pk_liveupd =
 			bprint("*** Alert - map monsters turned off in single player / coop\n --- certain levels can NOT be finished without using enhancements\n");
 	}
 	M_MONSTER_II = cvar("sv_monster_map2");
+
+	FAST_MONSTER = cvar("sv_monster_fast");
+	SLOW_MONSTER = cvar("sv_monster_slow");
+	R_FAST_MONSTER = cvar("sv_monster_rnd_fast");
+	R_SLOW_MONSTER = cvar("sv_monster_rnd_slow");
+	C_FS_MONSTER = cvar("sv_monster_cfs");
 
 // pk cubes
 	PK_CUBE_TIME = cvar("pk_cubes_time"); // TDO: doesnt reset existing makers
@@ -1470,6 +1477,7 @@ void() pk_srvcmd_set =
 	MORPHIC = 0; // def: 2 ?
 	morph_setup();
 
+// monsters
 	M_MONSTER = 0;
 	S_MONSTER = 0;
 	C_MONSTER = 0;
@@ -1484,6 +1492,12 @@ void() pk_srvcmd_set =
 	C_MONSTER_WAIT = 60;// 80; // how long till we spawn another random mosnter
 	C_MONSTER_DEV = 20;
 	C_MONSTER_CNT = 0;
+
+	FAST_MONSTER = 0;
+	SLOW_MONSTER = 0;
+	R_FAST_MONSTER = 0;
+	R_SLOW_MONSTER = 0;
+	C_FS_MONSTER = 0;
 
 // crates
 
@@ -1789,6 +1803,12 @@ current max is 312, move lines out of comment as needed
 		registercvar("sv_monster_map2", "0"); // bit mask to allow map monsters in dm
 		registercvar("sv_monster_rnd2", "0"); // bit mask to allow extra random spawned monsters in dm
 		registercvar("sv_monster_resp2", "0"); // bit mask to respawn some map monsters (not random ones)
+// fast | slow monsters
+		registercvar("sv_monster_fast", "0"); // make any map monster with this bit fast
+		registercvar("sv_monster_slow", "0"); // make any map monster with this bit slow
+		registercvar("sv_monster_rnd_fast", "0"); // make extra fast monsters when map monsters of these bits spawn
+		registercvar("sv_monster_rnd_slow", "0"); // make extra slow monsters when map monsters of these bits spawn
+		registercvar("sv_monster_cfs", "0.05"); // chance to make random fast / slow monster
 
 // things dealing with the dead
 

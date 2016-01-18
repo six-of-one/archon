@@ -38,6 +38,16 @@ float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent 
 float DM_MONSTER;	// true if any option allows monsters in dm
 float HUB_MONSTER;	// true if monsters will appear on hub maps - "sv_monster_hub"
 
+// fast and slow monsters
+float FAST_MONSTER; // monster bits set here will always be fast monsters
+float SLOW_MONSTER; // monster bits set here will always be slow monsters
+float R_FAST_MONSTER; // randomly generate fast monsters when regular map monsters (of these bits) spawn
+float R_SLOW_MONSTER; // randomly generate slow monsters when regular map monsters (of these bits) spawn
+float C_FS_MONSTER; // chance to make a fast / slow monster
+
+void() random_monster_location;
+void() remove_monster;
+
 // timings
 float S_MONSTER_WAIT; // min wait till we respawn a dead mosnter
 float S_MONSTER_DEV;

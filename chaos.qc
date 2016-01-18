@@ -396,8 +396,9 @@ void() func_model =
 	precache_model (self.mdl);
 	setmodel (self,self.mdl);
 
-	self.frame = self.count;
-	self.skin = self.cnt;
+// set these only if they are set - otherwise use defaults
+	if (self.count) self.frame = self.count;
+	if (self.cnt) self.skin = self.cnt;
 
 	self.lip = self.aflag = 0;
 	if (self.dmg)
@@ -597,6 +598,9 @@ float(string surf, vector v, entity e) sky_touch =
 		if (surf == "") last_texture = getsurfacetexture(world, surfnum2);
 		else last_texture = surf;
 		if (last_texture == "sky1" || last_texture == "sky4" || last_texture == "sky0" || last_texture == "sky2" || last_texture == "sky6") t = TRUE;
+		else if (last_texture == "firey_") t = TRUE;
+		else if (last_texture == "s6_") t = TRUE;
+		else if (last_texture == "graveyard/grave_") t = TRUE;
 		else if (last_texture == "skydark") t = TRUE;
 		else if (last_texture == "c1_") t = TRUE;
 		else if (last_texture == "textures/K_sky/rabbit_skybox" || last_texture == "textures/skies/pjbasesky_arena1_sky") t = TRUE;
@@ -888,6 +892,14 @@ void () m_func_illusionary =
 
 	func_illusionary();
 };
+
+// map item wrapper (so  radiant doesnt have the one m_ entry)
+
+void() func_m_illusionary =
+{
+	m_func_illusionary();
+};
+
 
 float() crandom;
 
@@ -1709,6 +1721,18 @@ float(entity e) IS_MISSILE =
 	return(f);
 };
 
+
+// info_allow - indicate a map allows certain things, like large monster flyers
+
+float ALLOW_LARGE_FLYER;
+
+void() info_allow =
+{
+// allow random monsters that are flyers and large - dragons, cthulhu, etc
+	if (self.netname == "largeflyers") ALLOW_LARGE_FLYER = TRUE;
+
+	remove(self);
+};
 
 // new body que - builds que on the fly
 

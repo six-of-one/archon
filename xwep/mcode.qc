@@ -2271,10 +2271,11 @@ void() painkeep_cube_use =
 	}
 	else
 	{
-		if (random() < 0.5)
+		if ((random() < 0.5) && (chaos_tele_total < CHAOS_TELE_LIMIT))
 		{
 			chaos_teleport(self.origin, "", world);
 			newmis.origin_z = newmis.origin_z + 20 + random() * 30;
+			chaos_tele_total = chaos_tele_total + 1;
 
 			if (random() < 0.95) // mostly not permanent
 				dyn_remove(newmis, (PK_DYNTO * (2 + random() + random()) + (20 * random())), chaos_tele_expire);
@@ -2476,7 +2477,7 @@ void() cube_touch =
 	}
 };
 
-/*QUAKED pk_cube  (0 .5 .8) (-16 -16 0) (16 16 32)
+/*QUAKED func_pk_cube  (0 .5 .8) (-16 -16 0) (16 16 32)
 --------  CAT  --------
 
 to use as map item - they will respawn
@@ -2507,6 +2508,13 @@ void() pk_cube =
 	setsize (self,'-16 -16 0','16 16 32');
 	StartItem ();
 
+};
+
+// map item wrapper (so  radiant doesnt have the one pk_ entry)
+
+void() func_pk_cube =
+{
+	pk_cube();
 };
 
 void() crate_touch =

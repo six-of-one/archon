@@ -622,8 +622,12 @@ void() painkeep_touch =
 
 
 
-if (!self.mask_x) 			bprint("------------------- ** WARNING - item with no mask x\n");
-
+if (!self.mask_x)
+{
+	bprint("------------------- ** WARNING - item with no mask x = ");
+	bprint(self.model);
+	bprint("\n");
+}
 
 
 // morphic
@@ -688,7 +692,12 @@ if (!self.mask_x) 			bprint("------------------- ** WARNING - item with no mask 
 
 
 
-if (self.classname == "") bprint("*** - blank classname in touch fn \n");
+if (self.classname == "")
+{
+	bprint("*** - blank classname in touch fn = ");
+	bprint(self.model);
+	bprint("\n");
+}
 
 
 
@@ -1116,9 +1125,9 @@ void(float new, float new2) PK_Deathmatch_Weapon =
 void() BackpackTouch =
 {
 	local string	bs;
-	local	float	best, new;
-	local		entity	st1;
-	local	float	acount;
+	local float best, new;
+	local entity e;
+	local float acount;
 
 	if (Q_100)
 	{
@@ -1149,14 +1158,14 @@ void() BackpackTouch =
 		acount = 1;
 //		sprint (other, "the ");
 
-		st1 = self;
+		e = self;
 		self = self.eweapon;
 //		sprint (other, self.netname);
 
 		x_weapon_touch(); // prints "you got the" - this puts the eweapon in SUB_regen !!
 		self = other;
 		best = W_BestWeapon();
-		self = st1;
+		self = e;
 //		if (self.eweapon.stack1 == "threw")
 			remove(self.eweapon); // pack native have a dyn_remove - but we need to take away the threw weps left eweapons
 	}
@@ -1174,10 +1183,10 @@ void() BackpackTouch =
 		}
 
 // if the player was using his best weapon, change up to the new one if better
-	st1 = self;
+	e = self;
 	self = other;
 	best = W_BestWeapon();
-	self = st1;
+	self = e;
 	}
 
 // change weapons
@@ -1373,12 +1382,19 @@ void() BackpackTouch =
 	{
 
 // remove the backpack, change self to the player
-	remove(self);
-	self = other;
+//	remove(self); - deprecated because of bot seq touch code via painkeep_touch does some stuff to self after return
+// this change may have fixed some issues with bots
+		self.solid = SOLID_NOT;
+		self.model = "";
+		self.think = SUB_Remove;
+		self.nextthink = time + 0.25;
 	}
 	else
 		return;
 // end ammo pack code
+
+	e = self;
+	self = other;
 
 // change to the weapon
 	if (!deathmatch)
@@ -1387,6 +1403,7 @@ void() BackpackTouch =
 	PK_Deathmatch_Weapon (new, 0); // *pk - new wep switch rule for higher risk weps
 
 	W_SetCurrentAmmo ();
+	self = e;
 };
 
 // fn(xwep_ammo) - handel xweapon & pki ammo issues when they go in the pack
@@ -1595,6 +1612,21 @@ void() DropBackpack =
 
 	newmis = world;
 
+// toss limits Q, PK, q / pk guy code
+// CHECK: what d, q2, q3 guy drop in dm when dead
+
+	if (!PK_100)
+	if ((MAP_MODE != "Q") && (MAP_MODE != "PK"))
+	if (self.class_select != "class_monster")
+	if (self.morphy != CHAR_Q)
+	if (self.morphy != CHAR_PK)
+	{
+		if (self.morphy == CHAR_W) return;
+		if (self.morphy == CHAR_D) return;
+		if (self.morphy == CHAR_Q2) return;
+		if (self.morphy == CHAR_Q3) return;
+	}
+
 	if (DEAD_THROW_NOWAY)
 	if (noway_below)
 	if (self.origin_z < noway_below) return;
@@ -1612,6 +1644,7 @@ void() DropBackpack =
 
 	newmis.items = self.weapon;
 	newmis.pk_items = 0;
+	newmis.classname = "backpack";
 
 	bkt = BACKPACK_TIME + crandom() * BACKPACK_TIME_DV;
 
@@ -1683,7 +1716,7 @@ void() DropBackpack =
 	newmis.touch = BackpackTouch;
 
 	newmis.nextthink = time + bkt;
-	newmis.think = SUB_Remove;
+	newmis.think = SUB_Remove; // poss. chaos vector
 	AddToSplash(newmis); // *pk - splash tossed items
 
 	bot_BackpackSetup(newmis); // *bot

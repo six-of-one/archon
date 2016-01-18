@@ -133,7 +133,7 @@ void() linkLightning =
 void() light_lightning =
 {
 
-	if (pk_flags & PK_TP_SPARKSFLASH)
+	if ((pk_flags & PK_TP_SPARKSFLASH) || XENV)
 	{
 		remove(self);
 		return;

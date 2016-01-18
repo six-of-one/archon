@@ -990,6 +990,8 @@ void(entity e, string md, entity p) DeadThrew =
 
 	newmis.items = e.weapon;
 	newmis.pk_items = 0;
+	newmis.classname = "thrownwep";
+	newmis.mask_x = CB_HUMAN + CB_GREMLIN;
 
 	if (e.eweapon) // note: even though newmis is spawned for the thrown item, eweapon is kept around, because threw weps use backpack touch code
 	{
@@ -1077,7 +1079,11 @@ void(entity e, string md, entity p) DeadThrew =
 
 	setmodel (newmis, md);
 	setsize (newmis, '-12 -12 0', '12 12 56');
-	newmis.touch = BackpackTouch;
+
+// Cataboligne - 11.11.12 - fix morphs beng able to pickup weps they shouldnt
+//	- also may have fixed some un-ided bot issues
+	newmis.touch = painkeep_touch;
+	newmis.pk_touch = BackpackTouch;
 
 	item_eject(newmis, ' 210 210 240'); // velocity to toss - IDEA: use directional of corpse moving (blast, etc)
 	newmis.think = SUB_Remove; // IMP: dont just blink, fade or melt out of level
@@ -1093,6 +1099,7 @@ void(entity e, string md, entity p) DeadThrew =
 
 // fn(DeadThrowWeps) - handel throwing weapons out on death
 
+// DEAD_THROW - sv_dead_throw
 //	bit				rule
 // 0			no weps thrown
 // 1			throw weaps, none worky

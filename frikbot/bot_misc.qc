@@ -677,17 +677,21 @@ float (entity targ1, entity targ2) wisible =
 {
 	local vector	spot1, spot2;
 	local entity ignore;
+	local float f;
 
 	spot1 = targ1.origin;
 	spot2 = realorigin(targ2);
-	
+
+	f = 1001; // loop safety - Cataboligne - 11.8.12, after years of ops this code is now going infinite on certain maps
+
 	ignore = self;
 	do
 	{
+		f = f - 1;
 		traceline (spot1, spot2, TRUE, ignore);
 		spot1 = realorigin(trace_ent);
                 ignore = trace_ent;
-	} while ((trace_ent != world) && (trace_fraction != 1));
+	} while ((trace_ent != world) && (trace_fraction != 1) && (f > 0));
 	if (trace_endpos == spot2)
 		return TRUE;
 	else 

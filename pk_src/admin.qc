@@ -1924,6 +1924,7 @@ void() AdminCommands =
 			if (pk_flags & PK_TP_SPARKSFLASH)
 			{
 				self.wad = "\nSFX Enabled.";
+				if (XENV) self.wad = "\nSFX Enabled - but blocked by XENV (sv_c_xenv).";
 				pk_bas_flags(PK_TP_SPARKSFLASH, 1);
 			}
 			else
@@ -1978,7 +1979,9 @@ void() AdminCommands =
 			else
 				sprint(self, "Duty Checking Off   --- (sv_pk_duty)\n");
 
-			if (!(pk_flags & PK_TP_SPARKSFLASH))
+			if (XENV)
+				sprint(self, "SFX \bOFF\b             --- (sv_c_xenv)\n");
+			else if (!(pk_flags & PK_TP_SPARKSFLASH))
 				sprint(self, "SFX On              --- (sv_pk_sfx)\n");
 			else
 				sprint(self, "SFX \bOFF\b             --- (sv_pk_sfx)\n");

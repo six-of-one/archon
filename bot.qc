@@ -586,18 +586,20 @@ void(entity e) bot_BackpackSetup =
 {
 	if (!e) return;
 	e.pk_touch = e.touch; // *pk
-	e.touch = painkeep_touch; // using this while installed with pk
+	if (!Q_100) e.touch = painkeep_touch; // *pk
+
+// bot functions that op. w/o painkeep - masked off here because painkeep_touch does bot_touch and more
 //	e.bot_item_touch = e.touch;
 //	e.touch = bot_touch;
+
 	e.classname = "Backpack"; // *bot backpack code follows
 	e.th_weight = backpackweight;
 	e.state = BOT_TOUCHED;
-	if (!Q_100) e.touch = painkeep_touch; // *pk
 }
 
 // remove item hooks & put here - code diverts here from PlaceItem
 
-// IMP: easy ver, all x stuff
+// IMP: easy ver, all x stuff - note: class_select possibilities
 
 void(entity e) bot_item_linx =
 {

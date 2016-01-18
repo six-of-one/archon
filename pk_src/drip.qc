@@ -44,8 +44,7 @@ void() func_drip_drop =
 {
 	local entity drop;
 
-	if (!XENV || PK_100)
-	if ( ! pk_flags & PK_TP_SPARKSFLASH)
+	if ((! pk_flags & PK_TP_SPARKSFLASH) || !XENV)
 	{
 		// create new drop
 		drop = spawn();

@@ -298,6 +298,7 @@ void() lavablob_mytosis =
 	newmis.classname = "monster_lavabomb";
 	newmis.netname = "Bomb";
 	newmis.class_select = "class_monster";
+	newmis.think = tbaby_checknew; // should be set already
 
 	r = random();
 

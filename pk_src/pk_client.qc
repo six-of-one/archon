@@ -1290,9 +1290,9 @@ server total 100?
 		self.dmgtime = 0;
 	}
 
-	if (!PK) // *pk - done elsewhere CHECK:
-	if (! (self.flags & FL_WATERJUMP))
-		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
+//	if (!PK) // *pk - done elsewhere CHECK:
+//	if (! (self.flags & FL_WATERJUMP))
+//		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
 };
 
 

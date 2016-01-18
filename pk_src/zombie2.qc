@@ -51,7 +51,8 @@ void() monster_zombie2 =
 	precache_sound ("misc/zombie/swing_2.wav");
 	precache_sound ("misc/zombie/swing_3.wav");
 
-	if (pk_flags & PK_TP_SPARKSFLASH)
+//	if (pk_flags & PK_TP_SPARKSFLASH)
+	if ((pk_flags & PK_TP_SPARKSFLASH) || XENV)
 	{
 		remove(self);
 		return;
@@ -93,7 +94,7 @@ void() monster_zombie3 =
 {
 	precache_model ("progs/zombie3.mdl");
 
-	if (pk_flags & PK_TP_SPARKSFLASH)
+	if ((pk_flags & PK_TP_SPARKSFLASH) || XENV)
 	{
 		remove(self);
 		return;

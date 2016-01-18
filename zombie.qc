@@ -482,7 +482,7 @@ if (ign != A_MONSTER)
 	if (!M_MONSTER & CB_M_ZOMBY)
 	if (deathmatch)
 	{
-		if ( pk_flags & PK_TP_SPARKSFLASH)
+		if ((pk_flags & PK_TP_SPARKSFLASH) || XENV)
 		{
 			remove(self);
 			return;

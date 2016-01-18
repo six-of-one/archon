@@ -471,7 +471,10 @@ void(string cls) item_call =
 	else if (cls == "monster_shalrath") monster_shalrath(A_MONSTER);
 	else if (cls == "monster_supervore") monster_supervore(A_MONSTER);
 	else if (cls == "monster_shambler") monster_shambler(A_MONSTER);
-	else if (cls == "monster_tarbaby") monster_tarbaby(A_MONSTER);
+//	else if (cls == "monster_tarbaby") monster_tarbaby(A_MONSTER);
+//	else if (cls == "monster_tarbaby_rnd") {self.spawnflags = TB_RANDOM; monster_tarbaby(A_MONSTER); }
+// just make randomly spawned spawns random select
+	else if (cls == "monster_tarbaby") {self.spawnflags = TB_RANDOM; monster_tarbaby(A_MONSTER); }
 	else if (cls == "monster_wizard") monster_wizard(A_MONSTER);
 	else if (cls == "monster_zombie") monster_zombie(A_MONSTER);
 	else if (cls == "monster_scourge") monster_scourge(A_MONSTER);
@@ -502,7 +505,7 @@ void(string cls) item_call =
 		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2 + random(), random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
 
-		total_monsters = t_monsters  + 1;
+		total_monsters = t_monsters  + 1; // NOTE: update message not sent
 
 		return;		
 	}

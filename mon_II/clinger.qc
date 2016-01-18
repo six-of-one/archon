@@ -229,6 +229,8 @@ void() cligner_killed =
 	clinger_die1();
 };
 
+// note: macro sets .think
+
 void() clinger_respawn = [ $idle1, clinger_idle1 ]
 {
 	local float respawning;

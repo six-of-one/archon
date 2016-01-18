@@ -2167,7 +2167,11 @@ void() PK_ImpulseCommands =
 	{
 		if (pk_flags & PK_TP_SPARKSFLASH)
 		{
-			bprint("SFX Enabled.\n");
+			bprint("SFX Enabled");
+			if (XENV)
+				bprint(" - but blocked by XENV (sv_c_xenv)");				
+			else
+				bprint(".\n");
 			pk_bas_flags(PK_TP_SPARKSFLASH, 1);
 		}
 		else
@@ -2233,7 +2237,13 @@ void() PK_ImpulseCommands =
 			sprint(self, "Duty Checking Off\n");
 
 		if (!(pk_flags & PK_TP_SPARKSFLASH))
-			sprint(self, "SFX On\n");
+		{
+			sprint(self, "SFX On");
+			if (XENV)
+				bprint(" - but blocked by XENV (sv_c_xenv)");				
+			else
+				bprint(".\n");
+		}
 		else
 			sprint(self, "SFX Off\n");
 

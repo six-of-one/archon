@@ -545,6 +545,28 @@ float MIN_CLOUD_DIST			= 300; // minimum distance between player / zombie clouds
 float CLOUD2_STATE			= 100; // if 2nd cloud is to start - cloud 1 state must be < than this
 float tot_cloud;  // limit 3 clouds, 1 zomby can only have 2
 
+// slows stuff down in clouds - more touched, more slowed
+
+void() cloud_touch =
+{
+	if (self.attack_finished > time) return;
+	self.attack_finished = time + 0.2;
+
+	if (other == self.owner) return;
+	if (!other.movetype) return;
+	if (other.classname == OBSERVER) return; // observers
+	if (IS_ZOMBIE(other)) return; // us / our family
+
+	if (random() < 0.3)
+		other.velocity = other.velocity * 0.005;
+	else
+		other.velocity = other.velocity * 0.025;
+
+// clouds do damage too, sometimes
+	if (random() < 0.2)
+		T_Damage (other, self.owner, self.owner.owner, 1 + 2 * random());		
+}
+
 void() cloudkill =
 {
 	local float dist, mult, f, clc;
@@ -655,7 +677,7 @@ void() cloudkill =
 			if (f && clc < 100)
 			{
 				clc = clc + 1;
-				e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, cparticle_lorg, v0, v0, v0, v0, "clouds", "progs/lavaball.mdl", SUB_Null, 0.4,SUB_Remove, SUB_Null, self, world);
+				e = chaos_spawn(MOVETYPE_NONE, SOLID_TRIGGER, 0, RM_SKY, cparticle_lorg, v0, v0, v0, v0, "clouds", "progs/lavaball.mdl", cloud_touch, 0.4,SUB_Remove, SUB_Null, self, world);
 //				e = chaos_spawn(MOVETYPE_NONE, SOLID_NOT, 0, RM_SKY, self.origin, v0, v0, v0, v0, "clouds", "progs/lavaball.mdl", SUB_Null, 0.4,SUB_Remove, SUB_Null, self, world);
 //				e.origin_x = e.origin_x + crandom() * 60;
 //				e.origin_y = e.origin_y + crandom() * 60;
@@ -695,7 +717,8 @@ void() cloudkill =
 					head.cnt = time + self.rad_time;
 				}
 
-				if (vlen(head.velocity) > 75) head.velocity = head.velocity * 0.5; // slow down in cloud
+// old method - seemed not so
+//				if (vlen(head.velocity) > 75) head.velocity = head.velocity * 0.5; // slow down in cloud
 
 				if (self.dmg_take > 0)
 					T_Damage (head, self, self.owner, self.dmg * (self.dmg_take / dist) + self.dmg_save * random());
@@ -725,7 +748,11 @@ else
 				if (head.cnt  < time)
 				if (random() < self.lefty) { if (WARNING) bprint("\ndied!");
 					T_Damage (head, self, self.owner, head.health + 5);
-} if (WARNING) bprint("\n");
+}
+
+
+if (WARNING) bprint("\n");
+
 			}
 		}
 		head = head.chain;
