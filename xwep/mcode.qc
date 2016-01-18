@@ -2378,7 +2378,9 @@ void() cube_touch =
 		else // frik test
 		{
 			if (!MORPH_BOT & 1) return;
-		} 
+		}
+		
+		if (self.mask_x == MORPH_ARCHON) return; // not bot Archons yet
 
 		if (other.mask_x & CB_HUMAN) // if bot score is low, stay human for now
 		{
@@ -2420,7 +2422,9 @@ void() cube_touch =
 		{
 			if (other.eweapon.duration > time) return; // debouncer
 			other.eweapon.duration = time + 3;
-			sprint(other, "You already merged with an Evolution Cube - you must use it or change weapons.\n");
+			sprint(other, "You already merged with an ");
+			sprint(other, other.eweapon.netname);
+			sprint(other, " - you must use it or change weapons.\n");
 			return;
 		}
 	}
@@ -2430,7 +2434,7 @@ void() cube_touch =
 	if (other.archon < ARCHON_MORPH_MIN) //not enough power yet
 	{
 		if (self.theowner != other) // debounce
-			sprint(other, "You need more power to use an Evolution Cube.\n");
+			sprint(other, "You need more Archon power for Evolution.\n");
 		self.theowner = other;
 		return;
 	}
@@ -2447,7 +2451,10 @@ void() cube_touch =
 	}
 
 	if (self.wad == "morph_cube")
-		sprint(other, "you merged with this Evolution Cube");
+	{
+		sprint(other, "you merged with this ");
+		sprint(other, self.netname);
+	}
 	else
 //	if (self.wad == "pk_cube")
 		sprint(other, "You control this Painkeep Cube");
@@ -2474,7 +2481,7 @@ void() cube_touch =
 	if (cvar("r_ambient") > 0)
 		other.light_lev = cvar("r_ambient"); // because of cube re-arm
 
-	sprint(other, "\nIf you select another weapon the cube will be free...\n");
+	sprint(other, "\nIf you select another weapon the item will be free...\n");
 	self.owner = other;
 	other.prevweapon = other.weapon; // save for pack on morphic
 	other.theowner = other.eweapon;

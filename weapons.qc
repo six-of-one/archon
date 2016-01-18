@@ -73,6 +73,7 @@ void () W_FireAxe =
 	{
 		trace_ent.axhitme = 1;
 		if (trace_ent.netname != "Crate") // ick: hack - handle in spawnblood, recode to pass ent
+		if (trace_ent.solid == SOLID_SLIDEBOX) // BLOODCHECK -  7.29.13
 		SpawnBlood (org, '0 0 0', 20);
 		T_Damage (trace_ent,self,self,20);
 	}

@@ -510,10 +510,15 @@ void() grap_touch =
 
 		if (other.health && other.solid != SOLID_BSP && other.solid != SOLID_NOT)
 	  {
+			if (other.solid == SOLID_SLIDEBOX) // BLOODCHECK - 7.29.13
+			{
+				spawn_touchblood (9);
+				sound(self, CHAN_AUTO, "zombie/z_hit.wav", 1, ATTN_NORM); // hit flesh sound - 7.29.13
+			}
+			else
 			// play hit sound
 			sound(self, CHAN_AUTO, "weapons/grapple/grapf_1.wav", 1, ATTN_NORM);
 
-			spawn_touchblood (9);
 			T_Damage(other, self, grapOwner, 9);
 
 			// chance to knock a rune loose - Cataboligne

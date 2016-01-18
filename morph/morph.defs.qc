@@ -252,6 +252,10 @@ float IMP_DROPI;
 float IMP_DROPI_ACT				= 54; // drop inventory - activate impulse
 .entity dropent;
 
+// flag masks - how cube knows what to offer
+
+float MORPH_ARCHON;
+
 // morph bit flags
 
 //archons
@@ -259,8 +263,8 @@ float CB_CHAOS						= 1;
 float CB_ORDER						= 2;
 //humans
 float CB_HUMAN						= 4;
-float CB_DEMO						= 8;
 //medievals
+float CB_SHAPESHIFT				= 8;
 float CB_WRAITH					= 16;
 float CB_DRAGON					= 32;
 // q2
@@ -305,7 +309,6 @@ float CHAR_Q2						= 14;
 float CHAR_Q3						= 15;
 
 
-float IMP_MDEMO					= 61;	// string STI_MDEMO			= "impulse 61";
 float IMP_MSPECIAL				= 62;	// string STI_MSPECIAL		= "impulse 62";
 float IMP_MTECH					= 63;	// string STI_MTECH			= "impulse 63";
 
@@ -313,6 +316,7 @@ float IMP_MTECH					= 63;	// string STI_MTECH			= "impulse 63";
 
 float IMP_MENG						= 65;	// string STI_MENG			= "impulse 65";
 //Medieval:
+float IMP_MSHAPESHIFT			= 69;	// string STI_MDEMO			= "impulse 61";
 float IMP_MWRAITH					= 70;	// string STI_MWRAITH		= "impulse 70";
 float IMP_MTHAM					= 71;	// string STI_MTHAM			= "impulse 71";
 float IMP_MDRACON 				= 72;	// string STI_MDRACON		= "impulse 72";

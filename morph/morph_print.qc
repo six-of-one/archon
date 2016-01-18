@@ -136,6 +136,25 @@ void() morph_print_notify =
 	if (self.enemy.solid)
 	if (self.enemy.classname == "player")
 	{
+		if (self.mask_x == MORPH_ARCHON)
+		{
+	//						 1234567890123456789012345678901234567890
+		centerprint3(self.enemy, 
+						 "\b                 ARCHON!                \n"
+						   "----------------------------------------\n"
+						 "\bYou have been chosen - So might it be...\n"
+						 "\bselect a demense with these controls:   \n"
+						   "----------------------------------------\n"
+						 "\bUse cycle weapon+ to go forward -       \n"
+						 "\bUse cycle weapon- to go backward.       \n"
+						 "\bPress alt-fire to finish your selection \n"
+						 "\band become one!                         \n"
+						 "\bselect any weapon with 1 - 9 to exit.   \n"
+						 "\b----------------------------------------\n"
+						 "you have: ", ftos(self.enemy.archon), " points.");
+		}
+		else
+		{
 		centerprint3(self.enemy, "\b           Welcome to Archon.           \n"
 						 "----------------------------------------\n"
 						 "\bYou can now evolve - please select an   \n"
@@ -148,6 +167,7 @@ void() morph_print_notify =
 						 "\bselect any weapon with 1 - 9 to exit.   \n"
 						 "\b----------------------------------------\n"
 						 "you have: ", ftos(self.enemy.archon), " points.");
+		}
 	}
 	remove(self);
 };
@@ -162,32 +182,18 @@ stuffcmd(self, "\ncon_notify 4\n"); // for this output
 p1.eweapon.archon = 0;
 if (p1.cnt < 0)
 	{
-	//						 1234567890123456789012345678901234567890
-/*
-	centerprint3(p1,
-						 "\b           Welcome to Archon.           \n"
-						 "\b----------------------------------------\n"
-						 "\bYou can now evolve - please select an   \n"
-						 "\bevolution with these controls:          \n"
-						 "\b----------------------------------------\n"
-						 "\bUse cycle weapon+ to go forward -       \n"
-						 "\bUse cycle weapon- to go backward.       \n"
-						 "\bPress fire to finish your selection     \n"
-						 "\band Evolve!                             \n"
-						 "\bselect any weapon with 1 - 9 to exit.   \n"
-						 "\b----------------------------------------\n");
-*/
 		newmis = spawn();
 		newmis.think = morph_print_notify;
 		newmis.nextthink = time + 0.5;
 		newmis.enemy = p1;
+		newmis.mask_x = p1.eweapon.mask_x; // would not compile when this was mask = mask
 
 		p1.cnt = 0; // clear for classpr
 		return;
 	}
 else if (p1.state == IMP_MCHAOS)
 	{
-	if (!MORPH_FREE) p1.eweapon.archon = 5000;
+	p1.eweapon.archon = 5000;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Archon of Chaos:\n"
@@ -207,7 +213,7 @@ else if (p1.state == IMP_MCHAOS)
 	}
 else if (p1.state == IMP_MORDER)
 	{
-	if (!MORPH_FREE) p1.eweapon.archon = 5000;
+	p1.eweapon.archon = 5000;
 	if (p1.archon > p1.eweapon.archon)
 	centerprint3(p1,
 						 "Archon of Order:\n"
@@ -423,6 +429,7 @@ else if (p1.state == IMP_MCTHON)
 						 "----------------------------------------\n"
 						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
+
 else if (p1.state == IMP_MHUMAN) // basic grunt desc.
 	{
 	if (morph_classpr(p1, SC_MARINE)) return;
@@ -442,6 +449,16 @@ else if (p1.state == IMP_MHUMAN) // basic grunt desc.
 						 "----------------------------------------\n"
 						 "uses: ", ftos(p1.eweapon.archon), " points.");
 	}
+/*
+else if (p1.state == IMP_MSPECIAL)
+	centerprint(p1, "\bYour training is simply the best.  Your\n"
+						 "\bnails hurt more, your rockets explode  \n"
+						 "\bharder.  Your shotguns boom louder.    \n"
+						 "\bYou can even improve a few of them. You\n"
+						 "\blook like  Wesley Snipes in Blade. Dont\n"
+						 "\bstop your training, its critical...you \n"
+						 "\bmust collect items to maintain training\n"
+						 "\bdiscipline.  You have been warned.     \n");
 else if (p1.state == IMP_MDEMO)
 	{
 	if (morph_classpr(p1, SC_MARINE)) return;
@@ -452,16 +469,6 @@ else if (p1.state == IMP_MDEMO)
 						 "\bNot much in the way of a ranged attack \n"
 						 "\bfor awhile.  No fantasy weapons at all.\n");
 	}
-else if (p1.state == IMP_MSPECIAL)
-	centerprint(p1, "\bYour training is simply the best.  Your\n"
-						 "\bnails hurt more, your rockets explode  \n"
-						 "\bharder.  Your shotguns boom louder.    \n"
-						 "\bYou can even improve a few of them. You\n"
-						 "\blook like  Wesley Snipes in Blade. Dont\n"
-						 "\bstop your training, its critical...you \n"
-						 "\bmust collect items to maintain training\n"
-						 "\bdiscipline.  You have been warned.     \n");
-/*
 else if (p1.state == IMP_MTECH) // tech desc.
 	{
 	if (morph_classpr(p1, SC_TECH)) return;

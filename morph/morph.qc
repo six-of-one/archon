@@ -12,7 +12,6 @@
 
 // flag masks - how cube knows what to offer
 
-float MORPH_ARCHON;
 float MORPH_MARINE;
 float MORPH_MONSTER;
 float MORPH_CASTLE; // wolf
@@ -36,7 +35,7 @@ void() morph_setup =
 	MORPH_ALL = MORPH_ARCHON + MORPH_MONSTER + MORPH_HELLION + MORPH_STROG + MORPH_ANCIENT + CB_HUMAN;
 
 // these morph fly natively
-	MORPH_FLY = CB_CHAOS + CB_ORDER + CB_SCRAG + CB_WRAITH + CB_DRAGON + CB_GREMLIN;
+	MORPH_FLY = CB_CHAOS + CB_ORDER + CB_SCRAG + CB_SHAPESHIFT + CB_WRAITH + CB_DRAGON + CB_GREMLIN;
 // these morphs can always hook - so limited jumpers can get unstuck - this is a limited range hook
 	MORPH_HOOK = CB_CHAOS + CB_CTHON + CB_ZOMBY + CB_SCOURGE; // + CB_GREMLIN;
 // morph with builting armor (can heal this)
@@ -90,9 +89,9 @@ float(float sel) cb_morph =
 	else if (sel == CHAR_PK)			return(CB_HUMAN);
 	else if (sel == CHAR_Q2)			return(CB_HUMAN);
 	else if (sel == CHAR_Q3)			return(CB_HUMAN);
-	else if (sel == IMP_MDEMO)			return(CB_DEMO);
 //	else if (sel == IMP_MSPECIAL)		return(CB_SPEC);
 //Medieval:
+	else if (sel == IMP_MSHAPESHIFT)	return(CB_SHAPESHIFT);
 	else if (sel == IMP_MWRAITH)		return(CB_WRAITH);
 	else if (sel == IMP_MDRAGON)		return(CB_DRAGON);
 //Q2
@@ -122,9 +121,9 @@ float(float sel) cb_morph =
 	else if (sel == CB_ORDER)			return(IMP_MORDER);
 //Techs:
 	else if (sel == CB_HUMAN)			return(IMP_MHUMAN);
-	else if (sel == CB_DEMO)			return(IMP_MDEMO);
 //	else if (sel == CB_SPECIAL)		return(IMP_MSPEC);
 //Medieval:
+	else if (sel == CB_SHAPESHIFT)	return(IMP_MSHAPESHIFT);
 	else if (sel == CB_WRAITH)			return(IMP_MWRAITH);
 	else if (sel == CB_DRAGON)			return(IMP_MDRAGON);
 //Strogs:
@@ -375,7 +374,7 @@ void() morphic_impulse =
 		{
 			c.owner = world;
 			c.touch = painkeep_touch;
-			centerprint(self, "The cube is free...");
+			centerprint(self, "The item is free...");
 		}
 		if (done == 1) self.impulse = 0;
 		cube_rearm(); // re arm player
@@ -438,11 +437,11 @@ void() morphic_impulse =
 			if (sv < 1) // ran out
 			{
 				if (c.theowner != self) // debounce
-					sprint(self, "You need more power to use this Evolution Cube.\n");
+					sprint(self, "You need more Archon power for Evolution.\n");
 				c.theowner = self;
 				c.owner = world;
 				c.touch = painkeep_touch;
-				centerprint(self, "The cube is free...");
+				centerprint(self, "The item is free...");
 				self.state = 
 				self.impulse = 0;
 				cube_rearm(); // re arm player
@@ -482,11 +481,12 @@ void() morph_cube_use =
 	}
 
 	if (!self.state) return; // no selection made yet
-	if (self.state == self.morphy) // cant select same thing
+	if (self.state == self.morphy) // cant select same thing --- NOTE: Archons, Wraith & Shapeshift can NOT morph with cubes!
+											 // they can morph with internal power - state will = true form, morph = current form, or special chaos code
 	{
 		self.eweapon.owner = world;
 		self.eweapon.touch = painkeep_touch;
-		centerprint(self, "The cube is free...");
+		centerprint(self, "The item is free...");
 		cube_rearm(); // re arm player
 		return;
 	}
@@ -530,8 +530,8 @@ CB_CHAOS						= 1
 CB_ORDER						= 2
 //humans
 CB_HUMAN						= 4
-CB_DEMO						= 8
 //medievals
+CB_SHAPESHIFT				= 8;
 CB_WRAITH					= 16
 CB_DRAGON					= 32
 // q2
@@ -562,6 +562,10 @@ void() morph_cube =
 {
 	local float r;
 
+// TEST: until rest of morphs ready
+// IMP: level access - perhaps by server xp, diff masks
+// IDEA: if ULOK* true, use xnre on maps i.e. MORPH_HELLION on doom levels
+
 	if (!self.mask_x)
 	{
 		r = rint(random() * 6);
@@ -570,20 +574,24 @@ void() morph_cube =
 			if (time > 240) self.mask_x = MORPH_ARCHON;
 			else r = r + 1;
 		}
-		if ((r < 3) && ULOK2) self.mask_x = MORPH_STROG;
-		else if ((r == 3) && ULOKD) self.mask_x = MORPH_HELLION;
-		else self.mask_x = MORPH_MONSTER;
+//		if ((r < 3) && ULOK2) self.mask_x = MORPH_STROG;
+//		else if ((r == 3) && ULOKD) self.mask_x = MORPH_HELLION;
+//		else // TEST - merge with next non cond
+		if (r) // TEST - remove
+			self.mask_x = MORPH_MONSTER;
 	}
 
 
-// TEST: until rest of morphs ready
-// IMP: level access - perhaps by server xp, diff masks
-// IDEA: if ULOK* true, use xnre on maps i.e. MORPH_HELLION on doom levels
-
-	self.mask_x = MORPH_MONSTER;
-
 	setmodel(self, "progs/morph_cube.bsp");
-	self.netname = "Morphic Cube";
+	self.netname = "Evolution Cube";
+
+	if (self.mask_x == MORPH_ARCHON)
+	{
+		setmodel(self, "progs/8ray_arc.bsp");
+		self.netname = "Archon Spirit";
+	}
+
+
 	self.touch = painkeep_touch;
 	self.pk_touch = cube_touch;
 	self.noise = "items/r_item2.wav";
