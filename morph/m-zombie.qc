@@ -664,7 +664,7 @@ void() cloudkill =
 		{
 			local entity e;
 			head = findradius(self.origin, self.distance * mult);
-			f = 400;
+			f = 160;
 			if (clc > 15)
 			while (head && f > 0)
 			{
@@ -696,7 +696,7 @@ void() cloudkill =
 // cloud damage here
 // note: why does it damage crates?  toxic?
 	
-	f = 400;
+	f = 200;
 	head = findradius(self.origin, self.distance * mult);
 	if (self.wait > 1) self.wait = self.wait - 1;
 	else
@@ -865,7 +865,7 @@ void() player_zombie_attack =
 			p.dmg = 2;
 			p.dmg_save = 1;
 			p.dmg_take = 0;
-			p.cnt = 70;
+			p.cnt = 65;
 			p.lip = 20;
 			p.distance = self.health * 3;
 			p.search_time = time + self.health + self.health * 0.5 * random() + 30 * random();

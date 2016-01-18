@@ -280,6 +280,27 @@ entity(entity e, float fl) vload =
 
 	if (fl > 0) tr.vwepent.mcode = wepbit_mcode(fl, "Q");
 
+
+#ifdef warning
+		if (WARNING & 16384)
+		{
+			bprint("   *** warning: vw loading - ");
+			bprint(e.netname);
+			if (!pkvl)
+			{
+			bprint(" - md: ");
+			bprint(md);
+			bprint(" - mc: ");
+			bprint(ftos(tr.vwepent.mcode));
+			bprint(" - flg: ");
+			bprint(ftos(fl));
+			bprint("\n");
+			}
+		}
+		pkvl = 0;
+#endifdef
+
+
 	return(tr.vwepent);
 };
 
@@ -294,7 +315,14 @@ void (entity e, float fl) pkvload =
 	{
 		if (tr.pk_currentitem == PK_IT_AXE) return; // dont add extra vw axes
 		tr = tr.vwepent;
-	}
+
+		}
+
+
+#ifdef warning
+			pkvl = 1;
+#endifdef
+
 
 	tr = vload(e, IT_AXE);
 
@@ -327,6 +355,21 @@ void (entity e, float fl) pkvload =
 		tr.skin = 1;
 
 	tr.mcode = wepbit_mcode(fl, "PK2");
+
+#ifdef warning
+		if (WARNING & 16384)
+		{
+			bprint(" - md: ");
+			bprint(md);
+			bprint(" - mc: ");
+			bprint(ftos(tr.mcode));
+			bprint(" - flg: ");
+			bprint(ftos(fl));
+			bprint("\n");
+		}
+		pkvl = 0;
+#endifdef
+
 
 };
 
@@ -971,6 +1014,8 @@ void(entity e, string md, entity p) DeadThrew =
 		{
 			bprint(" *** warning: dead threw - ");
 			bprint(e.netname);
+			bprint(" - slot: ");
+			bprint(ftos(e.weapon));
 			bprint("\n");
 		}
 #endifdef
@@ -1055,6 +1100,10 @@ void(entity e, string md, entity p) DeadThrew =
 		{
 			bprint(" *** warning: dead threw - ");
 			bprint(ftos(newmis.lip));
+			bprint(" - w-mc: ");
+			bprint(ftos(e.mcode));
+			bprint(" - slot: ");
+			bprint(ftos(e.weapon));
 			bprint("\n");
 		}
 #endifdef

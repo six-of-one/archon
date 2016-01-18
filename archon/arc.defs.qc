@@ -29,6 +29,7 @@ float MAXFL						= 16777215; // max (non mantissa) float - max bit mask
 
 #ifdef warning
 float WARNING;								// display warnings - dev work mainly - now uses the following bit flags for specific warning sets
+float pkvl; // for indicator
 #endifdef
 												// & 1 - server ops
 												// & 2 - items

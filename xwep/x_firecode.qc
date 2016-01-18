@@ -16,6 +16,13 @@
 
 entity(entity e, float nw, float camcc) x_wep_store =
 {
+
+
+#ifdef warning
+			pkvl = 1;
+#endifdef
+
+
 	if (camcc >= 0) // code from xwep_fakeload so it can use loader
 	{
 		if (e) // replacing the basics - remove vw ent
@@ -24,7 +31,8 @@ entity(entity e, float nw, float camcc) x_wep_store =
 			e = world;
 			vw_chain(other); // removed existing weps
 		}
-		e = vload(other, nw);
+		e = vload(other, nw); // FIX: vector ?
+//		if (!e) e = vload(other, nw);
 	}
 
 	e.eweapon = e;
@@ -99,6 +107,22 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.target2 = self.target2;
 	e.targetname = self.targetname;
 	e.killtarget = self.killtarget;
+
+
+#ifdef warning
+		if (WARNING & 16384)
+		{
+			bprint(" - md: ");
+			bprint(e.vwepmdl);
+			bprint(" - mc: ");
+			bprint(ftos(e.mcode));
+			bprint(" - slot: ");
+			bprint(ftos(e.weapon));
+			bprint("\n");
+		}
+		pkvl = 0;
+#endifdef
+
 
 	return(e);
 };
