@@ -313,11 +313,15 @@ if (PR_VIEWPC) bprint ("--------------- cam exit: cam dmove\n");
 		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta
 		self.owner.takedamage = DAMAGE_NO;
 		self.owner.health = 1; // hack so engine will let you move cam
+		self.owner.think = SUB_Null;
 		if (self.owner.crosshair_sv > 0) crosshair_off(self.owner);
 
 // pbserver status bar - time spent observing in rels & high score
 		stuffcmd(self.owner, "infobar 2 \"");
 		stuffcmd(self.owner, self.owner.netname);
+		if (self.owner.deadflag)
+			stuffcmd(self.owner, " :dead (");
+		else
 		stuffcmd(self.owner, " :observer (");
 		stuffcmd(self.owner, ftos(rint(time - self.ltime)));
 		stuffcmd(self.owner, " rels) Archon 3.1a - high score: ");

@@ -128,6 +128,9 @@ void () observer =
 
 	bprint ("set_viewport: observer\n");
 
+	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
+	morph_clearparms(self.owner, TRUE);
+	self.ltime = time;
 
 	setmodel(self, "progs/null.mdl");
 	setsize (self,'-4 -4 -4', ' 4 4 4'); // dont look in floors / walls

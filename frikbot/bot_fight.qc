@@ -5,6 +5,9 @@
 *                                              *
 ***********************************************/
 
+/// 1st rule of FrikBot Fight Code - no one talks about FrikBot Fight Code
+/// 2nd rule of FrikBot Fight Code - no one talks about FrikBot Fight Code...
+
 /*
 
 This program is in the Public Domain. My crack legal
@@ -44,6 +47,7 @@ this notice in its entirety.
 
 .entity avoid;
 
+// TDO: add in runes, eweapon code
 float(entity e) bot_size_player =
 {
 	local float sz;
@@ -144,7 +148,7 @@ void() bot_dodge_stuff =
 			}
 		}
 	}
-	if (coop)
+	if (coop || DM_MONSTER) // Cataboligne - 10.16.11 - help frik avoid dm monstere
 	{
 		if (!self.enemy)
 		{
@@ -264,6 +268,8 @@ void(float brange) bot_weapon_switch =
 	local vector v;
 
 	it = self.items & 127;
+
+// TDO: add eweapon selector
 
 	while(it) // note: this looks like a loop inviting trouble - might need a safety, Cat
 	{

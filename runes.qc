@@ -175,10 +175,10 @@ string(float b) rune2_name =
 
 string(float b) rune_name =
 {
-	if (b == T_DSH) return("Disruptor Shield");
-	if (b == T_AMP) return("Power Amplifier");
-	if (b == T_TEIM) return("Time Accelerator");
-	if (b == T_ADOC) return("Auto Doc");
+	if (b == TECH_DSH) return("Disruptor Shield");
+	if (b == TECH_AMP) return("Power Amplifier");
+	if (b == TECH_TEIM) return("Time Accelerator");
+	if (b == TECH_ADOC) return("Auto Doc");
 
 	if (cvar("sv_c_rune") > 1 && ULOK2) return(rune2_name(b));
 
@@ -773,6 +773,7 @@ void () rune_touch =
 		if (self.spawnflags & RUNE_FLG_DM) other.rune_3_dmg = other.rune_3_dmg + RUNE_3_ACM;
 		if (self.spawnflags & RUNE_FLG_HS) other.rune_3_haste = other.rune_3_haste + RUNE_3_ACM;
 		if (self.spawnflags & RUNE_FLG_RG) other.rune_3_rgn = other.rune_3_rgn + RUNE_3_ACM;
+		if (self.spawnflags & RUNE_VAMPIRE) other.rune_3_vamp = other.rune_3_vamp + RUNE_3_ACM;
 	}
 
 // remove it in single player, or setup for respawning in deathmatch
@@ -838,7 +839,7 @@ void() rune_maker =
 	self.nextthink = time + tm;
 
 
-// fix leak - leak is stopped, but the code is staying for now
+// fix leak - leak is stopped (apparently not), but the code is staying for now
 
 	if (rune_count >= RUNE_CNT || tm > 60)
 	if (RUNES == 2) // && 4
@@ -857,6 +858,8 @@ void() rune_maker =
 		e = find(world, classname, "player"); // can include q3 items from flag set
 		while (e)
 		{
+			if (!e.deadflag)
+			if (e.classname != OBSERVER)
 			if (e.rune_flag & RUNE_MASK)
 			{
 				rm = rm | e.rune_flag;
@@ -867,6 +870,7 @@ void() rune_maker =
 		e = find(world, class_select, "class_bot");
 		while (e)
 		{
+			if (!e.deadflag)
 			if (e.rune_flag & RUNE_MASK)
 			{
 				rm = rm | e.rune_flag;
@@ -1461,7 +1465,7 @@ void() rune_regen =
 
 	f = 5;
 	h = 100;
-	if (self.rune_flag & T_ADOC) // has tech
+	if (self.rune_flag & TECH_ADOC) // has tech
 	{
 		h = 150;
 		if (self.rune_flag & RUNE_FLG_RG) // has both!
@@ -1515,7 +1519,7 @@ cap = 3.5
 
 	if (r > 1)
 	{
-		if (self.rune_flag & T_ADOC)
+		if (self.rune_flag & TECH_ADOC)
 		{
 			h = 150;
 			f = 5;
@@ -1566,17 +1570,29 @@ void() rune_vamp =
 
 	self.regeneration_sound = time + 1;
 
-// suck head has too much health
-	self.health = self.health - 1;
-	if (random() < 0.2)
-	if (self.health > (1.5 * self.max_health * self.health_modifier))
-		self.health = self.health - 0.5;
-	if (self.health > (2 * self.max_health * self.health_modifier))
+	f = 1;
+	
+// suck head has too much health - do an upper bleed out
+	if (ENHANCED)
+	{
+		if (self.rune_flag & TECH_DSH) // tech cuts upper bleed out in half
+			f = 0.5;
+
 		self.health = self.health - 1;
-	if (self.health > (4 * self.max_health * self.health_modifier))
-		self.health = self.health - 1;
-	if (self.health > (8 * self.max_health * self.health_modifier))
-		self.health = self.health - 2;
+
+		if (random() < 0.2)
+		if (self.health > (1.5 * self.max_health * self.health_modifier))
+		{
+			if (!self.rune_flag & TECH_DSH) // tech cuts bleed out
+				self.health = self.health - 0.5;
+		}
+		if (self.health > (2 * self.max_health * self.health_modifier))
+			self.health = self.health - (1 * f);
+		if (self.health > (4 * self.max_health * self.health_modifier))
+			self.health = self.health - (1 * f);
+		if (self.health > (8 * self.max_health * self.health_modifier))
+			self.health = self.health - (2 * f);
+	}
 };
 
 void() HasteSound =
@@ -1585,7 +1601,7 @@ void() HasteSound =
 		if (self.haste_sound < time)
 		{
 			self.haste_sound = time + 2;
-			if ( (self.rune_flag & T_TEIM) && !(self.rune_flag & RUNE_FLG_HS) )
+			if ( (self.rune_flag & TECH_TEIM) && !(self.rune_flag & RUNE_FLG_HS) )
 				sound(self, CHAN_BODY, tech_tiem_sound, 1, ATTN_NORM);
 			else
 			sound(self, CHAN_BODY, rune_haste_sound, 1, ATTN_NORM);			
@@ -1594,10 +1610,10 @@ void() HasteSound =
 
 void() rune_dmg_sound =
 {
-	if (self.rune_flag & RUNE_FLG_DM || self.rune_flag & T_AMP)
+	if (self.rune_flag & RUNE_FLG_DM || self.rune_flag & TECH_AMP)
 	{
 		if (RUNE_QUAD_COMB)
-		if (self.rune_flag & T_AMP)
+		if (self.rune_flag & TECH_AMP)
 //		if (cvar("sv_c_rune") > 1 && ULOK2) // quad & rune
 		if (self.items & IT_QUAD)
 		if (self.super_sound == (time + 1))
@@ -1609,10 +1625,10 @@ void() rune_dmg_sound =
 		if (self.super_sound < time) // note - quad sound blocks this
 		{
 			self.super_sound = time + 1;
-			if (RUNE_TECH_DMG_COMB && (self.rune_flag & T_AMP) && (self.rune_flag & RUNE_FLG_DM))
+			if (RUNE_TECH_DMG_COMB && (self.rune_flag & TECH_AMP) && (self.rune_flag & RUNE_FLG_DM))
 				sound (self, CHAN_BODY, "q2_snd/tech2x.wav", 1, ATTN_NORM);
 			else
-			if ( (self.rune_flag & T_AMP) && !(self.rune_flag & RUNE_FLG_DM) )
+			if ( (self.rune_flag & TECH_AMP) && !(self.rune_flag & RUNE_FLG_DM) )
 				sound (self, CHAN_BODY, tech_amp_sound, 1, ATTN_NORM);
 			else
 				sound (self, CHAN_BODY, rune_strength_sound, 1, ATTN_NORM);
@@ -1631,7 +1647,7 @@ float(float atf) rune_haste =
 
 	f = 0;
 	if (self.rune_flag & RUNE_FLG_HS) f = 1;
-	if (self.rune_flag & T_TEIM) f = f + 1;
+	if (self.rune_flag & TECH_TEIM) f = f + 1;
 	if (!f) return(TRUE);
 
 	self.attack_finished = time + (atf / f); 

@@ -2527,7 +2527,9 @@ void() crate_touch =
 {
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
 	{
-		grap_checkIfGrap();
+		if (self.touch != painkeep_touch)
+		if (other.classname == "Harpoon")
+			grap_checkIfGrap();
 		return;
 	}
 
@@ -2568,14 +2570,22 @@ void() crate_init =
 		remove(self);
 		return;
 	}
-	
+
 // make it openable
 	self.solid = SOLID_BBOX; // block, can climb on
 	self.health = 50 + random() * 50;
 	self.th_die = painkeep_cube_use;
 	self.takedamage = DAMAGE_AIM;
 	self.touch = crate_touch;
+	self.cnt = 0;
 	setmodel(self, self.mdl); // for respawn crates
+
+/*
+	if (random() < 0.5)
+		self.noise = "chaos/crate1.wav";
+	else
+		self.noise = "chaos/crate2.wav";
+*/
 
 	self.think = self.th_stand;
 	self.nextthink = time + 30 + PK_CUBE_TIME + random() * PK_CUBE_DV;
@@ -2590,7 +2600,7 @@ void() pk_crate =
 
 	self.mdl = self.model;
 	self.netname = "Crate";
-	self.noise = "items/r_item2.wav";
+//	self.noise = "chaos/crate1.wav";
 
 	item_eject(self, ' 180 180 210');
 
@@ -2669,7 +2679,7 @@ void() func_crate =
 	self.wad = "pk_crate";
 	self.netname = "Crate";
 	self.touch = crate_touch;
-	self.noise = "items/r_item2.wav";
+//	self.noise = "chaos/crate1.wav";
 
 // make it openable
 	self.solid = SOLID_BBOX; // block, can climb on

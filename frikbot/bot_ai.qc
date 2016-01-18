@@ -1057,8 +1057,7 @@ void() BotAI =
 		}
     	}
 
-	// b_aiflags handling
-
+// b_aiflags handling
 	
 	if (self.b_aiflags)
 		bot_handle_ai(); 

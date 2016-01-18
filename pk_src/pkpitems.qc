@@ -19,7 +19,9 @@ void () pkplus_touch =
 
 	if (other.classname != "player") //&& other.classname != "pk*bot")
 	{
-		grap_checkIfGrap();
+		if (self.touch != painkeep_touch)
+		if (other.classname == "Harpoon")
+			grap_checkIfGrap();
 		return ;
 	}
 

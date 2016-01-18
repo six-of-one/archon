@@ -235,7 +235,7 @@ void()   player_scourge_atk2 =[ $shoot2,   player_scourge_atk3 ]
    player_scourge_FireSpikes(-52);  // moving outside shots in 4 units
 
 	if (ENHANCED)
-	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
+	if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(47);
 };
 void()   player_scourge_atk3 =[ $shoot1,   player_scourge_atk4 ]
@@ -249,7 +249,7 @@ void()   player_scourge_atk3 =[ $shoot1,   player_scourge_atk4 ]
 		if ((self.rune_flag & RUNE_FLG_DM) || (self.super_damage_finished))// quad or damage rune - extra nails
 			player_scourge_FireSpikes(45);
 
-		if ((self.rune_flag & T_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - more extra nails
+		if ((self.rune_flag & TECH_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - more extra nails
 			player_scourge_FireSpikes(-47);
 	}
 
@@ -261,7 +261,7 @@ void()   player_scourge_atk4 =[ $shoot2,   player_scourge_atk5 ]
 //   player_scourge_FireSpikes(-56);
 
 	if (ENHANCED)
-	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
+	if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
 };
 void()   player_scourge_atk5 =[ $shoot1,   player_scourge_atk6 ]
@@ -282,10 +282,10 @@ void()   player_scourge_atk6 =[ $shoot2,   player_scourge_atk7 ]
 
 	if (ENHANCED)
 	{
-		if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
+		if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 			player_scourge_FireSpikes(-47);
 
-		if ((self.rune_flag & T_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - extra nails
+		if ((self.rune_flag & TECH_TEIM) || (self.rune_flag & RUNE_FLG_HS))// haste rune - extra nails
 			player_scourge_FireSpikes(45);
 	}
 };
@@ -307,7 +307,7 @@ void()   player_scourge_atk8 =[ $shoot2,   player_stand1 ]
 //   player_scourge_FireSpikes(-56);
 //   SUB_AttackFinished (4*random());
 	if (ENHANCED)
-	if ((self.rune_flag & T_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
+	if ((self.rune_flag & TECH_AMP) || self.super_damage_finished)// quad or damage rune - extra nails
 		player_scourge_FireSpikes(-47);
 
 	if (self.currentammo < 1 )  // firing lasers, out of ammo
@@ -388,7 +388,8 @@ void() player_scourge_impulse =
 
 	if (self.weapon == IT_ROCKET_LAUNCHER) // touched a rocket - set normal mode
 	{
-		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER) | IT_GRENADE_LAUNCHER;
+		self.items = self.items - (self.items & IT_ROCKET_LAUNCHER);
+		self.items = self.items | IT_GRENADE_LAUNCHER;
 		self.builtin = self.builtin - (self.builtin & IT_ROCKET_LAUNCHER);
 		self.weapon = IT_GRENADE_LAUNCHER;
 	}

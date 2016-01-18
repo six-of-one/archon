@@ -37,6 +37,12 @@ void() chaos_precache =
 	precache_model ("progs/g_deepsleep.mdl");
 	precache_model ("progs/vw_deepsleep.mdl");
 	precache_model ("progs/steam.mdl");
+
+// map repair - block hollow brush effect
+	precache_model ("progs/abclip.bsp");
+
+// cubes & crates
+
 	precache_model ("progs/pk_cube.bsp");
 	precache_model ("progs/crate.bsp");
 	precache_model ("progs/crate_lg.bsp");
@@ -45,8 +51,12 @@ void() chaos_precache =
 	precache_model ("progs/crate_o2.bsp");
 	precache_model ("progs/crate_o3.bsp");
 	precache_model ("progs/morph_cube.bsp");
-	precache_model ("progs/abclip.bsp");
+	precache_sound ("sound/chaos/crate1a.wav");
+	precache_sound ("sound/chaos/crate1b.wav");
+	precache_sound ("sound/chaos/crate1c.wav");
+	precache_sound ("sound/chaos/crate1o.wav");
 
+// chaos x weps
 	precache_sound ("sound/flm/ft_hum.wav");
 	precache_sound ("sound/flm/ft_fire.wav");
 	precache_sound ("sound/flm/burning.wav");
@@ -668,7 +678,9 @@ void() x_pack_touch =
 {
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
 	{
-		grap_checkIfGrap();
+		if (self.touch != painkeep_touch)
+		if (other.classname == "Harpoon")
+			grap_checkIfGrap();
 		return;
 	}
 	if (other.health <= 0)

@@ -178,6 +178,7 @@ float RUNE_3_ACM; // amount to accumulate under rule 3
 .float rune_3_resist;
 .float rune_3_haste;
 .float rune_3_rgn;
+.float rune_3_vamp;
 float rune_set;
 void() run_runes;
 void(entity e, entity p) rune_id;
@@ -1542,6 +1543,12 @@ float VW_HARP_FRADJ        = 20; // frame adjust from run / stand for a fired ha
 // crates o stuff
 
 float PK_CRATE;
+
+// sounds of busting
+string CRATE_OPEN1			= "chaos/crate1a.wav";
+string CRATE_OPEN2			= "chaos/crate1b.wav";
+string CRATE_OPEN3			= "chaos/crate1c.wav";
+string CRATE_OPENED			= "chaos/crate1o.wav";
 
 // pk cubes
 

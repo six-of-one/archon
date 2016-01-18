@@ -141,7 +141,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 {
 	local vector dir;
 	local entity oldself;
-	local float save, pwr_save;
+	local float save, pwr_save, r;
 	local float take;
 
 	if (!targ.takedamage)
@@ -154,21 +154,25 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	damage_attacker = attacker;
 
 // check for quad damage powerup on the attacker
-	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & T_AMP) ) ) || ( RUNE_QUAD_COMB || !ENHANCED ) ) // rune overpowers quad on higher rule sets 
+	if (!( (RUNES > 1) && ( (attacker.rune_flag & RUNE_FLG_DM) || (attacker.rune_flag & TECH_AMP) ) ) || ( RUNE_QUAD_COMB || !ENHANCED ) ) // rune overpowers quad on higher rule sets 
 	if (attacker.super_damage_finished > time)
 	if (attacker.pkplus_actortype != PKPLUS_ACTORQUAD) // pk art code here
 		damage = damage * 4;
 
+	r = cvar("sv_c_rune");
 	if (attacker.rune_flag & RUNE_FLG_DM) // dmg rune - idea: could do more under rules > 2
 	{
+		if (r > 1)
+		if (targ == attacker) return; // lith rules
+
 		damage = damage * 2;
 
-		if (attacker.rune_flag & T_AMP) // combind with dmg tech!
+		if (attacker.rune_flag & TECH_AMP) // combind with dmg tech!
 		if (RUNE_TECH_DMG_COMB || !ENHANCED)
 			damage = damage * 2;
 	}
 	else
-	if (attacker.rune_flag & T_AMP) // dmg tech
+	if (attacker.rune_flag & TECH_AMP) // dmg tech
 		damage = damage * 2;
 
 //MED
@@ -201,18 +205,18 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 
 	take = ceil(damage - save - pwr_save);
 
-	if ( (targ.rune_flag & RUNE_FLG_RS) || (targ.rune_flag & T_DSH) ) // idea: resist should do more under rules > 2, but not tech
+	if ( (targ.rune_flag & RUNE_FLG_RS) || (targ.rune_flag & TECH_DSH) ) // idea: resist should do more under rules > 2, but not tech
 	{
 		take = floor(take / 2);
 		save = floor(save / 2);
-		if (( RUNE_TECH_RS_COMB || !ENHANCED ) && (targ.rune_flag & RUNE_FLG_RS) && (targ.rune_flag & T_DSH))
+		if (( RUNE_TECH_RS_COMB || !ENHANCED ) && (targ.rune_flag & RUNE_FLG_RS) && (targ.rune_flag & TECH_DSH))
 		{
 			take = floor(take / 2);
 			save = floor(save / 2);			
 		}
 		if (targ.invincible_sound < time)
 		{
-			if ( (self.rune_flag & T_DSH) && !(self.rune_flag & RUNE_FLG_RS) )
+			if ( (self.rune_flag & TECH_DSH) && !(self.rune_flag & RUNE_FLG_RS) )
 				sound (self, CHAN_BODY, tech_dsh_sound, 1, ATTN_NORM);
 			else
 				sound (targ, CHAN_ITEM, rune_resist_sound, 1, ATTN_NORM);
@@ -281,8 +285,28 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
    if ((!targ.rune_flag & RUNE_VAMPIRE) || ! ENHANCED)
    if ((!targ.rune_flag & RUNE_FLG_RG) || ! ENHANCED) // regen immune to feeders
    if ((!targ.rune_flag & TECH_ADOC) || ! ENHANCED)
-   if (targ.flags & (FL_CLIENT | FL_MONSTER)) // only these for now
+   if (targ.flags & (FL_CLIENT | FL_MONSTER)) // only these get vamped for now - excludes all doors, triggers, crates, etc
 	{
+		if (! ENHANCED && (r > 1)) // lith code
+		{
+			if (attacker.health < (attacker.max_health * attacker.health_modifier * 2))
+			{
+	local float f;
+				f = take; // vdamage = damage;
+				r = ceil(targ.health - take); // targ->health
+				if(r < -40) f = f - (-40 - r); //if(targ->health < -40) vdamage -= -40 - targ->health;
+
+				r = rint(f + 0.5); // add = (int)((float)vdamage * rune_vampire->value + 0.5);
+				if (r > 0)
+				{
+					attacker.health = attacker.health + r; // if(add > 0) { attacker->health += add;
+
+					if (attacker.health > (attacker.max_health * attacker.health_modifier * 2)) // if(attacker->health > rune_vampiremax->value) attacker->health = rune_vampiremax->value;
+						attacker.health = attacker.max_health * attacker.health_modifier * 2; // 200 for a human
+				}
+			}
+		}
+		else
 		if (targ.health < take) attacker.health = attacker.health + RUNE_VAMPIRE_PER * targ.health; // only get RUNE_VAMPIRE_PER% of actual damage, excludes armor & other saves
 		else attacker.health = attacker.health + RUNE_VAMPIRE_PER * take;
 	}
@@ -293,6 +317,22 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	ax_dmg = take; // Cataboligne - 10.11.11 - bot endless axe war preventative deal
 
 	if (!Q_100) pk_setDamageSkin(targ); // *pk damage skin support
+
+// crate being busted open - hear it now
+	if (targ.netname == "Crate")
+	if ((targ.aflag < time) || (targ.health <= 0))
+	{
+		targ.aflag = time + 1; // NOTE: does anything else use player .aflag?
+		r = random();
+		if (targ.health <= 0)
+			sound (targ, CHAN_AUTO, CRATE_OPENED, 1, ATTN_NORM);
+		else if (r < 0.33)
+			sound (targ, CHAN_AUTO, CRATE_OPEN1, 1, ATTN_NORM);
+		else if (r < 0.66)
+			sound (targ, CHAN_AUTO, CRATE_OPEN2, 1, ATTN_NORM);
+		else //if (r < 0.3)
+			sound (targ, CHAN_AUTO, CRATE_OPEN3, 1, ATTN_NORM);		
+	}
 
 	if (targ.health <= 0)
 	{
@@ -308,37 +348,37 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	if (self.classname == "pk*bot")
 	{
 		if (attacker != world && inflictor != world)
-			{
+		{
 // xreaper code - looks good
-				if ((attacker != self) && !coop)
+			if ((attacker != self) && !coop)
+			{
+				if (self.enemy)
 				{
-					if (self.enemy)
-					{
-						secondEnemy (attacker);
-					}
-					else
-					{
-						self.enemy = attacker;
-						BotFoundTarget ();
-					}
+					secondEnemy (attacker);
+				}
+				else
+				{
+					self.enemy = attacker;
+					BotFoundTarget ();
 				}
 			}
+		}
 	}
 	else
 	{
 
-	if ((self.flags & FL_MONSTER) && attacker != world)
-	{
-	// get mad unless of the same class (except for soldiers)
-		if (self != attacker && attacker != self.enemy && (self.charmer != attacker))
+		if ((self.flags & FL_MONSTER) && attacker != world)
 		{
-			if ( (self.classname != attacker.classname)
-			|| (self.classname == "monster_army" ) || (self.classname == "monster_armagon" )  )
+	// get mad unless of the same class (except for soldiers)
+			if (self != attacker && attacker != self.enemy && (self.charmer != attacker))
 			{
-				if (self.enemy.classname == "player")
-					self.oldenemy = self.enemy;
-				self.enemy = attacker;
-				FoundTarget ();
+				if ( (self.classname != attacker.classname)
+				|| (self.classname == "monster_army" ) || (self.classname == "monster_armagon" )  )
+				{
+					if (self.enemy.classname == "player")
+						self.oldenemy = self.enemy;
+					self.enemy = attacker;
+					FoundTarget ();
 				}
 			}
 		}

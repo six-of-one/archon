@@ -157,7 +157,7 @@ void() pk_run_frames =
 	k = 0;
 
 	if (self.rune_flag & RUNE_FLG_HS) k = 1;
-	if (self.rune_flag & T_TEIM) k = k + 1;
+	if (self.rune_flag & TECH_TEIM) k = k + 1;
 
 	if (k)
 	{

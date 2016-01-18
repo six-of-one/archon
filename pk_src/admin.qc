@@ -1066,7 +1066,6 @@ void() Admin_itemmenu =
 Monsters menu admin
 ==========
 */
-// TDO: extend for monsters 2
 
 void() Admin_allmonsters =
 {

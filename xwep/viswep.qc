@@ -1039,6 +1039,7 @@ void(entity e, string md, entity p) DeadThrew =
 		newmis.eweapon.items = e.weapon;
 		setattachment(e, world, ""); // clear attachs
 		if (p) xwep_ammo(newmis.eweapon, p);
+		newmis.mask_x = e.mask_x;
 	}
 	else // standard weapon
 	{
@@ -1056,16 +1057,25 @@ void(entity e, string md, entity p) DeadThrew =
 			else if (newmis.items == IT_NAILGUN) newmis.ammo_nails = newmis.currentammo;
 			else if (newmis.items == IT_SUPER_SHOTGUN) newmis.ammo_shells = newmis.currentammo;
 			else if (newmis.items == IT_SHOTGUN) newmis.ammo_shells = newmis.currentammo;
+
+// better set masks or any morph can get them
+			if (newmis.items & (IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER | IT_LIGHTNING))
+				newmis.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
+			else
+			if (newmis.items & (IT_NAILGUN | IT_SUPER_NAILGUN))
+				newmis.mask_x = CB_HUMAN+ CB_GREMLIN + CB_OGRE;
 		}
 		else // pki
 		{
 //			if (newmis.items == IT_AXE)
 			newmis.pk_currentitem = newmis.pk_items = e.pk_currentitem; // Cataboligne - 9.6.11 - fixes a bug in the pk1.1 source!
+			newmis.mask_x = CB_HUMAN + CB_GREMLIN;
 
 			if (newmis.pk_items == PK_IT_CLIGHT)
 			{
 				newmis.lip = e.lip = wepbit_mcode(IT_LIGHTNING, "QA");
 				newmis.ammo_cells = newmis.currentammo = e.currentammo = wepbit_mcode(IT_LIGHTNING, "QAC") * 2;
+				newmis.mask_x = CB_HUMAN + CB_ENF + CB_GREMLIN;
 			}
 
 // pki
@@ -1080,14 +1090,22 @@ void(entity e, string md, entity p) DeadThrew =
 			else if (e.pk_currentitem == PKPLUS_IT_ACTOR) newmis.pkplus_actorammo = 1;
 
 			if (p) xwep_ammo(newmis, p);
-			if (newmis.pk_items & PKID) newmis.noise = "misc/pickup/tone2.wav";
+			if (newmis.pk_items & PKID)
+			{
+				newmis.mask_x = MORPH_ALL;
+				newmis.noise = "misc/pickup/tone2.wav";
+			}
 		}
 	}
 
 //	newmis.flags = FL_ITEM; // not making these large
 	newmis.solid = SOLID_TRIGGER;
 	newmis.movetype = MOVETYPE_TOSS;
-	setorigin(newmis, e.origin);
+	if (e.owner)
+		setorigin(newmis, e.owner.origin); // fix morph toss issues
+	else
+		setorigin(newmis, e.origin);
+
 	setmodel (newmis, md);
 	setsize (newmis, '-12 -12 0', '12 12 56');
 	newmis.touch = BackpackTouch;

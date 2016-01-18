@@ -777,9 +777,9 @@ void () CheckPowerups =
 		stuffcmd(self, "con_notify_alias\n"); // for notify default
 	}
 
-	if (self.classname == OBSERVER) // Cataboligne 8.9.9 purify - chase cam (dead) & observer - clear all effects
+	if (self.classname == OBSERVER) // Cataboligne 8.9.9 purify - chase cam (dead) & observer
 	{
-		morph_clearparms(self, TRUE);
+//		morph_clearparms(self, TRUE); // removed cause it should be done in cam / obs code - watch this
 		return;
 	}						// NOTE: great place for some interesting chaos effects
 
@@ -1470,7 +1470,10 @@ void () PlayerPreThink =
 	}
 
 // GRAPPLING
-	grap_maintainHarpoon();
+	if (self.grap_cornerchainNext) // if harpoon out
+		grap_maintainHarpoon();
+	else
+		self.grap_firetest = 0;
 	self.oldorigin = self.origin;
 
 	if (self.pk_dutychecking == 0)
@@ -1565,7 +1568,7 @@ void () PlayerPostThink =
 			}
 
 // runes - these qaulify the below 2 tests in the call!
-	if (self.rune_flag & RUNE_FLG_RG || self.rune_flag & T_ADOC) rune_regen();
+	if (self.rune_flag & RUNE_FLG_RG || self.rune_flag & TECH_ADOC) rune_regen();
 	if (self.rune_flag & RUNE_VAMPIRE) rune_vamp();
 
 	if (Q_100 || Q_99) // CHECK: q99-ness effect hereish
@@ -1916,7 +1919,8 @@ bprint("\n");
 
 	if (targ.classname == "player")
 	{
-		if (targ.watertype != CONTENT_LAVA && (targ.flags & FL_DEMONBOOM || targ.deathtype == "rage") ) // because a dying demon in a rage still explodes...
+//		if (targ.watertype != CONTENT_LAVA && (targ.flags & FL_DEMONBOOM || targ.deathtype == "rage") ) // because a dying demon in a rage still explodes...
+		if (targ.watertype != CONTENT_LAVA && (targ.deathtype == "rage") ) // because a dying demon in a rage still explodes...
 		{
 			targ.deathtype = "";
 			bprint (targ.netname);

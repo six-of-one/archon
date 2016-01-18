@@ -27,19 +27,43 @@ $frame explode1 explode2
 void() clinger_fall1;
 void() clinger_idle1 =[ $idle1, clinger_idle1 ]
 {
-	local entity targ;
+	local entity targ, e;
 	local vector targposition, v;
+	local float f, k;
 
 // all children still alive?  don't fall yet
 	if (self.cnt < 1)
 		return;
 
-	targ = checkclient();
+	k = 0;
+	e = findradius(self.origin, 1600);
+	while (e)
+	{
+		if (e != self)
+		if (e.classname != "monster_young")
+		if (!e.deadflag)
+		if (e.classname != OBSERVER)
+		if (e.flags & FL_CLIENT) // || e.flags & FL_MONSTER)
+		{
+			v = e.origin - self.origin;
+			v_z = 0;
+			f = vlen(v);
+			if (f < 160)
+			if (f < k || k == 0) // find closest targ
+			{
+				k = f;
+				targ = e;
+			}
+		}
+		e = e.chain;
+	}
+
 	if (!targ) return;
-	if (targ.classname == OBSERVER) return; // dont fall on observers
+//	if (targ.classname == OBSERVER) return; // dont fall on observers
+
 	if (ENHANCED)
    if (targ.invisible_finished) // mostly cant see invisible
-	if (random() < 0.86) return;
+	if (random() < 0.96) return;
 
 	targposition = targ.origin + targ.velocity * 0.3;
 	targposition_z = targ.origin_z;

@@ -913,6 +913,9 @@ void() pk_liveupd =
 		MORPHIC = cvar("sv_morph");
 	}
 
+	DM_MONSTER = FALSE;
+	if (find(world,class_select,"class_monster")) DM_MONSTER = TRUE;
+
 	S_MONSTER = cvar("sv_monster_resp");
 	S_MONSTER_II = cvar("sv_monster_resp2");
 	if (S_MONSTER & MONSTER_MASK)

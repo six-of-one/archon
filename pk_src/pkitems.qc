@@ -172,7 +172,9 @@ void () painkeep_weapon_touch =
 
 	if (other.classname != "player") // *bot
 	{
-		grap_checkIfGrap();
+		if (self.touch != painkeep_touch)
+		if (other.classname == "Harpoon")
+			grap_checkIfGrap();
 		return ;
 	}
 
@@ -574,7 +576,8 @@ void() painkeep_touch =
 	if (other.admin != USER_MENU)
 		return; // *pk - admin - no collecting stuff
 
-	if (other.duration > time) return; // note: snything that sets player duration fsck here
+// note: the only thing this really does is prevent running the entire touch code for things that are not picked up on the first touch more than once per sec for players / bots
+	if (other.duration > time) return; // note: snything that sets player duration could fsck here
 
 	if (other.eweapon)
 	if (other.eweapon.wad == "pk_cube" || other.eweapon.wad == "morph_cube")
@@ -582,7 +585,7 @@ void() painkeep_touch =
 
 	e = world;
 
-	if (!cube)
+	if (!cube) // should not happen for bots - but here just in case
 	if (other.health > 0)
 	if (other.classname == "pk*bot") // *bot - looks like player for touch
 	{
@@ -598,7 +601,8 @@ void() painkeep_touch =
 
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
 	{
-		grap_checkIfGrap();
+		if (other.classname == "Harpoon")
+			grap_checkIfGrap();
 		return;
 	}
 
@@ -1122,9 +1126,12 @@ void() BackpackTouch =
 
 	if (other.classname != "player") // pk - this is where the grap can grab stuff
 	{
-		grap_checkIfGrap();
+		if (self.touch != painkeep_touch)
+		if (other.classname == "Harpoon")
+			grap_checkIfGrap();
 		return;
 	}
+
 	if (other.health <= 0)
 		return;
 

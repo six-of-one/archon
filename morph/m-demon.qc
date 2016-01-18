@@ -161,22 +161,49 @@ void() demon_explode_plague =
 void() player_demon_explode =
 {
 	local entity sv;
+	local float f;
 //	if (!self.flags & FL_DEMONBOOM) return;
 
 	if (self.attack_finished < time)
 	{
-		if (self.class_select != "dead_body") setmodel(self, "");							// dont allow for corpse after explosion
+//		if (self.class_select != "dead_body") setmodel(self, "");							// dont allow for corpse after explosion
 		self.flags = self.flags - (self.flags & FL_DEMONBOOM);
 		self.weapon = IT_AXE;
+
+		f = 1; // health multiplier
+		if (self.flags & IT_SUPERHEALTH) f = 2;
+		if (self.flags & IT_QUAD) f = 4;
+		if (self.flags & IT_SUIT) f = f * 0.5; // env protect power contains half of blast
+
+		if (RUNES)
+		if (ENHANCED)
+		{
+			if ( (self.rune_flag & RUNE_FLG_RS) || (self.rune_flag & TECH_DSH) ) f = f * 0.8;
+			if (self.rune_flag & RUNE_FLG_DM) f = f * 1.333;
+			if (self.rune_flag & TECH_AMP) f = f * 1.21;
+		}
+
 		sv = self;
 		self = spawn(); // cant blow a client ent
 		self.classname = "demonboom";
 		self.owner = sv;
 		self.origin = sv.origin + ' 0 0 20';
+
 //		Explode(0, random() * 100 + sv.health, world, TE_TAREXPLOSION, 0, BecomeExplosion);
 
+
+local float k;
+k = random() * 100 + (sv.health * f);
+bprint("---- demon boom tot dmg: ");
+bprint(ftos(k));
+bprint(" - * ");
+bprint(ftos(f));
+bprint("\n");
+ 
+
+
 		// stand in for above fn
-					T_RadiusDamage (self,self.owner,random() * 100 + sv.health,world);
+					T_RadiusDamage (self,self.owner,k,sv); //random() * 100 + (sv.health * f),sv); // note: when restoring explode - now doesnt hit owner
 
 					WriteByte (MSG_BROADCAST,SVC_TEMPENTITY);
 					WriteByte (MSG_BROADCAST,TE_TAREXPLOSION);
@@ -187,8 +214,9 @@ void() player_demon_explode =
 					BecomeExplosion ();
 
 		self = sv;
+		dead_drop(self); // Cataboligne - 10.7.11 - drop runes+ - otherwise, protected from damage maybe
 		self.deathtype = "rage";
-		T_Damage(self, self, world, self.health + 2 );
+		T_Damage(self, self, world, self.health + 10 );
 // note: wonky obit possible here
 		fire_burst (player_ZombieFireGrenade, self.origin + ' 0 0 20', 0, ZOMBIE_FLSH_VEL, "", "", 0, 6, 8, ' 120 0 0', ' 300 360 360', demon_explode_plague, FL_ANGADR, world);
 //		if (self.class_select == "dead_body") SUB_Remove(); // already dead, remove corpse
@@ -199,10 +227,20 @@ void() player_demon_explode =
 	if ((self.attack_finished - demon_cntdn) < time ) // announce to self approximate countdown
 	{
 		demon_cntdn = demon_cntdn - 1;
+		if ( (self.rune_flag & RUNE_FLG_HS) || (self.rune_flag & TECH_TEIM) )
+		{
+			demon_cntdn = demon_cntdn - 0.333;
+			if (random() < 0.333)
+				demon_cntdn = demon_cntdn - random();
+		}
 		if (demon_cntdn < 0) demon_cntdn = random();
 		sprint(self, "Gonna pop in ");
 		sprint(self,ftos(ceil(demon_cntdn)));
-		sprint(self, " or less!\n");
+		sprint(self, " or less");
+		if ( (self.rune_flag & RUNE_FLG_HS) || (self.rune_flag & TECH_TEIM) )
+		if (self.attack_finished < (time + 3))
+			sprint(self, " - HURRY");
+		sprint(self, "!\n");
 	}
 };
 
@@ -308,7 +346,6 @@ void() player_demon_impulse =
 	if (self.weapon == IT_AXE)
 	if (self.pk_currentitem == PK_IT_AXE)
 	{
-		self.items = self.items | IT_AXE;
 		sprint(self, "Demon using ( Hack & Slash )\n"); 
 	}
 
@@ -317,10 +354,25 @@ void() player_demon_impulse =
 		sprint(self, "Demon using ( Head Spike )\n");
 		self.items = self.items | IT_NAILS;
 	}
+
 	if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
-		sprint(self, "Demon getting enraged\n");
-		self.items = self.items | IT_ROCKETS;
+		if (self.flags & IT_INVULNERABILITY)
+		{
+			sprint(self, "Pentagram powersurges beyond rage");
+			if (random() < 0.3)
+				sprint(self, " - try Hack & Slash & Jump");
+			sprint(self, "\n");
+			self.weapon = IT_AXE;
+		}
+		else
+		{
+			sprint(self, "Demon getting enraged");
+			if (self.rune_flag)
+				sprint(self, " - you will lose runes of power");
+			sprint(self, "\n");
+			self.items = self.items | IT_ROCKETS;
+		}
 	}
 };
 

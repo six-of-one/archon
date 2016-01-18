@@ -268,8 +268,10 @@ void() lavablob_die_explode8	=	[ $exp,		SUB_Nop ]
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
 
+	other = self; // attpempt to fix FSCK: non bot in SV_FlyMove
 	self = spawn();
 	BecomeExplosion ();
+	self = other;
 };
 
 /*

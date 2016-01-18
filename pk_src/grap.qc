@@ -19,7 +19,8 @@
 float SAFE_LOOP = 300; // count of loop limit in case a grap test gets stuck somehow
 
 /*
-   put in SAFE_LOOP to fix this, which I have seen a few times;
+   put in SAFE_LOOP to fix this, which I have seen a few times
+	tweaked - may not have quite been safe enough
 
 // dm4 pk code test of dyn items, item override, custom hub
 // in lava w/pent, fired grap up to ciel & sunk down to bot.
@@ -721,11 +722,13 @@ void() grap_maintainHarpoon =
 //		self.velocity = self.velocity = temp * 500;
 //	}
 
+/* // this is tested in client now, prior to call
 	if (!self.grap_cornerchainNext) // if harpoon not out
 	{
 		self.grap_firetest = 0;
 		return;
 	}
+*/
 
 	if (self.weapon == IT_AXE && self.pk_currentitem == PK_IT_GRAPGUN)
 	{
@@ -960,7 +963,7 @@ float() grap_checkCornerLines =
 {
 	local entity corner, tryNext, del;
 	local vector cornerOrigin;
-	local float sf;
+	local float sf, sf2;
 
 	corner = self.grap_cornerchainNext;
 	cornerOrigin = self.origin + '0 0 16';
@@ -970,53 +973,53 @@ float() grap_checkCornerLines =
 	{
 		sf = sf - 1;
 
-		// check if the line is broken
-	  traceline (cornerOrigin, corner.origin, TRUE, self.grap_pull);
+// check if the line is broken
+		traceline (cornerOrigin, corner.origin, TRUE, self.grap_pull);
 
-	  if (trace_fraction < 1.0)
-	  { // line is broken, create a new corner.
-	  	if (grap_createCorner(corner.grap_owner))
-	    {
-	    	// if it was the owner that went out of line, do a double check...
-	      if (corner.grap_owner == self)
-	      {
-	      	if (grap_forceCheckCorner(self))
-	        {
-	        	return TRUE;
-	        }
-	      }
-	      else
-	      {
-		    	return TRUE;
-	      }
-	    }
-	  }
-	  else
-	  { // check if a corner can be deleted.
-	    tryNext = corner.grap_cornerchainNext;
-
-			sf = 500;
-			while(tryNext && sf > 0)
+		if (trace_fraction < 1.0)
+		{ // line is broken, create a new corner.
+			if (grap_createCorner(corner.grap_owner))
+			{
+// if it was the owner that went out of line, do a double check...
+				if (corner.grap_owner == self)
 				{
-				sf = sf - 1;
-	    	if (grap_checkIfCanBeRemoved(corner.grap_owner, cornerOrigin, tryNext.origin))
-	      { // Up to this corner can be deleted.
-
-				while(corner != tryNext && sf > 0)
+					if (grap_forceCheckCorner(self))
+					{
+						return TRUE;
+					}
+				}
+				else
 				{
-						sf = sf - 1;
+					return TRUE;
+				}
+			}
+		}
+		else
+		{ // check if a corner can be deleted.
+			tryNext = corner.grap_cornerchainNext;
+
+			sf2 = 500;
+			while(tryNext && sf2 > 0)
+			{
+				sf2 = sf2 - 1;
+				if (grap_checkIfCanBeRemoved(corner.grap_owner, cornerOrigin, tryNext.origin))
+				{ // Up to this corner can be deleted.
+
+					while(corner != tryNext && sf2 > 0)
+					{
+						sf2 = sf2 - 1;
 						del = corner;
-	          corner = corner.grap_cornerchainNext;
+						corner = corner.grap_cornerchainNext;
 						grap_removeCorner(del);
-	        }
-	      }
+					}
+				}
 
-	      tryNext = tryNext.grap_cornerchainNext;
-	    }
-	  }
+				tryNext = tryNext.grap_cornerchainNext;
+			}
+		}
 
 		cornerOrigin = corner.origin;
-	  corner = corner.grap_cornerchainNext;
+		corner = corner.grap_cornerchainNext;
 	}
 
 	// if going to target, resetup goto

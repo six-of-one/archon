@@ -1444,7 +1444,7 @@ void(entity p, float pg) drop_setup =
 					ic = rune_name(d);
 					if (d & RUNE_FLG_HS)
 //					if (p.target2 == "progs/q3_art.mdl")
-					if (stack_search(p, "item_haste"))
+					if (stack_search(p, "item_haste")) // TDO: when getting run, delete this from stack
 						ic = "Haste ";
 
 					if (d & RUNE_FLG_RG)

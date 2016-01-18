@@ -35,6 +35,7 @@ float M_MONSTER; // bit mask to allow map monsters in dm
 float S_MONSTER; // bit mask of monsters to respawn when dead (map monsters only, no random ones) - works in single player too!
 float C_MONSTER; // bit mask of monsters to spawn randomly
 float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent - if 0 save for a live control update loop that can recreate the monster
+float DM_MONSTER;	// true if any option allows monsters in dm
 
 // timings
 float S_MONSTER_WAIT; // min wait till we respawn a dead mosnter

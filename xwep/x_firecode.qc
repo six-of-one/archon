@@ -108,7 +108,9 @@ void() x_weapon_touch =
 
 	if (other.classname != "player") // *bot - done in master touch fn
 	{
-		grap_checkIfGrap();
+		if (self.touch != painkeep_touch)
+		if (other.classname == "Harpoon")
+			grap_checkIfGrap();
 		return ;
 	}
 
@@ -353,7 +355,9 @@ void() x_item_touch =
 
 	if (other.classname != "player") // *bot - done in master touch fn
 	{
-		grap_checkIfGrap();
+		if (self.touch != painkeep_touch)
+		if (other.classname == "Harpoon")
+			grap_checkIfGrap();
 		return ;
 	}
 	if (other.health <= 0)

@@ -772,6 +772,7 @@ void(entity e, float all) morph_clearparms =
 		e.empathy_finished = 0;
 		e.effects = 0; // chaos vector for dead camers
 		e.group = ""; // for specials
+		e.armorvalue = e.armortype = 0; // dont clear for not all - some morphs get / keep armor
 	}
 	else // morph change will retain these
 	{
