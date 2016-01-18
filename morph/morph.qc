@@ -1496,6 +1496,18 @@ void(float cmd, float pls) polymorph_check =
 		morph_sound_off();
 		self._summon = SUB_Null;
 
+// limit health conversions
+// a human with 100 health morphing to an ogre would have 275 health
+// a human with 200 health morphing to an ogre would have 375 health
+// note - also clears poison, disease, etc if healtype > 2
+		self.healtype = 0;
+ 		if (self.health > (self.max_health * self.health_modifier))
+		{
+			self.healtype = self.health;
+			self.health = self.max_health * self.health_modifier;
+			self.healtype = self.healtype - self.health;
+		}
+
 		if (cmd == IMP_MCHAOS) player_chaos_become();
 		else if (cmd == IMP_MORDER) player_order_become();
 		else if (cmd == IMP_MZOMBIE) player_zombie_become();
@@ -1521,13 +1533,15 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MWRAITH) player_wraith_become();
 		else if (cmd == IMP_MSHAPESHIFT) player_shapeshifter_become();
 	*/
-
 // have to be human at this point, since we validate the mask_x value
 		else
 		{
 			player_human_become();
 			if (self.cnt != self.morphy) set_defaults(self); // becoming human from other form - get defaults
 		}
+
+		self.health = self.health + self.healtype;
+
 
 // archon spirit release logic
 // note: first 3 morphs counted must be from human form - makes it hard for 1 or 2 players to become an archon without disconnect
@@ -1694,7 +1708,6 @@ float(entity e, float hl) morph_heal =
 	}
 	return(0);													// health > .8 of MAX - no boost
 };
-
 
 // need think to wake them up because *monster_start_go has to happen
 // NOTE: this does seem to wack monsters that attack player / morph on site (grunts)

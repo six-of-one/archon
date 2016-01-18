@@ -2414,6 +2414,18 @@ void() cube_touch =
 	if (self.owner) // shouldnt happen
 		return;
 
+#ifdef warning
+if (WARNING & 255) 
+if (world.owner != world)
+{
+	bprint("\b *** warning: world ownership: ");
+	bprint(item_ident(world.owner));
+	bprint("\n");
+}
+#endifdef
+
+	world.owner = world; // bug - world had owner == 1
+
 	if (sphere_a.owner == other) // no cubes while controlling sphere
 	{
 #ifdef warning

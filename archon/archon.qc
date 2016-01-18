@@ -133,6 +133,11 @@ void() altar_touch =
 	{
 		self.lefty = self.lefty + 1; // usage
 		other.archon = other.archon + 1;
+
+// quad powered
+		if (other.super_damage_finished > time)
+			other.archon = other.archon + 3;
+
 		other.xp = other.xp - self.aflag;
 		if (random() < 0.002) sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
@@ -166,9 +171,15 @@ void() altar_touch =
 		if (self.lefty > 12800)
 		{
 			self.aflag = 64;
+			if (self.lefty > 13800)
+			if (random() < 0.05) self.aflag = self.lefty = 2;
+		}
+		else if (self.lefty > 6400)
+		{
+			self.aflag = 32;
+			if (self.lefty > 7200)
 			if (random() < 0.03) self.aflag = self.lefty = 2;
 		}
-		else if (self.lefty > 6400) self.aflag = 32;
 		else if (self.lefty > 3200) self.aflag = 16;
 		else if (self.lefty > 1600) self.aflag = 8;
 		else if (self.lefty > 800) self.aflag = 4;

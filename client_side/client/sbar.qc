@@ -966,6 +966,8 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 				v_x = v_x + 7;
 			}
 			Sbar_DrawString(arc_level + v, ")", ALPHA_FULL, '7 7 0','1 0.5 1');
+// show quad power drive
+			if (cl_items & IT_QUAD) DrawInventoryAmmo(arc_level + v + '8 16 0',"gfx/sb_quad",    ALPHA_FULL * 0.8, 1.5);
 		}
 
 // power cost of spell, cube, or morph (non Archon) power shot

@@ -1200,6 +1200,8 @@ runes will not use lith models if - ULOK2 is false, or rule == -2
 */
 // run runes
 
+float show_runemap; // hold state for redisplay
+
 void() run_runes =
 {
 	local entity e;
@@ -1490,8 +1492,9 @@ void() run_runes =
 		}
 	}
 
-	if (autocvar_it_runemap) // display rune info on console (network - all players see this)
+	if (autocvar_it_runemap != show_runemap) // display rune info on console (network - all players see this)
 	{
+		show_runemap = autocvar_it_runemap;
 		stuffcmd(self, "con_notify 22\n"); // for this op
 		stuffcmd(self, "con_notifytime 10\n");
 

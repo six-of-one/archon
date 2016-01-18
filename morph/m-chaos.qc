@@ -3369,6 +3369,7 @@ void() player_chaos_become =
 	self.aflag = 0; // chaos form states
 	self.view_ofs = '0 0 4';
 
+// does this even matter for Archons ?
 	self.health = 100 * MCHAOS_HEALMOD + 10 * crandom() * 3.14159265;
 	self.health_modifier = MCHAOS_HEALMOD;
 

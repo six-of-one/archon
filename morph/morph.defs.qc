@@ -239,6 +239,7 @@ float(entity e) shotgun_check;
 .float modelindex_morph; // cant use a global when all players can use diff models
 
 .float health_modifier;
+
 .string msight;
 .float soundlock; // limit some sounds - set to -1 to prevent idle / sight sounds
 .float soundoff; // idle & sight sounds seem to repeat if you dont turn them off

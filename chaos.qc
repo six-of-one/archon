@@ -462,12 +462,13 @@ Select a random map segment for quake hack mode maps
 
 map segment:
 
-"mean" 			"#"		- start number - 2 default
-"stdev" 		"#"		- randomize - 4 default
-"count" 		"#"		- prefer this segment number - 0 default
-"cnt" 		    "#"		- preference percent for "count" - 0.3 default
-"map"			"{name}"	- use this named segment
+"mean"			"#"		- start number - 2 default
+"stdev"			"#"		- randomize - 4 default, -1 for 0
+"count"			"#"		- prefer this segment number - 0 default
+"cnt"				"#"		- preference percent for "count" - 0.3 default
+"map"				"{name}"	- use this named segment
 "delay"			"#"		- reset after delay rels if "map" not set
+"rotate_type"	"1"		- rotate random 90 deg. incr
 
 */
 
@@ -482,7 +483,9 @@ void() func_maphack =
 	}
 
 	if (!self.mean) self.mean = 2;
+	if (self.mean < 0) self.mean = 0;
 	if (!self.stdev) self.stdev = 4;
+	if (self.stdev < 0) self.stdev = 0;
 	if (!self.cnt) self.cnt = 0.5;
 
 	self.state = self.mean + rint(self.stdev * random());
@@ -493,12 +496,31 @@ void() func_maphack =
 
 	if (self.state > 6) self.state = 6; // NOTE: hard coded max segment
 
-	if (self.state == 1) self.mdl = "maps/x4_1.bsp";
-	if (self.state == 2) self.mdl = "maps/x4_2.bsp";
-	if (self.state == 3) self.mdl = "maps/x4_3.bsp";
-	if (self.state == 4) self.mdl = "maps/x4_4.bsp";
-	if (self.state == 5) self.mdl = "maps/x4_5.bsp";
-	if (self.state == 6) self.mdl = "maps/x4_6.bsp";
+	if (world.model == "maps/x4_1.bsp")
+	{
+		self.mdl = "maps/x4_6.bsp";
+		if (self.state == 1) self.mdl = "maps/x4_1.bsp";
+		if (self.state == 2) self.mdl = "maps/x4_2.bsp";
+		if (self.state == 3) self.mdl = "maps/x4_3.bsp";
+		if (self.state == 4) self.mdl = "maps/x4_4.bsp";
+		if (self.state == 5) self.mdl = "maps/x4_5.bsp";
+		if (self.state == 6) self.mdl = "maps/x4_6.bsp";
+	}
+	else
+	if (world.model == "maps/OA.bsp")
+	{
+		self.mdl = "maps/oa_1.bsp";
+		if (self.state == 1) self.mdl = "maps/oa_1.bsp";
+		if (self.state == 2) self.mdl = "maps/oa_2.bsp";
+		if (self.state == 3) self.mdl = "maps/oa_3.bsp";
+		if (self.state == 4) self.mdl = "maps/oa_2.bsp";
+		if (self.state == 5) self.mdl = "maps/oa_1.bsp";
+	}
+
+	if (self.rotate_type)
+	{
+		self.angles_y = rint(3.3 * random()) * 90;
+	}
 
 	if (self.delay > 0) // idea: fade replace? solidify floor while changing?
 	{
