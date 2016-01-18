@@ -320,17 +320,6 @@ void() PK_init =
 	*/
 };
 
-// TEST remove
-
-float(float yaw, float dist) walkmove =
-{
-	if (self.flags & FL_MONSTER)
-	if (!self.movetype)
-		return(0);
-
-	return(walkmove__(yaw,dist));
-};
-
 // fn (precache_sound) -- dynamic item takeovers - because some engines cannot precache after map load
 // fn(precache_model)
 

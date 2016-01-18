@@ -2600,7 +2600,7 @@ if (WARNING & 2) bprint("\b *** warning: nocubes: SOA\n");
 			if (self.state == self.morphy)
 			{
 				morph_print(self); // get archon pts
-				self.archon = self.archon - e.archon; // put bot archon pts back
+				self.archon = self.archon - e.archon;
 
 
 #ifdef morph_pwr

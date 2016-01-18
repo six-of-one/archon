@@ -150,7 +150,7 @@ void() sphere_annihilation_move =
 		}
 	}
 
-// sphere - chance of going wild ever 7 = 7 rels
+// sphere - chance of going wild every 7 = 7 rels
 	if (time & 7 == 7)
 	if (self.owner)
 	{
@@ -158,18 +158,21 @@ void() sphere_annihilation_move =
 		if (random() < 0.05)
 		{
 			self.owner = world; // oh shit - free sphere
+			self.solid = SOLID_BBOX;
 		}
 
 		if (self.dmg > 500)
 		if (random() < 0.1)
 		{
 			self.owner = world;
+			self.solid = SOLID_BBOX;
 		}
 
 		if (self.dmg > 2000)
 		if (random() < (self.dmg / 10000)) // eventually - uncontrollable
 		{
 			self.owner = world;
+			self.solid = SOLID_BBOX;
 		}
 	}
 	else
@@ -447,12 +450,11 @@ void(entity g) set_annihilate =
 
 	if (g.classname == "chaos_teleport_icon") // NOTE: if this is the anti-sphere this is the place to do it
 	{
-		g.classname = "whirl"; // block repeater
+		if (g.trigger_field.touch != SUB_Null)
+			dyn_remove(g, 1, chaos_tele_expire); // cant call tele_exp directly
 		g.trigger_field.touch = SUB_Null; // allow no more teleports
-		dyn_remove(g, 1, chaos_tele_expire); // cant call tele_exp directly
 		return;
 	}
-
 
 #ifdef warning
 if (WARNING & 32)
@@ -590,7 +592,7 @@ if (WARNING & 32)
 
 void() sphere_annihilation_spawn =
 {
-	sphere_a = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, self.origin + '0 0 24' + v_forward * 60, '-7 -7 -7', ' 7 7 7', '0 0 0', '0 0 0', "sphere_annihilation", "progs/sphere_annihilation.mdl", sphere_annihilation_touch, 0.1, sphere_annihilation_move, sphere_annihilation_death, self, world); // here we divide by zero...
+	sphere_a = chaos_spawn(MOVETYPE_FLY, SOLID_TRIGGER, 0, 0, self.origin + '0 0 24' + v_forward * 60, '-7 -7 -7', ' 7 7 7', '0 0 0', '0 0 0', "sphere_annihilation", "progs/sphere_annihilation.mdl", sphere_annihilation_touch, 0.1, sphere_annihilation_move, sphere_annihilation_death, self, world); // here we divide by zero...
 	sphere_a.wait = time + 3;// TEST120; // cant kill off for this long
 	sphere_a.dest1 = sphere_a.origin - sphere_a.owner.origin; // position from holder
 	sphere_a.dest2_z = sphere_a.lefty = 0; // location controls
@@ -600,7 +602,6 @@ void() sphere_annihilation_spawn =
 	sphere_a.scale = 1;
 	sphere_a.map = "sphere_annihilation"; // double check search
 // spawn sound?
-
 
 
 
@@ -805,6 +806,7 @@ void() sphere_attack =
 		else if (sphere_a.state == ST_ANGLE)
 		{
 			sphere_a.state = ST_FREEZE;
+			sphere_a.solid = SOLID_BBOX;
 //			sprint(self,"Sphere is now idle - it will not follow you.\n");
 			if (self.morphy == IMP_MSHALR) stuffcmd(self, "exec cfg/morph/m-shalrath.cfg\n");
 			self.mcode = -662; // tell HUD sphere is fixed position
@@ -819,6 +821,7 @@ void() sphere_attack =
 				return;
 			}
 			sphere_a.state = ST_FOLLOW;
+			sphere_a.solid = SOLID_TRIGGER;
 			if (self.morphy == IMP_MSHALR) stuffcmd(self, "exec cfg/morph/m-shalrath-soa.cfg\n");
 			self.mcode = 0; // tell HUD back in control
 		}

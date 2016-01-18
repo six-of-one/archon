@@ -1172,7 +1172,7 @@ void(vector torg, string trgname, entity trgent) chaos_teleport =
 {
 //	local entity tel;
 	local entity s;
-	
+
 	if (self.classname == "player") s = self; // only players own these
 
 // IDEA - get trigger field size from model sizes

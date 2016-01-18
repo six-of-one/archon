@@ -1687,7 +1687,11 @@ float (string hd, float hf, float flg, float rd, float hl, float sz, float gf, s
 
 void() morph_die =
 {
-	if (sphere_a.owner == self) sphere_a.owner = world; // owner died, sphere free
+	if (sphere_a.owner == self)
+	{
+		sphere_a.owner = world; // owner died, sphere free
+		sphere_a.solid = SOLID_BBOX;
+	}
 	stuffcmd(self, "scr_zoomwindow 0\n");
 	morph_sound_off();
 	self.alpha = 1; // clear prev state

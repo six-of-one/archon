@@ -2223,37 +2223,39 @@ void() holdable_teleporter =
 
 void() q3_misc_explobox =
 {
-	local float r;
 	self.netname = "Barrel";
 	if (self.class_select == null_string) self.class_select = "q3_item";
-	misc_explodbox_set(self, "progs/barrel.mdl", Q3_BARREL_BLAST, 80, MOVETYPE_NONE);
-	droptofloor(0,0);
 
-	r = rint(3 * random());
-	if (r == 1)
+	self.aflag = rint(3 * random());
+	if (!self.model)
+	if (self.aflag == 1)
 	{
-	setmodel (self, "progs/q3_ammobox.mdl");
+	self.model = "progs/q3_ammobox.mdl";
 	self.frame = 0;
 	self.skin = q3_bfg_amsk;
 	}
-	else if (r == 2)
+	else if (self.aflag == 2)
 	{
-	setmodel (self, "progs/q3_arm.mdl");
+	self.model = "progs/q3_arm.mdl";
 	self.frame = 0;
 	self.skin = 1;
 	}
-	else if (r == 3)
+	else if (self.aflag == 3)
 	{
-	setmodel(self, "progs/q3_health.mdl");
+	self.model = "progs/q3_health.mdl";
 	self.frame = 1;
 	self.skin = Q3_HEALM;
 	}
 	else //if (r == 0)
 	{
-	setmodel(self, "progs/q3_art.mdl");
+	self.model = "progs/q3_art.mdl";
 	self.frame = q3_regn_fsk;
 	self.skin = q3_regn_fsk;
 	}
+
+	misc_explodbox_set(self, self.model, Q3_BARREL_BLAST, 80, MOVETYPE_NONE);
+	droptofloor(0,0);
+
 //	self.noise = "doom/dsbarexp.wav";
 	self.noise4 = "q3_snd/respawn1.wav";
 

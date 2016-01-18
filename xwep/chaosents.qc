@@ -1057,18 +1057,24 @@ Takes damage, gets killed - default model is monster_army
 
 // note - on making monsters - engine takes one of .th_* and assigns it to think when things (like damage) happen to monster
 
-// TEST - remove
-var float autocvar_sv_c_nosil = 0;
+// block these for testing
+//var float autocvar_sv_c_nosil = 0;
 
 void() monster_silhouette =
 {
-	if (autocvar_sv_c_nosil) // test - blocked
+/*
+	if (autocvar_sv_c_nosil)
 	{
 		remove(self);
 		return;
 	}
-
-	if (!self.model) self.model = "progs/soldier.mdl";
+*/
+	
+	if (!self.model)
+	{
+		self.model = "progs/soldier.mdl";
+		self.skin = 1;
+	}
 	precache_model (self.model);
 	setmodel(self, self.model);
 	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);

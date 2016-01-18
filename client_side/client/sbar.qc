@@ -14,7 +14,6 @@ float SB_TOP    = 2;
 float SB_BOTTOM_RIGHT = 3;
 float sb_align;
 
-float cl_items, x_items;
 
 //-----------------------------------------------------------------------------
 // Custom hud config init / shutdown
@@ -376,19 +375,6 @@ string(float mb) rune_power =
 // Sbar_DrawInventory
 //-----------------------------------------------------------------------------
 
-float items, items2, currentweap, cammo, mcode, archon, no_ammo;
-float rune_flag, dmg_flare;
-float pk_inv, pk_wep;
-
-// flasher codes
-
-float flasher, flashhl, flashawep, sterix_fl, nothuman, flashmhc;
-float ALPHA_FULL, ALPHA_MEDIUM, ALPHA_LOW, ALPHA_90, p_alph;
-
-// note setting > 1 will cause numbers of critical stats to flash on hud - health, current wep ammo, armor, etc
-var float autocvar_hud_flash_numeral = 16;
-// note setting > 1 will cause icons of critical stats to flash on hud - health, current wep ammo, armor, etc
-var float autocvar_hud_flash_icon = 6;
 
 // test mapcode mc and return TRUE if an infinite ammo weapon
 
@@ -459,9 +445,6 @@ void(vector valor, string pic, float itemnum, float item2num, float transparenci
  
 // scale - usual scale, cause some weps scale wrong
 // spcl - pk wep, etc
-
-// make drawn weapon & ammo larger
-var float autocvar_hud_bigwep = 1;
 
 void(vector valor, string pic1, string pic2, float itemnum, float scale, float spcl) DrawInventoryWeapon =
 {
@@ -573,14 +556,6 @@ void(vector valor, string pic, float transparencia, float scale) DrawInventoryAm
 }; 
 
 
-// score
-float plscore;
-string plname;
-
-float p1, plnum, p3rd, pred, plead, fgl, topscore, rfgl, rhs, fraglimit;
-var float autocvar_hud_frags_style = 3;
-var float autocvar_hud_frags_mapname = 1;
-
 // print score line for player #pr - 1 at vr
 
 void(float plr, vector vr) score_line =
@@ -685,19 +660,6 @@ float(float pow) bar_scale =
 	
 	return(scl);
 }
-
-// has_* - once a mapcode item is detected, this allows holstered view
-float has_laser, has_prox, has_pnail, has_hook, has_flamer1, has_deepsleep, has_ppoint, cnt_left, explflg;
-float inv, quad, ring, suit, silencio, xplast, xpltime, deadtime, conrate, had_decod;
-
-// hud special messaging system for cfg scripts
-float hudmsg_timer, hudmsg_timer2, hudmsg_timer3;
-
-// scores
-var float autocvar_hud_frags = 6;
-
-// so we can use the new HUD with other mods / vanilla - set this cvar to one in a cfgs
-var float autocvar_hud_nomod = 0;
 
 void() Sbar_DrawInventory =
 {

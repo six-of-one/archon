@@ -1443,7 +1443,6 @@ void () PlayerPostThink =
 		if (find(world, classname, LOOPSOUND)) loop_play(); // play on looped sounds
 
 // sphere of annihilation controls
-		if ((framecount & 3) == 1)
 		if (sphere_a) sphere_annihilation_phys_move();
 	}
 
