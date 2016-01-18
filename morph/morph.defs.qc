@@ -25,7 +25,7 @@ float MORPH_SARMOR; // morphs with healable (scourge) armor built in
 .float morphy; // morphic code number from list below
 .vector mask; // inventory a player can pickup by class - mask for item, class for player
 
-float MORPH_ALL; //every morph bit
+float MORPH_ALL; //every morph bit in mask 1
 
 
 // monsters in dm - so morphs have friends
@@ -34,46 +34,62 @@ float A_MONSTER				= -555777; // allow monsters in dm - monster_* called from co
 float M_MONSTER; // bit mask to allow map monsters in dm
 float S_MONSTER; // bit mask of monsters to respawn when dead (map monsters only, no random ones) - works in single player too!
 float C_MONSTER; // bit mask of monsters to spawn randomly
+float C2_MONSTER; // bit mask for extra set of randomly spawned critters
 float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent - if 0 save for a live control update loop that can recreate the monster
+
+// timings
+float S_MONSTER_WAIT; // min wait till we respawn a dead mosnter
+float S_MONSTER_DEV;
+
+float C_MONSTER_WAIT; // how long till we spawn another random mosnter
+float C_MONSTER_DEV;
+float C_MONSTER_CNT;	// random monster total
 
 void() lavaball_shot;
 void(entity e) chaos_mdlsize;
 
 // monster bit flags - still use mask_x
+void() random_monster;
+
+float MONSTER_MASK; // all monster bits
+float pk_monster_set; // admin var to store bits for setting monster values
+
+string(float mb, float mode) monster_id;
+
+float CB_M_ARMY					= 1;
+float CB_M_FISH					= 2;
+float CB_M_KNIGHT					= 4;
+float CB_M_DOG						= 8;
+float CB_M_DEMON					= 16;
+float CB_M_ENF						= 32;
+float CB_M_HKNIGHT				= 64;
+float CB_M_OGRE					= 128;
+float CB_M_SHALR					= 256; // + super vore ?
+float CB_M_SHAMBL					= 512;
+float CB_M_SCRAG					= 1024;
+float CB_M_ZOMBY					= 2048;
+float CB_M_CTHON					= 4096; // boss
+float CB_M_TARBABY				= 8192;
+float CB_M_SCOURGE				= 16384;
+float CB_M_SHUBS					= 32768;
+float CB_M_SVORE					= 65536; // super vore
 
 /*
-float CB_						= 1;
-float CB_						= 2;
-float CB_						= 4;
-float CB_						= 8;
-float CB_					= 16;
+float CB_M_					= 131072;
+float CB_M_					= 262144;
+float CB_M_					= 524288;
+float CB_M_					= 1048576;
+float CB_M_					= 2097152;
+float CB_M_					= 4194304;
+float CB_M_					= 8388608;
 */
-float CB_M_ARMY					= 32;
-float CB_M_FISH					= 64;
-float CB_M_KNIGHT					= 128;
-float CB_M_DOG						= 256;
-float CB_M_DEMON					= 512;
-float CB_M_ENF						= 1024;
-float CB_M_HKNIGHT				= 2048;
-float CB_M_OGRE					= 4096;
-float CB_M_SHALR					= 8192; // + super vore ?
-float CB_M_SHAMBL					= 16384;
-float CB_M_SCRAG					= 32768;
-float CB_M_ZOMBY					= 65536;
-float CB_M_CTHON					= 131072; // boss
-float CB_M_TARBABY				= 262144;
-float CB_M_SCOURGE				= 524288;
-float CB_M_SHUBS					= 1048576;
-//float CB_						= 2097152;
-//float CB_					= 4194304; // mode bits = 4 modes
-//float CB_						= 8388608;
 
 /* special - will use something else
 float CB_GUNNEY					= 64;
 float CB_SUPTANK					= 128;
 float CB_TANK						= 256;
 float CB_IMP						= 2097152;
-float CB_ARACHN					= 4194304; // mode bits = 4 modes
+float CB_ARACHN					= 4194304;
 float CB_CYBER						= 8388608;
 */
 
@@ -207,8 +223,8 @@ float IMP_MSELECT					= 99;	string STI_MSELECT		= "impulse 158";
 // evolution
 void(float silent) player_scourge_become;
 void(float silent) player_shalrath_become;
+void(float silent) player_enforcer_become;
 void(float silent) player_anode_become;
-
 
 //morph health modifiers            original code
 float MHUMAN_HEALMOD				= 1.0;	// 100 = 1.0
@@ -268,3 +284,5 @@ float WRAITH_USE_CAM				= FALSE; // if true wraith can use chase cam - NOTE: cam
 void() morph_precache;
 void() m_precache_scourge;
 void() m_precache_shalrath;
+void() m_precache_enforcer;
+

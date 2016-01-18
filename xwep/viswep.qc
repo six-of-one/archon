@@ -864,6 +864,8 @@ vector(entity hent) grap_vw_adj =
 
 // dead threw protos
 
+float PR_THREW = 0; // TEST: master print
+
 void(entity e, entity p) xwep_ammo;
 void(entity e, string cl) item_call_save;
 void () painkeep_weapon_touch;
@@ -998,11 +1000,12 @@ void(entity pack) DeadThrowWeps =
 
 
 
-
+if (PR_THREW)
+{
 bprint("throw loop check: ");
 bprint(e.netname);
 bprint("\n");
-
+}
 
 
 
@@ -1035,10 +1038,12 @@ bprint("\n");
 
 
 
+if (PR_THREW)
+{
 bprint("dead thr wep: ");
 bprint(newmis.netname);
 bprint("\n");
-
+}
 
 
 				}
@@ -1047,11 +1052,13 @@ bprint("\n");
 
 
 
+if (PR_THREW)
+{
 bprint("live thr wep: ");
 bprint(newmis.netname);
 bprint("\n");
 }
-
+}
 
 
 				newmis.frame = e.frame;

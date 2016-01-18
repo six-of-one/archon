@@ -36,7 +36,9 @@ void() chaos_precache =
 	precache_model ("progs/vw_qgun.mdl");
 	precache_model ("progs/g_deepsleep.mdl");
 	precache_model ("progs/vw_deepsleep.mdl");
+	precache_model ("progs/steam.mdl");
 	precache_model ("progs/pk_cube.bsp");
+	precache_model ("progs/morph_cube.bsp");
 
 	precache_sound ("sound/flm/ft_hum.wav");
 	precache_sound ("sound/flm/ft_fire.wav");

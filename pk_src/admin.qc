@@ -63,6 +63,7 @@ float   A_DMMAP = 22;
 float   A_BOTS  = 23;
 float   A_PKCON = 24;
 float   A_ITEM  = 25;
+float   A_MONST = 26;
 float   A_SKICK = 30;
 float   A_PKMOD = 60;
 
@@ -114,7 +115,12 @@ void(entity e) admin_clear =
 	e.takedamage = DAMAGE_AIM;	
 	e.wad = e.message = e.path = e.target = "";
 	e.enemy = world;
-	if (CAM_DEF & DPCAM_ON) cvar_set("chase_active", ftos(e.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
+	if (CAM_DEF & DPCAM_ON)
+	{
+		stuffcmd(e, "chase_active ");
+		stuffcmd(self, ftos(e.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
+		stuffcmd(e, "\n");
+	}
 };
 
 // clear | set these for players
@@ -1016,6 +1022,153 @@ void() Admin_itemmenu =
 
 /*
 ==========
+Monsters menu admin
+==========
+*/
+void() Admin_allmonsters =
+{
+	local string it;
+	local float f, mn;
+
+	mn = 0;
+
+	bprint("\b--------------------------------\n");
+	mn = 1;
+	bprint("All monsters bit set: ");
+	bit_print(MONSTER_MASK, MONSTER_MASK);
+	bprint("\n\nlist of all monsters:\n");
+	f = 1;
+	while (f < MONSTER_MASK)
+	{
+		it = monster_id(f, 0);
+		bprint(it);
+		bprint("\n"); 
+		f = f * 2;
+	}
+
+	bprint("\b--------------------------------\n");
+};
+
+void() Admin_monsterbits =
+{
+	local string it;
+	local float f, mn;
+
+	mn = 0;
+
+	bprint("\b--------------------------------\n");
+	if (! M_MONSTER & MONSTER_MASK)
+		bprint("No map monsters appearing in DM\n");
+	else
+	{
+		mn = 1;
+		bprint("Map monsters bit set: ");
+		bit_print(MONSTER_MASK, M_MONSTER);
+		bprint("\n\nlist appearing in DM:\n");
+		f = 1;
+		while (f < MONSTER_MASK)
+		{
+			it = monster_id(f, 0);
+			if (f & M_MONSTER) { bprint(it); bprint("\n"); }
+			f = f * 2;
+		}
+	}
+
+	bprint("\b--------------------------------\n");
+	if (! S_MONSTER & MONSTER_MASK)
+		bprint("No map monsters will respawn\n");
+	else
+	{
+		mn = 1;
+		bprint("Respawn monsters bit set: ");
+		bit_print(MONSTER_MASK, S_MONSTER);
+		bprint("\n\nlist that respawn:\n");
+		f = 1;
+		while (f < MONSTER_MASK)
+		{
+			it = monster_id(f, 0);
+			if (f & S_MONSTER) { bprint(it); bprint("\n"); }
+			f = f * 2;
+		}
+	}
+	bprint("\b--------------------------------\n");
+	if (! C_MONSTER & MONSTER_MASK)
+		bprint("No random monsters appearing in DM\n");
+	else
+	{
+		mn = 1;
+		bprint("Random monsters bit set: ");
+		bit_print(MONSTER_MASK, C_MONSTER);
+		bprint("\n\nlist appearing in DM:\n");
+		f = 1;
+		while (f < MONSTER_MASK)
+		{
+			it = monster_id(f, 0);
+			if (f & C_MONSTER) { bprint(it); bprint("\n"); }
+			f = f * 2;
+		}
+	}
+
+	bprint("\b--------------------------------\n");
+	if (!mn) self.wad = "\nNo monster controls set.";
+};
+
+/*
+==========
+Monsters menu admin
+==========
+*/
+
+void() Admin_monstermenu =
+{
+	self.message =
+				       "\b     Admin Monster Menu:    \n"
+				       "\b+--------------------------+\n"
+							"  +------- \bmonster\b ------+  \n"
+							"  01: Army Grunt            \n" // 1			- really 32
+							"  02: Fish                  \n" // 2
+							"  03: Knight                \n" // 4
+							"  04: Rabid Dog             \n" // 8
+							"  05: Fiend                 \n" // 16
+							"  06: Enforcer              \n" // 32
+							"  07: Hell Knight           \n" // 64
+							"  08: Ogre                  \n" // 128
+							"  09: Shalrath              \n" // 256
+							"  10: Shambler              \n" // 512
+							"  11: Scragg                \n" // 1024
+							"  12: Zomby                 \n" // 2048
+							"  13: Cthon                 \n" // 4096
+							"  14: Spawn                 \n" // 8192
+							"  15: Scourge               \n" // 16384
+							"  16: Shubbers              \n" // 32768
+							"  17: Super Vore            \n" // 65536
+//							"  18: Only these items      \n" // 131072
+//							"  19: None of these items   \n" // 262144
+//							"  20: Substitute removed    \n" // 542288
+//							"  21: Infinite ammo         \n" // 1048576
+//							"  22: Infinite ammo         \n" // 2097152
+//							"  23: Infinite ammo         \n" // 4194304
+//							"  24: Infinite ammo         \n" // 8388608
+							"  +------ \bcontrols\b ------+  \n" 
+							"  26: Bits -> map monsters  \n" 
+							"  27: Bits -> to random     \n"
+							"  28: Bits -> to respawn    \n"
+							"  29: All bits off          \n" 
+							"  30: Show monster bits     \n"
+							"  31: List all monsters     \n"
+//							"  32: Monster set II        \n"
+							" 666:  main menu            \n"
+							" admin impulse: exit admin  \n"
+				       "\b+--------------------------+\n"
+						 "\b  Enter code: ";
+
+	self.wad = "";
+	self.admin = 30; //  - this & 3 must = 2
+	self.lefty = 0;
+};
+
+/*
+==========
 Painkeep impulses
 ==========
 */
@@ -1088,6 +1241,7 @@ void() Admin_mainmenu =
 						"  23:  bot control         \n"
 //						"  24:  painkeep control    \n"
 						"  25:  item control        \n"
+						"  26:  monster control     \n"
 						"  30:  kick players        \n"
 //						"  60:  PK mode toggle      \n"
 //						"  ---  PK mode = TRUE      \n"
@@ -1118,6 +1272,7 @@ void() Admin_mainmenu =
 						"  23:  bot control         \n"
 						"  24:  painkeep control    \n"
 //						"  25:  item control        \n"
+//						"  26:  monster control     \n"
 						"  30:  kick players        \n"
 //						"  60:  PK mode toggle      \n"
 						"  ---  PK mode = TRUE      \n"
@@ -1148,6 +1303,7 @@ void() Admin_mainmenu =
 						"  23:  bot control         \n"
 						"  24:  painkeep control    \n"
 						"  25:  item control        \n"
+						"  26:  monster control     \n"
 						"  30:  kick players        \n"
 						"  60:  PK mode toggle      \n"
 						"  ---  PK mode = TRUE      \n"
@@ -1177,6 +1333,7 @@ void() Admin_mainmenu =
 						"  22:  map control         \n"
 						"  23:  bot control         \n"
 						"  25:  item control        \n"
+						"  26:  monster control     \n"
 						"  30:  kick players        \n"
 						"  60:  PK mode toggle      \n"
 						"  ---  PK mode = FALSE     \n"
@@ -1227,7 +1384,7 @@ void() AdminCommands =
 	local float e, f;
 	local string str;
 
-	if (cvar("chase_active") > 0) cvar_set("chase_active","0");
+	if (cvar("chase_active") > 0) stuffcmd(self, "chase_active 0\n");
 
 	if (self.admin == 1)																// login
 	{
@@ -1310,6 +1467,11 @@ void() AdminCommands =
 		if (self.lefty == A_ITEM)
 		{
 			if (!PK_100) Admin_itemmenu();
+		}	
+		else
+		if (self.lefty == A_MONST) // Cat - 9.19.11 - added monster controls to admin interface
+		{
+			if (!PK_100) Admin_monstermenu();
 		}	
 		else
 		if (self.lefty == A_PKMOD)
@@ -1806,6 +1968,63 @@ void() AdminCommands =
 		}
 		self.lefty = 0; //self.lefty + 1;
 	}
+	else if (self.admin == 29)														// monster overrides
+	{
+		self.admin = 30; // one more than select val above - enter key reduces by 1, menu display sets this code & 3 must = 2
+		if (self.lefty == 666)
+			Admin_mainmenu();
+		else if (self.lefty == 26)
+		{
+			cvar_set("sv_monster_map", ftos(pk_monster_set));
+			self.wad = "\nBit set written to sv_monster_map";
+			bprint("Map monsters bit set: ");
+			bit_print(MONSTER_MASK, pk_monster_set);
+			bprint("\n--- Please wait for the server to update monsters\n");
+		}
+		else if (self.lefty == 27)
+		{
+			cvar_set("sv_monster_rnd", ftos(pk_monster_set));
+			self.wad = "\nBit set written to sv_monster_rnd";
+			bprint("Random monsters bit set: ");
+			bit_print(MONSTER_MASK, pk_monster_set);
+			bprint("\n--- Please wait for the server to update monsters\n");
+		}
+		else if (self.lefty == 28)
+		{
+			cvar_set("sv_monster_resp", ftos(pk_monster_set));
+			self.wad = "\nBit set written to sv_monster_resp";
+			bprint("Respawning map monsters bit set: ");
+			bit_print(MONSTER_MASK, pk_monster_set);
+			bprint("\n--- Please wait for the server to update monsters\n");
+		}
+		else if (self.lefty == 29)
+		{
+			pk_monster_set = 0;
+		}
+		else if (self.lefty == 30)
+			Admin_monsterbits();
+		else if (self.lefty == 31)
+			Admin_allmonsters();
+//		else if (self.lefty == 32)
+//		{
+//		}
+		else if (self.lefty > 0 && self.lefty < 18) // < 25) NOTE: only 1 - 17 used
+		{
+			self.lefty = self.lefty - 1;
+			f = AdminBitFlag(self.lefty);
+//			if (Q_99  && self.lefty == 6) f = 0;
+			if (pk_monster_set & f)
+				pk_monster_set = pk_monster_set - (pk_monster_set & f);
+			else
+				pk_monster_set = pk_monster_set | f;
+
+			if (pk_monster_set & f)
+				self.wad = "\nBit toggled on for selected monster";
+			else
+				self.wad = "\nBit toggled off for selected monster";
+		}
+		self.lefty = 0; //self.lefty + 1;
+	}
 
 	if (self.admin == 15)
 		centerprint3(self, self.message, self.enemy.netname, self.wad);
@@ -2019,7 +2238,7 @@ void() PK_AdminImpulse =
 	{
 		if (Q_100 | Q_99) return; // Cataboligne - 8.16.9 - quake compatability mode
 
-		if (cvar("chase_active") > 0) cvar_set("chase_active","0");
+		if (cvar("chase_active") > 0) stuffcmd(self, "chase_active 0\n");
 
 		if (self.message == "")
 		{

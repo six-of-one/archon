@@ -763,7 +763,7 @@ void (float skl) AddAnotherBot =
 	newbot.b_clientno = newbot.id;
 	newbot.b_shirt = rint(top);
 	newbot.b_pants = rint(bottom);
-	newbot.ishuman = FALSE; // frik stuff - make sure
+	newbot.ishuman = FALSE; // frik stuff - make sure - always must be false for bots
 	UpdateClient(newbot);
 /*
 	WriteByte (MSG_ALL,MSG_UPDATENAME);

@@ -456,7 +456,7 @@ void(string cls) item_call =
 	self.mdl = self.model;
 	if (self.classname == "dyn_monster")
 	{
-		self.map = self.classname; // find it later - can set class_select because *_start does
+		self.class_select = self.classname; // find it later - can set class_select because *_start does
 		self.classname = scls; // for death messages, morph checks
 		FoundTarget(); // make 'em run around
 		self.pausetime = 0;
@@ -815,6 +815,7 @@ entity() dyn_rndloc =
 		else if (e.chain.flags & FL_ITEM) { ri = ri + 1; e = e.chain; }
 		else if (e.chain.classname == "info_player_deathmatch") { ri = ri + 1; e = e.chain; }
 		else if (e.chain.classname == "info_teleport_destination") { ri = ri + 1; e = e.chain; }
+		else if (e.chain.classname == "waypoint") { ri = ri + 1; e = e.chain; } // Cataboligne - 9.19.11 - added bot waypoints - ton of these, might skew stats, and dynamics will nearly always be along bot paths
 		else if (e.chain.classname == "path_corner") { ri = ri + 1; e = e.chain; }
 		else if (e.chain.classname == "hub_custom") { ri = ri + 1; e = e.chain; }
 //		else if (e.chain.classname == "") { ri = ri + 1; e = e.chain; }

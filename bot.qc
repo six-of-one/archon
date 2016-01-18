@@ -108,7 +108,7 @@ float(entity e) IROBOT =
 	float c;
 	
 	if (!e) return(FALSE); // testing world
-	if (!e.ishuman && e.classname == "player") c = TRUE; // frikbot found
+	if ( (e.ishuman != 1) && (e.classname == "player") ) c = TRUE; // frikbot found - even in pretend were human, ishuman == 2 mode
 	else if (e.classname == "pk*bot") c = TRUE; // pk*bot found
 	else c = FALSE; // maybe human, maybe vegetable, maybe mineral, but not a bot
 

@@ -541,7 +541,7 @@ void() KickABot =
 		{
 			
 			BotDisconnect(ty);
-			ty.ishuman = TRUE;
+			ty.ishuman = TRUE; // prob. incase a real human connects and gets this slot ?
 			ty = world;
 		}
 		else
@@ -557,6 +557,7 @@ void() KickABot =
 Simplified origin checking. 
 
 God, I wish I had inline
+(suck it up buddy, this is Quake coding! --Cat)
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */

@@ -496,6 +496,7 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 		}
 
 //	newmis.frags = NOFAKE; // no missile fakeloads by default - need to change if this ever fires weapons out
+	AddToSplash(newmis);
 };
 
 

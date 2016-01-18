@@ -587,7 +587,7 @@ void() ClientInRankings =
 		self.phys_obj = b_temp2;
 	}
 
-	if (self.ishuman == 2)
+	if (self.ishuman == 2) // was pretending to be human
 	{
 		self.ishuman = FALSE;
 		return;
@@ -597,7 +597,7 @@ void() ClientInRankings =
 	active_clients = active_clients | ClientBitFlag(cno);
 	
 	self.b_clientno = cno;
-	self.ishuman = TRUE;
+	self.ishuman = TRUE; // this is where human players are indicated as human - Cataboligne, special NOTE:
 	self.switch_wallhug = time + 1;
 };
 
@@ -1006,7 +1006,7 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
 	self.team = self.b_pants + 1;
 	UpdateClient(self);
 	SetNewParms();
-	self.ishuman = 2;
+	self.ishuman = 2; // pretend to be human for a bit
 	ClientConnect();
 	PutClientInServer();
 

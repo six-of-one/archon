@@ -609,7 +609,7 @@ void() run_runes =
 		bprint("\n");
 		if (nonserver_rune_found)
 			bprint("* non server Runes are loaded on this map.\n\n");
-		cvar_set("pk_runemap", "0");
+		cvar_set("pk_runemap", "0"); // ideally want a stuffcmd, but this is called from a think - no idea which player set this.
 	}
 
 };

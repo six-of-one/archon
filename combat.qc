@@ -103,7 +103,8 @@ void(entity targ, entity attacker) Killed =
 	monster_death_use ();
 	self.th_die ();
 
-	dead_cam_set(); // Cataboligne 9.11.3 purify - chase cam
+	if (self.ishuman) // Cataboligne 9.19.11 - monsters were calling - just never saw because werent using dp cam
+		dead_cam_set(); // Cataboligne 9.11.3 purify - chase cam
 
 	self = oself;
 };

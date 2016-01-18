@@ -116,7 +116,7 @@ void() CheckWaterLevels =
 	    }
 	    else
 	    {
-			if (!XENV || PK_100)
+			if (!XENV || PK_100) // NOTE: server vars that control splashing
 	      if ( ! pk_flags & PK_TP_SPARKSFLASH)
 	        MakeSplash(e);
 

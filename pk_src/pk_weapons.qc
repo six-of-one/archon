@@ -432,7 +432,7 @@ void() PK_SetCurrentAmmo =
 		}
 // end pk_art
 	}
-	else if (self.builtin & self.weapon) SUB_Null();
+	else if (self.builtin & self.weapon) self.weaponmodel = "";
 
 	else if (self.weapon == IT_SHOTGUN)
 	{
@@ -708,7 +708,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		}
 // end pk_art
 	}
-	else if (f.builtin & self.weapon) SUB_Null();
+	else if (f.builtin & self.weapon) self.weaponmodel = "";
 
 	else if (f.weapon == IT_SHOTGUN)
 	{
@@ -1409,7 +1409,7 @@ void() PK_Attack =
 
 	if (self._attack != SUB_Null) // morph built in weapons
 	{
-		if ( (self.pk_currentitem != PK_IT_AXE) && (self.builtin & self.weapon) ) // fire a pk item - from any builtin slot
+		if ( (self.pk_currentitem != PK_IT_AXE) && (self.builtin & self.weapon) ) // fire a pk item
 		{
 			e = self._attack;
 			self._attack = SUB_Null;

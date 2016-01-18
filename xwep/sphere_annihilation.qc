@@ -253,6 +253,7 @@ float(entity g) annihilation_check =
 	else if (g == sphere_a) t = FALSE;
 	else if (g.think == annihilate) t = FALSE;
 	else if (g.model == "") t = FALSE;
+	else if (g.classname == "whirl") t = FALSE;
 	else if (g.flags & FL_CLIENT && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_CLI) t = FALSE;
 	else if (g.classname == "viswep" && g.owner != world) t = FALSE;
 	else if (! IS_MISSILE(g) && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
@@ -288,7 +289,7 @@ void(entity g) set_annihilate =
 //			head.yaw_speed = vlen(head.velocity) / 5.0;
 //			head.ideal_yaw = vectoyaw(sphere_a.origin - head.origin);
 	g.velocity = v0;
-	g.dest1 = g.origin - sphere_a.origin;
+	g.dest1 = g.origin - sphere_a.origin + ' 0 0 12';
 };
 
 void() sphere_annihilation_touch =
@@ -311,6 +312,27 @@ void() sphere_annihilation_spawn =
 // spawn sound?
 };
 
+// whirl things around
+
+void() sphere_whirl =
+{
+	local float d;
+	local vector org;
+	local float gPercent;
+	local float gDist = 960;		// range of the weapon
+	local float gPower = 512;
+
+	org = (sphere_a.absmin + sphere_a.absmax) * 0.5;
+
+	d = vlen(self.origin - org);
+	gPercent = 1 - (d / gDist);
+
+	self.velocity = self.velocity + normalize(sphere_a.origin - self.origin) * gPower * gPercent;
+
+	if (self.attack_finished < time) set_annihilate(self); // whirl for a bit then go away
+
+	self.nextthink = time + 0.1;
+};
 
 // fn(sphere_annihilation_phys_move) - move the sphere and its flotsam in physics code - following controller player
 
@@ -343,6 +365,18 @@ void() sphere_annihilation_phys_move =
 				set_annihilate(head);
 			}
 			head = head.chain;
+		}
+
+// TDO: sound effect (maybe from black hole 06 ?) - also swirl things like grav suck
+		if (random() < 0.06) // sphere pulls particles out of air - IDEA: something else in water - whirl around sphere of water tex
+		{
+			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_BBOX, 0, RM_SKY,  sphere_a.origin , v0, v0, v0, v0, "whirl", "progs/steam.mdl", SUB_Null, 5 + random() * 4, SUB_Remove, SUB_Null, self, world);
+			newmis.origin_x = newmis.origin_x + crandom() * 80;
+			newmis.origin_y = newmis.origin_y + crandom() * 80;
+			newmis.origin_z = newmis.origin_z + random() * 32;
+			newmis.think = sphere_whirl;
+			newmis.nextthink = time + 0.1;
+			newmis.attack_finished = time + 3 + random() * 4;
 		}
 	}
 	else

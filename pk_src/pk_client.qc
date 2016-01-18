@@ -512,7 +512,7 @@ void() PutClientInServer =
 
 	DecodeLevelParms ();
 
-	W_SetCurrentAmmo ();
+//	W_SetCurrentAmmo (); // moved for m0rphic
 
 	self.attack_finished = time;
 	self.th_pain = player_pain;
@@ -546,6 +546,8 @@ void() PutClientInServer =
 
 	self.morphy = IMP_MSHALR; // TEST:
 	polymorph_check(self.morphy, self.morphy); // become incarnation
+
+	W_SetCurrentAmmo (); // moved for m0rphic
 
 	player_stand1 ();
 
@@ -1269,7 +1271,8 @@ void () ClientConnect =
 {
 	local float v;
 
-	if (FRIKBOT) ClientInRankings (); // sets .ishuman for humans
+//	if (FRIKBOT)  // this always must happen for ishuman test
+		ClientInRankings (); // sets .ishuman for humans
 	bot_con(TRUE); // *bot - doesnt depend on active bots, must always happen
 	if (Q_100 || Q_99)
 	{
@@ -1317,7 +1320,8 @@ void () ClientConnect =
 //void() pk_clientdisconnect =
 void () ClientDisconnect =
 {
-	if (FRIKBOT) ClientDisconnected ();
+//	if (FRIKBOT) 
+		ClientDisconnected ();
 	bot_con(FALSE); // *bot
 
 	if (gameover)

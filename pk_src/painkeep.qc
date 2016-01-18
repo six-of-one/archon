@@ -858,7 +858,11 @@ void() pk_liveupd =
 	}
 
 	S_MONSTER = cvar("sv_monster_resp");
-	C_MONSTER = cvar("sv_monster_rnd"); // TDO: live control
+	C_MONSTER_CNT = cvar("sv_monster_cnt");
+	if ( (C_MONSTER != cvar("sv_monster_rnd")) || (C2_MONSTER != cvar("sv_monster_rnd2")) )
+	{
+		random_monster(); // control
+	}
 
 	if (deathmatch)
 	if (M_MONSTER != cvar("sv_monster_map"))
@@ -1199,6 +1203,14 @@ void() pk_srvcmd_set =
 	M_MONSTER = 0;
 	S_MONSTER = 0;
 	C_MONSTER = 0;
+	C2_MONSTER = 0;
+
+	S_MONSTER_WAIT = 30; //60; // min wait till we respawn a dead mosnter
+	S_MONSTER_DEV = 10;
+
+	C_MONSTER_WAIT = 30;// 80; // how long till we spawn another random mosnter
+	C_MONSTER_DEV = 20;
+	C_MONSTER_CNT = 0;
 
 // pk cubes
 
@@ -1463,9 +1475,13 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_morph", "3"); // 2 cubes
 		registercvar("sv_morph_time", "30"); // TEST: "120");
 		registercvar("sv_morph_dv", "5"); // TEST: "40");
-//		registercvar("cl_morph", "12"); // client ident		
+//		registercvar("cl_morph", "12"); // client ident
+
+// dm monsters
 		registercvar("sv_monster_map", "0"); // bit mask to allow map monsters in dm
-		registercvar("sv_monster_rnd", "0"); // bit mask to allow map monsters in dm
+		registercvar("sv_monster_rnd", "0"); // bit mask to allow random spawned monsters in dm
+		registercvar("sv_monster_cnt", "0"); // # of random monster to spawn
+		registercvar("sv_monster_rnd2", "0"); // bit mask to allow extra random spawned monsters in dm
 		registercvar("sv_monster_resp", "0"); // bit mask to respawn some map monsters (not random ones)
 
 // things dealing with the dead

@@ -118,6 +118,11 @@ void () observer =
 	}
 	cam_startdeathview(); // get a cam ent
 	set_viewport(self, self); // dont really need death view
+
+
+	bprint ("set_viewport: observer\n");
+
+
 	setmodel(self, "progs/null.mdl");
 	setsize (self,'-4 -4 -4', ' 4 4 4'); // dont look in floors / walls
 	self.movetype = MOVETYPE_FLY;

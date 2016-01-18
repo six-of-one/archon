@@ -2039,7 +2039,7 @@ void() abandoned_cube =
 
 void() cube_touch =
 {
-	if (other.classname != "player" || IROBOT(other)) // *bot - done in master touch fn - NOTE: no bots in cube code yet
+	if ( (other.classname != "player") || (!other.ishuman) ) // *bot - done in master touch fn - NOTE: no bots in cube code yet
 	{
 		grap_checkIfGrap();
 		return ;

@@ -20,6 +20,7 @@ float CAM_DEF; 					// set to 1 for default chase cam
 float NO_CAM; 					// set to 1 to disable chase cam
 
 float CHSCAM_NO_WATER = FALSE; // if true, cam will deactivate in water
+// water is an issue because the engine (even darkplaces) does not update the cam view when the player ent is partially in non-vised (non transparent) water
 
 // fn(chase_cam_precache) - init cam, cache files
 
@@ -30,9 +31,20 @@ void() chase_cam_precache =
 };
 
 //original chasecam.qc
+float PR_VIEWPC = 0; // set to 1 to show viewport changes - leaving this test in for significance of viewport hijacks
 
 void( entity m_e, entity v_e) set_viewport =
 {
+	if (!m_e.ishuman) return; // no bots
+
+
+if (PR_VIEWPC)
+{
+bprint ("set_viewport:  in call - ent = ");
+bprint(item_ident(m_e));
+bprint ("\n");
+}
+
 	msg_entity = m_e;                         // target of message
 	WriteByte (MSG_ONE, SVC_SETVIEWPORT);
 	WriteEntity (MSG_ONE, v_e);           // view port
@@ -56,7 +68,8 @@ void( float opt ) Remove_chase_cam;
 
 void(string bcm) cam_setbob =
 {
-	if (IROBOT(self)) return; // no cam for bots - no stuffcmd either
+//	if (IROBOT(self)) return; // no cam for bots - no stuffcmd either
+	if (!self.ishuman) return; // no bots
 
 	if (bcm == "")
 	{
@@ -109,7 +122,7 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 	}
 
-	if (Q_100 || PK_100 || NO_CAM) // Cataboligne - 8.16.9 - quake compatability mode
+	if (Q_100 || PK_100 || NO_CAM || !cam_owner.ishuman) // Cataboligne - 8.16.9 - quake compatability mode - 9.19.11 dont allow bots in here
 	{
 		return;
 	}
@@ -122,11 +135,11 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 
 	if (CAM_DEF & DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
 	{
-		cvar_set("chase_active", "1");
+		stuffcmd(cam_owner, "chase_active 1\n");
 		return;
 	}
 
-	cvar_set("chase_active", "0"); // make sure this is off
+	stuffcmd(cam_owner, "chase_active 0\n"); // make sure this is off
 
 	chase_cam = spawn();
 
@@ -170,7 +183,7 @@ void() Reable_chase_cam =
 
 	self.nextthink = time + 0.1;
 
-	if (self.owner.solid == SOLID_NOT)
+	if ( (self.owner.solid == SOLID_NOT) || (!self.owner.ishuman) )
 	{
 		//owner died in water, reset .cam_x flag for respawn
 //		self.owner.cam_x = self.owner.cam_x | CHSCAM_ON;
@@ -216,6 +229,11 @@ void( float opt ) Remove_chase_cam =
 
 	// set view-point back to normal
 	set_viewport( self.owner, self.owner);
+
+
+	
+if (PR_VIEWPC) bprint ("set_viewport: remove cam\n");
+
 
 
 	setmodel( self, "" );
@@ -302,8 +320,16 @@ void () cam_deathmove =
 		self.oldorigin = self.owner.origin;
 		setorigin(self.owner, self.origin);
 		set_viewport(self.owner, self.owner);
+
+
+
+if (PR_VIEWPC) bprint ("set_viewport: deathmove\n");
+
+
+
 		sprint(self.owner,"your spirit is free!\n");
 	}
+
 	if (cvar("fov") != DCAM_FOV) stuffcmd( self.owner, DCAM_SET_FOV ); // I see short dead dudes - enforce crow vision
 
 	PK_SetCurrentAmmoOnly(self.owner);
@@ -322,6 +348,12 @@ void () cam_deathview =
 
 // FIXED - viewport restore here
 		set_viewport(self.owner, self.owner); // test this
+
+
+
+if (PR_VIEWPC) bprint ("set_viewport: cam dview\n");
+
+
 
 		remove( self);
 		return;
@@ -399,6 +431,13 @@ void() cam_startdeathview =
 	e.dest = '0 0 0' - v_forward; // save forward direction, used in cam_deathview
 
 	set_viewport( self, e);
+
+
+
+if (PR_VIEWPC) bprint ("set_viewport: cam start dview\n");
+
+
+
 };
 
 
@@ -438,6 +477,13 @@ void() Keep_cam_chasing_owner =
 		if (intermission_running)
 		{
 			set_viewport( self.owner, self.owner);
+
+
+
+if (PR_VIEWPC) bprint ("set_viewport: intermix\n");
+
+
+
 			remove( self );
 		}
 		else
@@ -452,6 +498,13 @@ void() Keep_cam_chasing_owner =
 			{
 				self.owner.view_ofs_z = -1;
 				set_viewport( self.owner, self);
+
+
+
+if (PR_VIEWPC) bprint ("set_viewport: deadcam in keep chasing\n");
+
+
+
 			}
 		}
 		return;
@@ -698,6 +751,13 @@ local string s1;
 			self.skin = 1;
 			self.owner.view_ofs_z = 22;
 			set_viewport( self.owner, self.owner);
+
+
+
+if (PR_VIEWPC) bprint ("set_viewport: temp disab restore\n");
+
+
+
 		}
 	}
 	else
@@ -707,6 +767,13 @@ local string s1;
 			self.skin = 0;
 			self.owner.view_ofs_z = -1;
 			set_viewport( self.owner, self);
+
+
+
+if (PR_VIEWPC) bprint ("set_viewport: temp disable \n");
+
+
+
 		}
 	}
 
@@ -742,7 +809,7 @@ void() Toggle_chase_cam =
 
 		if (CAM_DEF & DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
 		{
-			cvar_set("chase_active","0");
+			stuffcmd(self, "chase_active 0\n");
 			Chase_cam_setweapon( self );
 		}
 	}
@@ -776,7 +843,8 @@ void() Chase_cam_level_start =
 
 	local entity e;
 
-	if (IROBOT(self)) return; // no cam start for bots
+//	if (IROBOT(self)) return; // no cam start for bots
+	if (!self.ishuman) return; // no bots
 
 	e = spawn();
 	e.owner = self;
@@ -869,6 +937,7 @@ void(float opt) Chase_cam_read_temp1 =
 void(float sel) cam_parms =
 {
 	if (IROBOT(self)) return; // no cam for bots
+//	if (!self.ishuman) return; // no bots
 
 	CAM_DEF = 1; // compiled default for non dp engines
 	if (DARKPLACES || chaos) // IDEA: move to live upd
@@ -900,7 +969,7 @@ void(float sel) cam_parms =
 			self.cam_y = cvar("chase_back");
 			self.cam_z = cvar("chase_up") / 100;
 		}
-		else cvar_set("chase_active","0"); // so it doesnt get left on changing parm between levels or something
+		else stuffcmd(self, "chase_active 0\n"); // so it doesnt get left on changing parm between levels or something
 	}
 	else
 	{
@@ -952,22 +1021,24 @@ void () dead_cam_set =
 //		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 //	}
 
-	if (CAM_DEF & DPCAM_ON) cvar_set("chase_active", "0");
+	if (CAM_DEF & DPCAM_ON) stuffcmd(self, "chase_active 0\n");
 
 
 	if (Q_100 || PK_100) return; // || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
 
 // limit on frags from fire & forget implementation
 
-	if (self.flags & FL_CLIENT || IROBOT(self))
+	if (self.flags & FL_CLIENT || IROBOT(self)) // should just be FL_CLIENT
 	if (FFW_LIMIT > 0)
 	{
 		self.search_time = time + FFW_LIMIT;
 	}
 
+	if (self.disconnectPlayer) return; // dont set for disconnect frikbots that get splash damage!
+	if (!self.ishuman) return; // no bots past this - they get the code above
+/*
 	if (IROBOT(self))  // no deadcam for bots
 	{
-/*
 
 // deprecated - bot code already handles respawn, so no reason to duplicate this - tweak bot code for more random return to action
 
@@ -984,9 +1055,9 @@ void () dead_cam_set =
 		}
 		else
 			respawn();
-*/
 		return;
 	}
+*/
 
 // NOTE: wraith option still needs checked once we have chaos mod morph deal
 	
@@ -1011,7 +1082,7 @@ void() cam_punch =
 
 void () ccb_impulse_check =
 {
-	if (IROBOT(self)) return; // no cam for bots - not sure how they would get here...
+	if (!self.ishuman) return; // no cam for bots - not sure how they would get here...
 
 	if (DARKPLACES || chaos)
 	{
@@ -1081,6 +1152,8 @@ void (vector ts) cam_CheckWaterJump =
 
 void() cam_waterjump =
 {
+	if (!self.ishuman) return; // no bots
+
 //	if (! self.flags & FL_WATERJUMP)
 	cam_CheckWaterJump (' 0 0 -8');
 	if (! self.flags & FL_WATERJUMP)

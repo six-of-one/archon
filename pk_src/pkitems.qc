@@ -54,6 +54,7 @@ void () SUB_regen =
 
 	self.model = self.mdl;		// restore original model
 	self.solid = SOLID_TRIGGER;	// allow it to be touched again
+	if (self.touch == SUB_Null) self.touch = painkeep_touch; // reset from sphere of A
 	if (self.noise4 != "")
 		sound (self, CHAN_VOICE, self.noise4, 1, ATTN_NORM);	// play respawn sound - doom / other resp sounds
 	else
@@ -595,7 +596,7 @@ void() painkeep_touch =
 	}
 
 // morphic
-	if (!self.mask_x & CB_HUMAN) // NOTE: CHECK: TDO: this means humans are not tested and CAN GET everything!
+	if (!other.mask_x & CB_HUMAN) // NOTE: CHECK: TDO: this means humans are not tested and CAN GET everything!
 	if (!(self.mask_x & other.mask_x) && (self.wad != "morph_cube")) // make sure morph can collect this
 	{
 		if (e) e.classname = "pk*bot";

@@ -38,6 +38,8 @@ void() morph_setup =
 // these morphs can always hook
 	MORPH_HOOK = CB_CHAOS + CB_CTHON + CB_ZOMBY + CB_SCOURGE; // + CB_GREMLIN;
 	MORPH_SARMOR = CB_SCOURGE + CB_GREMLIN + CB_IMP;
+
+	MONSTER_MASK = CB_M_ARMY + CB_M_FISH + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + CB_M_CTHON + CB_M_TARBABY + CB_M_SCOURGE + CB_M_SHUBS + CB_M_SVORE;
 };
 
 
@@ -45,6 +47,8 @@ void() morph_setup =
 void() morph_precache =
 {
 	m_precache_scourge();
+	m_precache_enforcer();
+	m_precache_shalrath();
 };
 
 
@@ -178,6 +182,57 @@ string(entity p1, float sel, string fp) polymorph_id =
 	sprint(p1,fp);
 	sprint(p1,s1);
 	return s2;
+};
+
+// id monsters from bit flag - for admin
+
+string(float mb, float mode) monster_id =
+{
+	local string s2;
+
+	s2 = "";
+
+	if (!mode)
+	{
+		if (mb == CB_M_ARMY) s2 = "Army Grunt";
+		if (mb == CB_M_FISH) s2 = "Fish";
+		if (mb == CB_M_KNIGHT) s2 = "Knight";
+		if (mb == CB_M_DOG) s2 = "Rabid Dog";
+		if (mb == CB_M_DEMON) s2 = "Fiend";
+		if (mb == CB_M_ENF) s2 = "Enforcer";
+		if (mb == CB_M_HKNIGHT) s2 = "Hell Knight";
+		if (mb == CB_M_OGRE) s2 = "Ogre";
+		if (mb == CB_M_SHALR) s2 = "Shalrath";
+		if (mb == CB_M_SHAMBL) s2 = "Shambler";
+		if (mb == CB_M_SCRAG) s2 = "Scragg";
+		if (mb == CB_M_ZOMBY) s2 = "Zomby";
+		if (mb == CB_M_CTHON) s2 = "Cthon";
+		if (mb == CB_M_TARBABY) s2 = "Spawn";
+		if (mb == CB_M_SCOURGE) s2 = "Scourge";
+		if (mb == CB_M_SHUBS) s2 = "Shub Niggurath";
+		if (mb == CB_M_SVORE) s2 = "Super Vore";
+	}
+	else
+	{
+		if (mb == CB_M_ARMY) s2 = "monster_army";
+		if (mb == CB_M_FISH) s2 = "monster_fish";
+		if (mb == CB_M_KNIGHT) s2 = "monster_knight";
+		if (mb == CB_M_DOG) s2 = "monster_dog";
+		if (mb == CB_M_DEMON) s2 = "monster_demon1";
+		if (mb == CB_M_ENF) s2 = "monster_enforcer";
+		if (mb == CB_M_HKNIGHT) s2 = "monster_hell_knight";
+		if (mb == CB_M_OGRE) s2 = "monster_ogre";
+		if (mb == CB_M_SHALR) s2 = "monster_shalrath";
+		if (mb == CB_M_SHAMBL) s2 = "monster_shambler";
+		if (mb == CB_M_SCRAG) s2 = "monster_wizard";
+		if (mb == CB_M_ZOMBY) s2 = "monster_zombie";
+		if (mb == CB_M_CTHON) s2 = "monster_boss";
+		if (mb == CB_M_TARBABY) s2 = "monster_tarbaby";
+		if (mb == CB_M_SCOURGE) s2 = "monster_scourge";
+		if (mb == CB_M_SHUBS) s2 = "monster_oldone";
+		if (mb == CB_M_SVORE) s2 = "monster_supervore";
+	}
+	return s2;	
 };
 
 /*
@@ -688,7 +743,11 @@ void() morph_impulse =
 		f = self.weapon;
 		if (f & self.builtin) pk_cycleObjects();
 
-		if (self.pk_currentitem == PK_IT_AXE) self.weapon = f; // go back to whatever
+		if (self.pk_currentitem == PK_IT_AXE)
+		{
+			self.weapon = f; // go back to whatever
+			self.weaponmodel = "";
+		}
 		else 
 		{
 			self.weapon = IT_AXE;
@@ -827,6 +886,7 @@ void(float cmd, float pls) polymorph_check =
 	//	if (cmd == IMP_MCHAOS) player_chaos_become(pls);
 		if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
+		else if (cmd == IMP_MENF) player_enforcer_become(pls);
 		else if (cmd == IMP_MANODEX) player_anode_become(pls);
 		else player_human_become(pls);
 	/*	else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
@@ -915,6 +975,91 @@ float(entity e, float hl) morph_heal =
 	}
 	return(0);													// health > .8 of MAX - no boost
 };
+
+
+entity random_monster_spawn;
+
+void() random_monster =
+{
+	C_MONSTER = cvar("sv_monster_rnd");
+	C2_MONSTER = cvar("sv_monster_rnd2");
+
+	if (self.classname != "random_mspawn")
+	{
+// turned off
+		if (!C_MONSTER) // && ! C2_MONSTER)
+		{
+// IDEA: get rid of all random monsters here?
+			if (random_monster_spawn)
+				remove(random_monster_spawn);
+			random_monster_spawn = world;
+			return;
+		}
+		else if (!random_monster_spawn) // turned on
+		{
+			random_monster_spawn = spawn();
+			random_monster_spawn.classname = "random_mspawn";
+		}
+		if (random_monster_spawn.classname != "random_mspawn")
+		{
+			remove(random_monster_spawn); // NOTE: this could be removing an important ent, maybe it should be qualified?
+			random_monster_spawn = spawn();
+			random_monster_spawn.classname = "random_mspawn";
+		}
+		random_monster_spawn.think = random_monster;
+		random_monster_spawn.nextthink = time + C_MONSTER_WAIT * random() + C_MONSTER_DEV * crandom();
+		return;
+	}
+
+	local float f;
+	local entity e;
+	self.nextthink = time + C_MONSTER_WAIT * random() + C_MONSTER_DEV * crandom();
+/*
+	if (!C_MONSTER)
+	{
+		remove(self);
+		random_monster_spawn = world;
+		return;
+	}	*/
+	if (!C_MONSTER) return; // whoops - nothing to do - this shouldnt happen...of course
+
+	f = 100;
+	if (self.cnt < 1) self.cnt = 1;
+	while ( (! self.cnt & C_MONSTER) && (f > 0) )
+	{
+		self.cnt = self.cnt * 2;
+		if (self.cnt > MONSTER_MASK) self.cnt = 1;
+		f = f - 1;
+	}
+	if (f <= 0)
+	{
+		if (WARNING) bprint("*** WARNING - random monster spawn found no bits - check sv_monster_rnd!\n");
+		return;
+	}
+
+	self = spawn();
+	self.wad = monster_id(self.cnt, TRUE); // get spawn func
+	
+	self.classname = "dyn_monster";
+	item_call(self.wad);
+	e = dyn_rndloc();
+	setorigin(self, e.origin);
+	item_eject(self, ' 200 200 360');
+
+	if (WARNING)
+	{
+		bprint("*** Random monster spawned: ");
+		bprint(self.wad);
+		if (e)
+		{
+			bprint(" near: ");
+			bprint(e.classname);
+		}
+		else
+			bprint(" on the map");
+		bprint("\n");
+	}
+}
 
 // NOTE: TDO: put back in volcano when added to mod
 
