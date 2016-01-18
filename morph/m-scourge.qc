@@ -573,10 +573,11 @@ void(float silent) player_scourge_become =
 //		self.armortype = ARM_SCRG; // norm armor convert to scourge armor FIX
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become a scourge.\n");
-//		player_scourge_impulse();
+		bprint(" has become "); // scourge
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
 //		morph_impulse();
-		}
+	}
 };

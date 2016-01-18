@@ -1839,7 +1839,7 @@ void(entity e, entity bq, float trm) BodyQueAsset =
 
 void (entity e) CopyToBodyQue =
 {
-	if ((e.model == null_string) || (e.model == "progs/null.mdl")) return;
+	if ((e.model == null_string) || (e.model == null_model)) return;
 
 	if (DEAD_BODYCOUNT < 1)
 	{

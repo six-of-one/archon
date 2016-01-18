@@ -112,7 +112,6 @@ void () PortalTouch =
 		e.think = PortalSaver;
 		e.nextthink = time + 0.2;
 		e.attack_finished = time + 10;
-		other.cam_x = other.cam_x | CAM_TELE; // for the short move
 	}
 
 	v = vlen(other.velocity); // IDEA: cap this?

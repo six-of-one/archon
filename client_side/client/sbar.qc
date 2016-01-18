@@ -515,9 +515,11 @@ if (ibar_flag)
 	woff = '0 0 0';
 	woff_y = weapons_offset;
 
-sb_align = SB_BOTTOM;
+sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
-// Archon power bar - note vid_conheight and vid_conwidth are very important for this - they need consulted or set
+/// Archon power bars
+
+//note vid_conheight and vid_conwidth are very important for this - they need consulted or set
 
 //	if (mcode == -665) archon_magic = 2; // using magic from archon pts - for now we use (-) volume
 	if (mcode == -666) archon_magic = 1; // chaos archon
@@ -529,8 +531,10 @@ sb_align = SB_BOTTOM;
 	if (volspec < 0) plevel = archon - fabs(volspec); // morph cube cost or power shots
 	if (plevel < 0) plevel = 0; // IMP: warn on - result - red # or such
 
-// IMP: diff colors for archons themselves, show possible spell usage at top of bar (reduction amount)
+// IMP: diff colors for archons themselves, 
+//shows spell usage at top of bar (reduction amount)
 
+// scale chaos level bar
 	chaos_level = '-412 0 0';
 	chaos_level_y = bar_scale(volspec);
 	
@@ -592,10 +596,10 @@ sb_align = SB_BOTTOM;
 			Sbar_DrawString(chaos_level + '20 5 0', ftos(volspec), ALPHA_FULL, '7 7 0','1 0.5 1');
 	}
 
-//	if (volspec < 0) volspec = 0; // done, 0 this cost - needed for morph HUD
+/// morph cube status here
 
 
-// runes
+/// runes area left
 	pwr_step = '-400 50 0';
 
 /*
@@ -622,6 +626,7 @@ sb_align = SB_BOTTOM;
 // armor, health in bar 2, 3
 // keys, artifacts in bar 3
 
+
 	wep_step = '55 -10 0'; // morph ID's
 	if (health > 999) wep_step = '65 -10 0';
 	if (ibar_flag == 1) wep_step = '35 -10 0';
@@ -632,6 +637,8 @@ sb_align = SB_BOTTOM;
 		DrawInventory(pwr_step + '0 -15 0' + woff, "gfx/sb_key2",IT_KEY2 , 0, ALPHA_FULL, 1.4);
 		if (cl_items & (IT_KEY1 | IT_KEY2)) pwr_step_y = pwr_step_y + 4;
 	}
+
+/// morph ident and weapon / spell description and special status items
 
 	if (ibar_flag)
 	{
@@ -1013,6 +1020,7 @@ sb_align = SB_BOTTOM;
 		DrawInventory('230 48 0', "gfx/sb_sigil4", 0, 256, ALPHA_MEDIUM, 1.5);
 	}
 
+/// spells
 	if (archon_magic)
 	{
 		if (explodeshot == -6)
@@ -1063,7 +1071,10 @@ sb_align = SB_BOTTOM;
 					if (nails == 3)
 					{
 						Sbar_DrawString('260 40 0' + woff, "Polymorph self", ALPHA_FULL, '7 7 0','1 0.5 0.5');
-						instr = "*FIRE - cast polymorph to creature";
+						if (explodeshot == 24) // no creature cost can be this val
+							instr = "*FIRE - start polymorph selection";
+						else
+							instr = "*FIRE - cast polymorph spell";
 					}
 				}
 				DrawInventoryAmmo('372 50 0', "gfx/reticle.spr_0", ALPHA_FULL, 0.05);
@@ -1142,7 +1153,7 @@ sb_align = SB_BOTTOM;
 			Sbar_DrawString(pwr_step + '22 -5 0' + woff, "FIRE - chaos bolt attack", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			cnt_left = pwr_step_y;
 			pwr_step_y = pwr_step_y + 14;
-			Sbar_DrawString(pwr_step + '22 -5 0' + woff, "ALT_FIRE - chaos beam", ALPHA_FULL, '7 7 0','1 0.5 0.5');
+			if (volspec > 2000) Sbar_DrawString(pwr_step + '22 -5 0' + woff, "ALT_FIRE - chaos beam", ALPHA_FULL, '7 7 0','1 0.5 0.5');
 			DrawInventoryAmmo('362 50 0', "gfx/inv_chaos_shot", ALPHA_FULL, 0.1);
 		}
 
@@ -1155,6 +1166,8 @@ sb_align = SB_BOTTOM_RIGHT;
 
 // std inventory will maintain a 20 unit step, blocked, new inventory will increment where needed
 // some items are on position swap out - laser for sng, etc.
+
+/// weapon area right
 	wep_step = '290 140 0';
 
 	if (bullets > 0)

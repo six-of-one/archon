@@ -3,8 +3,6 @@
  * file: motd.qc
  *
  */
-void() extraWeaponsDisplay;
-
 
 // ConnectMessage - display a message on connect.
 void() connectmessage =
@@ -19,7 +17,6 @@ void() connectmessage =
 //	Line5 = "\nsee:           \nhttp://www.moddb.com/downloads/";
 	Line7 = "\n              for details";
 //	\b_-=\b* \bC\bataboligne\n
-//	\bpainkeep-source-update\b
 
 if (self.classname == "player" && self.class_select != "class_bot")
 {
@@ -142,6 +139,7 @@ void() updateStatusDisplay =
 	if (inHubMap) // Cataboligne - 8.22.9 - custom hubs can cause this message on non pk / non hub maps
 	if (self.msgcount <= MOTDTIME)
 	{
+		if (!self.hubstartupmessage) self.hubstartupmessage = time + 15;
 	  connectmessage();
 	  return;
 	}
@@ -174,7 +172,6 @@ void() updateStatusDisplay =
 		return;
 	}
 
-//	self.laststattime = time + 10;
 
 	if (inHubMap)
 	{
@@ -182,149 +179,12 @@ void() updateStatusDisplay =
 	  
 		// display the HubMap data...
 		hub_control_status();
-//		self.aflag = time + 2;
 	}
 	else
 	{
 		self.laststattime = time + 10;
-
-	  if (self.pk_items & PK_IT_EXTRADISP)
-	  {
-			extraWeaponsDisplay();
-	  }
 	}
 };
-
-
-
-void() extraWeaponsDisplay =
-{
-	// print the current inventory items out.
-	local	float		timelimit;
-	local	float		fraglimit;
-
-	timelimit = cvar("timelimit") * 60;
-	fraglimit = cvar("fraglimit");
-
-	msg_entity = self;
-	WriteByte(MSG_ONE, SVC_CENTERPRINT);
-
-	if (fraglimit)
-	{
-	  local entity pl;
-	  local float maxfrag;
-
-	  pl = find(world, classname, "player");
-	  maxfrag = 0;
-	  while (pl != world)
-	  {
-	    if (pl.disconnectPlayer == 0)
-	    {
-	      if (pl.frags > maxfrag)
-	      {
-	        maxfrag = pl.frags;
-	      }
-	    }
-
-	    pl = find(pl, classname, "player");
-	  }
-
-	  // '\n\n\n\n\n\n\n\n\n\nFrag Count: '
-	  WriteB3(MSG_ONE, 657930);
-	  WriteB3(MSG_ONE, 657930);
-	  WriteB3(MSG_ONE, 657930);
-	  WriteB3(MSG_ONE, 7489034);
-	  WriteB3(MSG_ONE, 2123617);
-	  WriteB3(MSG_ONE, 7696195);
-	  WriteB3(MSG_ONE, 3830894);
-	  WriteB3(MSG_ONE, 32);
-
-	  WriteBFloat(MSG_ONE, maxfrag);
-
-	  // '/'
-	  WriteB3(MSG_ONE, 2109216);
-
-	  WriteBFloat(MSG_ONE, fraglimit);
-	}
-	else
-	{
-	  // '\n\n\n\n\n\n\n\n\n\n                 '
-	  WriteB3(MSG_ONE, 657930);
-	  WriteB3(MSG_ONE, 657930);
-	  WriteB3(MSG_ONE, 657930);
-	  WriteB3(MSG_ONE, 2105354);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	}
-
-	if (timelimit)
-	{
-	  local float timemins, timedef;
-
-	  timemins = 0;
-	  if (timelimit > time)
-	  {
-	    timedef = (timelimit - time);
-	    timemins = timedef / 60;
-	    timemins = floor(timemins);
-	    timedef = (timelimit - time) - (timemins * 60);
-	  }
-	  else
-	  {
-	    timedef = 0;
-	  }
-
-	  // '    Time Left:'
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 6902816);
-	  WriteB3(MSG_ONE, 2123117);
-	  WriteB3(MSG_ONE, 6710604);
-	  WriteB3(MSG_ONE, 14964);
-
-	  if (timemins < 10)
-	  {
-	    // ' 0'
-	    WriteB3(MSG_ONE, 12320);
-	  }
-	  else
-	  {
-	    // ' '
-	    WriteB3(MSG_ONE, 32);
-	  }
-
-	  WriteBFloat(MSG_ONE, timemins);
-
-	  if (timedef < 10)
-	  {
-	    // ':0'
-	    WriteB3(MSG_ONE, 12346);
-	  }
-	  else
-	  {
-	    // ':'
-	    WriteB3(MSG_ONE, 58);
-	  }
-
-	  WriteBFloat(MSG_ONE, timedef);
-	}
-	else
-	{
-	  // '                     '
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	  WriteB3(MSG_ONE, 2105376);
-	}
-
-	WriteByte(MSG_ONE, 0);
-};
-
 
 
 

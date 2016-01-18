@@ -334,15 +334,18 @@ void(float silent) player_shambler_become = {
 //	else
 //		setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
 	self.view_ofs = '0 0 54'; // raised by 22
-	self.cam_z = 0.34;
+
 	self.health = self.health * MSHAMBLR_HEALMOD / self.health_modifier;
 	self.health_modifier = MSHAMBLR_HEALMOD;
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become a shambler.\n");
-		}
+		bprint(" has become "); // shambler
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
+//		morph_impulse();
+	}
 };

@@ -114,7 +114,6 @@ float monster_rnd_cnt; // random monsters on level
 float MONSTER_NOWAY	= 1; // if true kill monsters out of noway bounds - excludes flyers
 
 void() lavaball_shot;
-void(entity e) chaos_mdlsize;
 
 // monster bit flags - still use mask_x
 void() random_monster;
@@ -297,13 +296,17 @@ float CB_CYBER						= 8388608;
 float IMP_MIN						= 6;
 float IMP_MAX						= 99;
 
+// cant be 1, 2, 4
+
 float IMP_MCHAOS					= 6;	// string STI_MCHAOS			= "impulse 6";
 float IMP_MORDER					= 7;	// string STI_MORDER			= "impulse 7";
+
+// cant be 8
+
 //Techs:
 float IMP_MHUMAN					= 12;	// string STI_MHUMAN			= "impulse 12"; // NOTE: char_q - standard quake guy
 
 //.float char_mode; // genre of player character - set by selection to vars morph states
-// cant be 1, 2, 4, 8, 16, 32
 float CHAR_W						= 10;
 float CHAR_D						= 11;
 float CHAR_Q						= 12;
@@ -311,6 +314,9 @@ float CHAR_PK						= 13;
 float CHAR_Q2						= 14;
 float CHAR_Q3						= 15;
 
+// cant be 16, 32
+
+//float IMP_MCTHONTALL				= 33;	// for bomb -> cthon & back
 
 float IMP_MSPECIAL				= 62;	// string STI_MSPECIAL		= "impulse 62";
 float IMP_MTECH					= 63;	// string STI_MTECH			= "impulse 63";
@@ -324,7 +330,6 @@ float IMP_MWRAITH					= 70;	// string STI_MWRAITH		= "impulse 70";
 float IMP_MTHAM					= 71;	// string STI_MTHAM			= "impulse 71";
 float IMP_MDRACON 				= 72;	// string STI_MDRACON		= "impulse 72";
 float IMP_MTHIEF					= 73;	// string STI_MTHIEF			= "impulse 73";
-float IMP_MJUMP					= 81; // jump over undefined morph states in select
 //Quake 2:
 float IMP_MGUNNEY			 		= 81;	// string STI_MGUNNEY		= "impulse 81";
 float IMP_MTANK	 				= 82;	// string STI_MTANK			= "impulse 82";
@@ -349,6 +354,8 @@ float IMP_MGREMLIN_F				= 98;	// string STI_MGREMLIN		= "impulse 98"; // flying 
 float IMP_MGREMLIN_L				= 99;	// landlubber gremlin
 float IMP_MVOMIS					= 100;// string STI_MCTHON			= "impulse 95";
 
+// cant use 128, 256
+
 // head skin map
 
 float HEADSKN_Q					= 0;
@@ -370,6 +377,7 @@ void(float silent) player_wizard_become;
 void(float silent) player_ogre_become;
 void(float silent) player_shambler_become;
 void(float silent) player_lavablob_become;
+void() player_lavacthon_become;
 void(float silent) player_gremlin_become;
 
 //morph health modifiers            original code
@@ -416,13 +424,20 @@ float FIREBALL_WEP_VEL			= 300;
 string DEF_MORPH_DEATH1			= " was killed by ";
 string DEF_MORPH_DEATH2			= " some way, nobody knows for sure\n";
 
-// gremlin
+// archon
 
+float CHAOS_BEAM_MIN;//		= 1000;
+
+void(entity e) de_archon;
+void() de_archon_thk;
+void(entity cent, float pl) chaos_morph_chg;
 void(vector org, float rn, float pr, float col) chaos_particle;
 float(entity e) IS_CHAOS;
 void() chaos_morph_chgthk;
+void(entity e) chaos_mdlsize;
 
 // gremlin
+
 float ST_CLAW						= 1;
 float ST_BITE						= 2;
 float GREM_AASPAWN				= FALSE; // if true always allow monster gremlin to spawn in water
@@ -443,7 +458,6 @@ void(entity e) lavacthon_blobme;
 void() lavablob_slimeflare;
 float LEVEL_CTHON					= TRUE; // bring cthon up to lava level found in house of cthon
 float hoc_level					= 16; // default house of cthon level
-float NO_TFOG						= -2222; // no telefog when transforming
 float(entity e) IS_LAVA;
 
 //scourges

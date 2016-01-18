@@ -808,15 +808,17 @@ void(float silent) player_gremlin_become =
 */
 
 	if (self.armortype == 0) //gremlin has some base armor on create
-		{
+	{
 		player_scourge_armor(self, 80, GIVEARMOR); 
-		}
+	}
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become a gremlin.\n");
-		}
-
+		bprint(" has become "); // gremlin
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
+//		morph_impulse();
+	}
 	if (self.map == "spawn") self.frame = $spawn1;
 };

@@ -88,6 +88,8 @@ void(entity p1) morph_print =
 stuffcmd(p1,"scr_centertime 240\n"); // incase admin_centertime is not
 stuffcmd(self, "\ncon_notify 4\n"); // for this output
 p1.eweapon.archon = 0;
+p1.mcode = p1.eweapon.mcode;
+
 if (p1.cnt < 0)
 	{
 		newmis = spawn();

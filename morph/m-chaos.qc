@@ -77,7 +77,6 @@ float CHAOS_DEC					= -7; // amount used firing beam
 float CHAOS_ABSOLUTE				= 256000; // ultimate max chaos level - if this is reached, total chaos ensues
 float MAX_CHAOS_LVL;//			= 16000;// max chaos level - when exceeded chaos star burst happens.
 float MIN_CHAOS_DEC;//			= 3000; // min burst needs to dec
-float CHAOS_BEAM_MIN;//		= 1000;
 float CHAOS_BEAM_GAIN;					// beam min added to this - beam locked out after every up
 float CHAOS_MELO_MIN;//		= 60; // min lockout time
 
@@ -194,41 +193,43 @@ string(entity e) chaos_bomb_rndmdl;
 void(entity cent, float pl) chaos_morph_chg =
 {
 	local entity sv;
-	local float sf;
+//	local float sf;
 
 	sv = self;
 	if (cent != world) self = cent;
-	if (!(pl > IMP_MIN && pl < IMP_MAX)) pl = self.state;
+	if (!(pl > IMP_MIN && pl < IMP_MAX)) pl = self.height;
 
 	if (pl == self.morphy) // already there
 	{
 		self = sv;
 		return;
 	}
-	sf = self.volume;
+//	sf = self.volume;
 	polymorph_check(pl, 0); // IDEA - small chance of taking another form?
-	self.volume = sf;
-	sf = 25;
+//	self.volume = sf;
+//	sf = 25;
 	if (IS_CHAOS(self)) 
 		{
 		if (pl == self.state) { self.aflag = FL_MELO; self.wait = time + CHAOS_MELO_MIN + 30 * random(); }
-		sf = 10 + random() * 35;
+//		sf = 10 + random() * 35;
 		}
-	sf = sf + morph_heal(self, sf);
-	if (pl == self.state)
-		if (self.health < (self.max_health * self.health_modifier * 0.5))
-			T_Heal(self, sf,0);
+//	sf = sf + morph_heal(self, sf);
+//	if (pl == self.state)
+//		if (self.health < (self.max_health * self.health_modifier * 0.5))
+//			T_Heal(self, sf,0);
 	self = sv;
 };
 
 // fn(chaos_morph_chgthk) - think to change morph - restores chaos from other forms
 
-/// chaos_poly = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", "", SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
+/// self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", "", SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
 
 void() chaos_morph_chgthk =
 {
-	if (self.owner.model != "progs/null.mdl" && self.owner.model != null_string)
+	if (self.owner.model != null_model && self.owner.model != null_string)
 		chaos_morph_chg(self.owner, 0);
+	if (self.owner.goalentity == self) self.owner.goalentity = world;
+
 //	if (IS_CHAOS(self.owner)) chaos_poly = world;
 	remove(self);
 };
@@ -243,13 +244,11 @@ void(entity e, string md) chaos_flycheck =
 
 	mt = MOVETYPE_WALK;
 
-//	if (!IS_CHAOS(e)) return; // do we need this check??
 	if (md == "progs/teleport.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/chaos_b2.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/chaos_b3.1col.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/chaos_b3.2rot.mdl") mt = MOVETYPE_FLY;
 	if (md == "progs/chaos_b3.3rsm.mdl") mt = MOVETYPE_FLY;
-//	if (md == null_string) mt = MOVETYPE_FLY;
 
 // cheat a little bit - this should be down below
 	if (mt == MOVETYPE_FLY)
@@ -266,8 +265,8 @@ void(entity e, string md) chaos_base_mdl =
 {
 	local string md2;
 
-	if (e.morphy != IMP_MCHAOS && e.state == IMP_MCHAOS)
-		chaos_morph_chg(e, 0); // back to our own true morph, restores model - (! IS_CHAOS_PURE(self))
+	if (e.morphy != IMP_MCHAOS && e.height == IMP_MCHAOS)
+		chaos_morph_chg(e, 0); // back to our own true morph, restores model
 	else
 	{
 		if (md == null_string) md2 = "progs/chaos_b2.mdl";
@@ -334,8 +333,8 @@ string() chaos_mdlsel =
 	else if (ci_md == "maps/b_rock0.bsp")			{ ci_md = "maps/b_exbox2.bsp";				s1 = "explode box"; }
 	else if (ci_md == "maps/b_exbox2.bsp")		{ ci_md = "progs/g_gas.mdl";						s1 = "gas cylinders"; }
 //	else if (ci_md == "progs/g_gas.mdl")				{ ci_md = "progs/drycel6.mdl";				s1 = "batterys"; }
-	else if (ci_md == "progs/g_gas.mdl")				{ ci_md = "progs/b_batt1.mdl";				s1 = "batterys"; }
-	else if (ci_md == "progs/b_batt1.mdl")		{ ci_md = "progs/quaddama.mdl";				s1 = "quad"; }
+	else if (ci_md == "progs/g_gas.mdl")				{ ci_md = "maps/b_batt1.mdl";				s1 = "batterys"; }
+	else if (ci_md == "maps/b_batt1.mdl")		{ ci_md = "progs/quaddama.mdl";				s1 = "quad"; }
 	else if (ci_md == "progs/quaddama.mdl")		{ ci_md = "progs/g_rock2.mdl";				s1 = "rocket launcher"; }
 	else if (ci_md == "progs/g_rock2.mdl")		{ ci_md = "maps/b_bh100.bsp";					s1 = "health box"; }
 	else if (ci_md == "maps/b_bh100.bsp")			{ ci_md = "progs/chaos_b2.mdl";				s1 = "natural state"; }
@@ -349,7 +348,7 @@ string() chaos_mdlsel =
 
 float(string md) chaos_mdlchk =
 {
-	if (md == "progs/null.mdl") return FALSE; // dead state
+	if (md == null_model) return FALSE; // dead state
 	if (md == "progs/chaos_b2.mdl") return FALSE;
 	if (md == "progs/chaos_b3.1col.mdl") return FALSE;
 	if (md == "progs/chaos_b3.2rot.mdl") return FALSE;
@@ -373,7 +372,7 @@ void() chaos_mdlchg =
 			chaos_flycheck(self.owner, self.owner.model);
 			self.owner.modelindex_morph=self.owner.modelindex;
 			if (ci_md != "progs/chaos_b2.mdl")
-				chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
+				chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self.owner, world);
 			}
 		}
 	remove(self);
@@ -623,6 +622,11 @@ void() player_chaos_stand = [ $chaos1, player_stand1 ]
 	self.nextthink = time + 0.2;
 	rdir = 0;
  
+	if (self.archon < 0)
+	{
+		de_archon(self);
+		return;
+	}
 	if (chaos_move_effect()) return;
 	else if (self.walkframe > 6) self.walkframe = 5;
 	else if (self.walkframe < 0) self.walkframe = 1;
@@ -641,6 +645,11 @@ void() player_chaos_run = [ $chaos1, player_run ]
 	self.nextthink = time + 0.1;
 	rdir = 0;
 
+	if (self.archon < 0)
+	{
+		de_archon(self);
+		return;
+	}
 	if (chaos_move_effect()) return;
 	else if(self.walkframe > 6) self.walkframe = 5;
 	else if(self.walkframe < 0) self.walkframe = 1;
@@ -716,7 +725,7 @@ void() cbolt_touch =
 	}
 
 	if (self.classname != "calderashard")
-	if (other.state == IMP_MCHAOS || other.morphy == IMP_MCHAOS) return; //IS_CHAOS(other)
+	if (other.height == IMP_MCHAOS || other.morphy == IMP_MCHAOS) return; //IS_CHAOS(other)
 
 // hit something that bleeds
 	if (other.takedamage)
@@ -879,7 +888,7 @@ void() player_chaos_fade11 = [ $chaosfade5,   player_chaos_fade12  ] { };
 void() player_chaos_fade12 = [ $chaosfade6,   player_chaos_fade13  ] { };
 void() player_chaos_fade13 = [ $chaosfade7,   player_chaos_fade14  ] { };
 void() player_chaos_fade14 = [ $chaosfade8,   player_chaos_fade15  ] { };//if (random() < 0.45) VolcanoQuake(self, "chaos fade"); };
-void() player_chaos_fade15 = [ $chaosfade8,   SUB_Nop  ] { setmodel(self,"progs/null.mdl"); }; // IDEA: pop sound?
+void() player_chaos_fade15 = [ $chaosfade8,   SUB_Nop  ] { setmodel(self,null_model); }; // IDEA: pop sound?
 // explode then fade
 void() player_chaos_fade16 = [ $chaosfade9,   player_chaos_fade17  ] { };
 void() player_chaos_fade17 = [ $chaosfade10,   player_chaos_fade18  ] { };
@@ -1117,7 +1126,7 @@ void() chaos_item =
 			else if (r1 == 8) ci_md = "progs/end2.mdl";
 			else if (r1 == 9) ci_md = "progs/end3.mdl";
 			else if (r1 == 10) ci_md = "progs/end4.mdl";
-			else if (r1 == 11) {ci_md = "progs/b_batt1.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
+			else if (r1 == 11) {ci_md = "maps/b_batt1.mdl"; ci_fr = CI_EXPL_BASE_DMG + random() * 30; }
 			else if (r1 == 12) ci_md = "progs/zom_gib.mdl";
 			else if (r1 == 13) ci_md = "progs/s_bubble.spr";
 			else if (r1 == 14) ci_md = "progs/eyes.mdl";
@@ -1270,11 +1279,11 @@ float FL_FPART					= 65536; // particle field
 */
 
 float fwalk_dist					= 12; // field move velocity max | rnd jump origin additive
-float lf_per							= 0.06; // chance per sec of light field
-float pf_per							= 0.05; // chance per sec of particle field
-float pf_len							= 5.0; // avg field 5 secs
-float pf_dev							= 1.5; // +- 1.5
-float pf_exc							= 17.0; // exceptional fields are longer
+float lf_per						= 0.06; // chance per sec of light field
+float pf_per						= 0.05; // chance per sec of particle field
+float pf_len						= 5.0; // avg field 5 secs
+float pf_dev						= 1.5; // +- 1.5
+float pf_exc						= 17.0; // exceptional fields are longer
 float particle_fields;
 
 float(float ad) fieldadd = // field count controls
@@ -1340,7 +1349,7 @@ void(vector org) spawn_light_field =
 {
 //	if (tenebrae) if (chaos_dynlit > 3) return;
 	chaos_dynlit = chaos_dynlit + 1;
-	newmis = chaos_spawn(0, 0, FL_FLIT, 0, org, v0, v0, v0, v0, "chaos_field", "progs/null.mdl", SUB_Null, 0.1, chaos_field_thk, SUB_Null, self, world);
+	newmis = chaos_spawn(0, 0, FL_FLIT, 0, org, v0, v0, v0, v0, "chaos_field", null_model, SUB_Null, 0.1, chaos_field_thk, SUB_Null, self, world);
 	newmis.wait = time + pf_len + crandom() * pf_dev;
 	if (random() < 0.5) newmis.aflag = FL_FJUMP;
 	else if (random() < 0.5) newmis.aflag = FL_FFLY;
@@ -1412,13 +1421,13 @@ puddle (lava + acid)
 
 */
 string beam_hum;
-float CBURST					= 0.04; // chance of chaos burst per sec
-float CBQUAKE					= 0.05; // chance of chaos beam quake
-float CBTELEP					= 0.03; // chance of chaos beam teleport
-float CBEXCH					= 0.05; // chance of chaos beam exchange
-float CBDROPI					= 0.02; // chance of chaos beam drop item - done in chaos_item for now
-float CBXFORM					= 0.03; // chance of chaos beam transform
-float CBSUMMON				= 0.015; // chance of chaos beam summon monster
+float CBURST						= 0.04; // chance of chaos burst per sec
+float CBQUAKE						= 0.05; // chance of chaos beam quake
+float CBTELEP						= 0.03; // chance of chaos beam teleport
+float CBEXCH						= 0.05; // chance of chaos beam exchange
+float CBDROPI						= 0.02; // chance of chaos beam drop item - done in chaos_item for now
+float CBXFORM						= 0.03; // chance of chaos beam transform
+float CBSUMMON						= 0.015; // chance of chaos beam summon monster
 
 entity x3;
 
@@ -1748,21 +1757,43 @@ void() poly_self =
 	self = spawn();
 	morph_cube();
 	self.mask_x = CB_DEMON + CB_OGRE + CB_SHALR + CB_SCRAG + CB_ZOMBY + CB_CTHON + CB_GREMLIN + CB_SCOURGE;
+	other.state = 0;
 	self.model = null_string;
-	self.nextthink = 0;
+	self.wad = "morph_cube";
+	self.mcode = -666; // use archon magic vector in HUD - still will display cube info
 	cube_touch();
+	self.nextthink = 0;
 	self = other;
 	self.archon = self.archon - self.pk_explode_ammo;
 };
 
 // setup spells
 
+void() clear_reticle =
+{
+	if (self.bolt_targetNext)
+	if (self.bolt_targetNext.model == "gfx/reticle.spr")
+	{
+		remove(self.bolt_targetNext); // IMP: fade remove this later
+		self.bolt_targetNext = world;
+	}
+
+	if (self.bolt_target)
+		archon_target_clear(self.bolt_target);
+
+	if (self.enemy)
+		archon_target_clear(self.enemy);
+};
+
 // pkplus_actorammo - targeting for server & HUD
-// 	0 - no reticles or targets - spell just fires
-//		1 - free roaming reticle
-//		2 - target(s) needed on this spell
-//			- if bit 2 is set, normal targeting will occur - this will always show potential alternates
-//		4 - spell uses 2 targets - for HUD to display both
+// 		0 - no reticles or targets - spell just fires
+//			1 - free roaming reticle
+//			2 - target(s) needed on this spell
+//				- if bit 2 is set, normal targeting will occur - this will always show potential alternates
+//			4 - spell uses 2 targets - for HUD to display both
+//			8 - spell target must be a player / bot
+//		 32 - spell target must be a monster
+
 
 // 65536 - spell reset req.
 
@@ -1770,6 +1801,7 @@ void() spell_target =
 {
 	self.pk_explode_ammo = 0;
 	self.pkplus_actorammo = 0;
+	self.cnt = self.pkplus_actorammo & 2; // reticle controls
 	if (self.weapon == IT_SHOTGUN)
 	{
 		if (self.ammo_shells == 3) { self.pk_explode_ammo = 15; self.pkplus_actorammo = 3; self.th_melee = uni_teleport; }
@@ -1798,9 +1830,11 @@ void() spell_target =
 	}
 	if (self.weapon == IT_SUPER_SHOTGUN)
 	{
-		if (self.ammo_nails == 3) { self.pk_explode_ammo = 25; self.pkplus_actorammo = 0; self.th_melee = poly_self; }
+		if (self.ammo_nails == 3) { self.pk_explode_ammo = 24; self.pkplus_actorammo = 0; self.th_melee = poly_self; }
 	}
 
+	if (self.pkplus_actorammo == 0) // changed - remove existing reitcles
+		clear_reticle();
 	self.bolt_targetTimeout = time + 30;
 	self.mcode = -666; // archon casting spell
 	self.th_missile = spell_target;
@@ -1958,7 +1992,7 @@ if (self.delay < 0 || self.delay > LT_CHAOS) self.delay = 0; // bounds on bolt m
 		if (self.lastweapon & IT_LIGHTNING)
 		{
 			if (random() < 0.5) sd = "lasercannon/laserg.wav";
-			HIP_LaunchLaser(self.origin + ' 0 0 4', aim(self, 10000), rint(random()), sd); //gun_aim(self, v0), rint(random()), sd);
+			HIP_LaunchLaser(self.origin + ' 0 0 4', v_forward, rint(random()), sd); //gun_aim(self, v0), rint(random()), sd);
 		}
 		else
 			fire_missile(LASERCAN_VEL, MOVETYPE_FLYMISSILE, 0, RM_SKY | PF_LAVA, self.origin + ' 0 0 4', ' 0 0 0', "laser", "progs/laser_m.mdl", sd, Laser_Blast, 6, SUB_Remove, Laser_Blast);
@@ -2005,18 +2039,7 @@ void() clear_target =
 
 void() clear_spell =
 {
-	if (self.bolt_targetNext)
-	if (self.bolt_targetNext.model == "gfx/reticle.spr")
-	{
-		remove(self.bolt_targetNext); // IMP: fade remove this later
-		self.bolt_targetNext = world;
-	}
-
-	if (self.bolt_target)
-		archon_target_clear(self.bolt_target);
-
-	if (self.enemy)
-		archon_target_clear(self.enemy);
+	clear_reticle();
 
 	self.enemy = self.bolt_target = world;
 	if (self.pk_explode_ammo > 0) self.pk_explode_ammo = -6; // send cancel code to HUD
@@ -2038,6 +2061,11 @@ void() clear_spell =
 void() archon_target =
 {
 	local float f;
+
+	if (self.bolt_target != self) // Archons can teleport self
+	if (self.bolt_target) setorigin(self.bolt_target.bolt_target, self.bolt_target.origin + self.bolt_target.bolt_target.view_ofs);
+	if (self.enemy) setorigin(self.enemy.bolt_target, self.enemy.origin + self.enemy.bolt_target.view_ofs);
+
 // 3000 - traceline targeting range
 	traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + v_forward * 3000, FALSE, self);
 
@@ -2326,6 +2354,10 @@ void(float silent) player_chaos_become =
 	self.items = self.items | self.builtin;
 	self.weapon = IT_AXE;
 	self.pk_currentitem = PK_IT_AXE;
+// spell init
+	self.ammo_shells = 7;
+	self.ammo_nails = 3;
+
 	self.pk_explode_ammo = 0; // spell cost
 	self.th_missile = SUB_Null; // spell target
 	clear_spell();
@@ -2336,9 +2368,8 @@ void(float silent) player_chaos_become =
 	self.movetype = MOVETYPE_FLY;
 	self.aflag = 0; // chaos form states
 	self.view_ofs = ' 0 0 4';
-	self.cam_z = 0.2;  //cam
 
-	self.health = self.health * MCHAOS_HEALMOD / self.health_modifier;
+	self.health = 100 * MCHAOS_HEALMOD + 10 * crandom() * 3.14159265;
 	self.health_modifier = MCHAOS_HEALMOD;
 
 	makevectors(self.v_angle);
@@ -2349,10 +2380,17 @@ void(float silent) player_chaos_become =
 	if (!silent) // silent for starting new level as this beasty
 	{
 		bprint(self.netname);
-		bprint(" has become \bChaos\n"); 
+		bprint(" has become ");
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
+//		morph_impulse();
 	}
+
 	self.skin = 1;
 };
+
+
+
 
 
 

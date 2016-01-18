@@ -383,7 +383,7 @@ void(float silent) player_hknight_become =
 	self.noise2 = "hknight/pain1.wav";
 	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 34'; // raised 12
-	self.cam_z = 0.1;
+
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
@@ -395,9 +395,11 @@ void(float silent) player_hknight_become =
 
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become a hell knight.\n");
+		bprint(" has become "); // hell knight
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
 		player_hknight_impulse();
 		if (self.armortype == 0) //knight has some base armor
 			{
@@ -405,5 +407,5 @@ void(float silent) player_hknight_become =
 			}
 		else
 			self.armortype = ARM_SCRG;
-		}
+	}
 };

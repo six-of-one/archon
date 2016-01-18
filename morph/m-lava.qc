@@ -480,6 +480,7 @@ void() cthonme =
 			self.archon = self.archon + self.volume;
 // emerge
 		player_lavacthon_become();
+//		polymorph_check(IMP_MCTHONTALL, 0);
 	}
 	else
 		sprint(self, "You must be in lava to emerge\n");
@@ -633,7 +634,6 @@ void(float silent) player_lavablob_become =
 	self._jump2=	lavablob_jump1;
 	self._attack=player_lavablob_attack;
 	self._impulse=player_lavablob_impulse;
-//	self._can_get_p=SUB_False;
 	self._killmsg=player_lavablob_killmsg;
 	self._killmsg2=player_lavablob_killmsg2;
 
@@ -657,12 +657,12 @@ void(float silent) player_lavablob_become =
 //	self.noise2 = "enforcer/pain1.wav";
 	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 4';
-	self.cam_z = 0.1;  //cam
 
 	setsize (self, '-16 -16 -24', '16 16 20');
 	self.health = self.health * MLAVAB_HEALMOD / self.health_modifier;
 	self.health_modifier = MLAVAB_HEALMOD;
-	if (silent != NO_TFOG) // not coming from cthon form
+
+if (silent != -666) // NO_TFOG - not coming from cthon form
 	{
 		makevectors(self.v_angle);
 		spawn_tfog(self.origin + 20 * v_forward);
@@ -673,9 +673,11 @@ void(float silent) player_lavablob_become =
 	if (!silent) // silent for starting new level as this beasty
 	{
 		bprint(self.netname);
-		bprint(" has become a Lava Bomb.\n"); // owwieee! it burnsies...
+		bprint(" has become "); // Lava Bomb
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
+//		morph_impulse();
 	}
-//		player_stand1(); // in case we came from cthon fire frames
 };
 
 

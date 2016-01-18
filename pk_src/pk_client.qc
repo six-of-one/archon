@@ -32,18 +32,13 @@ void() SetNewParms_PK =
 	parm4 = -25;
 	parm3 = parm5 = parm6 = parm7 = parm9 = 0;
 	parm8 = 1;
-	parm16 = MOTDTIME + 1;
 
 	parm10 = parm11 = parm12 = 0;
-	if(self.pk_items & PK_IT_EXTRADISP)
-	{
-		parm16 = parm16 | PK_IT_EXTRADISP;
-	}
 
 // Cataboligne 2.18.11 - set defaults code
 	parm6 = -6;
 
-	cam_parms(2);
+//	cam_parms(2);
 };
 
 // called from engine - saves off pk parms for level change
@@ -54,20 +49,18 @@ void() SetChangeParms =
 
 //		q10-_SetChangeParms();
 
-// Cataboligne 9.11.3 purify - chase cam - parm14
-	cam_parms(0);
+//	cam_parms(0);
 
 	if (self.class_select == "class_player")
 	{
 		parm15 = self.morphy;
-		if (self.mask_x & MORPH_ARCHON) parm15 = self.height; // true archon form
+		if ((self.height == IMP_MCHAOS) || (self.height == IMP_MORDER)) parm15 = self.height; // true archon form
 	}
 
 	if (self.health <= 0 || self.classname == OBSERVER) // Cataboligne - 5.3.10 - fix level change issue when in dead observer or admin observer
 	{
 		morph_clearparms(self, TRUE);
 		SetNewParms_PK();
-		parm16 = parm16 | 256; // Cataboligne - 8.22.9 - pk orig oper
 		return ;
 	}
 
@@ -113,7 +106,7 @@ void() SetChangeParms =
 	parm7 = self.ammo_cells;
 	parm8 = self.weapon;
 	parm9 = (self.armortype * 100) + (self.armorvalue * 256);
-	parm10 = parm11 = parm16 = 0;
+	parm10 = parm11 = 0;
 
 	parm10 = PK_IT_AXE | self.pk_items;
 
@@ -127,11 +120,9 @@ void() SetChangeParms =
 	 + ((self.pkplus_egoammo & 3) * 4096) + ((self.pkplus_tombammo & 3) * 16384) + ((self.pkplus_actorammo & 3) * 65536) + ((self.pkplus_phoneammo & 3) * 262144);
 // end pk_art
 
-	// do hub message.
-	parm16 = self.msgcount | 256; // | (self.pk_items & PK_IT_EXTRADISP);
 };
 
-// called from vars - clears pk parms
+// called from vars - clears pk parms - for now only bots call this
 
 void() SetNewParms =
 {
@@ -148,21 +139,13 @@ void() SetNewParms =
 	parm9 = 0;
 
 	parm10 = parm11 = parm12 = 0;
-// do hub message.
-	parm16 = 256;
 
-	if (pk_flags & PK_TP_STATUSON)
-	{
-		parm16 = parm16 | PK_IT_EXTRADISP;
-	}
-
-	parm15 = -1;
+	parm15 = -1; // note: clears morph states!
 
 // Cataboligne 2.18.11 - set defaults code
 	parm6 = -6; // no rockets anyway, so we use this to call default func
 
-// Cataboligne 9.11.3 purify - chase cam
-	cam_parms(2);
+//	cam_parms(2);
 };
 
 // called from PCIS - restores pk parms on new level
@@ -176,8 +159,8 @@ void() DecodeLevelParms =
 	if (serverflags)
 	{
 		if (world.model == "maps/start.bsp" && !inHubMap) // Cataboligne - 5.19.10 - q1 SP hack for using forced dyn items
-			SetNewParms ();   // take away all stuff on starting new episode
-		if (world.model == "maps/qstart.bsp") SetNewParms();
+			SetNewParms_PK ();   // take away all stuff on starting new episode
+		if (world.model == "maps/qstart.bsp") SetNewParms_PK();
 	}
 //	bot_skinDecode();
 	if (parm3) set_xweap(self, parm3);
@@ -196,7 +179,7 @@ void() DecodeLevelParms =
 	self.armorvalue = ceil((parm9 &  16776960 ) / 256); // maxfl - 255
 	self.armortype = (parm9 & 255) * 0.01;
 
-	self.pk_items = parm10 | (parm16 & PK_IT_EXTRADISP); // fix PK mode false map to PK mode true map
+	self.pk_items = parm10; // fix PK mode false map to PK mode true map
 	self.pk_explode_ammo = parm11 & 15;
 	self.pk_turretammo = floor(parm11 / 16) & 3;
 	self.pk_canpabammo = floor(parm11 / 64) & 3;
@@ -209,8 +192,6 @@ void() DecodeLevelParms =
 	self.pkplus_actorammo = floor(parm11 / 65536) & 3;
 	self.pkplus_phoneammo = floor(parm11 / 262144) & 3;
 // end pk_art
-
-	self.msgcount = (parm16 & 255);
 
 	if (self.class_select == "class_player") // a level change happened, this is not a bot, parm15 is valid - set it
 	if (cb_morph(parm15)) // set only if valid - respawn hack deal
@@ -240,11 +221,11 @@ void() DecodeLevelParms =
 	}
 
 	self.x_items = 0; // clear prior to defaults - cant clear again after that, and giveway must be added
+
 // NOTE: *** morphy MUST be set prior to this call!
 	if (parm6 == -6) set_defaults(self); // only done on respawn or spawn where we are clearing parms because of dead
 
-// Cataboligne 9.11.3 purify - chase cam - parm14
-	cam_parms(1);
+//	cam_parms(1);
 };
 
 string nextmap;
@@ -521,7 +502,6 @@ void() PutClientInServer =
 	self._killmsg = SUB_Null;
 	self._killmsg2 = SUB_Null;
 
-//		Chase_cam_level_start(); // Cataboligne 8.9.9 purify - chase cam
 //		q10-_PutClientInServer(); // always encoding now
 
 	spot = PK_SelectSpawnPoint (); // *pk - get a spawn point, pk style 
@@ -605,7 +585,7 @@ void() PutClientInServer =
 	pk_plcfg();
 	self.pk_items = self.pk_items | PK_IT_AXE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_CANPAB | PK_IT_BEARTRAP
 																	| PKPLUS_IT_EGO | PKPLUS_IT_TOMB | PKPLUS_IT_ACTOR | PKPLUS_IT_PHONE; // Cataboligne 8.12.9 purify - pk artifacts
-
+//
 	grap_releaseHarpoon();
 	self.pk_currentInventory = self.pk_currentitem = PK_IT_AXE;
 	self.beartrap_time = 0;
@@ -647,19 +627,11 @@ void() PutClientInServer =
 
 	self.pkplus_actortype = 0; // Cataboligne 8.12.9 purify - pk artifacts
 
-//	if (!PK) return;
-
 	if (inHubMap)
 	{ // give the respawn guy a fighting chance...
 		self.items = self.items | IT_INVULNERABILITY;
 		self.invincible_time = 1;
 		self.invincible_finished = time + 15;
-
-		// PAINKEEP timeout for the hub "how to vote" message.
-		if (parm16 & 256)
-		{
-			self.hubstartupmessage = time + 15;
-		}
 	}
 
 	// PAINKEEP SPLASH Make this entity splash
@@ -670,7 +642,7 @@ void() PutClientInServer =
 	// PAINKEEP Fix the velocity on respawn bug
 	self.velocity = '0 0 0';
 
-	Chase_cam_level_start(); // Cataboligne 8.9.9 purify - chase cam
+	stuffcmd(self, STD_FOV ); // incase of crow vision
 };
 
 /*
@@ -1324,49 +1296,25 @@ void () PlayerPreThink =
 		}
   }
 
-	if (self.pk_dutychecking == 0)
+	CheckRules ();
+	if (self.movetype != MOVETYPE_NOCLIP)
+	if (self.health > 0)
+	if (self.classname == "player" || self.classname == "pk*bot")
 	{
-		CheckRules ();
-		if (self.movetype != MOVETYPE_NOCLIP)
-		if (self.health > 0)
-		if (self.classname == "player" || self.classname == "pk*bot")
-		{
-			WaterMove ();
+		WaterMove ();
 
-			if (self.waterlevel == 2)
-				CheckWaterJump ();
-		}
+		if (self.waterlevel == 2)
+			CheckWaterJump ();
+	}
 
 //		if (!Q-100 && !PK-100)
-		if (self.waterlevel)
-		if (! self.flags & FL_WATERJUMP)
-		if (self.cam_x & CHSCAM_ON)
-		{
-			cam_waterjump();  // Cataboligne 8.22.9 purify - chase cam
-		}
-
-	}
-	else if (time > self.pk_dutychecking)
+	if (self.waterlevel)
+	if (! self.flags & FL_WATERJUMP)
+	if (self.cam_x & CHSCAM_ON)
 	{
-		CheckRules ();
-		if (self.movetype != MOVETYPE_NOCLIP)
-		if (self.health > 0)
-		if (self.classname == "player" || self.classname == "pk*bot")
-		{
-			WaterMove ();
-
-			if (self.waterlevel == 2)
-				CheckWaterJump ();
-		}
-
-		if (self.waterlevel)
-		if (! self.flags & FL_WATERJUMP)
-		if (self.cam_x & CHSCAM_ON)
-		{
-			cam_waterjump();  // Cataboligne 8.22.9 purify - chase cam
-		}
-
+		cam_waterjump();  // Cataboligne 8.22.9 purify - chase cam
 	}
+
 
 	if ((framecount & 3) == 2)
 	if (self.classname == OBSERVER)
@@ -1425,14 +1373,7 @@ void () PlayerPreThink =
 		self.grap_firetest = 0;
 	self.oldorigin = self.origin;
 
-	if (self.pk_dutychecking == 0)
-	{
-		updateStatusDisplay();
-	}
-	else if (time > self.pk_dutychecking)
-	{
-		updateStatusDisplay();
-	}
+	updateStatusDisplay(); // PK status
 };
 
 
@@ -1478,7 +1419,7 @@ void () PlayerPostThink =
 	if (self.vw_frame != framecount)
 		viswep_post(); // Cataboligne - 9.26.9 - viswep code link - always have to run this for 1 player + pk*bots deal
 
-	if (self.admin == USER_MENU) // user menu does not allow skip postthink codes
+	if (self.admin == -1) // user menu does not allow skip postthink codes  // USER-MENU
 	{
 		if (self.view_ofs != '0 0 0') 
 			admin_postthink();
@@ -1489,18 +1430,6 @@ void () PlayerPostThink =
 	if (pk_adminframe != framecount)
 	if (admin_postthink()) return;
 
-
-	if (chaos)
-		if (!(self.cam_x & CHSCAM_ON))  // Cataboligne - 5.14.10 - cam purify - custom engine dont display vw_ for 1pv
-			{
-//			if (!(self.flags & FL_NDISMDL)) bprint("switching to not display vwep\n");
-			self.flags = self.flags | FL_NDISMDL; // old self.flags method, replacing with:
-			}
-		else
-			{
-//			if (self.flags & FL_NDISMDL) bprint("switching to display vwep\n");
-			self.flags = self.flags - (self.flags & FL_NDISMDL);
-			}
 
 // runes - these qaulify the below 2 tests in the call!
 	if (self.rune_flag & RUNE_FLG_RG || self.rune_flag & TECH_ADOC) rune_regen();
@@ -1561,9 +1490,6 @@ void () PlayerPostThink =
 	{
 		if (self.bolt_targetTimeout > time) // reticles & targeting
 		{
-			if (self.bolt_target != self) // Archons can teleport self
-			if (self.bolt_target) setorigin(self.bolt_target.bolt_target, self.bolt_target.origin + self.bolt_target.bolt_target.view_ofs);
-			if (self.enemy) setorigin(self.enemy.bolt_target, self.enemy.origin + self.enemy.bolt_target.view_ofs);
 			archon_target();
 		}
 		else
@@ -1628,66 +1554,21 @@ void () PlayerPostThink =
 		horn_airblast(FALSE);
 	}
 
-// PK_DUTYCHECKING_START
-	if (self.pk_dutychecking == 0)
+	if (!self.mask_x & MORPH_ARCHON)
+	if (self.bolt_target || self.bolt_targetNext || ((self.bolt_changeModelTimeout < time) && (self.weaponmodel == "progs/v_cl_on.mdl")) )
+		bolt_checkTargets();
+
+	CheckPowerups ();
+
+	if (self.copb_timeout)
 	{
-		if (!self.mask_x & MORPH_ARCHON)
-		if (self.bolt_target || self.bolt_targetNext || ((self.bolt_changeModelTimeout < time) && (self.weaponmodel == "progs/v_cl_on.mdl")) )
-			bolt_checkTargets();
-	
-		CheckPowerups ();
-
-		if (self.copb_timeout)
+		if (self.copb_timeout >= time)
 		{
-			if (self.copb_timeout >= time)
-			{
-				copb_checkFart();
-			}
-			else
-			{
-				self.copb_timeout = 0;
-			}
-		}
-
-		if (pk_flags & PK_TP_DUTYON)
-		{
-			self.pk_dutychecking = time + 0.5;
-		}
-	}
-	else if (time > self.pk_dutychecking)
-	{
-		if (!self.mask_x & MORPH_ARCHON)
-		if (self.bolt_target || self.bolt_targetNext || ((self.bolt_changeModelTimeout < time) && (self.weaponmodel == "progs/v_cl_on.mdl")) )
-			bolt_checkTargets();
-
-		CheckPowerups ();
-
-		if (self.copb_timeout)
-		{
-			if (self.copb_timeout >= time)
-			{
-				copb_checkFart();
-			}
-			else
-			{
-				self.copb_timeout = 0;
-			}
-		}
-
-		if (pk_flags & PK_TP_DUTYON)
-		{
-			self.pk_dutychecking = time + 0.5;
+			copb_checkFart();
 		}
 		else
 		{
-			self.pk_dutychecking = 0;
-		}
-	}
-	else
-	{
-		if (!(pk_flags & PK_TP_DUTYON))
-		{
-			self.pk_dutychecking = 0;
+			self.copb_timeout = 0;
 		}
 	}
 };
@@ -1735,8 +1616,6 @@ void () ClientConnect =
 // a client connecting during an intermission can cause problems
 	if (intermission_running)
 		ExitIntermission ();
-// MOTD_START
-//	self.msgcount = 1;
 };
 
 // called from client disconnect

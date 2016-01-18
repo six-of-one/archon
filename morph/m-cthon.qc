@@ -139,7 +139,8 @@ void() lavacthon_rise17 = [ $rise17, player_stand1 ] {};
 // return to blob form
 void() reblob =
 {
-	player_lavablob_become(NO_TFOG);
+//	polymorph_check(IMP_MCTHON, -666); // NO_TFOG
+	player_lavablob_become(-666); // NO_TFOG
 };
 
 void() lavacthon_reblob1  = [ $rise11, lavacthon_reblob2 ] {};
@@ -171,7 +172,8 @@ void(entity e) lavacthon_blobme =
 	{
 		lavablob_eject(); // eject some material since we are not in lava
 		if (random() < 0.2) lavablob_eject(); // even more - cthon is a big beast
-		player_lavablob_become(NO_TFOG);
+//		polymorph_check(IMP_MCTHON, -666); // NO_TFOG
+		player_lavablob_become(-666); // NO_TFOG
 		self = sv;
 		return;
 	}
@@ -382,13 +384,14 @@ void() player_lavacthon_become =
 	setmodel(self,"progs/cthon.mdl");
 	self.modelindex_morph = self.modelindex;
 
+//	self.morphy = IMP_MCTHON; // hack - dont want the temp 33 in here in case of level changes
+
 	self.skin = 0;
 
 	self.msight = "boss1/sight1.wav";
 //	self.noise2 = "enforcer/pain1.wav";
 	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 120';
-	self.cam_z = 1.4;  //cam - FIX may need tweaked
 	setsize (self, '-64 -64 -24', ' 64 64 128');
 
 	sprint(self,"You are emergent...CTHON!!\n");

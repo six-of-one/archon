@@ -217,6 +217,7 @@ pk_src/pk_artifacts.qc
 
 morph/morph_print.qc
 morph/morph.qc
+morph/archon.qc
 morph/m-chaos.qc
 morph/m-scourge.qc
 morph/m-cthon.qc

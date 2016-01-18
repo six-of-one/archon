@@ -531,15 +531,18 @@ void(float silent) player_wizard_become =
 //	else
 //	 	setsize (self, '-16 -16 -24', '16 16 40');
 	self.view_ofs = '0 0 28'; // raised 6
-	self.cam_z = 0.32;
+
 	self.health = self.health * MWIZARD_HEALMOD / self.health_modifier;
 	self.health_modifier = MWIZARD_HEALMOD;
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become a scrag.\n");
-		}
+		bprint(" has become "); // scrag
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
+//		morph_impulse();
+	}
 };

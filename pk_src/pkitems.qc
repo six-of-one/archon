@@ -535,7 +535,7 @@ void() painkeep_touch =
 
 	if (other.admin)
 	if (other.admin != LIVE_ADMIN)
-	if (other.admin != USER_MENU)
+	if (other.admin != -1) // USER-MENU
 		return; // *pk - admin - no collecting stuff
 
 // note: the only thing this really does is prevent running the entire touch code for things that are not picked up on the first touch more than once per sec for players / bots

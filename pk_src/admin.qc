@@ -60,9 +60,7 @@ float   A_START = 07;
 float   A_FRAGL = 10;
 float   A_TIMEL = 11;
 float   A_GRAVU = 12;
-float   A_FRICU = 13;
 float   A_DMMAP = 22;
-float   A_BOTS  = 23;
 float   A_PKCON = 24;
 float   A_ITEM  = 25;
 float   A_MONST = 26;
@@ -140,12 +138,10 @@ bprint("\n");
 	e.takedamage = DAMAGE_AIM;	
 	e.wad = e.message = e.path = e.target = null_string;
 	e.enemy = world;
-	if (CAM_DEF & DPCAM_ON)
-	{
-		stuffcmd(e, "chase_active ");
-		stuffcmd(self, ftos(e.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
-		stuffcmd(e, "\n");
-	}
+
+	stuffcmd(e, "chase_active ");
+	stuffcmd(e, ftos(e.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
+	stuffcmd(e, "\n");
 
 	if (e.dropent)
 	if (e.dropent.classname == "dropinv")
@@ -536,7 +532,7 @@ float() MapDM =
 				bprint("---------------------\nHub map set\n---------------------\n\n");
 				while (e)
 				{
-					if (e.model == "progs/hub_port.mdl" || e.model == "progs/null.mdl")
+					if (e.model == "progs/hub_port.mdl" || e.model == null_model)
 					{
 						if (v1 != ' 0 0 0' && mm < 2)
 						{
@@ -1009,7 +1005,7 @@ Painkeep impulses
 void() Admin_pkmenu =
 {
 	self.message =
-				       "\b    Admin Painkeep Menu:    \n\b+--------------------------+\n  01: SFX toggle            \n  02: HUB mode toggle       \n  03: Duty check toggle     \n  04: settings list         \n  05: PK dynamic items      \n  06: Spike traps           \n  07: Server map loop       \n    : PK 2.X server         \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
+				       "\b    Admin Painkeep Menu:    \n\b+--------------------------+\n  01: SFX toggle            \n  02: HUB mode toggle       \n  04: settings list         \n  05: PK dynamic items      \n  06: Spike traps           \n  07: Server map loop       \n    : PK 2.X server         \n 666:  main menu            \n admin impulse: exit admin  \n\b+--------------------------+\n\b  Enter code: ";
 //  05: PK dynamic items      \n"
 //  06: Spike traps           \n"
 //  07: Extra sound           \n"
@@ -1128,7 +1124,7 @@ void() AdminCommands =
 			self.admin_input = cvar("sv_gravity");
 		}
 		else
-		if (self.admin_input == A_FRICU)
+		if (self.admin_input == 13)
 		{
 			self.cnt = 0.01;
 			Admin_varmenu();
@@ -1150,7 +1146,7 @@ void() AdminCommands =
 			Admin_dmmapmenu();
 		}
 		else
-		if (self.admin_input == A_BOTS) Admin_botmenu(); else
+		if (self.admin_input == 23) Admin_botmenu(); else
 		if (self.admin_input == A_PKCON)
 		{
 			Admin_pkmenu();
@@ -1505,19 +1501,6 @@ void() AdminCommands =
 				pk_bas_flags(PK_SF_HUB, 1);
 			}
 		}
-		else if (self.admin_input == 3)
-		{
-			if (pk_flags & PK_TP_DUTYON)
-			{
-				self.wad = "\nDuty Checking OFF";
-				pk_bas_flags(PK_TP_DUTYON, 0);
-			}
-			else
-			{
-				self.wad = "\nDuty Checking ON";
-				pk_bas_flags(PK_TP_DUTYON, 1);
-			}
-		}
 		else if (self.admin_input == 4)
 		{
 			self.wad = "\nSettings printed to console";
@@ -1533,22 +1516,12 @@ void() AdminCommands =
 			else
 				sprint(self, "Server map loop Off --- (sv_pk_cmap)\n");
 
-			if (pk_flags & PK_TP_DUTYON)
-				sprint(self, "Duty Checking On    --- (sv_pk_duty)\n");
-			else
-				sprint(self, "Duty Checking Off   --- (sv_pk_duty)\n");
-
 			if (XENV)
 				sprint(self, "SFX \bOFF\b             --- (sv_c_xenv)\n");
 			else if (!(pk_flags & PK_TP_SPARKSFLASH))
 				sprint(self, "SFX On              --- (sv_pk_sfx)\n");
 			else
 				sprint(self, "SFX \bOFF\b             --- (sv_pk_sfx)\n");
-
-			if (pk_flags & PK_TP_STATUSON)
-				sprint(self, "Status \bON\n");
-			else
-				sprint(self, "Status Off\n");	 
 
 			if (!(pk_flags & PK_SPIKER))
 				sprint(self, "Spike traps enabled in PK mode\n");
@@ -1809,87 +1782,6 @@ User Menu
 ============
 */
 
-// build menu for user
-
-void() User_menu =
-{
-	string head, ln1, ln2, ln3, ln4, ln5, foot;
-
-	ln1 = ln2 = ln3 = ln4 = ln5 = null_string;
-
-	if (self.aflag == IMP_DROPI) // drop inv menu
-	{
-		drop_menu();
-		return;
-	}
-	
-	if (self.ammo_cells > 1 && self.pk_items & PK_IT_CLIGHT)
-		head =
-						"\b   Painkeep User Menu:   \n\b+------------------------+\n  1: Chain Thunderbolt    \n";
-	else
-		head =
-						"\b   Painkeep User Menu:   \n\b+------------------------+\n";
-
-	if (self.pk_gravitywellammo > 0)
-		ln1 =
-						"  2: Gravity Well         \n";
-	if (self.pk_gravitywellammo == -1)
-		ln1 =
-						"  2: Super Gravity Well   \n";
-	if (self.pk_turretammo > 0)
-		ln2 =
-						"  3: Auto Sentry          \n";
-	if (self.pk_items & PK_IT_GRAPGUN)
-	{
-		ln3 =
-						"  4: Harpoon              \n";
-		foot = 
-						"  5: release harpoon      \n\n\b*** following are impulse links ***\n\n  11: close combat wep    \n  12: prev pk weapon      \n  13: status display      \n    any impulse exits     \n\b+------------------------+\n\b Enter code: ";
-	}
-	else
-	{
-	foot = 
-						"\b*** following are impulse links ***\n\n  11: close combat wep    \n  12: prev pk weapon      \n  13: status display      \n    any impulse exits     \n\b+------------------------+\n\b Enter code: ";
-	}
-	if (self.pk_items & PK_IT_AIRGUN)
-	{
-		if (self.pk_beartrapammo > 0)
-			ln4 =
-						"  6: Air fist             \n  7: Beartrap             \n";
-		else
-			ln4 =
-						"  6: Air fist             \n";
-	}
-	else
-	{
-		if (self.pk_beartrapammo > 0)
-			ln4 =
-						"  7: Beartrap             \n";
-	}
-	if (self.pk_canpabammo > 0)
-		ln5 =
-						"  8: Can o' Pork n' Beans \n  9: Axe                  \n  0: Inventory list       \n  +--------------------+  \n";
-	else
-		ln5 =
-						"  9: Axe                  \n  0: Inventory list       \n  +--------------------+  \n";
-
-	self.wad = null_string;
-	centerprint7(self, head, ln1, ln2, ln3, ln4, ln5, foot);
-};
-
-// set painkeep item from user menu
-
-void(float pki, float ci) user_menu_pkitem =
-{
-	if (ci) // ci - set current inventory too
-		self.pk_currentInventory = self.pk_currentitem = pki;
-	else
-		self.pk_currentitem = pki;
-
-	self.weapon = IT_AXE;
-	self.forcewchange = TRUE;
-	W_SetCurrentAmmo();
-};
 
 // fn(PK_AdminImpulse) - main admin input control routine
 
@@ -1900,7 +1792,7 @@ void() PK_AdminImpulse =
 
 	self.attack_finished = time + 0.1; // debounce - dont want this every frame
 
-	if (self.admin == USER_MENU) // process user menu (impulse 39) here + impulse 53, drop menu
+	if (self.admin == -1) // process user menu (impulse 39) here + impulse 53, drop menu  // USER-MENU
 	{
 		if (cvar("chase_active") > 0) stuffcmd(self, "chase_active 0\n");
 
@@ -1914,7 +1806,7 @@ void() PK_AdminImpulse =
 			stuffcmd(self, "admin_centertime\n");
 			admin_timer(FALSE, USER_TIMEOUT);
 			self.impulse = 0;
-			self.message = "USER_MENU";
+			self.message = null_string;
 		}
 		if (self.aflag == IMP_DROPI) // drop inv section
 		{
@@ -1949,48 +1841,6 @@ void() PK_AdminImpulse =
 				self.impulse = 0;
 			}
 		}
-		else
-		if (self.impulse == 6)
-		{
-			if (self.pk_items & PK_IT_AIRGUN)
-				user_menu_pkitem(PK_IT_AIRGUN, FALSE);
-		}
-		else if (self.impulse == 4)
-		{
-			if (self.pk_items & PK_IT_GRAPGUN)
-				user_menu_pkitem(PK_IT_GRAPGUN, FALSE);
-		}
-		else if (self.impulse == 1)
-		{
-			if (self.ammo_cells > 1 && self.pk_items & PK_IT_CLIGHT)
-				user_menu_pkitem(PK_IT_CLIGHT, FALSE);
-		}
-		else if (self.impulse == 2)
-		{
-			if (self.pk_gravitywellammo != 0)
-				user_menu_pkitem(PK_IT_GRAVITYWELL, TRUE);
-		}
-		else if (self.impulse == 7)
-		{
-			if (self.pk_beartrapammo > 0)
-				user_menu_pkitem(PK_IT_BEARTRAP, TRUE);
-		}
-		else if (self.impulse == 3)
-		{
-			if (self.pk_turretammo > 0)
-				user_menu_pkitem(PK_IT_TURRET, TRUE);
-		}
-		else if (self.impulse == 8)
-		{
-			if (self.pk_canpabammo > 0)
-				user_menu_pkitem(PK_IT_CANPAB, TRUE);
-		}
-		else if (self.impulse == 9)
-		{
-			user_menu_pkitem(PK_IT_AXE, TRUE);
-		}
-		else if (self.impulse == 5)
-			grap_releaseHarpoon();
 /*		else if (self.impulse == 11)
 		{
 			self.weapon = W_BestWeapon();
@@ -2006,7 +1856,7 @@ void() PK_AdminImpulse =
 			}
 */
 		f = self.impulse;
-		User_menu();
+//		User_menu();
 //		centerprint3(self, self.message, null_string, null_string);
 		if (self.button0 || self.button1 || self.button2 || self.impulse)
 		{

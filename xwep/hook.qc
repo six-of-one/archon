@@ -889,7 +889,7 @@ void(entity e) InitiateHook =
 
 		if (newhook.lefty == SEL_LASER_HOOK)
 		{
-			setmodel(newhook, "progs/null.mdl");
+			setmodel(newhook, null_model);
 			newhook.target = "q2_snd/lhook_h.wav"; // hook hit a solid - not damaged
 			newhook.noise1 = null_string; // drop
 			newhook.target1 = null_string; // in + out
@@ -901,7 +901,7 @@ void(entity e) InitiateHook =
 		}
 		if (newhook.lefty == SEL_LTN_HOOK)
 		{
-			setmodel(newhook, "progs/null.mdl");
+			setmodel(newhook, null_model);
 			newhook.target = "q3_snd/lg_hit3.wav"; // hook hit a solid - not damaged
 			newhook.noise1 = null_string; // drop
 			newhook.target1 = null_string; // in + out
@@ -914,7 +914,7 @@ void(entity e) InitiateHook =
 //		if (newhook.lefty == SEL_S_HOOK)
 	}
 
-	if (newhook.model != "progs/null.mdl") setsize(newhook, '0 0 0', '0 0 0'); // setsize (newhook,'-4 -4 -4','4 4 4');
+	if (newhook.model != null_model) setsize(newhook, '0 0 0', '0 0 0'); // setsize (newhook,'-4 -4 -4','4 4 4');
 
 	newhook.avelocity = '0 0 500';
 

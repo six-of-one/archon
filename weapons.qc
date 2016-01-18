@@ -1565,7 +1565,7 @@ void () ImpulseCommands =
 	else if (self.impulse == IMP_DROPI) // CHECK: *_100
 	{
 		if (!self.admin)
-			self.admin = USER_MENU;
+			self.admin = -1; // USER-MENU
 		self.aflag = self.impulse;
 	}
 	if (self.impulse == IMP_PARM)

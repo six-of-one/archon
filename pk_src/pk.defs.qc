@@ -25,6 +25,7 @@ float LOK_STRICT				= 1; 			// lock deal
 float XTR_SAVED1				= 1195724115; // saved1 test val
 
 // scratch vars
+//entity e0;
 
 float z0 = 0;
 float gsf;										// loop safety global - this MUST be watched CAREFULLY
@@ -34,6 +35,7 @@ vector norm; 									// for trace_plane_normal manipulations
 
 string sg;
 string null_string = "";
+string null_model = "progs/null.mdl";
 
 // end engines
 
@@ -202,9 +204,8 @@ float pk_adminframe;						// only do once per frame
 float LIVE_ADMIN				= 100;	// for being in game with admin privs - previous painkeep admin mode
 float ADMIN_LOGIN				= -2;		// .admin value for login
 float ADMINLOCK;							// polled from sv_c_adminlock
-float USER_MENU				= -1;		// .admin value that handles user menu - admin code set runs user menus
+//float USER_MENU				= -1;		// .admin value that handles user menu - admin code set runs user menus
 float USER_TIMEOUT			= 5;		// timeout user menu in 5 secs
-float USER_IMPULSE			= 39;		// user menu impulse
 float ADMIN_FAILED_LOGIN	= -777;	// login didnt succeed
 string ADMINCODE				= "float1\n"; // local command that loads admin security password
 //													  //- obscured to keep anyone with casual console access from divining its true meaning
@@ -1482,19 +1483,11 @@ float VWY_LASERCAN			= 9;
 float VWZ_LASERCAN			= 12;
 
 
-// **************************************
-// Cataboligne 9.11.3 purify - chase cam
+/// cam section - redone 9.29.13
 
-// **************************************
-void( entity m_e, entity v_e) set_viewport;
-void() chase_cam_precache;
-void(float sel) cam_parms;
-void() Chase_cam_level_start;
+var float autocvar_sv_cam = 0;
+
 void() cam_waterjump;
-
-float CAM_TELE = 8; // flag saying owner was teleported - go along 
-// this is mostly for the across the room teleport or respawn so cam doesnt fly across distance
-float CAM_DPLOAD = 16; // flag saying dp cam values were loaded - only do once
 
 
 // message protocol defines
@@ -1503,9 +1496,9 @@ float SVC_SETVIEWANGLES		= 10;
 
 // free player entity variable
 // '.float speed'  bit-flag defines:
+
 //float CHSCAM_MONSTER  = ;
 float CHSCAM_ON				= 1;
-float DPCAM_ON					= 2;
 float LASERTARG_ON			= 4;
 float LASERTARG_LIT			= 32;
 
@@ -1514,6 +1507,9 @@ void() cam_punch;						// return punchangle if passed parm - otherwise set self.
 void() dead_cam_set;					// Cataboligne 9.11.3 purify proto - chase cam
 float DCAMTO;							// timeout for death cam 2 mins
 float DCAMTOACT;						// action after timeout 0 = respawn, 1 = disconnect
+
+// frag counting
+
 float FFW_LIMIT;						// time limit on how long players get frags from fire & forget weaps after dead
 float NOCIDE;							// dont cound suicide frags for idiom of var
 float NOENVCIDE;
@@ -1567,7 +1563,7 @@ void() pk_cphub;
 void(entity e) pk_admincfg;
 void () tfragadmin_touch;
 
-float PK_TP_STATUSON			= 256;
+//float PK-TP_STATUSON			= 256;
 .float hubstartupmessage;
 .float messagetimeout;
 
@@ -1634,7 +1630,7 @@ float PK_IT_GRAPGUN			= 16;
 float PK_IT_AIRGUN			= 32;
 float PK_IT_CLIGHT			= 64;
 float PK_IT_BEARTRAP			= 128;
-float PK_IT_EXTRADISP		= 4096; //= 256; - pk artifacts support recode
+//float PK-IT_EXTRADISP		= 4096; //= 256; - pk artifacts support recode
 
 float PK_IT_RANGE				= 112; // range weps - grap, airgun, chainthunder
 float PK_IT_CARY				= 3982; // throwables - fire & forget - grav, turret, can, beartrap, ego, tomb, phone, actor
@@ -1874,10 +1870,6 @@ float PK_TP_SPARKSFLASH		= 64;
 void(float to, float f) WriteB3;
 void(float to, float f) WriteBDigit;
 void(float to, float f) WriteBFloat;
-
-// duty checks
-.float pk_dutychecking;
-float PK_TP_DUTYON			= 128;
 
 
 // **************************************

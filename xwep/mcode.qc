@@ -1984,6 +1984,7 @@ void() cube_rearm =
 {
 	if (self.deadflag) return;
 
+	self.mcode = 0; // clear HUD
 	self.weapon = W_BestWeapon();
 	self.pk_currentitem = W_BestPKWeapon();
 	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);

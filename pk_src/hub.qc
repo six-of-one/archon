@@ -228,7 +228,7 @@ void() hub_custom =
 // set appearance - model has different frames & skins for variety
 // IDEA: set facing in cphub? - not for now, all portals should be "directionless"
 	if (self.delay < 0)
-		setmodel (self, "progs/null.mdl");
+		setmodel (self, null_model);
 	else
 	{
 		setmodel (self, "progs/hub_port.mdl");

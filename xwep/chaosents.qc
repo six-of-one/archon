@@ -12,7 +12,7 @@
 
 void() chaos_precache =
 {
-	precache_model ("progs/null.mdl"); // Cataboligne 8.8.9 purify - chase cam
+	precache_model (null_model); // Cataboligne 8.8.9 purify - chase cam
 
 // sounds
 	precache_sound ("reggun/fire4.wav");

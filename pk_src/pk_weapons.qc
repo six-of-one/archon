@@ -291,7 +291,7 @@ void() PK_SetCurrentAmmo =
 	}
 
 //	wchanged = wchanged & ((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) || cvar("chase_active"));
-	if (!((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) || cvar("chase_active"))) wchanged = FALSE;
+	if (!((self.items & IT_INVISIBILITY) || (self.cam_x & CHSCAM_ON) || (self.cam_x & CHSCAM_ON))) wchanged = FALSE;
 
 	if (wchanged)
 		sprint(self, "You have selected the ");
@@ -1182,179 +1182,6 @@ void() pk_special_impulse =
 	{
 		self.pk_currentInventory = self.pk_currentitem = PK_IT_AXE;
 	}
-	else if (self.impulse == USER_IMPULSE)
-	{
-		if (!self.admin)
-			self.admin = USER_MENU;
-		return;
-	}
-	else
-	{ // print the current inventory items out.
-		msg_entity = self;
-		WriteByte(MSG_ONE, SVC_CENTERPRINT);
-
-		// '\n\n\n\n\nYou Have:\nGravity Wells : '
-		WriteB3(MSG_ONE, 657930);
-		WriteB3(MSG_ONE, 5835274);
-		WriteB3(MSG_ONE, 2127215);
-		WriteB3(MSG_ONE, 7758152);
-		WriteB3(MSG_ONE, 670309);
-		// '--------\n'
-		WriteB3(MSG_ONE, 2960685);
-		WriteB3(MSG_ONE, 2960685);
-		WriteB3(MSG_ONE, 666925);
-		
-		WriteB3(MSG_ONE, 6386247);
-		WriteB3(MSG_ONE, 7629174);
-		WriteB3(MSG_ONE, 5709945);
-		WriteB3(MSG_ONE, 7105637);
-		WriteB3(MSG_ONE, 3809395);
-		WriteB3(MSG_ONE, 32);
-
-		WriteBFloat(MSG_ONE, fabs(self.pk_gravitywellammo));
-
-		// '										 '
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-//		WriteB3(MSG_ONE, 2105376);
-
-		// '\nAutoSentry's : '
-		WriteB3(MSG_ONE, 7684362);
-		WriteB3(MSG_ONE, 5468020);
-		WriteB3(MSG_ONE, 7630437);
-		WriteB3(MSG_ONE, 2586994);
-		WriteB3(MSG_ONE, 3809395);
-		WriteB3(MSG_ONE, 32);
-
-		WriteBFloat(MSG_ONE, self.pk_turretammo);
-
-		// '										 '
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 8224);
-//		WriteB3(MSG_ONE, 2105376);
-//		WriteB3(MSG_ONE, 2105376);
-
-		// '\nCan Of Pork & Beens : '
-		WriteB3(MSG_ONE, 6374154);
-		WriteB3(MSG_ONE, 5185646);
-		WriteB3(MSG_ONE, 5251174);
-		WriteB3(MSG_ONE, 7041647);
-		WriteB3(MSG_ONE, 2106912);
-		WriteB3(MSG_ONE, 6645058);
-		WriteB3(MSG_ONE, 2126702);
-		WriteB3(MSG_ONE, 8250);
-
-		WriteBFloat(MSG_ONE, self.pk_canpabammo);
-
-		// '										 '
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-	WriteB3(MSG_ONE, 2105376);
-
-		// '\nBear Traps : '
-		WriteB3(MSG_ONE, 6636042);
-		WriteB3(MSG_ONE, 2126433);
-		WriteB3(MSG_ONE, 6386260);
-		WriteB3(MSG_ONE, 2126704);
-		WriteB3(MSG_ONE, 8250);
-
-		WriteBFloat(MSG_ONE, self.pk_beartrapammo);
-
-		// '										 '
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-//		WriteB3(MSG_ONE, 2105376);
-//		WriteB3(MSG_ONE, 2105376);
-//		WriteB3(MSG_ONE, 2105376);
-
-		// '\nExploding Shells : '
-		WriteB3(MSG_ONE, 7881994);
-		WriteB3(MSG_ONE, 7302256);
-		WriteB3(MSG_ONE, 7235940);
-		WriteB3(MSG_ONE, 5447783);
-		WriteB3(MSG_ONE, 7103848);
-		WriteB3(MSG_ONE, 2126700);
-		WriteB3(MSG_ONE, 8250);
-
-		WriteBFloat(MSG_ONE, self.pk_explode_ammo);
-
-		// '										 '
-		if (self.pk_explode_ammo < 10) WriteB3(MSG_ONE, 32);
-		WriteB3(MSG_ONE, 8224);
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-		WriteB3(MSG_ONE, 2105376);
-//		WriteB3(MSG_ONE, 2105376);
-
-		// '\n'
-		WriteB3(MSG_ONE, 10);
-
-		pk_art_prinv(); // Cataboligne 8.12.9 purify - pk artifacts
-
-		if (self.pk_items & PK_IT_GRAPGUN)
-		{
-			// 'Harpoon Gun	'
-			WriteB3(MSG_ONE, 7496008);
-			WriteB3(MSG_ONE, 7303024);
-			WriteB3(MSG_ONE, 4661358);
-			WriteB3(MSG_ONE, 2125429);
-			WriteB3(MSG_ONE, 32);
-		}
-		else
-		{
-			// '						 '
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 32);
-		}
-
-		if (self.pk_items & PK_IT_AIRGUN)
-		{
-			// 'AirFist	 '
-			WriteB3(MSG_ONE, 7498049);
-			WriteB3(MSG_ONE, 7563590);
-			WriteB3(MSG_ONE, 2105460);
-			WriteB3(MSG_ONE, 32);
-		}
-		else
-		{
-			// '					'
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 32);
-		}
-
-		if (self.pk_items & PK_IT_CLIGHT)
-		{
-			// 'Chain Thunderbolt '
-			WriteB3(MSG_ONE, 6383683);
-			WriteB3(MSG_ONE, 2125417);
-			WriteB3(MSG_ONE, 7694420);
-			WriteB3(MSG_ONE, 6644846);
-			WriteB3(MSG_ONE, 7299698);
-			WriteB3(MSG_ONE, 2126956);
-		}
-		else
-		{
-			// '									'
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-			WriteB3(MSG_ONE, 2105376);
-		}
-
-		WriteByte(MSG_ONE, 0);
-		return;
-	}
 
 //
 // set weapon, set ammo
@@ -2054,7 +1881,7 @@ void() PK_ImpulseCommands =
 		{
 			if (self.impulse == ALT_FIRE_IMP)
 			if (self.eweapon._alt_fire)
-				if (self.eweapon._alt_fire != SUB_Null) self.eweapon._alt_fire(self.eweapon);
+				self.eweapon._alt_fire(self.eweapon);
 
 			if (self.impulse >= 1 && self.impulse <= 10 || self.impulse == 12) // || self.impulse == 14) // wraith option
 			{
@@ -2075,18 +1902,26 @@ void() PK_ImpulseCommands =
 	{
 		if (self.eweapon)
 		{
-			if (self.eweapon._alt_fire)
-				if (self.eweapon._alt_fire != SUB_Null) self.eweapon._alt_fire(self.eweapon);
+			if (self.eweapon._alt_fire) self.eweapon._alt_fire(self.eweapon);
 		}
 		else // no eweapon - give morph builtins alternate fire
-			if (self._attack != SUB_Null)
-				self._attack();
+			if (self._attack) self._attack();
 		self.impulse = 0;
 		return;
 	}
 
 	if ((self.impulse >= 1 && self.impulse <= 14) && self._impulse != SUB_Null) 
 	{
+		if (self.impulse == 14)
+		if (self.height == IMP_MCHAOS)
+		if (self.morphy != IMP_MCHAOS) // voluntary return to Archon form - no pts req. for now
+		{
+			if (self.goalentity.think != de_archon_thk)
+			if (self.goalentity.classname == "archon_morph")
+				self.goalentity.think();
+			else
+			chaos_morph_chg(self, 0);
+		}
 //		if (!self.holdent.flags & FL_HELD) 
 			self._impulse(); // item_held()
 		self.impulse = 0;
@@ -2104,7 +1939,7 @@ void() PK_ImpulseCommands =
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
 
-	else if (self.impulse >= 30 && self.impulse <= 39 || self.impulse == 21 || self.impulse == 22) // user impulses
+	else if (self.impulse >= 30 && self.impulse <= 38 || self.impulse == 21 || self.impulse == 22) // pk user impulses
 		pk_special_impulse();
 	else if (self.impulse > 160 && self.impulse < 166) // Cataboligne 8.12.9 purify - pk artifacts
 	{
@@ -2191,44 +2026,9 @@ void() PK_ImpulseCommands =
 		if (pk_admintime > 0) admin_resettimeout();
 	}
 
-// MOTD_START
-	else if (self.impulse == 201)
-	{
-		if (self.pk_items & PK_IT_EXTRADISP)
-		{
-			sprint(self, "Status Display OFF\n");
-			self.pk_items = self.pk_items - PK_IT_EXTRADISP;
-		}
-		else
-		{
-			sprint(self, "Status Display ON\n");
-			self.pk_items = self.pk_items | PK_IT_EXTRADISP;
-		}
-	}
-
-// PK_DUTYCHECKING_START
-	else if (self.admin > 0 && self.impulse == 202)
-	{
-		if (pk_flags & PK_TP_DUTYON)
-		{
-			bprint("Duty Checking OFF\n");
-			pk_bas_flags(PK_TP_DUTYON, 0);
-		}
-		else
-		{
-			bprint("Duty Checking ON\n");
-			pk_bas_flags(PK_TP_DUTYON, 1);
-		}
-		admin_sv_cfg();
-	}
 
 	else if (self.impulse == 225)
 	{
-		if (pk_flags & PK_TP_DUTYON)
-			sprint(self, "Duty Checking On\n");
-		else
-			sprint(self, "Duty Checking Off\n");
-
 		if (!(pk_flags & PK_TP_SPARKSFLASH))
 		{
 			sprint(self, "SFX On");
@@ -2239,11 +2039,6 @@ void() PK_ImpulseCommands =
 		}
 		else
 			sprint(self, "SFX Off\n");
-
-		if (pk_flags & PK_TP_STATUSON)
-			sprint(self, "Status On\n");
-		else
-			sprint(self, "Status Off\n");	 
 
 		if (pk_flags & PK_TP_USERMAPON)
 			sprint(self, "Custom Maps On\n");

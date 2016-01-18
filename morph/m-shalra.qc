@@ -378,7 +378,6 @@ void(float silent) player_shalrath_become =
 	self.noise2 = "shalrath/pain.wav";
 	self.noise3 = null_string;
 	self.view_ofs = '0 0 34'; // raised 8
-	self.cam_z = 0.1;
 
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
@@ -391,9 +390,11 @@ void(float silent) player_shalrath_become =
 	spawn_tfog(self.origin + 20 * v_forward);
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become a vore.\n");
-//		morph_impulse(); // for one wep morphs we only need this once
-		}
+		bprint(" has become "); // vore
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
+//		morph_impulse();
+	}
 };

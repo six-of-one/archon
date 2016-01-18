@@ -272,7 +272,7 @@ entity(entity e, float fl) vload =
 			xwep_fakeload (tr.vwepent, 0, 0, "weapon_mjolnir", IT_MJOLNIR);
 	}
 	else if (fl == IT_ARMOR1) md = "progs/vw_armor.mdl";
-	else if (fl < 0) md = "progs/null.mdl"; // special cases - set own model
+	else if (fl < 0) md = null_model; // special cases - set own model
 	if (md == null_string) md = VW_DEFGUN;
 	tr.vwepent.mdl = md;
 	if (fl >0 && fl != IT_AXE && !VW) md = VW_DEFGUN;
@@ -583,7 +583,7 @@ void() viswep_post =
 //	vw_chain(self);
 
 														// NOTE: check this vs. invisibility for norm & morphs
-	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0' || self.model == null_string) //(self.admin && self.admin != USER_MENU)) //intermission_running)
+	if (self.deadflag || self.classname == OBSERVER || self.view_ofs == '0 0 0' || self.model == null_string) //(self.admin && self.admin != USER-MENU)) //intermission_running)
 	{
 		if (self.vwepent)
 		{

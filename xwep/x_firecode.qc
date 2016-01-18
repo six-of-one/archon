@@ -1389,8 +1389,8 @@ void () X_FireOnePlasma =
 			traceline (org, org + v_forward*4096, TRUE, self);
 			if (!XENV)
 			{
-				newmis.aiment = placestain(trace_endpos, "progs/null.mdl", plspg_fade, 60);
-				newmis.aiment.aiment = placestain(trace_endpos, "progs/null.mdl", plspg_fade, 60);
+				newmis.aiment = placestain(trace_endpos, null_model, plspg_fade, 60);
+				newmis.aiment.aiment = placestain(trace_endpos, null_model, plspg_fade, 60);
 			}
 		}
 	}

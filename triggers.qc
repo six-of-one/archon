@@ -406,7 +406,7 @@ void () tdeath_touch =
 
 	if (other.admin)
 	if (other.admin != LIVE_ADMIN)
-	if (other.admin != USER_MENU) // Cataboligned - 5.4.10 - dont let admin be telefragged either
+	if (other.admin != -1) // Cataboligned - 5.4.10 - dont let admin be telefragged either  // USER-MENU
 	{
 		local entity e;
 
@@ -466,11 +466,9 @@ void (vector org, entity death_owner) spawn_tdeath =
 
 	if (other.admin)
 	if (other.admin != LIVE_ADMIN)
-	if (other.admin != USER_MENU) // dont let admin telefrag anyone
+	if (other.admin != -1) // dont let admin telefrag anyone  // USER-MENU
 		death.touch = tfragadmin_touch;
 
-// cam fix
-	if (other) other.cam_x = other.cam_x | CAM_TELE;
 };
 
 void () teleport_touch =

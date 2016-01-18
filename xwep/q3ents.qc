@@ -1001,7 +1001,7 @@ void () weapon_grapplinghook =
 
 // grap specials
 
-	self.killtarget =  "progs/null.mdl";
+	self.killtarget =  null_model;
 	self.target = "q3_snd/lg_hit3.wav"; // hook hit a solid - not damaged
 	self.noise1 = null_string; // drop
 	self.target1 = null_string; // in + out
@@ -1801,8 +1801,8 @@ void() regen_shell_exp =
 	else
 		h = 200; // q3 default val
 
-		if (self.enemy.mdl != "progs/null.mdl" || (self.owner.health >= h)) 
-			self.enemy.mdl = "progs/null.mdl";
+		if (self.enemy.mdl != null_model || (self.owner.health >= h)) 
+			self.enemy.mdl = null_model;
 		else
 			self.enemy.mdl = "progs/player_sh.mdl";
 		setmodel(self.enemy, self.enemy.mdl);

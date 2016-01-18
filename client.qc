@@ -388,7 +388,7 @@ void () respawn =
 	if (coop)
 	{
 		// make a copy of the dead body for appearances sake
-		if (self.model != "progs/null.mdl") // Cataboligne - 8.14.9 - dead cam etc
+		if (self.model != null_model) // Cataboligne - 8.14.9 - dead cam etc
 		CopyToBodyQue (self);
 
 		morph_clearparms(self, TRUE);
@@ -402,7 +402,7 @@ void () respawn =
 	else if (deathmatch)
 	{
 		// make a copy of the dead body for appearances sake
-		if (self.model != "progs/null.mdl") // Cataboligne - 8.14.9 - dead cam etc
+		if (self.model != null_model) // Cataboligne - 8.14.9 - dead cam etc
 			CopyToBodyQue (self);
 
 		morph_clearparms(self, TRUE);

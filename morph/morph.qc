@@ -117,6 +117,7 @@ float(float sel) cb_morph =
 	else if (sel == IMP_MDEMON)		return(CB_DEMON);
 	else if (sel == IMP_MOGRE)			return(CB_OGRE);
 	else if (sel == IMP_MCTHON)		return(CB_CTHON);
+//	else if (sel == IMP_MCTHONTALL)		return(CB_CTHON);
 	else if (sel == IMP_MSCOURGE)		return(CB_SCOURGE);
 	else if (sel == IMP_MGREMLIN_F)	return(CB_GREMLIN);
 	else if (sel == IMP_MGREMLIN_L)	return(CB_GREMLIN);
@@ -173,10 +174,10 @@ string(float sel) polymorph_id =
 {
 	local string s1;
 
-	if (sel == IMP_MCHAOS)				s1 = "Chaos icarnate";
-	if (sel == IMP_MORDER)				s1 = "order icarnate";
+	if (sel == IMP_MCHAOS)				s1 = "\bChaos\b icarnate";
+	if (sel == IMP_MORDER)				s1 = "Order icarnate";
 //Techs:
-//	else if (sel == IMP_MHUMAN)		s1 = "a lowly Cook";
+	else if (sel == IMP_MHUMAN)		s1 = "a lowly Cook";
 //	else if (sel == IMP_MDEMO)			s1 = "a mad Bomber";
 //	else if (sel == IMP_MSPECIAL)		s1 = "a trained Specialist";
 //	else if (sel == IMP_MTECH)			s1 = "a crafty Technician";
@@ -439,7 +440,10 @@ void() morphic_impulse =
 				else
 				if (c.archon < c.volume) c.volume = c.archon;
 			}
-			self.volume = 0 - c.archon; // for HUD
+			if (self.mask_x & MORPH_ARCHON)
+				self.pk_explode_ammo = c.archon; // for HUD - archon casting spell
+			else
+				self.volume = 0 - c.archon; // for HUD
 		}
 		if (MORPH_FREE) sv = 0;
 		else if (self.archon > c.archon) sv = 0;
@@ -606,6 +610,7 @@ void() morph_cube =
 
 	setmodel(self, "progs/morph_cube.bsp");
 	self.netname = "Evolution Cube";
+	self.mcode = -664; // code for HUD
 
 	if (self.mask_x == MORPH_ARCHON) /// imp - this needs expand along with set code above - there should only be 1 archon item among all morph cubes
 	{
@@ -956,14 +961,35 @@ void(entity e, float all) morph_clearparms =
 	}
 
 	e.pkprevweapon = e.pklastweapon = e.prevweapon = e.lastweapon = 0;
+
 // remove pk items & ammos
 	e.pkplus_egoammo = e.pkplus_tombammo = e.pkplus_actorammo = e.pkplus_phoneammo = 0;
 	e.pk_gravitywellammo = e.pk_turretammo = e.pk_canpabammo = e.pk_beartrapammo = e.pk_explode_ammo = 0;
 
+	e.pk_currentInventory = e.pk_currentitem = PK_IT_AXE;
+	e.beartrap_time = 0;
+	e.bt_immune_time = time + BT_BUFFER;
+	e.voteIntermission = 0;
+
+
+	e.grap_owner = world;
+// clear bolt wep
+	e.bolt_target = world;
+	e.bolt_targetNext = world;
+	e.bolt_targetTimeout = 0;
+	e.bolt_targetNextTimeout = 0;
+	if (e.bolt_targetTimeoutEntity) remove(e.bolt_targetTimeoutEntity);
+	e.bolt_targetTimeoutEntity = world;
+	e.bolt_conduitTimeout = 0;
+	e.bolt_changeModelTimeout = 0;
+	if (e.bolt_lightningFire) remove(e.bolt_lightningFire);
+	e.bolt_lightningFire = world;
+
+
 // these are not items - just select flags
 	e.pk_items = PK_IT_AXE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_CANPAB | PK_IT_BEARTRAP
 					| PKPLUS_IT_EGO | PKPLUS_IT_TOMB | PKPLUS_IT_ACTOR | PKPLUS_IT_PHONE;
-
+//
 // remove x items & ammos
 	e.ammo_bullet = e.ammo_slug = e.ammo_gaspr = e.ammo_hgrenade = 0;
 	e.x_items = x_item_dm_giveaway;
@@ -1285,23 +1311,62 @@ void(float silent) player_human_become =
 		stuffcmd(self, "exec cfg/morph/m-human.cfg\n");
 	}
 
+	setmodel (self,"progs/eyes.mdl");
+	modelindex_eyes = self.modelindex;
+
 	if (self.morphy == CHAR_W) setmodel(self, "progs/plyr_bw.mdl");
 	if (self.morphy == CHAR_D) setmodel(self, "progs/plyr_dm.mdl");
 	if (self.morphy == CHAR_Q) setmodel(self, "progs/player.mdl");
 	if (self.morphy == CHAR_PK) setmodel(self, "progs/plyr_pk.mdl");
 	if (self.morphy == CHAR_Q3) setmodel(self, "progs/plyr_q3.mdl");
+	self.modelindex_morph = self.modelindex;
+
 	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
 
-//	self.items =  self.items | IT_SHOTGUN | IT_AXE; // cant do - may have already set defaults
+//	self.msight = "chaos/hsight1.wav";
 
+	self.view_ofs = ' 0 0 22';
+
+	self.health = self.health * MHUMAN_HEALMOD / self.health_modifier;
+	self.health_modifier = MHUMAN_HEALMOD;
+
+	self.items = self.items | IT_SHOTGUN | IT_AXE; // make sure humans have def weps before calling def
+	if (self.ammo_shells < 25) self.ammo_shells = 25;
+
+	set_defaults(self);
+
+// must clear when coming from Archons / demi-Archons
+	self._stand = SUB_Null; // make sure these are safe & detectable
+	self._pain = SUB_Null;
+	self._run = SUB_Null;
+	self._impulse = SUB_Null;
+	self._hk_lesser = SUB_Null;
+	self._hk_major = SUB_Null;
+	self._attack = SUB_Null;
+	self._jump = SUB_Null;
+	self._jump2 = SUB_Null;
+	self._die = SUB_Null;
+	self._summon = SUB_Null;
+	self._alt_fire = SUB_Null;
+	self._killmsg = SUB_Null;
+	self._killmsg2 = SUB_Null;
+	self.th_missile = SUB_Null;
+	self.th_melee = SUB_Null;
+
+	if (!silent) // silent for starting new level as this beasty
+	{
+		bprint(self.netname);
+		bprint(" has become ");
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
+//		morph_impulse();
+	}
 };
 
 void(float cmd, float pls) polymorph_check =
 {
 	if (!cb_morph(cmd)) return; // ha ha, validation
 
-//	if (cb_morph(cmd))	// these are polymorph commands - used to be other commands in here - handled else wheres now
-//	{
 // if pls is set its a spawn (level load) | respawn incarnation
 
 		if (!pls) // live morph change - voluntary or not
@@ -1313,7 +1378,7 @@ void(float cmd, float pls) polymorph_check =
 			{
 				if (cmd == self.height) // returning to native form
 				{
-					if (self.goalentity.classname == "chaos_morph")
+					if (self.goalentity.classname == "archon_morph")
 					{
 						remove(self.goalentity);
 						self.goalentity = world;
@@ -1322,7 +1387,8 @@ void(float cmd, float pls) polymorph_check =
 				else // going to another form - set random return code
 				{
 					if (self.goalentity.classname == "beacon") remove(self.goalentity); // self poly kills beacon spell
-					self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "chaos_morph", null_string, SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
+					if (self.archon > 0)
+						self.goalentity = chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, cmd + (crandom() * 150.0), chaos_morph_chgthk, SUB_Null, self, world);
 				}
 			}
 
@@ -1379,10 +1445,9 @@ void(float cmd, float pls) polymorph_check =
 		self.mask_x = cb_morph(cmd);
 
 		self.alpha = 1;				// clear any prev state set - i.e. chaos
-		self.skin = 0; // clear damage - note also clear suits
+		self.skin = 0; 				// clear damage - note also clear suits
 		if (WALKSOUND) sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);
 		morph_sound_off();
-//		self.eweapon = world;
 		self._summon = SUB_Null;
 
 		if (self.deadflag) return;
@@ -1396,12 +1461,11 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MDEMON) player_demon_become(pls);
 		else if (cmd == IMP_MOGRE) player_ogre_become(pls);
 		else if (cmd == IMP_MCTHON) player_lavablob_become(pls);
+//		else if (cmd == IMP_MCTHONTALL) player_lavacthon_become();
 		else if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
 		else if (cmd == IMP_MENF) player_enforcer_become(pls);
 		else if (cmd == IMP_MGREMLIN_F) player_gremlin_become(pls);
 		else if (cmd == IMP_MGREMLIN_L) player_gremlin_become(pls);
-
-		else player_human_become(pls);
 	/*
 		else if (cmd == IMP_MIMP) player_imp_become(pls);
 		else if (cmd == IMP_MCYBER) player_cyber_become(pls);
@@ -1410,23 +1474,22 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MTANK) player_tank_become(pls);
 		else if (cmd == IMP_MSUPTANK) player_supertank_become(pls);
 		else if (cmd == IMP_MWRAITH) player_wraith_become(pls);
-		else player_human_become(pls);
 	*/
+		else player_human_become(pls);
+
 		self.modelindex_morph = self.modelindex;
 		self.mdl = self.model;
 
 		self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent); // IDEA: default could load eweap for morph - it needs consolted if morphs ever get ews
 	
-		if (cmd == IMP_MCHAOS || cmd == IMP_MWIZARD || cmd == IMP_MWRAITH)
+		if (cmd == IMP_MCHAOS || cmd == IMP_MORDER || cmd == IMP_MWIZARD || cmd == IMP_MWRAITH)
 		{
 			flyer_check(self, TRUE);
-			if (cmd == IMP_MWRAITH && !self.deadflag && !WRAITH_USE_CAM) self.cam_x = self.cam_x - (self.cam_x & CHSCAM_ON);
+//			if (cmd == IMP_MWRAITH && !self.deadflag && !WRAITH_USE_CAM) self.cam_x = self.cam_x - (self.cam_x & CHSCAM_ON);
 		}
 		else
 			flyer_check(self, FALSE);
 
-//	if (cmd != IMP_MWIZARD && cmd != IMP_MCHAOS && cmd != IMP_MWRAITH) self.movetype = MOVETYPE_WALK; // only spawned flyers
-//	}
 };
 
 

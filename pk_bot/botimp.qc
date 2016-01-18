@@ -126,15 +126,12 @@ void () observer =
 	}
 	
 	cam_startdeathview(); // get a cam ent
-	set_viewport(self, self); // dont really need death view
-
-	bprint ("set_viewport: observer\n");
 
 	dead_drop(self); // Cataboligne - 10.7.11 - drop runes+
 	morph_clearparms(self.owner, TRUE);
 	self.ltime = time;
 
-	setmodel(self, "progs/null.mdl");
+	setmodel(self, null_model);
 	setsize (self,'-4 -4 -4', ' 4 4 4'); // dont look in floors / walls
 	self.movetype = MOVETYPE_FLY;
 	self.health = self.view_ofs_z = 1;

@@ -957,7 +957,7 @@ void(float silent) player_zombie_become =
 	self.noise2 = "zombie/z_pain1.wav";
 	self.noise2 = null_string;
 	self.view_ofs = '0 0 20'; // lowered 2
-	self.cam_z = 0.1;
+
 	self.lefty = 0; // cam
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
@@ -970,12 +970,13 @@ void(float silent) player_zombie_become =
 	makevectors(self.v_angle);
 	spawn_tfog(self.origin + 20 * v_forward);
 
-
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become a zombie.\n"); // yuk :-|~
+		bprint(" has become "); // zombie
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
 		morph_impulse();
-		}
+	}
 };
 

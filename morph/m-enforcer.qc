@@ -368,7 +368,6 @@ void(float silent) player_enforcer_become =
 	self._jump2 = SUB_Null;
 	self._attack = player_enf_atk;
 	self._impulse = player_enf_impulse;
-//	self._can_get_p = SUB_False;
 	self._killmsg = player_enf_killmsg;
 	self._killmsg2 = player_enf_killmsg2;
 
@@ -387,7 +386,6 @@ void(float silent) player_enforcer_become =
 	self.noise2 = "enforcer/pain1.wav";
 	self.noise3 = null_string;
 	self.view_ofs = ' 0 0 24';
-	self.cam_z = 0.1;
 //	if(!deathmatch)
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
@@ -400,11 +398,13 @@ void(float silent) player_enforcer_become =
 
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become an enforcer.\n");
+		bprint(" has become "); // an enforcer
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
 		morph_impulse();
-		}
+	}
 };
 
 

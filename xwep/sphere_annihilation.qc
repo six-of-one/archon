@@ -327,7 +327,7 @@ float(entity g) annihilation_check =
 	else if (g.classname == "viswep" && g.owner != world) t = FALSE; // viswep held by player
 	else if (! f && vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON_ENT) t = FALSE;
 	else if (vlen(g.origin - sphere_a.origin) > SPHERE_HORIZON) t = FALSE;
-	else if (g.model == "progs/null.mdl") t = FALSE;
+	else if (g.model == null_model) t = FALSE;
 	else if (g.solid == SOLID_TRIGGER && g.movetype == MOVETYPE_NONE) t = FALSE;
 	else if (g.solid == SOLID_BSP) t = FALSE;
 	else if (g.movetype == MOVETYPE_PUSH) t = FALSE;

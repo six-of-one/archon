@@ -500,7 +500,7 @@ void(float silent) player_demon_become =
 	self.noise2 = "demon/dpain1.wav";
 	self.noise3 = null_string;
 	self.view_ofs = '0 0 12'; // lowered by 10
-	self.cam_z = 0.06;
+
 //	if(!deathmatch)
 //		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else
@@ -512,9 +512,11 @@ void(float silent) player_demon_become =
 
 
 	if (!silent) // silent for starting new level as this beasty
-		{
+	{
 		bprint(self.netname);
-		bprint(" has become a fiend.\n");
+		bprint(" has become "); // fiend
+		bprint(polymorph_id(self.morphy));
+		bprint(".\n");
 		morph_impulse();
-		}
+	}
 };

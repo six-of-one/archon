@@ -122,12 +122,23 @@ void(entity targ, entity attacker) Killed =
 
 	monster_death_use ();
 
+	if (self.goalentity.think != de_archon_thk) // no return this vector if he got de-archoned
+	if ((self.height == IMP_MCHAOS && self.morphy != IMP_MCHAOS) ||
+		 (self.height == IMP_MORDER && self.morphy != IMP_MORDER)) // voluntary return to Archon form - no pts req. for now
+	{
+		if (self.goalentity.classname == "archon_morph")
+			self.goalentity.think();
+		else
+		chaos_morph_chg(self, 0);
+	}
+	else
 //	if (self.th_die != (void()) 0) // something got thru with 0 th_die on server test 10.28.11
 	if (self.th_die) // something got thru with 0 th_die on server test 10.28.11
 	self.th_die ();
 
 	if (self.vwepent) viswep_ld(self, -2); // still have visweps
 
+	if ((self.morphy != IMP_MCHAOS) && (self.morphy != IMP_MORDER))
 	if (self.class_select == "class_player") // Cataboligne 9.19.11 - monsters were calling - just never saw because werent using dp cam
 		dead_cam_set(); // Cataboligne 9.11.3 purify - chase cam
 
@@ -167,7 +178,6 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		{
 				// IMP: magic shield goes here - prevent archon power loss but reduce shield power
 				targ.archon = targ.archon - (damage * 0.25); // reduce by 1/4 damage
-				if (targ.archon < 0) targ.archon = 0; // IMP: *** - de-archon at this point
 		}
 
 		if (attacker.rune_flag & RUNE_VAMPIRE)
@@ -184,6 +194,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 				attacker.archon = attacker.archon + save; // add points to attackers
 		}
 
+		if (attacker.archon < 0) de_archon(attacker);
 		return;
 	}
 

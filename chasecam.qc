@@ -1,36 +1,22 @@
+/* ::-::
+ *
+ * Cataboligne
+ *
+ * file: chasecam.qc
+ *
+ * date: unknwn - pk_ccc - 1st cam for pk
+ * date: 8.29.03 - chaos mod mkI
+ * date: 3.25.08 - pk 2.x
+ * date: 3.29.10 - chaos mod mkII
+ * date: 9.29.13 - dp cam - removed albins code
+ *
+ * qc - support chaos mod archon being
+ *
+ */
+
+
 /*
-chasecam file
-
---- see original for instructional comment - Cataboligne
-
-====================================================================
-
-*/
-// vars
-
-//.vector cam; // all chase cam data - moved for pre compile
-
-// already in pk for hub view
-// string CL_BOBSET = "cl_bob 0.02\n"; // val for turning view bob back on when not in chasecam
-
-string CAM_MODEL = "progs/null.mdl";
-float CAM_DIST		= 100.0;
-float CAM_Z			= 22.0;
-float CAM_DEF; 					// set to 1 for default chase cam
-float NO_CAM; 					// set to 1 to disable chase cam
-
-float CHSCAM_NO_WATER = FALSE; // if true, cam will deactivate in water
-// water is an issue because the engine (even darkplaces) does not update the cam view when the player ent is partially in non-vised (non transparent) water
-
-// fn(chase_cam_precache) - init cam, cache files
-
-void() chase_cam_precache =
-{
-//	precache_model ("progs/cross1.mdl" ); // lasertargeter
-	precache_model (CAM_MODEL);
-};
-
-//original chasecam.qc
+now not used - strictly dpcam mod
 
 void( entity m_e, entity v_e) set_viewport =
 {
@@ -40,18 +26,12 @@ void( entity m_e, entity v_e) set_viewport =
 	WriteByte (MSG_ONE, SVC_SETVIEWPORT);
 	WriteEntity (MSG_ONE, v_e);           // view port
 };
-
-void() Keep_cam_chasing_owner;
-void( float opt ) Remove_chase_cam;
+*/
 
 // (moved to defs.qc)
-//float chasecam_dist = 118, chasecam_zmult = 0.30000;
 // changed to player.cam_y (distance)
 // player.cam_z (zmult)
-// set in client.qc for initial values
 
-// Resets weapon model after changing view
-// called by chase cam or player entities
 // hack - handles cl_bob deal - Cataboligne 1.8.8
 // IDEA: save bob value
 
@@ -75,6 +55,8 @@ void(string bcm) cam_setbob =
 	}
 };
 
+// Resets weapon model after changing view
+
 void( entity player_ent ) Chase_cam_setweapon =
 {
 	local entity e;
@@ -85,7 +67,7 @@ void( entity player_ent ) Chase_cam_setweapon =
 	{
 		self.weaponmodel = null_string;
 		cam_setbob(null_string);
-		stuffcmd( self, CAM_FOV ); // moved here for dpcam
+		stuffcmd( self, CAM_FOV );
 	}
 	else
 	{
@@ -96,147 +78,7 @@ void( entity player_ent ) Chase_cam_setweapon =
 	self = e;
 };
 
-// called either by player or chase cam entities (to restart)-
-// vpos:
-// '0 0 0' = start from player
-// (else use as cam origin)
-void( entity cam_owner, vector vpos ) Start_chase_cam =
-{
 
-	local entity	chase_cam;
-
-	if (DARKPLACES || chaos)
-	{
-		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
-//		if (chaos)
-//		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
-	}
-
-	if (NO_CAM || cam_owner.class_select == "class_bot") // Cataboligne - 8.16.9 - quake compatability mode - 9.19.11 dont allow bots in here
-	{
-		return;
-	}
-
-	// turn on bit-flag
-	cam_owner.cam_x = cam_owner.cam_x | CHSCAM_ON;
-
-	Chase_cam_setweapon( cam_owner );
-
-
-	if (CAM_DEF & DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
-	{
-		stuffcmd(cam_owner, "chase_active 1\n");
-		return;
-	}
-
-	stuffcmd(cam_owner, "chase_active 0\n"); // make sure this is off
-
-	chase_cam = spawn();
-
-	chase_cam.owner=cam_owner;
-
-	chase_cam.solid = SOLID_NOT;
-	chase_cam.movetype = MOVETYPE_FLY;
-	chase_cam.water_notify = null_string; // Cataboligne - 6.13.10 - cam splash issue - just in case fix
-
-
-	chase_cam.angles = chase_cam.owner.angles;
-
-	setmodel (chase_cam, CAM_MODEL );
-	setsize (chase_cam, '0 0 0', '0 0 0');
-
-	if (vpos == '0 0 0')
-		setorigin( chase_cam, chase_cam.owner.origin + '0 0 22' );
-	else
-		setorigin( chase_cam, vpos );
-
-	chase_cam.classname = "chase_cam";
-
-	chase_cam.nextthink = time + 0.1;
-	chase_cam.think = Keep_cam_chasing_owner;
-
-	// set CLOSE to 0 (ref. PlayerPreThink())
-	//chase_cam.owner.view_ofs_z = -1;
-	//set_viewport( cam_owner, chase_cam);
-	chase_cam.skin = 1; // let track function handle the remote view
-							  // part, start with "temp. disabled" flag set
-
-	// distance clipping
-	chase_cam.ammo_shells = cam_owner.cam_y / 3;
-
-};
-
-// secondary think for cam entities
-void() Reable_chase_cam =
-{
-	local float p;
-
-	self.nextthink = time + 0.1;
-
-	if ( (self.owner.solid == SOLID_NOT) || (self.owner.class_select == "class_bot") )
-	{
-		//owner died in water, reset .cam_x flag for respawn
-//		self.owner.cam_x = self.owner.cam_x | CHSCAM_ON;
-		remove( self );
-		return;
-	}
-
-	if (self.owner.classname == OBSERVER) return;
-	if (self.owner.admin) return; // pk mods
-
-	if ((CHSCAM_NO_WATER == TRUE) & (self.owner.waterlevel != 0))
-		return;
-
-	p = pointcontents(self.owner.origin);
-	
-	if (p == CONTENT_SOLID) // fell out of level, etc
-		return;
-
-	self.owner.cam_x = self.owner.cam_x | CHSCAM_ON;
-	Chase_cam_setweapon( self.owner );
-
-	self.skin = 1; // flag temp. disabled flag so track function-
-						// will reset remote view
-	self.solid = SOLID_NOT;
-	self.movetype = MOVETYPE_FLY;
-	setmodel (self, CAM_MODEL);
-	setsize (self, '0 0 0', '0 0 0');
-	setorigin( self, self.owner.origin);
-	self.ammo_shells = self.owner.cam_y / 3; // distance clipping
-	self.think = Keep_cam_chasing_owner;
-	//Start_chase_cam( self.owner, '0 0 0' );
-};
-
-
-// called only by chase cam entities
-// opt values
-// TRUE = remove completely
-// FALSE = remove view but keep alive with Reable_chase_cam();-
-void( float opt ) Remove_chase_cam =
-{
-	// turn off bit-flag-
-	self.owner.cam_x = self.owner.cam_x - (self.owner.cam_x & CHSCAM_ON);
-
-	// set view-point back to normal
-	set_viewport( self.owner, self.owner);
-
-	setmodel( self, null_string );
-	self.velocity = '0 0 0';
-
-//	self.owner.view_ofs_z = 22;
-	self.owner.view_ofs_z =  morph_chasecam_fpv(self.owner); // Cataboligne 9.19.3 - morph chasecam return to FPV
-
-	Chase_cam_setweapon( self.owner );
-
-	if ( !opt )
-	{
-		self.nextthink = time + 0.1;
-		self.think = Reable_chase_cam;
-	}
-	else
-		remove( self );
-
-};
 
 
 void () dcam_respawnthink =
@@ -282,17 +124,12 @@ void () cam_deathmove =
 		}
 
 		crosshair_con(self.owner, -1);
-// fix - set viewport back if default no
-//		if (!cvar("sv_cam_def") || NO_CAM || (chaos && !cvar("cl_cam_def")))
-//			set_viewport(self.owner, self.owner); // NOTE: not the fix we wanted?
 		return;
 	}
 	else if (DCAMTO && (self.delay < time))
 	{
 		if (DCAMTOACT)
 		{
-//			self.owner.think = ClientDisconnect;
-//			self.owner.nextthink = time + 0.5;
 			stuffcmd( self.owner, "disconnect\n" );
 			remove(self);
 		}
@@ -348,34 +185,25 @@ void () cam_deathmove =
 	}
 
 // observers are very poor - no possesions
-//	if (self.owner.frame || self.owner.effects || self.owner.weapon || self.owner.currentammo || self.owner.model != "progs/null.mdl")
-//	if (self.owner.model != "progs/null.mdl")
-//	{
-//		morph_clearparms(self.owner, TRUE);
-//	}
 
-	if (self.owner.model != "progs/null.mdl")
+	if (self.owner.model != null_model)
 	{
 		morph_clearparms(self.owner, TRUE);
+		PK_SetCurrentAmmoOnly(self.owner); // note: is this needed in loop?
 		self.ltime = time;
-		setmodel(self.owner, "progs/null.mdl");
+		setmodel(self.owner, null_model);
 		setsize (self.owner,'-4 -4 -4', ' 4 4 4');
-//		self.owner.movetype = MOVETYPE_FLY; // set camera flight pattern delta
-//		self.owner.takedamage = DAMAGE_NO;
 		self.owner.wait = 0;
 		self.owner.view_ofs_z = 1;
 		self.owner.water_notify = null_string; // Cataboligne - 6.13.10 - deadcam splash issue
 		self.oldorigin = self.owner.origin;
-		setorigin(self.owner, self.origin);
-		set_viewport(self.owner, self.owner); // back to moving players own ent, cams off
+//		setorigin(self.owner, self.origin);
+//		set_viewport(self.owner, self.owner); // back to moving players own ent, cams off
 
 		sprint(self.owner,"your spirit is free!\n");
 	}
 
 	if (cvar("fov") != DCAM_FOV) stuffcmd( self.owner, DCAM_SET_FOV ); // I see short dead dudes - enforce crow vision
-
-	PK_SetCurrentAmmoOnly(self.owner); // note: is this needed in loop?
-//	self.owner.flags = self.owner.flags | FL_ONGROUND;
 };
 
 // fn(cam_deathview) - view of recently deceased
@@ -397,15 +225,11 @@ void () cam_deathview =
 
 	if (self.owner.solid != SOLID_NOT) // hit respawn already
 	{
-
-// FIXED - viewport restore here
-//		set_viewport(self.owner, self.owner); // test this
-
 		remove( self);
 		return;
 	}
 	else
-	if (!self.wait && self.owner.model != "progs/null.mdl")
+	if (!self.wait && self.owner.model != null_model)
 	{
 		self.delay = 0;
 		self.wait = time + 4;
@@ -423,25 +247,8 @@ void () cam_deathview =
 		self.owner.model = null_string;
 	}
 
-
 	self.owner.classname = OBSERVER;
 	PK_SetCurrentAmmoOnly(self.owner);
-
-	traceline( self.owner.origin, self.origin, TRUE, self.owner);
-
-	if (trace_fraction < 1)
-	{
-		setorigin( self, trace_endpos - self.dest * 8);
-		self.velocity = '0 0 0';
-	}
-
-	if (self.velocity != '0 0 0')
-	{
-		traceline( self.origin, self.origin + self.dest * 20, TRUE, self.owner);
-		if (trace_fraction < 1 || trace_inwater ||
-			 vlen( self.origin - self.owner.origin) > 200)
-			self.velocity = '0 0 0';
-	}
 
 	self.owner.health = 1; //hack so engine doesnt tilt view
 
@@ -454,339 +261,37 @@ void () cam_deathview =
 
 void() cam_startdeathview =
 {
-	local entity e;
-	local vector goal, ang;
+//	local vector goal, ang;
 
-	ang = self.v_angle;
-	ang_x = 30; // pretend was a slight down aim
+//	ang = self.v_angle;
+//	ang_x = 30; // pretend was a slight down aim
 	self.weaponmodel = null_string;
 
-	self.oldenemy = e = spawn();
-	e.owner = self;
-	e.classname = "deadcam";
-	e.solid = SOLID_NOT;
-	e.movetype = MOVETYPE_FLY;
-	e.angles = e.owner.angles;
+	self.oldenemy = newmis = spawn();
+	newmis.owner = self;
+	newmis.classname = "deadcam";
+	newmis.nextthink = time + 0.1;
+	newmis.think = cam_deathview;
+/*
+
+might want to try this with player ent after copy to bodyque
+	
+	newmis.solid = SOLID_NOT;
+	newmis.movetype = MOVETYPE_FLY;
+	newmis.angles = newmis.owner.angles;
 	setmodel (e, CAM_MODEL );
 	setsize (e, '0 0 0', '0 0 0');
-	e.nextthink = time + 0.1;
-	e.think = cam_deathview;
 	makevectors( ang );
 	goal = (self.origin + '0 0 18') - (v_forward * 120);
 	traceline( self.origin + '0 0 18', goal, TRUE, self);
 	setorigin( e, trace_endpos + (v_forward * 8));
-	e.velocity = '0 0 0' - v_forward * 20;
-	e.dest = '0 0 0' - v_forward; // save forward direction, used in cam_deathview
-
-	set_viewport( self, e);
-};
-
-
-/*
-	main think function for cam entities
-		self.ammo_shells = distance clipping
-		self.ammo_nails = hang-up flag
-		self.dmg = lifts fix
-		self.frags = lifts fix
-		self.impulse = lifts fix
-		self.dest = deathview vector to save 'v_forward' of fade direction
-		self.skin = close proximity temporary disableing
-		self.owner = player this cam is for
-
-	.v_angle_x:
-		78.8 (max down aim)
-		-68.9 (max up aim)
+	newmis.velocity = '0 0 0' - v_forward * 20;
+	newmis.dest = '0 0 0' - v_forward; // save forward direction, used in cam_deathview
 */
-void() Keep_cam_chasing_owner =
-{
-	local vector vtmp1, vtmp2;
-	local vector owner_vec, goal, dir;
-	local float  dist, cap, f_f;
-
-	self.nextthink = time + 0.1;
-
-	// check if player toggled
-	if (! (self.owner.cam_x & CHSCAM_ON))
-	{
-		Remove_chase_cam( TRUE );
-		return;
-	}
-
-	if (self.owner.solid == SOLID_NOT)
-	{
-
-		if (intermission_running)
-		{
-			set_viewport( self.owner, self.owner);
-			remove( self );
-		}
-		else
-		{  // deathview
-			self.velocity = '0 0 0' - normalize( self.owner.origin - self.origin) * 20;
-			self.angles = vectoangles( self.velocity);
-			makevectors( self.angles);
-			self.dest = v_forward; // save forward direction, used in cam_deathview
-			self.think = cam_deathview;
-			self.classname = "deadcam";
-			if (self.skin) // temp disable flag is set
-			{
-				self.owner.view_ofs_z = -1;
-				set_viewport( self.owner, self);
-			}
-		}
-		return;
-	}
-
-	if (self.owner.admin) // pk mods - note: this is slightly annoying in operation
-	{
-		Remove_chase_cam( FALSE );
-		return;
-	}
-
-// because non transparent vised water blocks cam traces
-	if ( (CHSCAM_NO_WATER == TRUE) & (self.owner.waterlevel != 0) )
-	{
-		Remove_chase_cam( FALSE );
-		return;
-	}
-	
-	cap = pointcontents(self.owner.origin);
-	
-	if (cap == CONTENT_SOLID) // fell out of level, etc - very important as this cam does not leave the level, and the falling test code requires outside tests for grace saves
-	{
-		Remove_chase_cam( FALSE );
-		return;
-	}
-	
-// teleport check
-	
-	if (self.owner.cam_x & CAM_TELE)
-	{
-		self.owner.cam_x = self.owner.cam_x - (self.owner.cam_x & CAM_TELE);
-		setorigin( self, self.owner.origin + '0 0 22' );
-	}
-	/*
-	else if (self.owner.waterlevel != 0)
-	{
-		self.flags = self.flags | FL_WATERJUMP;
-	}
-	else
-		self.flags = self.flags - (self.flags & FL_WATERJUMP);
-	*/
-	owner_vec = self.owner.origin + '0 0 22';
-
-	// get player velocity relative to player's
-	// current yaw
-	// f_f (based on running calcs (maxspeed = 400)
-	//  (back ~= 640, forward ~= 0)
-	dir_y = self.owner.v_angle_y;
-	makevectors( dir );
-	f_f = vlen( (v_forward * 320) - self.owner.velocity );
-
-	// held for use after second makevectors call for
-	// pulling forward on a down aim
-	dir = v_forward;
-
-
-	// increment fade-back variable
-	self.ammo_shells = self.ammo_shells + 4.5;
-	if (self.ammo_shells > self.owner.cam_y)
-		self.ammo_shells = self.owner.cam_y;
-
-	makevectors( self.owner.v_angle );
-
-	// set spot before clipping
-	//.v_angle_x:
-	//	78.8 (max down aim)
-	//	-68.9 (max up aim)
-
-	goal = owner_vec - (v_forward * self.ammo_shells);
-	goal_z = goal_z + 14 + (self.ammo_shells * self.owner.cam_z);
-
-	// adjust initial goal
-	//////////////////////////////////////////////////
-	if (self.owner.v_angle_x > 0)
-	{
-		// pull forward
-		cap = self.owner.v_angle_x;
-		if (cap > 56) cap = 56;
-		goal = goal + dir * cap;
-
-		// pull down
-		goal_z = goal_z - (self.owner.v_angle_x * (self.ammo_shells * 0.01));
-		cap = self.owner.origin_z + 28;
-		if (goal_z < cap)
-			goal_z = cap;
-	}
-
-	// increase height if getting under the player
-	if (goal_z < owner_vec_z)
-	{
-		vtmp1 = goal; vtmp1_z = 0;
-		vtmp2 = owner_vec; vtmp2_z = 0;
-		cap = vlen( vtmp1 - vtmp2 );
-		if (cap < 100)
-		{
-			goal_z = goal_z + ((100 - cap) * 0.6);
-			if ( goal_z > owner_vec_z )
-				goal_z = owner_vec_z;
-		}
-	}
-	//////////////////////////////////////
-
-	// clip for brushes
-	//////////////////////////////////////
-	traceline (owner_vec, goal, FALSE, self.owner);
-	// pull a little forward, avoids most hang-ups along walls
-	goal = trace_endpos + ( v_forward * 2 );
-
-	// clip fade-back variable
-	traceline( owner_vec, owner_vec - (v_forward * self.ammo_shells), FALSE, self.owner);
-	if (trace_fraction < 1)
-	{
-		self.ammo_shells = vlen(trace_endpos - owner_vec);
-		cap = fabs( self.owner.v_angle_x ) - 10;
-		if (cap > 0)
-			self.ammo_shells = self.ammo_shells + cap;
-	}
-
-	traceline (self.origin, goal, FALSE, self.owner );
-	if (trace_fraction < 1)
-	{
-		// half it if blocked
-		dir = normalize(goal - owner_vec);
-		dist = vlen(goal - owner_vec) * 0.5;
-		goal =  owner_vec + dir * dist;
-	}
-
-	// pad for floors and ceilings
-	traceline (goal, goal + '0 0 6', FALSE, self.owner );
-	if (trace_fraction < 1 ) goal = trace_endpos - '0 0 6';
-	else
-	{
-		traceline (goal, goal - '0 0 6', FALSE, self.owner );
-		if (trace_fraction < 1 ) goal = trace_endpos + '0 0 6';
-	}
-	////////////////////////////////////////
-
-	self.angles = self.owner.angles;
-
-	traceline (self.origin, owner_vec, FALSE, self.owner );
-	if (trace_fraction < 1)
-	{
-		// vtmp1_z:  0 = LOS to head
-		//				-1 = LOS to feet, but not head
-		//				-2 = no LOS
-		traceline (self.origin, self.owner.origin - '0 0 24', FALSE, self.owner );
-		if (trace_fraction == 1)
-			vtmp1_z = -1;
-		else
-			vtmp1_z = -2;
-	}
-	else
-		vtmp1_z = 0;
-	if (vtmp1_z > -2)
-	{
-		dir = normalize(goal - self.origin);
-		dist = vlen(goal - self.origin);
-
-		cap = dist * 0.16;
-
-		if (cap > 5.2)
-			self.velocity = dir * dist * 5.2;
-		else if (cap > 1)
-			self.velocity = dir * dist * cap;
-		else
-			self.velocity = dir * dist;
-
-		if (vtmp1_z == -1)
-		{
-			self.velocity_z = self.velocity_z - 400;
-		}
-
-		// tighten up if owner running backwards
-		if (f_f > 560)
-		{
-			cap = self.velocity_z;
-			self.velocity = self.velocity * 2;
-			self.velocity_z = cap;
-		}
-
-		if (! self.owner.velocity_z)
-		{
-			// rising/lowering lifts fix,
-			// quick and dirty hack, player.velocity_z stays at zero when
-			// moving on a lift, so check through an alternate route for the
-			// condition and amplify the current z velocity.
-			if (self.owner.origin_z != self.frags)
-				//if (self.dmg &&  (self.owner.flags & FL_ONGROUND)) // avoid landing on ground events that can happen between thinks
-					// wierd setup here with the .impulse var, forces a skip for first occurance,
-					// avoids logic catching vel_z same/org_z dif. instance that happens when player
-					// transitions between sloping to level ground while running, (also took care
-					// of the same type of thing for landing after a jump)
-					if (self.impulse)
-						self.velocity_z = self.velocity_z * 3;
-					else
-						self.impulse = TRUE;
-		}
-		else if (self.impulse)
-			self.impulse = FALSE;
-
-		// try to avoid hangups common to ceiling clips when player
-		// is running
-		if( self.oldorigin == self.origin )
-		{
-			if( dist > 16 )
-			{
-				self.ammo_nails = self.ammo_nails + 1;
-				if( self.ammo_nails > 2 )
-				{
-					self.ammo_nails = 0;
-					self.velocity = '0 0 0';
-					setorigin( self, goal );
-				}
-			}
-			else
-				self.ammo_nails = 0;
-		}
-	}
-	else
-	{
-		self.velocity = '0 0 0';
-		setorigin( self, goal );
-	}
-
-	if (! self.skin) // .skin is 1 if in a temp disable state
-	{
-		if (vlen(self.owner.origin - self.origin) < 30)
-		{
-			self.skin = 1;
-//			self.owner.view_ofs_z = 22;
-			self.owner.view_ofs_z =  morph_chasecam_fpv(self.owner); // Cataboligne 9.19.3 - morph chasecam return to FPV
-			set_viewport( self.owner, self.owner);
-		}
-	}
-	else
-	{
-		if (vlen(self.owner.origin - self.origin) > 39)
-		{
-			self.skin = 0;
-			self.owner.view_ofs_z = -1;
-			set_viewport( self.owner, self);
-		}
-	}
-
-
-	// hacks (only) section :-)
-
-	// keep flag clear so internal C won't drop movement checks
-	if (self.flags & FL_ONGROUND)
-		self.flags = self.flags - FL_ONGROUND;
-
-	self.oldorigin = self.origin; // cam hang-up hack
-	self.frags = self.owner.origin_z; // 'on lift' hack
-	self.dmg = self.owner.flags & FL_ONGROUND; // 'on lift' hack
+//	set_viewport( self, e);
 };
+
+
 
 
 // called by player only
@@ -797,68 +302,18 @@ void() Toggle_chase_cam =
 	if (self.admin) return; // pk mods
 	if (self.classname == OBSERVER) return;
 
-	if ((CHSCAM_NO_WATER == TRUE) & (self.waterlevel != 0))
-		return;
-
-	if( (self.cam_x & CHSCAM_ON) )
-	{
-		// will be noticed by next think-
-		// of player's chase cam entity
+	if (self.cam_x & CHSCAM_ON)
 		self.cam_x = self.cam_x - CHSCAM_ON;
-
-		if (CAM_DEF & DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
-		{
-			stuffcmd(self, "chase_active 0\n");
-			Chase_cam_setweapon( self );
-		}
-	}
 	else
-		Start_chase_cam( self, '0 0 0' );
+		self.cam_x = self.cam_x | CHSCAM_ON;
+
+	Chase_cam_setweapon( self );
+	stuffcmd(self, "chase_active ");
+	stuffcmd(self, ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
+	stuffcmd(self, "\n");
+
 };
 
-
-void() Chase_cam_lvlstart_think =
-{
-
-	if (self.owner.cam_x & CHSCAM_ON)
-		Start_chase_cam( self.owner, '0 0 0' );
-
-/*
-	if ( (self.owner.cam_x & LASERTARG_ON) )
-	{
-		self.owner.cam_x = self.owner.cam_x - LASERTARG_ON;
-		LaserTargeterToggle( self.owner );
-	}
-*/
-	remove( self );
-};
-
-
-// called in CLIENT.QC by void() PutClientInServer-
-// player.cam_x is set and saved between levels using parm16
-// in CLIENT.QC
-void() Chase_cam_level_start =
-{
-
-	local entity e;
-
-	if (self.class_select == "class_bot") return; // no bots
-
-	set_viewport( self, self); // Cataboligne 10.4.11 - fix bug while using dpcam where view gets borked
-
-// get rid of any dcam
-	if (self.oldenemy)
-	if (self.oldenemy.classname == "deadcam")
-		remove(self.oldenemy);
-
-	self.oldenemy = world;
-
-	e = spawn();
-	e.owner = self;
-	e.nextthink = time + 0.2;
-	e.think = Chase_cam_lvlstart_think;
-	stuffcmd(self, STD_FOV ); // incase of crow vision
-};
 
 
 // opt:
@@ -915,74 +370,11 @@ void(float opt) Chase_cam_change_zmult =
 };
 
 
-// fn(cam_parms) - manage parms between levels
-
-// self must be player ent when this is called
-
-void(float sel) cam_parms =
-{
-	if (self.class_select == "class_bot") return; // no cam for bots
-
-	CAM_DEF = 1; // compiled default for non dp engines
-	if (DARKPLACES || chaos) // IDEA: move to live upd
-	{
-		CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam
-//		if (chaos)
-//		if (cvar("cl_cam_def") != CAM_DEF) CAM_DEF = cvar("cl_cam_def"); // Cataboligne - 8.26.11 - temp disable testing dpcam
-
-		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
-//		if (chaos)
-//		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
-	}
-
-	if (NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
-
-	if (!sel)
-	{
-// holds current state of cam and targeter between levels
-		parm14 = self.cam_x + (self.cam_y & 255) * 256 + ((self.cam_z * 100) & 255) * 65536; // bit flags, cam distance, cam height
-	}
-	else if (sel == 1)
-	{
-		self.cam_x = parm14 & 255;
-		self.cam_y = (parm14 & 65280)/256;
-		self.cam_z = ((parm14 & 16711680)/65536)  * 0.01;
-
-		if (!self.cam_x & CAM_DPLOAD)
-		if (CAM_DEF & DPCAM_ON)
-		{
-//			cvar_set("chase_active", ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
-			self.cam_y = cvar("chase_back");
-			self.cam_z = cvar("chase_up") / 100;
-			self.cam_x = self.cam_x | CAM_DPLOAD;
-		}
-		else stuffcmd(self, "chase_active 0\n"); // so it doesnt get left on changing parm between levels or something
-	}
-	else
-	{
-	// only reset if zeroed  (so DM/COOP respawns don't reset)
-		if (self.deadflag == DEAD_RESPAWNABLE)
-			parm14 = self.cam_x + (self.cam_y & 255) * 256 + ((self.cam_z * 100) & 255) * 65536; // bit flags, cam distance, cam height
-		else
-			parm14 = CAM_DEF + CAM_DIST * 256 + CAM_Z * 65536; // bit flags, cam distance, cam height
-	}
-};
-
 
 	// prevent internal C from tilting the view after
 	// QC has already initiated all death processes
 void () dead_cam_set =
 {
-
-//	if (DARKPLACES || chaos)
-//	{
-//		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
-//		if (chaos)
-//		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
-//	}
-
-	if (CAM_DEF & DPCAM_ON) stuffcmd(self, "chase_active 0\n");
-
 
 // limit on frags from fire & forget implementation
 
@@ -995,15 +387,16 @@ void () dead_cam_set =
 	if (self.disconnectPlayer) return; // dont set for disconnect frikbots that get splash damage!
 	if (self.class_select == "class_bot") return; // no bots past this - they get the code above
 
+// just leave cam on if on, and run this - 0 follow vars
+	stuffcmd(self, "exec cfg/morph/dead.cfg\n");
+
 // NOTE: wraith option still needs checked once we have chaos mod morph deal
 	
 	if (self.flags & FL_CLIENT)
 	{
-		if (self.oldenemy)
 		if (self.oldenemy.classname == "deadcam") return; // dont make more than one - just in case
 
-		if ( (! self.cam_x & CHSCAM_ON) || (self.cam_x & DPCAM_ON) )
-			cam_startdeathview();
+		cam_startdeathview();
 	}
 };
 
@@ -1016,28 +409,13 @@ void() cam_punch =
 	if (self.cam_x & CHSCAM_ON) self.punchangle_x = 0;
 };
 
+
 void () ccb_impulse_check =
 {
 	if (self.class_select == "class_bot") return; // no cam for bots - not sure how they would get here...
 
-	if (DARKPLACES || chaos)
-	{
-		NO_CAM = cvar("sv_cam_off"); // dp var disables cam
-//		if (chaos)
-//		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
-	}
+	if (!autocvar_sv_cam) return; // server turned cam off
 
-	if (NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
-
-	CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam - check here in case it was changed
-
-	if (!self.cam_x & CAM_DPLOAD)
-	if (CAM_DEF & DPCAM_ON)
-	{
-		self.cam_y = cvar("chase_back");
-		self.cam_z = cvar("chase_up") / 100;
-		self.cam_x = self.cam_x | CAM_DPLOAD;
-	}
 //chase cam code
 	if (self.impulse == 230) Toggle_chase_cam();
 
@@ -1047,15 +425,13 @@ void () ccb_impulse_check =
 	else if (self.impulse == 235) Chase_cam_change_dist(1); // plus
 
 //	else if (self.impulse == 231) LaserTargeterToggle( self );
-	if (CAM_DEF & DPCAM_ON)
-	{
-		stuffcmd(self, "chase_back ");
-		stuffcmd(self, ftos(floor(self.cam_y)));
-		stuffcmd(self, "\n");
-		stuffcmd(self, "chase_up ");
-		stuffcmd(self, ftos(floor(self.cam_z * 100)));
-		stuffcmd(self, "\n");
-	}
+
+	stuffcmd(self, "chase_back ");
+	stuffcmd(self, ftos(floor(self.cam_y)));
+	stuffcmd(self, "\n");
+	stuffcmd(self, "chase_up ");
+	stuffcmd(self, ftos(floor(self.cam_z * 100)));
+	stuffcmd(self, "\n");
 
 };
 
