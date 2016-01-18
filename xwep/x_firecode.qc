@@ -223,8 +223,13 @@ void() d_weapon_touch =
 	self.model = string_null;
 	self.solid = SOLID_NOT;
 	if (deathmatch == 1)
+	{
+		if (self.wait)
+			self.nextthink = time + self.wait;
+		else
 		self.nextthink = time + RSP_TIME;
-	self.think = SUB_regen;
+		self.think = SUB_regen;
+	}
 
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets

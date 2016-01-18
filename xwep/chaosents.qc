@@ -212,7 +212,6 @@ string pk_pr;
 
 void(entity e, float am, string pr) eweap_am =
 {
-	local string f;
 //	if (am_type == am) return;
 //	am_type = am;
 
@@ -242,21 +241,15 @@ void(entity e, float am, string pr) eweap_am =
 	{
 		if (pr != "") sprint(e, pr);
 		sprint(e, ftos(e.ammo_rockets));
-		f = " rockets";
-		if (EWEAP)
-		if (EWEAP.vwepmdl == "progs/vw_q2_hgr.mdl")
-			f = " grenades";
-
-		sprint(e, f);
-		if (f == " rockets")
-			am_type = am_type | IT_ROCKETS;
+		sprint(e, " rockets");
+		am_type = am_type | IT_ROCKETS;
 	}
 	else if (am == AMMO_GRENADES && !(am_type & IT_ROCKETS))
 	{
 		if (pr != "") sprint(e, pr);
 		sprint(e, ftos(e.ammo_rockets));
 		sprint(e, " grenades");
-		am_type = am_type | IT_ROCKETS;
+//		am_type = am_type | IT_ROCKETS;
 	}
 	else if (am == AMMO_NAILS && !(am_type & IT_NAILS))
 	{
@@ -471,7 +464,7 @@ void(float wp) q1_inv_print =
 	else if (wp == IT_GRENADE_LAUNCHER)
 	{
 		sprint(self, "Grenade launcher");
-		eweap_am(self, AMMO_GRENADES, "   -> ");
+		eweap_am(self, AMMO_ROCKETS, "   -> ");
 		sprint(self, "\n");
 	}
 	else if (wp == IT_ROCKET_LAUNCHER)
@@ -528,11 +521,9 @@ void() inventory =
 			{
 				if (e.eweapon)
 				{
-					EWEAP = e;
 					sprint(self, e.netname);
 					eweap_am(self, e.lip, "   -> ");
 					sprint(self, "\n");
-					EWEAP = world;
 				}
 				else
 					if (self.items & f) q1_inv_print(f);

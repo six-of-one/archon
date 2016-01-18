@@ -848,6 +848,9 @@ void() q3_ha_rot_thk =
 		self.owner.health = self.owner.health - 1;
 		f = TRUE;
 	}
+	if (self.owner.rune_flag & RUNE_FLG_RG) // no rot when regen rune is set
+		f = TRUE;
+	else
 	if (self.owner.armorvalue > Q3_HA_MAX)
 	{
 		self.owner.armorvalue = self.owner.armorvalue - 1;
@@ -1121,11 +1124,12 @@ void () item_quad =
 
 void() item_regen =
 {
-	self.classname = "item_artifact_invulnerability";
-	item_artifact_invulnerability();
+	if (self.class_select == "") self.class_select = "q3_item";
+	self.classname = "item_sigil";
+	self.spawnflags = RUNE_FLG_RG; //rune_bit_code(rune_bit_code(0, RUNE_FLG_RG),0);
+	item_sigil();
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
-	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
 
@@ -1164,20 +1168,21 @@ void () item_enviro =
 
 void() item_haste =
 {
+	if (self.class_select == "") self.class_select = "q3_item";
 	self.classname = "item_sigil";
-	self.spawnflags = rune_bit_code(MC_SIGIL4, 0);
+	self.spawnflags = RUNE_FLG_HS; //rune_bit_code(rune_bit_code(0, RUNE_FLG_HS),0);
 	item_sigil();
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
-	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 };
 
 void() item_flight =
 {
-	self.classname = "item_sigil";
-	self.spawnflags = rune_bit_code(MC_SIGIL8, 0); // FIX: placeholder only
-	item_sigil();
+//	self.classname = "item_sigil";
+//	self.spawnflags = rune_bit_code(0, RUNE_FLG_FLT);
+//	item_sigil();
+	item_pack(); // FIX: placeholder only
 	if (!self.wait) self.wait = Q3_POWER_WAIT;
 
 	if (self.class_select == "") self.class_select = "q3_item";
