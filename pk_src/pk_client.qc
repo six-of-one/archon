@@ -223,6 +223,7 @@ void() DecodeLevelParms =
 	}
 	self.mask_x = cb_morph(self.morphy);
 
+	self.x_items = 0; // clear prior to defaults - cant clear again after that, and giveway must be added
 // NOTE: *** morphy MUST be set prior to this call!
 	if (parm6 == -6) set_defaults(self); // only done on respawn or spawn where we are clearing parms because of dead
 
@@ -505,6 +506,8 @@ void() PutClientInServer =
 	self.dmg = 2;   		// initial water damage
 	self.super_damage_finished = 0;
 	self.radsuit_finished = 0;
+	self.wetsuit_finished = 0;
+	self.empathy_finished = 0;
 	self.invisible_finished = 0;
 	self.invincible_finished = 0;
 	self.effects = 0;
@@ -544,6 +547,7 @@ void() PutClientInServer =
 	self.angles = spot.angles;
 	self.fixangle = TRUE;		// turn this way immediately
 
+// morphic stuff
 	setmodel (self,"progs/eyes.mdl");
 	modelindex_eyes = self.modelindex;
 
@@ -576,12 +580,12 @@ void() PutClientInServer =
 
 // Cataboligne - 9.13.11 - x_item giveaway for doors - only set by doors in dm
 
-		self.x_items = x_item_dm_giveaway;
+		self.x_items = self.x_items | x_item_dm_giveaway; // we could have set defaults
 	}
 
 	spawn_tdeath (self.origin,self);
 
-
+// pk stuff below
 	pk_plcfg();
 	self.pk_items = self.pk_items | PK_IT_AXE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_CANPAB | PK_IT_BEARTRAP
 																	| PKPLUS_IT_EGO | PKPLUS_IT_TOMB | PKPLUS_IT_ACTOR | PKPLUS_IT_PHONE; // Cataboligne 8.12.9 purify - pk artifacts
@@ -626,8 +630,6 @@ void() PutClientInServer =
 	stuffcmd(self, CL_BOBSET); // restore bobing - may have come from a hub vote
 
 	self.pkplus_actortype = 0; // Cataboligne 8.12.9 purify - pk artifacts
-
-//	self.alpha = 0.5; // testing
 
 //	if (!PK) return;
 
@@ -934,7 +936,7 @@ void () CheckPowerups =
 		}
 	}
 
-	if (self.wetsuit_finished) // hip wetsuit (not in yet), q2 rebreather
+	if (self.wetsuit_finished) // hip wetsuit , q2 rebreather
 	{
 		self.air_finished = time + 12;		// don't drown
 
@@ -992,6 +994,46 @@ void () CheckPowerups =
 		}
 	}
 
+//MED
+// empathy shields
+	if (self.empathy_finished)
+	{
+// sound and screen flash when items starts to run out
+		if (self.empathy_finished < time + 3)
+		{
+			if (self.empathy_time == 1)
+			{
+				if (self.group)
+				{
+					sprint (self, self.group);
+					self.group = "";
+				}
+				else
+				sprint (self, "Empathy Shields are running out\n");
+				stuffcmd (self, "bf\n");
+				sound (self, CHAN_AUTO, "items/suit2.wav", 1, ATTN_NORM);
+				self.empathy_time = time + 1;
+			}
+
+			if (self.empathy_time < time)
+			{
+				self.empathy_time = time + 1;
+				stuffcmd (self, "bf\n");
+			}
+		}
+
+		if (self.empathy_finished < time)
+		{	// just stopped
+//MED
+//         self.items2 = self.items2 - HIP_IT_EMPATHY_SHIELDS;
+			self.empathy_time = 0;
+			self.empathy_finished = 0;
+			self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+		}
+//MED
+		else
+			self.effects = self.effects | EF_DIMLIGHT;
+	}
 };
 
 /*
@@ -1226,6 +1268,45 @@ void () PlayerPreThink =
 // PAINKEEP SPLASH Check for entities splashing
 		CheckWaterLevels();
 
+	//JIM
+	//WETSUIT
+	if (self.wetsuit_finished > time)
+	{
+		if (self.waterlevel==2)
+		{
+			self.velocity = self.velocity * 1.25; // haste rune will override these
+		}
+		if (self.waterlevel==3)
+		{
+			self.velocity = self.velocity * 1.5;
+		}
+		if (self.waterlevel >= 2)
+		{
+		// play scuba sound
+			if (self.swim_flag < time)
+			{
+				self.swim_flag = time + 7;
+				sound (self, CHAN_BODY, "hipitems/wetsuit.wav", 1, ATTN_NORM);
+			}
+			//MED 01/17/97
+			else
+			{
+				if (fabs(self.swim_flag - time - 6)<0.04)
+				{
+					DeathBubbles(1);
+				}
+				else if (fabs(self.swim_flag - time - 5.5)<0.04)
+				{
+					DeathBubbles(1);
+				}
+				else if (fabs(self.swim_flag - time - 5)<0.04)
+				{
+					DeathBubbles(1);
+				}
+			}
+		}
+  }
+
 	if (self.pk_dutychecking == 0)
 	{
 		CheckRules ();
@@ -1409,10 +1490,22 @@ void () PlayerPostThink =
 		return;
 	}
 
-
 	if (self.view_ofs == '0 0 0')
 		return;		// intermission or finale
 
+	//JIM
+	//WETSUIT
+	if (self.wetsuit_finished > time)
+	{
+		if (self.waterlevel==2)
+		{
+			self.velocity = self.velocity * 0.8;
+		}
+		if (self.waterlevel==3)
+		{
+			self.velocity = self.velocity * 0.66;
+		}
+	}
 
 	if (self.deadflag)
 	// BOLT_START

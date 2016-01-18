@@ -107,6 +107,7 @@ hipnotic/hipnoticents.qc
 hipnotic/hipwater.qc
 hipnotic/hipstain.qc
 hipnotic/gremlin.qc
+hipnotic/hipspawn.qc
 
 // runes
 runes.qc

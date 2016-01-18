@@ -620,11 +620,13 @@ void() PlayerDie =
 	}
 	local	float	i;
 
-	self.items = self.items - (self.items & IT_INVISIBILITY);
+	self.items = self.items - (self.items & IT_INVISIBILITY); // note - doesnt clear other flags
 	self.invisible_finished = 0;	// don't die as eyes
 	self.invincible_finished = 0;
 	self.super_damage_finished = 0;
 	self.radsuit_finished = 0;
+	self.wetsuit_finished = 0;
+   self.empathy_finished = 0;
 	self.modelindex = modelindex_player;	// don't use eyes
 	
 

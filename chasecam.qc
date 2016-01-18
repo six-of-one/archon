@@ -304,7 +304,8 @@ void () cam_deathmove =
 	}
 
 // observers are very poor - no possesions
-	if (self.owner.frame || self.owner.effects || self.owner.weapon || self.owner.currentammo || self.owner.model != "progs/null.mdl")
+//	if (self.owner.frame || self.owner.effects || self.owner.weapon || self.owner.currentammo || self.owner.model != "progs/null.mdl")
+	if (self.owner.model != "progs/null.mdl")
 	{
 		morph_clearparms(self.owner, TRUE);
 	}

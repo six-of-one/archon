@@ -44,6 +44,10 @@ void() morph_setup =
 
 	MONSTER_MASK_II = CB_M_BLARG + CB_M_RAPTOR + CB_M_SPIDER + CB_M_MANGA + CB_M_BOSSMAN;
 
+// note - no fish, shubs or cthon
+	MONSTER_Q1 = CB_M_ARMY + CB_M_KNIGHT + CB_M_DOG + CB_M_DEMON + CB_M_ENF + CB_M_HKNIGHT + CB_M_OGRE + CB_M_SHALR + CB_M_SHAMBL + CB_M_SCRAG + CB_M_ZOMBY + 
+						CB_M_TARBABY;
+
 };
 
 
@@ -412,19 +416,64 @@ void() morph_cube_use =
 	cube_rearm(); // re arm player
 };
 
+/*QUAKED morph_cube  (0 .5 .8) (-16 -16 0) (16 16 32)
+--------  CAT  --------
+
+to use as map item - they will respawn
+wad = "morph_cube"
+
+nothing - pick a random set from morph_cube list
+
+"mask_x" - morph list bit mask
+
+CB_CHAOS						= 1
+CB_ORDER						= 2
+//humans
+CB_HUMAN						= 4
+CB_DEMO						= 8
+//medievals
+CB_WRAITH					= 16
+CB_DRAGON					= 32
+// q2
+CB_GUNNEY					= 64
+CB_SUPTANK					= 128
+CB_TANK						= 256
+
+//beasties
+CB_DEMON						= 512
+CB_ENF						= 1024
+CB_HKNIGHT					= 2048
+CB_OGRE						= 4096
+CB_SHALR						= 8192
+CB_SHAMBL					= 16384
+CB_SCRAG						= 32768
+CB_ZOMBY						= 65536
+CB_CTHON						= 131072
+CB_GREMLIN					= 262144
+CB_SCOURGE					= 524288
+// doom
+CB_IMP						= 2097152
+CB_ARACHN					= 4194304 // mode bits = 4 modes
+CB_CYBER						= 8388608
+
+*/
+
 void() morph_cube =
 {
 	local float r;
 
-	r = rint(random() * 6);
-	if (!r)
+	if (!self.mask_x)
 	{
-		if (time > 240) self.mask_x = MORPH_ARCHON;
-		else r = r + 1;
+		r = rint(random() * 6);
+		if (!r)
+		{
+			if (time > 240) self.mask_x = MORPH_ARCHON;
+			else r = r + 1;
+		}
+		if ((r < 3) && ULOK2) self.mask_x = MORPH_STROG;
+		else if ((r == 3) && ULOKD) self.mask_x = MORPH_HELLION;
+		else self.mask_x = MORPH_MONSTER;
 	}
-	if ((r < 3) && ULOK2) self.mask_x = MORPH_STROG;
-	else if ((r == 3) && ULOKD) self.mask_x = MORPH_HELLION;
-	else self.mask_x = MORPH_MONSTER;
 
 
 // TEST:
@@ -697,7 +746,8 @@ void(entity e, float all) morph_clearparms =
 	if (all) // morph change will retain these
 	{
 		e.flags = FL_CLIENT | FL_ONGROUND | FL_JUMPRELEASED; // default, need to clear drop pull & such
-		e.invincible_time = e.super_damage_finished = e.radsuit_finished = e.invisible_finished = e.invincible_finished = 0;
+		e.invincible_time = e.super_damage_finished = e.radsuit_finished = e.wetsuit_finished = e.invisible_finished = e.invincible_finished =
+		e.empathy_finished = 0;
 		e.effects = 0;
 		e.group = ""; // for specials
 	}
@@ -1067,7 +1117,7 @@ void(float cmd, float pls) polymorph_check =
 		self.mask_x = cb_morph(cmd);
 
 		self.alpha = 1;				// clear any prev state set - i.e. chaos
-		self.skin = 0;
+		self.skin = 0; // clear damage - note also clear suits
 		if (WALKSOUND) sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);
 		morph_sound_off();
 //		self.eweapon = world;

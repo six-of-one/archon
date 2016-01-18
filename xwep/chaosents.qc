@@ -38,6 +38,12 @@ void() chaos_precache =
 	precache_model ("progs/vw_deepsleep.mdl");
 	precache_model ("progs/steam.mdl");
 	precache_model ("progs/pk_cube.bsp");
+	precache_model ("progs/crate.bsp");
+	precache_model ("progs/crate_lg.bsp");
+	precache_model ("progs/crate_lg_o1.bsp");
+	precache_model ("progs/crate_o1.bsp");
+	precache_model ("progs/crate_o2.bsp");
+	precache_model ("progs/crate_o3.bsp");
 	precache_model ("progs/morph_cube.bsp");
 
 	precache_sound ("sound/flm/ft_hum.wav");
@@ -548,11 +554,12 @@ bprint("\n");
 		if (other.mask_x & CB_HUMAN)
 			other.skin = self.lip;  // set skin for suit
 		other.rad_time = 1;
-		if (other.radsuit_finished < time)
-			other.radsuit_finished = time + t;
+		if (other.wetsuit_finished < time)
+			other.wetsuit_finished = time + t;
 		else
-			other.radsuit_finished = other.radsuit_finished + t;
+			other.wetsuit_finished = other.wetsuit_finished + t;
 	}
+	else // wetsuit has suit items set - cant exec next bit
 
 	if (self.items == IT_SUIT)
 	{
@@ -609,7 +616,7 @@ bprint("\n");
 		if (other.wetsuit_finished < time)
 			other.wetsuit_finished = time + t;
 		else
-			other.wetsuit_finished = other.wetsuit_finished + t;
+			other.wetsuit_finished = other.wetsuit_finished + t; // note - this can extend wetsuit time
 	}
 
 	if (self.netname == "Silencer")
@@ -618,6 +625,41 @@ bprint("\n");
 			other.silencer_finished = time + t;
 		else
 			other.silencer_finished = other.silencer_finished + t;
+	}
+
+// handle hip ents
+	if (self.netname == "Horn of Conjuring")
+	{
+		activator = other;
+		horn_active = 1;
+		horn_charmer = other;
+		if (self.target)
+			SUB_UseTargets();				// fire all targets / killtargets
+		else
+		{
+			if (!self.movetarget) self.movetarget = spawn(); // make a maker
+			setorigin (self.movetarget, self.origin + ' 0 0 4'); // appears where horn is
+			self.movetarget.classname = "func_make";
+			self.movetarget.think = func_make;
+			self.movetarget.spawnflags = 0;
+			self.movetarget.nextthink = time + 2 + random() * 3;
+			self.movetarget.wait = -10; // make a random monster
+			self.movetarget.count = self.movetarget.delay = 0; // only make 1
+			self.movetarget.charmer = other; // horn conjured monster
+			self.movetarget.mask_x = 0; // any q1 - fish - cthon - shubs
+			if (random() < 0.9) // hip horn default
+				self.movetarget.mask_x =  CB_M_DOG + CB_M_DEMON + CB_M_OGRE + CB_M_SHAMBL + CB_M_ZOMBY;			
+		}
+		horn_active = 0;
+	}
+
+	if (self.netname == "Empathy Shields")
+	{
+		other.empathy_time = 1;
+		if (other.empathy_finished < time)
+			other.empathy_finished = time + t;
+		else
+			other.empathy_finished = other.empathy_finished + t;
 	}
 
 	if (other.mask_x & CB_HUMAN)
@@ -642,6 +684,7 @@ bprint("\n");
 	}
 
 	activator = other;
+	if (self.netname != "Horn of Conjuring")
 	SUB_UseTargets();				// fire all targets / killtargets
 };
 

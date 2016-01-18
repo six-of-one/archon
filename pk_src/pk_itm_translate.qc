@@ -77,7 +77,7 @@ string(entity e, float TR) map_trans =
 		if (!RUNES || e.map != "rune") // ignore runes if server on
 			return(mcg);
 		mcd = mcw = mcq = mcq2 = mcq3 = mcg;
-		}
+	}
 
 
 	if (TR == FL_TR_RESTORE)
@@ -2332,6 +2332,8 @@ string(float tr) tran_str =
 
 void() check_translate =
 {
+	local float tr_all_fire;
+
 		if (DOOM_ALPHA != cvar("pk_doom_alpha"))
 		{
 			local float f;
@@ -2354,9 +2356,12 @@ void() check_translate =
 
 	if (cvar("pk_place_item") != 1)
 	{
+		tr_all_fire = 0;
 		if (TR_ALL != cvar("pk_tr_all" ))
 		{
+			TR_ALL = fabs(cvar("pk_tr_all" ));
 			if (!TR_ALL) TR_ALL = FL_TR_RESTORE; // turned off & we need restore controls
+			tr_all_fire =  TR_ALL;
 
 			if (WARNING)
 			{
@@ -2366,7 +2371,7 @@ void() check_translate =
 			}
 		}
 
-		if (TR_WOLF != cvar("pk_tr_wolf" ) || TR_ALL)
+		if (TR_WOLF != cvar("pk_tr_wolf" ) || tr_all_fire)
 		{
 			TR_WOLF = fabs(cvar("pk_tr_wolf" ));
 			if (!TR_WOLF) TR_WOLF = FL_TR_RESTORE; // turned off & we need restore controls
@@ -2381,7 +2386,7 @@ void() check_translate =
 			master_item_control_loop("wolf_item", TR_WOLF);
 		}
 
-		if (TR_DOOM != cvar("pk_tr_doom" ) || TR_ALL)
+		if (TR_DOOM != cvar("pk_tr_doom" ) || tr_all_fire)
 		{
 			TR_DOOM = fabs(cvar("pk_tr_doom" ));
 			if (!TR_DOOM) TR_DOOM = FL_TR_RESTORE; // turned off & we need restore controls
@@ -2396,7 +2401,7 @@ void() check_translate =
 			master_item_control_loop("doom_item", TR_DOOM);
 		}
 
-		if (TR_QUAKE != cvar("pk_tr_quake" ) || TR_ALL)
+		if (TR_QUAKE != cvar("pk_tr_quake" ) || tr_all_fire)
 		{
 			TR_QUAKE = fabs(cvar("pk_tr_quake" ));
 			if (!TR_QUAKE) TR_QUAKE = FL_TR_RESTORE; // turned off & we need restore controls
@@ -2411,7 +2416,7 @@ void() check_translate =
 			master_item_control_loop("quake_item", TR_QUAKE);
 		}
 
-		if (TR_Q2 != cvar("pk_tr_q2" ) || TR_ALL)
+		if (TR_Q2 != cvar("pk_tr_q2" ) || tr_all_fire)
 		{
 			TR_Q2 = fabs(cvar("pk_tr_q2" ));
 			if (!TR_Q2) TR_Q2 = FL_TR_RESTORE; // turned off & we need restore controls
@@ -2426,7 +2431,7 @@ void() check_translate =
 			master_item_control_loop("q2_item", TR_Q2);
 		}
 
-		if (TR_Q3 != cvar("pk_tr_q3" ) || TR_ALL)
+		if (TR_Q3 != cvar("pk_tr_q3" ) || tr_all_fire)
 		{
 			TR_Q3 = fabs(cvar("pk_tr_q3" ));
 			if (!TR_Q3) TR_Q3 = FL_TR_RESTORE; // turned off & we need restore controls

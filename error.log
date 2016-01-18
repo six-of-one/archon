@@ -1,1 +1,1 @@
-warning: pk_src/pk_weapons.qc:1722:Null 'if' statement
+error: xwep/mcode.qc:2054:Unknown value "n"

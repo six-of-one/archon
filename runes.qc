@@ -216,7 +216,9 @@ void(entity e, entity p) rune_id =
 		sprint(p, "\bPENTA-QUAD\b !!\n(shoot quick they're all running away...\n");
 		if (e.items & IT_SUPERHEALTH) sprint(p, "Mega Health\n");
 		if (e.items & IT_INVISIBILITY) sprint(p, "Limited Invisibility\n");
-		if (e.items & IT_SUIT) sprint(p, "Hazmat Suit\n");
+		if (e.items & IT_SUIT) 
+		if (!e.wetsuit_finished)
+			sprint(p, "Hazmat Suit\n");
 		if (!e.items & (IT_SUIT | IT_INVISIBILITY | IT_SUPERHEALTH) ) sprint(p, "\n");
 	}
 	else
@@ -224,10 +226,24 @@ void(entity e, entity p) rune_id =
 		if (e.items & IT_SUPERHEALTH) sprint(p, "Mega Health\n");
 		if (e.items & IT_INVISIBILITY) sprint(p, "Limited Invisibility\n");
 		if (f && (e.items & IT_INVULNERABILITY)) sprint(p, "\bPENTAGRAM of Protection !!\n");
-		if (e.items & IT_SUIT) sprint(p, "Hazmat Suit\n");
+		if (e.items & IT_SUIT) 
+		if (!e.wetsuit_finished)
+			sprint(p, "Hazmat Suit\n");
 		if (f && (e.items & IT_QUAD)) sprint(p, "\bQuad\b freakin Damage !\n");
 		sprint(p, "\n");
 	}
+	if (e.wetsuit_finished)
+	{
+		if (e.items & IT_SUIT) 
+			sprint(p, "Wetsuit\n");
+		else
+			sprint(p, "Re-breather\n");
+	}
+	if (e.empathy_finished)
+		sprint(p, "Empathy Shields\n");
+	if (e.silencer_finished)
+		sprint(p, "Silencer\n");
+	
 };
 
 // rune 1 rules - runes expire in pow time

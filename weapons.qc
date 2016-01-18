@@ -494,7 +494,7 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	e1 = e2 = world;
 
 	traceline (p1, p2, FALSE, self);
-	if (trace_ent.takedamage)
+	if (trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT))
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent,from,from,damage);
@@ -507,7 +507,7 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	e1 = trace_ent;
 
 	traceline (p1 + f, p2 + f, FALSE, self);
-	if (trace_ent != e1 && trace_ent.takedamage)
+	if (trace_ent != e1 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT))
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent,from,from,damage);
@@ -515,7 +515,7 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage =
 	e2 = trace_ent;
 
 	traceline (p1 - f, p2 - f, FALSE, self);
-	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)
+	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT))
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent,from,from,damage);
@@ -548,7 +548,9 @@ void () W_FireLightning =
 		wlevel = CheckWaterLevel ();
 		if (wlevel > 1)
 		{
+			discharged = 1;
 			T_RadiusDamage (self,self,(35* self.ammo_cells),world);
+			discharged = 0;
 			self.ammo_cells = 0;
 			W_SetCurrentAmmo ();
 			return ;
@@ -561,7 +563,9 @@ void () W_FireLightning =
 			cells = self.ammo_cells;
 			self.ammo_cells = 0;
 			W_SetCurrentAmmo ();
+			discharged = 1;
 			T_RadiusDamage (self, self, 35*cells, world);
+			discharged = 0;
 			return;
 		}
 	}

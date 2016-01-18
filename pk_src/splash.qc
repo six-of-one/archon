@@ -175,7 +175,7 @@ void() CheckWaterLevels =
 					if (e.ip_orgOrigin != v0) // put items back now
 					{
 						e.wait = e.wait - 1;
-						if (e.wait < -895) e.movetype = MOVETYPE_NONE; // drastic but neccesary if a bounding box seems to cut into a wall / solid because item keeps falling after every reset
+						if (e.wait < -891) e.movetype = MOVETYPE_NONE; // drastic but neccesary if a bounding box seems to cut into a wall / solid because item keeps falling after every reset
 						e.ip_orgOrigin_z = e.ip_orgOrigin_z + 3;
 						setorigin (e, e.ip_orgOrigin);
 						e.velocity = v0;

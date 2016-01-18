@@ -237,7 +237,7 @@ void() turret_searchForEnemy =
 
 	if (!self.currentammo && !self.turret_timeout && self.health < 1)
 	{
-		local float f, c;
+		local float f, c, d;
 		local entity e;
 
 		self.delay = TRUE; // KillStraker candidate
@@ -280,7 +280,15 @@ void() turret_searchForEnemy =
 					e.nextthink = time + PK_TUR_INVRETIME;
 			}
 
-			if (!c) fn_make(f, v0); // if we didnt find an invulernable, now make one from quake - IDEA: use map type
+			d = -1;
+			if (MAP_MODE == "W") d = rint(random() * 2.35); //f = pk_mcode("d_art_invulnerable", world); 
+			if (MAP_MODE == "Q3") d = rint(random() * 2.35);
+			if (MAP_MODE == "D" || d == 0) f = pk_mcode("d_art_invulnerable", world); 
+			if (MAP_MODE == "Q" || d == 1) f = pk_mcode("item_artifact_invulnerability", world); 
+			if (MAP_MODE == "PK") f = pk_mcode("item_artifact_invulnerability", world); 
+			if (MAP_MODE == "Q2" || d == 2) f = pk_mcode("item_invulnerability", world); 
+
+			if (!c) fn_make(f, v0, ""); // if we didnt find an invulernable, now make one
 		}
 	}
 

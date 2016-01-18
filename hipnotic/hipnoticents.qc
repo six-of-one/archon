@@ -127,21 +127,21 @@ void() hip_precache =
 	precache_model ("progs/laser_m.mdl");
 	precache_model ("progs/rubble_m.mdl");
 
-	precache_sound ("sound/hipitems/wetsuit.wav");
-	precache_sound ("sound/hipitems/weton.wav");
-	precache_sound ("sound/hipitems/empathy.wav");
-	precache_sound ("sound/hipitems/empathy2.wav");
-	precache_sound ("sound/hipitems/horn.wav");
-	precache_sound ("sound/hipitems/spikmine.wav");
-	precache_sound ("sound/weapons/lasercannon/laserg.wav");
-	precache_sound ("sound/weapons/lasercannon/laserric.wav");
-	precache_sound ("sound/weapons/prox/proxwarn.wav");
-	precache_sound ("sound/weapons/prox/proxbomb.wav");
-	precache_sound ("sound/weapons/thors_hammer/mjolhit.wav");
-	precache_sound ("sound/weapons/thors_hammer/mjolslap.wav");
-	precache_sound ("sound/weapons/thors_hammer/mjoltap.wav");
-	precache_sound ("sound/weapons/thors_hammer/mjoltink.wav");
-	precache_sound ("sound/weapons/thors_hammer/mjolwam.wav");
+	precache_sound ("hipitems/wetsuit.wav");
+	precache_sound ("hipitems/weton.wav");
+	precache_sound ("hipitems/empathy.wav");
+	precache_sound ("hipitems/empathy2.wav");
+	precache_sound ("hipitems/horn.wav");
+	precache_sound ("hipitems/spikmine.wav");
+	precache_sound ("weapons/lasercannon/laserg.wav");
+	precache_sound ("weapons/lasercannon/laserric.wav");
+	precache_sound ("weapons/prox/proxwarn.wav");
+	precache_sound ("weapons/prox/proxbomb.wav");
+	precache_sound ("weapons/thors_hammer/mjolhit.wav");
+	precache_sound ("weapons/thors_hammer/mjolslap.wav");
+	precache_sound ("weapons/thors_hammer/mjoltap.wav");
+	precache_sound ("weapons/thors_hammer/mjoltink.wav");
+	precache_sound ("weapons/thors_hammer/mjolwam.wav");
 
 // stains
 	precache_model ("progs/s_rlspg.spr");
@@ -212,6 +212,7 @@ void() weapon_mjolnir =
 
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 void() weapon_laser_gun =
@@ -330,6 +331,7 @@ void() item_hornofconjuring =
 {
    self.netname = "Horn of Conjuring";
 	self.wait = RSP_TIME;
+	self.touch = x_pwr_touch;
 
    setmodel(self, "progs/horn.mdl");
    setsize (self, '-16 -16 0', '16 16 32');
@@ -337,6 +339,7 @@ void() item_hornofconjuring =
 
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 
@@ -392,15 +395,20 @@ Empathy Shield.
 */
 void() item_artifact_empathy_shields =
 {
-   self.netname = "Empathy Shields";
+	self.netname = "Empathy Shields";
 	self.wait = RSP_TIME;
+	self.touch = x_pwr_touch;
+//	self.dmgtime = ; // just using pow time for now
+//	self.group = "Empathy Shields are running out\n";
 
-   setmodel(self, "progs/empathy.mdl");
-   setsize (self, '-16 -16 0', '16 16 32');
-   self.noise = "hipitems/empathy.wav";
+	setmodel(self, "progs/empathy.mdl");
+	setsize (self, '-16 -16 0', '16 16 32');
+	self.noise = "hipitems/empathy.wav";
+	self.noise3 = "hipitems/empathy2.wav";
 
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 /*QUAKED item_artifact_wetsuit (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -412,20 +420,20 @@ void() item_artifact_wetsuit =
 	self.wait = RSP_TIME;
 	self.touch = x_pwr_touch;
 //	self.dmgtime = ; // just using pow time for now
-	self.group = "Radiation suit is near expiration date\n";
+	self.group = "Air tanks are getting low\n";
+//	self.group = "Air supply in Wetsuit is running out\n";
 	self.items = IT_SUIT;
 
-   setmodel (self, "progs/wetsuit.mdl");
-   setsize (self, '-16 -16 -24', '16 16 32');
-   self.noise = "misc/weton.wav";
-   self.noise3 = "misc/wetsuit.wav";
+	setmodel (self, "progs/wetsuit.mdl");
+	setsize (self, '-16 -16 -24', '16 16 32');
+	self.noise = "hipitems/weton.wav";
+	self.noise3 = "hipitems/wetsuit.wav";
 
 	self.lip = WETSUIT; // skin in human player models
 
 	if (self.class_select == "") self.class_select = "hip_item";
 	StartItem ();
 	self.mask_x = MORPH_ALL; // everyone can get arts
-
 };
 
 /*

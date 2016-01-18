@@ -678,6 +678,7 @@ void() PK_PlayerDie =
 	self.invincible_finished = 0;
 	self.super_damage_finished = 0;
 	self.radsuit_finished = 0;
+	self.wetsuit_finished = 0;
 	self.copb_timeout = 0;
 	self.modelindex = self.modelindex_morph;	// don't use eyes
 

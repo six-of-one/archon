@@ -196,6 +196,8 @@ void() flyer_move; // fly rune for now
 
 // **************************************
 
+void() func_make;
+
 // item override admin
 float DYN_OVR;
 float DYN_ART;
@@ -212,7 +214,7 @@ void() dtf_handle;
 entity() dyn_rndloc;
 vector(vector v1, float d1, float r1) stdv_rndloc
 void() start_loopcyc;
-void(float mc, vector vo) fn_make;
+void(float mc, vector vo, string wd) fn_make;
 float(string sc, entity e) pk_mcode;
 void() place_item_control;
 void() pic_test;
@@ -968,7 +970,6 @@ float Q3_SH_ENV				= 3;
 
 // hipnotic
 
-.float wetsuit_finished; // used by hip wetsuit & q2 rebreather
 
 // end genre section
 
@@ -1413,6 +1414,10 @@ float GRAP_ROPE				= 9;
 
 float VW_HARP_FRADJ        = 20; // frame adjust from run / stand for a fired harp
 
+
+// crates o stuff
+
+float PK_CRATE;
 
 // pk cubes
 

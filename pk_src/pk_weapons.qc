@@ -276,6 +276,9 @@ void() PK_SetCurrentAmmo =
 		self.pkprevweapon = self.pk_currentitem;
 		self.forcewchange = FALSE;
 
+		if (self.weapon & self.builtin) // otherwise morph cant cycle to pki
+			self.eweapon = world;
+
 		if ((!self.weapon & self.builtin) || (self.pk_currentitem != PK_IT_AXE)) // never announce a built in here - will ALAWYS be done in morph code & pki - needs announce
 		wchanged = TRUE;
 		ominous_hum("", 1);

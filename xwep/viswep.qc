@@ -656,9 +656,11 @@ void() viswep_post =
 	
 	}
 
+	if (!self.mask_x & CB_HUMAN) // because non humans dont have vwepents for pki - test never happens below
+		if (self.pkprevweapon != self.pk_currentitem) PK_SetCurrentAmmo();
+
 	if (!self.vwepent)
 	{
-		if (self.pkprevweapon != self.pk_currentitem) PK_SetCurrentAmmo(); // because morphs dont make vwep for pki
 		return;
 	}
 
@@ -897,9 +899,6 @@ void() viswep_post =
 					setorigin(vhead, vhead.owner.origin + vofs); // ... sync visible weapon model
 					vhead.angles = vhead.owner.angles;
 				}
-				else
-				if (vhead.origin_z > 2)
-					vhead.origin = v0; // for pistol deal  - this really needs to be timed
 			}
 		}
 		vhead = vhead.vwepent;

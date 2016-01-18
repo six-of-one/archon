@@ -50,8 +50,7 @@ void(vector p1, vector p2, entity from, float damage) HIP_HammerDamage =
 
 	traceline (p1, p2, FALSE, self);
 //JIM
-//	if (trace_ent.takedamage && !trace_ent.wetsuit_finished )
-	if (trace_ent.takedamage)
+	if (trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent, from, from, damage);
@@ -66,7 +65,7 @@ void(vector p1, vector p2, entity from, float damage) HIP_HammerDamage =
 
 	traceline (p1 + f, p2 + f, FALSE, self);
 //JIM
-	if (trace_ent != e1 && trace_ent.takedamage)// && !trace_ent.wetsuit_finished )
+	if (trace_ent != e1 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent, from, from, damage);
@@ -76,7 +75,7 @@ void(vector p1, vector p2, entity from, float damage) HIP_HammerDamage =
 
 	traceline (p1 - f, p2 - f, FALSE, self);
 //JIM
-	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)// && !trace_ent.wetsuit_finished )
+	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage && !trace_ent.wetsuit_finished && (trace_ent.items & IT_SUIT) )
 	{
 		particle (trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage (trace_ent, from, from, damage);
@@ -149,7 +148,6 @@ void() HIP_LightningThink =
 			{
 			if(!(head.flags & FL_NOTARGET) && ((head.flags & FL_MONSTER) || (head.flags & FL_CLIENT))) // CHECK: pk*bot no cli flg deal?
 				{
-//				if (visible(head) && (head!=self.owner.owner) && (head.health>0))
 				if ((visible(head)) && (head!=self.owner.owner) && (head.health>0))
 					{
 					head_dist = vlen(head.origin - self.lastvictim.origin);

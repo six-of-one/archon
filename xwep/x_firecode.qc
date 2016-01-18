@@ -995,6 +995,13 @@ void() player_pistol1 =
 	self.nextthink = time + 0.1;
 	self.think = player_pistol1;
 
+	if (self.eweapon)
+	{
+		if (self.eweapon.tag_entity)
+		if (self.eweapon.origin_z > 0)
+			self.eweapon.origin_z = 0;
+	}
+
 	if (self.tomb_time > GUN_BASE)
 	{
 		if (self.weaponframe > 1)
@@ -1100,20 +1107,8 @@ void() plspg_fade =
 // fn(Plasma_MissileTouch) - blow a plasma bolt - handles monster stuff if eweapon not set
 // fn(X_FireOnePlasma) - fire a single plasma bolt, handles weapon stuff
 
-
-void () plasmaexplode5 = [ 7, plasmaexplode6 ] { self.alpha = 0.3; };
-void () plasmaexplode6 = [ 8, SUB_Remove    ] { self.alpha = 0.1; };
-
-void () plasmaexplode1 = [ 3, plasmaexplode2 ] { self.alpha = 0.7; };
-void () plasmaexplode2 = [ 4, plasmaexplode3 ] 
+void() plasma_stain =
 {
-	if (random() < 0.5) self.think = plasmaexplode5;
-	self.alpha = 0.5;
-};
-void () plasmaexplode3 = [ 5, plasmaexplode4 ] { self.alpha = 0.3; };
-void () plasmaexplode4 = [ 6, SUB_Remove    ]
-{
-	self.alpha = 0.1;
 	if (self.mcode == MC_Q3_PLASMA)
 	if (!XENV)
 	{
@@ -1127,6 +1122,26 @@ void () plasmaexplode4 = [ 6, SUB_Remove    ]
 		self.aiment.aiment.nextthink = time  + 2;
 		self.aiment.nextthink = time  + 27;
 	}
+};
+
+void () plasmaexplode5 = [ 7, plasmaexplode6 ] { self.alpha = 0.3; };
+void () plasmaexplode6 = [ 8, SUB_Remove    ]
+{
+	self.alpha = 0.1;
+	plasma_stain(); // chaos vector
+};
+
+void () plasmaexplode1 = [ 3, plasmaexplode2 ] { self.alpha = 0.7; };
+void () plasmaexplode2 = [ 4, plasmaexplode3 ] 
+{
+	if (random() < 0.5) self.think = plasmaexplode5;
+	self.alpha = 0.5;
+};
+void () plasmaexplode3 = [ 5, plasmaexplode4 ] { self.alpha = 0.3; };
+void () plasmaexplode4 = [ 6, SUB_Remove    ]
+{
+	self.alpha = 0.1;
+	plasma_stain();
 };
 
 void () Plasma_MissileTouch =
@@ -1279,7 +1294,7 @@ bprint(EWEAP.netname);
 		org = self.origin + v_forward * VWX_PLASMA + v_right * VWY_PLASMA + v_up * VWZ_PLASMA; // Cataboligne - 9.30.9 - true position fire point
 	}
 
-	fire_missile(PLASMA_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH | FL_USEAMMO | FL_AIM1K | FL_RUNEHST, RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", pls, snd, Plasma_MissileFuseOut, ROCKET_FUSE * 3,  plasmaexplode1, Plasma_MissileTouch);
+	fire_missile(PLASMA_VEL, MOVETYPE_FLYMISSILE, FL_MSL | FL_PUNCH | FL_USEAMMO | FL_AIM1K | FL_RUNEHST, RM_SKY | PF_LAVA, org, ' 0 0 0', "missile", pls, snd, Plasma_MissileTouch, ROCKET_FUSE * 3,  Plasma_MissileFuseOut, plasmaexplode1);
 
 	if (newmis)
 	{

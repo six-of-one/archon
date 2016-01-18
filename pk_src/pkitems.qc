@@ -304,6 +304,7 @@ void () weapon_airfist =
 	setsize (self,'-16 -16 0','16 16 56');
 	//setsize (self, '-15 -9 25', '17 9 43');
 	StartItem ();
+	self.mask_x = CB_HUMAN + CB_GREMLIN;
 };
 
 /*QUAKED weapon_rmine (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -601,9 +602,23 @@ void() painkeep_touch =
 		}
 	}
 
+
+
+if (!self.mask_x) 			bprint("\n\n\n\n\n*** - WARNING - item with no mask x\n\n\n");
+
+
+
 // morphic
-	if (!other.mask_x & CB_HUMAN && (!other.mask_x & CB_GREMLIN || ( (other.builtin & self.items) && (self.pk_currentitem < 2) ) ) ) // NOTE: CHECK: TDO: this means humans are not tested and CAN GET everything!
-	if ((!(self.mask_x & other.mask_x) || (other.model == "progs/cthon.mdl")) && (self.wad != "morph_cube")) // make sure morph can collect this
+	f = FALSE; // dont exit
+
+	if (!self.mask_x & other.mask_x) f = TRUE; // morph cant collect
+	if ((other.mask_x & CB_GREMLIN) &&  (other.builtin & self.items)) f = TRUE; // gremlin trying to replace builtin, even if he can collect
+	if (self.pk_currentitem > 1)  f = FALSE; // all can get pki (but cthon)
+	if (other.mask_x & CB_HUMAN) f = FALSE; // humans are ignoring the test - TDO: remove this
+	if (other.model == "progs/cthon.mdl") f = TRUE; // cthon get nada
+	if (self.wad == "morph_cube") f = FALSE; // all can get cube
+
+	if (f) // make sure morph can collect this
 	{
 		if (e) e.classname = "pk*bot";
 		return;
@@ -1608,6 +1623,7 @@ void() DropBackpack =
 	AddToSplash(newmis); // *pk - splash tossed items
 
 	bot_BackpackSetup(newmis); // *bot
+	newmis.mask_x = CB_HUMAN + CB_GREMLIN; // TDO: rest of morph bp touch
 };
 
 
@@ -1723,6 +1739,7 @@ void() pk_placeitem =
 	}
 	else
 	{
+		if (self.punchangle != '-1 -1 -1') // no eject
 		if (self.punchangle != v0)
 			item_eject(self, self.punchangle);
 		else

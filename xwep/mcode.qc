@@ -1884,79 +1884,100 @@ void() cube_rearm =
 };
 
 
-// self is player
+// self is player or crate
 // c = self.eweapon = cube
+// c = self = crate
 
 void(entity e, float trvs) item_translate;
 
 void() painkeep_cube_use =
 {
 	local vector v1;
-	local entity c, sv;
+	local entity c, sv, crate;
 	local float f, d;
+	local vector v;
 
 	sv = self;
-	c = self.eweapon;
+	d = 0;
+	crate = world;
 
-	v1 = self.origin - c.origin;
-	if (vlen(v1) > PK_CUBE_DIST)
+	if (self.wad == "pk_crate") crate = self;
+
+	if (!crate) // player wad string better never = pk_crate
 	{
-		sprint(self, "You are too far away to open your cube.\n");
-		return;
-	}
-
-	cube_rearm(); // re arm player
-	self.button0 = 0;
-
-	if (c.wad != "pk_cube")
-	{
-		if (WARNING)	bprint("*** WARNING - in cube use and dont have a cube!\n");
-		return;
-	}
-
-	sound (self, CHAN_WEAPON, c.noise, 1, ATTN_NORM);
-	c.think = SUB_Null;
-	c.owner = world;
-
-// make something random
-
-	f = MC_PK_RNDITM - 1;
-	if (PK_ART) f = MC_PKP_RNDITM - 2;
-	d = MC_CHTHUNDR + rint(random() * f);
-	if (random() < 0.36)
-	{
-		d = 0;
-		f = rint(random() * 10);
-		if (f < 4) d = MC_HIP_LASERCAN;
-		if (f < 6 && ULOK2) d = MC_Q2_BFG;
-		if (d) self.ammo_cells = -1;
-		else
+		c = self.eweapon;
+		v1 = self.origin - c.origin;
+		if (vlen(v1) > PK_CUBE_DIST)
 		{
-			if (f < 7) { d = MC_PORTAL; self.ammo_shells = -1; }
-			else if (f < 8) d = MC_DEEPSLEEP;
+			sprint(self, "You are too far away to open your cube.\n");
+			return;
+		}
+
+		cube_rearm(); // re arm player
+		self.button0 = 0;
+
+		if (c.wad != "pk_cube")
+		{
+			if (WARNING)	bprint("*** WARNING - in cube use and dont have a cube or a crate!\n");
+			return;
+		}
+		c.think = SUB_Null;
+
+		if (c.message) sprint(c.owner, c.message);
+		c.owner = world;
+	}
+	else
+	{
+		c = self; // crate is self - still have to set, might use cube code
+		if (c.solid == SOLID_TRIGGER) return; // opened crate
+	}
+	f = floor(random() * c.stdev);
+	if (c.items) d = c.items + f; // select item
+
+	sound (c, CHAN_WEAPON, c.noise, 1, ATTN_NORM);
+
+// make something random if none was given
+
+	if (!d)
+	{
+		f = MC_PK_RNDITM - 1;
+		if (PK_ART) f = MC_PKP_RNDITM - 2;
+		d = MC_CHTHUNDR + rint(random() * f);
+		if (random() < 0.36)
+		{
+			d = 0;
+			f = rint(random() * 10);
+			if (f < 4) d = MC_HIP_LASERCAN;
+			else if (f < 6 && ULOK2) d = MC_Q2_BFG;
+			if (d) c.ammo_cells = -1;
 			else
 			{
-				f = rint(random() * 6);
-				if (f == 1) d = MC_HEALTHMEGA;
-				else if (f == 2) d = MC_ARMOR3;
-				else if (f == 3) { c.touch = SUB_Null; d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; }
-				else if (f == 4) d = MC_HOOK;
-				else if (f == 5)
-				{
-					d = MC_HIP_MJOLNIR;
-					if (ULOK2)
-					{
-						d = MC_Q2_ARM_PSHIELD;
-						self.ammo_cells = -1;
-					}
-					if (ULOK3) d = MC_Q3_HASTE; 
-				}
+				if (f < 7) d = MC_PORTAL;
+				else if (f < 8) d = MC_DEEPSLEEP;
 				else
 				{
-					d = MC_PENT;
-					f = MC_TOT - 2;
-					if (random() < 0.2 && GENERATIONS) d = MC_SUPER_SHOTGUN + rint(random() * f);
-					if (random() < 0.2 && MORPHIC) c.wad = "morph_cube";
+					f = rint(random() * 6);
+					if (f == 1) d = MC_HEALTHMEGA;
+					else if (f == 2) d = MC_ARMOR3;
+					else if (f == 3) { c.touch = SUB_Null; d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL;  } 
+					else if (f == 4) d = MC_HOOK;
+					else if (f == 5)
+					{
+						d = MC_HIP_MJOLNIR;
+						if (ULOK2)
+						{
+							d = MC_Q2_ARM_PSHIELD;
+							c.ammo_cells = -1;
+						}
+						if (ULOK3) d = MC_Q3_HASTE; 
+					}
+					else
+					{
+						d = MC_PENT;
+						f = MC_TOT - 2;
+						if (random() < 0.2 && GENERATIONS) d = MC_SUPER_SHOTGUN + rint(random() * f);
+						if (random() < 0.2 && MORPHIC) c.wad = "morph_cube";
+					}
 				}
 			}
 		}
@@ -1964,8 +1985,96 @@ void() painkeep_cube_use =
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
 //	if (1) d = MC_Q2_BFG; // TEST:
 
+	if (crate)
+	{
+		if (c.classname != "info_notnull")
+		{
+			if (c.model == "progs/crate_lg.bsp")
+				setmodel(c, "progs/crate_lg_o1.bsp");
+			else
+			if (random() < 0.5)
+				setmodel(c, "progs/crate_o1.bsp"); // crates become debris
+			else
+			if (random() < 0.5)
+				setmodel(c, "progs/crate_o2.bsp");
+			else
+				setmodel(c, "progs/crate_o3.bsp");
+
+			c.touch = SUB_Null;
+			c.solid = SOLID_TRIGGER; // non blocking
+			if (c.classname != "func_crate")
+				c.takedamage = DAMAGE_AIM; // this isnt actually shootable because of the trigger solid
+
+			if (c.th_stand != SUB_Null) // could be respawnable
+			{
+				c.think = c.th_stand;
+				c.nextthink = time + fabs(PK_CUBE_TIME) + random() * 30;
+			}
+			else
+			{
+				c.health = 20;
+				c.think = c.th_die = SUB_Remove;
+				c.nextthink = time + fabs(PK_CUBE_TIME) + random() * 30;
+			}
+		}
+
+		if (crate.message)
+		if (damage_attacker.ishuman)
+			sprint(damage_attacker, crate.message);
+
+// find any crate targets and process
+		if (crate.target)
+		{
+			c = find (world,targetname,crate.target);
+			if(c)
+			{
+				self = c;
+				painkeep_cube_use();
+//				c = find (world,targetname,c.target);
+			}
+		}
+		c = spawn(); // crates make a new thing
+		setorigin(c, crate.origin + ' 0 0 8');
+//		c.classname = "dyn_item"; // dont respawn
+		c.ammo_cells = crate.ammo_cells; // was set above
+
+		c.wad = item_by_mcode(d); // default
+		f = floor(random() * crate.stdev);
+		if (crate.items) c.wad = item_by_mcode(crate.items + f);
+		else if (crate.map) c.wad = crate.map;
+		else if (crate.wait)
+		{
+			self = c; // temp ent
+			self.delay = self.count = 0;
+			self.wait = crate.wait;
+			self.spawnflags = 2; // no respawn on item
+			func_make();
+			d = pk_mcode(newmis.wad, world);
+			if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL)
+				n.th_stand = SUB_Remove;
+			newmis.velocity = v0; // stop eject
+			remove(self);
+			sv = self;
+			return;
+		}
+	}
+	else
 	if (c.wad == "pk_cube")
+	{
+		if (c.classname != "dyn_item")
+		{
+			c.model = "";
+			c.solid = SOLID_NOT;
+			if (deathmatch)
+//			if (deathmatch == 1 || deathmatch == 3)
+			c.think = SUB_regen;
+			c.nextthink = time + fabs(PK_CUBE_TIME);
+			v = c.origin + ' 0 0 4';
+			c = spawn();
+			c.origin = v;
+		}
 		c.wad = item_by_mcode(d);
+	}
 
 	self = c;
 	self.pk_touch = painkeep_touch;
@@ -1973,32 +2082,71 @@ void() painkeep_cube_use =
 	self.mask_x = 0; // reset
 	self.style = 0; // so we arent making a melee wep out of a range wep
 //	item_translate(self, FL_TR_RANDOM);
-	if (random() > 0.15)
+	if (random() > 0.15 || crate) // crates always give goody
 //	if (0) // TEST:
 	{
-		if (d == MC_EXPLOD2 || d == MC_D_BARREL) // cause barrels are special
+		d = pk_mcode(self.wad, world);
+
+
+
+bprint(" *** cube / crate made =  (");
+//bprint(item_ident(self));
+bprint(self.wad);
+bprint(" - #: ");
+bprint(ftos(d));
+bprint(")\n");
+
+
+
+
+		if (d == MC_EXPLOD1 || d == MC_EXPLOD2 || d == MC_D_BARREL || d == MC_Q2_BARREL) // cause barrels are special
 		{
 //			self = spawn();
 			self.classname = "";
 			self.scode = -1; // item call tests this for making barrels
 			item_call(self.wad);
+			self.th_stand = SUB_Remove; // go away after boom
 			remove(c);
 			self = sv;
 			return;
 		}
+		if (d) self.classname = "dyn_item";
+
+
+
+bprint(" *** cube / crate made =  (");
+//bprint(item_ident(self));
+bprint(self.classname);
+bprint(")\n");
+
+
 		item_call(self.wad);
-		if (self.ammo_cells < 0) self.currentammo = self.ammo_cells = self.currentammo + 30 + 50 * random();
-		if (self.ammo_shells < 0) self.currentammo = self.ammo_shells = self.currentammo + 30 + 30 * random();
-		self.punchangle = ' 110 110 280'; // for ejector
+
+		if (!crate)
+			self.punchangle = ' 110 110 280'; // for ejector
+		else
+			self.punchangle = '-1 -1 -1'; // for ejector - just a boost
 
 // pk cube fix - spawned something and fns are reversed
-		if (self.pk_touch == painkeep_touch)
-		if (self.touch != painkeep_touch)
+		if (self.class_select != "class_monster")
 		{
-			self.pk_touch = self.touch;
+			if (self.ammo_cells < 0) self.ammo_cells = self.currentammo = self.currentammo + 30 + 50 * random();
+//			if (self.ammo_shells < 0) self.ammo_shells = self.currentammo = self.currentammo + 30 + 30 * random();
+			if (self.pk_touch == painkeep_touch)
+			if (self.touch != painkeep_touch)
+			{
+				self.pk_touch = self.touch;
+			}
+			self.touch = painkeep_touch;
+			self.solid = SOLID_TRIGGER;	// allow it to be touched again - needed on x weaps
 		}
-		self.touch = painkeep_touch;
-		self.solid = SOLID_TRIGGER;	// allow it to be touched again - needed on x weaps
+		else if (damage_attacker)
+		if (random() < 0.92)
+		if (damage_attacker.flags & FL_CLIENT)
+		{
+			self.charmer = damage_attacker;
+			self.charmed = 1;
+		}
 	}
 	else
 	{
@@ -2007,6 +2155,13 @@ void() painkeep_cube_use =
 			chaos_teleport(self.origin, "", world);
 			newmis.origin_z = newmis.origin_z + 20 + random() * 30;
 			remove(self);
+		}
+		else if (random() < 0.25)
+		{
+			d = rnd_bit_mask(MONSTER_Q1); // no mask_y - use any q1 monster
+			self.wad = monster_id(d, MON_FUNC_REG);
+			self.origin_z = self.origin_z + 8;
+			item_call(self.wad);
 		}
 		else
 		{
@@ -2061,12 +2216,6 @@ float BOT_NOUSE_MCUBE = 0.8;
 
 void() cube_touch =
 {
-	if (other.classname != "player") // *bot - done in master touch fn
-	{
-		grap_checkIfGrap();
-		return ;
-	}
-
 	if (PK_100 || Q_100)
 	{
 		remove(self);
@@ -2158,13 +2307,26 @@ void() cube_touch =
 	}
 
 	self.think = abandoned_cube;
-	self.count = time + 70 + random(); // abandoned then
+	self.count = time + 60 + random() * 10; // abandoned then
 	self.nextthink = time + 3 + random();
 };
 
+/*QUAKED pk_cube  (0 .5 .8) (-16 -16 0) (16 16 32)
+--------  CAT  --------
+
+to use as map item - they will respawn
+wad = "pk_cube"
+
+nothing - pick a random item from pk_cube list
+
+"items" - mapcode of item to create
+"stdev" - add random this to items mapcode for a custom series
+
+*/
 void() pk_cube =
 {
 	setmodel(self, "progs/pk_cube.bsp");
+	self.mdl = self.model;
 	self.netname = "Painkeep Cube";
 	self.touch = painkeep_touch;
 	self.pk_touch = cube_touch;
@@ -2181,6 +2343,155 @@ void() pk_cube =
 	StartItem ();
 
 };
+
+void() crate_touch =
+{
+	if (other.classname != "player") // pk - this is where the grap can grab stuff
+	{
+		grap_checkIfGrap();
+		return;
+	}
+
+	if (!other.ishuman)
+		return;
+
+	if (other.health <= 0)
+		return;
+
+	if (PK_100 || Q_100)
+	{
+		remove(self);
+		return;
+	}
+
+	if (self.duration > time) return;
+
+	self.duration = time + 2 + random();
+
+	if (!self.cnt)
+		centerprint(other, "Hit the crate to bust it open\n");
+	else if (random() < 0.5)
+		centerprint(other, "Come on bust 'er open\n");
+	else if (random() < 0.5)
+		centerprint(other, "This crate could have a BFG in it!\n");
+	else if (random() < 0.5)
+		centerprint(other, "Contents: stuff\n");
+	self.cnt = 1;
+};
+
+void() crate_init =
+{
+	if (!deathmatch)
+	if (self.classname == "func_crate") // dont respawn
+	{
+		remove(self);
+		return;
+	}
+	
+// make it openable
+	self.solid = SOLID_BBOX; // block, can climb on
+	self.health = 50 + random() * 50;
+	self.th_die = painkeep_cube_use;
+	self.takedamage = DAMAGE_AIM;
+	self.touch = crate_touch;
+	setmodel(self, self.mdl); // for respawn crates
+
+	self.think = self.th_stand;
+	self.nextthink = time + 30 + fabs(PK_CUBE_TIME) + random() * fabs(PK_CUBE_TIME);
+};
+
+void() pk_crate =
+{
+	setmodel(self, "progs/crate.bsp");
+
+	if (random() < 0.11)
+		setmodel(self, "progs/crate_lg.bsp");
+
+	self.mdl = self.model;
+	self.netname = "Crate";
+	self.noise = "items/r_item2.wav";
+
+	item_eject(self, ' 180 180 210');
+
+	self.touch = crate_touch;
+	self.th_stand = SUB_Remove;
+	self.think = crate_init; // think to this so we can toss it out and then solidify it
+	self.nextthink = time + 1 + random();
+};
+
+/*QUAKED func_crate  (0 .5 .8) (-16 -16 0) (16 16 32) LARGE RESPAWN
+--------  CAT  --------
+
+Breakable crates for your map
+
+LARGE - large crate = dimensions (-32 -32 0) (32 32 64)
+RESPAWN - respawn this crate
+
+-------- NOTES --------
+
+"target" - points to info_notnull with additional crate item flags
+			- these can chain for multi item crates
+         - wad = "pk_crate"
+
+nothing - pick a random item from pk_cube list
+
+"items" - mapcode of item to create
+"stdev" - add random this to items mapcode for a custom series
+
+"map" - used as spawn func - i.e. monster_dog
+
+"wait" - use func_make codes = special value listed below
+
+special values of .wait - select random item from:
+-1 = q1 items, no runes if RUNES
+-2 = q1 items, ignore RUNES
+-3 = pk items, no art if !PK_ART
+-4 = pk items, ignore PK_ART
+-5 = all items, ignoring rules
+
+-6 = doom items
+-7 = wolf items
+-8 = q2 items
+-9 = q3 items
+
+-10 = monsters, bit mask in mask, or by map_code once they are done
+						.cnt = % chance of mask_y monster over mask_x if both
+*/
+
+
+void() func_crate =
+{
+	precache_model ("progs/crate.bsp");
+	precache_model ("progs/crate_lg.bsp");
+	precache_model ("progs/crate_lg_o1.bsp");
+	precache_model ("progs/crate_o1.bsp");
+	precache_model ("progs/crate_o2.bsp");
+	precache_model ("progs/crate_o3.bsp");
+
+	setmodel(self, "progs/crate.bsp");
+	if (self.spawnflags & 1)
+		setmodel(self, "progs/crate_lg.bsp");
+	self.mdl = self.model;
+
+	if (self.spawnflags & 2)
+		self.th_stand = crate_init;
+	else
+		self.th_stand = SUB_Null; // used for doing things besides regen
+
+
+	self.wad = "pk_crate";
+	self.netname = "Crate";
+	self.touch = crate_touch;
+	self.noise = "items/r_item2.wav";
+
+// make it openable
+	self.solid = SOLID_BBOX; // block, can climb on
+	self.health = 50 + random() * 50;
+	self.th_die = painkeep_cube_use;
+	self.takedamage = DAMAGE_AIM;
+};
+
+
 
 // all quake 1 key load outs
 
@@ -2213,6 +2524,9 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/w_s_key.mdl");
 		self.netname = "silver key";
 		self.items = IT_KEY1;
+		if (self.classname == "dyn_item")
+			self.wad = "item_key1_0";
+		else
 		self.classname = "item_key1_0";
 	}
 	else if (ks == 11)
@@ -2220,6 +2534,9 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/m_s_key.mdl");
 		self.netname = "silver runekey";
 		self.items = IT_KEY1;
+		if (self.classname == "dyn_item")
+			self.wad = "item_key1_1";
+		else
 		self.classname = "item_key1_1";
 	}
 	else if (ks == 12)
@@ -2227,6 +2544,9 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/b_s_key.mdl");
 		self.netname = "silver keycard";
 		self.items = IT_KEY1;
+		if (self.classname == "dyn_item")
+			self.wad = "item_key1_2";
+		else
 		self.classname = "item_key1_2";
 	}
 	else if (ks == 20)
@@ -2234,6 +2554,9 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/w_g_key.mdl");
 		self.netname = "gold key";
 		self.items = IT_KEY2;
+		if (self.classname == "dyn_item")
+			self.wad = "item_key2_0";
+		else
 		self.classname = "item_key2_0";
 	}
 	else if (ks == 21)
@@ -2241,6 +2564,9 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/m_g_key.mdl");
 		self.netname = "gold runekey";
 		self.items = IT_KEY2;
+		if (self.classname == "dyn_item")
+			self.wad = "item_key2_1";
+		else
 		self.classname = "item_key2_1";
 	}
 	else if (ks == 22)
@@ -2248,6 +2574,9 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/b_g_key.mdl");
 		self.netname = "gold keycard";
 		self.items = IT_KEY2;
+		if (self.classname == "dyn_item")
+			self.wad = "item_key2_2";
+		else
 		self.classname = "item_key2_2";
 	}
 	else
@@ -2255,6 +2584,9 @@ void (float ksv) item_keyX =
 		setmodel (self,"progs/w_s_key.mdl");
 		self.netname = "silver key";
 		self.items = IT_KEY1;
+		if (self.classname == "dyn_item")
+			self.wad = "item_key1_0";
+		else
 		self.classname = "item_key1_0";
 	}
 	if (ks == 10 || ks == 20)
@@ -2317,50 +2649,50 @@ string(float xi) x_key_print =
 	return("");
 };
 
-// TDO: expand fn - handle chaos items, non respawnables
-
 // fn_make - make an item from map code value
 
 // mc - map code
 // vo - location, will randomize if = v0
 
+// note: this make respawnable items
 
-void(float mc, vector vo) fn_make =
+void(float mc, vector vo, string wd) fn_make =
 {
 	local string sc;
 	local entity e, sv;
 	local vector v1;
 
+	newmis = world;
 	sv = self;
+	if (wd) sc = wd;
+	else
 	sc = item_by_mcode(mc);
 
 	if (sc != "")
 	{
 		v1 = vo;
 		if (vo == v0) // no origin sent, get random one around some other object
-		{	  
-		e = dyn_rndloc();
-		if (!e) e = findradius(world.origin, 256000);
-		if (!e) 
 		{
-			if (WARNING) bprint("*** warning: fn_make could not find a random (or any) location - giving up\n");
-			return; // crap - no location
-		}
-		v1 = e.origin + ' 0 0 16';
-		if (e.flags & FL_ITEM) // randomize away from other map items
-			v1 = stdv_rndloc(e.origin + ' 0 0 16', 50, 100);
+			e = dyn_rndloc();
+			if (!e) e = findradius(world.origin, 256000);
+			if (!e) 
+			{
+				if (WARNING) bprint("*** warning: fn_make could not find a random (or any) location - giving up\n");
+				return; // crap - no location
+			}
+			v1 = e.origin + ' 0 0 16';
+			if (e.flags & FL_ITEM) // randomize away from other map items
+				v1 = stdv_rndloc(e.origin + ' 0 0 16', 50, 100);
 		}
 
-		self = spawn();
+		newmis = self = spawn();
 
 		self.wad = sc;
 
 		setorigin(self, v1);
 		item_call(sc);
 
-		self.velocity_z = 300 + 100 * random();
-		self.velocity_x = -170 + (random() * 340);
-		self.velocity_y = -170 + (random() * 340);
+		item_eject(self, ' 340 340 300');
 
 		if (self.map == "rune") self.map = ""; // rune server deal
 
@@ -2380,27 +2712,82 @@ void(float mc, vector vo) fn_make =
 	}
 	else //if (WARNING)
 	{
-		bprint("\b *** fn_make: map code with no item translation:\n");
+		bprint("\b *** fn_make: map code or func call with no item translation:\n");
 		bprint(" -------------->  ");
 		bprint(ftos(mc));
+		if (wd)
+		{
+			bprint(" - func: ");
+			bprint(wd);
+		}
 		bprint("\n");
 	}
 };
 
-// func_make handles map call - set wait to valid map code or special value listed below
+/*QUAKED func_make (0 .5 .8) (-8 -8 -8) (8 8 8) RNDLOC RESPAWN
+--------  CAT  --------
+Cataboligne - 6.13.10
 
-// special values of .wait - select random item from:
-// -1 = q1 items, no runes if RUNES
-// -2 = q1 items, ignore RUNES
-// -3 = pk items, no art if !PK_ART
-// -4 = pk items, ignore PK_ART
-// -5 = all items, ignoring rules
+spawn a mapcode item
 
-// -6 = doom items
-// -7 = wolf items
-// -8 = q2 items
-// -9 = q3 items
+RNDLOC (spawnflags = 1) - use a random location
+RESPAWN - items created will respawn, unless monsters
 
+wait: any valid mapcode - see mcode.qc for details
+      -1 - spawn a random q1 ent, ignores runes if server on
+      -2 - spawn any random q1 ent
+      -3 - spawn a random pk ent, ignores plus if turned off
+      -4 - spawn any random pk ent
+      -5 - spawn any random ent
+
+      -6 = doom items
+      -7 = wolf items
+      -8 = q2 items
+      -9 = q3 items
+      -10 = monsters by mask shown below
+
+count: if not 0 spawn this many items and go away
+       if delay is 0 this will happen every 30 rels
+
+delay: if not 0 wait this long and spawn another ent.
+       you might want random locations for this
+
+--- monster bits ---
+
+if more than one bit is set monsters will be selected randomly
+cnt = % chance of mask_y monster over mask_x if both set, default = 0.3, 30%
+
+mask_x:
+
+ARMY				= 1
+FISH				= 2
+KNIGHT			= 4
+DOG				= 8
+DEMON				= 16
+ENF				= 32
+HKNIGHT			= 64
+OGRE				= 128
+SHALR				= 256
+SHAMBL			= 512
+SCRAG				= 1024
+ZOMBY				= 2048
+CTHON				= 4096 // boss
+TARBABY			= 8192
+SCOURGE			= 16384
+SHUBS				= 32768
+SVORE				= 65536 // super vore
+GREMLIN			= 131072
+VOMIT				= 262144 // guy id left out
+
+mask_y:
+
+BLARG				= 1
+RAPTOR			= 2
+SPIDER			= 4
+MANGA				= 8
+BOSSMAN			= 16
+*/
+  
 void() func_make =
 {
 	local float d, f;
@@ -2416,7 +2803,8 @@ void() func_make =
 	d = self.wait;
 	f = MC_RNDITM - 2;
 	if (RUNES && self.wait == -1) f = MC_NR_RNDITM - 2; // dont rndize runes if server on
-	if (self.wait == -1 || self.wait == -2) d = MC_SUPER_SHOTGUN + rint(random() * f);
+//	if (self.wait == -1 || self.wait == -2) 
+		d = MC_SUPER_SHOTGUN + rint(random() * f); // now default
 
 	if (!Q_99)
 	{
@@ -2425,16 +2813,16 @@ void() func_make =
 		if (self.wait == -3 || self.wait == -4) d = MC_PULSE_NAILGUN + rint(random() * f);
 
 		f = MC_D_RNDITM;
-		if (self.wait == -6) d = MC_D_SAW + rint(random() * f);
+		if ((self.wait == -6) && ULOKD) d = MC_D_SAW + rint(random() * f);
 
 		f = MC_W_RNDITM;
-		if (self.wait == -7) d = MC_W_KNIFE + rint(random() * f);
+		if ((self.wait == -7) && ULOKW) d = MC_W_KNIFE + rint(random() * f);
 
 		f = MC_Q2_RNDITM;
-		if (self.wait == -8) d = MC_Q2_BLASTER + rint(random() * f);
+		if ((self.wait == -8) && ULOK2) d = MC_Q2_BLASTER + rint(random() * f);
 
 		f = MC_Q3_RNDITM;
-		if (self.wait == -9) d = MC_Q3_GAUNTLET + rint(random() * f);
+		if ((self.wait == -9) && ULOK3) d = MC_Q3_GAUNTLET + rint(random() * f);
 	}
 	else
 	{
@@ -2443,22 +2831,62 @@ void() func_make =
 	}
 
 	f = MC_T_RNDITM;
-	if (self.wait == -5)
+	if ((self.wait == -5) && GENERATIONS)
 	{
 		if (Q_99) f = MC_NR_RNDITM;
 		d = MC_SUPER_SHOTGUN + rint(random() * f);
 	}
 
-	fn_make(d, self.origin);
+	self.wad = "";
+	if (self.wait == -10)
+	{
+		f = MON_FUNC_REG;
+		d = rnd_bit_mask(self.mask_x);
+		if (!d) // no mask_x monsters
+		{
+			if (!self.mask_y) d = rnd_bit_mask(MONSTER_Q1); // no mask_y - use any q1 monster
+			else
+			{
+				d = rnd_bit_mask(self.mask_y);
+				f = MON_FUNC_II;
+			}
+		}
+		else
+		if (self.mask_y)
+		{
+			if (!self.cnt) self.cnt = 0.3;
+			if (random() < self.cnt)
+			{
+				d = rnd_bit_mask(self.mask_y);
+				f = MON_FUNC_II;
+			}
+		}
+		self.wad = monster_id(d, f); // get spawn func - note: will not be dyn_monster
+		d = 0;
+	}
+
+	fn_make(d, self.origin, self.wad);
+	if (!self.spawnflags & 2)
+	if (newmis.class_select != "class_monster")
+		newmis.classname = "dyn_item";
+
+	if (newmis) // make sure we made it
+	if (self.charmer) // IDEA: if targeted this func could easily spawn charmed monsters just by detecting targeting player
+	{
+		newmis.charmer = self.charmer;
+		newmis.charmed = 1;
+	}
+
+//	if (newmis.flags & FL_MONSTER)
+//		spawn_tdeath(newmis.origin, newmis); // issue: has eject velocity - flag isnt set till *_go think
 
 	if (self.count > 0)
 	{
 		if (self.count > 0)
 		if (self.delay < 1) self.delay = 30;
 	
-		if (self.count < 1) self.delay = 0;
-
 		self.count = self.count - 1;
+		if (self.count < 1) self.delay = 0;
 	}
 
 	if (self.delay > 0)
@@ -2467,7 +2895,6 @@ void() func_make =
 		self.think = func_make;
 	}
 };
-
 
 // mcode for barrels
 

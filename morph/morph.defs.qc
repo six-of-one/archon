@@ -52,6 +52,7 @@ void() random_monster;
 void() monster_respawn;
 
 float MONSTER_MASK; // all monster bits
+float MONSTER_Q1; // base q1 monster bits
 float pk_monster_set; // admin var to store bits for setting monster values
 
 string(float mb, float mode) monster_id;

@@ -84,8 +84,10 @@ string (float bt) ammo_by_bit =
 void(string cls) item_call =
 {
 	local string scls;
-	local float rd;
+	local float rd, t_monsters;
 	local entity f;
+
+	t_monsters = total_monsters;
 
 	f = world;
 	rd = random();
@@ -139,6 +141,9 @@ void(string cls) item_call =
 		self.frame = 0;
 		self.skin = 0;
 		self.noise = ""; // grab sound items
+		self.noise1 = "";
+		self.noise2 = "";
+		self.noise3 = "";
 		self.noise4 = ""; // respawn sound
 	}
 
@@ -224,6 +229,7 @@ void(string cls) item_call =
 	else if (cls == "item_pkplus_actor") item_pkplus_actor();
 	else if (cls == "item_pkplus_phone") item_pkplus_phone();
 
+	else if (cls == "pk_crate") pk_crate();
 	else if (cls == "pk_cube") pk_cube();
 	else if (cls == "morph_cube") morph_cube();
 
@@ -472,14 +478,22 @@ void(string cls) item_call =
 //		FoundTarget(); // make 'em run around - cant be done here
 		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2, random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
+
+		total_monsters = t_monsters  + 1;
+
 		return;
 	}
 	if (self.class_select == "class_monster")
 	{
+		if (!self.classname) self.classname = scls;
 		chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, "monster_wakey", "", SUB_Null, 2, random_monster_wakey, SUB_Null, self, world);
 		self.pausetime = 0;
+
+		total_monsters = t_monsters  + 1;
+
 		return;		
 	}
+
 	self.flags = FL_ITEM;
 	self.movetype = MOVETYPE_TOSS;
 	if (self.classname != "dyn_item") // dont do these for dyn items
@@ -906,6 +920,7 @@ void() dyn_spawn =
 // give players notice
 	if (self.wad == "pk_cube") bprint("\n\n"); // space cubes so the notes are easier to see
 	else if (self.wad == "morph_cube") bprint("\n\n");
+	else if (self.wad == "pk_crate") bprint("\n\n");
 	bprint("*** Dynamic item spawned: ");
 	bprint(self.wad);
 	if (sv)
@@ -917,9 +932,13 @@ void() dyn_spawn =
 		bprint(" on the map");
 	if (self.wad == "pk_cube") bprint("\n\n");
 	else if (self.wad == "morph_cube") bprint("\n\n");
+	else if (self.wad == "pk_crate") bprint("\n\n");
 	bprint("\n");
 
 	item_call(self.wad);
+
+	if (self.wad == "pk_crate") return;
+
 	sv = spawn();
 	sv.enemy = self;
 	sv.think = dyn_rem;
@@ -1210,12 +1229,20 @@ void() func_dynitem =
 			v1 = stdv_rndloc(self.origin, 0, self.lip);
 			setorigin(e, v1);
 		}
+		if (self.netname == "pk_crate_maker") // makin crates
+		{
+			e.wad = "pk_crate";
+			self.wait = fabs(PK_CUBE_TIME);
+			if (PK_CUBE_TIME < 0) self.delay = fabs(PK_CUBE_TIME) * 0.3;
+		}
+		else
 		if (self.netname == "pk_cube_maker") // makin cubes
 		{
 			e.wad = "pk_cube";
 			self.wait = fabs(PK_CUBE_TIME);
 			if (PK_CUBE_TIME < 0) self.delay = fabs(PK_CUBE_TIME) * 0.3;
 		}
+		else
 		if (self.netname == "morph_cube_maker") // makin cubes
 		{
 			e.wad = "morph_cube";
@@ -1257,7 +1284,7 @@ void() func_dynitem =
 
 // cube handler fn - called from server var loop
 
-// fires off - pk_cubes, morphic cubes
+// fires off - pk_cubes, morphic cubes, crates
 
 void(string cb) cube_handle =
 {
@@ -1269,7 +1296,7 @@ void(string cb) cube_handle =
 	{
 		cv = cvar(cb);
 		cbnet = "pk_cube_maker";
-		cn = "Painkeep";
+		cn = "Painkeep Cubes";
 		cbv = PK_CUBE;
 		cbt = fabs(PK_CUBE_TIME);
 		if (PK_CUBE_TIME < 0) cbd = fabs(PK_CUBE_TIME) * 0.3;
@@ -1279,10 +1306,20 @@ void(string cb) cube_handle =
 	{
 		cv = cvar(cb) - 1;
 		cbnet = "morph_cube_maker";
-		cn = "Morphic";
+		cn = "Morphic Cubes";
 		cbv = MORPHIC;
 		cbt = MORPH_CUBE_TIME;
 		cbd = MORPH_CUBE_DV;
+	}
+	else
+	if (cb == "pk_crates")
+	{
+		cv = cvar(cb);
+		cbnet = "pk_crate_maker";
+		cn = "Crates";
+		cbv = PK_CRATE;
+		cbt = fabs(PK_CUBE_TIME);
+		if (PK_CUBE_TIME < 0) cbd = fabs(PK_CUBE_TIME) * 0.3;
 	}
 	else
 	{
@@ -1296,15 +1333,15 @@ void(string cb) cube_handle =
 		return;
 	}
 
-	if (cbv <= 0 && cv > 0)
+	if (cv > cbv && cv > 0)
 	{
-		f =  cv; //cvar("pk_cubes");
+		f =  cv - cbv; //cvar("pk_cubes"); // adding some spawners
 		if (WARNING)
 		if (f > 10)
 		{
 			bprint("*** Warning - ");
 			bprint(cb);
-			bprint(": making more than 10 cubes!\n");
+			bprint(": making more than 10 cubes | crates!\n");
 		}
 
 		while (f > 0)
@@ -1322,9 +1359,9 @@ void(string cb) cube_handle =
 		}
 		bprint("***  ");
 		bprint(cn);
-		bprint(" Cubes will spawn on this map - keep an eye out\n");
+		bprint(" will spawn on this map - keep an eye out\n");
 	}
-	if (cbv > 0 && cv <= 0)
+	if (cv <= 0) // turned off - remove them all
 	{
 		e = find(world,netname, cbnet);
 		while (e)
@@ -1332,6 +1369,19 @@ void(string cb) cube_handle =
 			p = e;
 			e = find(e,netname, cbnet);
 			remove (p);
+		}
+	}
+	else
+	if (cv < cbv && cbv > 0) // taking away some spawners but not turned off
+	{
+		f = cbv - cv;
+		e = find(world,netname, cbnet);
+		while (e && f > 0)
+		{
+			p = e;
+			e = find(e,netname, cbnet);
+			remove (p);
+			f = f - 1;
 		}
 	}
 

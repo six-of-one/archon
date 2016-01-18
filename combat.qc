@@ -74,6 +74,12 @@ void(entity targ, entity attacker) Killed =
 	if (self.health < -99)
 		self.health = -99;		// don't let sbar look bad if a player
 
+//MED
+	if (self.charmed)
+	{
+		self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+	}
+
 	if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
 	{	// doors, triggers, etc
 		self.th_die ();
@@ -128,6 +134,9 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	if (!targ.takedamage)
 		return;
 
+   if (discharged && targ.wetsuit_finished && (targ.items & IT_SUIT)) // lightning underwater & wearing suit
+      return;
+
 // used by buttons and triggers to set activator for target firing
 	damage_attacker = attacker;
 
@@ -139,6 +148,17 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 
 	if (attacker.rune_flag & RUNE_FLG_DM)
 		damage = damage * 2;
+
+
+//MED
+//check for empathy shields
+	if ((targ.empathy_finished) && !(inflictor.empathy_finished) && (targ != attacker))
+	{
+		empathy_dmg = 1;
+		damage = damage/2;
+		T_Damage (attacker,targ,targ,damage); // ha - back damage
+		empathy_dmg = 0;
+	}
 
 // save damage based on the target's armor level
 
@@ -211,6 +231,17 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 		return ;
 	}
 
+
+//MED
+   if (targ.empathy_finished)
+	{
+      if (self.empathy_sound < time)
+		{
+         sound (targ, CHAN_ITEM, "hipitems/empathy2.wav", 1, ATTN_NORM);
+         self.empathy_sound = time + 0.5;
+		}
+	}
+
 // team play damage avoidance
 	if ((teamplay == 1) && (targ.team > 0)&&(targ.team == attacker.team))
 		return ;
@@ -256,7 +287,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	if ((self.flags & FL_MONSTER) && attacker != world)
 	{
 	// get mad unless of the same class (except for soldiers)
-		if (self != attacker && attacker != self.enemy)
+		if (self != attacker && attacker != self.enemy && (self.charmer != attacker))
 		{
 			if ( (self.classname != attacker.classname)
 			|| (self.classname == "monster_army" ) )

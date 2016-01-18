@@ -195,7 +195,7 @@ void() t_followtarget =
       return;
 //   if (other.enemy == world)
 //      return;
-   if (other.radsuit_finished > time)// && (other.mode_y & IV_WETSUIT))
+   if (other.wetsuit_finished > time)
       return;
 
    targ = other.enemy;
@@ -234,7 +234,7 @@ if (WARNING)
 }
 */
    self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
-   self.radsuit_finished = time + 2;
+   self.wetsuit_finished = time + 2;
 	if (!self.movetarget)
       {
       if (self.oldenemy != world)

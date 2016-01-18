@@ -107,11 +107,11 @@ void() PK_init =
 // genre for init stuff
 
 	if (pk_map) MAP_MODE = "PK";
-	else if (world.wad == "wolftex.wad") MAP_MODE = "W";
-	else if (world.wad == "doomtex.wad") MAP_MODE = "D";
-	else if (world.wad == "doom2tex.wad") MAP_MODE = "D";
-	else if (world.wad == "q2.wad") MAP_MODE = "Q2";
-	else if (world.wad == "" && !pk_map) MAP_MODE = "Q3";
+	else if (world.wad == "wolftex.wad" && ULOKW) MAP_MODE = "W";
+	else if (world.wad == "doomtex.wad" && ULOKD) MAP_MODE = "D";
+	else if (world.wad == "doom2tex.wad" && ULOKD) MAP_MODE = "D";
+	else if (world.wad == "q2.wad" && ULOK2) MAP_MODE = "Q2";
+	else if (world.wad == "" && !pk_map && ULOK3) MAP_MODE = "Q3";
 	else  MAP_MODE = "Q";
 
 // single player hack - if hub flag is set and we forced dynamic items level exit returns to hub
@@ -885,11 +885,18 @@ void() pk_liveupd =
 	}
 
 // pk cubes
-	PK_CUBE_TIME = cvar("pk_cubes_time");
+	PK_CUBE_TIME = cvar("pk_cubes_time"); // TDO: doesnt reset existing makers
 	if (PK_CUBE  != cvar("pk_cubes")) 
 	{
 		cube_handle("pk_cubes");
 		PK_CUBE = cvar("pk_cubes");
+	}
+
+// crates - use cube timing, but lasts twice as long
+	if (PK_CRATE  != cvar("pk_crates")) 
+	{
+		cube_handle("pk_crates");
+		PK_CRATE = cvar("pk_crates");
 	}
 
 // turrets
@@ -1044,7 +1051,7 @@ void() pk_liveupd =
 
 	if (cvar("pk_make")) // create item at random location if map code valid
 	{
-		fn_make(cvar("pk_make"), v0);
+		fn_make(cvar("pk_make"), v0, "");
 //		cvar_set("saved1", ftos(cvar("saved1") + 1)); // TEST
 		cvar_set("pk_make", "0");
 	}
@@ -1227,6 +1234,10 @@ void() pk_srvcmd_set =
 	C_MONSTER_WAIT = 30;// 80; // how long till we spawn another random mosnter
 	C_MONSTER_DEV = 20;
 	C_MONSTER_CNT = 0;
+
+// crates
+
+	PK_CRATE = 0;
 
 // pk cubes
 
@@ -1491,7 +1502,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_pk_cmap", "0"); // admin setup custom maps - activate server map loop via pknextmap aliases
 
 // morphic
-		registercvar("sv_morph", "5"); // TEST: 3"); // 2 cubes
+		registercvar("sv_morph", "4"); // TEST: 3"); // 2 cubes
 		registercvar("sv_morph_time", "30"); // TEST: "120");
 		registercvar("sv_morph_dv", "5"); // TEST: "40");
 //		registercvar("cl_morph", "12"); // client ident
@@ -1591,6 +1602,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 
 // pk items
 
+		registercvar("pk_crates", "1"); // TEST: "0"); // randomly spawn this many crates on a map
 		registercvar("pk_cubes", "1"); // TEST: "0"); // randomly spawn this many companion cubes on a map
 		registercvar("pk_cubes_time", "60"); // cube timeout - respawn every this many secs
 
