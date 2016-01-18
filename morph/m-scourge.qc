@@ -324,6 +324,8 @@ void() player_scourge_impulse =
 
 	morph_impulse();
 
+	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
+
 // TDO: eweapon checks - can fire lasers & prox bombs
 // TDO: alt fire
 // TDO: quad & dmg runes increase nail fire (6 slots for runes, 8 slots for quad)
@@ -354,7 +356,7 @@ float (entity p, float heala, float ign) player_scourge_armor =
 	float armheal;
 	
 	if (ign != GIVEARMOR)
-	if (p.armorvalue >= SCOURGE_ARMORMAX) // TDO: || !IS_SARMOR(p))
+	if ( (p.armorvalue >= SCOURGE_ARMORMAX) || (! p.mask_x & MORPH_SARMOR) )
 			return FALSE;
 
 	if ((ign == GIVEARMOR) || p.health >= ((p.max_health * p.health_modifier) - (p.max_health / 2.0)))

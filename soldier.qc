@@ -274,11 +274,16 @@ void() army_die =
 
 /*QUAKED monster_army (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
-void() monster_army =
+void(float ign) monster_army =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_ARMY)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model ("progs/soldier.mdl");
@@ -295,7 +300,7 @@ void() monster_army =
 	precache_sound ("soldier/sight1.wav");
 
 	precache_sound ("player/udeath.wav");		// gib death
-
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

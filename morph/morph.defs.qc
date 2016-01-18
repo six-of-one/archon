@@ -19,12 +19,63 @@ float MORPH_CUBE_DV;
 float MORPH_FF;                             // true = allow morph friendly fire (ogre can hurt another ogre, etc.)
 float MORPH_FLY;
 float MORPH_HOOK; // morphs that have built in hook - mostly for jump & get stuck issues
+float MORPH_CHAIN_LEN			= 320; // built in hook is for escape - shorter length
+float MORPH_SARMOR; // morphs with healable (scourge) armor built in
 
 .float morphy; // morphic code number from list below
 .vector mask; // inventory a player can pickup by class - mask for item, class for player
 
 float MORPH_ALL; //every morph bit
 
+
+// monsters in dm - so morphs have friends
+
+float A_MONSTER				= -555777; // allow monsters in dm - monster_* called from code
+float M_MONSTER; // bit mask to allow map monsters in dm
+float S_MONSTER; // bit mask of monsters to respawn when dead (map monsters only, no random ones) - works in single player too!
+float C_MONSTER; // bit mask of monsters to spawn randomly
+float R_MONSTER				= 1; // if 1 and loading a map in dm, remove the monster ent - if 0 save for a live control update loop that can recreate the monster
+
+void() lavaball_shot;
+void(entity e) chaos_mdlsize;
+
+// monster bit flags - still use mask_x
+
+/*
+float CB_						= 1;
+float CB_						= 2;
+float CB_						= 4;
+float CB_						= 8;
+float CB_					= 16;
+*/
+float CB_M_ARMY					= 32;
+float CB_M_FISH					= 64;
+float CB_M_KNIGHT					= 128;
+float CB_M_DOG						= 256;
+float CB_M_DEMON					= 512;
+float CB_M_ENF						= 1024;
+float CB_M_HKNIGHT				= 2048;
+float CB_M_OGRE					= 4096;
+float CB_M_SHALR					= 8192; // + super vore ?
+float CB_M_SHAMBL					= 16384;
+float CB_M_SCRAG					= 32768;
+float CB_M_ZOMBY					= 65536;
+float CB_M_CTHON					= 131072; // boss
+float CB_M_TARBABY				= 262144;
+float CB_M_SCOURGE				= 524288;
+float CB_M_SHUBS					= 1048576;
+//float CB_						= 2097152;
+//float CB_					= 4194304; // mode bits = 4 modes
+//float CB_						= 8388608;
+
+/* special - will use something else
+float CB_GUNNEY					= 64;
+float CB_SUPTANK					= 128;
+float CB_TANK						= 256;
+float CB_IMP						= 2097152;
+float CB_ARACHN					= 4194304; // mode bits = 4 modes
+float CB_CYBER						= 8388608;
+*/
 
 // selection
 void() morph_cube;
@@ -41,6 +92,8 @@ void() morph_die;
 
 float(entity targ, float sdot, vector vang, vector vorg) infront;
 float(entity ck, float hl) morph_heal;
+
+void(float dx) morph_CycleWeaponCommand;
 
 
 .void() _stand;

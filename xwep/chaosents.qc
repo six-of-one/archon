@@ -991,7 +991,7 @@ void(entity e) set_defaults =
 
 // NOTE: muddy area for morphs.  how to handle all this - maybe convert health by modifier?
 //					check to see if morph can use any of the give away eweaps?
-	if (cb_morph(self.morphy) != CB_HUMAN) return;
+	if (!self.mask_x & CB_HUMAN) return;
 
 
 	if (DEF_HEALTH) e.health = fabs(DEF_HEALTH);

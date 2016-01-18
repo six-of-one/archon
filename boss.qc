@@ -261,10 +261,14 @@ void() boss_awake =
 
 /*QUAKED monster_boss (1 0 0) (-128 -128 -24) (128 128 256)
 */
-void() monster_boss =
+void(float ign) monster_boss =
 {
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_CTHON)
 	if (deathmatch)
 	{
+		if (R_MONSTER)
 		remove(self);
 		return;
 	}
@@ -278,9 +282,12 @@ void() monster_boss =
 	precache_sound ("boss1/throw.wav");
 	precache_sound ("boss1/pain.wav");
 	precache_sound ("boss1/death.wav");
+}
 
 	total_monsters = total_monsters + 1;
 
+	if (deathmatch) boss_awake();
+	else
 	self.use = boss_awake;
 };
 

@@ -236,15 +236,17 @@ void() player_shalrath_impulse =
 
 	morph_impulse();
 
+	if (self.pk_currentitem != PK_IT_AXE) return; // selected a pk goody - dont re-message
+
 	if (self.weapon == SEL_SHAL_ANH)
 	{
 		self.items = self.items | IT_CELLS | IT_AXE;
-		sprint(self, "Shalrath using ( Press fire to summon / dismiss Sphere of annihilation )\n"); 
+		sprint(self, "Press fire to summon / dismiss Sphere of annihilation\n"); 
 	}
 	if (self.weapon == SEL_SHAL_BOMB)
 	{
 		self.items = self.items | IT_ROCKETS | IT_ROCKET_LAUNCHER;
-		sprint(self, "Scourge firing ( Spiked bomb )\n"); 
+		sprint(self, "Shalrath firing ( Spiked bomb )\n"); 
 	}
 
 	if (self.weapon == SEL_SHAL_LTN)

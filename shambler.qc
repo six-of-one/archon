@@ -326,11 +326,16 @@ void() sham_die =
 
 /*QUAKED monster_shambler (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 */
-void() monster_shambler =
+void(float ign) monster_shambler =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_SHAMBL)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model ("progs/shambler.mdl");
@@ -347,6 +352,7 @@ void() monster_shambler =
 	precache_sound ("shambler/melee1.wav");
 	precache_sound ("shambler/melee2.wav");
 	precache_sound ("shambler/smack.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

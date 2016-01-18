@@ -467,10 +467,13 @@ void(entity attacker, float take) zombie_pain =
 
 If crucified, stick the bounding box 12 pixels back into a wall to look right.
 */
-void() monster_zombie =
+void(float ign) monster_zombie =
 {
 // NEW_ZOMBIE_START
 
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_ZOMBY)
 	if (deathmatch)
 	{
 		if ( pk_flags & PK_TP_SPARKSFLASH)
@@ -481,7 +484,8 @@ void() monster_zombie =
 
 		if (Q_100 || !(self.spawnflags & SPAWN_CRUCIFIED))
 		{
-			remove(self);
+			if (R_MONSTER)
+				remove(self);
 			return;
 		}
 	}
@@ -501,6 +505,7 @@ void() monster_zombie =
 	precache_sound ("zombie/z_miss.wav");
 	precache_sound ("zombie/z_hit.wav");
 	precache_sound ("zombie/idle_w2.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

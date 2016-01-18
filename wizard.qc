@@ -373,11 +373,16 @@ void() Wiz_Missile =
 
 /*QUAKED monster_wizard (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
-void() monster_wizard =
+void(float ign) monster_wizard =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_SCRAG)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model ("progs/wizard.mdl");
@@ -391,6 +396,7 @@ void() monster_wizard =
 	precache_sound ("wizard/widle2.wav");
 	precache_sound ("wizard/wpain.wav");
 	precache_sound ("wizard/wsight.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

@@ -595,7 +595,7 @@ void() painkeep_touch =
 	}
 
 // morphic
-	if (cb_morph(other.morphy) != CB_HUMAN)
+	if (!self.mask_x & CB_HUMAN) // NOTE: CHECK: TDO: this means humans are not tested and CAN GET everything!
 	if (!(self.mask_x & other.mask_x) && (self.wad != "morph_cube")) // make sure morph can collect this
 	{
 		if (e) e.classname = "pk*bot";

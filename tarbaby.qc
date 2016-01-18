@@ -188,11 +188,16 @@ void()	tbaby_die2	=[	$exp,		tbaby_run1	]
 
 /*QUAKED monster_tarbaby (1 0 0) (-16 -16 -24) (16 16 24) Ambush
 */
-void() monster_tarbaby =
+void(float ign) monster_tarbaby =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_TARBABY)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model2 ("progs/tarbaby.mdl");
@@ -201,7 +206,7 @@ void() monster_tarbaby =
 	precache_sound2 ("blob/hit1.wav");
 	precache_sound2 ("blob/land1.wav");
 	precache_sound2 ("blob/sight1.wav");
-	
+}	
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
@@ -216,7 +221,17 @@ void() monster_tarbaby =
 	self.th_missile = tbaby_jump1;
 	self.th_melee = tbaby_jump1;
 	self.th_die = tbaby_die1;
-	
+
+	if (!Q_100)
+	if (ign != A_MONSTER)
+	if (random() < 0.17) // hot tarbaby from a map spawned baby
+	{
+		setmodel(self,"progs/lavabomb.mdl");
+		setsize (self, '-16 -16 -24', '16 16 40');
+		self.health = 160;
+		self.th_missile = lavaball_shot;
+	}
+
 	walkmonster_start ();
 };
 

@@ -234,11 +234,16 @@ void() knight_die =
 
 /*QUAKED monster_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
-void() monster_knight =
+void(float ign) monster_knight =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_KNIGHT)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model ("progs/knight.mdl");
@@ -250,6 +255,7 @@ void() monster_knight =
 	precache_sound ("knight/sword1.wav");
 	precache_sound ("knight/sword2.wav");
 	precache_sound ("knight/idle.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

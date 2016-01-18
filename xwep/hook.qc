@@ -263,19 +263,10 @@ void () DropHook =
 	// remove all hook flags
 	self.owner.hook = 0;
 
+	if (!self.morphy) 
 	if (self.lefty == SEL_S_HOOK )
 		stuffcmd(self.owner, "exec hook_release.cfg\n");
-/*
-	if (hook_ver == CHAOS_VER)
-	{
-		if (self.owner.morphnum == IMP_MCTHON) sound (self.owner, CHAN_AUTO, "boss1/throw.wav", 1, ATTN_NORM);
-		else if (self.owner.morphnum == IMP_MZOMBIE) sound (self.owner, CHAN_AUTO, "zombie/z_shot1.wav", 1, ATTN_NORM);
-//		else if (self.owner.morphnum == IMP_MCHAOS) newlink.skin = floor(random() * 3.4); // randomize here
-		else
-			sound (self.owner, CHAN_AUTO, "hook/retract.wav", 1, ATTN_NORM);
-	}
-	else
-*/
+
 	sound (self.owner, CHAN_AUTO, self.noise1, 1, ATTN_NORM);
 
 	// removes hook and chain
@@ -386,14 +377,10 @@ void () MaintainLinks =
 			setsize (newlink, '0 0 0', '0 0 0');
 			newlink.goalentity = world;
 			currlink.goalentity = newlink;
-/*
-			if (hook_ver == CHAOS_VER)
-			{
-				if (self.owner.morphnum == IMP_MCTHON) newlink.skin = 1;
-				else if (self.owner.morphnum == IMP_MZOMBIE) newlink.skin = 2; // IDEA: diff mdl added to spike looks like bones & ligaments
-				else if (self.owner.morphnum == IMP_MCHAOS) newlink.skin = floor(random() * 3.4);
-			}
-*/
+
+			if (self.morphy == IMP_MCTHON) newlink.skin = 1;
+			else if (self.morphy == IMP_MZOMBIE) newlink.skin = 2; // IDEA: diff mdl added to spike looks like bones & ligaments
+			else if (self.morphy == IMP_MCHAOS) newlink.skin = floor(random() * 3.4);
 			
 			if (self.lefty != SEL_S_HOOK )
 			{
@@ -516,6 +503,7 @@ void () HookBehavior =
 	if (self.enemy.takedamage)
 	if (HOOK_DMG || self.dmg)
 	if (self.lefty == SEL_S_HOOK)
+	if (!self.morphy)
 	if (time > self.wait)
 	{
 		if (HOOK_DMG)
@@ -595,24 +583,13 @@ void () HookBehavior =
 			if (self.delay < time)
 			{
 				f1 = gs / GROW_RATE;
-//				if (hook_ver == CHAOS_VER)
-//				{
-/*
-					if (self.owner.morphnum == IMP_MCTHON) sound (self.owner, CHAN_AUTO, "boss1/throw.wav", 1, ATTN_NORM);
-					else if (self.owner.morphnum == IMP_MZOMBIE) sound (self.owner, CHAN_AUTO, "zombie/z_fall.wav", 1, ATTN_NORM);
-//		else if (self.owner.morphnum == IMP_MCHAOS) newlink.skin = floor(random() * 3.4); // randomize here
-				else
-*/
-//					sound (self.owner, CHAN_AUTO, "hook/chain1.wav", f1, ATTN_NORM);
-//				}
-//				else
 				sound (self.owner, CHAN_AUTO, self.target1, f1, ATTN_NORM);
 
 				self.delay = time + 0.2;
 			}
 		}
-		if ( self.armorvalue > MAX_CHAIN_LEN )
-			self.armorvalue = MAX_CHAIN_LEN;
+		if ( self.armorvalue > self.armortype )
+			self.armorvalue = self.armortype;
 	}
 	if (gs < 0)
 	{
@@ -631,17 +608,7 @@ void () HookBehavior =
 				i1 = fabs(gs);
 				i2 = fabs(SHRINK_RATE);
 				f1 = i1 / i2;
-//				if (hook_ver == CHAOS_VER)
-//				{
-/*
-					if (self.owner.morphnum == IMP_MCTHON) sound (self.owner, CHAN_AUTO, "boss1/throw.wav", 1, ATTN_NORM);
-					else if (self.owner.morphnum == IMP_MZOMBIE) sound (self.owner, CHAN_AUTO, "zombie/z_fall.wav", 1, ATTN_NORM);
-//		else if (self.owner.morphnum == IMP_MCHAOS) newlink.skin = floor(random() * 3.4); // randomize here
-					else
-*/
-//						sound (self.owner, CHAN_AUTO, "hook/chain2.wav", f1, ATTN_NORM);
-//				}
-//				else
+
 				sound (self.owner, CHAN_AUTO, self.target2, f1, ATTN_NORM);
 
 				self.delay = time + 0.2;
@@ -739,26 +706,6 @@ void() HookTouch =
 
 	if (other.solid != SOLID_SLIDEBOX)
 	{
-/*
-	if (hook_ver == CHAOS_VER)
-	{
-		if (self.owner.morphnum == IMP_MCTHON)
-		{
-			sound (self, CHAN_AUTO, "blob/hit1.wav", 1, ATTN_NORM);
-		}
-		else if (self.owner.morphnum == IMP_MZOMBIE)
-		{
-			sound (self, CHAN_AUTO, "zombie/z_hit.wav", 1, ATTN_NORM);
-		}
-		else if (self.owner.morphnum == IMP_MCHAOS)
-		{
-			sound (self, CHAN_AUTO, rnd_string(v0, "player/axhit2.wav","player/pain5.wav","player/teledth1.wav","enforcer/enfstop.wav","chaos/proxwarn.wav"), 1, ATTN_NORM);
-		}
-		else
-			sound (self, CHAN_AUTO, "player/axhit2.wav", 1, ATTN_NORM);
-	}
-	else
-*/
 		sound (self, CHAN_AUTO, self.target, 1, ATTN_NORM);
 
 		self.avelocity = '0 0 0';
@@ -783,7 +730,7 @@ void() LaunchHook =
 	self.armorvalue = vlen(self.origin - (self.owner.origin + '0 0 16'));
 
 	if ( !(self.owner.hook & HOOK_ON) ||
-			self.armorvalue > MAX_CHAIN_LEN	||
+			self.armorvalue > self.armortype	||
 			self.owner.solid == SOLID_NOT	)
 	{
 		DropHook();
@@ -832,30 +779,44 @@ void(entity e) InitiateHook =
 
 	hk = "progs/v_spike.mdl";
 
-/*
-	if (hook_ver == CHAOS_VER)
-	{
-		if (e.morphnum == IMP_MCTHON)
-		{
-			hk = "progs/lavaball.mdl";
-//			setmodel(newhook, "progs/lavaball.mdl");
-//			sound (e, CHAN_AUTO, "blob/hit1.wav", 1, ATTN_NORM);
-		}
-		else if (e.morphnum == IMP_MZOMBIE)
-		{
-			hk = "progs/gib_m.mdl";
-//			sound (e, CHAN_AUTO, "zombie/z_hit.wav", 1, ATTN_NORM);
-		}
-		else if (e.morphnum == IMP_MCHAOS)
-		{
-			hk = rnd_string(v0, "progs/v_spike.mdl","progs/hook.mdl","progs/lavaball.mdl","progs/ejbatt.mdl",rnd_string(v0, "progs/k_spike.mdl","progs/g_bomb.mdl","progs/proxbomb.mdl","progs/missile.mdl","progs/grenade.mdl"));
-//			sound (e, CHAN_AUTO, "weapons/ax1.wav", 1, ATTN_NORM);
-		}
-	}
-	else
-*/
-
 	newhook = chaos_spawn(MOVETYPE_FLY, SOLID_BBOX, 0, 0, e.origin + (v_forward*16) + '0 0 16', ' 0 0 0', ' 0 0 0', vectoangles(v_forward), v_forward*2000, "", hk, HookTouch, 0.01, LaunchHook, SUB_Null, e, world);
+
+	newhook.armortype = MAX_CHAIN_LEN;
+	newhook.morphy = 0;
+
+	if (e.mask_x & MORPH_HOOK)
+	{
+		newhook.lefty = SEL_S_HOOK;
+		newhook.morphy = e.morphy;
+		newhook.armortype = MORPH_CHAIN_LEN; // built in hook is for escape - shorter length
+		if (e.morphy == IMP_MCTHON)
+		{
+			setmodel(newhook, "progs/lavaball.mdl");
+			newhook.target = "blob/hit1.wav";
+			newhook.noise1 = "boss1/throw.wav";
+			newhook.target1 = "boss1/throw.wav";
+			newhook.target2 = "boss1/throw.wav";
+			newhook.frame = 1;
+		}
+		else if (e.morphy == IMP_MZOMBIE)
+		{
+			setmodel(newhook, "progs/gib_m.mdl");
+			newhook.target = "zombie/z_hit.wav";
+			newhook.noise1 = "zombie/z_shot1.wav";
+			newhook.target1 = "zombie/z_fall.wav";
+			newhook.target2 = "zombie/z_fall.wav";
+		}
+		else if (e.morphy == IMP_MCHAOS)
+		{
+			hk = rnd_string(v0, "progs/v_spike.mdl","progs/hook.mdl","progs/lavaball.mdl","progs/cubel.mdl",rnd_string(v0, "progs/k_spike.mdl","progs/g_bomb.mdl","progs/proxbomb.mdl","progs/missile.mdl","progs/grenade.mdl"));
+			setmodel(newhook, hk);
+			newhook.target = "weapons/ax1.wav";
+//			newhook.target1 = "hook/chain1.wav"; // IDEA: randomize
+//			newhook.target2 = "hook/chain2.wav";
+		}
+		e.hook = e.hook | MODE2;// Cataboligne - 9.18.11 - morph hook only do one shot, no I_HOOK op
+	}
+
 
 // default sounds
 	newhook.target = "player/axhit2.wav"; // hook hit a solid - not damaged
@@ -864,22 +825,22 @@ void(entity e) InitiateHook =
 	newhook.target2 = "hook/chain2.wav"; // in
 	newhook.targetname = "weapons/ax1.wav"; // launch snd
 
-	if (self.eweapon)
-	if (self.eweapon.netname == "Grappling hook")
+	if (e.eweapon)
+	if (e.eweapon.netname == "Grappling hook")
 	{
-		newhook.eweapon = self.eweapon;
-		newhook.lefty = self.eweapon.lefty;
-//		newhook.mdl = self.eweapon.killtarget;
-		setmodel(newhook, self.eweapon.killtarget);
-		newhook.frame = self.eweapon.dmg_save; // frame in mdl for hook
-		newhook.dmg = self.eweapon.dmg;
-		newhook.noise1 = self.eweapon.noise1; // these override - so they must alway be set for eweap
-//		newhook.noise3 = self.eweapon.noise3; // continous run sound - ltn hook
-		newhook.target = self.eweapon.target;
-		newhook.target1 = self.eweapon.target1;
-		newhook.target2 = self.eweapon.target2;
-		newhook.targetname = self.eweapon.targetname;
-		newhook.punchangle = self.eweapon.punchangle;
+		newhook.eweapon = e.eweapon;
+		newhook.lefty = e.eweapon.lefty;
+//		newhook.mdl = e.eweapon.killtarget;
+		setmodel(newhook, e.eweapon.killtarget);
+		newhook.frame = e.eweapon.dmg_save; // frame in mdl for hook
+		newhook.dmg = e.eweapon.dmg;
+		newhook.noise1 = e.eweapon.noise1; // these override - so they must always be set for eweap
+//		newhook.noise3 = e.eweapon.noise3; // continous run sound - ltn hook
+		newhook.target = e.eweapon.target;
+		newhook.target1 = e.eweapon.target1;
+		newhook.target2 = e.eweapon.target2;
+		newhook.targetname = e.eweapon.targetname;
+		newhook.punchangle = e.eweapon.punchangle;
 	}
 
 	if (!newhook.lefty) // give away hook behavior
@@ -898,7 +859,7 @@ void(entity e) InitiateHook =
 			newhook.targetname = "q2_snd/lhook_l.wav"; // launch snd			
 			newhook.punchangle_x = 0.5;
 			newhook.speed = 650;
-			self.hook = self.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
+			e.hook = e.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
 		}
 		if (newhook.lefty == SEL_LTN_HOOK)
 		{
@@ -910,7 +871,7 @@ void(entity e) InitiateHook =
 			newhook.targetname = "q3_snd/gauntrun.wav"; // launch snd
 			newhook.noise3 = "q3_snd/gauntrun.wav"; // continous run sound - ltn hook
 			newhook.punchangle_x = 0.5;
-			self.hook = self.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
+			e.hook = e.hook | MODE2;// Cataboligne - 9.8.11 - give away laser & ltn only do one shot, no I_HOOK op
 		}
 //		if (newhook.lefty == SEL_S_HOOK)
 	}
@@ -930,9 +891,7 @@ void(entity e) InitiateHook =
 	// self.ammo_nails = FALSE;  // initial hit flag for live ents
 	// self.delay = 0; // wait cycle for chain raising/lowering sounds
 
-//	if (hook_ver == CHAOS_VER)
-//	if (e.morphnum == IMP_MCTHON)
-//		newhook.frame = 1;
+	if (!newhook.morphy) 
 	if (newhook.lefty == SEL_S_HOOK )
 		stuffcmd(e, "exec hook_control.cfg\n");
 
@@ -940,7 +899,7 @@ void(entity e) InitiateHook =
 	local float f;
 	local string md;
 	
-	if (self.impulse == I_HOOK) // mode one, fire & wait
+	if (e.impulse == I_HOOK) // mode one, fire & wait
 	{
 		f = HOOK_URTO;
 		if (f <= 0 && HOOK_TIME > 0)
@@ -949,13 +908,13 @@ void(entity e) InitiateHook =
 			f = HOOK_TIME; // no urto, but there is a std timeout - set up ent
 		}
 	}
-//	if (self.impulse == I_HOOK2) 
+//	if (e.impulse == I_HOOK2) 
 	else f = HOOK_TIME;
 
 	newhook.movetarget = world;
 	if (f > 0)
 	{
-		newhook.movetarget = chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, md, "", SUB_Null, f, hook_timeout, SUB_Null, self, world);
+		newhook.movetarget = chaos_spawn(0, 0, 0, 0,  v0, v0, v0, v0, v0, md, "", SUB_Null, f, hook_timeout, SUB_Null, e, world);
 		newhook.movetarget.enemy = newhook;
 	}
 };
@@ -981,21 +940,9 @@ void() CheckGrapHookJump =
 //--------------------------------------------------------------------
 void() CheckGrapHook =
 {
-	local float cb_msk, ts;
-//	cb_msk = CB_CHAOS | CB_GREMLIN | CB_CTHON | CB_SCOURGE | CB_ZOMBY;
+	local float ts;
 
-/*
-	if (hook_ver == CHAOS_VER)
-	{
-//		if (!self.mask_x & cb_msk) return; // validate hook users
-		if (self.model == "progs/cthon.mdl") return; // dont want hook in cthon form
-		MAX_CHAIN_LEN = 256; // for escaping liquids & such
-	}
-	else if (hook_ver == TEST_VER)
-		MAX_CHAIN_LEN = 2000; // done in update
-	else
-		return; // no version disables hook
-*/
+	if (self.model == "progs/cthon.mdl") return; // dont want hook in cthon form
 
 	if ((!(self.hook & HOOK_ON)) && (self.impulse == I_HOOK))
 		{
@@ -1034,6 +981,7 @@ void() CheckGrapHook =
 
 		if (!ts)
 		if (LASER_HOOK || LTN_HOOK) return; // no reeling with these hook
+		if (self.mask_x & MORPH_HOOK) return; // morph cant reel either
 
 		// deactivate chain growth or shrink
 		if (self.impulse == I_STOP)
@@ -1117,7 +1065,7 @@ void() hook_dmg_check =
 				 self.velocity_z < 10)
 			{
 				T_Damage (self, world, world, 10);
-//				if (self.morphnum == IS_HUMAN)
+				if (self.mask_x & CB_HUMAN)
 					sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
 //				else
 //					morph_sound (TRUE, self.noise2, 0.5);
@@ -1129,7 +1077,7 @@ void() hook_dmg_check =
 	{
 		// normal three-point landing
 		if (self.velocity_z > -30)
-//			if (self.morphnum == IS_HUMAN)
+			if (self.mask_x & CB_HUMAN)
 				sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
 	}
 };

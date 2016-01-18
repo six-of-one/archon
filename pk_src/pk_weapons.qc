@@ -576,7 +576,7 @@ void() PK_SetCurrentAmmo =
 		self.weaponmodel = self.eweapon.weaponmodel;
 	}
 
-//	if (cb_morph(self.morphy) != CB_HUMAN) self.weaponmodel = ""; // morphs can use carryables - this will make them no wep mdls
+//	if (!self.mask_x & CB_HUMAN) self.weaponmodel = ""; // morphs can use carryables - this will make them no wep mdls
 
 // Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
@@ -809,7 +809,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		f.weaponframe = 0;
 	}
 
-//	if (cb_morph(f.morphy) != CB_HUMAN) self.weaponmodel = ""; // morphs can use carryables - this will make them no wep mdls
+//	if (!self.mask_x & CB_HUMAN) self.weaponmodel = ""; // morphs can use carryables - this will make them no wep mdls
 
 // Cataboligne 8.8.9 purify - chase cam
 	// disable model in chase view
@@ -1029,12 +1029,12 @@ float(float weaponnum, float pknum) CanSelect =
 	if (!self.items & weaponnum)
 		return FALSE;
 
+	if (weaponnum == IT_AXE && !(self.pk_items & pknum)) // moved above next test so morphs dont bork pki
+		return FALSE;
+
 	if (pknum == PK_IT_AXE || weaponnum != IT_AXE)
 	if (weaponnum & self.builtin)
 		return TRUE;
-
-	if (weaponnum == IT_AXE && !(self.pk_items & pknum))
-		return FALSE;
 
 	local float am;
 	am = HasAmmo(weaponnum, pknum);
@@ -1390,6 +1390,7 @@ float(float rot) PK_CheckLivEnt =
 void() PK_Attack =
 {
 	local	float	r;
+	local void() e;
 
 	if (!W_CheckNoAmmo ())
 		return;
@@ -1408,11 +1409,22 @@ void() PK_Attack =
 
 	if (self._attack != SUB_Null) // morph built in weapons
 	{
-		self._attack();
+		if ( (self.pk_currentitem != PK_IT_AXE) && (self.builtin & self.weapon) ) // fire a pk item - from any builtin slot
+		{
+			e = self._attack;
+			self._attack = SUB_Null;
+			r = self.weapon;
+			self.weapon = IT_AXE;
+			PK_Attack();
+			self._attack = e;			
+			self.weapon = r;
+		}
+		else
+			self._attack();
 		return;
 	}
 
-	if (self.weapon == IT_AXE) // comment out so morphs can select pk items on any builtin weapon
+	if (self.weapon == IT_AXE)
 	{
 		if (self.pk_currentitem == PK_IT_AXE)
 		{
@@ -2041,7 +2053,7 @@ void() PK_ImpulseCommands =
 	}
 	else if (self.impulse >= 94 && self.impulse <= 98) // Cataboligne 8.29.11 purify - hook - this is only the vector for give-away hook, item hooks vector via fire code
 	{
-		if (HOOK)
+		if (HOOK || (self.mask_x & MORPH_HOOK)) // morphs with hooks too
 			hook_impulse_check();
 
 		if (self.eweapon)

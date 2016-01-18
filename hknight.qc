@@ -396,8 +396,11 @@ void() hknight_melee =
 
 /*QUAKED monster_hell_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
-void() monster_hell_knight =
+void(float ign) monster_hell_knight =
 {
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_HKNIGHT)
 	if (deathmatch)
 	{
 		remove(self);
@@ -419,7 +422,8 @@ void() monster_hell_knight =
 
 	precache_sound ("knight/sword1.wav");
 	precache_sound ("knight/sword2.wav");
-	
+}
+
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 

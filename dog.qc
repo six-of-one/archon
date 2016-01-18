@@ -327,11 +327,16 @@ float()	DogCheckAttack =
 /*QUAKED monster_dog (1 0 0) (-32 -32 -24) (32 32 40) Ambush
 
 */
-void() monster_dog =
+void(float ign) monster_dog =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_DOG)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model ("progs/h_dog.mdl");
@@ -342,6 +347,7 @@ void() monster_dog =
 	precache_sound ("dog/dpain1.wav");
 	precache_sound ("dog/dsight.wav");
 	precache_sound ("dog/idle.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

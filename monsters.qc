@@ -127,6 +127,7 @@ void() walkmonster_start =
 	self.think = walkmonster_start_go;
 	total_monsters = total_monsters + 1;
 	if (!Q_100) AddToSplashBig(self); // *pk - Make this entity splash
+	self.class_select = "class_monster"; // Cataboligne - let mod know this is a monster
 };
 
 
@@ -181,6 +182,7 @@ void() flymonster_start =
 	self.think = flymonster_start_go;
 	total_monsters = total_monsters + 1;
 	if (!Q_100) AddToSplashBig(self); // *pk - Make this entity splash
+	self.class_select = "class_monster";
 };
 
 
@@ -233,6 +235,7 @@ void() swimmonster_start =
 	self.nextthink = self.nextthink + random()*0.5;
 	self.think = swimmonster_start_go;
 	total_monsters = total_monsters + 1;
+	self.class_select = "class_monster";
 };
 
 

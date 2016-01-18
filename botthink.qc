@@ -188,7 +188,7 @@ void () BotCheckPowerups =
 			self.invisible_time = 0;
 		}
 		self.frame = 0;
-		if (cb_morph(self.morphy) == CB_HUMAN)
+		if (self.mask_x & CB_HUMAN)
 			self.modelindex = modelindex_eyes;
 		else
 			self.modelindex = 0;

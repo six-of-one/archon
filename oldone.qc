@@ -249,11 +249,15 @@ void () nopain =
 
 /*QUAKED monster_oldone (1 0 0) (-16 -16 -24) (16 16 32)
 */
-void() monster_oldone =
+void(float ign) monster_oldone =
 {
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_SHUBS)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 
@@ -263,6 +267,7 @@ void() monster_oldone =
 	precache_sound2 ("boss2/idle.wav");
 	precache_sound2 ("boss2/sight.wav");
 	precache_sound2 ("boss2/pop2.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

@@ -312,11 +312,16 @@ void() enf_die =
 /*QUAKED monster_enforcer (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 
 */
-void() monster_enforcer =
+void(float ign) monster_enforcer =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_ENF)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model2 ("progs/enforcer.mdl");
@@ -333,7 +338,8 @@ void() monster_enforcer =
 	precache_sound2 ("enforcer/sight2.wav");
 	precache_sound2 ("enforcer/sight3.wav");
 	precache_sound2 ("enforcer/sight4.wav");
-	
+}
+
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 

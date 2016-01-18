@@ -415,11 +415,16 @@ void() ogre_melee =
 /*QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 
 */
-void() monster_ogre =
+void(float ign) monster_ogre =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_OGRE)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model ("progs/ogre.mdl");
@@ -433,6 +438,7 @@ void() monster_ogre =
 	precache_sound ("ogre/ogpain1.wav");
 	precache_sound ("ogre/ogsawatk.wav");
 	precache_sound ("ogre/ogwake.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
@@ -453,9 +459,9 @@ void() monster_ogre =
 	walkmonster_start();
 };
 
-void() monster_ogre_marksman =
+void(float ign) monster_ogre_marksman =
 {
-	monster_ogre ();
+	monster_ogre (ign);
 };
 
 

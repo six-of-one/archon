@@ -310,11 +310,16 @@ void() ShalMissileTouch =
 
 /*QUAKED monster_shalrath (1 0 0) (-32 -32 -24) (32 32 48) Ambush
 */
-void() monster_shalrath =
+void(float ign) monster_shalrath =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_SHALR)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model2 ("progs/shalrath.mdl");
@@ -327,7 +332,7 @@ void() monster_shalrath =
 	precache_sound2 ("shalrath/idle.wav");
 	precache_sound2 ("shalrath/pain.wav");
 	precache_sound2 ("shalrath/sight.wav");
-
+}
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
@@ -351,11 +356,16 @@ void() monster_shalrath =
 
 /*QUAKED monster_supervore (1 0 0) (-32 -32 -24) (32 32 48) Ambush
 */
-void() monster_supervore =
+void(float ign) monster_supervore =
 {
+
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_SHALR)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model2 ("progs/shalrath.mdl");
@@ -368,6 +378,7 @@ void() monster_supervore =
 	precache_sound2 ("shalrath/idle.wav");
 	precache_sound2 ("shalrath/pain.wav");
 	precache_sound2 ("shalrath/sight.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
@@ -375,6 +386,7 @@ void() monster_supervore =
 	setmodel (self, "progs/shalrath.mdl");
 	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
 	self.health = 800; // wowsers - NOTE: might need tweaked down a bit
+
 
 	self.th_stand = s_shal_stand;
 	self.th_walk = s_shal_walk1;

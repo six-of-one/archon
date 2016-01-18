@@ -763,7 +763,7 @@ void () CheckPowerups =
 	// use the eyes
 		self.frame = 0;
 		
-		if (cb_morph(self.morphy) == CB_HUMAN)
+		if (self.mask_x & CB_HUMAN)
 			self.modelindex = modelindex_eyes;
 		else
 			self.modelindex = 0;
@@ -1576,6 +1576,19 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 			{
 				attacker.frags = attacker.frags + frag_plus(attacker);
 
+//MED 11/18/96
+            if (targ.dmg_inflictor.classname == "proximity_grenade")
+               {
+               bprint (targ.netname);
+               if (random()<0.5)
+                  bprint (" got too friendly with ");
+               else
+                  bprint (" did the rhumba with ");
+               bprint (attacker.netname);
+               bprint ("'s bomb\n");
+               return;
+               }
+
 				// For the correct death messages
 				//rnum = attacker.weapon;
 				rnum = inflictor.weapon;
@@ -1722,6 +1735,29 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					else
 						deathstring2 = "'s shaft\n";
 				}
+//MED
+/* TDO: eweapon death msg generic
+
+            if (rnum == IT_LASER_CANNON)
+				{
+               if (random()<0.5)
+                  {
+                  deathstring = " was toasted by ";
+                  }
+               else
+                  {
+                  deathstring = " was radiated by ";
+                  }
+               deathstring2 = "'s laser\n";
+				}
+*/
+//MED
+            if (rnum == IT_MJOLNIR)
+				{
+               deathstring = " was slammed by ";
+               deathstring2 = "'s hammer\n";
+				}
+
 				bprint (targ.netname);
 				bprint (deathstring);
 				bprint (attacker.netname);
@@ -1797,6 +1833,8 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					bprint (" became one with Shub-Niggurath\n");
 				if (attacker.classname == "monster_shalrath")
 					bprint (" was exploded by a Vore\n");
+				if (attacker.classname == "monster_supervore")
+					bprint (" was eviscerated by a Hierophant Vore\n");
 				if (attacker.classname == "monster_shambler")
 					bprint (" was smashed by a Shambler\n");
 				if (attacker.classname == "monster_tarbaby")
@@ -1807,6 +1845,12 @@ void(entity targ, entity inflictor, entity attacker) PK_ClientObituary =
 					bprint (" was scragged by a Scrag\n");
 				if (attacker.classname == "monster_zombie")
 					bprint (" joins the Zombies\n");
+//MED
+            if (attacker.classname == "monster_gremlin")
+               bprint (" was outsmarted by a Gremlin\n");
+//MED
+            if (attacker.classname == "monster_scourge")
+               bprint (" was stung by a Centroid\n");
 
 				return;
 			}

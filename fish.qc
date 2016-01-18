@@ -155,11 +155,16 @@ void(entity attacker, float damage)	fish_pain =
 
 /*QUAKED monster_fish (1 0 0) (-16 -16 -24) (16 16 24) Ambush
 */
-void() monster_fish =
+void(float ign) monster_fish =
 {
+	
+if (ign != A_MONSTER)
+{
+	if (!M_MONSTER & CB_M_FISH)
 	if (deathmatch)
 	{
-		remove(self);
+		if (R_MONSTER)
+			remove(self);
 		return;
 	}
 	precache_model2 ("progs/fish.mdl");
@@ -167,6 +172,7 @@ void() monster_fish =
 	precache_sound2 ("fish/death.wav");
 	precache_sound2 ("fish/bite.wav");
 	precache_sound2 ("fish/idle.wav");
+}
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;

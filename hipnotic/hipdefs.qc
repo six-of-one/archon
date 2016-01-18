@@ -38,6 +38,8 @@ entity horn_charmer;
 // scourge code
 .void() th_turn; // NOTE - not really used
 float AS_DODGING     = 5;
+.float spawnsilent;
+.float spawnmulti;
 
 // hipnotic gremlin code
 .float stoleweapon

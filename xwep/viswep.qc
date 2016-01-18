@@ -322,6 +322,8 @@ void(entity e, float pkbt) vwep_firecary =
 
 	pkbits = mk_pkbits(e);
 
+	if (!self.mask_x & CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
+
 	if (pkbits & pkbt) return; // e' still got one
 
 	vw_chain(e);
@@ -383,7 +385,7 @@ void(entity e, float cd) viswep_ld =
 		return;
 	}
 
-	if (cb_morph(e.morphy) != CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
+	if (!self.mask_x & CB_HUMAN) return; // CHECK: back - will any morph ever have vws?
 	
 // have items & check for inventory
 	while (tr)

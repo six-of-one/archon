@@ -857,6 +857,16 @@ void() pk_liveupd =
 		MORPHIC = cvar("sv_morph");
 	}
 
+	S_MONSTER = cvar("sv_monster_resp");
+	C_MONSTER = cvar("sv_monster_rnd"); // TDO: live control
+
+	if (deathmatch)
+	if (M_MONSTER != cvar("sv_monster_map"))
+	{
+		M_MONSTER = cvar("sv_monster_map"); // TDO: process loop - turn bits on and off
+//		if (!R_MONSTER) // monsters were not removed when loading map - live controls usefull
+	}
+
 // pk cubes
 	PK_CUBE_TIME = cvar("pk_cubes_time");
 	if (PK_CUBE  != cvar("pk_cubes")) 
@@ -1186,6 +1196,10 @@ void() pk_srvcmd_set =
 	MORPHIC = 0; // TEST: 2;
 	morph_setup();
 
+	M_MONSTER = 0;
+	S_MONSTER = 0;
+	C_MONSTER = 0;
+
 // pk cubes
 
 	PK_CUBE = 0;
@@ -1450,6 +1464,9 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_morph_time", "30"); // TEST: "120");
 		registercvar("sv_morph_dv", "5"); // TEST: "40");
 //		registercvar("cl_morph", "12"); // client ident		
+		registercvar("sv_monster_map", "0"); // bit mask to allow map monsters in dm
+		registercvar("sv_monster_rnd", "0"); // bit mask to allow map monsters in dm
+		registercvar("sv_monster_resp", "0"); // bit mask to respawn some map monsters (not random ones)
 
 // things dealing with the dead
 

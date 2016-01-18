@@ -89,6 +89,7 @@ void(string cls) item_call =
 
 	f = world;
 	rd = random();
+	if (self.classname != "dyn_monster") // because explod box translantions & randomizes need faked
 	if (self.classname != "dyn_item") // because explod box translantions & randomizes need faked
 	{
 		rd = 1;
@@ -430,12 +431,37 @@ void(string cls) item_call =
 	else if (cls == "ammo_gas") ammo_gas();
 	else if (cls == "ammo_gas_lg") ammo_gas_lg();
 
+// monsters - random spawns
+	else if (cls == "monster_army") monster_army(A_MONSTER);
+	else if (cls == "monster_boss") monster_boss(A_MONSTER);
+	else if (cls == "monster_dog") monster_dog(A_MONSTER);
+	else if (cls == "monster_enforcer") monster_enforcer(A_MONSTER);
+	else if (cls == "monster_fish") monster_fish(A_MONSTER);
+	else if (cls == "monster_hell_knight") monster_hell_knight(A_MONSTER);
+	else if (cls == "monster_knight") monster_knight(A_MONSTER);
+	else if (cls == "monster_ogre") monster_ogre(A_MONSTER);
+	else if (cls == "monster_oldone") monster_oldone(A_MONSTER);
+	else if (cls == "monster_shalrath") monster_shalrath(A_MONSTER);
+	else if (cls == "monster_supervore") monster_supervore(A_MONSTER);
+	else if (cls == "monster_shambler") monster_shambler(A_MONSTER);
+	else if (cls == "monster_tarbaby") monster_tarbaby(A_MONSTER);
+	else if (cls == "monster_wizard") monster_wizard(A_MONSTER);
+	else if (cls == "monster_zombie") monster_zombie(A_MONSTER);
+
 	else // fail - not valid
 	{
 		if (f) remove(f); // IDEA: restore what was hidden?
 		return;
 	}
 	self.mdl = self.model;
+	if (self.classname == "dyn_monster")
+	{
+		self.map = self.classname; // find it later - can set class_select because *_start does
+		self.classname = scls; // for death messages, morph checks
+		FoundTarget(); // make 'em run around
+		self.pausetime = 0;
+		return;
+	}
 	self.flags = FL_ITEM;
 	self.movetype = MOVETYPE_TOSS;
 	if (self.classname != "dyn_item") // dont do these for dyn items

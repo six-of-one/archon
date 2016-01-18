@@ -37,6 +37,7 @@ void() morph_setup =
 	MORPH_FLY = CB_CHAOS + CB_ORDER + CB_SCRAG + CB_WRAITH + CB_DRAGON + CB_GREMLIN;
 // these morphs can always hook
 	MORPH_HOOK = CB_CHAOS + CB_CTHON + CB_ZOMBY + CB_SCOURGE; // + CB_GREMLIN;
+	MORPH_SARMOR = CB_SCOURGE + CB_GREMLIN + CB_IMP;
 };
 
 
@@ -460,6 +461,7 @@ float(entity atk, entity trg) morph_ffchk =
 	else if (mon.classname == "monster_knight") return(oth.morphy == IMP_MHKNIGHT);
 	else if (mon.classname == "monster_ogre") return(oth.morphy == IMP_MOGRE);
 //	else if (mon.classname == "monster_oldone"
+	else if (mon.classname == "monster_supervore") return(oth.morphy == IMP_MSHALR);
 	else if (mon.classname == "monster_shalrath") return(oth.morphy == IMP_MSHALR);
 	else if (mon.classname == "monster_shambler") return(oth.morphy == IMP_MSHAMBLR);
 	else if (mon.classname == "monster_tarbaby") return(oth.morphy == IMP_MCTHON);
@@ -514,6 +516,7 @@ else if (self.classname == "monster_tarbaby") return morph_test(chk,IMP_MHKNIGHT
 else if (self.classname == "monster_boss") return morph_test(chk,IMP_MCTHON,0,0,0,0,0); // cthon likes lava
 //else if (self.classname == "monster_vomit") return morph_test(chk,0,0,0,0,0,IMP_MSHAMBLR);
 else if (self.classname == "monster_enforcer") return morph_test(chk,IMP_MENF,IMP_MHKNIGHT,IMP_MOGRE,IMP_MSCOURGE,0,IMP_MSHAMBLR);
+else if (self.classname == "monster_supervore") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,IMP_MGREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
 else if (self.classname == "monster_shalrath") return  morph_test(chk,IMP_MOGRE,IMP_MSHALR,IMP_MGREMLIN,IMP_MDEMON,IMP_MSCOURGE,IMP_MSHAMBLR);
 else if (self.classname == "monster_scourge") return morph_test(chk,IMP_MSCOURGE,IMP_MGREMLIN,0,0,0,IMP_MSHAMBLR);
 else if (self.classname == "monster_gremlin") return morph_test(chk,IMP_MSCOURGE,IMP_MGREMLIN,IMP_MDEMON,IMP_MOGRE,0,IMP_MSHAMBLR);
@@ -563,6 +566,116 @@ void(entity f, float all) morph_clearparms =
 	f.x_items = x_item_dm_giveaway;
 };
 
+// fn(morph_CycleWeaponCommand) - cycle builtins for morphs
+
+// dx =  1 - fwd
+// dx = -1 - bwd
+
+void(float dx) morph_CycleWeaponCommand =
+{
+	local float sf;
+	sf = 50;
+	while (1)
+	{
+		if (self.weapon == IT_MJOLNIR)
+		{
+			self.pk_currentitem = PK_IT_AXE;
+			if (dx == 1)
+			{
+				self.weapon = IT_AXE;
+				self.pk_currentitem = self.pk_currentInventory;
+				PK_SetCurrentAmmo();
+			}
+			else
+				self.weapon = IT_LIGHTNING;
+		}
+		else if (self.weapon == IT_AXE) // && self.pk_currentitem == self.pk_currentInventory)
+		{
+			if (dx == 1)
+				self.weapon = IT_SHOTGUN;
+			else
+				self.weapon = IT_MJOLNIR;
+			self.pk_currentitem = PK_IT_AXE;
+		}
+		else if (self.weapon == IT_SHOTGUN)
+		{
+			self.pk_currentitem = PK_IT_AXE;
+			if (dx == 1)
+				self.weapon = IT_SUPER_SHOTGUN;
+			else
+			{
+				self.weapon = IT_AXE;
+				self.pk_currentitem = self.pk_currentInventory;
+				PK_SetCurrentAmmo();
+			}
+		}
+		else if (self.weapon == IT_SUPER_SHOTGUN)
+		{
+			if (dx == 1)
+				self.weapon = IT_NAILGUN;
+			else
+				self.weapon = IT_SHOTGUN;
+			self.pk_currentitem = PK_IT_AXE;
+		}
+		else if (self.weapon == IT_NAILGUN)
+		{
+			if (dx == 1)
+				self.weapon = IT_SUPER_NAILGUN;
+			else
+				self.weapon = IT_SUPER_SHOTGUN;
+			self.pk_currentitem = PK_IT_AXE;
+		}
+		else if (self.weapon == IT_SUPER_NAILGUN)
+		{
+			if (dx == 1)
+				self.weapon = IT_GRENADE_LAUNCHER;
+			else
+				self.weapon = IT_NAILGUN;
+			self.pk_currentitem = PK_IT_AXE;
+		}
+		else if (self.weapon == IT_GRENADE_LAUNCHER)
+		{
+			if (dx == 1)
+				self.weapon = IT_ROCKET_LAUNCHER;
+			else
+				self.weapon = IT_SUPER_NAILGUN;
+			self.pk_currentitem = PK_IT_AXE;
+		}
+		else if (self.weapon == IT_ROCKET_LAUNCHER)
+		{
+			if (dx == 1)
+				self.weapon = IT_LIGHTNING;
+			else
+				self.weapon = IT_GRENADE_LAUNCHER;
+			self.pk_currentitem = PK_IT_AXE;
+		}
+		else if (self.weapon == IT_LIGHTNING)
+		{
+			if (dx == 1)
+				self.weapon = IT_MJOLNIR;
+			else
+				self.weapon = IT_ROCKET_LAUNCHER;
+			self.pk_currentitem = PK_IT_AXE;
+		}
+
+// fix loop bug - we hope
+		if (sf < 1)
+		{
+			self.weapon = IT_AXE;
+			self.pk_currentitem = PK_IT_AXE;
+			W_SetCurrentAmmo();
+			return;
+		}
+		sf=sf - 1;
+
+		if (CanSelect(self.weapon, self.pk_currentitem))
+		{
+			W_SetCurrentAmmo();
+			return;
+		}
+	}
+
+};
 // fn(morph_impulse) - generic morph impulse testing
 
 void() morph_impulse =
@@ -576,27 +689,54 @@ void() morph_impulse =
 		if (f & self.builtin) pk_cycleObjects();
 
 		if (self.pk_currentitem == PK_IT_AXE) self.weapon = f; // go back to whatever
-		else PK_SetCurrentAmmo();
+		else 
+		{
+			self.weapon = IT_AXE;
+			PK_SetCurrentAmmo();
+//			sprint(self, "--- press Alt-fire to use this Painkeep item.\n");
+			self.weapon = f;
+		}
 	}
 	else if ((self.impulse == 2) && (self.builtin & IT_SHOTGUN))
+	{
 		self.weapon = IT_SHOTGUN;
+		self.pk_currentitem = PK_IT_AXE; // so that when morphs impulse select stuff, the pk item recently cycled to will clear and let them fire this wep
+	}
 	else if ((self.impulse == 3) && (self.builtin & IT_SUPER_SHOTGUN))
+	{
 		self.weapon = IT_SUPER_SHOTGUN;
+		self.pk_currentitem = PK_IT_AXE;
+	}
 	else if ((self.impulse == 4) && (self.builtin & IT_NAILGUN))
+	{
 		self.weapon = IT_NAILGUN;
+		self.pk_currentitem = PK_IT_AXE;
+	}
 	else if ((self.impulse == 5) && (self.builtin & IT_SUPER_NAILGUN))
+	{
 		self.weapon = IT_SUPER_NAILGUN;
+		self.pk_currentitem = PK_IT_AXE;
+	}
 	else if ((self.impulse == 6) && (self.builtin & IT_GRENADE_LAUNCHER))
+	{
 		self.weapon = IT_GRENADE_LAUNCHER;
+		self.pk_currentitem = PK_IT_AXE;
+	}
 	else if ((self.impulse == 7) && (self.builtin & IT_ROCKET_LAUNCHER))
+	{
 		self.weapon = IT_ROCKET_LAUNCHER;
+		self.pk_currentitem = PK_IT_AXE;
+	}
 	else if ((self.impulse == 8) && (self.builtin & IT_LIGHTNING))
+	{
 		self.weapon = IT_LIGHTNING;
+		self.pk_currentitem = PK_IT_AXE;
+	}
 
 	else if (self.impulse == 10)
-		CycleWeaponCommand ();
+		morph_CycleWeaponCommand(1);
 	else if (self.impulse == 12)
-		CycleWeaponReverseCommand ();
+		morph_CycleWeaponCommand(-1);
 	else if (self.impulse == IMP_MSIGHT)
 	{
 		if (self.msight == "gremlinsight") // ugh - hack, need a callback here or something
@@ -776,6 +916,98 @@ float(entity e, float hl) morph_heal =
 	return(0);													// health > .8 of MAX - no boost
 };
 
+// NOTE: TDO: put back in volcano when added to mod
+
+// fn(fireball_missile) - fire off a fireball (or anything) as a missile, treated as lavaball
+// fn(lavaball_shot) - generic call for think, fire_burst
+// fn(lavaball_supershot) - generic call for think, fire_burst - makes larger size lava balls
+
+// vel - velocity
+// cl - classname
+// md - model
+// sd - weapon sound
+// fr - frame
+// flg - added flags
+
+// default melt = 16, default damage = 20
+// NOTE: this uses missile ent for sounds
+
+float FIRE_FLY_TM                               = 5; // time for fly to live
+float FIRE_FLY_TDEV                     = 4; // std dev fly life
+float FIRE_FLY_VELBASE          = 600; // fire fly base velocity - not the Q1 launcher default!
+float FIRE_FLY_VELLARGE         = 600; // larger fire fly base velocity
+float FIRE_FLY_VELDEV           = 200; // fire fly velocity deviation
+float FIRE_FLY_VELXY                    = 50; // fire fly x & y velocity
+float FIRE_FLY_VELBW                    = 400; // fire fly velocity when fireball wep hits world
+float FIRE_FLY_VELMIRV          = 100; // fire fly velocity when a mirv occurs
+float FIRE_FLY_DMG                      = 20; // base dmg - Q1 default
+vector FIREB_MSL_AVEL           = ' 200 100 300'; // default fireball missile avelocity
+
+void(float vel, string cl, string md, string sd, float flg) fireball_missile =
+{
+//	fire_missile(vel, MOVETYPE_FLYMISSILE, flg, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | PF_LAVA | CK_EARTHQUAKE, self.origin, 
+//					 v0, cl, md, sd, fire_fly_touch, FIRE_FLY_TM + random() * FIRE_FLY_TDEV, meltthink, fire_fly_adj);
+	fire_missile(vel, MOVETYPE_FLYMISSILE, flg, RM_SKY | FLT_IMM | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | PF_LAVA | CK_EARTHQUAKE, self.origin, 
+					 v0, cl, md, sd, fire_fly_touch, FIRE_FLY_TM + random() * FIRE_FLY_TDEV, SUB_Remove, SUB_Remove);
+
+	newmis.avelocity = FIREB_MSL_AVEL;
+	newmis.dmgtime = time + 0.1;  // clear fields
+	if (cl == "fireballwep") newmis.dmgtime = time + 0.07;
+	newmis.rad_time = time + 2; // content check timer
+	newmis.dmg = FIRE_FLY_DMG; // 20
+	newmis.dest_y = 16;
+	newmis.class_select = "class_firefly"; // all things made here + fireball weps
+	chaos_mdlsize(newmis);
+};
+
+void() lavaball_shot =
+{
+	local string sd;
+	local float fl;
+
+	sd = "";
+	if (self.flags & FL_MONSTER) { sd = "boss1/throw.wav"; fl = FL_CTHONF; }
+
+	fireball_missile(FIREBALL_WEP_VEL, "fireball", "progs/lavaball.mdl", sd, fl);
+//	newmis.grab_callback = grab_lavaball;
+};
+
+// put back in chaos morph when added
+
+// fn(chaos_mdlsize) - set sizes for certain models
+
+void(entity e) chaos_mdlsize =
+{
+	local vector vmin, vmax;
+	if (!e) return;
+
+	vmin = vmax = v0;
+	if (e.model == "progs/teleport.mdl")			{ vmin = '-16 -16 -16'; vmax = ' 16 16 16'; }
+	else if (e.model == "progs/lavaball.mdl" || e.model == "progs/snowball.mdl")
+	{
+		if (e.frame == 0 || e.frame == 5)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
+		if (e.frame == 1 || e.frame == 6)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
+		if (e.frame == 2 || e.frame == 3 ||
+			  e.frame == 7 || e.frame == 8)			{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+		if (e.frame == 4 || e.frame == 9)			{ vmin = '-1 -1 -1'; vmax = ' 1 1 1'; }
+	}
+	else if (e.model == "progs/grenade.mdl")
+	{
+		if (e.frame == 0)								{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; } // reg grenade
+		if (e.frame == 1 || e.frame == 6)			{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; } // telespheres
+		if (e.frame == 2 || e.frame == 7)			{ vmin = '-3 -3 -3'; vmax = ' 3 3 3'; }
+		if (e.frame == 3 || e.frame == 4 ||
+			  e.frame == 8 || e.frame == 9)			{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+		if (e.frame == 5 || e.frame == 10)		{ vmin = '-1 -1 -1'; vmax = ' 1 1 1'; }
+	}
+	else if (e.model == "progs/proxbomb.mdl")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+	else if (e.model == "progs/hook.mdl")			{ vmin = '-5 -5 -5'; vmax = ' 5 5 5'; }
+	else if (e.model == "progs/v_spike.mdl")		{ vmin = '-4 -4 -4'; vmax = ' 4 4 4'; }
+	else if (e.model == "progs/ejbatt.mdl")		{ vmin = '-2 -2 -6'; vmax = ' 2 2 4'; }
+	else if (e.model == "progs/s_bubble.spr")	{ vmin = '-2 -2 -2'; vmax = ' 2 2 2'; }
+	else if (e.model == "progs/chaos_b2.mdl")	{ vmin = '-16 -16 -24'; vmax = ' 16 16 40'; }
+	if (vmin != v0 && vmax != v0) setsize(e, vmin, vmax);
+};
 
 
 
