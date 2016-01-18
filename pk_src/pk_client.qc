@@ -69,8 +69,8 @@ void() SetChangeParms =
 
 	if (self.health <= 0 || self.classname == OBSERVER) // Cataboligne - 5.3.10 - fix level change issue when in dead observer or admin observer
 	{
-		morph_clearparms(self, TRUE);
 		parm15 = self.morphy;
+		morph_clearparms(self, TRUE);
 		SetNewParms_PK();
 		parm16 = parm16 | 256; // Cataboligne - 8.22.9 - pk orig oper
 		return ;
@@ -78,7 +78,7 @@ void() SetChangeParms =
 
 	// code xweaps - return poss map code for parm & clear items
 
-	parm12 = self.mcode; //xw_parm(self);
+	parm12 = self.mcode; //xw_parm(self); - NOTE: borks bot_changeparms under other engines (non dp) above which uses parm12
 
 	if (self.scode & 512) // had a grapple - zip out bit
 	{
@@ -141,9 +141,8 @@ void() SetNewParms =
 	parm7 = 0;
 	parm8 = 1;
 	parm9 = 0;
-//	parm10 = PK_IT_AXE | PK_IT_GRAVITYWELL | PK_IT_TURRET | PK_IT_CANPAB | PK_IT_BEARTRAP; // deprecated - not really used
-//	parm11 = parm12 = parm13 = parm14 = 0; // chasecam change
-		parm10 = parm11 = 0;
+
+	parm10 = parm11 = 0;
 // do hub message.
 	parm16 = 256;
 
@@ -254,7 +253,7 @@ void () ClientKill =
 	bprint (self.netname);
 	bprint (" suicides\n");
 	set_suicide_frame();
-	self.modelindex = modelindex_player;
+	self.modelindex = self.modelindex_morph;
 	self.frags = self.frags - 2 * frag_minus_cide(self);	// extra penalty
 	respawn ();
 };
@@ -389,7 +388,7 @@ entity() PK_SelectSpawnPoint =
 			totalspots = totalspots - 1;
 			spot = find (spot, classname, "info_player_deathmatch");
 		}
-		return spot;
+		if (spot || PK_100) return spot;
 	}
 
 // We now have the number of spots available on the map in numspots
@@ -405,7 +404,10 @@ entity() PK_SelectSpawnPoint =
 		spot = spot.goalentity;
 		numspots = numspots - 1;
 	}
-	return spot;
+	if (spot || PK_100) return spot;
+	
+	spot = find_tdest(0, "");
+	return spot; // this better pretty damn well be somewhere in the level
 
 };
 
@@ -504,6 +506,7 @@ void() PutClientInServer =
 	self._jump2 = SUB_Null;
 	self._die = SUB_Null;
 	self._summon = SUB_Null;
+	self._alt_fire = SUB_Null;
 
 	DecodeLevelParms ();
 
@@ -523,12 +526,11 @@ void() PutClientInServer =
 	self.angles = spot.angles;
 	self.fixangle = TRUE;		// turn this way immediately
 
-// oh, this is a hack!
 	setmodel (self,"progs/eyes.mdl");
 	modelindex_eyes = self.modelindex;
 
 	setmodel (self,"progs/player.mdl");
-	modelindex_player = self.modelindex;
+	self.modelindex_morph = self.modelindex;
 
 	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
 
@@ -537,6 +539,10 @@ void() PutClientInServer =
 	if (self.health_modifier <= 0) self.health_modifier = MHUMAN_HEALMOD;
 
 	if (!cb_morph(self.morphy)) self.morphy = IMP_MHUMAN; // should NEVER happen?!  TDO: char_con deal
+
+	if  (cvar("anode"))
+		polymorph_check(IMP_MANODEX,IMP_MANODEX); // TEST:
+	else
 	polymorph_check(self.morphy, self.morphy); // become incarnation
 
 	player_stand1 ();
@@ -754,10 +760,14 @@ void () CheckPowerups =
 
 	// use the eyes
 		self.frame = 0;
-		self.modelindex = modelindex_eyes;
+		
+		if (cb_morph(self.morphy) == CB_HUMAN)
+			self.modelindex = modelindex_eyes;
+		else
+			self.modelindex = 0;
 	}
 	else
-		self.modelindex = modelindex_player;	// don't use eyes
+		self.modelindex = self.modelindex_morph;	// don't use eyes
 
 	// invincibility
 	if (self.invincible_finished)
@@ -1035,6 +1045,9 @@ void () PlayerPreThink =
 	}
 };
 
+
+
+
 float vw_bot_frame; // handle pk*bots
 
 //void() pk_post_think =
@@ -1044,6 +1057,9 @@ void () PlayerPostThink =
 	{
 		viswep_pkbot();
 		if (find(world, classname, LOOPSOUND)) loop_play(); // play on looped sounds
+
+// sphere of annihilation controls
+		if (sphere_a) sphere_annihilation_phys_move();
 	}
 
 	if (FRIKBOT)
@@ -1062,10 +1078,23 @@ void () PlayerPostThink =
 		if (cvar("botlevel")) // hack so alias can load new map & keep pk*bots - set by console command aliases for map & changelevel - bmap & blvl
 		{
 			bot_changelevel(); // map change MUST happen - this clears bots from map!
-	//		bot_changeParms(); // save bots for change
 			cvar_set("botlevel", "0");
 		}
   }
+
+	if (self.movetarget.model == "progs/anode_x.mdl")
+	{
+		if (intermission_running || self.view_ofs == '0 0 0')
+		{
+			self.movetarget.model = "";
+		}
+		else
+		{
+			self.movetarget.angles_x = 0; // - self.angles_x;
+			setorigin(self.movetarget, self.origin);
+			self.movetarget.angles_y = self.angles_y; // relative angles
+		}
+	}
 
 	viswep_post(); // Cataboligne - 9.26.9 - viswep code link - always have to run this for 1 player + pk*bots deal
 
@@ -1274,7 +1303,6 @@ void () ClientConnect =
 		bprint(" entered the game\n");
 	}
 
-	parm15 = 0;
 // a client connecting during an intermission can cause problems
 	if (intermission_running)
 		ExitIntermission ();

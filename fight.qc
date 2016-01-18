@@ -149,7 +149,7 @@ The monster is in a melee attack, so get as close as possible to .enemy
 =============
 */
 float (entity targ) visible;
-float(entity targ) infront;
+//float(entity targ) infront;
 float(entity targ) range;
 
 void(float d) ai_charge =

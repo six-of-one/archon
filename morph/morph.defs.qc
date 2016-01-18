@@ -17,11 +17,13 @@ float MORPHIC; // if 1 allow morphs and morphing, if > 1 - spawn this many morph
 float MORPH_CUBE_TIME; // time to spawn & respawn cubes
 float MORPH_CUBE_DV;
 float MORPH_FF;                             // true = allow morph friendly fire (ogre can hurt another ogre, etc.)
+float MORPH_FLY;
 
 .float morphy; // morphic code number from list below
 .vector mask; // inventory a player can pickup by class - mask for item, class for player
 
 float MORPH_ALL; //every morph bit
+
 
 // selection
 void() morph_cube;
@@ -33,6 +35,11 @@ void() morphic_impulse;
 void(float cmd, float pls) polymorph_check;
 void(entity f, float all) morph_clearparms;
 float(float sel) cb_morph;
+float(entity chk) morph_clichk;
+void() morph_die;
+
+float(entity targ, float sdot, vector vang, vector vorg) infront;
+
 
 .void() _stand;
 .void(entity attacker, float take) _pain; // so we can use native monster calls
@@ -46,16 +53,21 @@ float(float sel) cb_morph;
 .void() _die;
 .void() _summon;
 
+.float modelindex_morph; // cant use a global when all players can use diff models
+
 .float health_modifier;
 .string msight;
 .float soundlock; // limit some sounds - set to -1 to prevent idle / sight sounds
 .float soundoff; // idle & sight sounds seem to repeat if you dont turn them off
+
+.float builtin; // morph builtin wep mask
 
 // impulses
 
 float IMP_MFLY						= 70; // switch flight mode / ground mode
 float IMP_MFIREL					= 71; // fire melee attack
 float IMP_MFIREM					= 72; // fire range attack
+float IMP_MSIGHT					= 74; // shout out
 
 // morph bit flags
 
@@ -85,11 +97,12 @@ float CB_ZOMBY						= 65536;
 float CB_CTHON						= 131072;
 float CB_GREMLIN					= 262144;
 float CB_SCOURGE					= 524288;
-//float CB_DRAGON					= 1048576;
 // doom
 float CB_IMP						= 2097152;
 float CB_ARACHN					= 4194304; // mode bits = 4 modes
 float CB_CYBER						= 8388608;
+// anode
+float CB_ANODEX					= 1048576;
 
 
 // code numbers - store in .morphy
@@ -97,6 +110,7 @@ float CB_CYBER						= 8388608;
 
 float IMP_MCHAOS					= 6;	string STI_MCHAOS			= "impulse 156";
 float IMP_MORDER					= 7;	string STI_MORDER			= "impulse 157";
+float IMP_MANODEX					= 9;	string STI_MANODEX		= "impulse 159";
 //float USE_PULSE_SPIKES			= -257368;
 //Techs:
 float IMP_MHUMAN					= 12;	string STI_MHUMAN			= "impulse 160"; // NOTE: char_q - standard quake guy
@@ -135,7 +149,10 @@ float IMP_MGREMLIN				= 98;	string STI_MGREMLIN		= "impulse 198";
 float IMP_MSELECT					= 99;	string STI_MSELECT		= "impulse 158";
 
 
+// evolution
 void(float silent) player_scourge_become;
+void(float silent) player_shalrath_become;
+void(float silent) player_anode_become;
 
 
 //morph health modifiers            original code
@@ -172,7 +189,14 @@ float CHAOS_H2_RET				= 0.1; // chance chaos will change form if health < 1/2 ma
 
 float WALKSOUND					= 1; // sv_
 
+float ZOMBIE_FLSH_VEL			= 600;
+float SCRAGG_SHT_VEL				= 800;
+float SHALRATH_SHT_VEL			= 400;
+float FIREBALL_WEP_VEL			= 300;
+
 //scourges
+
+float (entity p, float heala, float ign) player_scourge_armor;
 
 float SCOURGE_ARMORMAX			= 100;
 float GIVEARMOR					= 333;
@@ -182,3 +206,10 @@ float ARM_SCRG						= 0.35; // scourge morph built in def armor
 // wratihs
 
 float WRAITH_USE_CAM				= FALSE; // if true wraith can use chase cam - NOTE: cam does not work when wraith penetrates solids
+
+
+// precaches
+
+void() morph_precache;
+void() m_precache_scourge;
+void() m_precache_shalrath;

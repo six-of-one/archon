@@ -303,7 +303,7 @@ void() PK_SetCurrentAmmo =
 
 	if (self.weapon == IT_AXE)
 	{
-		if (self.pk_currentitem == PK_IT_AXE && (cb_morph(self.morphy) == CB_HUMAN))
+		if (self.pk_currentitem == PK_IT_AXE && (!self.builtin & IT_AXE))
 		{
 			self.currentammo = 0;
 			self.weaponmodel = "progs/v_axe.mdl";
@@ -432,7 +432,7 @@ void() PK_SetCurrentAmmo =
 		}
 // end pk_art
 	}
-	else if (cb_morph(self.morphy) != CB_HUMAN) SUB_Null();
+	else if (self.builtin & self.weapon) SUB_Null();
 
 	else if (self.weapon == IT_SHOTGUN)
 	{
@@ -616,7 +616,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 
 	if (f.weapon == IT_AXE)
 	{
-		if (f.pk_currentitem == PK_IT_AXE && (cb_morph(f.morphy) == CB_HUMAN))
+		if (f.pk_currentitem == PK_IT_AXE &&  (!f.builtin & IT_AXE))
 		{
 			f.currentammo = 0;
 			f.weaponframe = 0;
@@ -708,7 +708,7 @@ void(entity e) PK_SetCurrentAmmoOnly =
 		}
 // end pk_art
 	}
-	else if (cb_morph(f.morphy) != CB_HUMAN) SUB_Null();
+	else if (f.builtin & self.weapon) SUB_Null();
 
 	else if (f.weapon == IT_SHOTGUN)
 	{
@@ -1029,6 +1029,10 @@ float(float weaponnum, float pknum) CanSelect =
 	if (!self.items & weaponnum)
 		return FALSE;
 
+	if (pknum == PK_IT_AXE || weaponnum != IT_AXE)
+	if (weaponnum & self.builtin)
+		return TRUE;
+
 	if (weaponnum == IT_AXE && !(self.pk_items & pknum))
 		return FALSE;
 
@@ -1318,6 +1322,9 @@ float() PK_BestWeapon =
 
 float() PK_CheckNoAmmo =
 {
+	if (!self.weapon && self.eweapon) // cubic control
+		return TRUE;
+
 	if (self.currentammo > 0)
 		return TRUE;
 
@@ -1325,10 +1332,6 @@ float() PK_CheckNoAmmo =
 		return TRUE;
 
 	if (ammo_con(self.weapon, self, "wpck")) // see if its inf ammo wep
-		return TRUE;
-
-	if (cb_morph(self.morphy) != CB_HUMAN) // morph using builtin
-	if (!self.eweapon)
 		return TRUE;
 
 	self.weapon = W_BestWeapon ();
@@ -1996,7 +1999,19 @@ void() PK_ImpulseCommands =
 			cube_rearm(); // re arm player
 		}
 	}
-		
+
+	if (self.impulse == ALT_FIRE_IMP)
+	{
+		if (self.eweapon)
+		{
+			if (self.eweapon._alt_fire)
+				if (self.eweapon._alt_fire != SUB_Null) self.eweapon._alt_fire(self.eweapon);
+		}
+		else // no eweapon - give morph builtins alternate fire
+			if (self._attack != SUB_Null)
+				self._attack();
+	}
+	
 	if ((self.impulse >= 1 && self.impulse <= 13) && self._impulse != SUB_Null) 
 	{
 //		if (!self.holdent.flags & FL_HELD) 

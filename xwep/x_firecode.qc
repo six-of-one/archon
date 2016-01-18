@@ -54,6 +54,10 @@ entity(entity e, float nw, float camcc) x_wep_store =
 	e.th_melee = SUB_Null;
 	if (self.th_melee != (void ()) 0) e.th_melee = self.th_melee; // multi modes
 
+// alt fire modes
+	if (self._alt_fire != (void ()) 0) e._alt_fire = self._alt_fire; // multi modes
+	else self._alt_fire = e._alt_fire = SUB_Null;
+
 	e.netname = self.netname;
 //		e.mdl = self.mdl; - invisible
 	setmodel (e, self.vwepmdl);
@@ -400,7 +404,7 @@ void(float velmul, float mvt, float flg, float ct, vector fmorg, vector vdr, str
 	e = world;					// set eweapon ref
 	if (EWEAP) e = EWEAP;
 	else if (self.eweapon) e = self.eweapon;
-	
+
 	if (flg) // flag only section
 		{
 			if (flg & FL_USEAMMO) // fired from wep using ammo
@@ -2324,3 +2328,10 @@ fts.cnt = fts.cnt + 1;
 	cam_punch(); // Cataboligne - 5.13.10 - cam purify - nullify fire punchangle if in cam view
 };
 
+
+// wrapper for cmod stuffs
+
+void(float recurse, vector p1, vector p2, entity from, float damage) LightningDamage_x =
+{
+	LightningDamage (p1, p2, from, damage);
+};

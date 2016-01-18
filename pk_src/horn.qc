@@ -37,6 +37,9 @@ $cd id1/progs/s_ablast
 
 $frame ablast1 ablast2 ablast3 ablast4 ablast5 ablast6
 
+// for search - PK100 val
+
+float AIRGUN_SDOT = 0.8;
 
 
 // The Main code for the AirFist that is called when the AirFist is fired.
@@ -426,7 +429,7 @@ float (entity e) hornInfront =
 	vec = normalize (e.origin - self.AIRG_BlastOrigin - self.view_ofs);
 	dot = vec * v_forward;
 
-	if (dot > 0.8)
+	if (dot > AIRGUN_SDOT) //0.8)
 	{
 	  return TRUE;
 	}

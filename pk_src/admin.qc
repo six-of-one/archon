@@ -99,14 +99,22 @@ void() admin_sv_cfg =
 
 void(entity e) admin_clear =
 {
-	stuffcmd(e, "noadmingamma\n");
+	if (e.light_lev > 0)
+	{
+		stuffcmd(e, "r_ambient ");
+		stuffcmd(e, ftos(e.light_lev));
+		stuffcmd(e, "\n");
+//		e.light_lev = 0; // just always save this - func has multiple re-entry
+	}
+	else
+		stuffcmd(e, "noadmingamma\n");
 	stuffcmd(e, "noadmin_centertime\n");
 	centerprint(e, "");
 	e.impulse = e.admin = 0;
 	e.takedamage = DAMAGE_AIM;	
 	e.wad = e.message = e.path = e.target = "";
 	e.enemy = world;
-	if (CAM_DEF == DPCAM_ON) cvar_set("chase_active", ftos(e.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
+	if (CAM_DEF & DPCAM_ON) cvar_set("chase_active", ftos(e.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
 };
 
 // clear | set these for players
@@ -1351,7 +1359,15 @@ void() AdminCommands =
 			centerprint(self, "");
 			self.takedamage = DAMAGE_AIM;
 			self.impulse = 0;
-			stuffcmd(self, "noadmingamma\n"); // set gamma level
+			if (self.light_lev > 0)
+			{
+				stuffcmd(self, "r_ambient \n");
+				stuffcmd(self, ftos(self.light_lev));
+				stuffcmd(self, "\n");
+//				self.light_lev = 0;
+			}
+			else
+				stuffcmd(self, "noadmingamma\n"); // set gamma level
 			stuffcmd(self, "noadmin_centertime\n");
 			sprint(self,"Entering live game admin mode - timeout is: ");
 			if (pk_admintime < 60)
@@ -2007,6 +2023,8 @@ void() PK_AdminImpulse =
 
 		if (self.message == "")
 		{
+			if (cvar("r_ambient") > 0)
+				self.light_lev = cvar("r_ambient");
 			stuffcmd(self, "usergamma\n");
 			stuffcmd(self, "admin_centertime\n");
 			admin_timer(FALSE, USER_TIMEOUT);
@@ -2143,6 +2161,8 @@ void() PK_AdminImpulse =
 			}
 			self.lefty = 0;
 			self.takedamage = DAMAGE_NO;
+			if (cvar("r_ambient") > 0)
+				self.light_lev = cvar("r_ambient");
 			stuffcmd(self, "admingamma\n"); // set gamma level
 			stuffcmd(self, "admin_centertime\n");
 		}

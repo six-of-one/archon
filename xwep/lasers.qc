@@ -1,3 +1,32 @@
+
+
+// regular bolt - 3 sizes, std, 1/2, 1/4 -- all sizes follow this
+$frame reg_bolt1 reg_bolt2 reg_bolt3
+// slanted bolt - sloped front & back edge
+$frame slant_bolt4 slant_bolt5 slant_bolt6
+// cylinder bolt 
+$frame cyl_bolt7 cyl_bolt8 cyl_bolt9
+
+// super size versions
+$frame superslant_bolt10 supercyl_bolt11
+
+/*
+skins:
+
+0		=	bright orange to dark orange
+1		=	ice shades on a cylinder (vert)
+2		=	yellow tip - shades of red (std flare color)
+3		=	brightest red
+4		=	yellow
+5		=	blue
+6		=	green (dull in original colors)
+7		=	black
+8		=	ice shades - (horizontal)
+9		=	brown / yellow tones (horz)
+10	=	purple (dull in original colors - horz)
+
+*/
+
 // fn (Laser_Blast) - laser touch fn, smarter than enforcers code
 // from ultimate mod, original code by n-tropy
 

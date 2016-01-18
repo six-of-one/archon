@@ -431,6 +431,9 @@ void (vector org, entity death_owner) spawn_tdeath =
 	if (other.admin != LIVE_ADMIN)
 	if (other.admin != USER_MENU) // dont let admin telefrag anyone
 		death.touch = tfragadmin_touch;
+
+// cam fix
+	other.cam_x = other.cam_x | CAM_TELE;
 };
 
 void () teleport_touch =

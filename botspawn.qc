@@ -385,10 +385,9 @@ void () PutBotInServer =
 //	setorigin (self,spot);
 //	self.angles = spwn.angles;
 //	self.fixangle = 1;
-//	setmodel (self,"progs/eyes.mdl");
-//	modelindex_eyes = self.modelindex;
-//	setmodel (self,"progs/player.mdl");
-//	modelindex_player = self.modelindex;
+
+//models--------
+
 //	setsize (self,VEC_HULL_MIN,VEC_HULL_MAX);
 //	self.deadflag = DEAD_NO;
 //	self.pausetime = 0;

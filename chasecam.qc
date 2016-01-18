@@ -120,7 +120,7 @@ void( entity cam_owner, vector vpos ) Start_chase_cam =
 	Chase_cam_setweapon( cam_owner );
 
 
-	if (CAM_DEF == DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
+	if (CAM_DEF & DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
 	{
 		cvar_set("chase_active", "1");
 		return;
@@ -252,12 +252,11 @@ void () cam_deathmove =
 		self.owner.health = -1;
 		self.owner.deadflag = DEAD_RESPAWNABLE; // really die & respawn
 //		stuffcmd(self.owner,"scr_centertime 5\n");
-//		stuffcmd(self.owner,"scr_centertime 240\n");
+
 		self.think = SUB_Remove;
-//		self = self.owner;
+
 		setorigin(self.owner, self.oldorigin);
 		self.owner.velocity = ' 0 0 0';
-		parm15 = self.morphy;
 		if (!intermission_running) 
 		{
 			self.owner.think = respawn;
@@ -473,10 +472,18 @@ void() Keep_cam_chasing_owner =
 	
 	cap = pointcontents(self.owner.origin);
 	
-	if (cap == CONTENT_SOLID) // fell out of level, etc
+	if (cap == CONTENT_SOLID) // fell out of level, etc - very important as this cam does not leave the level, and the falling test code requires outside tests for grace saves
 	{
 		Remove_chase_cam( FALSE );
 		return;
+	}
+	
+// teleport check
+	
+	if (self.owner.cam_x & CAM_TELE)
+	{
+		self.owner.cam_x = self.owner.cam_x - (self.owner.cam_x & CAM_TELE);
+		setorigin( self, self.owner.origin + '0 0 22' );
 	}
 	/*
 	else if (self.owner.waterlevel != 0)
@@ -733,7 +740,7 @@ void() Toggle_chase_cam =
 		// of player's chase cam entity
 		self.cam_x = self.cam_x - CHSCAM_ON;
 
-		if (CAM_DEF == DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
+		if (CAM_DEF & DPCAM_ON) // Cataboligne - 8.26.11 - support for dpcam
 		{
 			cvar_set("chase_active","0");
 			Chase_cam_setweapon( self );
@@ -747,7 +754,7 @@ void() Toggle_chase_cam =
 void() Chase_cam_lvlstart_think =
 {
 
-	if ( (self.owner.cam_x & CHSCAM_ON) )
+	if (self.owner.cam_x & CHSCAM_ON)
 		Start_chase_cam( self.owner, '0 0 0' );
 
 /*
@@ -887,7 +894,7 @@ void(float sel) cam_parms =
 		self.cam_x = parm14 & 255;
 		self.cam_y = (parm14 & 65280)/256;
 		self.cam_z = ((parm14 & 16711680)/65536)  * 0.01;
-		if (CAM_DEF == DPCAM_ON)
+		if (CAM_DEF & DPCAM_ON)
 		{
 //			cvar_set("chase_active", ftos(self.cam_x & 1)); // Cataboligne - 8.26.11 - support for dpcam
 			self.cam_y = cvar("chase_back");
@@ -945,7 +952,7 @@ void () dead_cam_set =
 //		if (cvar("cl_cam_off") != NO_CAM) NO_CAM = cvar("cl_cam_off");
 //	}
 
-	if (CAM_DEF == DPCAM_ON) cvar_set("chase_active", "0");
+	if (CAM_DEF & DPCAM_ON) cvar_set("chase_active", "0");
 
 
 	if (Q_100 || PK_100) return; // || NO_CAM) return; // Cataboligne - 8.16.9 - quake compatability mode
@@ -988,7 +995,7 @@ void () dead_cam_set =
 		if (self.aiment)
 		if (self.aiment.classname == "deadcam") return; // dont make more than one - just in case
 
-		if (! self.cam_x & CHSCAM_ON || CAM_DEF == DPCAM_ON)
+		if ( (! self.cam_x & CHSCAM_ON) || (CAM_DEF & DPCAM_ON) )
 			cam_startdeathview();
 	}
 };
@@ -1017,7 +1024,7 @@ void () ccb_impulse_check =
 
 	CAM_DEF = cvar("sv_cam_def"); // dp var disables default cam - check here in case it was changed
 
-	if (CAM_DEF == DPCAM_ON)
+	if (CAM_DEF & DPCAM_ON)
 	{
 		self.cam_y = cvar("chase_back");
 		self.cam_z = cvar("chase_up") / 100;
@@ -1034,7 +1041,7 @@ void () ccb_impulse_check =
 	else if (self.impulse == 239) Chase_cam_read_temp1(1); // read cvar temp1 into player.cam_z (cam height)
 
 //	else if (self.impulse == 231) LaserTargeterToggle( self );
-	if (CAM_DEF == DPCAM_ON)
+	if (CAM_DEF & DPCAM_ON)
 	{
 		cvar_set("chase_back", ftos(self.cam_y));
 		cvar_set("chase_up", ftos(self.cam_z * 100));

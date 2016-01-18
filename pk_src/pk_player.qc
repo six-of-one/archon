@@ -607,7 +607,7 @@ void() PK_PlayerDie =
 	self.super_damage_finished = 0;
 	self.radsuit_finished = 0;
 	self.copb_timeout = 0;
-	self.modelindex = modelindex_player;	// don't use eyes
+	self.modelindex = self.modelindex_morph;	// don't use eyes
 
 	self.pkplus_actortype = 0; // Cataboligne 8.12.9 purify - pk artifacts
 
@@ -620,6 +620,15 @@ void() PK_PlayerDie =
 	{
 		grap_remove(self);
 	}
+
+	if (self._die != SUB_Null) 
+	{
+		morph_die();
+		self._die(); // grim reaper comes a callin - it was the salmon
+		return;
+	}
+
+// TDO: conduit for all morphs
 
 	if (self.bolt_conduitTimeout > time) // it's the conduit time for this player...
 	{

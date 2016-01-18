@@ -263,6 +263,53 @@ TEST: more testing before removeal
 
 float Q_MEGA_MAX = 250;
 
+// T_Heal: add health to an entity, limiting health to max_health
+// "ignore" will ignore max_health limit
+//
+float (entity e, float healamount6, float ignore) T_Heal =
+{
+	local float heala;
+
+	if (Q_100 || PK_100)
+	{
+		return(q100_T_Heal(e, healamount6, ignore));
+	}
+
+	if (e.health <= 0)
+		return 0;
+
+//	if ((!ignore) && (e.health >= other.max_health)) .. moved to test below
+//		return 0;
+
+	heala = ceil (healamount6);
+
+	if (!player_scourge_armor(e,heala,ignore) && (!ignore) && (e.health >= e.max_health * e.health_modifier))
+	{
+		return 0;
+	}
+
+	e.health = e.health + heala;
+//	if ((!ignore) && (e.health >= e.max_health))
+//		e.health = e.max_health;
+	if ((!ignore) && (e.health >= e.max_health * e.health_modifier))
+		e.health = e.max_health * e.health_modifier;
+
+// Cant hard cap here because of q2 bottles
+//	if (e.health > 250)
+//		e.health = 250;
+
+// global morph max - 999 to keep display bar good
+//	if (e.health > MAX_HEALTH) e.health = MAX_HEALTH;
+
+// NOTE: q2 deal will bork display bar if anyone can collect enough (and its pretty easy with a tank...)
+
+	if (!Q_100)
+	if (e.model == "progs/player.mdl") // TDO: morph dmg skins
+		pk_setDamageSkin(e); // *pk damage skins code
+
+	return 1;
+};
+
 // Cataboligne - 9.9.11 - tweak to prevent multiple health rots on 1 avatar
 
 //float() health_touch =
@@ -287,7 +334,7 @@ void() health_touch =
 	if (self.healtype > HEAL_NORM) // Soul, Mega, health bottle  Ignore max_health...
 	{
 		if (self.volume > 0)
-		if (other.health >= self.volume * 1)
+		if (other.health >= self.volume * other.health_modifier)
 			return;
 /*
 		if (self.healtype == HEAL_MEGA) // Megahealth
@@ -301,8 +348,8 @@ void() health_touch =
 			return; //(TRUE);
 
 		if (self.volume > 0)
-		if (other.health >= self.volume * 1)
-			other.health = self.volume * 1;
+		if (other.health >= self.volume * other.health_modifier)
+			other.health = self.volume * other.health_modifier;
 /*
 		if (self.healtype == HEAL_MEGA) // Megahealth
 		if (other.health >= Q_MEGA_MAX * 1)
@@ -420,12 +467,12 @@ void() x_pwr_touch =
 	if (self.class_select == "q3_item") // for holdables - since they use pk slots, tho the corollary of collecting a pk item is not tested
 	if (self.pk_currentitem) // 'es already got one...wot?  'e sais 'yve already got one.  already got a Grail?
 	{
+bprint("holdable: ");
 		if (other.pk_canpabammo && self.pk_currentitem == PK_IT_CANPAB) return;
 		if (other.pkplus_phoneammo && self.pk_currentitem == PKPLUS_IT_PHONE) return;
 		e2 = vchk(self.items, self.pk_currentitem, other.vwepent);
 
 
-bprint("holdable: ");
 if (!e2) bprint("no ent found");
 else bprint("*** ent found!");
 bprint("\n");
@@ -987,7 +1034,7 @@ void(entity e) set_defaults =
 	DEF_WEAPON = DEF_WEAPON & WEP_MASK; // mask off remove bits
 
 // char init
-	
+
 	if (CHAR_CON)
 	{
 		if (!e.morphy)

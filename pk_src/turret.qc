@@ -1,4 +1,8 @@
-/* auto sentry / turret */
+ /*
+		+---------------------------------------+
+		|	auto sentry code										 | SEC-HEAD
+		+---------------------------------------+
+*/
 
 $frame gunsearch gunfire1 gunfire2 gunfire3 gunfire4 gunmisfire1 gunmisfire2
 
@@ -14,9 +18,11 @@ float CRIT_BLOW = 2;
 float PK_TUR_LIMIT; // max turrets on a given server - used if inf detected
 float PK_TUR_INVRETIME = 80; // what to retime invs to if infinite turrets exist
 
+float SENTRY_SDOT = 0.8; // view radius
+
 void() turret_searchForEnemy;
 void() turret_findTarget;
-float (entity e) turret_inFront;
+//float (entity e) turret_inFront;
 void() turret_attackEnemy;
 void() turret_deathAnim;
 //void() turret_deathAnimBase;
@@ -337,7 +343,8 @@ void() turret_findTarget =
 
 	    if (trace_fraction >= 1)
 	    if (tempDist < dist)
-	    if (turret_inFront(head))
+//	    if (turret_inFront(head))
+		 if(infront(head, SENTRY_SDOT, self.v_angle, v0)) // this is PK100 compat code
 	    if (visible(head))
 	    {
 		  	selected = head;
@@ -416,6 +423,7 @@ void() turret_findTarget =
 
 
 // modification of infront() from ai.qc to be tighter
+/*
 float (entity e) turret_inFront =
 {
 	local vector  vec;
@@ -432,7 +440,7 @@ float (entity e) turret_inFront =
 	return FALSE;
 };
 
-
+*/
 
 
 void() turret_attackEnemy =

@@ -21,8 +21,6 @@ float MORPH_STROG;
 float MORPH_ARENA;
 float MORPH_ANCIENT;
 
-float MORPH_FLY;
-
 void() morph_setup =
 {
 	MORPH_ARCHON = CB_CHAOS + CB_ORDER;
@@ -33,11 +31,20 @@ void() morph_setup =
 //	MORPH_ARENA = + ;
 	MORPH_ANCIENT = CB_WRAITH + CB_DRAGON;
 
-	MORPH_ALL = MORPH_ARCHON + MORPH_MONSTER + MORPH_HELLION + MORPH_STROG;
+	MORPH_ALL = MORPH_ARCHON + MORPH_MONSTER + MORPH_HELLION + MORPH_STROG + MORPH_ANCIENT + CB_HUMAN;
 
 // these morph fly nativley
 	MORPH_FLY = CB_CHAOS + CB_ORDER + CB_SCRAG + CB_WRAITH + CB_DRAGON + CB_GREMLIN;
 };
+
+
+
+void() morph_precache =
+{
+	m_precache_scourge();
+};
+
+
 
 // fn (cb_morph) - provide CB_* value given a morphy, or vice versa
 
@@ -79,6 +86,8 @@ float(float sel) cb_morph =
 	else if (sel == IMP_MIMP)			return(CB_IMP);
 	else if (sel == IMP_MCYBER)		return(CB_CYBER);
 	else if (sel == IMP_MARACHN)		return(CB_ARACHN);
+//anode:
+	else if (sel == IMP_MANODEX)		return(CB_ANODEX);
 
 // bit masks to morphic
 
@@ -111,6 +120,8 @@ float(float sel) cb_morph =
 	else if (sel == CB_IMP)				return(IMP_MIMP);
 	else if (sel == CB_CYBER)			return(IMP_MCYBER);
 	else if (sel == CB_ARACHN)			return(IMP_MARACHN);
+//anode:
+	else if (sel == CB_ANODEX)			return(IMP_MANODEX);
 
 	return 0; // failed - IMP_* &| CB_* not recognized
 };
@@ -283,10 +294,13 @@ void() morph_cube_use =
 		self.eweapon.owner = world;
 		self.eweapon.touch = painkeep_touch;
 		centerprint(self, "The cube is free...");
+		cube_rearm(); // re arm player
 		return;
 	}
 	if (self.state == IMP_MSCOURGE) // TEST: only one so far
 // evolve here
+
+	self.eweapon = world; // thrown pack have cube in them! - NOTE: prevents packs from getting xweap
 
 	polymorph_check(self.state, 0);
 
@@ -533,7 +547,7 @@ void(entity f, float all) morph_clearparms =
 		f.effects = 0;
 	}
 
-	f.skin = f.items = 0;
+	f.skin = f.items = f.builtin = 0;
 // f.frame = 0;
 //		f.items = f.items - (f.items & (IT_QUAD | IT_SUIT | IT_INVISIBILITY | IT_INVULNERABILITY));
 	f.weapon = f.currentammo = f.ammo_shells = f.ammo_nails = f.ammo_rockets = f.ammo_cells = 0;
@@ -545,6 +559,41 @@ void(entity f, float all) morph_clearparms =
 // remove x items & ammos
 	f.ammo_bullet = f.ammo_slug = f.ammo_gaspr = f.ammo_hgrenade = 0;
 	f.x_items = x_item_dm_giveaway;
+};
+
+// fn(morph_impulse) - generic morph impulse testing
+
+void() morph_impulse =
+{
+	if (self.impulse == 10)
+		CycleWeaponCommand ();
+	else if (self.impulse == 12)
+		CycleWeaponReverseCommand ();
+	else if (self.impulse == IMP_MSIGHT)
+	{
+		if (self.msight == "gremlinsight") // ugh - hack, need a callback here or something
+			morph_sound(2, rnd_string( ' 50 25 12', "gremlin/sight1.wav","gremlin/idle3.wav","gremlin/sight4.wav","gremlin/sight3.wav","gremlin/sight2.wav"), 3);
+		else
+			morph_sound(2, self.msight, 3);							// let player morphs "talk"
+		if (self._summon != SUB_Null) self._summon();		// attempt summon - TEST: ing
+	}
+	if (self.impulse == IMP_MFLY)
+	{
+		flyer_mode(self);
+	}
+/*
+	if (cmd == IMP_MFIREM)
+		{
+		if (self._hk_major) if (self._hk_major != SUB_Null) self._hk_major(); // missile attack
+		}
+	else if (cmd == IMP_MFIREL)
+		{
+		if (self._hk_lesser) if (self._hk_lesser != SUB_Null) self._hk_lesser(); // melee attack
+		}
+	else if (cmd == IMP_MSELECT) polymorph_select(1);		// select a morph - need perm. checking
+
+	else 
+*/
 };
 
 // fn(polymorph_check) - do a change by code or impulse, handles other morph impulse commands
@@ -563,31 +612,8 @@ void(float silent) player_human_become =
 void(float cmd, float pls) polymorph_check =
 {
 	if (!cb_morph(cmd)) return; // ha ha, validation
-/*
-	if (cmd == IMP_MFIREM)
-		{
-		if (self._hk_major) if (self._hk_major != SUB_Null) self._hk_major(); // missile attack
-		}
-	else if (cmd == IMP_MFIREL)
-		{
-		if (self._hk_lesser) if (self._hk_lesser != SUB_Null) self._hk_lesser(); // melee attack
-		}
-	else if (cmd == IMP_MSELECT) polymorph_select(1);		// select a morph - need perm. checking
-	else if (cmd == IMP_MSIGHT)
-	{
-		if (self.msight == "gremlinsight") // ugh - hack, need a callback here
-			morph_sound(2, rnd_string( ' 50 25 12', "gremlin/sight1.wav","gremlin/idle3.wav","gremlin/sight4.wav","gremlin/sight3.wav","gremlin/sight2.wav"), 3);
-		else
-			morph_sound(2, self.msight, 3);							// let player morphs "talk"
-		if (self._summon != SUB_Null) self._summon();		// attempt summon - TEST ing
-	}
-	else 
-*/
-		if (cmd == IMP_MFLY)
-	{
-		flyer_mode(self);
-	}
-	else if (cb_morph(cmd))	// these are polymorph commands
+
+	if (cb_morph(cmd))	// these are polymorph commands
 	{
 		if (!pls) // if pls is set its a spawn (level load) | respawn incarnation
 		{
@@ -620,6 +646,7 @@ void(float cmd, float pls) polymorph_check =
 		}
 
 		self.morphy = cmd;
+
 		self.mask_x = cb_morph(cmd);
 
 		self.alpha = 1;				// clear any prev state set - i.e. chaos
@@ -631,6 +658,8 @@ void(float cmd, float pls) polymorph_check =
 
 	//	if (cmd == IMP_MCHAOS) player_chaos_become(pls);
 		if (cmd == IMP_MSCOURGE) player_scourge_become(pls);
+		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
+		else if (cmd == IMP_MANODEX) player_anode_become(pls);
 		else player_human_become(pls);
 	/*	else if (cmd == IMP_MZOMBIE) player_zombie_become(pls);
 		else if (cmd == IMP_MSHALR) player_shalrath_become(pls);
@@ -652,7 +681,7 @@ void(float cmd, float pls) polymorph_check =
 		else if (cmd == IMP_MWRAITH) player_wraith_become(pls);
 		else player_human_become(pls);
 	*/
-		modelindex_player = self.modelindex; // NOTE: CHECK: where this is used - for polymorphs & moprh_cube
+		self.modelindex_morph = self.modelindex;
 
 		self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent); // TDO: default could load eweap for morph - it needs consolted if morphs ever get ews
 	
@@ -668,3 +697,24 @@ void(float cmd, float pls) polymorph_check =
 	}
 };
 
+// fn (morph_die) - morph creature dies - put it out of misery but leave a pretty corpse or gibblets
+// common morph death stuff
+
+// self must be dying ent
+
+// I know you, but you cant be you, we put you through the window, this is the really real world, there aint no comin' back! WHAT?!
+
+void() morph_die =
+{
+	if (sphere_a.owner == self) sphere_a.owner = world; // owner died, sphere free
+	stuffcmd(self, "scr_zoomwindow 0\n");
+	morph_sound_off();
+	self.alpha = 1; // clear prev state
+
+	if (WALKSOUND) sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NORM);
+
+// from player
+	self.solid = SOLID_NOT;
+	self.flags = self.flags - (self.flags & FL_ONGROUND);
+	self.view_ofs = '0 0 -8';
+};

@@ -117,7 +117,7 @@ void(string cls) item_call =
 
 		if (f)
 		{
-			self.modelindex = 0;
+			self.model = "";
 //			self.touch = SUB_Null;
 			self.solid = SOLID_NOT;
 			self.takedamage = DAMAGE_NO;
@@ -697,6 +697,8 @@ float(float cn, entity e, string op) ammo_con =
 	else if (op == "wpck") // wep check - allow auto sw to inf ammo wep
 	{
 		f = 0;
+		if (cn & e.builtin) return(1); // can always select morph builtins
+	
 		if (cn == IT_MJOLNIR)
 		{
 			if (e) tr = e.vwepent;
@@ -1128,7 +1130,7 @@ void() func_dynitem =
 // clear any of this
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_NONE;
-	self.modelindex = 0;
+	self.model = "";
 
 // loop
 	if (self.delay < 0) rv = crandom() * fabs(self.delay);

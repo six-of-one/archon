@@ -11,6 +11,7 @@ bot_tally.qc
 
 // morphic define
 morph/morph.defs.qc
+hipnotic/hipdefs.qc
 
 xwep/hook.defs.qc
 
@@ -33,6 +34,7 @@ precache.qc
 
 // chaos code
 chaos.qc
+environment.qc
 
 pk_src/painkeep.qc
 pk_src/pk_client.qc
@@ -42,7 +44,8 @@ subs.qc
 
 // v106 quake code
 fight.qc
-ai.qc
+// ai.qc - replace by morph code
+morph/morph_ai.qc
 combat.qc
 items.qc
 weapons.qc
@@ -85,7 +88,6 @@ xwep/sphere_annihilation.qc
 
 // hipnotic
 
-hipnotic/hipdefs.qc
 hipnotic/hiprubbl.qc
 hipnotic/rotate.qc
 hipnotic/hammer.qc
@@ -159,6 +161,8 @@ pk_src/pk_artifacts.qc
 morph/morph_print.qc
 morph/morph.qc
 morph/m-scourge.qc
+morph/m-shalra.qc
+morph/m-anode.qc
 
 bot.qc
 bot_func.qc

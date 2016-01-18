@@ -425,10 +425,15 @@ float EF_FULLBRIGHT			= 512;
 
 // env stuff - part of chaos engine env effects - mostly unused
 
+void(vector v1, vector v2, float typ, string snd) lightning_bolt;
+
 /// *** DUMMY SECTION - IDEA: move to better location later on
 
-//float FL_NOPART		= 8192; //no particles when melting
+// 8192 section
 
+float FL_NOPART				= 8192; //no particles when melting
+float FL_FROZEN				= 8192; // ball lightning freezes monsters
+			 
 float RMIN_SKY					= -60;	// removed from values returned
 float RMIN_LAVA				= -50;
 float RMIN_SLIME				= -40;
@@ -571,17 +576,20 @@ float DEF_AMMO_BASE			= 25; // if no ammo given for a default wep, this is it
 // **************************************
 
 float ALT_FIRE_IMP			= 13; // impulse for alt fire
-
+.void(entity ew) _alt_fire;
 
 float DEF_X_ITEMS; // x bit flags
 
 // end defaults
 
-float SPIKE_VEL				= 1000; // TDO: cvar? port to other code
+entity sphere_a; // only one of these ever
+void() sphere_annihilation_phys_move;
+
 
 // inits - by genre and map
 
 //.float char_mode; // genre of player character - set by selection to vars morph states
+// cant be 1, 2, 4, 8, 16, 32
 float CHAR_W					= 10;
 float CHAR_D					= 11;
 float CHAR_Q					= 12;
@@ -716,6 +724,10 @@ void() X_FireHitscan;
 void() X_FireRailgun;
 void() player_mgchg1;
 void() player_pistol1;
+
+float SPIKE_VEL					= 1000; // TDO: cvar? port to other code
+float DEF_VEL						= 600;
+float ROCKET_VEL					= 1000;
 
 float LASERCAN_VEL;
 float LASER_VEL;
@@ -1017,6 +1029,10 @@ void(float sel) cam_parms;
 void() Chase_cam_level_start;
 void() cam_waterjump;
 
+float CAM_TELE = 8; // flag saying owner was teleported - go along 
+// this is mostly for the across the room teleport or respawn so cam doesnt fly across distance
+
+
 // message protocol defines
 float SVC_SETVIEWPORT		= 5;
 float SVC_SETVIEWANGLES		= 10;
@@ -1315,6 +1331,7 @@ float BT_BUFFER				= 2;	  	// The nuber of secs people are immune to beartraps a
 
 float PK_GRV_TIME;
 float PK_GRV_SET;
+float PK_GRV_RSP; // special respawn override
 
 // other weps
 

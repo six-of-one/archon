@@ -717,7 +717,7 @@ void () BotDie =
 	self.invincible_finished = 0;
 	self.super_damage_finished = 0;
 	self.radsuit_finished = 0;
-	self.modelindex = modelindex_player;
+	self.modelindex = self.modelindex_morph;
 	DropBackpack ();
 	self.weaponmodel = "";
 	self.view_ofs = '0 0 -8';

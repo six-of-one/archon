@@ -73,6 +73,7 @@ void () PortalTouch =
 		e.think = PortalSaver;
 		e.nextthink = time + 0.2;
 		e.attack_finished = time + 10;
+		other.cam_x = other.cam_x | CAM_TELE; // for the short move
 	}
 
 	v = vlen(other.velocity); // IDEA: cap this?
@@ -557,7 +558,6 @@ void() weapon_portal =
 	self.dmg = 0;
 	self.dmg_save = 0;
 	self.dmg_take = 1; // shot cnt
-//	self.lefty = XW_MULTI + 1; // 2 mode wep
 	self.th_melee = weap_portal_multi;
 	self.vv_draw = vw_range_base;
 

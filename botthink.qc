@@ -188,11 +188,14 @@ void () BotCheckPowerups =
 			self.invisible_time = 0;
 		}
 		self.frame = 0;
-		self.modelindex = modelindex_eyes;
+		if (cb_morph(self.morphy) == CB_HUMAN)
+			self.modelindex = modelindex_eyes;
+		else
+			self.modelindex = 0;
 	}
 	else
 	{
-		self.modelindex = modelindex_player;
+		self.modelindex = self.modelindex_morph;
 	}
 	if (self.invincible_finished)
 	{

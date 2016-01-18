@@ -552,6 +552,7 @@ void() pk_ammo_touch =
 void() painkeep_touch =
 {
 	local entity stm2;
+	local float f;
 
 	if (other.admin)
 	if (other.admin != LIVE_ADMIN)
@@ -581,8 +582,21 @@ void() painkeep_touch =
 	if (other.health <= 0)
 		return;
 
+// cubic - because anything that sets eweap fsck's cube op
+	if (self.eweapon)
+	{
+		if (self.eweapon.wad == "pk_cube" || self.eweapon.wad == "morph_cube")
+		{
+			if (self.eweapon.duration > time) return;
+			self.eweapon.duration = time + 3;
+			sprint(self, "You cannot collect items while linked to a cube - change weapons or activate cube.\n");
+			return;
+		}
+	}
+
+// morphic
 	if (cb_morph(other.morphy) != CB_HUMAN)
-	if (!self.mask_x & other.mask_x && self.wad != "morph_cube")
+	if (!(self.mask_x & other.mask_x) && (self.wad != "morph_cube")) // make sure morph can collect this
 	{
 		if (e) e.classname = "pk*bot";
 		return;
@@ -617,8 +631,14 @@ void() painkeep_touch =
 		armorsave_rev(other); // get armor if power on
 		if (self.pk_touch == ammo_touch) self.pk_touch = pk_ammo_touch; // new fn for ammo collections
 
+		if (self.classname == "dyn_item")
+		{
+			f = TRUE;
+			self.classname = self.wad; // this should always be classname
+		}
 		self.pk_touch();
 
+		if (f) self.classname = "dyn_item"; // restore
 		if (self.solid == SOLID_NOT)
 		if (self.think == SUB_regen)
 		if (deathmatch == 1 || deathmatch == 3)
@@ -732,7 +752,12 @@ bprint(")\n");
 //			self.nextthink = time + self.wait;
 //		else
 		if (self.pk_items == PK_IT_GRAVITYWELL)
+		{
+			if (PK_GRV_RSP > 0)
+				self.nextthink = time + PK_GRV_RSP;
+			else
 			self.nextthink = time + RSP_TIME * 4;
+		}
 		else
 			self.nextthink = time + RSP_TIME * 2;
 		self.think = SUB_regen;

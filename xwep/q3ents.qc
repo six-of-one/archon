@@ -1351,6 +1351,7 @@ void() q3_item_armor_shard =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() q3_item_health_small =
@@ -1380,6 +1381,7 @@ void() q3_item_health_small =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() q3_item_health =
@@ -1406,6 +1408,7 @@ void() q3_item_health =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() q3_item_health_large =
@@ -1435,6 +1438,7 @@ void() q3_item_health_large =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() q3_item_health_mega =
@@ -1465,6 +1469,7 @@ void() q3_item_health_mega =
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() q3_item_quad =
@@ -1494,6 +1499,7 @@ void() q3_item_quad =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 // code for q3 arts that use rune effects
@@ -1658,6 +1664,7 @@ void() item_regen =
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() item_invis =
@@ -1687,6 +1694,7 @@ void() item_invis =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() q3_item_enviro =
@@ -1718,6 +1726,7 @@ void() q3_item_enviro =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() item_haste =
@@ -1750,6 +1759,7 @@ void() item_haste =
 	if (self.spawnflags & SUSPENDED) q3_suspend();
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() item_flight =
@@ -1778,6 +1788,7 @@ void() item_flight =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL - MORPH_FLY; // everyone can get goody - TDO: gremlin qual
 };
 
 // holdables
@@ -1875,6 +1886,7 @@ void() holdable_medkit =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() holdable_teleporter =
@@ -1921,6 +1933,7 @@ void() holdable_teleporter =
 
 	if (self.class_select == "") self.class_select = "q3_item";
 	if (self.spawnflags & SUSPENDED) q3_suspend();
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 // hack just to match others - q3 has no explode boxes - and appearances can be deceiving

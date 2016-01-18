@@ -26,7 +26,7 @@ void () player_stand1;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
 
-float	modelindex_eyes, modelindex_player;
+//float	modelindex_eyes, modelindex_player; // moved to pk_client
 
 
 //float intermission_running; - moved to painkeep.qc - q100 rules

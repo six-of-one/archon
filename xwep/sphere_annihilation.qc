@@ -17,7 +17,7 @@ float SP_MAXDIST				= 150; // cant control from further away than this
 void() gravity_pull;
 void() gravity_touch;
 
-entity sphere_a; // only one of these ever
+//entity sphere_a; // only one of these ever
 
 // the venerable ad&d standard super disposal device and mayhem maker
 
@@ -86,6 +86,8 @@ void() sphere_annihilation_death7 = [ $die7, SUB_Null ]
 	remove(self);
 	sphere_a = world;
 };
+
+// for now this is animation code - free spheres do not move on thier own - but they need to
 
 void() sphere_annihilation_move =
 {

@@ -813,5 +813,6 @@ void () item_sigil =
 	else
 	self.touch = sigil_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get runes
 	StartItem ();
 };

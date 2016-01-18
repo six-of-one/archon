@@ -240,6 +240,7 @@ void() d_item_healthbottle =
 	self.noise4 = "doom/dsitembk.wav"; // doom respawn sound
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get health
 };
 
 void() d_item_healthmedkit =
@@ -263,6 +264,7 @@ void() d_item_healthmedkit =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get health
 };
 
 void() d_item_healthstimpak =
@@ -289,6 +291,7 @@ void() d_item_healthstimpak =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get health
 };
 
 void() d_item_spiritarmor =
@@ -318,6 +321,7 @@ void() d_item_spiritarmor =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get this armor
 };
 
 // TWEAK - different damage handling than q1 armors
@@ -1116,6 +1120,7 @@ void() d_art_berserker =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 void() d_art_soulsphere =
@@ -1144,6 +1149,7 @@ void() d_art_soulsphere =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 void() d_art_megasphere =
@@ -1174,6 +1180,7 @@ void() d_art_megasphere =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 void() d_art_invulnerable =
@@ -1203,6 +1210,7 @@ void() d_art_invulnerable =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 void() d_art_invisible =
@@ -1232,6 +1240,7 @@ void() d_art_invisible =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 void() d_art_radsuit =
@@ -1257,6 +1266,7 @@ void() d_art_radsuit =
 	self.noise4 = "doom/dsitembk.wav";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 // use spawnflags to make one of 6 keys...
@@ -1282,6 +1292,7 @@ void() d_key_redskull =
 	self.skin = 0;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
 void() d_key_blueskull =
@@ -1306,6 +1317,7 @@ void() d_key_blueskull =
 	self.skin = 1;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
 void() d_key_yellowskull =
@@ -1330,6 +1342,7 @@ void() d_key_yellowskull =
 	self.skin = 2;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
 void() d_key_redcard =
@@ -1354,6 +1367,7 @@ void() d_key_redcard =
 	self.skin = 0;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
 void() d_key_bluecard =
@@ -1378,6 +1392,7 @@ void() d_key_bluecard =
 	self.skin = 1;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
 void() d_key_yellowcard =
@@ -1402,6 +1417,7 @@ void() d_key_yellowcard =
 	self.skin = 2;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "doom_item";
+	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
 /*
@@ -1846,6 +1862,7 @@ void() w_art_facesphere =
 	self.wait = D_POWER_WAIT;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = MORPH_ALL; // everyone can get arts
 };
 
 void() w_heal_medkit =
@@ -1872,6 +1889,7 @@ void() w_heal_medkit =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
 void() w_heal_food =
@@ -1896,6 +1914,7 @@ void() w_heal_food =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
 void() w_heal_dogfood =
@@ -1922,6 +1941,7 @@ void() w_heal_dogfood =
 	self.wait = RSP_TIME;
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = MORPH_ALL; // everyone can get healed
 };
 
 void() w_key =
@@ -1948,6 +1968,7 @@ void() w_key =
 	if (self.spawnflags & 1) self.netname = "Gold key";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = MORPH_ALL; // everyone can get keys
 };
 
 void() w_item_cross =
@@ -1973,6 +1994,7 @@ void() w_item_cross =
 	self.netname = "Cross";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
+	self.mask_x = MORPH_ALL; // everyone can get goody
 };
 
 void() w_key_g =

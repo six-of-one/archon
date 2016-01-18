@@ -53,6 +53,7 @@ void() PK_init =
 	if (ULOK3) q3_precache();
 	chaos_precache();
 	hip_precache();
+	morph_precache();
 	hook_precache();  // Cataboligne - hook mod
 	}
 
@@ -880,6 +881,7 @@ void() pk_liveupd =
 // gravity
 
 	if (PK_GRV_TIME != cvar("pk_grv_time")) PK_GRV_SET = FALSE;
+	PK_GRV_RSP = cvar("pk_grv_rsp");
 
 // tomb
 	if (PKPLUS_TOMB_TIME != cvar("pk_tomb_time")) PK_TOMB_SET = FALSE;
@@ -1372,6 +1374,8 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 	if (DARKPLACES) // reg under darkplaces - chaos engine has pre-reg
 	{
 // server controls
+		registercvar("anode", "0"); // set true when testing anode
+
 		registercvar("sv_xtras", "0"); // set true when xtra
 		registercvar("sv_dmstart", "0");
 		registercvar("sv_c_mapcmd", "1");
@@ -1445,6 +1449,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_morph", "3"); // 2 cubes
 		registercvar("sv_morph_time", "30"); // TEST: "120");
 		registercvar("sv_morph_dv", "5"); // TEST: "40");
+//		registercvar("cl_morph", "12"); // client ident		
 
 // things dealing with the dead
 
@@ -1453,11 +1458,11 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("sv_dead_throw_pki", "1");// TEST: "0"); // 0 = no painkeep items thrown - all in pack, 1 = throw painkieep items, 2 = pain keep items gone
 		registercvar("sv_dead_throw_armor", "1");// TEST: "0"); // 0 = no armor tossed, 1 = throw armor
 		registercvar("sv_dead_gibpack", "1"); // 0 = dont throw a back pack when gibbed, 1 = throw back pack always, 2 = throw packs in singleplayer
-		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at ready weapon
+		registercvar("pk_xchgl", "1"); // 0 = no xweps tween levels, 1 = save at the ready weapon
 
 // cam controls
 		registercvar("sv_cam_off", "0"); // set to 1 to turn cam off entirely
-		registercvar("sv_cam_def", "1"); // set to 0 to default to no cam view
+		registercvar("sv_cam_def", "3"); // set to 0 to default to no cam view, 1 for code cam, 2 to use dpcam, 3 to start with dpcam
 		registercvar("sv_cam_timeout", "0"); // set to # to timeout dead cam in # secs - limit on deadcam state
 		registercvar("sv_cam_to_action", "0"); // set to 1 - disconnect, 0 - respawn
 
@@ -1539,6 +1544,7 @@ CHAOS_UNSTABLE_TELE = 0.9; // TEST 0.3;
 		registercvar("pk_bt_dmg", "2"); // beartrap damage per bite
 
 		registercvar("pk_grv_time", "3.2"); // time for gravity to pull
+		registercvar("pk_grv_rsp", "0"); // gravity respawn timer override
 
 		registercvar("pk_tur_ammo","40");
 		registercvar("pk_tur_time","20");

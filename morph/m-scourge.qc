@@ -177,7 +177,7 @@ void(float ox) player_scourge_FireSpikes =
 
 	if (ox > 0) ox = ox - 16; // move shooting position in 16 qu, and I dont know why this needs done
 	else ox = ox + 16;
-	src = self.origin - '0 0 11' + v_right * ox + v_forward * 14;
+	src = self.origin - '0 0 11' + v_right * ox + v_forward * 18;
 
 //	if (wep_ref(WMOD_RDW,self.weapon & 255,0,self,0) == MC_ROTOR)
 	if (self.eweapon)
@@ -299,12 +299,14 @@ void() player_scourge_attack =
 
 	if ( self.weapon == SEL_SCRGTAIL )
 		{
+		if (rune_haste(0.5))
 		self.attack_finished = time + 1.0;
 		player_scourge_melee1();
 		}
 	else
 		{
 		player_scourge_atk1();
+		if (rune_haste(0.4))
 		self.attack_finished = time + 0.8;
 		}
 };
@@ -317,18 +319,16 @@ void() player_scourge_attack =
 
 void() player_scourge_impulse =
 {
-//	morph_impulse();
 
 	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
+
+	morph_impulse();
 
 	if (self.impulse == 1)
 		self.weapon = SEL_SCRGTAIL;
 	else if (self.impulse == 2)
 		self.weapon = SEL_SCRGNAIL;
-	else if (self.impulse == 10)
-		CycleWeaponCommand ();
-	else if (self.impulse == 12)
-		CycleWeaponReverseCommand ();
+
 
 // TDO: eweapon checks - can fire lasers & prox bombs
 // TDO: alt fire
@@ -360,31 +360,31 @@ float (entity p, float heala, float ign) player_scourge_armor =
 	float armheal;
 	
 	if (ign != GIVEARMOR)
-		if (p.armorvalue >= SCOURGE_ARMORMAX) // TDO: || !IS_SARMOR(p))
+	if (p.armorvalue >= SCOURGE_ARMORMAX) // TDO: || !IS_SARMOR(p))
 			return FALSE;
 
 	if ((ign == GIVEARMOR) || p.health >= ((p.max_health * p.health_modifier) - (p.max_health / 2.0)))
-		{
+	{
 		if (p.armortype == 0) //start armor
-			{
+		{
 			p.armortype = ARM_SCRG; // better armor at higher classes
 			p.items = p.items - (p.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
 //			if (self.morphnum != IS_SCOURGE) p.mode_y = p.mode_y - (p.mode_y & (IV_ARM1 | IV_ARM2 | IV_ARM3)) + IV_ARM1;
 			if (ign == GIVEARMOR) p.armorvalue = ceil(heala);
-			}
+		}
 		if (ign == GIVEARMOR) return TRUE;
 // we use the whole thing if health max and its not mega
 		armheal = heala * 0.40; //health only 40% effective on scourge armor
 // 1/3 of health goes to armor if we still need a heal to max or its a mega
 		if ((p.health < (p.max_health * p.health_modifier)) || ign)
-			{
+		{
 // subtract part of health we use for armor - T_Heal is going to heal full amount and we used some
 			p.health = p.health - (heala * 0.33);
 			armheal = heala * 0.132; // 40% value for 33% of heal amount
 			if (heala >= p.max_health) armheal = heala * 0.264; // mega is 80% effective
-			}
-		p.armorvalue = ceil(p.armorvalue + armheal); 
 		}
+		p.armorvalue = ceil(p.armorvalue + armheal); 
+	}
 	else
 		return FALSE;
 //cap scourge armor at 100, class level may change this
@@ -415,20 +415,18 @@ void(float silent) player_scourge_become =
 //	self._killmsg2=player_scourge_killmsg2;
 
 	setmodel(self,"progs/scor.mdl");
-//	self.modelindex_morph=self.modelindex;
+
 //	self.mask_x = CB_SCOURGE;
-	self.items = IT_AXE | IT_SHOTGUN;
-	self.weapon = SEL_SCRGNAIL;
+	self.builtin = self.items = IT_AXE | IT_SHOTGUN;
 	SEL_SCRGNAIL = IT_SHOTGUN;
 	SEL_SCRGTAIL = IT_AXE;
+	self.weapon = SEL_SCRGNAIL;
 	
-//	self.hk_primary = SEL_SCRGNAIL;
-//	self.hk_secondary = SEL_SCRGTAIL;
 	self.msight = "scrg/sight.wav";
 	self.noise2 = "scrg/pain2.wav";
 	self.noise3 = "";
 	self.view_ofs = ' 0 0 5'; // lowered to 12 first then 7 more
-	self.dest2_z = 0; // TDO: what is this?!
+	self.cam_z = 0;
 //	if(!deathmatch)
 //		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 //	else

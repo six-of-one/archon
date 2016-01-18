@@ -91,7 +91,7 @@ HEALTH BOX
 // T_Heal: add health to an entity, limiting health to max_health
 // "ignore" will ignore max_health limit
 //
-float (entity e, float healamount, float ignore) T_Heal =
+float (entity e, float healamount, float ignore) q100_T_Heal =
 {
 	if (e.health <= 0)
 		return 0;
@@ -1038,6 +1038,7 @@ void () item_key1 =
 	self.touch = key_touch;
 	self.items = IT_KEY1;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get keys
 	StartItem ();
 };
 
@@ -1076,6 +1077,7 @@ void () item_key2 =
 	self.touch = key_touch;
 	self.items = IT_KEY2;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get keys
 	StartItem ();
 };
 
@@ -1148,6 +1150,7 @@ void () q100_item_sigil =
 
 	self.touch = sigil_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get keys
 	StartItem ();
 };
 
@@ -1244,6 +1247,7 @@ void () item_artifact_invulnerability =
 	self.netname = "Pentagram of Protection";
 	self.items = IT_INVULNERABILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get arts
 	StartItem ();
 };
 
@@ -1262,6 +1266,7 @@ void () item_artifact_envirosuit =
 	self.netname = "Biosuit";
 	self.items = IT_SUIT;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get arts
 	StartItem ();
 };
 
@@ -1282,6 +1287,7 @@ void () item_artifact_invisibility =
 	self.netname = "Ring of Shadows";
 	self.items = IT_INVISIBILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get arts
 	StartItem ();
 };
 
@@ -1302,6 +1308,7 @@ void () item_artifact_super_damage =
 	self.netname = "Quad Damage";
 	self.items = IT_QUAD;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get arts
 	StartItem ();
 };
 

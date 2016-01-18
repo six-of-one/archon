@@ -318,7 +318,7 @@ float MC_Q3_ASLUGS;
 float MC_Q3_ALIGNTNING;
 float MC_Q3_ABFG;
 
-//float MC_Q3_HOLDMEDKIT;
+//float MC_Q3_HOLDMEDKIT; // moved to defs for other code
 //float MC_Q3_HOLDTELE;
 
 float MC_Q3_BARREL;
@@ -1868,6 +1868,18 @@ void () weapon_hook =
 
 // cubes - open 'er up and see what it is
 
+// self MUST BE player
+void() cube_rearm =
+{
+	self.state = 0;
+	self.weapon = W_BestWeapon();
+	self.pk_currentitem = W_BestPKWeapon();
+	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
+	W_SetCurrentAmmo();
+	admin_clear(self); // for morphic cube	
+};
+
+
 // self is player
 // c = self.eweapon = cube
 
@@ -1889,11 +1901,8 @@ void() painkeep_cube_use =
 		return;
 	}
 
+	cube_rearm(); // re arm player
 	self.button0 = 0;
-	self.weapon = W_BestWeapon();
-	self.pk_currentitem = W_BestPKWeapon();
-	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
-	W_SetCurrentAmmo();
 
 	if (c.wad != "pk_cube")
 	{
@@ -1949,12 +1958,14 @@ void() painkeep_cube_use =
 		}
 	}
 //	if (1) { d = MC_EXPLOD2; if (ULOKD) d = MC_D_BARREL; } // TEST:
+	if (1) d = MC_SUPER_NAILGUN; // TEST:
 
 	if (c.wad == "pk_cube")
 		c.wad = item_by_mcode(d);
 
 	self = c;
 	self.pk_touch = painkeep_touch;
+	self.class_select = ""; // for q3 holds
 //	item_translate(self, FL_TR_RANDOM);
 	if (random() > 0.15)
 //	if (0) // TEST:
@@ -2007,17 +2018,6 @@ void() painkeep_cube_use =
 
 //:-( cube owner didnt open it
 
-// self MUST BE player
-void() cube_rearm =
-{
-	self.state = 0;
-	self.weapon = W_BestWeapon();
-	self.pk_currentitem = W_BestPKWeapon();
-	self.eweapon = vchk(self.weapon, self.pk_currentitem, self.vwepent);
-	W_SetCurrentAmmo();
-	admin_clear(self); // for morphic cube	
-};
-
 void() abandoned_cube =
 {
 	local entity c;
@@ -2038,7 +2038,7 @@ void() abandoned_cube =
 
 void() cube_touch =
 {
-	if (other.classname != "player" || IROBOT(self)) // *bot - done in master touch fn - NOTE: no bots in cube code yet
+	if (other.classname != "player" || IROBOT(other)) // *bot - done in master touch fn - NOTE: no bots in cube code yet
 	{
 		grap_checkIfGrap();
 		return ;
@@ -2053,7 +2053,10 @@ void() cube_touch =
 	if (self.owner) // shouldnt happen
 		return;
 
-	if (other.eweapon) // other has a cube and is touching another one
+	if (sphere_a.owner == other) // no cubes while controlling sphere
+		return;
+
+	if (other.eweapon) // other has a cube and is touching different one
 	{
 		if (other.eweapon.wad == "pk_cube")
 		{
@@ -2088,6 +2091,8 @@ void() cube_touch =
 		stuffcmd(other, "admin_centertime\n");
 //		admin_timer(FALSE, USER_TIMEOUT);
 	}
+	if (cvar("r_ambient") > 0)
+		other.light_lev = cvar("r_ambient"); // because of cube re-arm
 
 	sprint(other, ".\nIf you select another weapon the cube will be free...\n");
 	self.owner = other;
@@ -2111,7 +2116,7 @@ void() pk_cube =
 	self._attack = painkeep_cube_use; // fire button to use
 	self._fr_attack = SUB_Null; // fire button to use
 	self.attack_finished = 3;
-//	self.mask_x = MORPH_ALL; // TDO: vet later
+	self.mask_x = MORPH_ALL;
 
 	self.punchangle = ' 210 210 240'; // for ejector
 //	item_eject(self, ' 210 210 240'); // done by pk_place_item with punchangle set
@@ -2214,6 +2219,7 @@ void (float ksv) item_keyX =
 	}
 	self.touch = key_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
+	self.mask_x = MORPH_ALL; // everyone can get keys
 	StartItem ();
 };
 
