@@ -526,6 +526,8 @@ void() flyer_move; // fly rune for now
 
 // archon items
 
+float system_hash;
+
 float MC_SUPER_SHOTGUN; // - 101 to get item override menu #
 float MC_PULSE_NAILGUN; // for HUD
 

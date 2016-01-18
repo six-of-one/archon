@@ -2498,20 +2498,20 @@ void() misc_teleporter =
 // fn(q3_play_sound) - play a sound for target_speaker, repeating or by activator
 // fn(q3_sound_think) - periodic repeating sound for target speaker
 
-float Q3_LOOPON				= 1;
-float Q3_LOOPOFF				= 2;
-float Q3_GLOBAL				= 4;
-float Q3_ACTIVATOR			= 8;
+//float Q3_LOOPON				= 1;
+//float Q3_LOOPOFF				= 2;
+//float Q3_GLOBAL				= 4;
+//float Q3_ACTIVATOR			= 8;
 
 void() q3_play_sound =
 {
-	sound (self, CHAN_AUTO, self.noise, 1, self.aflag);
+	sound (self, CHAN_AUTO, self.noise, self.volume, self.aflag);
 };
 
 void() q3_sound_think =
 {
 	q3_play_sound();
-	self.nextthink = time + self.wait + 5 * random();
+	self.nextthink = time + self.wait + self.delay * crandom();
 };
 
 /*		q3 ---
@@ -2540,11 +2540,13 @@ void() target_speaker =
 	if (time < 2) precache_sound (self.noise);
 
 	self.aflag = ATTN_NORM;
-	if (self.spawnflags & Q3_GLOBAL) self.aflag = ATTN_NONE;
+	if (self.spawnflags & 4) self.aflag = ATTN_NONE; // Q3_GLOBAL
+
+	if (!self.volume) self.volume = 1;
 
 	self.use = q3_play_sound;
 
-	if (self.flags & Q3_LOOPON)
+	if (self.flags & 1) // Q3_LOOPON - translated to q1 ambient - note: can not be turned off
 	{
 		ambientsound (self.origin, self.noise, 0.5, ATTN_STATIC);
 //		loop_sound(self, CHAN_WEAPON,self.noise, 1, attn, 8.25, self.origin, 0, LOOPFOREVER); // FIX - want this for loopoff - problem is we need the sound length
@@ -2557,7 +2559,7 @@ void() target_speaker =
 	else if (self.wait)
 	{
 		self.think = q3_sound_think;
-		self.nextthink = time + self.wait + 2 * crandom();
+		self.nextthink = time + self.wait + self.delay * crandom();
 	}
 };
 

@@ -109,7 +109,8 @@ float(entity hent, string match, string srch) cnt_ent =
 	else if (match == "netname") sr = find (world, netname, srch);
 	else if (match == "map") sr = find (world, map, srch);
 	else if (match == "targetname") sr = find (world, targetname, srch);
-	else if (match == "killtarget") sr = find (world, killtarget, srch);
+	else if (match == "weaponmodel") sr = find (world, weaponmodel, srch);
+	else if (match == "deathtype") sr = find (world, deathtype, srch);
 //	else if (match == "class_select") sr = find (world, class_select, srch);
 //	else if (match == "quakeset") sr = find (world, quakeset, srch);
 //	else if (match == "scode") sr = find (world, scode, srch);
@@ -138,7 +139,8 @@ float(entity hent, string match, string srch) cnt_ent =
 			else if (match == "netname") sr = find (sr, netname, srch);
 			else if (match == "map") sr = find (sr, map, srch);
 			else if (match == "targetname") sr = find (sr, targetname, srch);
-			else if (match == "killtarget") sr = find (sr, killtarget, srch);
+			else if (match == "weaponmodel") sr = find (sr, weaponmodel, srch);
+			else if (match == "deathtype") sr = find (sr, deathtype, srch);
 //			else if (match == "class_select") sr = find (sr, class_select, srch);
 //			else if (match == "quakeset") sr = find (sr, quakeset, srch);
 //			else if (match == "scode") sr = find (sr, scode, srch);
@@ -480,6 +482,7 @@ void() func_biome =
 {
 	self.use = biome_use;
 	biome = world;
+	if (self.spawnflags & 2) biome = self; // initial biome active on worldspawn
 };
 
 // probe for a hack at test origin - if none found, make via func_maphack
@@ -716,7 +719,7 @@ void() chaos_maphack_trigger =
 		self.dest1_z = -512;
 		self.dest2_x = self.lefty / 2 + 128;
 		self.dest2_y = self.lefty / 2 + 128;
-		self.dest2_z = 2048; // note - flyer issues
+		self.dest2_z = 2048; // note - flyer issues at any greater height
 		
 		setsize(self, self.dest1, self.dest2);
 	}
@@ -809,12 +812,15 @@ void() hide_hacks =
 void() target_speaker;
 // doors
 entity (vector fmins, vector fmaxs) spawn_field;
+void () plat_spawn_inside_trigger;
 
 // copy a hack element, model, item, monster, etc
 
 // self - hack to copy to
 // self.dropent - source item
 // self.aiment - set to copied ent
+
+// deathtype - sub search string for recursive replication of target1 / target2 sub items
 
 void() maphack_copy =
 {
@@ -827,20 +833,24 @@ void() maphack_copy =
 		if (self.dropent.lefty < 0)
 		{
 			self.dropent.targetname = "misc/null.wav";
-			self.dropent.killtarget = "misc/null.wav";
+			self.dropent.deathtype = "misc/null.wav";
 		}
 
 		self.aiment = spawn();
 		copyentity(self.dropent, self.aiment);
 
+		if (self.classname == "func_maphack")
 // dont make sub-copies of this!
-		if (!self.aiment.killtarget)
-			self.aiment.killtarget = "misc/null.wav"; // can not be null_string - any door that fires will erase all null killtargets!
+		if (self.aiment.weaponmodel) self.aiment.weaponmodel = "misc/null.wav"; // 2nd random copy from biome chunk lists
+		if (self.aiment.deathtype)
+			self.aiment.deathtype = "misc/null.wav"; // can not be null_string - any door that fires will erase all null deathtypes!
 		else
 			self.aiment.targetname = "misc/null.wav";
 
 // set new thing origin from - hack (or model) org, copied ent org about '0 0 0' + offset org stored in hack or model
-		setorigin(self.aiment, self.origin + self.dropent.origin + self.view_ofs);
+// offset from stored copies can be in: biome or func_model (or any other master item) or in individual copies
+// --- make sure not to double offset this way
+		setorigin(self.aiment, self.origin + self.dropent.origin + self.v_angle + self.aiment.v_angle);
 
 #ifdef warning
 																			if (WARNING & 65536)
@@ -885,7 +895,7 @@ void() maphack_copy =
 				self = self.aiment;
 				if (self.target1)
 				{
-					cnt_ent(self, "killtarget", self.target1);
+					cnt_ent(self, "deathtype", self.target1);
 					self.dropent = self.chain;
 					while (self.dropent)
 					{
@@ -897,7 +907,7 @@ void() maphack_copy =
 			// randomly select target2 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
 				if (self.target2)
 				{
-					self.aflag = cnt_ent(self, "killtarget", self.target2);
+					self.aflag = cnt_ent(self, "deathtype", self.target2);
 					self.dropent = self.chain;
 					while (self.dropent)
 					{
@@ -958,24 +968,27 @@ void() maphack_copy =
 			self.aiment.owner = self.aiment;
 			self.aiment.enemy = self.aiment; // so trigger can fire proper door
 //			if (!self.aiment.targetname) // triggers still dont copy right
-//			{
+			if (self.aiment.touch != secret_touch)
+			{
 				self.aiment.trigger_field = spawn_field (self.aiment.absmin + '30 30 0',self.aiment.absmax - '30 30 0'); // make a new trigger field around door
 				self.aiment.trigger_field.owner = self.aiment; // tell trigger to fire this door - it will initially point at the source door that was copied
-//			}
+			}
 		}
 		if (self.aiment.classname == "plat")
 		{
-			self.aiment.pos1 = self.aiment.origin; // so door moves correctly
-			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so door moves correctly
-//			self.aiment.owner = self.aiment;
-//			self.aiment.enemy = self.aiment; // so trigger can fire proper door
-//			self.aiment.trigger_field = spawn_field (self.aiment.absmin,self.aiment.absmax); // make a new trigger field around door
-//			self.aiment.trigger_field.owner = self.aiment; // tell trigger to fire this door - it will initially point at the source door that was copied
+			self.aiment.pos1 = self.aiment.origin; // so plat moves correctly
+			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so plat moves correctly
+
+// create a trigger field
+			self.aiment.aiment = self; // back link
+			self = self.aiment;
+			plat_spawn_inside_trigger();
+			self = self.aiment;
 		}
 		if (self.aiment.classname == "func_button")
 		{
-			self.aiment.pos1 = self.aiment.origin; // so door moves correctly
-			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so door moves correctly
+			self.aiment.pos1 = self.aiment.origin; // so button moves correctly
+			self.aiment.pos2 = self.aiment.origin + self.dropent.pos2; // so button moves correctly
 //			self.aiment.owner = self.aiment;
 //			self.aiment.enemy = self.aiment; // so trigger can fire proper door
 //			self.aiment.trigger_field = spawn_field (self.aiment.absmin,self.aiment.absmax); // make a new trigger field around door
@@ -1080,7 +1093,6 @@ void() func_maphack =
 	if (biome)
 	if (biome.button1)
 	{
-//TEST
 		self.msgcount = 
 		self.aflag = rint(random() * 1000);
 		self.aflag = self.aflag - biome.button1;
@@ -1447,6 +1459,21 @@ void() func_maphack =
 	self.solid = SOLID_BSP; // map piece
 
 // copy all target1 items to the new chunk - relative origin of item to '0 0 0' added to chunk origin
+
+	if (self.mdl && self.mdl != "") // or maphack_copy goes nuts & makes 32767 ents & overloads server
+	{
+		if (!self.target1)
+		{
+			self.target1 = self.mdl; // allow a per chunk copy set - uses map name of chunk
+			self.deathtype = "start";
+		}
+		if (!self.target2)
+		{
+			self.target2 = self.mdl; // allow a per chunk random copy set - uses map name of chunk
+			self.weaponmodel = "start";
+		}
+	}
+
 	if (self.target1)
 	{
 		cnt_ent(self, "targetname", self.target1);
@@ -1455,6 +1482,17 @@ void() func_maphack =
 		{
 			maphack_copy();
 			self.dropent = self.dropent.chain;
+		}
+// try deathtype search too if we set mdl to target1 - because some of the stuff uses targetname for quake func
+		if (self.deathtype == "start")
+		{
+			cnt_ent(self, "deathtype", self.target1);
+			self.dropent = self.chain;
+			while (self.dropent)
+			{
+				maphack_copy();
+				self.dropent = self.dropent.chain;
+			}
 		}
 	}
 
@@ -1483,6 +1521,20 @@ void() func_maphack =
 				maphack_copy();
 			}
 		self.dropent = self.dropent.chain;
+		}
+// try weaponmodel search too if we set mdl to target2 - because some of the stuff uses targetname for quake func
+		if (self.weaponmodel == "start")
+		{
+			cnt_ent(self, "weaponmodel", self.target2);
+			self.dropent = self.chain;
+			while (self.dropent)
+			{
+				self.dropent.rad_time = random();
+				if (!self.dropent.lefty) self.dropent.lefty = 0.15;
+				if (self.dropent.rad_time < fabs(self.dropent.lefty))
+					maphack_copy();
+				self.dropent = self.dropent.chain;
+			}
 		}
 	}
 

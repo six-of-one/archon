@@ -565,7 +565,7 @@ void () func_wall =
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_PUSH;	// so it doesn't get pushed by anything
 	self.solid = SOLID_BSP;
-	if (self.wad == "move") self.solid = SOLID_NOT; // cmod special for copy illusionary
+	if (self.wad == "move") self.solid = SOLID_NOT; // cmod special for copy illusionary in maphack
 	self.use = func_wall_use;
 	setmodel (self,self.model);
 };

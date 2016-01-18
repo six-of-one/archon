@@ -1002,7 +1002,6 @@ void() dyn_rem =
 // tm - time to live
 // rmv - alternate remve fn - for any ent that has think for something
 
-float system_hash;
 
 void(entity e, float tm, void() rmv) dyn_remove =
 {

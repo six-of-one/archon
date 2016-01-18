@@ -39,7 +39,13 @@ void () plat_spawn_inside_trigger =
 	trigger.movetype = MOVETYPE_NONE;
 	trigger.solid = SOLID_TRIGGER;
 	trigger.enemy = self;
-	
+
+// maphack conv
+	if (self.aiment)
+	{
+		self.mins = self.absmin;
+		self.maxs = self.absmax;
+	}
 	tmin = self.mins + '25 25 0';
 	tmax = self.maxs - '25 25 -8';
 	tmin_z = tmax_z - (self.pos1_z - self.pos2_z + 8);
