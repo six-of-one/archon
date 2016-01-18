@@ -522,7 +522,7 @@ void (entity inflictor, entity attacker, float damage, entity ignore) T_RadiusDa
 				points = damage - points;
 				if (head == attacker || inflictor.classname == "chaos_prox")
 					points = points * 0.5;
-				if (head.morphy == IMP_MCHAOS) points = 0; // Cat - imp 9.19.13 - so chaos proxmines dont hurt chaos
+//				if (head.morphy == IMP_MCHAOS) points = 0; // Cat - imp 9.19.13 - so chaos proxmines dont hurt chaos - archon takes no damage
 				if (points > 0)
 				{
 					if (CanDamage (head,inflictor))

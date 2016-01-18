@@ -306,12 +306,12 @@ float CB_CYBER						= 8388608;
 float IMP_MIN						= 6;
 float IMP_MAX						= 99;
 
-// cant be 1, 2, 4
+// no can has 1, 2, 4
 
 float IMP_MCHAOS					= 6;	// string STI_MCHAOS			= "impulse 6";
 float IMP_MORDER					= 7;	// string STI_MORDER			= "impulse 7";
 
-// cant be 8
+// no can has 8
 
 //Techs:
 float IMP_MHUMAN					= 12;	// string STI_MHUMAN			= "impulse 12"; // NOTE: char_q - standard quake guy
@@ -324,7 +324,7 @@ float CHAR_PK						= 13;
 float CHAR_Q2						= 14;
 float CHAR_Q3						= 15;
 
-// cant be 16, 32
+// no can has 16, 32
 
 //float IMP_MCTHONTALL				= 33;	// for bomb -> cthon & back
 
@@ -364,7 +364,7 @@ float IMP_MGREMLIN_F				= 98;	// string STI_MGREMLIN		= "impulse 98"; // flying 
 float IMP_MGREMLIN_L				= 99;	// landlubber gremlin
 float IMP_MVOMIS					= 100;// string STI_MCTHON			= "impulse 95";
 
-// cant use 128, 256
+// no can has 128, 256
 
 // head skin map
 

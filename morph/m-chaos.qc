@@ -93,6 +93,9 @@ float CHAOS_BEAM_GAIN;					// beam min added to this - beam locked out after eve
 float CHAOS_MELO_MIN;//		= 60; // min lockout time
 
 // were in chaos.defs.qc
+float ci_last, ci_fr, ci_sk, ci_flg, ci_tur; // last item made & frame set, master flag, turret count
+string ci_md; // last item model
+
 float FL_SAME						= 2; // make same thing
 float FL_FFLY						= 8; // move field by velocity
 float FL_FJUMP						= 4; // move field by setorg
@@ -102,8 +105,6 @@ float LT_CHAOS						= 7;  // chaos beam -- IMP: replace with some other effects 
 float USE_PULSE_SPIKES			= -257368;
 float C_FBPER						= 0.7; // % for chaos explode to fire bolts
 float CFCBALL						= 207;
-float ci_last, ci_fr, ci_sk, ci_flg; // last item made & frame set, master flag
-string ci_md; // last item model
 float CI_EXPLBOX					= 0.1; // % chance chaos item capable will become explode box
 float CI_FLAMEREAL				= 0.2; // % chance chaos item tossed flame2.mdl burns
 .float chaosattnoise; // IDEA: remove
@@ -1117,7 +1118,7 @@ void() chaos_item =
 		}
 */
 	ft = (ci_last == 2 && (f1 & FL_SAME));
-	if (ft || random() < 0.02) // lava balls
+	if (ft || random() < 0.02) // lava balls - CHECK: dont seem to see many of these
 		{
 		if (!ft) ci_fr = floor(random() * 2.2);
 		ci_last = 2;
@@ -1146,8 +1147,29 @@ void() chaos_item =
 			else if (ci_fr == 6) W_FireSpikes(USE_PULSE_SPIKES);
 			else if (ci_fr == 7) HIP_LaunchLaser(v0, v0, rint(random()), "lasercannon/laserg.wav");
 			else if (ci_fr == 8) fire_cbolt();
-			else if (ci_fr == 9) { beartrap_dropBearTrap(); newmis.beartrap_time = time + 9; }
-			else if (ci_fr == 10) { turret_dropTurret(); turret.owner = self.owner; }
+			else if (ci_fr == 9) { beartrap_dropBearTrap(); newmis.beartrap_time = time + 9 + random() * 20; }
+			else if (ci_fr == 10)
+			{
+				self.cnt = 1;
+				if (self.morphy == IMP_MCHAOS) // chaos personal rnd turret toss
+				{
+					if (self.aflag & FL_CSB) self.cnt = 3;
+					ci_tur = cnt_ent(world, "owner",  "turret");
+					ci_tur = ci_tur + 1;
+					if (ci_tur > self.cnt) self.cnt = 0;
+				}
+
+				if (self.cnt)
+				{
+					turret_dropTurret();
+					turret.owner = self.owner;
+				}
+				else
+				{
+					beartrap_dropBearTrap();
+					newmis.beartrap_time = time + 9 + random() * 40;
+				}
+			}
 			else if (ci_fr == 11)
 			{
 				newmis = spawn();
@@ -1198,7 +1220,7 @@ void() chaos_item =
 			ci_last = 4;
 			newmis = chaos_spawn(MOVETYPE_TOSS, SOLID_TRIGGER, 0, RM_SKY | MLT_LAVA | FLT_LAVA | PF_WATER | PF_SLIME | CK_EARTHQUAKE | PF_SOLID, v0, v0, v0, v0, v0, "chaos_item", ci_md, sky_touch_pointer, 5 + (random() * 20), remove_fade, SUB_Null, self, world);
 			if (newmis)
-				{
+			{
 				newmis.th_stand = SUB_Null;
 	//			if (random() < 0.717) newmis.th_stand = floaterPointer; // no float yet
 				if (random() < 0.234) newmis.bubble_count = NO_BUBBLES;
@@ -1235,19 +1257,22 @@ void() chaos_item =
 							newmis.touch = FlameTouch;
 					}
 				chaos_mdlsize(newmis);
+
+				if (ci_md == "progs/chaos_b2.mdl")
+				{
+					newmis.movetype = MOVETYPE_FLY;
+					newmis.think = chaos_field_thk; // give some random movement
+					newmis.nextthink = time + random();
+					newmis.aflag = FL_FFLY;
+					if (random() < 0.5) newmis.flags = newmis.flags | FL_FPART;
+					newmis.wait = time + 10 + (random() * 30);
 				}
+			}
+
+// NOTE: does not work the same way - compare code
 			if (random() < 0.8) item_eject(newmis, MED_BOUNCE);
 			else if (random() < 0.3) newmis.movetype = MOVETYPE_FLY;
-			if (newmis)
-			if (ci_md == "progs/chaos_b2.mdl")
-			{
-				newmis.movetype = MOVETYPE_FLY;
-				newmis.think = chaos_field_thk; // give some random movement
-				newmis.nextthink = time + random();
-				newmis.aflag = FL_FFLY;
-				if (random() < 0.5) newmis.flags = newmis.flags | FL_FPART;
-				newmis.wait = time + 10 + (random() * 30);
-			}
+
 			if (random() < 0.02) newmis.effects = newmis.effects | EF_DIMLIGHT; // light a few of these up for kicks
 			return;
 		}
@@ -1870,6 +1895,24 @@ void() set_beacon =
 
 /// polymoprh
 
+void() poly_restore =
+{
+	if (self.owner.flags & (FL_MONSTER | FL_ITEM))
+	if (self.owner.target2)
+	if (self.owner.target2 != self.owner.classname)
+	{
+		self.owner.think = SUB_Null; // incase it was a monster
+
+		item_call_save(self.owner, self.owner.target2);
+		if (self.owner.flags & FL_ITEM)
+		{
+			self.owner.takedamage = 0;
+			self.owner.touch = painkeep_touch;
+		}
+	}
+	remove(self);
+};
+
 void() poly_monster =
 {
 	trace_ent = self;
@@ -1877,7 +1920,18 @@ void() poly_monster =
 	self.stack3 = monster_id(self.pk_beartrapammo, MON_FUNC_REG);
 	self = self.bolt_target;
 	setorigin(self, self.origin + '0 0 32');
-	if (! self.target2) self.target2 = self.classname; // so order can attempt to put it back
+
+// so order can attempt to put it back
+	if (! self.target2) self.target2 = self.classname;
+
+// chaos poly stuff does not always stay so
+	if (trace_ent.morphy == IMP_MCHAOS)
+#ifdef testset
+		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 20.0), poly_restore, SUB_Null, self, world);
+#else
+	if (random() < 0.25)
+		chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 50.0 + (random() * 110.0), poly_restore, SUB_Null, self, world);
+#endifdef
 
 	trace_ent.stack4 = self.class_select;
 	if (self.flags & FL_MONSTER) total_monsters = total_monsters - 1; // because this will be bumped and this guy is already a mosnter
@@ -1963,7 +2017,7 @@ void() transmogrify =
 		chaos_flycheck(self, self.model);
 		self.modelindex_morph = self.modelindex;
 		if (ci_md != "progs/chaos_b2.mdl")
-			chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self, world);	
+			chaos_spawn(0, 0, 0, 0, v0, v0, v0, v0, v0, "archon_morph", null_string, SUB_Null, 10.0 + (random() * 110.0), chaos_mdlchg, SUB_Null, self, world);
 		self.archon = self.archon - self.pk_explode_ammo;
 	}
 };
@@ -2969,10 +3023,10 @@ void() archon_target =
 	setorigin(trace_ent.bolt_target, trace_ent.origin + trace_ent.bolt_target.view_ofs);
 //	setmodel(trace_ent.bolt_target, "progs/reticle.mdl");
 	if (self.morphy == IMP_MORDER)
-		self.bolt_target.mdl = "gfx/reticle2.spr";
+		trace_ent.bolt_target.mdl = "gfx/reticle2.spr";
 	else
-		self.bolt_target.mdl = "gfx/reticle.spr";
-	setmodel(trace_ent.bolt_target, self.bolt_target.mdl);
+		trace_ent.bolt_target.mdl = "gfx/reticle.spr";
+	setmodel(trace_ent.bolt_target, trace_ent.bolt_target.mdl);
 	if (trace_ent.flags & FL_ITEM)
 		trace_ent.bolt_target.scale = 0.7;
 

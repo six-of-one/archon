@@ -117,7 +117,13 @@ void() archon_ppp_thk =
 void() altar_touch =
 {
 	if (self.attack_finished > time) return;
-	self.attack_finished = time + self.delay;
+
+	self.count = 1;
+// only while the "toucher" has haste active
+	if (other.rune_flag & RUNE_FLG_HS) self.count = 2;
+	if (other.rune_flag & TECH_TEIM) self.count = self.count * 2;
+
+	self.attack_finished = time + (self.delay / self.count);
 
 	if (other.xp > self.aflag)
 	{

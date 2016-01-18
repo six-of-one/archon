@@ -759,7 +759,7 @@ if (self.classname == null_string)
 
 #ifdef warning
 if (WARNING & 2)
-if (ae != self && a2 != self && a3 != self) // TEST
+if (ae != self && a2 != self && a3 != self)
 {
 	a3 = a2;
 	a2 = ae;

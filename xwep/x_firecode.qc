@@ -2223,7 +2223,7 @@ void(entity e, float i) crosshair_con =
 
 	if (i > 0)
 	{
-		if (e.crosshair_sv != cvar("crosshair"))
+		if (e.crosshair_sv != cvar("crosshair")) // note: server / cli issue
 			e.crosshair_sv = cvar("crosshair");
 
 		e.crosshair_sv = fabs(e.crosshair_sv) + i;
@@ -2276,7 +2276,7 @@ float(entity o) BlastProof =
 	else if (o.map == "blastproof_.75") d = 0.75; */
 	else if (o.wad == "MEGA") d = 0.8;	// mega monsters take 8o% dmg
 	else if (o.wad == "SUPER") d = 0.4;	// super monsters take less dmg
-	else if (o.wad == "SUPER_XMAD") d = 0.3 - random();	// extra nad super monsters take _even_ less dmg
+	else if (o.wad == "SUPER_XMAD") d = 0.3 - (random() * 0.2);	// extra nad super monsters take _even_ less dmg
 
 	return(d);
 };

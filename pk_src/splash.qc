@@ -108,8 +108,9 @@ void() CheckWaterLevels =
 	cc_frame = framecount; // call only once per frame
 
 // run every other frame if enhanced
-//	if (ENHANCED)
+#ifdef enhanced
 	if (cc_frame & 1) return;
+#endifdef
 
 	mv = 0 - cvar("sv_maxvelocity");
 

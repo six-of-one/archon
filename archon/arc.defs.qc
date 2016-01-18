@@ -524,6 +524,7 @@ float MC_AEXPLSH;
 
 
 void() func_make;
+void() chaos_item;
 
 // item override admin
 float DYN_SHOW;
@@ -633,7 +634,11 @@ float CON_CYC					= 2097152; // cycle selected bits in thier group
 float CON_CHAOS				= 2490368; // item chaos it all 3 control bits set
 // excluding inf_ammo from run bits
 float CON_RUN					= 3014656; //4063232; // any control bit CON_* entries above - used by autorun
-float CYC_TIME					= 80; // test: - 240; // rels for cycle base - 4 mins +|- 2 mins
+#ifdef testset
+float CYC_TIME					= 80; // test--:  240;
+#else
+float CYC_TIME					= 240; // rels for cycle base - 4 mins +|- 2 mins
+#endifdef
 
 float IT_ARMOR_BITS;
 
@@ -725,15 +730,24 @@ float DEAD_THROW_ARMOR;
 float DEAD_THROW_PKI;
 float DEAD_THROW_LIVERND	= 0.5; // chance a dead threw wep is touchable under rule 2
 float DEAD_THROW_CNTRND		= 0.5; // chance a dead threw wep is NOT under rule 8
-float DEAD_THROW_TIME		= 110;// test: 66; // time (in rels) a deadthrew wep hangs around
 float DEAD_THROW_ARTIFACT	= 1; // if true when dead, any artifacts will be tossed out as inventory dropped
+#ifdef testset
+float DEAD_THROW_TIME		= 110;// test--: 66;
+#else
+float DEAD_THROW_TIME		= 66; // time (in rels) a deadthrew wep hangs around
+#endifdef
+
 
 float IT_ARTIFACT = 7929856; // for detecting arts in items - used by rune id & dead drop
 
 float DEAD_XPACK;
 float DEAD_GIBPACK;
 
-float DEAD_BODYCOUNT			= 28; // test: 48; // number of bodies (+1) in bodyque loop, if 0 bodies spawn (no que) and use timeout below
+#ifdef testset
+float DEAD_BODYCOUNT			= 28; // test--: 48;
+#else
+float DEAD_BODYCOUNT			= 48; // number of bodies (+1) in bodyque loop, if 0 bodies spawn (no que) and use timeout below
+#endifdef
 float DEAD_BODYTIME			= 120; // how long non que corpse hang around
 
 vector MED_BOUNCE				= '210 210 320'; // medium bounce for dead thrown stuff - idea: factor in dead body velo
@@ -949,7 +963,11 @@ string EARTHQUAKE				= "earthquake"; // select things we want to shake up
 float QUAKE_RUBBLE			= 0.17; // chance of rubble when skaking loose debris
 float QUAKE_RUBBLE_PER		= 0.04; // chance of rubble percent per richter
 float RUBBLE_DMGDEF			= 10; // default damage from hot rubble
-float RUBBLE_TIME				= 15; // test: 45; // time for rubble to hang around
+#ifdef testset
+float RUBBLE_TIME				= 15; // test--: 45;
+#else
+float RUBBLE_TIME				= 45; // time for rubble to hang around
+#endifdef
 float RUBBLE_TDEV				= 15; // dev time on rubble
 float RUBBLE_BLASTRAD		= 48; // distance from explosion to look for rubble to blast
 float EXPLODE_RUBBLE			= 0.6; // chance of rubble from explosion

@@ -447,6 +447,24 @@ void(entity corner, vector cornerOrigin) grep_createCornerRope =
 
 };
 
+// changed a SOLID_BBOX item to pull it - put it back here
+/*
+ changing harpoon head now
+
+void() grap_restore_bbox =
+{
+	self.cnt = 0;
+	self.nextthink = time + 0.5;
+
+	if (! self.grap_pull.grap_owner) self.cnt = 1;
+	if (self.delay < time) self.cnt = 1; // gave up
+	if (self.cnt) // done
+	{
+		self.grap_pull.solid = SOLID_BBOX;
+		remove(self);
+	}
+};
+*/
 
 void() grap_touch =
 {
@@ -550,6 +568,21 @@ local float pull_lock;
 	  if (!pull_lock)
 	  if ((other.health && other.solid != SOLID_BSP && other.solid != SOLID_NOT) || other.solid == SOLID_TRIGGER)
 	  {
+		  self.solid = SOLID_TRIGGER;
+/*
+ already deprecated for setting harpoon head to diff solid
+
+		  if (other.solid == SOLID_BBOX)
+		  {
+			  other.solid = SOLID_TRIGGER; // correct pull code - SOLID_BBOX will __not__ pull across map space correctly.  dont ask us why.
+//			  other.grap_firetest = SOLID_BBOX; // restore when released
+			  newmis = spawn(); // set think to restore bbox
+			  newmis.think = grap_restore_bbox;
+			  newmis.nextthink = time + 0.5;
+			  newmis.grap_pull = other;
+			  newmis.delay = time + 60; // give up in 60 secs
+		  }
+*/
 			self.grap_pull = other;
 			self.grap_pull.grap_owner = self.grap_owner;
 			self.grap_pull.movetype = MOVETYPE_FLY;
@@ -652,7 +685,8 @@ void() grap_goToOwner =
 	if (self.grap_pull.solid != SOLID_TRIGGER)
 	if (self.grap_pull.health < 1 || self.grap_pull.solid == SOLID_NOT)  // check if the entity is dead or "picked up"
 	{
-	  self.grap_pull.grap_owner = world;
+		self.grap_pull.grap_owner = world;
+//		if (self.grap_pull.grap_firetest == SOLID_BBOX) self.grap_pull.solid = SOLID_BBOX; // note: done with think
 
 	  if (self.grap_pull.classname == "player")
 	  {
@@ -838,6 +872,7 @@ void(entity grapOwner) grap_remove =
 	  if (f.grap_pull)
 	  {
 			f.grap_pull.grap_owner = world;
+//		  if (f.grap_pull.grap_firetest == SOLID_BBOX) f.grap_pull.solid = SOLID_BBOX;
 
 	    if (f.grap_pull.classname == "player")
 	    {
@@ -875,6 +910,7 @@ void(entity grapOwner) grap_removeRope =
 	  if (f.grap_pull)
 	  {
 			f.grap_pull.grap_owner = world;
+//		  if (f.grap_pull.grap_firetest == SOLID_BBOX) f.grap_pull.solid = SOLID_BBOX;
 
 	    if (f.grap_pull.classname == "player")
 	    {

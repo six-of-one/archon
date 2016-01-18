@@ -457,6 +457,7 @@ void(string cls) item_call =
 	else if (cls == "weapon_flamer") weapon_flamer();
 	else if (cls == "ammo_gas") ammo_gas();
 	else if (cls == "ammo_gas_lg") ammo_gas_lg();
+	else if (cls == "chaos_item") chaos_item();
 
 /// archon
 	else if (cls == "archon_altar") archon_altar();
@@ -494,6 +495,7 @@ void(string cls) item_call =
 	else if (cls == "monster_vomit") monster_vomit(A_MONSTER);
 
 // monster set II
+//	else if (cls == "monster_silhouette") monster_silhouette(); // only need this when they are used for real game
 	else if (cls == "monster_blarg") monster_blarg(A_MONSTER);
 	else if (cls == "monster_raptor") monster_raptor(A_MONSTER);
 	else if (cls == "monster_spider") monster_spider(A_MONSTER);
