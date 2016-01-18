@@ -424,6 +424,7 @@ void(string cls) item_call =
 // chaos
 	else if (cls == "c_weapon_reggun") c_weapon_reggun();
 	else if (cls == "c_weapon_deepsleep") c_weapon_deepsleep();
+	else if (cls == "weapon_portal") weapon_portal();
 	else if (cls == "weapon_flamer") weapon_flamer();
 	else if (cls == "ammo_gas") ammo_gas();
 	else if (cls == "ammo_gas_lg") ammo_gas_lg();

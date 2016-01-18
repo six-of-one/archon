@@ -331,6 +331,7 @@ float MC_Q3_RNDITM; // # of total items
 
 float MC_REGGUN;
 float MC_DEEPSLEEP;
+float MC_PORTAL;
 
 float MC_C_FLAMER;
 float MC_C_AGAS;
@@ -651,6 +652,7 @@ void() mcode_load =
 
 	MC_REGGUN = f = (f + 1);
 	MC_DEEPSLEEP = f = (f + 1);
+	MC_PORTAL = f = (f + 1);
 	MC_C_FLAMER = f = (f + 1);
 	MC_C_AGAS = f = (f + 1);
 	MC_C_AGAS_LG = (f + 1);
@@ -905,6 +907,7 @@ float(float mcv, entity e) bit_mcode =
 	
 	if (mc == MC_REGGUN)													return(IT_SUPER_SHOTGUN);
 	if (mc == MC_DEEPSLEEP)												return(IT_AXE);
+	if (mc == MC_PORTAL)													return(IT_LIGHTNING);
 	if (mc == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
 	if (mc == MC_C_AGAS)													return(0);
 	if (mc == MC_C_AGAS_LG)												return(0);
@@ -1202,6 +1205,7 @@ float(string sc, entity e) pk_mcode =
 	
 	if (tsc == "c_weapon_reggun")										return(MC_REGGUN);
 	if (tsc == "c_weapon_deepsleep")									return(MC_DEEPSLEEP);
+	if (tsc == "weapon_portal")										return(MC_PORTAL);
 	if (tsc == "weapon_flamer")										return(MC_C_FLAMER);
 	if (tsc == "ammo_gas")												return(MC_C_AGAS);
 	if (tsc == "ammo_gas_lg")											return(MC_C_AGAS_LG);
@@ -1485,6 +1489,7 @@ string (float mc) item_by_mcode =
 	
 	if (mc == MC_REGGUN)													return("c_weapon_reggun");
 	if (mc == MC_DEEPSLEEP)												return("c_weapon_deepsleep");
+	if (mc == MC_PORTAL)													return("weapon_portal");
 	if (mc == MC_C_FLAMER)												return("weapon_flamer");
 	if (mc == MC_C_AGAS)													return("ammo_gas");
 	if (mc == MC_C_AGAS_LG)												return("ammo_gas_lg");
@@ -1573,6 +1578,7 @@ float(float mcv) valid_wep_mcode =
 
 	if (mcv == MC_REGGUN)												return(IT_SUPER_SHOTGUN);
 	if (mcv == MC_DEEPSLEEP)											return(IT_AXE);
+	if (mcv == MC_PORTAL)												return(IT_LIGHTNING);
 	if (mcv == MC_C_FLAMER)												return(IT_GRENADE_LAUNCHER);
 
 	return(0); // not a valid x weapon
@@ -1913,7 +1919,7 @@ void() painkeep_cube_use =
 		if (d) self.ammo_cells = -1;
 		else
 		{
-			if (f < 6) { d = MC_REGGUN; self.ammo_shells = -1; }
+			if (f < 7) { d = MC_PORTAL; self.ammo_shells = -1; }
 			else if (f < 8) d = MC_DEEPSLEEP;
 			else
 			{

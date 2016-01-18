@@ -1714,16 +1714,9 @@ void() PK_ChangeWeapon =
 
 	if (self.eweapon) // multi mode test
 	if ((self.eweapon.weapon == fl) || (fl == IT_AXE && fl2 == PK_IT_CLIGHT && self.eweapon.weapon == IT_LIGHTNING)) // getting selected again
-	if (self.eweapon.lefty >= XW_MULTI && self.eweapon.lefty < XW_MULTI_END)
+	if (self.eweapon.th_melee != SUB_Null && self.eweapon.th_melee != (void ()) 0)
 	{
-		k = self.eweapon.lefty - XW_MULTI;
-		self.eweapon.cnt = self.eweapon.cnt + 1;
-		if (self.eweapon.cnt > k) self.eweapon.cnt = 0;
-		sprint(self, self.eweapon.netname);
-		sprint(self, " mode set to: ");
-		sprint(self, ftos(self.eweapon.cnt + 1)); // dont show mode 1 as 0
-		sprint(self, "\n");
-		return;
+		self.eweapon.th_melee();
 	}
 
 	am = !HasAmmo(fl, fl2);

@@ -1,11 +1,14 @@
 //.float portal_busy; // moved to defs - fell out deal
-.entity master; // TDO: replace with existing
-.entity portal_entrance;
+.entity master;
+.entity portal_entrance; // used by player ent for mode 2 portals to store entry (blue) portal for exit (red) portal
 .vector portal_entrance_pos;
 .entity portal_exit;
 .vector portal_exit_pos;
 .float portal_failed;
 .float portal_opened;
+
+float PORTAL_ONEWAY = 0; // set true for a one way portal
+float PORTAL_DEBOUNCE = 1; // debounce time in case we get a portal the player doesnt properly eject from
 
 // portals seem to dump players outside the level - this saves them
 
@@ -43,6 +46,7 @@ void() PortalSaver =
 void () PortalTouch =
 {
 	local entity e;
+	local float v;
 
 	if (((other.classname != "player") && (other.classname != "pk*bot") || !(other.flags & FL_CLIENT)))
 	{
@@ -52,6 +56,9 @@ void () PortalTouch =
 	{
 		return;
 	}
+	if (self.ltime > time) // debounce delay
+		return;
+
 	makevectors (other.angles);
 
 	e = spawn(); // in case the portal dumps player outside level - this saves em;
@@ -61,30 +68,50 @@ void () PortalTouch =
 	e.nextthink = time + 0.2;
 	e.attack_finished = time + 10;
 
-
-	if ((self.classname == "portal_entrance"))
+	v = vlen(other.velocity); // IDEA: cap this?
+	if (v < 48) v = 48;
+	if (self.classname == "portal_entrance")
 	{
-		other.fixangle = 1;		// turn this way immediately
-		other.angles = self.portal_exit.mangle;
-		makevectors (self.portal_exit.mangle);
-		other.velocity = v_forward * 200;
-		other.origin = (self.portal_exit.origin + (v_forward * -24));
-//		other.origin = (self.portal_exit.origin + (self.portal_exit.v_angle * -32));
+		if (self.portal_exit.mangle == ' 0 0 1')
+		{
+//			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back - IDEA: use entry angle & add vel_z
+			other.velocity_z = 150 + random() * 150;
+		}
+		else if (self.portal_exit.mangle != ' 0 0 -1') // out of ceiling
+		{
+			other.fixangle = 1;		// turn this way immediately
+			other.angles = vectoangles(self.portal_exit.mangle);
+			other.velocity = self.portal_exit.mangle * v;
+		}
+//		other.portal_failed = time + PORTAL_DEBOUNCE;
+		self.portal_exit.ltime = time + PORTAL_DEBOUNCE;
+
+		other.origin = (self.portal_exit.origin + (self.portal_exit.mangle * 24));
 	}
 	else
-	if ((self.classname == "portal_exit"))
+	if (self.classname == "portal_exit" && !PORTAL_ONEWAY)
 	{
-		other.fixangle = 1;		// turn this way immediately
-		other.angles = self.portal_exit.mangle;
-		makevectors (self.portal_entrance.mangle);
-		other.velocity = v_forward * 200;
-		other.origin = (self.portal_entrance.origin + (v_forward * -24));
-//		other.origin = (self.portal_entrance.origin + (self.portal_entrance.v_angle * 32));
+		if (self.portal_entrance.mangle == ' 0 0 1')
+		{
+//			item_eject(other, ' 210 210 300'); // up from floor - need some velo so we dont fall back
+			other.velocity_z = 150 + random() * 150;
+		}
+		else if (self.portal_entrance.mangle != ' 0 0 -1')
+		{
+			other.fixangle = 1;		// turn this way immediately
+			other.angles = vectoangles(self.portal_entrance.mangle);
+			other.velocity = self.portal_entrance.mangle * v;
+		}
+//		other.portal_failed = time + PORTAL_DEBOUNCE;
+		self.portal_entrance.ltime = time + PORTAL_DEBOUNCE;
+
+		other.origin = (self.portal_entrance.origin + (self.portal_entrance.mangle * 24));
 	}
 	else
 	{
 		return;
 	}
+	other.hook = 0; // VERIFY: other things like this that need to be done
 };
 
 float RED_PORTAL = 4; // add this for red portal skins - test
@@ -135,7 +162,7 @@ void () PortalThink =
 	self.nextthink = (time + 0.1);
 };
 
-vector Test2, Test1;
+vector Test1, Test2;
 
 entity (vector pos, entity entrance) OpenPortalExit =
 {
@@ -156,11 +183,37 @@ entity (vector pos, entity entrance) OpenPortalExit =
 	portal.portal_failed = FALSE;
 	portal.portal_entrance = entrance;
 
-	Test2 = norm = trace_plane_normal;
+	norm = trace_plane_normal;
+	portal.mangle = norm; //alize(pos + (norm * -100) - pos);
    norm_x = 0 - norm_x;
    norm_y = 0 - norm_y;
    portal.angles = vectoangles( norm );
-	portal.mangle = normalize(pos + (norm * -100));
+
+
+
+local entity e;
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, pos);
+makevectors(portal.mangle);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, pos + trace_plane_normal * 10);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, pos + trace_plane_normal * 20);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, pos + trace_plane_normal * 30);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, pos + trace_plane_normal * 40);
+e = spawn();
+setmodel(e, "progs/hook.mdl");
+setorigin(e, pos + trace_plane_normal * 50);
+
+
+
 
 	portal.touch = PortalTouch;
 	portal.attack_finished = entrance.attack_finished;
@@ -190,22 +243,16 @@ void () PortalPathThink =
 	{
 		v1 = normalize(self.velocity);
 		o2 = self.origin + (self.v_angle * 100);
-		traceline (o2,self.origin + (v1 * 4), TRUE, self); // for tpn
-
-
-
-local entity e;
-e = spawn();
-setmodel(e, "progs/beambit.spr");
-setorigin(e, o2);
-e = spawn();
-setmodel(e, "progs/hook.mdl");
-setorigin(e, self.origin + (self.velocity * 0.01));
-
-
-
+		traceline (o2,self.origin + self.v_angle * -1024, TRUE, self); // for tpn
 
 		self.portal_exit = OpenPortalExit ((self.origin + (v1 * 4)), self.portal_entrance);
+
+		if (trace_fraction == 1)
+		{
+			self.portal_exit.mangle = self.v_angle; // use this for the exit angle if we dont hit a wall with the trace
+			self.portal_exit.angles = vectoangles(self.v_angle); // use this for the portal angle if we dont hit a wall with the trace
+		}
+
 		self.portal_exit.master = self.master;
 		self.portal_entrance.portal_exit = self.portal_exit;
 		self.portal_entrance.portal_opened = TRUE;
@@ -295,7 +342,7 @@ float (vector dir, float md2) PreparePortalEntrance =
 		tline.velocity = (dir * 380);
 		tline.v_angle = dir;
 		tline.touch = SUB_Null;
-		tline.attack_finished = (time + 3.8);
+		tline.attack_finished = (time + 3.8); // how long this bit flies
 		tline.nextthink = (time + 0.1);
 		tline.think = PortalPathThink;
 		setmodel (tline, "");
@@ -310,10 +357,37 @@ float (vector dir, float md2) PreparePortalEntrance =
 	portal.avelocity = '0 0 0';
 
 	Test1 = norm = trace_plane_normal;
+	Test2 = portal.mangle = norm; //alize(org + (norm * -100) - org);
    norm_x = 0 - norm_x;
    norm_y = 0 - norm_y;
    portal.angles = vectoangles( norm );
-	portal.mangle = normalize(org + (norm * -100));
+
+
+
+local entity e;
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org);
+makevectors(portal.mangle);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org + portal.mangle * 10);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org + portal.mangle * 20);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org + portal.mangle * 30);
+e = spawn();
+setmodel(e, "progs/beambit.spr");
+setorigin(e, org + portal.mangle * 40);
+e = spawn();
+setmodel(e, "progs/hook.mdl");
+setorigin(e, org + portal.mangle * 50);
+
+
+
+
 
 	portal.classname = "portal_entrance";
 	portal.solid = SOLID_BBOX;
@@ -439,6 +513,18 @@ void () player_portalstart5 = [ $shotatt6, player_run ]
 	W_FirePortal ();
 };
 
+// portal has multiple modes
+
+void() weap_portal_multi =
+{
+	self.eweapon.cnt = self.eweapon.cnt + 1;
+	if (self.eweapon.cnt > 2) self.eweapon.cnt = 0;
+	sprint(self, self.eweapon.netname);
+	sprint(self, " mode set to: ");
+	sprint(self, ftos(self.eweapon.cnt + 1)); // dont show mode 1 as 0
+	sprint(self, "\n");
+	return;
+};
 
 void() weapon_portal =
 {
@@ -457,7 +543,8 @@ void() weapon_portal =
 	self.dmg = 0;
 	self.dmg_save = 1;
 	self.dmg_take = 1; // shot cnt
-	self.lefty = XW_MULTI + 1; // 2 mode wep
+//	self.lefty = XW_MULTI + 1; // 2 mode wep
+	self.th_melee = weap_portal_multi;
 	self.vv_draw = vw_range_base;
 
 	setmodel (self, "progs/m_portal.mdl");
