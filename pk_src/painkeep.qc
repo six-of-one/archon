@@ -582,6 +582,8 @@ void() pk_liveupd =
 
 	if (BOTFREEZE != cvar("sv_c_botfreeze")) bot_froze(world);
 
+	NODECOR = cvar("sv_c_nodecor");
+
 // runes
 	run_runes();
  
@@ -1179,6 +1181,8 @@ POW_TIME = 30;
 		registercvar("sv_c_ammo_max", "0"); // if true server values for max ammo override all genre limits
 																						  // if false genre limits apply
 																						  // if 2 override all limit settings and use server values - this stops rune & pack increases
+		registercvar("sv_c_nodecor", "0"); // decor control - 0: all on, 1: no blocking decor in dm, 2:no decor in dm, 3: no decor ever
+													  // decor also includes shell casins, chaos effects, debris
 
 // pk*bot server control - spawns bots on level changes
 		registercvar("sv_bot_pk", "0"); // bot count . skills non team - replaces parm12
@@ -1193,7 +1197,7 @@ POW_TIME = 30;
 		registercvar("sv_c_rune_random", "0"); // runes will have random powers
 		registercvar("sv_c_rune_set", "0");
 		registercvar("sv_c_rune_allowrule1multi", "0"); // if true more than 1 rune can be gotten in rule 1
-		registercvar("sv_c_rune_rule1sfx", "1"); // if true and multi 3 & 4 runes in 1 player have side effects
+		registercvar("sv_c_rune_rule1sfx", "1"); // if true and multi 3 & 4 runes in rule 1 have side effects
 
 		registercvar("sv_c_rsp_time", "30");
 		registercvar("sv_c_pow_time", "30"); // artifact power time

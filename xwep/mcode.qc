@@ -509,6 +509,7 @@ void() mcode_load =
 
 	MC_W_CLIP = f = (f + 1);
 	MC_W_GAS = f = (f + 1);
+	MC_W_MORTARS = f = (f + 1);
 	MC_W_PACK = f = (f + 1);
 
 	MC_W_FACESPHERE = f = (f + 1);
@@ -764,6 +765,7 @@ float(float mcv, entity e) bit_mcode =
 	if (mc == MC_W_FLAMER)												return(IT_GRENADE_LAUNCHER);
 //	if (mc == MC_W_CLIP)													return(IT_BULLETS);
 //	if (mc == MC_W_GAS)													return(IT_GAS);
+//	if (mc == MC_W_MORTARS)													return(IT_ROCKETS);
 
 	if (mc == MC_W_FACESPHERE)											return(IT_SUPERHEALTH);
 
@@ -1047,6 +1049,7 @@ float(string sc, entity e) pk_mcode =
 
 	if (tsc == "w_ammo_clip")											return(MC_W_CLIP);
 	if (tsc == "w_ammo_gas")											return(MC_W_GAS);
+	if (tsc == "w_ammo_rock")											return(MC_W_MORTARS);
 	if (tsc == "w_item_pack")											return(MC_W_PACK);
 
 	if (tsc == "w_heal_medkit")										return(MC_W_HEALTH);
@@ -1320,6 +1323,7 @@ string (float mc) item_by_mcode =
 
 	if (mc == MC_W_CLIP)													return("w_ammo_clip");
 	if (mc == MC_W_GAS)													return("w_ammo_gas");
+	if (mc == MC_W_MORTARS)													return("w_ammo_rock");
 	if (mc == MC_W_PACK)													return("w_item_pack");
 
 	if (mc == MC_W_FACESPHERE)											return("w_art_facesphere");

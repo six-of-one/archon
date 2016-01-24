@@ -58,127 +58,140 @@ float SAWLEN					= 80; // lenght saw can attack
 void() doom_precache =
 {
 // items
+// ammo
+// doom weps
+// shots
+// view models
+// viswep
 	precache_model ("progs/barrel.mdl");
 	precache_model ("progs/barrel2.mdl");
-	precache_model ("progs/d_bottle.mdl");
+	precache_model ("progs/flame2.mdl"); // doom torches in here
 	precache_model ("progs/heal_medkit.mdl");
-	precache_model ("progs/d_stimpack04.mdl");
 	precache_model ("progs/spiritarmor.mdl");
-	precache_model ("progs/d_spheres.mdl");
-	precache_model ("progs/d_berzerk.mdl");
-	precache_model ("progs/d_radsuit.mdl");
-	precache_model ("progs/d_skullkey.mdl");
-	precache_model ("progs/d_cardkey.mdl");
-	precache_model ("progs/d_armor.mdl");
-	precache_model ("progs/d_map.mdl");
-	precache_model ("progs/d_vis.mdl");
-// ammo
+	precache_model ("progs/d_1rocket.mdl");
 	precache_model ("progs/d_4shell.mdl");
 	precache_model ("progs/d_ammobox.mdl");
-	precache_model ("progs/d_clip.mdl");
-	precache_model ("progs/d_rockbox.mdl");
-	precache_model ("progs/d_1rocket.mdl");
-	precache_model ("progs/d_shellbox.mdl");
+	precache_model ("progs/d_armor.mdl");
+	precache_model ("progs/d_berzerk.mdl");
+	precache_model ("progs/d_bfg_boom.mdl");
+	precache_model ("progs/d_bfg.mdl");
+	precache_model ("progs/d_bottle.mdl");
+	precache_model ("progs/d_cardkey.mdl");
 	precache_model ("progs/d_cellbox.mdl");
 	precache_model ("progs/d_cellpack.mdl");
-	precache_model ("progs/d_pack.mdl");
-// doom weps
-	precache_model ("progs/d_saw.mdl");
-	precache_model ("progs/d_pistol.mdl");
-	precache_model ("progs/d_bfg.mdl");
-	precache_model ("progs/d_rock.mdl");
-	precache_model ("progs/d_plasma.mdl");
 	precache_model ("progs/d_chaingun.mdl");
-	precache_model ("progs/d_shotgun.mdl");
+	precache_model ("progs/d_clip.mdl");
 	precache_model ("progs/d_dblshot.mdl");
-// shots
+	precache_model ("progs/d_map.mdl");
+	precache_model ("progs/d_m_baron.mdl");
+	precache_model ("progs/d_m_imp.mdl");
+	precache_model ("progs/d_m_pinky.mdl");
+	precache_model ("progs/d_pack.mdl");
+	precache_model ("progs/d_pistol.mdl");
+	precache_model ("progs/d_plasma.mdl");
 	precache_model ("progs/d_plasma_sht.mdl");
-	precache_model ("progs/bfgbit.spr");
-
-// view models
-	precache_model ("progs/v_d_pistol.mdl");
+	precache_model ("progs/d_radsuit.mdl");
+	precache_model ("progs/d_rockbox.mdl");
+	precache_model ("progs/d_rock.mdl");
+	precache_model ("progs/d_saw.mdl");
+	precache_model ("progs/d_shellbox.mdl");
+	precache_model ("progs/d_shotgun.mdl");
+	precache_model ("progs/d_skullkey.mdl");
+	precache_model ("progs/d_spheres.mdl");
+	precache_model ("progs/d_stimpack04.mdl");
+	precache_model ("progs/d_vis.mdl");
 	precache_model ("progs/v_d_bfg.mdl");
-	precache_model ("progs/v_d_shot.mdl");
-	precache_model ("progs/v_d_dblshot.mdl");
 	precache_model ("progs/v_d_chg.mdl");
+	precache_model ("progs/v_d_dblshot.mdl");
+	precache_model ("progs/v_d_pistol.mdl");
 	precache_model ("progs/v_d_plasma.mdl");
 	precache_model ("progs/v_d_rock.mdl");
 	precache_model ("progs/v_d_saw.mdl");
-// viswep
-	precache_model ("progs/vw_d_saw.mdl");
-	precache_model ("progs/vw_d_pistol.mdl");
-	precache_model ("progs/vw_d_shot.mdl");
-	precache_model ("progs/vw_d_dblshot.mdl");
-	precache_model ("progs/vw_d_chaing.mdl");
-	precache_model ("progs/vw_d_rock.mdl");
-	precache_model ("progs/vw_d_plasma.mdl");
+	precache_model ("progs/v_d_shot.mdl");
 	precache_model ("progs/vw_d_bfg.mdl");
+	precache_model ("progs/vw_d_chaing.mdl");
+	precache_model ("progs/vw_d_dblshot.mdl");
+	precache_model ("progs/vw_d_pistol.mdl");
+	precache_model ("progs/vw_d_plasma.mdl");
+	precache_model ("progs/vw_d_rock.mdl");
+	precache_model ("progs/vw_d_saw.mdl");
+	precache_model ("progs/vw_d_shot.mdl");
+
 // wolfenstien
-	precache_model ("progs/w_armor.mdl");
-	precache_model ("progs/w_knife.mdl");
-	precache_model ("progs/w_pistol.mdl");
-	precache_model ("progs/w_mgun.mdl");
-	precache_model ("progs/w_chaing.mdl");
-	precache_model ("progs/w_mortar.mdl");
-	precache_model ("progs/w_flamer.mdl");
-	precache_model ("progs/w_clip.mdl");
-	precache_model ("progs/w_key.mdl");
-
-	precache_model ("progs/vw_w_knife.mdl");
-	precache_model ("progs/vw_w_pistol.mdl");
-	precache_model ("progs/vw_w_mgun.mdl");
-	precache_model ("progs/vw_w_chaing.mdl");
-	precache_model ("progs/vw_w_2chaing.mdl");
-	precache_model ("progs/vw_w_mortar.mdl");
-	precache_model ("progs/vw_w_flamer.mdl");
-
-	precache_model ("progs/v_w_knife.mdl");
-	precache_model ("progs/v_w_pistol.mdl");
-	precache_model ("progs/v_w_mgun.mdl");
-	precache_model ("progs/v_w_chg.mdl");
 	precache_model ("progs/v_w_2chg.mdl");
-	precache_model ("progs/v_w_mortar.mdl");
+	precache_model ("progs/v_w_chg.mdl");
 	precache_model ("progs/v_w_flamer.mdl");
+	precache_model ("progs/v_w_knife.mdl");
+	precache_model ("progs/v_w_mgun.mdl");
+	precache_model ("progs/v_w_mortar.mdl");
+	precache_model ("progs/v_w_pistol.mdl");
+	precache_model ("progs/vw_w_2chaing.mdl");
+	precache_model ("progs/vw_w_chaing.mdl");
+	precache_model ("progs/vw_w_flamer.mdl");
+	precache_model ("progs/vw_w_knife.mdl");
+	precache_model ("progs/vw_w_mgun.mdl");
+	precache_model ("progs/vw_w_mortar.mdl");
+	precache_model ("progs/vw_w_pistol.mdl");
+	precache_model ("progs/w_armor.mdl");
+	precache_model ("progs/w_chaing.mdl");
+	precache_model ("progs/w_clip.mdl");
+//	precache_model ("progs/w_dcr_changrn2.mdl");
+//	precache_model ("progs/w_dcr_changrn.mdl");
+	precache_model ("progs/w_dcr_bluvase.mdl"); // dog food
+	precache_model ("progs/w_foodp.mdl");
+	precache_model ("progs/w_flamer.mdl");
+	precache_model ("progs/w_key.mdl");
+	precache_model ("progs/w_knife.mdl");
+	precache_model ("progs/w_mgun.mdl");
+	precache_model ("progs/w_mortar.mdl");
+	precache_model ("progs/w_pistol.mdl");
+	precache_model ("progs/w_cross.bsp");
+
 
 // sounds
-	precache_sound ("doom/dsbarexp.wav");
-	precache_sound ("doom/dsitemup.wav");
-	precache_sound ("doom/dsitembk.wav");
-	precache_sound ("doom/dswpnup.wav");
-	precache_sound ("doom/dsgetpow.wav");
-	precache_sound ("doom/dsdorcls.wav");
-	precache_sound ("doom/dsdoropn.wav");
-	precache_sound ("doom/dsbdcls.wav");
-	precache_sound ("doom/dsbdopn.wav");
-	precache_sound ("doom/dspstart.wav");
-	precache_sound ("doom/dspstop.wav");
-	precache_sound ("doom/gibs.wav");
-// weps
-	precache_sound ("doom/dsrlaunc.wav");
-	precache_sound ("doom/dsbfg.wav");
-	precache_sound ("doom/dspistol.wav");
-	precache_sound ("doom/dsshotgn.wav");
-	precache_sound ("doom/dsdshtgn.wav");
-	precache_sound ("doom/dsplasma.wav");
-	precache_sound ("doom/dssawup.wav");
-	precache_sound ("doom/dssawidl.wav");
-	precache_sound ("doom/dssawhit.wav");
-	precache_sound ("doom/dssawful.wav");
-	precache_sound ("doom/dsfirxpl.wav");
-//	precache_sound ("doom/d_f_chg.wav");
-// wolf
-	precache_sound ("wolf/w_knife.wav");
-	precache_sound ("wolf/w_pistol.wav");
-	precache_sound ("wolf/w_mg.wav");
-	precache_sound ("wolf/w_chg.wav");
-	precache_sound ("wolf/w_mortar.wav");
-	precache_sound ("wolf/pickup_am.wav");
-	precache_sound ("wolf/pickup_gn.wav");
-	precache_sound ("wolf/pickup_gdy.wav");
-	precache_sound ("wolf/w_resp.wav");
-	precache_sound ("wolf/door_opn.wav");
-	precache_sound ("wolf/door_cls.wav");
+	precache_sound ("sound/doom/dsbfg.wav");
+	precache_sound ("sound/doom/dssawup.wav");
+	precache_sound ("sound/doom/dssawidl.wav");
+	precache_sound ("sound/doom/dssawhit.wav");
+	precache_sound ("sound/doom/dssawful.wav");
+	precache_sound ("sound/doom/dsitemup.wav");
+	precache_sound ("sound/doom/dsbarexp.wav");
+	precache_sound ("sound/doom/dswpnup.wav");
+	precache_sound ("sound/doom/dsitembk.wav");
+	precache_sound ("sound/doom/dsdorcls.wav");
+	precache_sound ("sound/doom/dsdoropn.wav");
+	precache_sound ("sound/doom/dsgetpow.wav");
+	precache_sound ("sound/doom/dspstart.wav");
+	precache_sound ("sound/doom/dspstop.wav");
+	precache_sound ("sound/doom/dsbdcls.wav");
+	precache_sound ("sound/doom/dsbdopn.wav");
+	precache_sound ("sound/doom/dspistol.wav");
+	precache_sound ("sound/doom/dsplasma.wav");
+	precache_sound ("sound/doom/dsfirxpl.wav");
+	precache_sound ("sound/doom/gibs.wav");
+	precache_sound ("sound/doom/dsrlaunc.wav");
+	precache_sound ("sound/doom/dsdshtgn.wav");
+	precache_sound ("sound/doom/dsshotgn.wav");
+	precache_sound ("sound/doom/dsoof.wav");
+	precache_sound ("sound/doom/dsstnmov.wav");
+	precache_sound ("sound/doom/dstelept.wav");
+	precache_sound ("sound/doom/dsswtchn.wav");
+	precache_sound ("sound/doom/dsswtchx.wav");
+	precache_sound ("sound/doom/dspunch.wav");
 
+	precache_sound ("sound/wolf/w_resp.wav");
+	precache_sound ("sound/wolf/w_mortar.wav");
+	precache_sound ("sound/wolf/w_knife.wav");
+	precache_sound ("sound/wolf/w_pistol.wav");
+	precache_sound ("sound/wolf/w_mg.wav");
+	precache_sound ("sound/wolf/w_chg.wav");
+	precache_sound ("sound/wolf/pickup_am.wav");
+	precache_sound ("sound/wolf/pickup_gn.wav");
+	precache_sound ("sound/wolf/pickup_gdy.wav");
+	precache_sound ("sound/wolf/door_cls.wav");
+	precache_sound ("sound/wolf/door_opn.wav");
+	precache_sound ("sound/wolf/door_cls2.wav");
+	precache_sound ("sound/wolf/door_secrt.wav");
 
 };
 
@@ -1294,6 +1307,27 @@ void() w_ammo_clip =
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
 
+// FIX: need ammo model
+
+void() w_ammo_rock =
+{
+	item_rockets();
+	self.touch = pk_ammo_touch;
+
+	self.lip = AMMO_ROCKETS;
+	self.volume = W_MAX_ROCKETS;
+	self.currentammo = 5;
+	self.wait = RSP_TIME;
+
+	setmodel (self, "progs/w_mortar.mdl");
+//	setmodel (self, "progs/w_amort.mdl");
+	self.noise = "wolf/pickup_am.wav";
+	self.noise4 = "wolf/w_resp.wav";
+	self.netname = "Mortars";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
 void() w_ammo_gas =
 {
 	item_spikes();
@@ -1376,6 +1410,40 @@ void() w_heal_medkit =
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
 
+void() w_heal_food =
+{
+	q100_item_health();
+	setmodel(self, "progs/w_foodp.mdl");
+	self.frame = 2;
+	self.skin = 2;
+	self.noise = "wolf/pickup_gdy.wav";
+	self.noise4 = "wolf/w_resp.wav";
+	self.netname = "Plate of Food";
+	self.healamount = 10;
+	self.healtype = HEAL_NORM;
+	self.volume = 100; // max add
+	self.wait = RSP_TIME;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
+void() w_heal_dogfood =
+{
+	q100_item_health();
+	setmodel(self, "progs/w_dcr_bluvase.mdl");
+	self.frame = 2;
+	self.skin = 2;
+	self.noise = "wolf/pickup_gdy.wav";
+	self.noise4 = "wolf/w_resp.wav";
+	self.netname = "Dog Food";
+	self.healamount = 4;
+	self.healtype = HEAL_NORM;
+	self.volume = 100; // max add
+	self.wait = RSP_TIME;
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
 void() w_key =
 {
 	if (self.spawnflags & 1)
@@ -1391,6 +1459,22 @@ void() w_key =
 
 	self.netname = "Blue key";
 	if (self.spawnflags & 1) self.netname = "Gold key";
+	self.effects = self.effects | EF_FULLBRIGHT;
+	if (self.class_select == "") self.class_select = "wolf_item";
+};
+
+void() w_item_cross =
+{
+	item_key1(); // FIX: treasure pick up fn
+//	self.touch = w_treas_touch;
+
+	self.wait = -1; // RSP_TIME; // no respawn for these, ever
+
+	self.noise = "wolf/pickup_gdy.wav";
+	setmodel (self, "progs/w_cross.bsp");
+	self.noise4 = "wolf/w_resp.wav";
+
+	self.netname = "Cross";
 	self.effects = self.effects | EF_FULLBRIGHT;
 	if (self.class_select == "") self.class_select = "wolf_item";
 };
@@ -1564,7 +1648,709 @@ void() player_sawu6 = [$shotatt6, player_stand1] { };
 
 // specials, decor
 
-void() d_bloody_mess =
+float NOBLOCK = 1;
+float BLOCK = 1;
+
+void() ddecor_blue_firestick =
+{
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 2;
+	self.skin = 3;
+	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_green_firestick =
+{
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 2;
+	self.skin = 2;
+	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_red_firestick =
+{
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 2;
+	self.skin = 1;
+	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_blue_torch =
+{
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 3;
+	self.skin = 3;
+	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_green_torch =
+{
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 3;
+	self.skin = 2;
+	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+void() ddecor_red_torch =
+{
+	precache_model ("progs/flame2.mdl");
+	setmodel(self,"progs/flame2.mdl");
+	if (sv_decor(self)) return;
+	self.frame = 3;
+	self.skin = 1;
+	self.effects = self.effects | EF_DIMLIGHT;
+	FireAmbient ();
+//	makestatic (self); // cant makestatic if it can be xlated!
+};
+
+// IDEA: make it burn?
+
+void() ddecor_barrel_fire =
+{
+	precache_model ("progs/barrel2.mdl");
+	setmodel(self,"progs/barrel2.mdl");
+	if (sv_decor(self)) return;
+
+	self.frame = 4;
+	self.skin = 4;
+	self.effects = self.effects | EF_DIMLIGHT;
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+
+	FireAmbient ();
+};
+
+void() ddecor_green_pillar =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/tallgpillar.md2");
+	setmodel(self,"progs/md2/tallgpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_red_pillar =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/tallrpillar.md2");
+	setmodel(self,"progs/md2/tallrpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_green_sht_pillar =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/sgpillar.md2");
+	setmodel(self,"progs/md2/sgpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_red_sht_pillar =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/srpillar.md2");
+	setmodel(self,"progs/md2/srpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_green_hrt_pillar =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/pwheart.md2");
+	setmodel(self,"progs/md2/pwheart.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_red_skull_pillar =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/pwskull.md2");
+	setmodel(self,"progs/md2/pwskull.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_stalagmite =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/stalagmite.md2");
+	setmodel(self,"progs/md2/stalagmite.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_tree =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/bigtree.md2");
+	setmodel(self,"progs/md2/bigtree.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_burnttree =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/tree.md2");
+	setmodel(self,"progs/md2/tree.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_tech_lamp =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/biglamp.md2");
+	setmodel(self,"progs/md2/biglamp.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_tech_sht_lamp =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/mediumlamp.md2");
+	setmodel(self,"progs/md2/mediumlamp.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_low_elex_lamp =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/lamp.md2");
+	setmodel(self,"progs/md2/lamp.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_techno_pillar =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/tekpillar.md2");
+	setmodel(self,"progs/md2/tekpillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() light_painkeep_candle;
+
+void() ddecor_candle =
+{
+	if (sv_decor(self)) return;
+	light_painkeep_candle(); // NOTE: this code uses makestatic
+};
+
+void() ddecor_candelabra =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/candleabra.md2");
+	setmodel(self,"progs/md2/candleabra.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_evil_eye =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/evileye.md2");
+	setmodel(self,"progs/md2/evileye.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_skull_float =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/floatskulls.md2");
+	setmodel(self,"progs/md2/floatskulls.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_twitch =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hangtorso.md2");
+	setmodel(self,"progs/md2/hangtorso.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_armout =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hang.md2");
+	setmodel(self,"progs/md2/hang.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_leg_pair =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hanginglegs.md2");
+	setmodel(self,"progs/md2/hanginglegs.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_1leg =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hangnoleg.md2");
+	setmodel(self,"progs/md2/hangnoleg.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_leg =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hangingleg.md2");
+	setmodel(self,"progs/md2/hangingleg.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_twitch_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_twitch();
+};
+
+void() ddecor_hang_armout_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_armout();
+};
+
+void() ddecor_hang_leg_pair_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_leg_pair();
+};
+
+void() ddecor_hang_vic_1leg_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_vic_1leg();
+};
+
+void() ddecor_hang_leg_nb =
+{
+	self.spawnflags = self.spawnflags | 1;
+	ddecor_hang_leg();
+};
+
+void() ddecor_hang_vic_noguts =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hangguy.md2");
+	setmodel(self,"progs/md2/hangguy.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_nogutsbrains =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/torsonobrain.md2");
+	setmodel(self,"progs/md2/torsonobrain.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_down =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hang2.md2");
+	setmodel(self,"progs/md2/hang2.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+
+void() ddecor_hang_vic_opnskull =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/torsoshowbrain.md2");
+	setmodel(self,"progs/md2/torsoshowbrain.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_up =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/hang2.md2");
+	setmodel(self,"progs/md2/hang2.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_hang_vic_nobrain =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/torsonobrain.md2");
+	setmodel(self,"progs/md2/torsonobrain.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_impaled =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/twitcher1.md2");
+	setmodel(self,"progs/md2/twitcher1.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_impaled_twitch =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/twitcher2.md2");
+	setmodel(self,"progs/md2/twitcher2.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_skull_pole =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/skullspole.md2");
+	setmodel(self,"progs/md2/skullspole.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_skull_kebob =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/headpole.md2");
+	setmodel(self,"progs/md2/headpole.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_skull_pile =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/skullcandles.md2");
+	setmodel(self,"progs/md2/skullcandles.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() ddecor_pool_blood =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/blood.md2");
+	setmodel(self,"progs/md2/blood.md2");
+//	setorigin(self, self.origin + ' 0 0 -8');
+	self.frame = 9;
+	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
+};
+
+void() ddecor_pool_blood_2 =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/bigblood.md2");
+	setmodel(self,"progs/md2/bigblood.md2");
+//	setorigin(self, self.origin + ' 0 0 -8');
+	self.frame = 9;
+	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
+};
+
+void() ddecor_pool_brains =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/brainpool.md2");
+	setmodel(self,"progs/md2/brainpool.md2");
+//	setorigin(self, self.origin + ' 0 0 -8');
+	self.frame = 9;
+	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
+};
+
+void() ddecor_bloody_mess =
 {
 // for now
 	if (!DARKPLACES)
@@ -1577,9 +2363,21 @@ void() d_bloody_mess =
 //	setorigin(self, self.origin + ' 0 0 -8');
 	self.frame = 9;
 	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
 };
 
-void() d_dead_player =
+// prev version - needs deprecation
+
+void() d_bloody_mess =
+{
+	ddecor_bloody_mess();
+};
+
+void() ddecor_dead_player =
 {
 // for now
 	if (!DARKPLACES)
@@ -1592,9 +2390,21 @@ void() d_dead_player =
 //	setorigin(self, self.origin + ' 0 0 -8');
 	self.frame = 146;
 	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
 };
 
-void() d_pool_flesh_blood =
+// prev version - needs deprecation
+
+void() d_dead_player =
+{
+	ddecor_dead_player();
+};
+
+void() ddecor_pool_flesh_blood =
 {
 // for now
 	if (!DARKPLACES)
@@ -1606,5 +2416,275 @@ void() d_pool_flesh_blood =
 	setmodel(self,"progs/md2/blood.md2");
 	self.frame = 9;
 	self.movetype = MOVETYPE_TOSS;
+
+	self.solid = SOLID_NOT;
+	if (self.spawnflags & BLOCK)
+		self.solid = SOLID_BSP;
+	sv_decor(self);
 };
 
+// prev version - needs deprecation
+
+void() d_pool_flesh_blood =
+{
+	ddecor_pool_flesh_blood();
+};
+
+
+// wolf decor
+
+void() wdecor_woodbarrel =
+{
+//	precache_model("progs/md2/woodbarrel.md2");
+//	setmodel(self,"progs/md2/woodbarrel.md2");
+	precache_model("progs/woodbarrel.mdl");
+	setmodel(self,"progs/woodbarrel.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_chand_grn =
+{
+	precache_model("progs/w_dcr_changrn2.mdl");
+	setmodel(self,"progs/w_dcr_changrn2.mdl");
+	self.movetype = MOVETYPE_NONE;	
+	sv_decor(self);
+};
+
+void() wdecor_floorlamp =
+{
+	precache_model("progs/w_dcr_floorlmp.mdl");
+	setmodel(self,"progs/w_dcr_floorlmp.mdl");
+
+	self.solid = SOLID_BSP;
+//	if (self.spawnflags & NOBLOCK) // TEST - restore later
+		self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_NONE;	
+	sv_decor(self);
+};
+
+void() wdecor_bed =
+{
+	precache_model("progs/wdcr_bed.bsp");
+	setmodel(self,"progs/wdcr_bed.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_column =
+{
+	if (!DARKPLACES)
+	{
+		remove(self);
+		return;
+	}
+	precache_model("progs/md2/wgreypillar.md2");
+	setmodel(self,"progs/md2/wgreypillar.md2");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_hangcage =
+{
+	precache_model("progs/wdcr_cage.bsp");
+	setmodel(self,"progs/wdcr_cage.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_hangcageskel =
+{
+	wdecor_hangcage();
+};
+
+void() wdecor_tablesmall =
+{
+	precache_model("progs/w_dcr_table.mdl");
+	setmodel(self,"progs/w_dcr_table.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_stove =
+{
+	precache_model("progs/woodbarrel.mdl");
+	setmodel(self,"progs/woodbarrel.mdl");
+
+	self.frame = 2;
+	self.skin = 1;
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_sink =
+{
+	precache_model("progs/w_dcr_table.mdl");
+	setmodel(self,"progs/w_dcr_table.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	self.frame = 2;
+	sv_decor(self);
+};
+
+void() wdecor_spears =
+{
+	precache_model("progs/wdcr_spears.bsp");
+	setmodel(self,"progs/wdcr_spears.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_vase =
+{
+	precache_model("progs/w_dcr_bluvase.mdl");
+	setmodel(self,"progs/w_dcr_bluvase.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_basket =
+{
+	precache_model("progs/w_dcr_bluvase.mdl");
+	setmodel(self,"progs/w_dcr_bluvase.mdl");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	self.skin = 1;
+	self.frame = 1;
+	sv_decor(self);
+};
+
+void() wdecor_water =
+{
+	precache_model("progs/volcano.mdl");
+	setmodel(self,"progs/volcano.mdl");
+
+	self.solid = SOLID_NOT;
+//	if (self.spawnflags & NOBLOCK)
+//		self.solid = SOLID_BSP;
+	self.skin = 12;
+	self.frame = 6;
+	sv_decor(self);
+};
+
+void() wdecor_well =
+{
+	precache_model("progs/wdcr_well.bsp");
+	setmodel(self,"progs/wdcr_well.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+void() wdecor_wellfull =
+{
+	precache_model("progs/wdcr_well_fl.bsp");
+	setmodel(self,"progs/wdcr_well_fl.bsp");
+
+	self.solid = SOLID_BSP;
+	if (self.spawnflags & NOBLOCK)
+		self.solid = SOLID_NOT;
+	sv_decor(self);
+};
+
+/*
+		+---------------------------------------+
+		|  Aux code - Doom                     | SEC-HEAD
+		+---------------------------------------+
+*/
+
+// fn(door_sounds_wd) - handle door sounds for doom / wolf
+
+// if map genre doom or wolf and no door sounds, use defaults.  mapped doors will only need to set alt sounds
+
+void() door_sounds_wd =
+{
+
+	if (self.sounds == 0)
+	if (self.noise1 == "" || self.noise1 == "misc/null.wav")
+	if (self.noise2 == "" || self.noise2 == "misc/null.wav")
+	{
+/*
+		precache_sound ("doom/dsdorcls.wav");
+		precache_sound ("doom/dsdoropn.wav");
+		precache_sound ("doom/dsbdcls.wav");
+		precache_sound ("doom/dsbdopn.wav");
+		precache_sound ("wolf/door_opn.wav");
+		precache_sound ("wolf/door_cls.wav");
+*/
+		if (MAP_MODE == "W")
+		{
+			self.sounds = DOOR_2S;
+			self.noise1 = "wolf/door_cls.wav";
+			self.noise2 = "wolf/door_opn.wav";
+		}
+		if (MAP_MODE == "D")
+		{
+			self.sounds = DOOR_2S;
+			self.noise1 = "doom/dsdorcls.wav";
+			self.noise2 = "doom/dsdoropn.wav";
+		}
+	}
+
+	if (self.noise1 != "") precache_sound (self.noise1);
+	if (self.noise2 != "") precache_sound (self.noise2);
+	if (self.noise3 != "") precache_sound (self.noise3);
+	if (self.noise4 != "") precache_sound (self.noise4);
+
+};
+
+// fn(button_sounds_d) - handle button sounds for doom
+
+void() button_sounds_d =
+{
+
+	if (self.sounds == 0)
+	if (self.noise == "")
+	{
+//		precache_sound ("doom/dsdorcls.wav");
+//		precache_sound ("doom/dsdoropn.wav");
+/*
+		if (MAP_MODE == "W")
+		{
+			self.sounds = DOOR_2S;
+		}
+*/
+		if (MAP_MODE == "D")
+		{
+			self.sounds = DOOR_2S;
+			self.noise = "doom/dsswtchn.wav";
+		}
+	}
+
+	if (self.noise != "") precache_sound (self.noise);
+
+};

@@ -12,18 +12,39 @@
 
 void() chaos_precache =
 {
-	precache_model ("progs/laser_m.mdl");
-
-	precache_model ("progs/m_reggun.mdl");
-	precache_model ("progs/v_reggun.mdl");
-	precache_model ("progs/vw_reggun.mdl");
-
 	precache_model ("progs/null.mdl"); // Cataboligne 8.8.9 purify - chase cam
 
 // sounds
 	precache_sound ("reggun/fire4.wav");
 
-	flamer_precache();
+	precache_model ("progs/bit.mdl");
+	precache_model ("progs/g_axe.mdl");
+	precache_model ("progs/v_axe.mdl");
+	precache_model ("progs/vw_axe.1.mdl");
+	precache_model ("progs/vw_axe.mdl");
+	precache_model ("progs/shotgun.mdl");
+	precache_model ("progs/vw_shot.mdl");
+	precache_model ("progs/smoke.mdl");
+	precache_model ("progs/m_reggun.mdl");
+	precache_model ("progs/v_reggun.mdl");
+	precache_model ("progs/vw_reggun.mdl");
+	precache_model ("progs/pt_beam.mdl");
+	precache_model ("progs/g_flamer2.mdl");
+	precache_model ("progs/g_gas.mdl");
+	precache_model ("progs/vw_flamer2.mdl");
+	precache_model ("progs/vw_gascyl.mdl");
+	precache_model ("progs/vw_qgun.mdl");
+	precache_model ("progs/vw_shovel.mdl");
+
+	precache_sound ("sound/flm/ft_hum.wav");
+	precache_sound ("sound/flm/ft_fire.wav");
+	precache_sound ("sound/flm/burning.wav");
+	precache_sound ("sound/flm/airhiss1.wav");
+	precache_sound ("sound/reggun/fire.wav");
+	precache_sound ("sound/reggun/fire4.wav");
+
+
+//	flamer_precache();
 };
 
 void() c_weapon_reggun =

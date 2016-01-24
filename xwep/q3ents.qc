@@ -90,39 +90,37 @@ float q3_bob_on; // server cfg this to 1 for total disable
 
 void() q3_precache =
 {
-	precache_model ("progs/q3_health.mdl");
+// all ammo
+// weps
+// 1pv
+// carry
+	precache_model ("progs/q3_ammobox.mdl");
 	precache_model ("progs/q3_arm.mdl");
 	precache_model ("progs/q3_arm_shard.mdl");
 	precache_model ("progs/q3_art.mdl");
+	precache_model ("progs/q3_bfg.mdl");
+	precache_model ("progs/q3_gauntlet.mdl");
+	precache_model ("progs/q3_gl.mdl");
+	precache_model ("progs/q3_grapple.mdl");
+	precache_model ("progs/q3_health.mdl");
 	precache_model ("progs/q3_hld_med.mdl");
 	precache_model ("progs/q3_hld_tel.mdl");
-// all ammo
-	precache_model ("progs/q3_ammobox.mdl");
-// weps
-	precache_model ("progs/q3_shot.mdl");
-	precache_model ("progs/q3_rl.mdl");
-	precache_model ("progs/q3_rail.mdl");
-	precache_model ("progs/q3_bfg.mdl");
-	precache_model ("progs/q3_gl.mdl");
-	precache_model ("progs/q3_plg.mdl");
 	precache_model ("progs/q3_lg.mdl");
 	precache_model ("progs/q3_mgun.mdl");
-	precache_model ("progs/q3_gauntlet.mdl");
-	precache_model ("progs/q3_grapple.mdl");
-
-// 1pv
-	precache_model ("progs/v_q3_shot.mdl");
+	precache_model ("progs/q3_plg.mdl");
+	precache_model ("progs/q3_rail.mdl");
+	precache_model ("progs/q3_rl.mdl");
+	precache_model ("progs/q3_shot.mdl");
 	precache_model ("progs/v_q3_bfg.mdl");
 	precache_model ("progs/v_q3_gl.mdl");
-//	precache_model ("progs/v_q3_hawk.mdl");
+	precache_model ("progs/v_q3_hawk.mdl");
+	precache_model ("progs/v_q3_lg.mdl");
 	precache_model ("progs/v_q3_mgun.mdl");
-//	precache_model ("progs/v_q3_mini.mdl");
+	precache_model ("progs/v_q3_mini.mdl");
 	precache_model ("progs/v_q3_plg.mdl");
 	precache_model ("progs/v_q3_rail.mdl");
 	precache_model ("progs/v_q3_rl.mdl");
-	precache_model ("progs/v_q3_lg.mdl");
-// carry
-	precache_model ("progs/vw_q3_ssg.mdl");
+	precache_model ("progs/v_q3_shot.mdl");
 	precache_model ("progs/vw_q3_bfg.mdl");
 	precache_model ("progs/vw_q3_gl.mdl");
 	precache_model ("progs/vw_q3_lg.mdl");
@@ -130,46 +128,52 @@ void() q3_precache =
 	precache_model ("progs/vw_q3_plg.mdl");
 	precache_model ("progs/vw_q3_rail.mdl");
 	precache_model ("progs/vw_q3_rl.mdl");
+	precache_model ("progs/vw_q3_ssg.mdl");
 
 
 // hear it
-	precache_sound ("q3_snd/am_pkup.wav");
-	precache_sound ("q3_snd/w_pkup.wav");
-	precache_sound ("q3_snd/respawn1.wav");
-	precache_sound ("q3_snd/s_health.wav");
-	precache_sound ("q3_snd/n_health.wav");
-	precache_sound ("q3_snd/l_health.wav");
-	precache_sound ("q3_snd/m_health.wav");
-	precache_sound ("q3_snd/ar1_pkup.wav");
-	precache_sound ("q3_snd/ar2_pkup.wav");
-	precache_sound ("q3_snd/ar3_pkup.wav");
 // art
-	precache_sound ("q3_snd/airout.wav");
-	precache_sound ("q3_snd/flight.wav");
-	precache_sound ("q3_snd/haste.wav");
-	precache_sound ("q3_snd/holdable.wav");
-	precache_sound ("q3_snd/invisibility.wav");
-	precache_sound ("q3_snd/poweruprespawn.wav");
-	precache_sound ("q3_snd/quaddamage.wav");
-	precache_sound ("q3_snd/regeneration.wav");
-	precache_sound ("q3_snd/regen.wav");
-	precache_sound ("q3_snd/use_medkit.wav");
-
 // fire
-	precache_sound ("q3_snd/rocklf1a.wav");
-	precache_sound ("q3_snd/rocklx1a.wav");
-	precache_sound ("q3_snd/grenlf1a.wav");
-	precache_sound ("q3_snd/hgrenb1a.wav");
-	precache_sound ("q3_snd/sshotf1b.wav");
-	precache_sound ("q3_snd/machgf1b.wav");
-	precache_sound ("q3_snd/plasmx1a.wav");
-	precache_sound ("q3_snd/hyprbf1a.wav");
-	precache_sound ("q3_snd/railgf1a.wav");
-	precache_sound ("q3_snd/rg_hum.wav");
-	precache_sound ("q3_snd/lg_fire.wav");
-	precache_sound ("q3_snd/lg_hum.wav");
-	precache_sound ("q3_snd/bfg_fire.wav");
-	precache_sound ("q3_snd/bfg_hum.wav");
+	precache_sound ("sound/q3_snd/plasmx1a.wav");
+	precache_sound ("sound/q3_snd/hyprbf1a.wav");
+	precache_sound ("sound/q3_snd/ar3_pkup.wav");
+	precache_sound ("sound/q3_snd/ar2_pkup.wav");
+	precache_sound ("sound/q3_snd/ar1_pkup.wav");
+	precache_sound ("sound/q3_snd/airout.wav");
+	precache_sound ("sound/q3_snd/use_medkit.wav");
+	precache_sound ("sound/q3_snd/regeneration.wav");
+	precache_sound ("sound/q3_snd/regen.wav");
+	precache_sound ("sound/q3_snd/quaddamage.wav");
+	precache_sound ("sound/q3_snd/poweruprespawn.wav");
+	precache_sound ("sound/q3_snd/invisibility.wav");
+	precache_sound ("sound/q3_snd/holdable.wav");
+	precache_sound ("sound/q3_snd/haste.wav");
+	precache_sound ("sound/q3_snd/flight.wav");
+	precache_sound ("sound/q3_snd/s_health.wav");
+	precache_sound ("sound/q3_snd/n_health.wav");
+	precache_sound ("sound/q3_snd/m_health.wav");
+	precache_sound ("sound/q3_snd/l_health.wav");
+	precache_sound ("sound/q3_snd/hgrenb1a.wav");
+	precache_sound ("sound/q3_snd/rocklx1a.wav");
+	precache_sound ("sound/q3_snd/lg_hum.wav");
+	precache_sound ("sound/q3_snd/bfg_hum.wav");
+	precache_sound ("sound/q3_snd/rg_hum.wav");
+	precache_sound ("sound/q3_snd/lg_fire.wav");
+	precache_sound ("sound/q3_snd/railgf1a.wav");
+	precache_sound ("sound/q3_snd/bfg_fire.wav");
+	precache_sound ("sound/q3_snd/grenlf1a.wav");
+	precache_sound ("sound/q3_snd/machgf1b.wav");
+	precache_sound ("sound/q3_snd/rocklf1a.wav");
+	precache_sound ("sound/q3_snd/sshotf1b.wav");
+	precache_sound ("sound/q3_snd/w_pkup.wav");
+	precache_sound ("sound/q3_snd/am_pkup.wav");
+	precache_sound ("sound/q3_snd/respawn1.wav");
+	precache_sound ("sound/q3_snd/dr1_end.wav");
+	precache_sound ("sound/q3_snd/dr1_strt.wav");
+	precache_sound ("sound/q3_snd/pt1_end.wav");
+	precache_sound ("sound/q3_snd/pt1_mid.wav");
+	precache_sound ("sound/q3_snd/pt1_strt.wav");
+
 };
 
 // bob em - needs called from client capable of stuff cmd
