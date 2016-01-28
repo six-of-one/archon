@@ -3,11 +3,15 @@
 	Written by Matt Houser
 	19:14GMT-5:01/01/96
 
+	016.1.25 - Cataboligne - add acid damage - TODO - new frame, skin, override for acid drops, hiss sounds
+
 	"classname" "func_drip"
 	"style" "#"	- not implemented yet
 	"sounds" "#"	- not implemented yet
 	"mean" "#" 	- Mean time between drips (default is 5)
 	"stdev" "#" 	- Variation around the mean time (default is 0)
+	"dmg" "#"		- acid drop damage -- [ 1 - 4 ] suggested (default 0)
+	"noise3"	"{snd}"	- hiss sound when acid drop hits
 */
 
 void() func_drip_touch =
@@ -37,6 +41,12 @@ void() func_drip_touch =
 		// muffled sound
 		sound (self, CHAN_AUTO, "misc/drip/drip_2.wav", 1, ATTN_NORM);
 
+// Cataboligne - add acid damage, sound
+	if (self.dmg)
+	{
+		T_Damage(other, self, self, self.dmg);
+		sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+	}
 	SUB_Remove();
 };
 
@@ -52,6 +62,8 @@ void() func_drip_drop =
 		drop.solid = SOLID_TRIGGER;
 		drop.movetype = MOVETYPE_BOUNCE;
 		drop.touch = func_drip_touch;
+		drop.dmg = self.dmg;		// Cataboligne - add acid damage
+// TODO: assign frame / skin / etc
 		setorigin(drop, self.origin);
 		setmodel(drop, "progs/s_drip.spr");
 
@@ -79,9 +91,9 @@ void() func_drip =
 	if (!self.style)
 		self.style = 1;
 
-	// default sound
-	if (!self.sounds)
-		self.sounds = 1;
+	// default sound - not implemented
+//	if (!self.sounds)
+//		self.sounds = 1;
 
 	self.think = func_drip_drop;
 	self.nextthink = time + meantime(self.mean, self.stdev);
