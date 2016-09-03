@@ -282,24 +282,25 @@ void () ego_think =
 
 void () ego_activate =
 {
-	local entity ent;
-	ent = spawn ();
-	ent.movetype = MOVETYPE_FLYMISSILE;
-	ent.solid = SOLID_NOT;
-	ent.classname = "ego";
-	ent.owner = self;
-	ent.weapon = 0;
-	ent.dmg = (250 + (50 * random ()));
-	ent.egosoundtime = (time - 1);
-	ent.delay = (time + POW_TIME);
-	ent.avelocity = '30 30 30';
-	setmodel (ent,"progs/v_ego.mdl");
-	setorigin (ent,(self.origin + '0 0 8'));
+//	local entity ent;
+
+	newmis = spawn ();
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.solid = SOLID_NOT;
+	newmis.classname = "ego";
+	newmis.owner = self;
+	newmis.weapon = 0;
+	newmis.dmg = (250 + (50 * random ()));
+	newmis.egosoundtime = (time - 1);
+	newmis.delay = (time + POW_TIME);
+	newmis.avelocity = '30 30 30';
+	setmodel (newmis,"progs/v_ego.mdl");
+	setorigin (newmis,(self.origin + '0 0 8'));
 	sound (self,CHAN_VOICE,"ego/ego.wav",1,ATTN_NORM);
-	ent.pk_currentitem = PKPLUS_IT_EGO;
-	ent.weapon = IT_AXE;
+	newmis.pk_currentitem = PKPLUS_IT_EGO;
+	newmis.weapon = IT_AXE;
 	self.dmg_inflictor = self;
-	ent.think = ego_think;
-	ent.nextthink = (time + 0.1);
+	newmis.think = ego_think;
+	newmis.nextthink = (time + 0.1);
 };
 

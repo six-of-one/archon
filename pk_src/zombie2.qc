@@ -17,8 +17,8 @@ void() zombie_hang =
 
 		self.flags = rint(random() * 2);
 
-	  local float rs;
-	  rs = rint ((random() * 2) + 1);
+//	  local float rs;
+//	  rs = rint ((random() * 2) + 1);
 
 	  if (self.flags == 1)
 	    sound (self, CHAN_VOICE, "misc/zombie/swing_1.wav", 1, ATTN_NONE);
@@ -59,7 +59,7 @@ void() monster_zombie2 =
 	}
 
 	self.solid = SOLID_NOT;
-	self.movetype = MOVETYPE_STEP;
+//	self.movetype = MOVETYPE_STEP;
 
 	setmodel (self, "progs/zombie2.mdl");
 
@@ -68,8 +68,8 @@ void() monster_zombie2 =
 	self.movetype = MOVETYPE_NONE;
 	self.frame = 22;
 
-	self.think = zombie_hang;
-	self.nextthink = time + 0.1;
+//	self.think = zombie_hang;
+//	self.nextthink = time + 0.1;
 
 	zombie_hang ();
 };
@@ -101,7 +101,7 @@ void() monster_zombie3 =
 	}
 
 	self.solid = SOLID_NOT;
-	self.movetype = MOVETYPE_STEP;
+//	self.movetype = MOVETYPE_STEP;
 
 	setmodel (self, "progs/zombie3.mdl");
 
@@ -110,8 +110,8 @@ void() monster_zombie3 =
 	self.movetype = MOVETYPE_NONE;
 	self.frame = 46;
 
-	self.think = zombie_twist;
-	self.nextthink = time + 0.1;
+//	self.think = zombie_twist;
+//	self.nextthink = time + 0.1;
 
 	zombie_twist ();
 };
