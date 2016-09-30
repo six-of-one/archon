@@ -1,0 +1,268 @@
+---------------------------------------------------------------------------
+
+     ***    *    *     *      ****     ***
+    * | *   *    *    * *    *    *   *   *
+    *\ /    *    *   *   *   *    *   *
+    - + -   ******  *******  *    *    ***    *   *   **   ***
+    */ \    *    *  *     *  *    *       *   ** **  *  *  *  *
+    * | *   *    *  *     *  *    *   *   *   * * *  *  *  *  *
+     ***    *    *  *     *   ****     ***    *   *   **   ***   (mark II)
+
+                    *      *****    ****    *    *   ****    *    *
+                   * *     *    *  *    *   *    *  *????*   **   *  ...
+    ... . . ...   *   *    *    *  *        *    *  *????*   ***  * .   .
+     .  . . .    *******   *****   *        ******  *????*   * ** *  .
+     .  ... ...  *     *   *  *    *        *    *  *????*   *  ***    .
+     .  . . .    *     *   *   *   *    *   *    *  *????*   *   ** .   .
+     .  . . ...  *     *   *    *   ****    *    *   ****    *    *  ...
+
+---------------------------------------------------------------------------
+
+
+beta Release
+
+b.1.2 - released 12.19.14
+
+---------------------------------------------------------------------------
+
+\|/
+-Support free code by Six gaming on Patreon: https://www.patreon.com/six_gaming
+/|\
+
+
+
+README update: 9.30.016
+---------------------------------------------------------------------------
+
+Game play:
+
+Philosophy -
+
+The mod is intended to be played with most new features turned on.
+Cubes and crates are designed as an add in vector for new weapons and items.
+The morph cubes enable polymorph and must be active to release the "Archon spirit"
+Nodules must be turned on to power archons spell energy and assist in becoming an archon.
+
+Become an Archon -
+
+Experience points (XP) are awarded for: item / treasure collection, monster kills, and using runes / artifacts.
+Once you amass some XP, find the Archon Altar (currently appears as a waving flag) and touch it.
+The Altar converts XP to archon points.  Power points (includes portable) provide direct
+archon points while touching them (or holding the portable.)
+
+Once you have a few hundered archon points, you can use any morph cube to take on other forms and
+gain more archon points.  By the time at least one player has more than 5000 archon points,
+the "Archon Spirit" should be on the level.  Archon Spirit currently appears as smaller 3D uber
+chaos icon - four 8 ray stars intersected.  Touch this and select your Archon choice - Chaos or Order.
+
+Faster method - find the "God Particle" - has the appearance of an M.C. Escher construct -
+three hollow 8 sided golden polygons that intersect.  Touching the God particle gives you
+mega amounts of archon points and XP.
+
+Using Archon spells - 
+
+Spells are selected with weapon impulses (bound to 1 - 8).
+Initial spells are attack (impulse 1) and teleport self / make vessel (impulse 2).
+To cast more spells, you must have a minimum of 2000 points to make a Soul vessel.
+When you have enough points the "make a vessel" spell gives you a reticle to select the
+location of your vessel.  Additional spells can add or remove points from a vessel.
+You can also rescind the vessel, and recover its points.
+
+Hints:
+
+Convert XP to archon points as soon as possible.  Archon points follow you to the next level -
+XP do not.  The earlier you convert XP, the more archon points you will get.  The conversion
+rate decays with altar usage by powers of 2.  The first one to the altar gets better conversion rates.
+Also look for "portable" power points - smaller versions of the hubs 5 power points.
+You can carry them with you - they provide small amounts of archon points every second
+and protect you from Archon spell targeting.
+
+The God particle is (meant to be) hard to find, but well worth it.  Finding the GP should be
+an Archons secondary goal - always.
+
+Morphed players should (again are "meant to") get more XP from built in weapons use and natural magic.
+
+Archons get a lot more archon points from power points and nodules.
+(Non Archons only get XP from nodules - Archons have direct conversion.)
+Archons can NOT convert XP to archon points and thus have no need of XP.
+
+5000 points is the minimum to become an Archon.  You will need more for spells.
+
+Some spells require more points added to your Soul vessel.
+
+---------------------------------------------------------------------------
+
+Game glossary and descriptions:
+
+
+Consult visual guide for images.
+
+Archon: Chaos or Order - becoming one is the point of the mod.
+
+Archon spirit: this is a special morph cube that allows a player to become an Archon.
+(You must posses enough archon points - 5000 at this time.  You need a lot more.)
+
+Soul vessel: a gem or other item where an Archon stores points.
+One is required for casting more powerful spells.
+
+God particle: a special nodule that gives a large quantity of archon points.
+
+Altar: touching an altar converts experience points to archon points.
+You get XP for: collecting items, possesing runes and artifacts, killing monsters.
+The only thing that directly gives archon points to non archons are power points.
+As of now, altars appear in game as flags.
+
+Painkeep cube: beveled edges, has pk symbol on it.  Touch it, and press fire - you
+must be in range.  Select another weapon to free the cube.  PK cubes give weapons, items, monsters
+and might be trapped.
+
+Morphic cube: beveled edges, glowing interior.  Touch it and the evolution menu appears.
+Use the mousewheel or page up/down to select an evolution.  Press ALT-FIRE (impulse 13, bound to "x")
+to evolve.  Select another weapon to free the cube.  Now requires archon power to operate.
+
+Crates: wooden crates, large and small.  Hack open with your trusty axe or use any weapon.
+Contains weapons and items.  Monsters are mostly helpers.
+
+Runes: collect a rune to get its power.  "r" identifies runes you carry, and "y" drops them.
+You can carry one of each variety.  Some combinations may not work.
+
+Quantum tunnel apparatus: makes "holes" through quantum space.  Press ALT-FIRE to select the mode.
+Experiment to find out how modes operate.  Mode 2, entry / exit is the standard method many are
+familiar with.  (And yes, this thing existed long before the one you all know so well!)
+
+Super gravity well: disaster maker extraordinare - throw this baby in a crowded room and get out.
+Come back later and admire the vortex art!
+
+Teleport sphere: comes from PK cubes.  Teleports you to a random location.
+Great getaway.
+
+Power points: on hub map, 4D in shape with a particle fountain.  Standing in one heals you and gives archon power.
+They also spawn random weapons for the hub map.
+
+Nodules: little colored bits that give archon power - Archons / Demi-archons get more power from them.
+
+Hub map votes: (arc_hub map only) open the storage doors to reveal vote exits.  Enter one to vote on your favorite levels.
+
+Maps: some new maps are provided.  A new score achievement system is in play.
+You have to score 50 frags (on any map, just once) to unlock some maps.
+Until the score achivement has been exceeded some voting doors on the Archon hub will not open!
+(Note to admins: these maps can not be manually loaded with "map" or "changelevel" either!)
+
+Random monsters: all the usual guys plus 6 new opponents.  If they dont come out of a cube, crate
+or horn, they are your enemy.  If you have evolved, similar monsters will generally not attack
+you.  Former soldiers will not attack player soldiers (such as Ranger - the quake marine.)
+Some new monsters are violent and will attack all others.  Some are complacent (bossman) until
+attacked.  Beware the bossman's tirades.  They are painful.
+
+Melee mode: enter the alias "melee" in the server console to enable.  All ranged weapons are gone.  Good luck.
+(Note: some morphs still have limited ranged attacks)
+
+To enable these items consult the next section.  Entering "typical" in the console gives
+typical options, generally turning all features on.  You must be on the server console.
+
+Note: instructions refer to game default key bindings.  See "autoexec.cfg" and "config.cfg".
+
+---------------------------------------------------------------------------
+
+Archons:
+
+Chaos and Order.
+
+Once you become an Archon you will discover an entirely different game.
+
+Your main adversary will be the other Archons and eventually demi-Archons.
+
+Power:
+
+Archons have two power levels - archon points and mana points.
+The archon point bar is the yellow one and is only increased by:
+1. power nodules, 2. power points, 3. God Particle.
+
+When you are not an Archon, you also get XP for collecting items, using artifacts
+and possessing runes.  XP needs converted and does not give much power.
+
+The mana power bar is second to the archon power bar.  Mana power increases on its
+own over time.  Events do affect it.  As Chaos mana increases Chaos will
+have "star bursts."  Chaos power will flare up and all manner of things
+will be ejected.  Some will be usable map items, some will be fake, some will
+be bombs.  Even monsters can come from Chaos.
+
+Orders mana will oppose Chaos.  The more mana Order has the greater effect
+it will have in reducing Chaos on the levels.
+
+
+
+You can only collect one item - power nodules.  And you need every one you can find.
+You can NOT be hurt - Archons ignore health issues.
+
+You can have your archon power level attacked - if it falls below zero
+(either by attack or spell use) you will revert to:
+1. your original form, or 2. your last polymorph self state.
+Some attacks will take away a LOT of archon points.  Watch out for them.
+
+Anything you want to do MUST be done by spell magic.
+Attack is the main spell - with power bolts.
+
+Move fast - teleport self spell.
+Give yourself rune powers.  Note: rune powers have a constant power
+usage requirement depending on the rune!
+Summon helpers - you can have minions!
+
+
+Chaos:
+
+The main point of chaos is to sow confusion and dissent.
+Chaos is a powerful force of nature.  When you fire the Chaos "beam"
+chaotic things will happen at the strike point.
+Chaos "star bursts" will litter levels with items, bombs, and
+all manner of things.
+Eventually when Chaos has enough mana - level wide total Chaos will ensue.
+
+Chaos fires a random bolt shot.
+ALT_FIRE (default key 'x') fires a beam of chaos energy.
+Chaos beam has random and strange effects at the strike point.
+
+Order:
+
+The main point of order is to maintain the status quo.
+Things will remain as they should normally be.
+No extra map items, no extra monsters, no "stuff."
+Order opposes Chaos at all times.
+This does limit some of Orders spells.
+When Order has enoough mana - all chaos items will be removed.
+All map items will be restored.  Unwanted monsters will be banished.
+
+Order has 3 attacks selectable on impulse 1:
+1. laser type bolt (default) - uses 1 archon point
+2. explosive bolt - uses 5 archon points
+3. melee shell - short range, hits many targets
+   - uses 10 points for 1 or 2 beings hit
+   - uses 20 points for 3 or more hits
+
+
+-------------------------------------------------------
+
+Polymorphed forms:
+
+Most morphs can collect and fire painkeep items.  This excludes - the air cannon, pulse nailgun and chain lightning gun.
+
+Many morphs with weaker or limited attacks have had ranged attacks added (fiend)
+and | or explosive shots (wizard, hell knight).
+
+Exploding shots take archon points to fire and require a minimum archon power
+before they are activated.  Once activated, however, you are free to use all
+available archon power to fire them.
+
+Lava bomb can turn into a smaller Cthon in any lava pool - jump in and ALT_FIRE (default key: x)
+Lava bomb, and Cthon also heal very quickly in lava.
+Consequently Cthon can NOT exist outside a lava pool, and Lava bomb is damaged by water.
+
+
+---------------------------------------------------------------------------
+
+                    CHAOS mod (mark II) - "the ARCH0Ns"
+
+
+\|/
+-Support free code by Six gaming on Patreon: https://www.patreon.com/six_gaming
+/|\
