@@ -1609,6 +1609,7 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 // include map name - translate bsp name if we know it - could also be world.message
 			if (autocvar_hud_frags_mapname)
 			{
+				cl1 = '0.9 0.9 1';
 				Sbar_DrawString(v + '28 -12 0', "Map:", ALPHA_FULL, '7 7 0',cl1);
 // translator
 // maker supplied a map_ cvar - format map_{mapname} in a cfg file - which the server runs for each map ~/cfg/map/{mapname}.cfg
