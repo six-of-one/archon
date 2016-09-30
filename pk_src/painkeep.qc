@@ -53,6 +53,7 @@ Painkeep v1.2.1 - 16 Oct 2008 - Cataboligne (source code update for v1.11)
 
 Painkeep 2.0 (beta) - 18 May 2010 - Cataboligne (major update!)
 - bots, visible weps, chase cam, quake 3 map support, random pk items
+- Artifacts 1.3 diff vs. v1.11 and merged in with 2.0
 
 Painkeep 2.1 - 19 Apr 2011 - Cataboligne
 - gold version for 2.x, bug fixes - final release
