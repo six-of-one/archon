@@ -532,6 +532,7 @@ string(string s, float start, float length) substring = #116; // returns a secti
 // load any entites contained in a file
 
 void(string s) ent_load = #101;
+//void(string s) ent_load = #45; // REMOVE - temp test with new engine
 
 
 
