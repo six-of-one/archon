@@ -81,7 +81,7 @@ float PK_SEVEN, PK_EIGHT;					// 7 and 8
 string vers						= "alias version \"echo quake-c: chaos archon (beta) 1.2\"\n"; // these are displayed prior to the darkplaces internal cmd, which then runs - very cool
 string stats					= "alias status \"echo code:     chaos archon (beta) 1.2\"\n";
 string vmotd					= "\\/ersion \b1\b.\b2\b.\b0b\b\n\n";
-string motd2					= "\n\n[\\/\b1\b.\b1\b.\b0b\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
+string motd2					= "\n\n[\\/\b1\b.\b2\b.\b0b\b] \b_-=\b* \bC\bataboligne\n\nhttp://www.moddb.com/mods/chaos-archon/\n\n";
 string infobver				= "infobar 10 \"you are playing: Archon 1.2 beta\"\n";
 
 // web sites
