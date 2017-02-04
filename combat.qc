@@ -213,7 +213,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 
 			targ.archon = targ.archon - (damage * save);
 		}
-		if (attacker.archon < 0) de_archon(attacker);
+		if (targ.archon < 0) de_archon(targ);
 		return;
 	}
 
