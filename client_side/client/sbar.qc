@@ -1056,7 +1056,13 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		wep_step = '30 -27 0';
 		DrawInventory(pwr_step + '10 -15 0' + woff, "gfx/sb_key1", IT_KEY1, 0, ALPHA_FULL, 1.4);
 		DrawInventory(pwr_step + '0 -15 0' + woff, "gfx/sb_key2",IT_KEY2 , 0, ALPHA_FULL, 1.4);
-		if (cl_items & (IT_KEY1 | IT_KEY2)) pwr_step_y = pwr_step_y + 4;
+// include std q1 runes
+		DrawInventory(pwr_step + '24 -15 0' + woff, "gfx/sb_sigil1", 0, 32, ALPHA_MEDIUM, 1.5);
+		DrawInventory(pwr_step + '36 -15 0' + woff, "gfx/sb_sigil2", 0, 64, ALPHA_MEDIUM, 1.5);
+		DrawInventory(pwr_step + '48 -15 0' + woff, "gfx/sb_sigil3", 0, 128, ALPHA_MEDIUM, 1.5);
+		DrawInventory(pwr_step + '60 -15 0' + woff, "gfx/sb_sigil4", 0, 256, ALPHA_MEDIUM, 1.5);
+
+		if (cl_items & (IT_KEY1 | IT_KEY2) || (items2 & 480)) pwr_step_y = pwr_step_y + 4;
 	}
 
 /// hud message for cfg scripts - instead of console print which gets lost fast on busy servers
