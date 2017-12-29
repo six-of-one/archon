@@ -1180,6 +1180,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 		if (timep >= 1.0) // track stats every second
 		{
 
+// zero sub decimal numbers
+			timep = floor(timep);
+
 // score on this map
 			if (!cl_mapscore) cl_mapscore = cvar(clscmap);
 
