@@ -2397,8 +2397,9 @@ void() abandoned_cube =
 
 
 // used by pk & morphic cubes
-float BOT_NOUSE_PKCUBE = 0.2;
-float BOT_NOUSE_MCUBE = 0.1; // 0.6; TEST - restore
+#define BOT_NOUSE_PKCUBE 	 0.2
+ // 0.6; TEST - restore
+#define BOT_NOUSE_MCUBE 	 0.1
 
 void() cube_touch =
 {

@@ -150,8 +150,8 @@ float MC_C_FLAMER 				= 293;
 float MC_DEEPSLEEP 				= 291;
 float MC_QUANTUM	  				= 292;
 
-float MC_PKC	  					= 1000;
-float MC_PKC_OOR	  				= 1001; // out of range
+float MC_PKC	  					= 256000;						// mk III changed these
+float MC_PKC_OOR	  				= 256256; // out of range
 float MC_MC	  						= 1002;
 float MC_MCAS 						= 1004;
 

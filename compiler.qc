@@ -164,6 +164,8 @@ void() t_on
 
 
 
+// a problem with the test map, where a button makes a random item - calls this, crashing without
 
+void() spawn_loop { };
 
 

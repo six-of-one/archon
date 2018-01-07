@@ -766,7 +766,7 @@ if (self.classname == null_string)
 		}
 		else
 		if (ARCHON_UNCOL) // item was no collected - may get some pts for touch
-		if (self.classname != "archon_nodule")
+		if (self.classname != "archon_nodule") /// NOTE: this requires a debounce - was prob not tested
 		if (self.class_select != "chaos_item")
 		{
 			other.xp = other.xp + (self.archon * ARCHON_UNCOL);
@@ -1682,10 +1682,12 @@ void() DropBackpack =
 	}
 
 	if (DEAD_THROW_NOWAY)
-	if (noway_below)
-	if (self.origin_z < noway_below) return;
-	if (noway_above)
-	if (self.origin_z > noway_above) return;
+	{
+		if (noway_below)
+		if (self.origin_z < noway_below) return;
+		if (noway_above)
+		if (self.origin_z > noway_above) return;
+	}
 
 #ifdef enhanced
 // none tossed in lava
