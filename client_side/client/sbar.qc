@@ -735,7 +735,7 @@ void() Sbar_DrawInventory =
 	archon = GetStat_FLOAT_TRUNCATED(STAT_ARCHON);
 	morph = GetStat_FLOAT_TRUNCATED(STAT_MORPH);
 	nothuman = TRUE;
-	mcode = GetStat_FLOAT_TRUNCATED(STAT_MCODE) & 4095;			// Six - 017.1.12 mask off upper bits used for clr_x
+	mcode = GetStat_FLOAT_TRUNCATED(STAT_MCODE) & MC_MASK;			// Six - 017.1.12 mask off upper bits used for clr_x
 	rune_flag = GetStat_FLOAT_TRUNCATED(STAT_RUNEFLAG);
 
 	arcvessel = (rune_flag & RUNE_VESS);
