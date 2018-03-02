@@ -406,8 +406,9 @@ void() morphic_impulse =
 //	if (!self.archon) self.archon = 1; // 0 test case below - the MF below should fix this
 
 	dx = 2; // incase by some weird chance we have no valid impulse
-	if (self.impulse == 10) dx = 2;
-	else if (self.impulse == 12) dx = 0.5;
+//	if (self.impulse == 10) dx = 2;
+//	else 
+		if (self.impulse == 12) dx = 0.5;
 
 	c.lefty = c.lefty * dx;
 	c.lefty = morph_selinc(c.lefty);

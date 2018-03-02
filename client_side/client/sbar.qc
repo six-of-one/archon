@@ -864,9 +864,9 @@ sb_align = SB_BOTTOM; ///NOTE: should this be alignt left ?
 
 //note vid_conheight and vid_conwidth are very important for this - they need consulted or set
 
-//	if (mcode == -665) archon_magic = 2; // using magic from archon pts - for now we use (-) volume
-//	if (mcode == -666) archon_magic = 1; // chaos archon
-//	if (mcode == -667) archon_magic = 1; // order archon - for diff color bars
+//	if (mcode == 1665) archon_magic = 2; // using magic from archon pts - for now we use (-) volume
+//	if (mcode == 1666) archon_magic = 1; // chaos archon
+//	if (mcode == 1667) archon_magic = 1; // order archon - for diff color bars
 	if (morph == IMP_MCHAOS) archon_magic = 1;
 	if (morph == IMP_MORDER) archon_magic = 1;
 
