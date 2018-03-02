@@ -1158,8 +1158,10 @@ void()   scourge_atk1 =[ $shoot1,   scourge_atk2 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 	SCOURGE_FireSpikes(40);
 //   SCOURGE_FireSpikes(-40);
-	if (self.spawnflags & SC_MEGA)	{
-		newmis.dmg = 18;		SCOURGE_FireUDSpikes(-34, 10);
+	if (self.spawnflags & SC_MEGA)
+	{
+		newmis.dmg = 18;
+		SCOURGE_FireUDSpikes(-34, 10);
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
 			SCOURGE_FireSpikes(-48);
@@ -1181,7 +1183,9 @@ void()   scourge_atk2 =[ $shoot2,   scourge_atk3 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 //   SCOURGE_FireSpikes(56);
 	SCOURGE_FireSpikes(-56);
-	if (self.spawnflags & SC_MEGA)	{		newmis.dmg = 18;
+	if (self.spawnflags & SC_MEGA)
+	{
+		newmis.dmg = 18;
 		SCOURGE_FireUDSpikes(46, 10);
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
@@ -1198,7 +1202,9 @@ void()   scourge_atk3 =[ $shoot1,   scourge_atk4 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 //   SCOURGE_FireSpikes(40);
 	SCOURGE_FireSpikes(-40);
-	if (self.spawnflags & SC_MEGA)	{		newmis.dmg = 18;
+	if (self.spawnflags & SC_MEGA)
+	{
+		newmis.dmg = 18;
 		SCOURGE_FireUDSpikes(34, 10);
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
@@ -1221,7 +1227,9 @@ void()   scourge_atk4 =[ $shoot2,   scourge_atk5 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 	SCOURGE_FireSpikes(56);
 //   SCOURGE_FireSpikes(-56);
-	if (self.spawnflags & SC_MEGA)	{		newmis.dmg = 18;
+	if (self.spawnflags & SC_MEGA)
+	{
+		newmis.dmg = 18;
 		SCOURGE_FireUDSpikes(-46, 10);
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
@@ -1236,7 +1244,9 @@ void()   scourge_atk5 =[ $shoot1,   scourge_atk6 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 	SCOURGE_FireSpikes(40);
 //   SCOURGE_FireSpikes(-40);
-	if (self.spawnflags & SC_MEGA)	{		newmis.dmg = 18;
+	if (self.spawnflags & SC_MEGA)
+	{
+		newmis.dmg = 18;
 		SCOURGE_FireUDSpikes(-34, 10);
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
@@ -1253,7 +1263,9 @@ void()   scourge_atk6 =[ $shoot2,   scourge_atk7 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 //   SCOURGE_FireSpikes(56);
 	SCOURGE_FireSpikes(-56);
-	if (self.spawnflags & SC_MEGA)	{		newmis.dmg = 18;
+	if (self.spawnflags & SC_MEGA)
+	{
+		newmis.dmg = 18;
 		SCOURGE_FireUDSpikes(46, 10);
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
@@ -1268,7 +1280,9 @@ void()   scourge_atk7 =[ $shoot1,   scourge_atk8 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 //   SCOURGE_FireSpikes(40);
 	SCOURGE_FireSpikes(-40);
-	if (self.spawnflags & SC_MEGA)	{		newmis.dmg = 18;
+	if (self.spawnflags & SC_MEGA)
+	{
+		newmis.dmg = 18;
 		SCOURGE_FireUDSpikes(34, 10);
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
@@ -1287,7 +1301,9 @@ void()   scourge_atk8 =[ $shoot2,   scourge_run1 ]
 	self.effects = self.effects | EF_MUZZLEFLASH;
 	SCOURGE_FireSpikes(56);
 //   SCOURGE_FireSpikes(-56);
-	if (self.spawnflags & SC_MEGA)	{		newmis.dmg = 18;
+	if (self.spawnflags & SC_MEGA)
+	{
+		newmis.dmg = 18;
 		SCOURGE_FireUDSpikes(-46, 10);
 		if (self.aflag == SC_FIRE_TRIPLE)
 		{
