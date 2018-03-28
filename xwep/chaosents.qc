@@ -1332,7 +1332,7 @@ void() generator_fire =
 	}
 };
 
-// IDEA: pop sound option, or explosion
+// IDEA: pop sound option, or explosion *
 
 void() monster_respawn_fire;
 

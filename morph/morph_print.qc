@@ -61,11 +61,11 @@ void() morph_print_notify =
 	{
 		if (self.mask_x == MORPH_ARCHON)
 		{
-			centerprint3(self.enemy, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\b                 ARCHON!                \n\b----------------------------------------\n\bYou have been chosen - So might it be...\nselect a demense with these controls:   \n\b----------------------------------------\n\bUse cycle weapon+ to go forward -       \nUse cycle weapon- to go backward.       \nPress alt-fire to finish your selection \nand become one!                         \nselect any weapon with 1 - 9 to exit.   \n----------------------------------------\n\byou have: ", ftos(floor(self.enemy.archon)), " points.");
+			centerprint3(self.enemy, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\b                 ARCHON!                \n\b----------------------------------------\n\bYou have been chosen - So might it be...\nselect a demense with these controls:   \n\b----------------------------------------\n\bUse cycle weapon+ to go forward -       \nUse cycle weapon- to go backward.       \nPress alt-fire to finish your selection \nand become one!                         \nselect any weapon with 1 - 9 to exit.   \n----------------------------------------\n\byou have: ", ftos(floor(self.enemy.archon)), " points.");
 		}
 		else
 		{
-			centerprint3(self.enemy, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\b           Welcome to Archon.           \n\b----------------------------------------\n\bYou can now evolve - please select an   \nevolution with these controls:          \n\b----------------------------------------\n\bUse cycle weapon+ to go forward -       \nUse cycle weapon- to go backward.       \nPress alt-fire to finish your selection \nand Evolve!                             \nselect any weapon with 1 - 9 to exit.   \n----------------------------------------\n\byou have: ", ftos(floor(self.enemy.archon)), " points.");
+			centerprint3(self.enemy, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\b           Welcome to Archon.           \n\b----------------------------------------\n\bYou can now evolve - please select an   \nevolution with these controls:          \n\b----------------------------------------\n\bUse cycle weapon+ to go forward -       \nUse cycle weapon- to go backward.       \nPress alt-fire to finish your selection \nand Evolve!                             \nselect any weapon with 1 - 9 to exit.   \n----------------------------------------\n\byou have: ", ftos(floor(self.enemy.archon)), " points.");
 		}
 	}
 	remove(self);
@@ -77,7 +77,7 @@ void() morph_print_notify =
 void(entity p1) morph_print =
 {
 stuffcmd(p1,"scr_centertime 240\n"); // incase admin_centertime is not
-stuffcmd(self, "\ncon_notify 4\n"); // for this output
+stuffcmd(p1, "\ncon_notify 4\n"); // for this output
 p1.eweapon.archon = 0;
 p1.mcode = p1.eweapon.mcode;
 

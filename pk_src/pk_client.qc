@@ -584,7 +584,7 @@ void() PutClientInServer =
 
 	self.view_ofs = '0 0 22';
 
-	if (self.health_modifier <= 0) self.health_modifier = MHUMAN_HEALMOD;
+//	if (self.health_modifier <= 0) self.health_modifier = MHUMAN_HEALMOD;
 
 	polymorph_check(self.morphy, self.morphy); // become incarnation
 

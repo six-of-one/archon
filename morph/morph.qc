@@ -181,8 +181,8 @@ string(float sel) polymorph_id =
 {
 	local string s1;
 
-	if (sel == IMP_MCHAOS)				s1 = "\bChaos\b icarnate";
-	if (sel == IMP_MORDER)				s1 = "Order icarnate";
+	if (sel == IMP_MCHAOS)				s1 = "\bChaos\b incarnate";
+	if (sel == IMP_MORDER)				s1 = "Order incarnate";
 //Techs:
 	else if (sel == IMP_MHUMAN)		s1 = "a lowly Cook";
 //	else if (sel == IMP_MDEMO)			s1 = "a mad Bomber";
