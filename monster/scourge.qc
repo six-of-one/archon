@@ -945,7 +945,7 @@ void() scourge_think =
 			return;
 		}
 
-		if (self.spawnflags & SC_BABY) // baby gets his nail guns
+		if (self.spawnflags & SC_BABY) // baby gets his first nail guns
 		{
 			self.rad_time = time + 50 + (random() * 10) + sc_count;
 			if (sc_count > sc_stop_grow)

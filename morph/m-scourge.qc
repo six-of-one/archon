@@ -149,7 +149,7 @@ void() player_scourge_die =
 		e = drop_item(0, "item_rockets", self, v0);
 		e.aflag = self.ammo_rockets;
 	}
-	if ((self.ammo_cells > 0) && (random() < ((120 - self.ammo_rockets) * 0.01) ))
+	if ((self.ammo_cells > 0) && (random() < ((120 - self.ammo_cells) * 0.01) ))
 	{
 		e = drop_item(0, "item_cells", self, v0);
 		e.aflag = self.ammo_cells;

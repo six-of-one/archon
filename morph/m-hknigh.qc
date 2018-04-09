@@ -2,7 +2,7 @@
  *
  * Cataboligne
  *
- * file: m-scourge.qc
+ * file: m-hknigh.qc
  *
  * date: 9/14/11
  *
