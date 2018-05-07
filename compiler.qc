@@ -17,6 +17,7 @@
 #message			-- GPL - see "source code/license.txt" for rights and details 
 #message 
 
+#pragma COPYRIGHT (c) 1.06 iD 1996, 1.07 Six 2010
 
 // **************************************
 // code weaver section
@@ -79,8 +80,16 @@ float pkvl; // for indicator
 // replaces - 
 //							float ENHANCED					= 1; // adds features that werent originally there in the sub mods (like runes)
 
+// compiler warnings
+// dont list unused vars warning when compiling
+//#pragma warning disable Q302
 
+// turn off warnings for map spawn functions - most are normally only called by the engine
+#pragma warning off F300
 
+// NOTE: this masks off no return value compiler WARNINGS !
+// comment this out to see any related warnings
+#pragma warning disable Q206
 
 // **************************************
 // Function section
